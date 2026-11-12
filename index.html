@@ -290,6 +290,7 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 .pth{display:inline-flex;flex-direction:column;align-items:center;font-size:11px;color:#5A3416}.pth i{font-style:normal}
 .pmore{font-size:12px;color:#8A6A4A;margin-left:4px}
 .polbody{border-top:1px dashed #E2C796;padding:6px 10px 10px}
+.prow.mine{background:#F0F9E8;border-radius:8px}
 </style>
 </head>
 <body class="game">
@@ -715,6 +716,7 @@ function startListeners(){
     regList=snap.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.v===4);sortReg();renderDex();
     if(sheet&&!(document.activeElement&&document.activeElement.id==='regName'))renderSheet();
   },()=>{}));
+  unsubs.push(db.collection('boards').onSnapshot(snap=>{boardsList=snap.docs.map(d=>({id:d.id,...d.data()})).filter(e=>e.v===4);if(curPanel==='dex'&&(dexTab==='boards'||dexTab==='rank'||dexTab==='me'))renderDex()},()=>{}));
   unsubs.push(db.collection('rights').onSnapshot(snap=>{rightsList=snap.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.v===4);collectPayouts();const ae=document.activeElement;if(curPanel==='dex'&&!(ae&&(ae.dataset&&(ae.dataset.rname||ae.dataset.rprice)||ae.id==='dexQ')))renderDex()},()=>{}));
   unsubs.push(db.collection('listings').onSnapshot(snap=>{listings=snap.docs.map(d=>({id:d.id,...d.data()})).filter(l=>l.kind==='item'||(l.v===4&&(()=>{try{const o=lotOf(l);return l.kind==='spec'?!!(o.spec&&o.spec.g):!!o.m}catch(e){return false}})()));collectSales();renderMarket()},()=>{}));
 }
@@ -1160,9 +1162,40 @@ async function lotAction(act,b){
 
 let dexCrop='all';
 const fmtDate=x=>{if(!x||!x.toDate)return '剛剛';const d=x.toDate();return `${d.getMonth()+1}/${d.getDate()}`};
+// ===== 紀錄榜：每種作物四個榜，各列前 10 名，每位玩家每榜只留最好的一株 =====
+const BOARDS=[['big','巨大榜','大小',1],['small','迷你榜','大小',-1],['perfect','完美榜','完美度',1],['weird','奇異榜','完美度',-1]];
+const BOARD_PTS=r=>r===1?5:r<=3?3:r<=10?1:0;
+let boardsList=[],boardCrop=null;
+const bVal=(b,ph)=>b==='big'||b==='small'?ph.ab.size:ph.ab.perf;
+function boardRank(crop,b){const dir=BOARDS.find(x=>x[0]===b)[3];return boardsList.filter(e=>e.crop===crop&&e.board===b).sort((x,y)=>dir*(y.value-x.value)||(x.at||0)-(y.at||0))}
+async function submitBoards(p){
+  if(!uid||!p)return;const ph=phen(p.g,p.crop),me=myName();
+  for(const [b,bn,vn,dir] of BOARDS){
+    const v=bVal(b,ph),id=`${p.crop}_${b}_${uid}`,cur=boardsList.find(e=>e.id===id);
+    if(cur&&dir*(v-cur.value)<=0)continue;
+    const doc={v:4,crop:p.crop,board:b,uid,name:me,value:v,key:ph.key,perfCls:ph.perfCls,plant:pname(p),at:Date.now()};
+    try{await db.collection('boards').doc(id).set(doc);
+      const tmp=boardsList.filter(e=>e.id!==id).concat([{id,...doc}]);const rk=tmp.filter(e=>e.crop===p.crop&&e.board===b).sort((x,y)=>dir*(y.value-x.value)||(x.at||0)-(y.at||0)).findIndex(e=>e.id===id)+1;
+      if(rk&&rk<=10)toast(`你的「${pname(p)}」登上${CROPS[p.crop].n}${bn}第 ${rk} 名（${vn} ${v}）`);
+    }catch(e){}
+  }
+}
+function boardsHTML(){
+  if(!boardCrop){const own=ownedCrops();boardCrop=own[0]||'tomato'}
+  let h=`<p class="note">任何成熟的植株都會自動參加，不需要是已登錄的品種。每位玩家在每個榜只保留自己最好的一株。名次分數：第 1 名 5 分、第 2–3 名 3 分、第 4–10 名 1 分，被擠下榜就扣回。</p>`;
+  h+=`<div class="filters">${CROP_KEYS.map(k=>`<button class="fchip" data-bc="${k}" aria-pressed="${boardCrop===k}">${CROPS[k].n}</button>`).join('')}</div>`;
+  for(const [b,bn,vn] of BOARDS){
+    const list=boardRank(boardCrop,b).slice(0,10);
+    h+=`<h3>${CROPS[boardCrop].n}${bn}</h3>`+(list.length?list.map((e,i)=>{let ic='';try{ic=fruitSVG({...appFromKey(e.key),perfCls:e.perfCls,seed:7},boardCrop,34)}catch(_){}
+      return `<div class="prow${e.uid===uid?' mine':''}"><span class="pp" style="min-width:26px">${i+1}</span>${ic}<span class="pl"><b>${e.uid===uid?'你':esc(e.name||'玩家')}</b><span class="meta">「${esc(e.plant||'')}」</span></span><span class="pp">${vn} ${e.value}</span></div>`}).join(''):'<p class="note">還沒有人上榜。</p>');
+  }
+  return h;
+}
+function boardStats(u){let pts=0;const places=[];for(const c of CROP_KEYS)for(const [b,bn] of BOARDS){const r=boardRank(c,b).findIndex(e=>e.uid===u)+1;if(r&&r<=10){pts+=BOARD_PTS(r);places.push(`${CROPS[c].n}${bn}第 ${r} 名`)}}return {pts,places}}
+
 // ===== 圖鑑面板：分頁 =====
 let dexTab='dex',dexQ='',dexTier=-1,rdraft={},rerr={},rconfirm=null;
-function dexTabsHTML(){return `<div class="filters" role="tablist">${[['dex','品種圖鑑'],['rights','標本與品種權'],['rank','育種家排行'],['me','我的成就']].map(([k,n])=>`<button class="fchip" role="tab" data-dtab="${k}" aria-pressed="${dexTab===k}">${n}</button>`).join('')}</div>`}
+function dexTabsHTML(){return `<div class="filters" role="tablist">${[['dex','品種圖鑑'],['rights','標本與品種權'],['boards','紀錄榜'],['rank','育種家排行'],['me','我的成就']].map(([k,n])=>`<button class="fchip" role="tab" data-dtab="${k}" aria-pressed="${dexTab===k}">${n}</button>`).join('')}</div>`}
 function renderDex(){
   if(!state)return;const el=document.getElementById('dex');if(!el)return;
   document.getElementById('dexTabs').innerHTML=dexTabsHTML();
@@ -1170,6 +1203,7 @@ function renderDex(){
   try{
     if(dexTab==='dex'){fl.innerHTML=filtersHTML(dexCrop,'data-dc');el.innerHTML=dexListHTML()}
     else if(dexTab==='rights')el.innerHTML=rightsHTML();
+    else if(dexTab==='boards')el.innerHTML=boardsHTML();
     else if(dexTab==='rank')el.innerHTML=rankHTML();
     else el.innerHTML=meHTML();
   }catch(e){logErr(e,'dex');el.innerHTML='<p class="note">圖鑑讀取時發生錯誤，請到「設定 → 錯誤紀錄」截圖回報。</p>'}
@@ -1217,7 +1251,7 @@ function rightsHTML(){
 }
 function rankHTML(){
   const ppl=[...profiles.filter(p=>p.id!==uid),{id:uid,name:myName()}].map(p=>({p,st:breederStats(p.id,p.name)})).sort((a,b)=>b.st.score-a.st.score);
-  return `<p class="note">育種家分數：命名品種依稀有度 1／2／4／7／12／20 分，保持一項紀錄 3 分（被打破就扣回），首位發現每次 1 分。</p>`+ppl.map((x,i)=>`<div class="prow"><span class="pp" style="min-width:28px">${i+1}</span><span class="pl"><b>${x.p.id===uid?'你':esc(x.p.name||'玩家')}・${x.st.title}</b><span class="meta">命名 ${x.st.named} 個・紀錄 ${x.st.recs} 項・首位發現 ${x.st.ff} 次</span></span><span class="pp">${x.st.score} 分</span></div>`).join('');
+  return `<p class="note">育種家分數：命名品種依稀有度 1／2／4／7／12／20 分，保持一項品種紀錄 3 分，紀錄榜第 1 名 5 分、第 2–3 名 3 分、第 4–10 名 1 分（被超越就扣回），首位發現每次 1 分。</p>`+ppl.map((x,i)=>`<div class="prow"><span class="pp" style="min-width:28px">${i+1}</span><span class="pl"><b>${x.p.id===uid?'你':esc(x.p.name||'玩家')}・${x.st.title}</b><span class="meta">命名 ${x.st.named} 個・品種紀錄 ${x.st.recs} 項・紀錄榜 ${x.st.places.length} 項・首位發現 ${x.st.ff} 次</span></span><span class="pp">${x.st.score} 分</span></div>`).join('');
 }
 function meHTML(){
   const st=breederStats(uid,myName()),next=TITLES.find(t=>t[0]>st.score);
@@ -1225,7 +1259,8 @@ function meHTML(){
   const seen=state.seen||{};
   return `<div class="scores"><div class="score"><b>${st.score}</b><span>育種家分數</span></div><div class="score"><b>${st.title}</b><span>${next?`再 ${next[0]-st.score} 分成為${next[1]}`:'最高稱號'}</span></div></div>
   <h3>命名品種（${st.named}）</h3><p class="note">${TIERS.map((t,i)=>`${t} ${st.byTier[i]}`).join('・')}</p>
-  <h3>目前保持的紀錄（${recs.length}）</h3><p class="note">${recs.length?recs.join('<br>'):'還沒有。紀錄被打破時會自動移除。'}</p>
+  <h3>目前保持的品種紀錄（${recs.length}）</h3><p class="note">${recs.length?recs.join('<br>'):'還沒有。紀錄被打破時會自動移除。'}</p>
+  <h3>紀錄榜名次（${st.places.length}）</h3><p class="note">${st.places.length?st.places.join('<br>'):'還沒有。任何成熟的植株都會自動參加。'}</p>
   <h3>首位發現</h3><p class="note">你是第一個種出的外觀共 ${st.ff} 種（只有你看得到）。</p>
   <h3>收集進度</h3><p class="note">${CROP_KEYS.filter(c=>(seen[c]||[]).length).map(c=>`${CROPS[c].n} ${seen[c].length} 種`).join('・')||'種出果實後就會記錄。'}</p>
   <h3>品種權交易</h3><p class="note">賣出 ${state.rightsSold||0} 個，總收入 ${state.rightsIncome||0} 金幣。</p>`;
@@ -1240,7 +1275,7 @@ async function dexAction(b){
 }
 document.getElementById('dexFilter').addEventListener('click',e=>{const b=e.target.closest('[data-dc]');if(!b)return;dexCrop=b.dataset.dc;renderDex()});
 document.getElementById('dexTabs').addEventListener('click',e=>{const b=e.target.closest('[data-dtab]');if(!b)return;dexTab=b.dataset.dtab;renderDex()});
-document.getElementById('dex').addEventListener('click',e=>{const b=e.target.closest('[data-ract]');if(b)dexAction(b)});
+document.getElementById('dex').addEventListener('click',e=>{const bc=e.target.closest('[data-bc]');if(bc){boardCrop=bc.dataset.bc;renderDex();return}const b=e.target.closest('[data-ract]');if(b)dexAction(b)});
 document.getElementById('dex').addEventListener('input',e=>{const t=e.target;if(t.dataset.rname){rdraft[t.dataset.rname]=t.value;rerr[t.dataset.rname]=''}if(t.id==='dexQ'){dexQ=t.value;const pos=t.selectionStart;renderDex();const n=document.getElementById('dexQ');if(n){n.focus();n.setSelectionRange(pos,pos)}}});
 document.getElementById('dex').addEventListener('change',e=>{if(e.target.id==='dexTier'){dexTier=+e.target.value;renderDex()}});
 
@@ -1482,7 +1517,7 @@ function tick(){
   state.plots.forEach((p,i)=>{
     if(!p)return;
     if(p.stage==='seedling'||p.stage==='fruit'){
-      if(p.watered){p.prog+=gdt*(p.fert?1.25:1);if(p.prog>=stageDur(p,phen(p.g,p.crop))){p.prog=0;p.watered=false;p.fert=false;if(p.stage==='seedling')flowered=true;p.stage=p.stage==='seedling'?'flower':'ripe';p.flowerT=0;changed=true;if(p.stage==='ripe'){doRecord(i);noteSeen(p)}}}
+      if(p.watered){p.prog+=gdt*(p.fert?1.25:1);if(p.prog>=stageDur(p,phen(p.g,p.crop))){p.prog=0;p.watered=false;p.fert=false;if(p.stage==='seedling')flowered=true;p.stage=p.stage==='seedling'?'flower':'ripe';p.flowerT=0;changed=true;if(p.stage==='ripe'){doRecord(i);noteSeen(p);submitBoards(p)}}}
     }else if(p.stage==='flower'){p.flowerT+=gdt;if(p.flowerT>=24*HOUR){pollinate(i,null);changed=true}}
   });
   if(flowered)tutEv('flower');
@@ -2082,10 +2117,10 @@ function advanceAll(){
 }
 async function adminWipe(){
   if(!isAdmin())return;
-  for(const c of ['registry','rights','listings','discoveries']){
+  for(const c of ['registry','rights','listings','discoveries','boards']){
     try{const sn=await db.collection(c).get();for(const d of sn.docs)await db.collection(c).doc(d.id).delete()}catch(e){logErr(e,'wipe '+c)}
   }
-  toast('已清空伺服器的圖鑑、品種權、市集與發現紀錄');
+  toast('已清空伺服器的圖鑑、品種權、市集、發現紀錄與紀錄榜');
 }
 const genoTxt=g=>`形狀：${g.s.map(p=>p.map(x=>x?'尖':'圓').join('')).join(' ')}\n特殊造型：${g.sp.map(x=>x?SPN[x]:'一般').join('/')}　花紋開關：${g.pw.map(x=>x?'開':'關').join('/')}\n主色：${g.c1.map(c=>CN[c]).join('/')}　副色：${g.c2.map(c=>CN[c]).join('/')}　花紋色：${g.pc.map(c=>CN[c]).join('/')}　花紋形式：${g.pf.map(f=>PFN[f]).join('/')}\n`+ABIL.map(k=>`${{size:'大小',perf:'完美度',speed:'速度',yield:'產量',vigor:'生命力'}[k]}：${g.n[k].map(p=>Math.round((p[0]+p[1])*50)).join(' ')}`).join('\n');
 
@@ -2181,8 +2216,9 @@ function breederStats(u,name){
   const named=regList.filter(r=>r.inventorUid===u);const byTier=[0,0,0,0,0,0];named.forEach(r=>byTier[r.tier||0]++);
   let recs=0;for(const r of regList){if(r.inventorUid==='system')continue;for(const k of ['big','small','perfect','weird']){const o=(r.rec||{})[k];if(o&&(o.uid===u||(!o.uid&&o.by===name)))recs++}}
   const prof=profiles.find(x=>x.id===u)||{},ff=u===uid?(state.firstFind||0):(prof.firstFind||0);
-  const score=byTier.reduce((s,n,i)=>s+n*TIER_PTS[i],0)+recs*3+ff;
-  return {named:named.length,byTier,recs,ff,score,title:titleOf(score)};
+  const bs=boardStats(u);
+  const score=byTier.reduce((s,n,i)=>s+n*TIER_PTS[i],0)+recs*3+ff+bs.pts;
+  return {named:named.length,byTier,recs,ff,bp:bs.pts,places:bs.places,score,title:titleOf(score)};
 }
 
 // ===== 訂單：每日與每週 =====

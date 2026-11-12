@@ -565,6 +565,57 @@ function gReplacer(k,v){if(v&&typeof v==='object'&&v.s&&v.n&&v.c1&&v.pw){try{con
 function gReviver(k,v){return typeof v==='string'&&v.length===GLEN+2&&v.startsWith('G:')?gdec(v.slice(2)):v}
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
+// ===== 存檔檢查與修復 =====
+const BUILD='2026-11-12b';
+const isPair=p=>Array.isArray(p)&&p.length===2;
+function isGeno(g){
+  if(!g||typeof g!=='object')return false;
+  if(!Array.isArray(g.s)||g.s.length!==SHN||!g.s.every(isPair))return false;
+  for(const k of ['sp','pw','c1','c2','pc','pf'])if(!isPair(g[k]))return false;
+  if(![...g.c1,...g.c2,...g.pc].every(c=>CSTR[c]))return false;
+  if(!g.n||typeof g.n!=='object')return false;
+  for(const k of ABIL){const a=g.n[k];if(!Array.isArray(a)||a.length!==NUMN||!a.every(p=>isPair(p)&&typeof p[0]==='number'&&typeof p[1]==='number'))return false}
+  return true;
+}
+function fixGeno(g){if(typeof g==='string'&&g.startsWith('G:')&&g.length===GLEN+2){try{g=gdec(g.slice(2))}catch(e){return null}}return isGeno(g)?g:null}
+function repairState(o){
+  const rep_={lots:[],seeds:0,fathers:0,plants:0};
+  if(!o||!Array.isArray(o.lots))return rep_;
+  o.lots=o.lots.filter(l=>{
+    if(!l||typeof l!=='object'){rep_.lots.push({name:'（無名稱）',source:''});return false}
+    if(Array.isArray(l.seeds)){const n0=l.seeds.length;l.seeds=l.seeds.map(fixGeno).filter(Boolean);rep_.seeds+=n0-l.seeds.length}
+    let m=fixGeno(l.m);if(!m&&Array.isArray(l.seeds)&&l.seeds.length)m=l.seeds[0];
+    if(!m||!CROPS[l.crop]){rep_.lots.push({name:l.name||'（無名稱）',source:l.source||''});return false}
+    l.m=m;const f=fixGeno(l.f);if(!f){l.f=m;rep_.fathers++}else l.f=f;
+    if(Array.isArray(l.seeds)&&!l.seeds.length&&!(l.count>0)){rep_.lots.push({name:l.name||'（無名稱）',source:l.source||''});return false}
+    if(!Array.isArray(l.seeds)&&!(Number.isFinite(l.count)&&l.count>0)){rep_.lots.push({name:l.name||'（無名稱）',source:l.source||''});return false}
+    return true;
+  });
+  if(Array.isArray(o.plots))o.plots=o.plots.map(p=>{
+    if(!p)return p;const g=fixGeno(p.g);
+    if(!g||!CROPS[p.crop]){rep_.plants++;return null}
+    p.g=g;p.m=fixGeno(p.m)||g;
+    if(p.pollen&&p.pollen.type==='cross'){const fg=fixGeno(p.pollen.fatherG);if(fg)p.pollen.fatherG=fg;else p.pollen={type:'self'}}
+    return p;
+  });
+  return rep_;
+}
+const repTotal=r=>r.lots.length+r.seeds+r.fathers+r.plants;
+function repNotice(r){
+  if(!repTotal(r))return;
+  const names=r.lots.map(x=>`「${x.name}」${x.source?'（'+x.source+'）':''}`);
+  logErr(`修復存檔：移除 ${r.lots.length} 包種子${names.length?'：'+names.slice(0,8).join('、'):''}；移除壞掉的種子 ${r.seeds} 顆、修正父本 ${r.fathers} 包、移除植株 ${r.plants} 株`,'');
+  let el=document.getElementById('repairBox');
+  if(!el){el=document.createElement('div');el.id='repairBox';el.setAttribute('role','status');el.style.cssText='position:fixed;left:12px;right:12px;top:12px;z-index:190;background:#FFFBEA;border:3px solid #B9840F;border-radius:14px;padding:12px;font-size:15px;line-height:1.55;color:#4A3208;box-shadow:0 4px 0 #8A6A12;max-height:60vh;overflow:auto';document.body.appendChild(el)}
+  el.innerHTML=`<b>存檔已自動修復</b><br>存檔裡有舊版程式留下、無法讀取的資料，已先備份到雲端再處理：${r.lots.length?`<br>移除 ${r.lots.length} 包種子：${names.join('、')}`:''}${r.seeds?`<br>移除壞掉的種子 ${r.seeds} 顆`:''}${r.fathers?`<br>修正父本資料 ${r.fathers} 包`:''}${r.plants?`<br>移除植株 ${r.plants} 株`:''}<br>你自己雜交、取種得到的種子都還在。<br><button class="btn primary" style="margin-top:8px" onclick="this.parentNode.remove()">知道了</button>`;
+}
+// ===== 舊頁面防護：定期確認自己是不是最新版本 =====
+async function checkBuild(){
+  if(location.protocol==='file:')return;
+  try{const r=await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)return;const t=await r.text();const m=t.match(/const BUILD='([^']+)'/);
+    if(m&&m[1]!==BUILD)blockSaves('遊戲已經有新版本了。這個畫面是舊版，為了保護你的存檔已停止存檔，請重新整理。若從 Instagram 或 LINE 開啟，建議改用 Safari 或 Chrome。')}catch(e){}
+}
+setInterval(checkBuild,5*60e3);document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkBuild()});
 // ===== 錯誤紀錄 =====
 const errLog=[];
 function logErr(e,where){const m=`${where||''} ${e&&e.message||e}`.trim();if(errLog[0]===m)return;errLog.unshift(m);errLog.length=Math.min(errLog.length,5);const el=document.getElementById('errLog');if(el)el.textContent=errLog.join('\n')}
@@ -595,7 +646,7 @@ async function flush(){
   const json=packState(state);
   if(json.length>850000&&!sizeWarned){sizeWarned=true;toast('存檔快到雲端上限了，建議把用不到的種子賣掉或丟掉')}
   if(Date.now()-lastBak>30*60e3){lastBak=Date.now();backupSave(json,'auto')}
-  try{await db.collection('players').doc(uid).set({save:json,savedAt:state.savedAt,session:SESSION,name:myName(),updatedAt:TS()},{merge:true});if(!dirty)setSync('ok')}
+  try{await db.collection('players').doc(uid).set({save:json,savedAt:state.savedAt,session:SESSION,build:BUILD,name:myName(),updatedAt:TS()},{merge:true});if(!dirty)setSync('ok')}
   catch(e){dirty=true;setSync('err');clearTimeout(saveTimer);saveTimer=setTimeout(flush,8000)}
 }
 function load(){try{const s=localStorage.getItem(lsKey());if(s){const o=unpack(s);if(o&&o.v===4)return migrate(o)}}catch(e){}return null}
@@ -618,7 +669,7 @@ function startListeners(){
     regList=snap.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.v===4);sortReg();renderDex();
     if(sheet&&!(document.activeElement&&document.activeElement.id==='regName'))renderSheet();
   },()=>{}));
-  unsubs.push(db.collection('listings').onSnapshot(snap=>{listings=snap.docs.map(d=>({id:d.id,...d.data()})).filter(l=>l.v===4||l.kind==='item');collectSales();renderMarket()},()=>{}));
+  unsubs.push(db.collection('listings').onSnapshot(snap=>{listings=snap.docs.map(d=>({id:d.id,...d.data()})).filter(l=>l.kind==='item'||(l.v===4&&(()=>{try{return !!lotOf(l).m}catch(e){return false}})()));collectSales();renderMarket()},()=>{}));
 }
 function stopListeners(){unsubs.forEach(u=>u());unsubs=[]}
 const collecting=new Set();
@@ -774,14 +825,16 @@ function seededRnd(a){return function(){a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>1
 function simsHTML(m,f,crop,label){return distHTML(lotDist({m,f,crop}),crop,label,false)}
 function filtersHTML(cur,attr){return ['all',...CROP_KEYS].map(k=>`<button class="fchip" ${attr}="${k}" aria-pressed="${cur===k}">${k==='all'?'全部':CROPS[k].n}</button>`).join('')}
 let bagSort='new',renaming=null,selling=null;
-function lotKey(l,k){const ph=phen(l.m,l.crop);return k==='tier'?ph.tier*1000+ph.score:k==='size'?ph.ab.size:k==='perf'?ph.ab.perf:k==='stab'?likely(l).p:k==='count'?lc(l):0}
+function lotKey(l,k){try{return lotKey_(l,k)}catch(e){return 0}}
+function lotKey_(l,k){const ph=phen(l.m,l.crop);return k==='tier'?ph.tier*1000+ph.score:k==='size'?ph.ab.size:k==='perf'?ph.ab.perf:k==='stab'?likely(l).p:k==='count'?lc(l):0}
 const openGroups=new Set();
 function gsig(g){const n=p=>JSON.stringify(p[0])<JSON.stringify(p[1])?[p[0],p[1]]:[p[1],p[0]];return JSON.stringify([g.s.map(n),n(g.sp),n(g.pw),n(g.c1),n(g.c2),n(g.pc),n(g.pf),ABIL.map(k=>g.n[k].map(n))])}
 function lotSig(l){const a=gsig(l.m),b=gsig(l.f);return l.crop+'|'+(a<b?a+'|'+b:b+'|'+a)}
 function mergeIdentical(){
   if(!state)return 0;const seen=new Map();let merged=0;
   for(const l of state.lots.slice()){
-    const k=lotSig(l),t=seen.get(k);
+    let k;try{k=lotSig(l)}catch(e){logErr(e,'merge');continue}
+    const t=seen.get(k);
     if(!t){seen.set(k,l);continue}
     const nt=lc(t),nl=lc(l);
     if(t.seeds||l.seeds){const toSeeds=x=>x.seeds?x.seeds:Array.from({length:x.count||0},()=>child(x.m,x.f).g);t.seeds=[...toSeeds(t),...toSeeds(l)];delete t.count}
@@ -795,7 +848,8 @@ function mergeIdentical(){
 function grpKey(l){try{return l.crop+'|'+likely(l).key}catch(e){return 'bad|'+l.id}}
 function lotRow(l,inner){try{return lotRow_(l,inner)}catch(e){logErr(e,'lotRow');return `<button class="lotrow" data-lot="${l.id}"><span class="lr"><b>${esc(l.name||'種子')}</b><span class="meta">這包種子的資料讀不到，點開可以丟掉。</span></span></button>`}}
 function lotRow_(l,inner){const ph=phen(l.m,l.crop),lk=likely(l);return `<button class="lotrow${inner?' inner':''}" data-lot="${l.id}"><span class="seedic">${fruitSVG(lk.app,l.crop,inner?44:52)}<i>最可能 ${pctTxt(lk.p)}</i></span><span class="lr"><b>${esc(l.name)}${l.wide?'・遠緣雜種':''}</b><span class="meta">${inner?'':CROPS[l.crop].n+'・'}${lc(l)} 顆${inner?'':'・'+shapeNameOf(lk.app,l.crop)+'・'+colorLabelA(lk.app)}</span><span class="meta">母本：${SIZE_N[ph.sizeCls]}・${PERF_N[ph.perfCls]}・發芽率 ${Math.round(l.germ*100)}%</span><span class="badges" style="justify-content:flex-start;margin-top:2px"><span class="badge r${ph.tier}">${l.ptier!=null&&l.ptier>=3?TIERS[l.ptier]+'母本':TIERS[ph.tier]}</span></span></span></button>`}
-function renderBag(){
+function renderBag(){try{renderBag_()}catch(e){logErr(e,'bag');const el=document.getElementById('bag');if(el)el.innerHTML='<p class="note">種子袋讀取時發生錯誤。請重新整理；如果仍然如此，請到「設定 → 錯誤紀錄」截圖回報。</p>'}}
+function renderBag_(){
   if(!state)return;
   if(mergeIdentical())save();
   document.getElementById('bagFilter').innerHTML=filtersHTML(uiCrop,'data-fc');
@@ -874,7 +928,7 @@ function renderDex(){
   if(!state)return;
   document.getElementById('dexFilter').innerHTML=filtersHTML(dexCrop,'data-dc');
   const el=document.getElementById('dex');
-  const list=regList.filter(r=>r.g&&(dexCrop==='all'||r.crop===dexCrop));
+  const list=regList.filter(r=>r.g&&(dexCrop==='all'||r.crop===dexCrop)&&(()=>{try{return isGeno(regG(r))}catch(e){return false}})());
   if(!list.length){el.innerHTML='<p class="note">還沒有登錄的品種。</p>';return}
   const items=list.map(r=>({r,ph:phen(regG(r),r.crop)})).sort((a,b)=>b.ph.tier-a.ph.tier||COLOR_ORDER.indexOf(a.ph.skin)-COLOR_ORDER.indexOf(b.ph.skin));
   const recTxt=(o,n)=>o&&o.by?`${n} ${o.v}（${esc(o.by)}）`:`${n} －`;
@@ -1376,9 +1430,10 @@ window.addEventListener('resize',updateCam);
 // ===== 市集攤位 =====
 let mkCrop='all';
 const lotCache=new Map();
-function lotOf(l){if(!lotCache.has(l.id))lotCache.set(l.id,unpack(l.lot));return lotCache.get(l.id)}
+function lotOf(l){if(!lotCache.has(l.id)){const o=unpack(l.lot);if(o&&typeof o==='object'){o.m=fixGeno(o.m);o.f=fixGeno(o.f)||o.m;if(Array.isArray(o.seeds))o.seeds=o.seeds.map(fixGeno).filter(Boolean)}lotCache.set(l.id,o)}return lotCache.get(l.id)}
 function renderMarket(){if(scene==='market')renderWorld();if(sheet&&sheet.stall!=null&&sheet.step==='view')renderSheet()}
-function listingCard(l){
+function listingCard(l){try{return listingCard_(l)}catch(e){logErr(e,'market');return ''}}
+function listingCard_(l){
   if(l.kind==='item'){const mine=l.sellerUid===uid;return `<div class="lot"><div class="lot-top">${itemIcon(l.item)}<div><div class="lot-name">${esc(itemName(l.item))} × ${l.count}</div><div class="meta">${itemEff(l.item)}</div><div class="meta">賣家：${esc(l.sellerName||'')}</div></div></div>${mine?`<button class="btn" data-act="scancel" data-id="${l.id}">收回（售價 ${l.price} 金幣）</button>`:`<button class="btn primary" data-act="sbuy" data-id="${l.id}">用 ${l.price} 金幣購買</button>`}</div>`}
   const lot=lotOf(l),lt={...lot,crop:l.crop},lk=likely(lt),ph=phen(lot.m,l.crop),mine=l.sellerUid===uid;
   return `<div class="lot"><div class="lot-top"><span class="seedic">${fruitSVG(lk.app,l.crop,64)}<i>最可能 ${pctTxt(lk.p)}</i></span><div><div class="lot-name">${esc(l.name)}</div><div class="meta">${CROPS[l.crop].n}・${l.count} 顆・發芽率 ${Math.round(lot.germ*100)}%</div><div class="meta">母本：${ph.shapeName}・${colorLabel(ph)}・${TIERS[ph.tier]}</div><div class="meta">血統：${esc(l.source)}</div></div></div>${distHTML(lotDist(lt),l.crop,'可能出現的後代',false)}${mine?`<button class="btn" data-act="scancel" data-id="${l.id}">收回這包（售價 ${l.price} 金幣）</button>`:`<button class="btn primary" data-act="sbuy" data-id="${l.id}">用 ${l.price} 金幣購買</button>`}</div>`;
@@ -1391,7 +1446,7 @@ function stallHTML(){
   if(sheet.step==='pick'){
     h+=`<p class="note">選一包要上架的種子。</p><div class="filters">${filtersHTML(uiCrop,'data-sc')}</div>`;
     const lots=state.lots.filter(l=>uiCrop==='all'||l.crop===uiCrop);
-    h+=lots.length?lots.map(l=>{const ph=phen(l.m,l.crop);return `<button class="pick" data-act="spick" data-lot="${l.id}">${fruitSVG(ph,l.crop,44)}<span><b>${esc(l.name)}</b><span class="meta">${CROPS[l.crop].n}・剩 ${lc(l)} 顆・${TIERS[ph.tier]}</span></span></button>`}).join(''):'<p class="note">這個分類沒有種子。</p>';
+    h+=lots.length?lots.map(l=>{try{const ph=phen(l.m,l.crop);return `<button class="pick" data-act="spick" data-lot="${l.id}">${fruitSVG(ph,l.crop,44)}<span><b>${esc(l.name)}</b><span class="meta">${CROPS[l.crop].n}・剩 ${lc(l)} 顆・${TIERS[ph.tier]}</span></span></button>`}catch(e){return ''}}).join(''):'<p class="note">這個分類沒有種子。</p>';
     return h+`<button class="btn" data-act="sback">返回</button>`;
   }
   if(sheet.step==='ipick'){
@@ -1801,7 +1856,7 @@ function enterVisit(fu){
   const p=profiles.find(x=>x.id===fu);
   scene='farm';selDecor=null;renderDecorEdit();
   viewing={uid:fu,name:(p&&p.name)||'朋友',st:null};
-  viewing.unsub=db.collection('players').doc(fu).onSnapshot(s=>{if(!viewing||viewing.uid!==fu)return;try{if(s.exists&&s.data().save){const o=unpack(s.data().save);viewing.st=o&&o.v===4?migrate(o):{v:4,plots:[],plotPos:[],decor:[],lots:[]}}}catch(e){}renderWorld()},()=>{});
+  viewing.unsub=db.collection('players').doc(fu).onSnapshot(s=>{if(!viewing||viewing.uid!==fu)return;try{if(s.exists&&s.data().save){const o=unpack(s.data().save);viewing.st=o&&o.v===4?migrate(o):{v:4,plots:[],plotPos:[],decor:[],lots:[]};repairState(viewing.st)}}catch(e){}renderWorld()},()=>{});
   visitMe={x:550,y:2100};
   joinFarm(fu);renderHUD();renderWorld();renderChars();updateCam();refreshAct();
   toast(`來到 ${viewing.name} 的農場，四處走走吧`);
@@ -2001,16 +2056,20 @@ auth.onAuthStateChanged(async user=>{
   if(!readOk){setSync('err');blockSaves('讀取雲端存檔失敗。為了避免用空白存檔蓋掉你的進度，遊戲先不啟動，請確認網路後重新整理。');return}
   if(snap.exists&&snap.data().save){
     const raw=snap.data().save;let o=null;try{o=unpack(raw)}catch(e){}
-    if(o&&o.v===4)cloud=migrate(o);
+    if(o&&o.v===4){cloud=migrate(o);cloud._raw=raw}
     else if(o)await backupSave(raw,'v'+(o.v||0));   // 舊版本存檔：重置前先備份
   }
   const local=load();
   if(cloud&&local)state=(local.savedAt||0)>(cloud.savedAt||0)?local:cloud;else state=cloud||local;
+  let repaired=null;
+  if(state){const raw=state._raw||packState(state);delete state._raw;const r=repairState(state);if(repTotal(r)){await backupSave(raw,'repair'+Date.now());repaired=r}}
+  if(cloud)delete cloud._raw;
   if(!state)newGame();
   ensureCrops();
   dirty=true;flush();
   db.collection('profiles').doc(uid).set({name:myName(),avatar:state.avatar||AV_DEF,at:TS()},{merge:true}).catch(()=>{});
-  startListeners();startSocial();watchOwnSave();
+  startListeners();startSocial();watchOwnSave();checkBuild();
+  if(repaired){save();repNotice(repaired)}
   closePanel();scene='farm';viewing=null;renderHUD();renderAll();tick();tutRender();renderOrdersBtn();joinFarm(uid);renderChars();updateCam();refreshAct();
   if(!loop)loop=setInterval(tick,1000);
 });

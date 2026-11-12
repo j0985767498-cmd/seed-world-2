@@ -297,7 +297,7 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 .recl{font-size:11px;font-weight:700;color:#5A3416}.recc .meta{font-size:10px}
 .bic{display:inline-flex;align-items:flex-end;justify-content:center;width:46px;height:46px}
 
-#marquee{position:fixed;z-index:30;top:calc(10px + env(safe-area-inset-top,0px));left:112px;right:70px;height:34px;display:flex;align-items:center;gap:6px;padding:0 8px;background:rgba(40,24,10,.82);border:2px solid #E8C35A;border-radius:17px;color:#FFE9A8;font-weight:700;font-size:14px;box-shadow:0 3px 0 rgba(0,0,0,.25);pointer-events:none}
+#marquee{position:fixed;z-index:45;top:calc(10px + env(safe-area-inset-top,0px));left:112px;right:70px;height:34px;display:flex;align-items:center;gap:6px;padding:0 8px;background:rgba(40,24,10,.82);border:2px solid #E8C35A;border-radius:17px;color:#FFE9A8;font-weight:700;font-size:14px;box-shadow:0 3px 0 rgba(0,0,0,.25);pointer-events:none}
 #marquee[hidden]{display:none}
 #marquee .mqwin{flex:1;overflow:hidden;white-space:nowrap;position:relative;height:100%;display:flex;align-items:center}
 #marquee span{display:inline-block;padding-left:100%;white-space:nowrap}
@@ -376,7 +376,7 @@ const CROPS={
   corn:{n:'玉米',short:'玉米',min:9,price:15,body:'tall',fl:'#D8C27A',fx:10,fy:-50,fs:46,deco:'kernels',ribs:false,bumps:false,shapes:['圓柱','錐形','短胖','彎月','螺旋'],surf:['飽滿','皺粒','爆裂粒'],tpl:[superE(0.5,1.15),tearDown(0.65,1.15),superE(0.68,0.85),bend(superE(0.45,1.15),0.5),wav(superE(0.48,1.15),0.18,4)]},
   broccoli:{n:'花椰菜',short:'花椰',min:10,price:17,body:'rosette',fl:'#F3E36A',fx:0,fy:-26,fs:52,deco:'florets',ribs:false,bumps:false,shapes:['圓頂','扁平','尖塔','螺旋塔','愛心'],surf:['細密','顆粒','捲曲'],tpl:[flatB(ell(1.15,0.95),0.35),flatB(ell(1.3,0.65),0.3),tearUp(1,1.1),lobe(tearUp(1,1.1),9,0.07),heart]},
   sweetpotato:{n:'甘藷',short:'甘藷',min:13,price:22,body:'vine',fl:'#C9A3E0',fx:10,fy:-6,fs:46,deco:'roots',ribs:false,bumps:true,shapes:['紡錘','圓球','長條','心形','捲曲'],surf:['光滑','凹紋','瘤狀'],tpl:[rot(spindle(0.55,1.3)),ell(0.95,0.95),rot(spindle(0.35,1.45)),heart,rot(wav(spindle(0.45,1.3),0.22,4))]},
-  melon:{n:'哈密瓜',short:'蜜瓜',min:15,price:25,body:'vine',fl:'#F3CC45',fx:12,fy:-14,fs:48,deco:'net',ribs:false,bumps:false,shapes:['圓球','橢圓','扁圓','愛心','星形'],surf:['光滑','淺網紋','深網紋'],tpl:[ell(1,1),ell(0.85,1.1),ell(1.2,0.82),heart,star(5,.75,.28)]},
+  melon:{n:'哈密瓜',short:'蜜瓜',min:15,price:25,body:'vine',fl:'#F3CC45',fx:12,fy:-14,fs:48,deco:'net',ribs:false,bumps:false,shapes:['圓球','橢圓','扁圓','愛心','星形'],surf:['光滑','淺紋','深紋'],tpl:[ell(1,1),ell(0.85,1.1),ell(1.2,0.82),heart,star(5,.75,.28)]},
   chili:{n:'辣椒',short:'辣椒',min:7,price:12,body:'bush',fl:'#FFFFFF',fx:5,fy:-30,fs:44,deco:'pepper',ribs:true,bumps:true,shapes:['長角','櫻桃','燈籠','愛心','螺旋'],surf:['光滑','皺皮','瘤皮'],tpl:[bend(tearDown(0.42,1.3),0.35),ell(0.9,0.9),lobe(superE(0.95,0.95,0.6),4,0.07),heart,wav(tearDown(0.42,1.3),0.22,4)]},
   pumpkin:{n:'南瓜',short:'南瓜',min:12,price:20,body:'vine',fl:'#F2A81E',fx:12,fy:-14,fs:52,deco:'pumpkin',ribs:true,bumps:true,shapes:['扁圓','圓球','葫蘆','愛心','星形'],surf:['光滑','溝紋','瘤狀'],tpl:[lobe(ell(1.3,0.82),8,0.05),ell(1,1),gourd,heart,star(5,.72,.3)]},
   eggplant:{n:'茄子',short:'茄子',min:8,price:14,body:'bush',fl:'#B79AE0',fx:4,fy:-26,fs:50,deco:'cap',ribs:false,bumps:true,shapes:['長條','蛋形','圓球','愛心','彎月'],surf:['光滑','細紋','瘤狀'],tpl:[ell(0.42,1.25),tearUp(0.8,1.1),ell(1,1),heart,bend(ell(0.42,1.2),0.6)]}
@@ -862,7 +862,7 @@ function fruitInner(a,ripe,crop){
   let gdef='';
   if(ok&&a.pat){
     const pc=patFill(a.pat.c),f=a.pat.f;
-    if(f===0){for(let k=-3;k<=3;k++){let dd='';for(let v=-1.6;v<=1.61;v+=0.2){dd+=(dd?' L':'M')+f3(k*0.36*(1-0.18*v*v))+' '+f3(v)}deco+=`<path d="${dd}" stroke="${pc}" stroke-width="0.16" fill="none" stroke-linecap="round" opacity=".92"/>`}}
+    if(f===0){for(let k=-4;k<=4;k++){let dd='';for(let v=-1.6;v<=1.61;v+=0.1){dd+=(dd?' L':'M')+f3(k*0.3*(1-0.16*v*v)+0.055*S(v*4.2+k*1.3))+' '+f3(v)}deco+=`<path d="${dd}" stroke="${pc}" stroke-width="0.075" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".92"/>`}}
     else if(f===1){for(let k=0;k<11;k++){const t=R()*6.283,r=sq(R())*0.85,rx=0.08+R()*0.09,cx=C(t)*r,cy=S(t)*r;deco+=`<ellipse cx="${f3(cx)}" cy="${f3(cy)}" rx="${f3(rx)}" ry="${f3(rx*(0.7+R()*0.5))}" fill="${pc}" opacity=".92"/>`}}
     else if(f===2){
       if(PAT2_STYLE==='wave'){for(let y=-1.3;y<=1.4;y+=0.42){let dd='';for(let x=-1.6;x<=1.61;x+=0.1)dd+=(dd?' L':'M')+f3(x)+' '+f3(y+0.09*S(x*5.2+y*3));deco+=`<path d="${dd}" stroke="${pc}" stroke-width="0.12" fill="none" stroke-linecap="round" opacity=".92"/>`}}
@@ -2196,7 +2196,8 @@ const genoTxt=g=>`形狀：${g.s.map(p=>p.map(x=>x?'尖':'圓').join('')).join('
 const NEWS_T0=Date.now();let newsSeen=new Set(),newsQ=[],newsBusy=false;
 async function postNews(kind,text,tier){
   if(!uid)return;
-  try{await db.collection('news').add({v:4,uid,name:myName(),kind,text:String(text).slice(0,120),tier:tier||0,at:Date.now()})}catch(e){}
+  const doc={v:4,uid,name:myName(),kind,text:String(text).slice(0,120),tier:tier||0,at:Date.now()};
+  try{const ref=await db.collection('news').add(doc);if(ref&&ref.id&&!newsSeen.has(ref.id)){newsSeen.add(ref.id);newsQ.push({...doc,id:ref.id});runNews()}}catch(e){logErr(e,'news')}
 }
 function onNews(docs){
   const fresh=docs.filter(d=>d.v===4&&!newsSeen.has(d.id)&&(d.at||0)>NEWS_T0-5*60e3).sort((a,b)=>(a.at||0)-(b.at||0));

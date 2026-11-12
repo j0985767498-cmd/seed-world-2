@@ -285,7 +285,7 @@ body.game{background:#5E9E38}
 <div class="panel" id="p-social" hidden role="dialog" aria-label="朋友"><div class="ph"><h2>朋友</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><button class="btn" id="avatarBtn2" style="margin:0 0 8px">打扮我的角色</button><h3 style="margin-top:4px">朋友</h3><div id="friends"></div><h3>公共聊天室</h3><div id="chat" aria-live="polite"></div><div class="chatbar"><input id="chatIn" maxlength="300" placeholder="輸入訊息" aria-label="聊天訊息" aria-describedby="chatErr"><button class="mini big" id="chatSend">傳送</button></div><div class="err" id="chatErr"></div></div></div>
 <div class="panel" id="p-decor" hidden role="dialog" aria-label="裝飾農場"><div class="ph"><h2>裝飾農場</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><p class="note">所有裝飾都免費。走到想放的位置，選一個裝飾，它會放在角色腳邊；點已放好的裝飾可以移動或收起。「標示」裡有大、小告示牌，可以寫 2 到 8 個字。</p><div class="filters" id="decorCats"></div><div class="decorItems" id="decorItems"></div></div></div>
 <div class="panel" id="p-explore" hidden role="dialog" aria-label="探索世界"><div class="ph"><h2>探索世界</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb" id="exploreBody"></div></div>
-<div class="panel" id="p-settings" hidden role="dialog" aria-label="設定"><div class="ph"><h2>設定</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div class="settings"><button class="btn" id="speedBtn"></button><p class="note">加速只用於測試流程，會讓所有生長時間變快 20 倍。</p><button class="btn" id="allSeedsBtn">測試：領取全部 8 種原始品種</button><button class="btn warn" id="resetBtn">重新開始</button><p class="note" id="account" style="margin-top:16px"></p><button class="btn" id="logoutBtn">登出</button></div></div></div>
+<div class="panel" id="p-settings" hidden role="dialog" aria-label="設定"><div class="ph"><h2>設定</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div class="settings"><button class="btn" id="speedBtn"></button><p class="note">加速只用於測試流程，會讓所有生長時間變快 20 倍。</p><details class="dist"><summary>錯誤紀錄（回報問題時截圖給開發者）</summary><pre id="errLog" style="white-space:pre-wrap;font-size:12px;margin:6px 0 0">目前沒有錯誤</pre></details><button class="btn" id="allSeedsBtn">測試：領取全部 8 種原始品種</button><button class="btn warn" id="resetBtn">重新開始</button><p class="note" id="account" style="margin-top:16px"></p><button class="btn" id="logoutBtn">登出</button></div></div></div>
 <div id="tut" hidden role="status"><div class="tuth"><img class="gp" src="data:image/jpeg;base64,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" width="44" height="44" alt="">農會阿伯<span class="stp" id="tutStep"></span></div><p id="tutText"></p><div class="tutb"><button id="tutSkip">跳過教學</button><button id="tutNext" hidden></button></div></div>
 <div id="backdrop"></div>
 <div id="sheet" role="dialog" aria-modal="true" aria-label="詳細資料"><div class="shead"><div class="grip"></div><button id="sheetX" class="xbtn" aria-label="關閉">✕</button></div><div class="sheet-wrap" id="sheetBody"></div></div>
@@ -543,16 +543,62 @@ function setSync(k){const t={loading:'讀取雲端存檔中…',saving:'儲存�
 function save(){
   if(!state||!uid)return;
   state.savedAt=Date.now();
-  try{localStorage.setItem(lsKey(),JSON.stringify(state))}catch(e){}
+  try{localStorage.setItem(lsKey(),packState(state))}catch(e){}
   dirty=true;setSync('saving');clearTimeout(saveTimer);saveTimer=setTimeout(flush,1000);
 }
+// ===== 精簡存檔：基因型編碼成固定長度字串 =====
+const GCOLS=[...BASIC,...SPECIAL];
+function genc(g){
+  let t=g.s.map(p=>''+p[0]+p[1]).join('')+g.sp.join('')+g.pw.join('')+[...g.c1,...g.c2,...g.pc].map(c=>GCOLS.indexOf(c).toString(36)).join('')+g.pf.join('');
+  for(const k of ABIL)for(const p of g.n[k])for(const v of p)t+=Math.round(v*1000).toString(36).padStart(2,'0');
+  return t;
+}
+function gdec(t){
+  const g={s:[],n:{}};let i=0;const d=()=>+t[i++];
+  for(let k=0;k<SHN;k++)g.s.push([d(),d()]);g.sp=[d(),d()];g.pw=[d(),d()];
+  const c=()=>GCOLS[parseInt(t[i++],36)];g.c1=[c(),c()];g.c2=[c(),c()];g.pc=[c(),c()];g.pf=[d(),d()];
+  for(const k of ABIL){g.n[k]=[];for(let q=0;q<NUMN;q++){const a=parseInt(t.substr(i,2),36)/1000,b=parseInt(t.substr(i+2,2),36)/1000;i+=4;g.n[k].push([a,b])}}
+  return g;
+}
+const GLEN=SHN*2+2+2+6+2+ABIL.length*NUMN*4;
+function gReplacer(k,v){if(v&&typeof v==='object'&&v.s&&v.n&&v.c1&&v.pw){try{const t=genc(v);if(t.length===GLEN&&!t.includes('-'))return 'G:'+t}catch(e){}}return v}
+function gReviver(k,v){return typeof v==='string'&&v.length===GLEN+2&&v.startsWith('G:')?gdec(v.slice(2)):v}
+const packState=o=>JSON.stringify(o,gReplacer);
+const unpack=t=>JSON.parse(t,gReviver);
+// ===== 錯誤紀錄 =====
+const errLog=[];
+function logErr(e,where){const m=`${where||''} ${e&&e.message||e}`.trim();if(errLog[0]===m)return;errLog.unshift(m);errLog.length=Math.min(errLog.length,5);const el=document.getElementById('errLog');if(el)el.textContent=errLog.join('\n')}
+window.addEventListener('error',ev=>logErr(ev.error||ev.message,'錯誤'));
+window.addEventListener('unhandledrejection',ev=>logErr(ev.reason,'錯誤'));
+// ===== 存檔保護 =====
+const SESSION=Math.random().toString(36).slice(2,10);
+let saveBlocked=false,lastBak=0,sizeWarned=false,selfUnsub=null;
+function blockSaves(msg){
+  saveBlocked=true;clearTimeout(saveTimer);
+  let el=document.getElementById('saveGuard');
+  if(!el){el=document.createElement('div');el.id='saveGuard';el.setAttribute('role','alert');el.style.cssText='position:fixed;left:12px;right:12px;top:12px;z-index:200;background:#FFF1E6;border:3px solid #B5482A;border-radius:14px;padding:12px;font-size:15px;line-height:1.5;color:#5A1E10;box-shadow:0 4px 0 #8A3A22';document.body.appendChild(el)}
+  el.innerHTML=`<b>已暫停存檔</b><br>${msg}<br><button class="btn primary" style="margin-top:8px" onclick="location.reload()">重新整理</button>`;
+}
+function watchOwnSave(){
+  if(selfUnsub)selfUnsub();
+  selfUnsub=db.collection('players').doc(uid).onSnapshot(sn=>{
+    if(!sn.exists||!state)return;const d=sn.data();
+    if(d.session&&d.session!==SESSION&&(d.savedAt||0)>(state.savedAt||0))blockSaves('你的帳號在另一個裝置或分頁有更新的進度。為了避免互相覆蓋，這個畫面已停止存檔，請重新整理載入最新進度。');
+  },()=>{});
+}
+async function backupSave(json,tag){
+  try{await db.collection('backups').doc(uid+'_'+tag).set({uid,save:json,savedAt:Date.now(),at:TS()})}catch(e){}
+}
 async function flush(){
-  if(!uid||!dirty||!state)return;
+  if(!uid||!dirty||!state||saveBlocked)return;
   dirty=false;clearTimeout(saveTimer);
-  try{await db.collection('players').doc(uid).set({save:JSON.stringify(state),savedAt:state.savedAt,name:myName(),updatedAt:TS()},{merge:true});if(!dirty)setSync('ok')}
+  const json=packState(state);
+  if(json.length>850000&&!sizeWarned){sizeWarned=true;toast('存檔快到雲端上限了，建議把用不到的種子賣掉或丟掉')}
+  if(Date.now()-lastBak>30*60e3){lastBak=Date.now();backupSave(json,'auto')}
+  try{await db.collection('players').doc(uid).set({save:json,savedAt:state.savedAt,session:SESSION,name:myName(),updatedAt:TS()},{merge:true});if(!dirty)setSync('ok')}
   catch(e){dirty=true;setSync('err');clearTimeout(saveTimer);saveTimer=setTimeout(flush,8000)}
 }
-function load(){try{const s=localStorage.getItem(lsKey());if(s){const o=JSON.parse(s);if(o&&o.v===4)return migrate(o)}}catch(e){}return null}
+function load(){try{const s=localStorage.getItem(lsKey());if(s){const o=unpack(s);if(o&&o.v===4)return migrate(o)}}catch(e){}return null}
 const tms=x=>x&&x.toMillis?x.toMillis():Infinity;
 function sortReg(){regList.sort((a,b)=>tms(a.at)-tms(b.at))}
 const gCache=new Map();
@@ -746,8 +792,9 @@ function mergeIdentical(){
   }
   return merged;
 }
-function grpKey(l){return l.crop+'|'+likely(l).key}
-function lotRow(l,inner){const ph=phen(l.m,l.crop),lk=likely(l);return `<button class="lotrow${inner?' inner':''}" data-lot="${l.id}"><span class="seedic">${fruitSVG(lk.app,l.crop,inner?44:52)}<i>最可能 ${pctTxt(lk.p)}</i></span><span class="lr"><b>${esc(l.name)}${l.wide?'・遠緣雜種':''}</b><span class="meta">${inner?'':CROPS[l.crop].n+'・'}${lc(l)} 顆${inner?'':'・'+shapeNameOf(lk.app,l.crop)+'・'+colorLabelA(lk.app)}</span><span class="meta">母本：${SIZE_N[ph.sizeCls]}・${PERF_N[ph.perfCls]}・發芽率 ${Math.round(l.germ*100)}%</span><span class="badges" style="justify-content:flex-start;margin-top:2px"><span class="badge r${ph.tier}">${l.ptier!=null&&l.ptier>=3?TIERS[l.ptier]+'母本':TIERS[ph.tier]}</span></span></span></button>`}
+function grpKey(l){try{return l.crop+'|'+likely(l).key}catch(e){return 'bad|'+l.id}}
+function lotRow(l,inner){try{return lotRow_(l,inner)}catch(e){logErr(e,'lotRow');return `<button class="lotrow" data-lot="${l.id}"><span class="lr"><b>${esc(l.name||'種子')}</b><span class="meta">這包種子的資料讀不到，點開可以丟掉。</span></span></button>`}}
+function lotRow_(l,inner){const ph=phen(l.m,l.crop),lk=likely(l);return `<button class="lotrow${inner?' inner':''}" data-lot="${l.id}"><span class="seedic">${fruitSVG(lk.app,l.crop,inner?44:52)}<i>最可能 ${pctTxt(lk.p)}</i></span><span class="lr"><b>${esc(l.name)}${l.wide?'・遠緣雜種':''}</b><span class="meta">${inner?'':CROPS[l.crop].n+'・'}${lc(l)} 顆${inner?'':'・'+shapeNameOf(lk.app,l.crop)+'・'+colorLabelA(lk.app)}</span><span class="meta">母本：${SIZE_N[ph.sizeCls]}・${PERF_N[ph.perfCls]}・發芽率 ${Math.round(l.germ*100)}%</span><span class="badges" style="justify-content:flex-start;margin-top:2px"><span class="badge r${ph.tier}">${l.ptier!=null&&l.ptier>=3?TIERS[l.ptier]+'母本':TIERS[ph.tier]}</span></span></span></button>`}
 function renderBag(){
   if(!state)return;
   if(mergeIdentical())save();
@@ -755,7 +802,7 @@ function renderBag(){
   const sel=document.getElementById('bagSort');if(sel.value!==bagSort)sel.value=bagSort;
   const el=document.getElementById('bag');
   let lots=state.lots.filter(l=>uiCrop==='all'||l.crop===uiCrop);
-  if(!lots.length){el.innerHTML='<p class="note">這裡沒有種子。採收時選擇「取種」，或到市集購買，種子就會放進這裡。</p>';return}
+  if(!lots.length){el.innerHTML=state.lots.length?`<p class="note">目前只顯示「${CROPS[uiCrop].n}」，這種作物的種子已經沒有了。你還有其他 ${state.lots.length} 包種子。</p><button class="btn primary" data-fc="all">顯示全部種子</button>`:'<p class="note">這裡沒有種子。採收時選擇「取種」，或到市集購買，種子就會放進這裡。</p>';return}
   const cmp=bagSort==='name'?(a,b)=>a.name.localeCompare(b.name,'zh-Hant'):bagSort==='new'?(a,b)=>state.lots.indexOf(a)-state.lots.indexOf(b):(a,b)=>lotKey(b,bagSort)-lotKey(a,bagSort);
   const groups=new Map();for(const l of lots){const k=grpKey(l);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(l)}
   const arr=[...groups.entries()].map(([k,ls])=>{ls.sort(cmp);return {k,ls}});arr.sort((a,b)=>cmp(a.ls[0],b.ls[0]));
@@ -814,7 +861,7 @@ async function lotAction(act,b){
     if(!(price>=1&&price<=999999)){sheet.err='請輸入 1 以上的價格';renderSheet();return}
     const payload={m:l.m,f:l.f,count:k,germ:l.germ};if(l.seeds)payload.seeds=l.seeds.slice(0,k);
     try{
-      await db.collection('listings').add({v:4,crop:l.crop,name:l.name,source:l.source,sellerUid:uid,sellerName:myName(),price,count:k,lot:JSON.stringify(payload),sold:false,createdAt:TS()});
+      await db.collection('listings').add({v:4,crop:l.crop,name:l.name,source:l.source,sellerUid:uid,sellerName:myName(),price,count:k,lot:packState(payload),sold:false,createdAt:TS()});
       removeSeeds(l,k);save();renderAll();toast(`已上架 ${k} 顆「${l.name}」，售價 ${price} 金幣`);
       if(state.lots.includes(l)){sheet.form=null;renderSheet()}else closeSheet();
     }catch(e){sheet.err='上架失敗，請檢查網路後再試一次';renderSheet()}
@@ -891,7 +938,7 @@ async function doRecord(i){
 }
 let sheet=null;
 const sb=document.getElementById('sheetBody'),sheetEl=document.getElementById('sheet'),bd=document.getElementById('backdrop');
-function openPlot(i){const p=state.plots[i];sheet={i,stage:p?p.stage:'empty',confirm:false,crossFrom:null};regDraft='';regErr='';renderSheet();sheetEl.classList.add('open');bd.style.display='block'}
+function openPlot(i){const p=state.plots[i];if(!p)uiCrop='all';sheet={i,stage:p?p.stage:'empty',confirm:false,crossFrom:null};regDraft='';regErr='';renderSheet();sheetEl.classList.add('open');bd.style.display='block'}
 function closeSheet(){sheet=null;sheetEl.classList.remove('open');bd.style.display='none'}
 bd.addEventListener('click',closeSheet);
 function fmt(ms){ms=Math.max(0,ms);const s=Math.ceil(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;return h?`${h} 小時 ${m} 分`:m?`${m} 分 ${r} 秒`:`${r} 秒`}
@@ -929,11 +976,13 @@ function renderSheet(){
   if(!p){
     h+=`<h2>第 ${i+1} 塊土地</h2><p class="stage">空地。選一包種子播種，每次種下一顆。</p><div class="filters">${filtersHTML(uiCrop,'data-sc')}</div>`;
     const lots=state.lots.filter(l=>uiCrop==='all'||l.crop===uiCrop),it=state.items||{};
+    if(!lots.length&&state.lots.length)h+=`<p class="note">目前只顯示「${CROPS[uiCrop].n}」，這種作物的種子已經沒有了。</p><button class="btn primary" data-sc="all">顯示全部種子</button>`;
     if(sheet.gf&&!(it['g'+sheet.gf]>0))sheet.gf=0;
     const gf=sheet.gf||0;
     if([1,2,3].some(l=>it['g'+l]>0))h+=`<div class="ferts"><span class="lbl">搭配發芽肥料（播種時用掉一個）</span><button class="fchip" data-gf="0" aria-pressed="${!gf}">不用</button>${[1,2,3].filter(l=>it['g'+l]>0).map(l=>`<button class="fchip" data-gf="${l}" aria-pressed="${gf===l}">${LV[l]} +${Math.round(GB[l]*100)}%（${it['g'+l]}）</button>`).join('')}</div>`;
     if(!lots.length)h+=`<p class="note">這個分類沒有種子。</p>`;
-    h+=lots.map(l=>`<button class="pick" data-act="plant" data-lot="${l.id}">${(lk=>`<span class="seedic">${fruitSVG(lk.app,l.crop,44)}<i>${pctTxt(lk.p)}</i></span>`)(likely(l))}<span><b>${esc(l.name)}</b><span class="meta">${CROPS[l.crop].n}・剩 ${lc(l)} 顆・發芽率 ${Math.round(Math.min(0.99,l.germ+GB[gf])*100)}%${gf?'（含肥料）':''}</span></span></button>`).join('');
+    const pickRow=(l,gf)=>`<button class="pick" data-act="plant" data-lot="${l.id}">${(lk=>`<span class="seedic">${fruitSVG(lk.app,l.crop,44)}<i>${pctTxt(lk.p)}</i></span>`)(likely(l))}<span><b>${esc(l.name)}</b><span class="meta">${CROPS[l.crop].n}・剩 ${lc(l)} 顆・發芽率 ${Math.round(Math.min(0.99,l.germ+GB[gf])*100)}%${gf?'（含肥料）':''}</span></span></button>`;
+    h+=lots.map(l=>{try{return pickRow(l,gf)}catch(e){logErr(e,'pick');return ''}}).join('');
     h+=`<h3>整理農地</h3><p class="note">空的農地可以移到角色腳邊，或拆除並退回 ${PLOT_REFUND} 金幣。</p><div class="row2"><button class="btn" data-act="pmove">移到我腳邊</button><button class="btn warn" data-act="pdel">${sheet.confirm?'再按一次確定拆除':'拆除這塊農地'}</button></div>`;
   }else{
     const ph=phen(p.g,p.crop),lvl=p.stage==='seedling'?1:p.stage==='ripe'?3:2;
@@ -1327,7 +1376,7 @@ window.addEventListener('resize',updateCam);
 // ===== 市集攤位 =====
 let mkCrop='all';
 const lotCache=new Map();
-function lotOf(l){if(!lotCache.has(l.id))lotCache.set(l.id,JSON.parse(l.lot));return lotCache.get(l.id)}
+function lotOf(l){if(!lotCache.has(l.id))lotCache.set(l.id,unpack(l.lot));return lotCache.get(l.id)}
 function renderMarket(){if(scene==='market')renderWorld();if(sheet&&sheet.stall!=null&&sheet.step==='view')renderSheet()}
 function listingCard(l){
   if(l.kind==='item'){const mine=l.sellerUid===uid;return `<div class="lot"><div class="lot-top">${itemIcon(l.item)}<div><div class="lot-name">${esc(itemName(l.item))} × ${l.count}</div><div class="meta">${itemEff(l.item)}</div><div class="meta">賣家：${esc(l.sellerName||'')}</div></div></div>${mine?`<button class="btn" data-act="scancel" data-id="${l.id}">收回（售價 ${l.price} 金幣）</button>`:`<button class="btn primary" data-act="sbuy" data-id="${l.id}">用 ${l.price} 金幣購買</button>`}</div>`}
@@ -1400,7 +1449,7 @@ async function stallAction(b){
     const payload={m:l.m,f:l.f,count:k,germ:l.germ,wide:!!l.wide,par:l.par,gpar:l.gpar,ptier:l.ptier};if(l.seeds)payload.seeds=l.seeds.slice(0,k);
     b.disabled=true;
     try{
-      await db.collection('listings').add({v:4,crop:l.crop,name:l.name,source:l.source,sellerUid:uid,sellerName:myName(),price,count:k,stall:i,lot:JSON.stringify(payload),sold:false,createdAt:TS()});
+      await db.collection('listings').add({v:4,crop:l.crop,name:l.name,source:l.source,sellerUid:uid,sellerName:myName(),price,count:k,stall:i,lot:packState(payload),sold:false,createdAt:TS()});
       removeSeeds(l,k);save();renderAll();sheet.step='view';renderSheet();toast(`已在攤位上架 ${k} 顆「${l.name}」，售價 ${price} 金幣`);
     }catch(e){sheet.err='上架失敗，請檢查網路後再試一次';renderSheet()}
     return;
@@ -1433,7 +1482,7 @@ async function stallAction(b){
 
 // ===== 面板與 HUD =====
 function openSheetUI(){sheetEl.classList.add('open');bd.style.display='block'}
-function openPanel(name){
+function openPanel(name){if(name==='bag')uiCrop='all';
   closeSheet();curPanel=name;
   for(const p of document.querySelectorAll('.panel'))p.hidden=p.id!=='p-'+name;
   document.getElementById('pdim').hidden=false;
@@ -1752,7 +1801,7 @@ function enterVisit(fu){
   const p=profiles.find(x=>x.id===fu);
   scene='farm';selDecor=null;renderDecorEdit();
   viewing={uid:fu,name:(p&&p.name)||'朋友',st:null};
-  viewing.unsub=db.collection('players').doc(fu).onSnapshot(s=>{if(!viewing||viewing.uid!==fu)return;try{if(s.exists&&s.data().save){const o=JSON.parse(s.data().save);viewing.st=o&&o.v===4?migrate(o):{v:4,plots:[],plotPos:[],decor:[],lots:[]}}}catch(e){}renderWorld()},()=>{});
+  viewing.unsub=db.collection('players').doc(fu).onSnapshot(s=>{if(!viewing||viewing.uid!==fu)return;try{if(s.exists&&s.data().save){const o=unpack(s.data().save);viewing.st=o&&o.v===4?migrate(o):{v:4,plots:[],plotPos:[],decor:[],lots:[]}}}catch(e){}renderWorld()},()=>{});
   visitMe={x:550,y:2100};
   joinFarm(fu);renderHUD();renderWorld();renderChars();updateCam();refreshAct();
   toast(`來到 ${viewing.name} 的農場，四處走走吧`);
@@ -1943,19 +1992,25 @@ document.getElementById('loginBtn').onclick=async()=>{
 };
 document.getElementById('logoutBtn').onclick=async()=>{await flush();leavePresence();if(viewing){viewing.unsub&&viewing.unsub();viewing=null}await auth.signOut()};
 auth.onAuthStateChanged(async user=>{
-  if(!user){stopListeners();uid=null;state=null;closeSheet();loginEl.hidden=false;return}
+  if(!user){if(selfUnsub){selfUnsub();selfUnsub=null}stopListeners();uid=null;state=null;closeSheet();loginEl.hidden=false;return}
   uid=user.uid;loginEl.hidden=true;setSync('loading');
   document.getElementById('account').textContent='目前登入：'+(user.displayName||'')+(user.email?'（'+user.email+'）':'');
   try{const rs=await db.collection('registry').get();regList=rs.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.v===4);sortReg()}catch(e){}
-  let cloud=null;
-  try{const snap=await db.collection('players').doc(uid).get();if(snap.exists&&snap.data().save){const o=JSON.parse(snap.data().save);if(o&&o.v===4)cloud=migrate(o)}}catch(e){setSync('err')}
+  let cloud=null,snap=null,readOk=false;
+  for(let k=0;k<3&&!readOk;k++){try{snap=await db.collection('players').doc(uid).get();readOk=true}catch(e){await new Promise(r=>setTimeout(r,1500))}}
+  if(!readOk){setSync('err');blockSaves('讀取雲端存檔失敗。為了避免用空白存檔蓋掉你的進度，遊戲先不啟動，請確認網路後重新整理。');return}
+  if(snap.exists&&snap.data().save){
+    const raw=snap.data().save;let o=null;try{o=unpack(raw)}catch(e){}
+    if(o&&o.v===4)cloud=migrate(o);
+    else if(o)await backupSave(raw,'v'+(o.v||0));   // 舊版本存檔：重置前先備份
+  }
   const local=load();
   if(cloud&&local)state=(local.savedAt||0)>(cloud.savedAt||0)?local:cloud;else state=cloud||local;
   if(!state)newGame();
   ensureCrops();
   dirty=true;flush();
   db.collection('profiles').doc(uid).set({name:myName(),avatar:state.avatar||AV_DEF,at:TS()},{merge:true}).catch(()=>{});
-  startListeners();startSocial();
+  startListeners();startSocial();watchOwnSave();
   closePanel();scene='farm';viewing=null;renderHUD();renderAll();tick();tutRender();renderOrdersBtn();joinFarm(uid);renderChars();updateCam();refreshAct();
   if(!loop)loop=setInterval(tick,1000);
 });

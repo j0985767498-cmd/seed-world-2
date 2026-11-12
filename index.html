@@ -93,6 +93,7 @@ button{font:inherit;color:inherit}
 .badge.r1{border-color:#5E9BC8}.badge.r2{border-color:#9B6CC8}.badge.r3{border-color:var(--mustard);font-weight:700}.badge.r4{border-color:#E0823D;background:#FFF1DE;font-weight:700}.badge.r5{border-color:#C2558F;background:linear-gradient(90deg,#FFE3EE,#E3F0FF);font-weight:700}
 .silh svg{filter:brightness(0);opacity:.35}
 .dexq{display:flex;gap:6px;margin:4px 0}.dexq input{flex:1;min-width:0}
+.avdirs{display:flex;justify-content:center;gap:2px;margin:-4px 0 6px}
 .seedic{position:relative;display:inline-flex;flex:none}.seedic i{position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);white-space:nowrap;font-style:normal;font-size:10px;background:#FFF6DE;border:1px solid #E2C796;border-radius:8px;padding:0 4px;color:#5A3416}
 .dist{border:2px solid #E2C796;border-radius:12px;background:#FFFDF6;padding:6px 10px;margin:8px 0}.dist summary{font-weight:700;color:#5A3416;cursor:pointer}
 .prow{display:flex;align-items:center;gap:8px;padding:3px 0;border-top:1px dashed #EAD9B4}.prow .pl{flex:1;display:flex;flex-direction:column;font-size:14px;line-height:1.3}.prow .pp{font-weight:700;color:#5A3416;font-size:14px}
@@ -1387,89 +1388,139 @@ function shade(hex,k){const n=parseInt(hex.slice(1),16),r=n>>16,g=(n>>8)&255,b=n
 function avatarSVG(av,flip,pose){
   av={...AV_DEF,...(av||{})};
   if(typeof pose!=='object'||pose===null)pose={bob:pose||0};
+  const view=pose.view||'front',isSide=view==='side',isBack=view==='back'||view==='bq',showFace=!isBack;
   const sk=SKINS[av.skin]||SKINS[0],hc=HAIRC[av.hairC]||HAIRC[0],tc=CLOTHC[av.topC]||CLOTHC[0],bc=CLOTHC[av.bottomC]||CLOTHC[0];
-  const tcd=shade(tc,-0.25),bcd=shade(bc,-0.25),hcd=shade(hc,-0.2);
+  const tcd=shade(tc,-0.25),bcd=shade(bc,-0.25),hcd=shade(hc,-0.2),skd=shade(sk,-0.12);
   const walk=pose.ph!=null,ph=pose.ph||0,t=pose.t||0,act=pose.act||null,ap=clamp(pose.actP||0,0,1);
   const crouch=(act==='plant'||act==='harvest')?Math.sin(ap*Math.PI)*3.2:0;
-  let legA=walk?Math.sin(ph)*30:0,armA=walk?-Math.sin(ph)*26:Math.sin(t*1.6)*3;
+  let legA=walk?Math.sin(ph)*(isSide?34:30):0,armA=walk?-Math.sin(ph)*(isSide?32:26):Math.sin(t*1.6)*3;
   let bob=walk?-Math.abs(Math.sin(ph))*1.8:Math.sin(t*2.2)*0.45;bob+=(pose.bob||0)+crouch;
-  // 動作時手臂的角度：前手（面向的那一側）與後手
-  let armF=armA,armB=-armA,tool='';
+  let armF=armA,armB=-armA;
   const e=Math.sin(ap*Math.PI);
   if(act==='water'){armF=-70*e+armA*(1-e);armB=armB*(1-e)}
   else if(act==='plant'){armF=-50*e;armB=-35*e}
   else if(act==='harvest'){armF=-135*e;armB=-135*e}
   else if(act==='pollinate'){armF=-60*e+Math.sin(t*14)*10*e;armB=armB*(1-e)}
-  const lean=walk?2.5:0;
+  // 正面、背面時手腳是左右擺；側面時前後擺
+  const lean=walk?(isSide?4:2):0;
+  const hs=1.42,headTilt=walk?Math.sin(ph)*2:Math.sin(t*0.9)*1.5;
   let s=`<ellipse cx="0" cy="0" rx="${(11-crouch*0.4).toFixed(1)}" ry="3.8" fill="rgba(0,0,0,.25)"/><g transform="${flip?'scale(-1 1) ':''}" stroke="#2A1A10" stroke-width="0.9" stroke-linejoin="round">`;
-  // 後面的頭髮
-  s+=`<g transform="translate(0 ${bob.toFixed(2)}) translate(0 -26) scale(1.42) translate(0 26)">`;
-  if(av.hair===2)s+=`<rect x="-10.5" y="-37" width="21" height="22" rx="9" fill="${hc}"/>`;
-  if(av.hair===3)s+=`<ellipse cx="9" cy="-28" rx="4" ry="8" fill="${hc}" transform="rotate(${-15+(walk?Math.sin(ph*2)*8:Math.sin(t*1.5)*3)} 9 -34)"/>`;
-  if(av.hair===6)s+=`<ellipse cx="-11" cy="-27" rx="3.5" ry="7" fill="${hc}" transform="rotate(${walk?Math.sin(ph*2)*7:0} -11 -33)"/><ellipse cx="11" cy="-27" rx="3.5" ry="7" fill="${hc}" transform="rotate(${walk?-Math.sin(ph*2)*7:0} 11 -33)"/>`;
-  if(av.top===3)s+=`<circle cx="0" cy="-30" r="11" fill="${tcd}"/>`;
-  s+='</g>';
-  // 腿：各自繞髖關節擺動
-  const legOne=(side,ang)=>{const x0=side<0?-6:1;let g='';
-    if(av.bottom===0)g+=`<rect x="${x0+1}" y="-8" width="4" height="7" fill="${sk}"/><rect x="${x0-0.5}" y="-12" width="6.5" height="6" rx="1.5" fill="${bc}"/>`;
-    else if(av.bottom===2)g+=`<rect x="${x0+1}" y="-7" width="4" height="6" fill="${sk}"/>`;
-    else if(av.bottom===4)g+=`<rect x="${x0-0.5}" y="-12" width="6" height="11" rx="3" fill="${bc}"/>`;
-    else g+=`<rect x="${x0}" y="-12" width="5" height="11" rx="1.5" fill="${bc}"/>`+(av.bottom===3?`<rect x="${x0+1}" y="-9" width="3" height="3" fill="${bcd}"/>`:'');
-    g+=`<rect x="${x0-0.5}" y="-2.5" width="5.5" height="2.5" rx="1" fill="#3A2E28"/>`;
-    const sy=crouch?(1-crouch*0.06):1;
-    return `<g transform="translate(0 ${(crouch*0.55).toFixed(2)}) rotate(${ang.toFixed(1)} ${side<0?-3.5:3.5} -12) translate(0 -12) scale(1 ${sy.toFixed(3)}) translate(0 12)">${g}</g>`};
-  s+=legOne(-1,-legA)+legOne(1,legA);
+  const HG=inner=>`<g transform="translate(0 ${bob.toFixed(2)}) translate(0 -26) scale(${hs}) translate(0 26) rotate(${headTilt.toFixed(2)} 0 -24)">${inner}</g>`;
+  // ---- 頭後方的頭髮（正面、側面時在身體後面）----
+  let back='';
+  const swing=walk?Math.sin(ph*2)*8:Math.sin(t*1.5)*3;
+  if(!isBack){
+    if(av.hair===2)back+=isSide?`<rect x="-11" y="-37" width="17" height="22" rx="8" fill="${hc}"/>`:`<rect x="-10.5" y="-37" width="21" height="22" rx="9" fill="${hc}"/>`;
+    if(av.hair===3)back+=isSide?`<ellipse cx="-10" cy="-28" rx="3.6" ry="8" fill="${hc}" transform="rotate(${15+swing} -9 -34)"/>`:`<ellipse cx="9" cy="-28" rx="4" ry="8" fill="${hc}" transform="rotate(${-15+swing} 9 -34)"/>`;
+    if(av.hair===6)back+=isSide?`<ellipse cx="-9.5" cy="-27" rx="3.5" ry="7" fill="${hc}" transform="rotate(${swing} -9.5 -33)"/>`:`<ellipse cx="-11" cy="-27" rx="3.5" ry="7" fill="${hc}" transform="rotate(${swing} -11 -33)"/><ellipse cx="11" cy="-27" rx="3.5" ry="7" fill="${hc}" transform="rotate(${-swing} 11 -33)"/>`;
+    if(av.top===3)back+=`<circle cx="${isSide?-3:0}" cy="-30" r="${isSide?9:11}" fill="${tcd}"/>`;
+  }
+  s+=HG(back);
+  // ---- 腿 ----
+  const legOne=(side,ang,far)=>{const x0=isSide?(side<0?-3.5:-1.5):(side<0?-6:1);const c=far&&isSide?bcd:bc,skc=far&&isSide?skd:sk;let g='';
+    if(av.bottom===0)g+=`<rect x="${x0+1}" y="-8" width="4" height="7" fill="${skc}"/><rect x="${x0-0.5}" y="-12" width="6.5" height="6" rx="1.5" fill="${c}"/>`;
+    else if(av.bottom===2)g+=`<rect x="${x0+1}" y="-7" width="4" height="6" fill="${skc}"/>`;
+    else if(av.bottom===4)g+=`<rect x="${x0-0.5}" y="-12" width="6" height="11" rx="3" fill="${c}"/>`;
+    else g+=`<rect x="${x0}" y="-12" width="5" height="11" rx="1.5" fill="${c}"/>`+(av.bottom===3&&!isBack?`<rect x="${x0+1}" y="-9" width="3" height="3" fill="${bcd}"/>`:'');
+    g+=isSide?`<path d="M${x0-0.5} -2.5 h6.5 q1.5 0 1.5 1.5 v1 h-8z" fill="#3A2E28"/>`:`<rect x="${x0-0.5}" y="-2.5" width="5.5" height="2.5" rx="1" fill="#3A2E28"/>`;
+    const sy=crouch?(1-crouch*0.06):1,px=isSide?0:(side<0?-3.5:3.5);
+    return `<g transform="translate(0 ${(crouch*0.55).toFixed(2)}) rotate(${ang.toFixed(1)} ${px} -12) translate(0 -12) scale(1 ${sy.toFixed(3)}) translate(0 12)">${g}</g>`};
+  s+=legOne(-1,-legA,true)+legOne(1,legA,false);
   s+=`<g transform="translate(0 ${bob.toFixed(2)}) rotate(${lean} 0 -12)">`;
+  // ---- 手臂 ----
   const sleeve=[0,4,6].includes(av.top)?'short':av.top===1?'none':'long';
-  const armC=sleeve==='long'?tc:sk;
-  const armOne=(side,ang,front)=>{const x0=side<0?-10.5:6.5,hx=side<0?-8.5:8.5;let g=`<rect x="${x0}" y="-23" width="4" height="11" rx="2" fill="${armC}"/>`;
-    if(sleeve==='short')g+=`<rect x="${x0}" y="-23" width="4" height="5" rx="1.5" fill="${tc}"/>`;
-    g+=`<circle cx="${hx}" cy="-12" r="2.2" fill="${sk}"/>`;
+  const armOne=(side,ang,front)=>{
+    const hx=isSide?(side<0?-1:1):(side<0?-8.5:8.5),x0=hx-2;const far=isSide&&!front;
+    const ac=sleeve==='long'?(far?tcd:tc):(far?skd:sk);
+    let g=`<rect x="${x0}" y="-23" width="4" height="11" rx="2" fill="${ac}"/>`;
+    if(sleeve==='short')g+=`<rect x="${x0}" y="-23" width="4" height="5" rx="1.5" fill="${far?tcd:tc}"/>`;
+    g+=`<circle cx="${hx}" cy="-12" r="2.2" fill="${far?skd:sk}"/>`;
     if(front&&act==='water'&&ap<1)g+=`<g transform="translate(${hx} -11)"><rect x="-1" y="-3.5" width="8" height="6.5" rx="1.5" fill="#6FA8DC"/><path d="M7 -2 l5 -3" stroke="#2A1A10" stroke-width="1.6" stroke-linecap="round"/><path d="M0 -3.5 q3 -4 6 0" fill="none" stroke="#2A1A10" stroke-width="1"/></g>`;
     if(front&&act==='pollinate'&&ap<1)g+=`<g transform="translate(${hx} -11)"><path d="M0 0 l0 7" stroke="#8A5A2B" stroke-width="1.6" stroke-linecap="round"/><circle cx="0" cy="8" r="2" fill="#F5D042"/></g>`;
     return `<g transform="rotate(${ang.toFixed(1)} ${hx} -22)">${g}</g>`};
   s+=armOne(-1,armB,false);
-  s+=av.top===1?`<rect x="-6" y="-24" width="12" height="13" rx="3" fill="${tc}"/>`:`<rect x="-7" y="-24" width="14" height="13" rx="3" fill="${tc}"/>`;
-  if(av.bottom===2)s+=`<polygon points="-6,-12 6,-12 8.5,-5 -8.5,-5" fill="${bc}"/>`;
-  if(av.top===2)s+=`<polygon points="-4,-24 0,-20 4,-24" fill="#F7F4EC"/><path d="M0 -20 V-12" stroke="${tcd}" stroke-width=".8"/>`;
-  if(av.top===3)s+=`<rect x="-4" y="-16" width="8" height="4" rx="1" fill="${tcd}"/>`;
-  if(av.top===4)s+=`<path d="M-7 -21 H7 M-7 -17.5 H7 M-7 -14 H7" stroke="#F7F4EC" stroke-width="1.4" opacity=".8"/>`;
-  if(av.top===5)s+=`<path d="M0 -24 V-11" stroke="${tcd}" stroke-width="1.2"/><polygon points="-3,-24 0,-19 -4,-19" fill="${tcd}"/><polygon points="3,-24 0,-19 4,-19" fill="${tcd}"/>`;
-  if(av.top===6)s+=`<polygon points="-4,-24 -1,-21 -4,-21" fill="#F7F4EC"/><polygon points="4,-24 1,-21 4,-21" fill="#F7F4EC"/><circle cx="0" cy="-19" r=".7" fill="${tcd}"/>`;
-  if(av.top===7)s+=`<rect x="-7" y="-13" width="14" height="2" fill="${tcd}"/><path d="M-4 -20 h1 M2 -18 h1 M-2 -16 h1" stroke="${tcd}" stroke-width="1.2"/>`;
-  if(av.bottom===5)s+=`<rect x="-5" y="-24" width="2" height="12" fill="${bc}"/><rect x="3" y="-24" width="2" height="12" fill="${bc}"/><rect x="-5" y="-16" width="10" height="5" fill="${bc}"/>`;
-  if(av.acc===4)s+=`<rect x="-5" y="-20" width="10" height="12" rx="1.5" fill="#F7F4EC" stroke="#CFC8B8" stroke-width=".6"/>`;
-  if(av.acc===7)s+=`<rect x="-7.5" y="-25.5" width="15" height="3.5" rx="1.7" fill="#D9473A"/><rect x="2" y="-24" width="3" height="7" rx="1" fill="#D9473A"/>`;
+  // ---- 身體 ----
+  const tw=isSide?10:(av.top===1?12:14),tx=-tw/2;
+  s+=`<rect x="${tx}" y="-24" width="${tw}" height="13" rx="3" fill="${tc}"/>`;
+  if(av.bottom===2)s+=isSide?`<polygon points="-5,-12 5,-12 6.5,-5 -6.5,-5" fill="${bc}"/>`:`<polygon points="-6,-12 6,-12 8.5,-5 -8.5,-5" fill="${bc}"/>`;
+  if(av.top===4)s+=`<path d="M${tx} -21 h${tw} M${tx} -17.5 h${tw} M${tx} -14 h${tw}" stroke="#F7F4EC" stroke-width="1.4" opacity=".8"/>`;
+  if(av.top===7)s+=`<rect x="${tx}" y="-13" width="${tw}" height="2" fill="${tcd}"/>`;
+  if(!isBack&&!isSide){
+    if(av.top===2)s+=`<polygon points="-4,-24 0,-20 4,-24" fill="#F7F4EC"/><path d="M0 -20 V-12" stroke="${tcd}" stroke-width=".8"/>`;
+    if(av.top===3)s+=`<rect x="-4" y="-16" width="8" height="4" rx="1" fill="${tcd}"/>`;
+    if(av.top===5)s+=`<path d="M0 -24 V-11" stroke="${tcd}" stroke-width="1.2"/><polygon points="-3,-24 0,-19 -4,-19" fill="${tcd}"/><polygon points="3,-24 0,-19 4,-19" fill="${tcd}"/>`;
+    if(av.top===6)s+=`<polygon points="-4,-24 -1,-21 -4,-21" fill="#F7F4EC"/><polygon points="4,-24 1,-21 4,-21" fill="#F7F4EC"/><circle cx="0" cy="-19" r=".7" fill="${tcd}"/>`;
+    if(av.top===7)s+=`<path d="M-4 -20 h1 M2 -18 h1 M-2 -16 h1" stroke="${tcd}" stroke-width="1.2"/>`;
+  }
+  if(av.bottom===5)s+=isSide?`<rect x="-1" y="-24" width="2" height="12" fill="${bc}"/><rect x="-5" y="-16" width="10" height="5" fill="${bc}"/>`:`<rect x="-5" y="-24" width="2" height="12" fill="${bc}"/><rect x="3" y="-24" width="2" height="12" fill="${bc}"/>${isBack?'':`<rect x="-5" y="-16" width="10" height="5" fill="${bc}"/>`}`;
+  if(av.acc===4&&!isBack)s+=isSide?`<rect x="1" y="-20" width="4" height="12" rx="1.5" fill="#F7F4EC" stroke="#CFC8B8" stroke-width=".6"/>`:`<rect x="-5" y="-20" width="10" height="12" rx="1.5" fill="#F7F4EC" stroke="#CFC8B8" stroke-width=".6"/>`;
+  if(av.acc===4&&isBack)s+=`<path d="M-1 -20 l-2 4 M1 -20 l2 4" stroke="#F7F4EC" stroke-width="1.2"/>`;
+  if(av.acc===7)s+=`<rect x="${tx-0.5}" y="-25.5" width="${tw+1}" height="3.5" rx="1.7" fill="#D9473A"/>`+(isBack?`<rect x="-1.5" y="-24" width="3" height="7" rx="1" fill="#D9473A"/>`:isSide?'':`<rect x="2" y="-24" width="3" height="7" rx="1" fill="#D9473A"/>`);
   s+=armOne(1,armF,true);
-  s+=`<g transform="translate(0 -26) scale(1.42) translate(0 26) rotate(${walk?Math.sin(ph)*2:Math.sin(t*0.9)*1.5} 0 -24)">`;
-  s+=`<circle cx="0" cy="-32" r="9" fill="${sk}"/>`;
-  const blink=!!pose.blink&&[0,2,3].includes(av.face);
-  const ey=-31.5,dk='#2A1E18';
-  if(blink)s+=`<path d="M-4.6 ${ey} h2.8 M1.8 ${ey} h2.8" stroke="${dk}" stroke-width="1" stroke-linecap="round"/>`;
-  else if(av.face===1)s+=`<path d="M-4.6 ${ey} q1.4 -1.6 2.8 0 M1.8 ${ey} q1.4 -1.6 2.8 0" stroke="${dk}" stroke-width="1" fill="none" stroke-linecap="round"/>`;
-  else if(av.face===2)s+=`<circle cx="-3.2" cy="${ey}" r="2" fill="#fff"/><circle cx="3.2" cy="${ey}" r="2" fill="#fff"/><circle cx="-3" cy="${ey+.2}" r="1.2" fill="${dk}"/><circle cx="3.4" cy="${ey+.2}" r="1.2" fill="${dk}"/>`;
-  else if(av.face===3)s+=`<circle cx="-3.2" cy="${ey}" r="1.2" fill="${dk}"/><path d="M1.8 ${ey} q1.4 -1.6 2.8 0" stroke="${dk}" stroke-width="1" fill="none" stroke-linecap="round"/>`;
-  else if(av.face===4)s+=`<path d="M-4.6 ${ey} h2.8 M1.8 ${ey} h2.8" stroke="${dk}" stroke-width="1" stroke-linecap="round"/>`;
-  else s+=`<ellipse cx="-3.3" cy="${ey}" rx="1.5" ry="2.1" fill="${dk}" stroke="none"/><ellipse cx="3.3" cy="${ey}" rx="1.5" ry="2.1" fill="${dk}" stroke="none"/><circle cx="-2.8" cy="${ey-.8}" r=".6" fill="#fff" stroke="none"/><circle cx="3.8" cy="${ey-.8}" r=".6" fill="#fff" stroke="none"/>`;
-  if(av.face===5||av.face===1)s+=`<circle cx="-5.5" cy="-29" r="1.6" fill="#F28DB2" opacity=".7" stroke="none"/><circle cx="5.5" cy="-29" r="1.6" fill="#F28DB2" opacity=".7" stroke="none"/>`;
-  s+=`<path d="M-1.6 -28 q1.6 1.4 3.2 0" stroke="${dk}" stroke-width=".9" fill="none" stroke-linecap="round"/>`;
+  // ---- 頭 ----
+  let h=`<circle cx="0" cy="-32" r="9" fill="${sk}"/>`;
+  const ey=-31.5,dk='#2A1E18',blink=!!pose.blink&&[0,2,3].includes(av.face);
+  const eye=(x,sq,which)=>{const g=`translate(${x} 0) scale(${sq} 1) translate(${-x} 0)`;let o='';
+    if(blink||av.face===4)o=`<path d="M${x-1.4} ${ey} h2.8" stroke="${dk}" stroke-width="1" stroke-linecap="round"/>`;
+    else if(av.face===1||(av.face===3&&which===1))o=`<path d="M${x-1.4} ${ey} q1.4 -1.6 2.8 0" stroke="${dk}" stroke-width="1" fill="none" stroke-linecap="round"/>`;
+    else if(av.face===2)o=`<circle cx="${x}" cy="${ey}" r="2" fill="#fff"/><circle cx="${x+0.2}" cy="${ey+.2}" r="1.2" fill="${dk}"/>`;
+    else if(av.face===3)o=`<circle cx="${x}" cy="${ey}" r="1.2" fill="${dk}"/>`;
+    else o=`<ellipse cx="${x}" cy="${ey}" rx="1.5" ry="2.1" fill="${dk}" stroke="none"/><circle cx="${x+0.5}" cy="${ey-.8}" r=".6" fill="#fff" stroke="none"/>`;
+    return `<g transform="${g}">${o}</g>`};
+  const blush=x=>(av.face===5||av.face===1)?`<circle cx="${x}" cy="-29" r="1.6" fill="#F28DB2" opacity=".7" stroke="none"/>`:'';
+  if(view==='front')h+=eye(-3.3,1,0)+eye(3.3,1,1)+blush(-5.5)+blush(5.5)+`<path d="M-1.6 -28 q1.6 1.4 3.2 0" stroke="${dk}" stroke-width=".9" fill="none" stroke-linecap="round"/>`;
+  else if(view==='fq')h+=eye(-1.3,0.8,0)+eye(4.6,0.95,1)+blush(-3.2)+blush(6.8)+`<path d="M1 -28 q1.5 1.3 3 0" stroke="${dk}" stroke-width=".9" fill="none" stroke-linecap="round"/>`;
+  else if(isSide)h+=eye(5.6,0.85,1)+blush(5.2)+`<path d="M6.6 -28 q1 0.9 2 0" stroke="${dk}" stroke-width=".9" fill="none" stroke-linecap="round"/><path d="M8.6 -31 q1.3 0.8 0.2 1.8" fill="${sk}" stroke="${dk}" stroke-width=".7"/><ellipse cx="-1.5" cy="-31" rx="1.6" ry="2.2" fill="${skd}" stroke="${dk}" stroke-width=".6"/>`;
+  // 頭髮
   const cap=`M-9.4 -31 A9.4 9.4 0 0 1 9.4 -31 Q5 -36.5 0 -35 Q-5 -36.5 -9.4 -31Z`;
-  if(av.hair===9)s+=`<path d="M-9 -33 A9 9 0 0 1 9 -33 Q0 -37 -9 -33Z" fill="${hc}"/>`;
-  else if(av.hair===4)s+=`<path d="M-9.5 -31 L-8 -40 L-4 -36 L-2 -43 L1 -37 L4 -42 L5 -36 L9 -39 L9.5 -31 Q0 -36 -9.5 -31Z" fill="${hc}"/>`;
-  else if(av.hair===7){for(const [a,b] of [[-7,-35],[-3.5,-39],[0.5,-40],[4.5,-38.5],[7.5,-35],[-9,-31],[9,-31]])s+=`<circle cx="${a}" cy="${b}" r="3.6" fill="${hc}"/>`}
-  else if(av.hair===8)s+=`<path d="M-9.4 -30 A9.4 9.4 0 0 1 9.4 -31 Q4 -33 -2 -36 Q-6 -33 -9.4 -30Z" fill="${hc}"/><path d="M-2 -36 Q3 -34 9.4 -31" stroke="${hcd}" stroke-width=".8" fill="none"/>`;
-  else{s+=`<path d="${cap}" fill="${hc}"/>`;if(av.hair===1)s+=`<rect x="-10" y="-33" width="3" height="9" rx="1.5" fill="${hc}"/><rect x="7" y="-33" width="3" height="9" rx="1.5" fill="${hc}"/><path d="M-8 -33.5 H8" stroke="${hc}" stroke-width="2"/>`;if(av.hair===2)s+=`<rect x="-10" y="-33" width="3" height="13" rx="1.5" fill="${hc}"/><rect x="7" y="-33" width="3" height="13" rx="1.5" fill="${hc}"/>`;if(av.hair===5)s+=`<circle cx="0" cy="-42" r="4.2" fill="${hc}"/>`}
-  if(av.acc===1)s+=`<ellipse cx="0" cy="-37.5" rx="14" ry="3.5" fill="#E2C46B"/><path d="M-7 -37.5 Q-7 -46 0 -46 Q7 -46 7 -37.5Z" fill="#E8CF7C"/><rect x="-7" y="-40" width="14" height="2" fill="#C9473A"/>`;
-  if(av.acc===2)s+=`<rect x="-9.4" y="-37" width="18.8" height="3" rx="1.5" fill="#C9473A"/><path d="M8.5 -36 l4 -2 l-1 4z" fill="#C9473A"/>`;
-  if(av.acc===3)s+=`<circle cx="-3.2" cy="${ey}" r="2.6" fill="none" stroke="#333" stroke-width=".8"/><circle cx="3.2" cy="${ey}" r="2.6" fill="none" stroke="#333" stroke-width=".8"/><path d="M-.6 ${ey} h1.2" stroke="#333" stroke-width=".8"/>`;
-  if(av.acc===5)s+=`<path d="M-9 -35 A9 7 0 0 1 9 -35Z" fill="${CLOTHC[(av.topC+3)%10]}"/><path d="M4 -35 h9 q0 2 -3 2 h-6z" fill="${shade(CLOTHC[(av.topC+3)%10],-0.25)}"/>`;
-  if(av.acc===6)s+=`${[0,1,2,3,4].map(k=>{const a=k/5*6.283;return `<circle cx="${(6+Math.cos(a)*1.8).toFixed(1)}" cy="${(-38+Math.sin(a)*1.8).toFixed(1)}" r="1.5" fill="#F28DB2"/>`}).join('')}<circle cx="6" cy="-38" r="1" fill="#F2C94C"/>`;
-  s+='</g></g>';
-  // 動作特效（不跟著翻轉方向的畫在外層）
-  if(act==='water'&&ap<1){for(let k=0;k<3;k++){const q=(ap*3+k/3)%1;s+=`<ellipse cx="${(18+k*2)*(flip?-1:1)}" cy="${(-20+q*18).toFixed(1)}" rx="1.1" ry="1.8" fill="#4FA3E0" stroke="none" opacity="${(1-q).toFixed(2)}"/>`}}
+  if(view==='back'){
+    h+=`<circle cx="0" cy="-32.3" r="9.5" fill="${hc}"/>`;
+    if(av.hair===2)h+=`<rect x="-10" y="-34" width="20" height="17" rx="8" fill="${hc}"/>`;
+    if(av.hair===3)h+=`<ellipse cx="0" cy="-23" rx="3.6" ry="7.5" fill="${hc}" transform="rotate(${swing*0.6} 0 -29)"/><circle cx="0" cy="-29.5" r="1.6" fill="#C9473A"/>`;
+    if(av.hair===6)h+=`<ellipse cx="-10.5" cy="-27" rx="3.5" ry="7" fill="${hc}" transform="rotate(${swing} -10.5 -33)"/><ellipse cx="10.5" cy="-27" rx="3.5" ry="7" fill="${hc}" transform="rotate(${-swing} 10.5 -33)"/>`;
+    if(av.hair===4)h+=`<path d="M-9 -33 L-7 -41 L-3 -37 L0 -43 L3 -37 L7 -41 L9 -33Z" fill="${hc}"/>`;
+    if(av.hair===7)for(const [a,b] of [[-6,-38],[0,-40],[6,-38],[-8.5,-31],[8.5,-31],[-5,-25.5],[5,-25.5]])h+=`<circle cx="${a}" cy="${b}" r="3.6" fill="${hc}"/>`;
+  }else if(view==='bq'){
+    h+=`<circle cx="-1" cy="-32.4" r="9.4" fill="${hc}"/><path d="M6.5 -35 q2.6 3 2.2 7" stroke="${hcd}" stroke-width=".8" fill="none"/>`;
+    if(av.hair===2)h+=`<rect x="-10.5" y="-34" width="18" height="17" rx="8" fill="${hc}"/>`;
+    if(av.hair===3)h+=`<ellipse cx="-3" cy="-23" rx="3.6" ry="7.5" fill="${hc}" transform="rotate(${swing*0.6} -3 -29)"/>`;
+    if(av.hair===6)h+=`<ellipse cx="-10.5" cy="-27" rx="3.5" ry="7" fill="${hc}" transform="rotate(${swing} -10.5 -33)"/><ellipse cx="8.5" cy="-27" rx="3.2" ry="6.5" fill="${hc}" transform="rotate(${-swing} 8.5 -33)"/>`;
+    if(av.hair===4)h+=`<path d="M-9.5 -33 L-7 -41 L-3 -37 L0 -43 L3 -37 L6 -40 L8 -33Z" fill="${hc}"/>`;
+    if(av.hair===7)for(const [a,b] of [[-6.5,-38],[-0.5,-40],[5,-38],[-9,-31],[-6,-25.5]])h+=`<circle cx="${a}" cy="${b}" r="3.6" fill="${hc}"/>`;
+  }else if(isSide){
+    if(av.hair===9)h+=`<path d="M-9 -32 A9 9 0 0 1 8.6 -34.5 Q2 -37 -3 -34 Q-6 -29 -8.6 -27Z" fill="${hc}"/>`;
+    else if(av.hair===4)h+=`<path d="M-9.5 -30 L-11 -38 L-6 -37 L-6 -44 L-1 -39 L2 -44 L4 -38 L9 -39 L8.8 -34 Q2 -36 -2 -33 Q-6 -28 -9.5 -26Z" fill="${hc}"/>`;
+    else if(av.hair===7)for(const [a,b] of [[-6.5,-36],[-2.5,-39.5],[2,-40],[6,-37.5],[-9,-30],[-7,-25.5]])h+=`<circle cx="${a}" cy="${b}" r="3.6" fill="${hc}"/>`;
+    else{h+=`<path d="M-9.4 -30 A9.4 9.4 0 0 1 9.2 -33.5 Q5 -36.5 1 -34.5 Q-2 -31 -3 -27 Q-6 -24 -9.2 -26Z" fill="${hc}"/>`;
+      if(av.hair===1||av.hair===2)h+=`<rect x="-9.8" y="-33" width="5" height="${av.hair===2?13:9}" rx="2" fill="${hc}"/>`;
+      if(av.hair===5)h+=`<circle cx="-4" cy="-42" r="4.2" fill="${hc}"/>`;
+      if(av.hair===8)h+=`<path d="M-1 -35.5 Q4 -35 9.2 -33.5" stroke="${hcd}" stroke-width=".8" fill="none"/>`;}
+  }else{
+    const ox=view==='fq'?0.8:0;
+    let hh='';
+    if(av.hair===9)hh+=`<path d="M-9 -33 A9 9 0 0 1 9 -33 Q0 -37 -9 -33Z" fill="${hc}"/>`;
+    else if(av.hair===4)hh+=`<path d="M-9.5 -31 L-8 -40 L-4 -36 L-2 -43 L1 -37 L4 -42 L5 -36 L9 -39 L9.5 -31 Q0 -36 -9.5 -31Z" fill="${hc}"/>`;
+    else if(av.hair===7){for(const [a,b] of [[-7,-35],[-3.5,-39],[0.5,-40],[4.5,-38.5],[7.5,-35],[-9,-31],[9,-31]])hh+=`<circle cx="${a}" cy="${b}" r="3.6" fill="${hc}"/>`}
+    else if(av.hair===8)hh+=`<path d="M-9.4 -30 A9.4 9.4 0 0 1 9.4 -31 Q4 -33 -2 -36 Q-6 -33 -9.4 -30Z" fill="${hc}"/><path d="M-2 -36 Q3 -34 9.4 -31" stroke="${hcd}" stroke-width=".8" fill="none"/>`;
+    else{hh+=`<path d="${cap}" fill="${hc}"/>`;if(av.hair===1)hh+=`<rect x="-10" y="-33" width="3" height="9" rx="1.5" fill="${hc}"/><rect x="7" y="-33" width="3" height="9" rx="1.5" fill="${hc}"/><path d="M-8 -33.5 H8" stroke="${hc}" stroke-width="2"/>`;if(av.hair===2)hh+=`<rect x="-10" y="-33" width="3" height="13" rx="1.5" fill="${hc}"/><rect x="7" y="-33" width="3" height="13" rx="1.5" fill="${hc}"/>`;if(av.hair===5)hh+=`<circle cx="0" cy="-42" r="4.2" fill="${hc}"/>`}
+    h+=ox?`<g transform="translate(${-ox} 0)">${hh}</g>`:hh;
+  }
+  if(av.hair===5&&isBack)h+=`<circle cx="${view==='bq'?-1:0}" cy="-42" r="4.2" fill="${hc}"/>`;
+  // 配件
+  const ax=view==='fq'?0.8:isSide?1.5:0;
+  if(av.acc===1)h+=`<ellipse cx="${-ax*0.3}" cy="-37.5" rx="${isSide?13:14}" ry="3.5" fill="#E2C46B"/><path d="M${-7-ax} -37.5 Q${-7-ax} -46 ${-ax} -46 Q${7-ax} -46 ${7-ax} -37.5Z" fill="#E8CF7C"/><rect x="${-7-ax}" y="-40" width="14" height="2" fill="#C9473A"/>`;
+  if(av.acc===2)h+=`<rect x="-9.4" y="-37" width="18.8" height="3" rx="1.5" fill="#C9473A"/>`+(isSide?`<path d="M-9 -36 l-4 -2 l1 4z" fill="#C9473A"/>`:isBack?`<path d="M0 -36 l-3 4 l3 -1 l3 1z" fill="#C9473A"/>`:`<path d="M8.5 -36 l4 -2 l-1 4z" fill="#C9473A"/>`);
+  if(av.acc===3&&!isBack)h+=view==='front'?`<circle cx="-3.2" cy="${ey}" r="2.6" fill="none" stroke="#333" stroke-width=".8"/><circle cx="3.2" cy="${ey}" r="2.6" fill="none" stroke="#333" stroke-width=".8"/><path d="M-.6 ${ey} h1.2" stroke="#333" stroke-width=".8"/>`:view==='fq'?`<ellipse cx="-1.3" cy="${ey}" rx="2.1" ry="2.6" fill="none" stroke="#333" stroke-width=".8"/><circle cx="4.6" cy="${ey}" r="2.6" fill="none" stroke="#333" stroke-width=".8"/><path d="M.8 ${ey} h1.2" stroke="#333" stroke-width=".8"/>`:`<ellipse cx="5.6" cy="${ey}" rx="2" ry="2.6" fill="none" stroke="#333" stroke-width=".8"/><path d="M3.6 ${ey} h-6" stroke="#333" stroke-width=".8"/>`;
+  if(av.acc===5){const cc=CLOTHC[(av.topC+3)%10],cd=shade(cc,-0.25);h+=`<path d="M-9 -35 A9 7 0 0 1 9 -35Z" fill="${cc}"/>`+(view==='back'?'':isSide||view==='bq'?(view==='bq'?'':`<path d="M6 -35 h7 q0 2 -3 2 h-4z" fill="${cd}"/>`):`<path d="M4 -35 h9 q0 2 -3 2 h-6z" fill="${cd}"/>`)}
+  if(av.acc===6){const fx=isBack?-6:isSide?-3:6;h+=`${[0,1,2,3,4].map(k=>{const a=k/5*6.283;return `<circle cx="${(fx+Math.cos(a)*1.8).toFixed(1)}" cy="${(-38+Math.sin(a)*1.8).toFixed(1)}" r="1.5" fill="#F28DB2"/>`}).join('')}<circle cx="${fx}" cy="-38" r="1" fill="#F2C94C"/>`}
+  s+=`<g transform="translate(0 -26) scale(${hs}) translate(0 26) rotate(${headTilt.toFixed(2)} 0 -24)">${h}</g>`;
+  s+='</g>';
+  if(act==='water'&&ap<1&&!isBack){for(let k=0;k<3;k++){const q=(ap*3+k/3)%1;s+=`<ellipse cx="${18+k*2}" cy="${(-20+q*18).toFixed(1)}" rx="1.1" ry="1.8" fill="#4FA3E0" stroke="none" opacity="${(1-q).toFixed(2)}"/>`}}
+  s+='</g>';
   if((act==='harvest'||act==='pollinate')&&ap<1){const q=ap;s+=`<path d="M${(flip?-1:1)*12} ${(-46-q*8).toFixed(1)} l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6 -4 -4 -1.6 4 -1.6z" fill="#FFD54A" stroke="#9A6A00" stroke-width=".8" opacity="${(1-q*0.8).toFixed(2)}"/>`}
-  return s+'</g>';
+  return s;
 }
+
 
 // ===== 角色動畫 =====
 let meAct=null;const ACT_DUR={water:900,plant:800,harvest:900,pollinate:1100};
@@ -1487,6 +1538,7 @@ function animOthers(dt){
     const dx=o.x-A.x,dy=o.y-A.y,d=Math.hypot(dx,dy);
     if(d>200){A.x=o.x;A.y=o.y}else{const k=Math.min(1,dt*8);A.x+=dx*k;A.y+=dy*k}
     A.moving=d>1.2;if(A.moving)A.ph+=dt*12;else A.ph=0;
+    if(o.f==null&&d>1.2)o.f=dirIdx(dx,dy);
     if(o.a&&o.a.at&&o.a.at!==A.lastA){A.lastA=o.a.at;A.aStart=Date.now()}
   }
   for(const id of Object.keys(animO))if(!others[id])delete animO[id];
@@ -2220,21 +2272,24 @@ function joinFarm(key){
 function leavePresence(){try{if(rtdbRef)rtdbRef.remove()}catch(e){}rtdbRef=null;if(rtdbOff){rtdbOff();rtdbOff=null}if(hb){clearInterval(hb);hb=null}others={}}
 function pushPos(force){
   if(!rtdbRef)return;const now=Date.now();if(!force&&now-lastPush<150)return;lastPush=now;const m=curMe();
-  rtdbRef.set({x:Math.round(m.x),y:Math.round(m.y),d:meDir,name:myName(),av:state.avatar||AV_DEF,a:meAct&&Date.now()-meAct.at<1500?meAct:null,t:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});
+  rtdbRef.set({x:Math.round(m.x),y:Math.round(m.y),d:meDir,name:myName(),av:state.avatar||AV_DEF,a:meAct&&Date.now()-meAct.at<1500?meAct:null,f:meFace,t:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});
 }
-let meDir=1,walkPh=0;
+let meDir=1,walkPh=0,meFace=2;
+const VIEWS=['side','fq','front','fq','side','bq','back','bq'];
+const faceFlip=f=>f===3||f===4||f===5;
+function dirIdx(vx,vy){return ((Math.round(Math.atan2(vy,vx)/(Math.PI/4))%8)+8)%8}
 const nameTag=n=>`<text x="0" y="-62" text-anchor="middle" font-size="8.5" fill="var(--ink)" stroke="var(--paper)" stroke-width="2.5" paint-order="stroke" font-family="Noto Sans TC,sans-serif">${esc(n)}</text>`;
 function charG(id,x,y,av,flip,pose,name){return `<g ${id?`id="${id}"`:''} transform="translate(${Math.round(x)} ${Math.round(y)}) scale(1.15)" pointer-events="none">${avatarSVG(av,flip,pose)}${name?nameTag(name):''}</g>`}
 function renderChars(){
   if(!state)return;const L=document.getElementById('charLayer');let s='';
   const t=performance.now()/1000,list=[];
   for(const [id,o] of Object.entries(others)){if(!o||typeof o.x!=='number')continue;const A=animO[id]||{x:o.x,y:o.y,ph:0};
-    const ps=poseFor(false,{a:o.a,_aStart:A.aStart,_seed:A.seed},t);if(A.moving)ps.ph=A.ph;list.push({y:A.y,h:charG('',A.x,A.y,o.av,o.d<0,ps,o.name||'朋友')})}
-  const m=curMe(),mp=poseFor(true,null,t);if(raf)mp.ph=walkPh;list.push({y:m.y,h:charG('meG',m.x,m.y,state.avatar,meDir<0,mp,'你')});
+    const ps=poseFor(false,{a:o.a,_aStart:A.aStart,_seed:A.seed},t);if(A.moving)ps.ph=A.ph;const of=o.f!=null?o.f:(o.d<0?3:1);ps.view=VIEWS[of];list.push({y:A.y,h:charG('',A.x,A.y,o.av,faceFlip(of),ps,o.name||'朋友')})}
+  const m=curMe(),mp=poseFor(true,null,t);if(raf)mp.ph=walkPh;mp.view=VIEWS[meFace];list.push({y:m.y,h:charG('meG',m.x,m.y,state.avatar,faceFlip(meFace),mp,'你')});
   list.sort((a,b)=>a.y-b.y);s=list.map(x=>x.h).join('');
   L.innerHTML=s;
 }
-function updateMe(){const g=document.getElementById('meG');if(!g){renderChars();return}const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y)}) scale(1.15)`);const mp=poseFor(true,null,performance.now()/1000);if(raf)mp.ph=walkPh;g.innerHTML=avatarSVG(state.avatar,meDir<0,mp)+nameTag('你')}
+function updateMe(){const g=document.getElementById('meG');if(!g){renderChars();return}const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y)}) scale(1.15)`);const mp=poseFor(true,null,performance.now()/1000);if(raf)mp.ph=walkPh;mp.view=VIEWS[meFace];g.innerHTML=avatarSVG(state.avatar,faceFlip(meFace),mp)+nameTag('你')}
 
 // ===== 互動按鈕 =====
 function nearest(){
@@ -2318,7 +2373,7 @@ function walkLoop(t){
     const m=curMe(),{W,H}=scene==='market'?WORLD.market:WORLD.farm,len=Math.max(1,Math.hypot(vx,vy));
     if(scene==='explore'){m.x+=vx/len*Math.min(1,len)*160*dt;m.y+=vy/len*Math.min(1,len)*130*dt}
     else{m.x=clamp(m.x+vx/len*Math.min(1,len)*160*dt,24,W-24);m.y=clamp(m.y+vy/len*Math.min(1,len)*130*dt,74,H-26)}
-    if(ab(vx)>0.15)meDir=vx<0?-1:1;walkPh+=dt*12;updateMe();updateCam();pushPos(false);refreshAct();
+    if(Math.hypot(vx,vy)>0.15){meFace=dirIdx(vx,vy);meDir=faceFlip(meFace)?-1:1}walkPh+=dt*12;updateMe();updateCam();pushPos(false);refreshAct();
     raf=requestAnimationFrame(walkLoop);
   }else{raf=null;walkPh=0;if(state){updateMe();pushPos(true);if(scene==='farm'&&!viewing)save()}}
 }
@@ -2329,7 +2384,7 @@ function avatarEditorHTML(){
   const d=sheet.draft;
   const row=k=>`<div class="avrow"><span>${AV_LBL[k]}</span><button class="mini" data-av="${k}" data-d="-1" aria-label="上一個">‹</button><b>${AV_OPT[k][d[k]]}</b><button class="mini" data-av="${k}" data-d="1" aria-label="下一個">›</button></div>`;
   const sw=(k,arr)=>`<div class="avrow"><span>${AV_LBL[k]}</span><div class="sw">${arr.map((c,i)=>`<button class="swatch" style="background:${c}" data-avc="${k}" data-v="${i}" aria-label="${AV_LBL[k]} ${i+1}" aria-pressed="${d[k]===i}"></button>`).join('')}</div></div>`;
-  return `<h2>我的角色</h2><div class="hero"><svg viewBox="-26 -54 52 58" width="150" height="168" role="img" aria-label="角色預覽">${avatarSVG(d,false,0)}</svg></div>${sw('skin',SKINS)}${row('face')}${row('hair')}${sw('hairC',HAIRC)}${row('top')}${sw('topC',CLOTHC)}${row('bottom')}${sw('bottomC',CLOTHC)}${row('acc')}<button class="btn primary" data-act="avsave">儲存角色</button>`;
+  return `<h2>我的角色</h2><div class="hero"><svg viewBox="-28 -62 56 66" width="150" height="177" role="img" aria-label="角色預覽">${avatarSVG(d,false,{t:performance.now()/1000})}</svg></div><div class="avdirs" aria-hidden="true">${[2,1,0,7,6].map(f=>`<svg viewBox="-28 -62 56 66" width="54" height="64">${avatarSVG(d,false,{view:VIEWS[f]})}</svg>`).join('')}</div>${sw('skin',SKINS)}${row('face')}${row('hair')}${sw('hairC',HAIRC)}${row('top')}${sw('topC',CLOTHC)}${row('bottom')}${sw('bottomC',CLOTHC)}${row('acc')}<button class="btn primary" data-act="avsave">儲存角色</button>`;
 }
 function avatarAction(b){
   const d=sheet.draft;

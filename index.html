@@ -692,7 +692,7 @@ const RGBC={white:[246,240,226],green:[88,164,64],yellow:[246,202,44],red:[220,4
   silver:[186,192,202],pearl:[244,238,246],blue:[70,120,220],gold:[226,176,44],obsidian:[40,30,52],crystal:[176,230,244],starry:[44,40,104],rainbow:[200,120,190]};
 const SPGRAD={silver:['#F4F6F9','#9AA3AE'],pearl:['#FFFFFF','#E3D4EA'],blue:['#9CC6FF','#2346A8'],gold:['#FFF1A8','#B9840F'],obsidian:['#6A5A80','#0E0A14'],crystal:['#F2FDFF','#7FCBE2'],starry:['#3A3F8A','#140F38']};
 const rgbS=v=>`rgb(${v.map(x=>Math.round(clamp(x,0,255))).join(',')})`;
-function baseFn(crop){return (CROPS[crop]||CROPS.tomato).tpl[0]}
+function baseFn(crop){if(crop==='bittergourd')return t=>{const c=C(t);return [0.5*S(t)*(1-0.1*c)*(0.75+0.25*Math.pow(ab(S(t)),0.5)),-1.38*c]};if(crop==='corn')return t=>[0.62*S(t)*(0.9-0.13*C(t)),-1.3*C(t)];return (CROPS[crop]||CROPS.tomato).tpl[0]}
 function shapePoints(a,crop){
   const N=96,base=baseFn(crop),bp=[];
   for(let i=0;i<N;i++)bp.push(base(i/N*2*Math.PI));
@@ -735,11 +735,23 @@ function fruitInner(a,ripe,crop){
   if(!isFinite(topY))topY=-0.8;if(!isFinite(botY))botY=0.8;
   const R=srand((a.seed||7)+a.level*97+(a.pat?a.pat.f*13:0));
   let behind='',deco='',front='';
-  if(cd.deco==='kernels')behind+=`<path d="M0 ${f3(botY)} C-1.15 0.5 -0.95 -0.7 -0.45 ${f3(topY+0.35)} Q-0.3 0.2 0 ${f3(botY)}Z" fill="#7FA34A"/><path d="M0 ${f3(botY)} C1.15 0.5 0.95 -0.7 0.45 ${f3(topY+0.35)} Q0.3 0.2 0 ${f3(botY)}Z" fill="#6E9440"/>`;
   // 作物本身的紋理
   if(cd.deco==='berry'){for(let y=-1.3;y<=1.3;y+=0.26)for(let x=-1.3;x<=1.3;x+=0.28){const xx=x+(Math.round(y/0.26)%2?0.14:0);deco+=`<ellipse cx="${f3(xx)}" cy="${f3(y)}" rx="0.035" ry="0.045" fill="#F2D35A" stroke="${darkc}" stroke-width="0.012"/>`}}
-  else if(cd.deco==='warts'){for(let k=0;k<40;k++){const x=(R()-0.5)*1.8,y=(R()-0.5)*2.9;deco+=`<ellipse cx="${f3(x)}" cy="${f3(y)}" rx="0.055" ry="0.09" fill="${light}" opacity=".7"/>`}}
-  else if(cd.deco==='kernels'){for(let y=-1.45;y<=1.45;y+=0.19){const row=Math.round(y/0.19);for(let x=-0.95;x<=0.95;x+=0.17){const xx=x+(row%2?0.085:0);deco+=`<ellipse cx="${f3(xx)}" cy="${f3(y)}" rx="0.075" ry="0.086" fill="${light}" opacity=".5" stroke="${stroke}" stroke-width="0.015"/>`}}}
+  else if(cd.deco==='warts'){
+    const half=y=>{let w=0;for(const p of pts)if(ab(p[1]-y)<0.1)w=Math.max(w,ab(p[0]));return w};
+    const U=[-0.62,-0.21,0.21,0.62];
+    U.forEach((u,ci)=>{
+      for(let y=topY+0.3+(ci%2)*0.15;y<=botY-0.25;y+=0.3){const w=half(y);if(w<0.16)continue;const x=w*u*0.95,rx=(0.058*Math.cos(u*1.2)+0.012)*Math.min(1,w/0.42);
+        deco+=`<ellipse cx="${f3(x+0.015)}" cy="${f3(y+0.035)}" rx="${f3(rx)}" ry="0.12" fill="${darkc}" opacity=".5"/><ellipse cx="${f3(x)}" cy="${f3(y)}" rx="${f3(rx)}" ry="0.12" fill="${light}"/>`}});
+  }
+
+
+  else if(cd.deco==='kernels'){
+    const half=y=>{let w=0;for(const p of pts)if(ab(p[1]-y)<0.12)w=Math.max(w,ab(p[0]));return w};
+    for(let y=topY+0.2;y<=botY-0.12;y+=0.29){const w=half(y);if(w<0.18)continue;
+      for(const u of [-0.75,-0.25,0.25,0.75]){const x=w*Math.sin(u*1.25)/Math.sin(1.25)*0.84,kw=0.27*w/0.62*Math.cos(u*1.05);
+        deco+=`<rect x="${f3(x-kw/2)}" y="${f3(y-0.125)}" width="${f3(kw)}" height="0.25" rx="${f3(Math.min(kw,0.25)/2.1)}" fill="${light}" stroke="${darkc}" stroke-width="0.02"/><ellipse cx="${f3(x-kw*0.18)}" cy="${f3(y-0.05)}" rx="${f3(kw*0.18)}" ry="0.04" fill="#fff" opacity=".5"/>`}}
+  }
   else if(cd.deco==='florets'){
     // 少量大花球，避免密集小點
     const sh=rgbS(c.map(v=>v*0.72)),rows=[[-0.95,[-0.55,0.35]],[-0.35,[-0.95,-0.1,0.75]],[0.3,[-0.6,0.3,1.1]],[0.9,[-0.95,-0.1,0.75]]];
@@ -770,6 +782,10 @@ function fruitInner(a,ripe,crop){
   else if(cd.deco==='pumpkin')front+=`<path d="M-0.09 ${f3(topY+0.1)} L-0.12 ${f3(topY-0.22)} Q0 ${f3(topY-0.34)} 0.14 ${f3(topY-0.24)} L0.09 ${f3(topY+0.1)}Z" fill="#7A6A2A"/>`;
   else if(cd.deco==='cap')front+=`<polygon points="${[...Array(10).keys()].map(k=>{const t=k/10*6.283-Math.PI/2,r=k%2?0.14:0.4;return f3(C(t)*r)+','+f3(topY+0.16+S(t)*r*0.7)}).join(' ')}" fill="#4E7F2A"/><rect x="-0.08" y="${f3(topY-0.3)}" width="0.16" height="0.36" rx="0.05" fill="#5E7F34"/>`;
   else if(cd.deco==='warts'||cd.deco==='net')front+=stem();
+  else if(cd.deco==='kernels'){
+    const b=botY,hk=sx=>`<path d="M${f3(sx*0.05)} ${f3(b+0.12)} C${f3(sx*0.75)} ${f3(b+0.05)} ${f3(sx*0.85)} ${f3(b-0.7)} ${f3(sx*0.62)} ${f3(b-1.35)} C${f3(sx*0.5)} ${f3(b-0.8)} ${f3(sx*0.3)} ${f3(b-0.35)} ${f3(sx*0.02)} ${f3(b-0.15)}Z" fill="#78B84E" stroke="#2F6B1E" stroke-width="0.055" stroke-linejoin="round"/><path d="M${f3(sx*0.12)} ${f3(b)} Q${f3(sx*0.55)} ${f3(b-0.5)} ${f3(sx*0.58)} ${f3(b-1.15)}" stroke="#4E9234" stroke-width="0.04" fill="none" stroke-linecap="round"/>`;
+    front+=`<path d="M-0.06 ${f3(topY+0.05)} q-0.12 -0.25 -0.28 -0.32 M0 ${f3(topY+0.05)} q0 -0.3 0.05 -0.36 M0.06 ${f3(topY+0.05)} q0.14 -0.22 0.3 -0.28" stroke="#C9935A" stroke-width="0.05" fill="none" stroke-linecap="round"/><rect x="-0.12" y="${f3(b+0.02)}" width="0.24" height="0.22" rx="0.05" fill="#8DBF5E" stroke="#3E6E22" stroke-width="0.045"/>`+hk(-1)+hk(1);
+  }
   else if(cd.deco==='florets'){
     const b=botY,lf=(sx)=>`<path d="M${f3(sx*0.12)} ${f3(b+0.12)} C${f3(sx*0.9)} ${f3(b+0.12)} ${f3(sx*1.38)} ${f3(b-0.32)} ${f3(sx*1.32)} ${f3(b-0.72)} C${f3(sx*1.0)} ${f3(b-0.45)} ${f3(sx*0.6)} ${f3(b-0.24)} ${f3(sx*0.08)} ${f3(b-0.2)}Z" fill="#62AE48" stroke="#2F6B1E" stroke-width="0.06" stroke-linejoin="round"/><path d="M${f3(sx*0.2)} ${f3(b+0.02)} Q${f3(sx*0.9)} ${f3(b-0.14)} ${f3(sx*1.2)} ${f3(b-0.6)}" stroke="#3E8A2C" stroke-width="0.045" fill="none" stroke-linecap="round"/>`;
     front+=`<rect x="-0.17" y="${f3(b-0.12)}" width="0.34" height="0.34" rx="0.07" fill="#A6CC72" stroke="#4E7A2A" stroke-width="0.05"/>`+lf(-1)+lf(1);
@@ -1169,6 +1185,7 @@ sb.addEventListener('click',e=>{
   if(sheet.visit)return;
   const i=sheet.i,p=state.plots[i],act=b.dataset.act;
   if(act==='close')return closeSheet();
+  {const am={water:'water',fert:'water',yfert:'water',plant:'plant',seed:'harvest',sell:'harvest',deliver:'harvest',self:'pollinate',cross:'pollinate'};if(am[act])playAct(am[act])}
   if(act==='register')return doRegister(i);
   if(act==='record')return doRecord(i);
   if(act==='plant'){
@@ -1309,7 +1326,7 @@ function startSocial(){
   unsubs.push(db.collection('messages').where('from','==',uid).onSnapshot(onMsg(null,'from'),()=>{}));
 }
 function waterAll(){
-  if(!state)return;let n=0;
+  if(!state)return;let n=0;playAct('water');
   for(const p of state.plots)if(p&&(p.stage==='seedling'||p.stage==='fruit')&&!p.watered){p.watered=true;n++}
   if(!n){toast('目前沒有需要澆水的植株');return}
   save();renderAll();if(sheet&&sheet.i!=null)renderSheet();toast(`幫 ${n} 株澆好水了`);tutEv('water');
@@ -1367,29 +1384,53 @@ const AV_OPT={face:['圓點眼','笑眼','大眼','眨眼','瞇眼','害羞'],ha
 const AV_LBL={skin:'膚色',face:'表情',hair:'髮型',hairC:'髮色',top:'上衣',topC:'上衣顏色',bottom:'下身',bottomC:'下身顏色',acc:'配件'};
 const AV_DEF={skin:0,face:0,hair:0,hairC:0,top:0,topC:0,bottom:1,bottomC:7,acc:0};
 function shade(hex,k){const n=parseInt(hex.slice(1),16),r=n>>16,g=(n>>8)&255,b=n&255,f=v=>Math.round(clamp(k<0?v*(1+k):v+(255-v)*k,0,255));return `rgb(${f(r)},${f(g)},${f(b)})`}
-function avatarSVG(av,flip,bob){
+function avatarSVG(av,flip,pose){
   av={...AV_DEF,...(av||{})};
+  if(typeof pose!=='object'||pose===null)pose={bob:pose||0};
   const sk=SKINS[av.skin]||SKINS[0],hc=HAIRC[av.hairC]||HAIRC[0],tc=CLOTHC[av.topC]||CLOTHC[0],bc=CLOTHC[av.bottomC]||CLOTHC[0];
   const tcd=shade(tc,-0.25),bcd=shade(bc,-0.25),hcd=shade(hc,-0.2);
-  let s=`<ellipse cx="0" cy="0" rx="11" ry="3.8" fill="rgba(0,0,0,.25)"/><g transform="translate(0 ${bob||0})${flip?' scale(-1 1)':''}" stroke="#2A1A10" stroke-width="0.9" stroke-linejoin="round"><g transform="translate(0 -26) scale(1.25) translate(0 26)">`;
+  const walk=pose.ph!=null,ph=pose.ph||0,t=pose.t||0,act=pose.act||null,ap=clamp(pose.actP||0,0,1);
+  const crouch=(act==='plant'||act==='harvest')?Math.sin(ap*Math.PI)*3.2:0;
+  let legA=walk?Math.sin(ph)*30:0,armA=walk?-Math.sin(ph)*26:Math.sin(t*1.6)*3;
+  let bob=walk?-Math.abs(Math.sin(ph))*1.8:Math.sin(t*2.2)*0.45;bob+=(pose.bob||0)+crouch;
+  // 動作時手臂的角度：前手（面向的那一側）與後手
+  let armF=armA,armB=-armA,tool='';
+  const e=Math.sin(ap*Math.PI);
+  if(act==='water'){armF=-70*e+armA*(1-e);armB=armB*(1-e)}
+  else if(act==='plant'){armF=-50*e;armB=-35*e}
+  else if(act==='harvest'){armF=-135*e;armB=-135*e}
+  else if(act==='pollinate'){armF=-60*e+Math.sin(t*14)*10*e;armB=armB*(1-e)}
+  const lean=walk?2.5:0;
+  let s=`<ellipse cx="0" cy="0" rx="${(11-crouch*0.4).toFixed(1)}" ry="3.8" fill="rgba(0,0,0,.25)"/><g transform="${flip?'scale(-1 1) ':''}" stroke="#2A1A10" stroke-width="0.9" stroke-linejoin="round">`;
+  // 後面的頭髮
+  s+=`<g transform="translate(0 ${bob.toFixed(2)}) translate(0 -26) scale(1.42) translate(0 26)">`;
   if(av.hair===2)s+=`<rect x="-10.5" y="-37" width="21" height="22" rx="9" fill="${hc}"/>`;
-  if(av.hair===3)s+=`<ellipse cx="9" cy="-28" rx="4" ry="8" fill="${hc}" transform="rotate(-15 9 -28)"/>`;
-  if(av.hair===6)s+=`<ellipse cx="-11" cy="-27" rx="3.5" ry="7" fill="${hc}"/><ellipse cx="11" cy="-27" rx="3.5" ry="7" fill="${hc}"/>`;
+  if(av.hair===3)s+=`<ellipse cx="9" cy="-28" rx="4" ry="8" fill="${hc}" transform="rotate(${-15+(walk?Math.sin(ph*2)*8:Math.sin(t*1.5)*3)} 9 -34)"/>`;
+  if(av.hair===6)s+=`<ellipse cx="-11" cy="-27" rx="3.5" ry="7" fill="${hc}" transform="rotate(${walk?Math.sin(ph*2)*7:0} -11 -33)"/><ellipse cx="11" cy="-27" rx="3.5" ry="7" fill="${hc}" transform="rotate(${walk?-Math.sin(ph*2)*7:0} 11 -33)"/>`;
   if(av.top===3)s+=`<circle cx="0" cy="-30" r="11" fill="${tcd}"/>`;
   s+='</g>';
-  const legs=(c)=>`<rect x="-6" y="-12" width="5" height="11" rx="1.5" fill="${c}"/><rect x="1" y="-12" width="5" height="11" rx="1.5" fill="${c}"/>`;
-  const shoes=`<rect x="-6.5" y="-2.5" width="5.5" height="2.5" rx="1" fill="#3A2E28"/><rect x="1" y="-2.5" width="5.5" height="2.5" rx="1" fill="#3A2E28"/>`;
-  if(av.bottom===0)s+=`<rect x="-5" y="-8" width="4" height="7" fill="${sk}"/><rect x="1" y="-8" width="4" height="7" fill="${sk}"/><rect x="-6.5" y="-12" width="13" height="6" rx="1.5" fill="${bc}"/>`;
-  else if(av.bottom===2)s+=`<rect x="-5" y="-7" width="4" height="6" fill="${sk}"/><rect x="1" y="-7" width="4" height="6" fill="${sk}"/><polygon points="-6,-12 6,-12 8.5,-5 -8.5,-5" fill="${bc}"/>`;
-  else if(av.bottom===4)s+=`<rect x="-6.5" y="-12" width="6" height="11" rx="3" fill="${bc}"/><rect x="0.5" y="-12" width="6" height="11" rx="3" fill="${bc}"/>`;
-  else s+=legs(bc)+(av.bottom===3?`<rect x="-5" y="-9" width="3" height="3" fill="${bcd}"/><rect x="2" y="-9" width="3" height="3" fill="${bcd}"/>`:'');
-  s+=shoes;
+  // 腿：各自繞髖關節擺動
+  const legOne=(side,ang)=>{const x0=side<0?-6:1;let g='';
+    if(av.bottom===0)g+=`<rect x="${x0+1}" y="-8" width="4" height="7" fill="${sk}"/><rect x="${x0-0.5}" y="-12" width="6.5" height="6" rx="1.5" fill="${bc}"/>`;
+    else if(av.bottom===2)g+=`<rect x="${x0+1}" y="-7" width="4" height="6" fill="${sk}"/>`;
+    else if(av.bottom===4)g+=`<rect x="${x0-0.5}" y="-12" width="6" height="11" rx="3" fill="${bc}"/>`;
+    else g+=`<rect x="${x0}" y="-12" width="5" height="11" rx="1.5" fill="${bc}"/>`+(av.bottom===3?`<rect x="${x0+1}" y="-9" width="3" height="3" fill="${bcd}"/>`:'');
+    g+=`<rect x="${x0-0.5}" y="-2.5" width="5.5" height="2.5" rx="1" fill="#3A2E28"/>`;
+    const sy=crouch?(1-crouch*0.06):1;
+    return `<g transform="translate(0 ${(crouch*0.55).toFixed(2)}) rotate(${ang.toFixed(1)} ${side<0?-3.5:3.5} -12) translate(0 -12) scale(1 ${sy.toFixed(3)}) translate(0 12)">${g}</g>`};
+  s+=legOne(-1,-legA)+legOne(1,legA);
+  s+=`<g transform="translate(0 ${bob.toFixed(2)}) rotate(${lean} 0 -12)">`;
   const sleeve=[0,4,6].includes(av.top)?'short':av.top===1?'none':'long';
   const armC=sleeve==='long'?tc:sk;
-  s+=`<rect x="-10.5" y="-23" width="4" height="11" rx="2" fill="${armC}"/><rect x="6.5" y="-23" width="4" height="11" rx="2" fill="${armC}"/>`;
-  if(sleeve==='short')s+=`<rect x="-10.5" y="-23" width="4" height="5" rx="1.5" fill="${tc}"/><rect x="6.5" y="-23" width="4" height="5" rx="1.5" fill="${tc}"/>`;
-  s+=`<circle cx="-8.5" cy="-12" r="2.2" fill="${sk}"/><circle cx="8.5" cy="-12" r="2.2" fill="${sk}"/>`;
+  const armOne=(side,ang,front)=>{const x0=side<0?-10.5:6.5,hx=side<0?-8.5:8.5;let g=`<rect x="${x0}" y="-23" width="4" height="11" rx="2" fill="${armC}"/>`;
+    if(sleeve==='short')g+=`<rect x="${x0}" y="-23" width="4" height="5" rx="1.5" fill="${tc}"/>`;
+    g+=`<circle cx="${hx}" cy="-12" r="2.2" fill="${sk}"/>`;
+    if(front&&act==='water'&&ap<1)g+=`<g transform="translate(${hx} -11)"><rect x="-1" y="-3.5" width="8" height="6.5" rx="1.5" fill="#6FA8DC"/><path d="M7 -2 l5 -3" stroke="#2A1A10" stroke-width="1.6" stroke-linecap="round"/><path d="M0 -3.5 q3 -4 6 0" fill="none" stroke="#2A1A10" stroke-width="1"/></g>`;
+    if(front&&act==='pollinate'&&ap<1)g+=`<g transform="translate(${hx} -11)"><path d="M0 0 l0 7" stroke="#8A5A2B" stroke-width="1.6" stroke-linecap="round"/><circle cx="0" cy="8" r="2" fill="#F5D042"/></g>`;
+    return `<g transform="rotate(${ang.toFixed(1)} ${hx} -22)">${g}</g>`};
+  s+=armOne(-1,armB,false);
   s+=av.top===1?`<rect x="-6" y="-24" width="12" height="13" rx="3" fill="${tc}"/>`:`<rect x="-7" y="-24" width="14" height="13" rx="3" fill="${tc}"/>`;
+  if(av.bottom===2)s+=`<polygon points="-6,-12 6,-12 8.5,-5 -8.5,-5" fill="${bc}"/>`;
   if(av.top===2)s+=`<polygon points="-4,-24 0,-20 4,-24" fill="#F7F4EC"/><path d="M0 -20 V-12" stroke="${tcd}" stroke-width=".8"/>`;
   if(av.top===3)s+=`<rect x="-4" y="-16" width="8" height="4" rx="1" fill="${tcd}"/>`;
   if(av.top===4)s+=`<path d="M-7 -21 H7 M-7 -17.5 H7 M-7 -14 H7" stroke="#F7F4EC" stroke-width="1.4" opacity=".8"/>`;
@@ -1399,10 +1440,13 @@ function avatarSVG(av,flip,bob){
   if(av.bottom===5)s+=`<rect x="-5" y="-24" width="2" height="12" fill="${bc}"/><rect x="3" y="-24" width="2" height="12" fill="${bc}"/><rect x="-5" y="-16" width="10" height="5" fill="${bc}"/>`;
   if(av.acc===4)s+=`<rect x="-5" y="-20" width="10" height="12" rx="1.5" fill="#F7F4EC" stroke="#CFC8B8" stroke-width=".6"/>`;
   if(av.acc===7)s+=`<rect x="-7.5" y="-25.5" width="15" height="3.5" rx="1.7" fill="#D9473A"/><rect x="2" y="-24" width="3" height="7" rx="1" fill="#D9473A"/>`;
-  s+='<g transform="translate(0 -26) scale(1.25) translate(0 26)">';
+  s+=armOne(1,armF,true);
+  s+=`<g transform="translate(0 -26) scale(1.42) translate(0 26) rotate(${walk?Math.sin(ph)*2:Math.sin(t*0.9)*1.5} 0 -24)">`;
   s+=`<circle cx="0" cy="-32" r="9" fill="${sk}"/>`;
+  const blink=!!pose.blink&&[0,2,3].includes(av.face);
   const ey=-31.5,dk='#2A1E18';
-  if(av.face===1)s+=`<path d="M-4.6 ${ey} q1.4 -1.6 2.8 0 M1.8 ${ey} q1.4 -1.6 2.8 0" stroke="${dk}" stroke-width="1" fill="none" stroke-linecap="round"/>`;
+  if(blink)s+=`<path d="M-4.6 ${ey} h2.8 M1.8 ${ey} h2.8" stroke="${dk}" stroke-width="1" stroke-linecap="round"/>`;
+  else if(av.face===1)s+=`<path d="M-4.6 ${ey} q1.4 -1.6 2.8 0 M1.8 ${ey} q1.4 -1.6 2.8 0" stroke="${dk}" stroke-width="1" fill="none" stroke-linecap="round"/>`;
   else if(av.face===2)s+=`<circle cx="-3.2" cy="${ey}" r="2" fill="#fff"/><circle cx="3.2" cy="${ey}" r="2" fill="#fff"/><circle cx="-3" cy="${ey+.2}" r="1.2" fill="${dk}"/><circle cx="3.4" cy="${ey+.2}" r="1.2" fill="${dk}"/>`;
   else if(av.face===3)s+=`<circle cx="-3.2" cy="${ey}" r="1.2" fill="${dk}"/><path d="M1.8 ${ey} q1.4 -1.6 2.8 0" stroke="${dk}" stroke-width="1" fill="none" stroke-linecap="round"/>`;
   else if(av.face===4)s+=`<path d="M-4.6 ${ey} h2.8 M1.8 ${ey} h2.8" stroke="${dk}" stroke-width="1" stroke-linecap="round"/>`;
@@ -1420,8 +1464,39 @@ function avatarSVG(av,flip,bob){
   if(av.acc===3)s+=`<circle cx="-3.2" cy="${ey}" r="2.6" fill="none" stroke="#333" stroke-width=".8"/><circle cx="3.2" cy="${ey}" r="2.6" fill="none" stroke="#333" stroke-width=".8"/><path d="M-.6 ${ey} h1.2" stroke="#333" stroke-width=".8"/>`;
   if(av.acc===5)s+=`<path d="M-9 -35 A9 7 0 0 1 9 -35Z" fill="${CLOTHC[(av.topC+3)%10]}"/><path d="M4 -35 h9 q0 2 -3 2 h-6z" fill="${shade(CLOTHC[(av.topC+3)%10],-0.25)}"/>`;
   if(av.acc===6)s+=`${[0,1,2,3,4].map(k=>{const a=k/5*6.283;return `<circle cx="${(6+Math.cos(a)*1.8).toFixed(1)}" cy="${(-38+Math.sin(a)*1.8).toFixed(1)}" r="1.5" fill="#F28DB2"/>`}).join('')}<circle cx="6" cy="-38" r="1" fill="#F2C94C"/>`;
-  return s+'</g></g>';
+  s+='</g></g>';
+  // 動作特效（不跟著翻轉方向的畫在外層）
+  if(act==='water'&&ap<1){for(let k=0;k<3;k++){const q=(ap*3+k/3)%1;s+=`<ellipse cx="${(18+k*2)*(flip?-1:1)}" cy="${(-20+q*18).toFixed(1)}" rx="1.1" ry="1.8" fill="#4FA3E0" stroke="none" opacity="${(1-q).toFixed(2)}"/>`}}
+  if((act==='harvest'||act==='pollinate')&&ap<1){const q=ap;s+=`<path d="M${(flip?-1:1)*12} ${(-46-q*8).toFixed(1)} l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6 -4 -4 -1.6 4 -1.6z" fill="#FFD54A" stroke="#9A6A00" stroke-width=".8" opacity="${(1-q*0.8).toFixed(2)}"/>`}
+  return s+'</g>';
 }
+
+// ===== 角色動畫 =====
+let meAct=null;const ACT_DUR={water:900,plant:800,harvest:900,pollinate:1100};
+function playAct(type){meAct={type,at:Date.now()};pushPos(true)}
+const blinkOn=(seed,t)=>((t*1000+seed*997)%3600)<130;
+function poseFor(isMe,o,t){
+  let act=null,actP=0;const a=isMe?meAct:(o&&o.a);
+  if(a&&a.type&&ACT_DUR[a.type]){const el=Date.now()-(isMe?a.at:(o._aStart||0));if(el>=0&&el<ACT_DUR[a.type]){act=a.type;actP=el/ACT_DUR[a.type]}}
+  return {t,act,actP,blink:blinkOn(isMe?1:(o._seed||2),t)};
+}
+const animO={};
+function animOthers(dt){
+  for(const [id,o] of Object.entries(others)){if(!o||typeof o.x!=='number')continue;
+    const A=animO[id]||(animO[id]={x:o.x,y:o.y,ph:0,seed:(hashStr(id)%1000)/7,lastA:0});
+    const dx=o.x-A.x,dy=o.y-A.y,d=Math.hypot(dx,dy);
+    if(d>200){A.x=o.x;A.y=o.y}else{const k=Math.min(1,dt*8);A.x+=dx*k;A.y+=dy*k}
+    A.moving=d>1.2;if(A.moving)A.ph+=dt*12;else A.ph=0;
+    if(o.a&&o.a.at&&o.a.at!==A.lastA){A.lastA=o.a.at;A.aStart=Date.now()}
+  }
+  for(const id of Object.keys(animO))if(!others[id])delete animO[id];
+}
+let lastAnim=performance.now();
+setInterval(()=>{
+  if(!state||document.hidden)return;
+  const now=performance.now(),dt=Math.min(0.2,(now-lastAnim)/1000);lastAnim=now;
+  animOthers(dt);renderChars();
+},80);
 
 // ===== 模式、參觀、角色移動 =====
 // ===== 世界與場景 =====
@@ -2145,18 +2220,21 @@ function joinFarm(key){
 function leavePresence(){try{if(rtdbRef)rtdbRef.remove()}catch(e){}rtdbRef=null;if(rtdbOff){rtdbOff();rtdbOff=null}if(hb){clearInterval(hb);hb=null}others={}}
 function pushPos(force){
   if(!rtdbRef)return;const now=Date.now();if(!force&&now-lastPush<150)return;lastPush=now;const m=curMe();
-  rtdbRef.set({x:Math.round(m.x),y:Math.round(m.y),d:meDir,name:myName(),av:state.avatar||AV_DEF,t:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});
+  rtdbRef.set({x:Math.round(m.x),y:Math.round(m.y),d:meDir,name:myName(),av:state.avatar||AV_DEF,a:meAct&&Date.now()-meAct.at<1500?meAct:null,t:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});
 }
 let meDir=1,walkPh=0;
 const nameTag=n=>`<text x="0" y="-62" text-anchor="middle" font-size="8.5" fill="var(--ink)" stroke="var(--paper)" stroke-width="2.5" paint-order="stroke" font-family="Noto Sans TC,sans-serif">${esc(n)}</text>`;
-function charG(id,x,y,av,flip,bob,name){return `<g ${id?`id="${id}"`:''} transform="translate(${Math.round(x)} ${Math.round(y)}) scale(1.15)" pointer-events="none">${avatarSVG(av,flip,bob)}${name?nameTag(name):''}</g>`}
+function charG(id,x,y,av,flip,pose,name){return `<g ${id?`id="${id}"`:''} transform="translate(${Math.round(x)} ${Math.round(y)}) scale(1.15)" pointer-events="none">${avatarSVG(av,flip,pose)}${name?nameTag(name):''}</g>`}
 function renderChars(){
   if(!state)return;const L=document.getElementById('charLayer');let s='';
-  for(const o of Object.values(others)){if(!o||typeof o.x!=='number')continue;s+=charG('',o.x,o.y,o.av,o.d<0,0,o.name||'朋友')}
-  const m=curMe();s+=charG('meG',m.x,m.y,state.avatar,meDir<0,0,'你');
+  const t=performance.now()/1000,list=[];
+  for(const [id,o] of Object.entries(others)){if(!o||typeof o.x!=='number')continue;const A=animO[id]||{x:o.x,y:o.y,ph:0};
+    const ps=poseFor(false,{a:o.a,_aStart:A.aStart,_seed:A.seed},t);if(A.moving)ps.ph=A.ph;list.push({y:A.y,h:charG('',A.x,A.y,o.av,o.d<0,ps,o.name||'朋友')})}
+  const m=curMe(),mp=poseFor(true,null,t);if(raf)mp.ph=walkPh;list.push({y:m.y,h:charG('meG',m.x,m.y,state.avatar,meDir<0,mp,'你')});
+  list.sort((a,b)=>a.y-b.y);s=list.map(x=>x.h).join('');
   L.innerHTML=s;
 }
-function updateMe(){const g=document.getElementById('meG');if(!g){renderChars();return}const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y)}) scale(1.15)`);g.innerHTML=avatarSVG(state.avatar,meDir<0,-Math.abs(Math.sin(walkPh))*1.5)+nameTag('你')}
+function updateMe(){const g=document.getElementById('meG');if(!g){renderChars();return}const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y)}) scale(1.15)`);const mp=poseFor(true,null,performance.now()/1000);if(raf)mp.ph=walkPh;g.innerHTML=avatarSVG(state.avatar,meDir<0,mp)+nameTag('你')}
 
 // ===== 互動按鈕 =====
 function nearest(){

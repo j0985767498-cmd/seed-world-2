@@ -281,6 +281,15 @@ body.joymode #actBtn{right:14px;bottom:calc(18px + env(safe-area-inset-bottom,0p
 body.joymode #waterAll{right:22px !important;bottom:calc(118px + env(safe-area-inset-bottom,0px)) !important;width:60px;height:60px}
 body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-inset-bottom,0px)) !important;width:60px;height:60px}
 #joy[hidden],#actBtn[hidden]{display:none}
+
+.polcard{border:2px solid #E2C796;border-radius:14px;background:#FFFDF6;margin:8px 0;overflow:hidden}
+.polcard.open{border-color:#5DBB3A}
+.polhead{display:flex;align-items:center;gap:8px;width:100%;background:none;border:0;padding:8px 10px 2px;text-align:left;font:inherit;color:inherit}
+.polhead .pl{flex:1;display:flex;flex-direction:column;line-height:1.35}.polhead .badge{margin-left:4px}
+.polstrip{display:flex;align-items:center;gap:6px;padding:2px 10px 8px 64px;cursor:pointer}
+.pth{display:inline-flex;flex-direction:column;align-items:center;font-size:11px;color:#5A3416}.pth i{font-style:normal}
+.pmore{font-size:12px;color:#8A6A4A;margin-left:4px}
+.polbody{border-top:1px dashed #E2C796;padding:6px 10px 10px}
 </style>
 </head>
 <body class="game">
@@ -1295,7 +1304,7 @@ bd.addEventListener('click',closeSheet);
 function fmt(ms){ms=Math.max(0,ms);const s=Math.ceil(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;return h?`${h} 小時 ${m} 分`:m?`${m} 分 ${r} 秒`:`${r} 秒`}
 function progInfo(p){
   const ph=phen(p.g,p.crop);
-  if(p.stage==='flower')return {pct:p.flowerT/(24*HOUR)*100,txt:`若不處理，${fmt((24*HOUR-p.flowerT)/state.speed)}後會自動自己授粉`};
+  if(p.stage==='flower')return {pct:p.flowerT/(24*HOUR)*100,txt:`若不處理，${fmt((24*HOUR-p.flowerT)/state.speed)}後會自動自花授粉`};
   const dur=stageDur(p,ph),pct=clamp(p.prog/dur*100,0,100);
   if(!p.watered)return {pct,txt:'需要澆水才會繼續生長'};
   return {pct,txt:`約 ${fmt((dur-p.prog)/((p.fert?1.25:1)*state.speed))}後進入下一階段`};
@@ -1320,7 +1329,7 @@ function renderSheet(){
   if(sheet.crossFrom!=null){
     const q=state.plots[sheet.crossFrom];
     if(p&&q&&p.stage==='flower'&&q.stage==='flower'&&p.crop===q.crop){
-      sb.innerHTML=`<h2>確認雜交</h2><p>把「${esc(pname(q))}」的花粉授給「${esc(pname(p))}」，種子會結在「${esc(pname(p))}」上。</p><p class="note">成功率約 ${Math.round(crossRate(p,q)*100)}%。如果沒成功，「${esc(pname(p))}」會改為自己授粉。</p><button class="btn primary" data-act="cross" data-j="${sheet.crossFrom}">確認雜交</button><button class="btn" data-act="close">取消</button>`;
+      sb.innerHTML=`<h2>確認雜交</h2><p>把「${esc(pname(q))}」的花粉授給「${esc(pname(p))}」，種子會結在「${esc(pname(p))}」上。</p><p class="note">成功率約 ${Math.round(crossRate(p,q)*100)}%。如果沒成功，「${esc(pname(p))}」會改為自花授粉。</p><button class="btn primary" data-act="cross" data-j="${sheet.crossFrom}">確認雜交</button><button class="btn" data-act="close">取消</button>`;
       return;
     }
     sheet.crossFrom=null;
@@ -1338,21 +1347,22 @@ function renderSheet(){
 
   }else{
     const ph=phen(p.g,p.crop),lvl=p.stage==='seedling'?1:p.stage==='ripe'?3:2;
-    h+=`<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・第 ${i+1} 塊土地・${stageLabel(p)}${p.pollen?`・${p.pollen.type==='cross'?`與 ${esc(p.pollen.fatherName)} 雜交`:'自己授粉'}`:''}${p.wide?'・遠緣雜種':''}</p>${p.pollen&&p.pollen.failed?'<p class="note" style="color:var(--danger)">雜交沒有成功，這次改為自己授粉。</p>':''}`;
+    h+=`<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・第 ${i+1} 塊土地・${stageLabel(p)}${p.pollen?`・${p.pollen.type==='cross'?`與 ${esc(p.pollen.fatherName)} 雜交`:'自花授粉'}`:''}${p.wide?'・遠緣雜種':''}</p>${p.pollen&&p.pollen.failed?'<p class="note" style="color:var(--danger)">雜交沒有成功，這次改為自花授粉。</p>':''}`;
     if(p.stage!=='ripe'){
       const own=p.stage==='fruit'||p.stage==='flower',fl=p.stage==='flower',pm=p.m||(state.lots.find(l=>l.lid===p.lid)||{}).m,ref=own?ph:(pm?phen(pm,p.crop):null);
       if(ref)h+=`<div class="hero">${fruitSVG(ref,p.crop,110,fl?1:own?Math.max(0.15,clamp(p.prog/stageDur(p,ph),0,1)*0.4):1,fl?'這株將結出的果實':own?'這株正在長的果實':'親本的樣子')}</div><p class="note" style="text-align:center">${fl?`開花了！這株會結出：${ph.shapeName}・${colorLabel(ph)}・${SIZE_N[ph.sizeCls]}`:own?'這株正在長大，顏色會在成熟時揭曉。':'這是親本的樣子。這株自己的樣子會在開花時出現，可能和親本不同。'}</p>`;
       const pi=progInfo(p);h+=`<div class="bar"><i id="pbar" style="width:${pi.pct}%"></i></div><p class="note" id="ptime">${pi.txt}</p>`;
     }
     if(p.stage==='seedling'||p.stage==='fruit')h+=`<div class="row2"><button class="btn primary" data-act="water" ${p.watered?'disabled':''}>${p.watered?'已澆水':'澆水'}</button><button class="btn" data-act="fert" ${p.fert?'disabled':''}>${p.fert?'已施肥':'施肥'}</button></div>`;
+    if(p.stage==='flower'){
+      h+=`<p class="note" style="margin-top:12px">點卡片可以看完整的後代預覽，確認後再按卡片最下方的按鈕授粉。預覽只包含形狀、顏色、花紋；大小和完美度會大約介於兩個親本之間。</p>`;
+      h+=polCard(p,i,null);
+      const others=state.plots.map((q,j)=>({q,j})).filter(o=>o.q&&o.j!==i&&o.q.stage==='flower'&&(o.q.crop===p.crop||isWide(p,o.q)));
+      h+=others.length?`<h3>選擇雜交對象</h3>`+others.map(o=>polCard(p,i,o)).join(''):`<p class="note">想雜交的話，需要另一株同時開花的${CROPS[p.crop].n}。</p>`;
+    }
     {const it=state.items||{};
       if(p.yf)h+=`<p class="note" style="margin-top:10px">已使用增產肥料（${LV[p.yf]}），取種時多 ${YB[p.yf]} 顆。</p>`;
       else if([1,2,3].some(l=>it['y'+l]>0))h+=`<p class="note" style="margin-top:10px">增產肥料：取種時能多得幾顆種子，每株只能用一次。</p><div class="ybtns">${[1,2,3].filter(l=>it['y'+l]>0).map(l=>`<button class="btn" data-act="yfert" data-l="${l}">${LV[l]}（${it['y'+l]}）<br>多 ${YB[l]} 顆</button>`).join('')}</div>`;}
-    if(p.stage==='flower'){
-      h+=`<p class="note" style="margin-top:12px">雜交會讓兩株的特徵重新組合；自己授粉則會讓後代越來越像這一株。只有同一種作物才能雜交。</p><button class="btn primary" data-act="self">自己授粉</button>`;
-      const others=state.plots.map((q,j)=>({q,j})).filter(o=>o.q&&o.j!==i&&o.q.stage==='flower'&&(o.q.crop===p.crop||isWide(p,o.q)));
-      h+=others.length?`<p class="note" style="margin-top:12px">或選一株同時開花的${CROPS[p.crop].n}雜交，圖片是對方會結出的果實：</p>`+others.map(o=>{const qp=phen(o.q.g,o.q.crop);return `<button class="pick" data-act="cross" data-j="${o.j}">${fruitSVG(qp,o.q.crop,56,1,descr(qp,o.q.crop))}<span><b>和「${esc(pname(o.q))}」雜交${isBack(p,o.q)?'<span class="badge r1" style="margin-left:4px">回交</span>':''}${isWide(p,o.q)?'<span class="badge r2" style="margin-left:4px">遠緣雜交</span>':''}</b><span class="meta">${CROPS[o.q.crop].n}・${qp.shapeName}・${colorLabel(qp)}・${TIERS[qp.tier]}</span><span class="meta">大小 ${qp.ab.size}・完美 ${qp.ab.perf}・速度 ${qp.ab.speed}・產量 ${qp.ab.yield}・生命力 ${qp.ab.vigor}</span><span class="meta">第 ${o.j+1} 塊土地・成功率約 ${Math.round(crossRate(p,o.q)*100)}%</span></span></button>`}).join(''):`<p class="note">想雜交的話，需要另一株同時開花的${CROPS[p.crop].n}。</p>`;
-    }
     if(p.stage==='ripe'){
       const left=ph.harvests-(p.hv||0)-1;
       if(sheet.seedName!=null)h+=`<div class="regbox"><b>替這包種子取名字</b><p class="note">取種 ${seedCount(p)} 顆。取個好記的名字，之後比較不會忘記是哪一包（1–8 個字）。</p><input id="seedName" maxlength="8" value="${esc(sheet.seedName)}" aria-label="種子名稱"><div class="err">${sheet.seedErr||''}</div><div class="row2"><button class="btn primary" data-act="seedok">確定取種</button><button class="btn" data-act="seedcancel">取消</button></div></div>`;
@@ -1401,6 +1411,7 @@ sb.addEventListener('click',e=>{
   if(act==='water'&&p){p.watered=true;toast('澆好水了');tutEv('water')}
   if(act==='fert'&&p){p.fert=true;toast('施肥完成，這個階段會長得比較快')}
   if(act==='yfert'&&p&&!p.yf){const l=+b.dataset.l,it=state.items||{};if(it['y'+l]>0){it['y'+l]--;p.yf=l;toast(`用了增產肥料（${LV[l]}），取種時會多 ${YB[l]} 顆`)}}
+  if(act==='polopen'){sheet.openPol=sheet.openPol===b.dataset.k?null:b.dataset.k;renderSheet();return}
   if(act==='self'&&p)pollinate(i,null);
   if(act==='cross'&&p)pollinate(i,+b.dataset.j);
   if(act==='uproot'&&p){if(!sheet.confirm){sheet.confirm=true;renderSheet();return}state.plots[i]=null;toast('已拔掉')}
@@ -1416,8 +1427,28 @@ sb.addEventListener('click',e=>{
 function pollinate(i,j){
   const p=state.plots[i];
   if(j==null)p.pollen={type:'self'};
-  else{const q=state.plots[j];if(q&&(q.crop===p.crop||isWide(p,q))&&rnd()<crossRate(p,q)){p.pollen={type:'cross',fatherG:clone(q.g),fatherName:pname(q),fatherLid:q.lid,fatherPar:q.par||[],wide:isWide(p,q)&&!p.wide};toast(isWide(p,q)?'遠緣雜交成功！':'雜交成功')}else{p.pollen={type:'self',failed:j!=null};toast('這次雜交沒有成功，植株改為自己授粉')}}
+  else{const q=state.plots[j];if(q&&(q.crop===p.crop||isWide(p,q))&&rnd()<crossRate(p,q)){p.pollen={type:'cross',fatherG:clone(q.g),fatherName:pname(q),fatherLid:q.lid,fatherPar:q.par||[],wide:isWide(p,q)&&!p.wide};toast(isWide(p,q)?'遠緣雜交成功！':'雜交成功')}else{p.pollen={type:'self',failed:j!=null};toast('這次雜交沒有成功，植株改為自花授粉')}}
   p.stage='fruit';p.prog=0;p.watered=false;p.fert=false;tutEv('pollinate');
+}
+
+// ===== 開花期：授粉卡片（預覽後代，按兩次才授粉）=====
+function polCard(p,i,o){
+  const self=!o,q=self?p:o.q,k=self?'self':String(o.j),open=sheet.openPol===k;
+  let d;try{d=lotDist({m:p.g,f:q.g,crop:p.crop})}catch(e){d=[]}
+  const qp=phen(q.g,q.crop),pp=phen(p.g,p.crop),rate=self?1:crossRate(p,q);
+  const top=d.slice(0,3),more=d.length-top.length;
+  const badges=self?'':`${isBack(p,q)?'<span class="badge r1">回交</span>':''}${isWide(p,q)?'<span class="badge r2">遠緣雜交</span>':''}`;
+  const title=self?'自花授粉':`和「${esc(pname(q))}」雜交`;
+  const sub=self?'後代會越來越像這一株':`${CROPS[q.crop].n}・${qp.shapeName}・${colorLabel(qp)}・第 ${o.j+1} 塊土地`;
+  let h=`<div class="polcard${open?' open':''}"><button class="polhead" data-act="polopen" data-k="${k}" aria-expanded="${open}">${fruitSVG(qp,q.crop,48)}<span class="pl"><b>${title} ${badges}</b><span class="meta">${sub}</span><span class="meta">${self?'一定成功':`成功率約 ${Math.round(rate*100)}%`}</span></span><span class="chev" aria-hidden="true">${open?'▲':'▼'}</span></button>`;
+  h+=`<div class="polstrip" data-act="polopen" data-k="${k}">${top.map(x=>`<span class="pth">${fruitSVG(x.app,p.crop,34)}<i>${pctTxt(x.p)}</i></span>`).join('')}${more>0?`<span class="pmore">還有 ${more} 種</span>`:''}</div>`;
+  if(open){
+    h+=`<div class="polbody">`+d.map(x=>`<div class="prow">${fruitSVG(x.app,p.crop,40)}<span class="pl"><b>${shapeNameOf(x.app,p.crop)}・${colorLabelA(x.app)}</b><span class="meta">${regStatus(p.crop,x.key)}</span></span><span class="pp">${pctTxt(x.p)}</span></div>`).join('');
+    h+=`<p class="note" style="margin:6px 0">另有約 0.35% 機率突變。${self?'':`<br>親本大小 ${pp.ab.size}／${qp.ab.size}、完美度 ${pp.ab.perf}／${qp.ab.perf}，後代大約介於兩者之間。<br>如果雜交失敗，會改為自花授粉。`}</p>`;
+    h+=self?`<button class="btn primary" data-act="self">確定自花授粉</button>`:`<button class="btn primary" data-act="cross" data-j="${o.j}">確定和它雜交（成功率約 ${Math.round(rate*100)}%）</button>`;
+    h+=`</div>`;
+  }
+  return h+`</div>`;
 }
 function sellPrice(p){const ph=phen(p.g,p.crop);return Math.round(CROPS[p.crop].price*5*(0.6+0.8*ph.ab.size/100)*(1+0.3*ph.tier))}
 function seedCount(p){const ph=phen(p.g,p.crop),cross=p.pollen&&p.pollen.type==='cross';let n=ph.seedBase+ph.yBonus+YB[p.yf||0];if(p.wide&&!cross)n=Math.max(1,Math.floor(n/2));return n}
@@ -2737,7 +2768,7 @@ const TUT=[
   {t:'歡迎來到種子的世界！我是農會的阿伯。點一塊空地，角色會走過去，挑一包種子種下去吧。用兩根手指捏合可以縮放畫面。',ev:'plant'},
   {t:'發芽了！頭上的水滴代表需要澆水。點它就會走過去澆水，或按右下角的「全部澆水」。',ev:'water'},
   {t:'澆了水就會慢慢長大，每個階段都要再澆一次。想快一點，可以在右邊「設定」開啟加速測試。等它開花吧。',ev:'flower'},
-  {t:'開花了！點它可以自己授粉，或和另一株同時開花的同種作物雜交。',ev:'pollinate'},
+  {t:'開花了！點它可以自花授粉，或和另一株同時開花的同種作物雜交。',ev:'pollinate'},
   {t:'再澆水讓果實長大，成熟後點它，可以賣掉換金幣，或取種留著培育。',ev:'harvest'},
   {t:'做得很好！右邊的圖示可以打開種子袋、圖鑑、朋友和裝飾；種出穩定的新外觀，取種時會得到標本，可以到圖鑑申請品種權；按「建設」可以開墾、拆除或拖移農地。點農場最下面的大門，或按「市集」，就能去市集擺攤、和大家見面。完成「訂單」還有金幣可拿喔！',btn:'開始玩'}
 ];

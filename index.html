@@ -281,9 +281,6 @@ body.game{background:#5E9E38}
 .itm{display:flex;gap:6px;align-items:center;background:#FFFDF6;border:2px solid #E2C796;border-radius:12px;padding:6px 8px}
 .itm svg{flex:none}
 .itm b{font-size:14px;color:#5A3416}
-.ferts{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px;align-items:center}
-.ferts .lbl{font-size:13px;color:var(--muted);width:100%}
-.ybtns{display:flex;gap:8px}.ybtns .btn{flex:1;font-size:14px;padding:8px 4px}
 [data-item]{cursor:pointer}
 [data-item] .bob{animation:bob 1.8s ease-in-out infinite;transform-box:fill-box}
 @keyframes bob{50%{transform:translateY(-3px)}}
@@ -327,6 +324,8 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 .tcells{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px;padding:6px 0 2px}
 .tcell{position:relative;aspect-ratio:1/1;border:2px solid #E2C796;border-radius:10px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;padding:0;font:inherit;touch-action:manipulation}
 .tcell.on{border-color:#2F6B1E;background:#DDF3D0;box-shadow:0 0 0 2px #5DBB3A}
+.tcell .todd{position:absolute;right:2px;top:0;font-size:13px;line-height:1;color:#E0A800;text-shadow:0 0 4px #FFF3A0;animation:tw 1.4s ease-in-out infinite}.todd-l{color:#E0A800}@keyframes tw{50%{opacity:.35;transform:scale(.8)}}@media (prefers-reduced-motion: reduce){.tcell .todd{animation:none}}
+.mutchk{display:flex;gap:8px;align-items:flex-start;background:#F4ECFB;border:2px solid #B48CE0;border-radius:12px;padding:8px 10px;margin:6px 0 8px}.mutchk input{width:22px;height:22px;margin:2px 0 0;flex:none}.mutchk .meta{display:block}
 .tcell i{position:absolute;left:3px;bottom:1px;font-size:9px;font-style:normal;color:#5A3416}
 .hvhead .fchip{flex:none}
 .hvgrp{border:2px solid #E2C796;border-radius:14px;background:#FFFDF6;margin:8px 0;padding:6px 10px}
@@ -362,18 +361,15 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-100%)}}
 @media (prefers-reduced-motion:reduce){#marquee span{padding-left:0;animation:none !important}}
 
-#shovelBar,#sowBar{position:fixed;left:8px;right:8px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:12;background:#FFF6DE;border:3px solid #5A3416;border-radius:16px;box-shadow:0 4px 0 #5A3416;padding:8px}
-#shovelBar .bbtip,#sowBar .bbtip{font-size:14px;color:#5A3416;text-align:center;margin-bottom:6px;line-height:1.35}#shovelBar small,#sowBar small{color:#8A6A4A}
-#shovelBar .bbrow,#sowBar .bbrow{display:grid;gap:6px}#shovelBar button,#sowBar button{min-height:46px;border-radius:12px;border:2px solid #5A3416;background:#fff;color:#5A3416;font:inherit;font-weight:700;font-size:15px}#shovelBar button.done,#sowBar button.done{background:#E8A33C;color:#fff;border-color:#8A5A12}
+#shovelBar,#sowBar,#accelBar{position:fixed;left:8px;right:8px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:12;background:#FFF6DE;border:3px solid #5A3416;border-radius:16px;box-shadow:0 4px 0 #5A3416;padding:8px}
+#shovelBar .bbtip,#sowBar .bbtip,#accelBar .bbtip{font-size:14px;color:#5A3416;text-align:center;margin-bottom:6px;line-height:1.35}#shovelBar small,#sowBar small,#accelBar small{color:#8A6A4A}
+#shovelBar .bbrow,#sowBar .bbrow,#accelBar .bbrow{display:grid;gap:6px}#shovelBar button,#sowBar button,#accelBar button{min-height:46px;border-radius:12px;border:2px solid #5A3416;background:#fff;color:#5A3416;font:inherit;font-weight:700;font-size:15px}#shovelBar button.done,#sowBar button.done,#accelBar button.done{background:#E8A33C;color:#fff;border-color:#8A5A12}
 #sowBtn{right:236px !important;bottom:calc(18px + env(safe-area-inset-bottom,0px)) !important;width:66px;height:66px}
 body.joymode #sowBtn{right:22px !important;bottom:calc(254px + env(safe-area-inset-bottom,0px)) !important;width:60px;height:60px}
 #sowBar .sowinfo{display:flex;align-items:center;gap:8px;margin-bottom:4px;color:#5A3416}
 #sowBar .sowinfo svg{width:40px;height:40px;flex:none}
 #sowBar .sowinfo b{display:block;font-size:15px}
 #sowBar .sowinfo small{display:block;font-size:12px}
-#sowBar .sowgf{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
-#sowBar .sowgf button{min-height:34px;font-size:13px;padding:0 8px;flex:1}
-#sowBar .sowgf button[aria-pressed="true"]{background:#5DBB3A;color:#fff;border-color:#2F7A1E}
 #sowBar button:disabled{opacity:.45}
 #shovelBtn{right:162px !important;bottom:calc(18px + env(safe-area-inset-bottom,0px)) !important;width:66px;height:66px}
 body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-inset-bottom,0px)) !important;width:60px;height:60px}
@@ -419,6 +415,7 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
 <button id="trayBtn" class="sbtn">育苗盤</button>
 <div id="buildBar" hidden></div>
 <div id="shovelBar" class="toolbar2" hidden></div>
+<div id="accelBar" class="toolbar2" hidden></div>
 <div id="sowBar" class="toolbar2" hidden></div>
 <div id="decorEdit" hidden></div>
 <div id="pdim" hidden></div>
@@ -541,6 +538,20 @@ function mutate(g){
   if(rnd()<0.002){const k=pk(['c1','c2','pc']);g[k][j]=wpk(SPEC_W);clrO(g,k,j);mu='spec'}
   if(rnd()<0.0005){g.sp[j]=wpk(SPSH_W);clrO(g,'sp',j);mu=mu||'spsh'}
   if(rnd()<0.001){
+    const r=rnd();
+    if(r<0.3){const k=pk(['c1','c2','pc']);if(!isSpecC(g[k][j])){g[k][j]=pk(BASIC.filter(c=>c!==g[k][j]));clrO(g,k,j)}}
+    else if(r<0.6){const i=Math.floor(rnd()*SHN);g.s[i][j]^=1}
+    else{const k=pk(ABIL),i=Math.floor(rnd()*NUMN);g.n[k][i][j]=r3(clamp(g.n[k][i][j]+gauss()*0.2,0,1))}
+    mu=mu||'gen';
+  }
+  return mu;
+}
+/* 14g 誘變劑：再做一次突變判定，機率為平常的 25 倍（特殊色 5%、特殊造型 1.25%、一般 2.5%）；不產生專屬造型，也不會蓋掉已有的專屬造型因子 */
+function mutateX(g){
+  let mu=null;const j=rnd()<.5?0:1;
+  if(rnd()<0.05){const k=pk(['c1','c2','pc']);g[k][j]=wpk(SPEC_W);clrO(g,k,j);mu='spec'}
+  if(rnd()<0.0125&&!(g.sp[j]>6)){g.sp[j]=wpk(SPSH_W);clrO(g,'sp',j);mu=mu||'spsh'}
+  if(rnd()<0.025){
     const r=rnd();
     if(r<0.3){const k=pk(['c1','c2','pc']);if(!isSpecC(g[k][j])){g[k][j]=pk(BASIC.filter(c=>c!==g[k][j]));clrO(g,k,j)}}
     else if(r<0.6){const i=Math.floor(rnd()*SHN);g.s[i][j]^=1}
@@ -763,6 +774,10 @@ function shapeMigrate(){
   state.shapeV=2;save();
   if(obs.length)setTimeout(()=>toast(`版本更新：${obs.length} 包種子已絕版，移到種原庫的「絕版品種」`,6000),1500);
 }
+/* 14g：舊肥料（發芽、增產；初級／中級／高級）換成金幣：每個 20／50／100 */
+function isOldFert(k){return /^[gy][1-3]$/.test(k)}
+function oldFertCoin(k){return [0,20,50,100][+k[1]]}
+function convOldFert(it){if(!it)return 0;let c=0;for(const k of Object.keys(it))if(isOldFert(k)){c+=Math.max(0,it[k]|0)*oldFertCoin(k);delete it[k]}return c}
 function migrate(o){
   if(!o.nextLid)o.nextLid=1;if(!o.counts)o.counts={};
   while(o.plots.length<64)o.plots.push(null);
@@ -770,7 +785,9 @@ function migrate(o){
   if(!o.items)o.items={};
   if(!o.decor)o.decor=[];if(!o.avatar)o.avatar={...AV_DEF};if(!o.tut)o.tut={step:0,done:false};
   if(!o.tutV){if(o.tut&&!o.tut.done)o.tut.step=[0,1,1,2,3,4][Math.min(o.tut.step|0,5)];o.tutV=2}/* 教學拿掉澆水步驟後的進度換算（只做一次） */
-  if(!o.resV){o.coins=3000;if(!o.items)o.items={};for(const k of ['g1','g2','g3','y1','y2','y3'])o.items[k]=3;o.resV=1}/* 關閉無限資源：金幣與肥料重設一次 */
+  if(!o.resV){o.coins=3000;o.resV=1}/* 關閉無限資源：金幣重設一次（14g 起不再給肥料） */
+  {const c=convOldFert(o.items);if(c){o.coins=(o.coins||0)+c;o._oldFert=(o._oldFert||0)+c}}/* 14g：舊肥料每次載入都換成金幣，不用旗標（市集上可能還有人掛賣舊肥料） */
+  if(o.weekly&&o.weekly.prize==='y3'){o.weekly.prize='acc';o.weekly.pt='生長加速劑 20 次'}
   if(!o.orders)o.orders={};
   if(!o.mapV){
     if(!o.me||o.me.x>440)o.me={x:230,y:545};
@@ -852,7 +869,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN+2&&v.startsWi
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-14f';
+const BUILD='2026-11-14g';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object')return false;
@@ -1508,7 +1525,7 @@ function lotSheetHTML(l){
   else if(f==='sell')h+=`<div class="regbox sellbox"><b>上架到市場</b><label>數量（最多 ${n} 顆）<input id="f1" type="number" inputmode="numeric" min="1" max="${n}" value="${esc(sheet.d1)}"></label><label>價格（金幣）<input id="f2" type="number" inputmode="numeric" min="1" value="${esc(sheet.d2)}"></label>${err}<div class="row2"><button class="btn primary" data-act="lsave">確定上架</button><button class="btn" data-act="lcancel">取消</button></div></div>`;
   else if(f==='npc')h+=`<div class="regbox sellbox"><b>賣給種子行</b><p class="note">每顆 ${sp} 金幣，越稀有收購價越高。</p><label>數量（最多 ${n} 顆）<input id="f1" type="number" inputmode="numeric" min="1" max="${n}" value="${esc(sheet.d1)}"></label><p class="note" id="ftotal">共 ${(parseInt(sheet.d1,10)||0)*sp} 金幣</p>${err}<div class="row2"><button class="btn primary" data-act="lsave">確定賣出</button><button class="btn" data-act="lcancel">取消</button></div></div>`;
   else if(f==='vault')h+=depositHTML(l);
-  else h+=`<button class="btn primary" data-act="lsow">連續播種</button><button class="btn" data-act="ltray">撒進育苗盤（最多 ${Math.min(n,trayFree())} 顆）</button><button class="btn" data-act="lform" data-f="vault">存入種原庫</button><button class="btn" data-act="lform" data-f="rename">改名</button><p class="note" style="margin:8px 0 0">想賣給朋友的話，到市集找一個空攤位上架。</p><button class="btn" data-act="lform" data-f="npc">賣給種子行（每顆 ${sp} 金幣）</button><button class="btn warn" data-act="ldiscard">${sheet.confirm?'再按一次，確定丟掉':'丟掉這包種子'}</button>`;
+  else h+=`<button class="btn primary" data-act="lsow">連續播種</button><button class="btn" data-act="ltray">撒進育苗盤（最多 ${Math.min(n,trayFree())} 顆）</button>${(state.items||{}).mut>0?mutChk(state.items.mut,'lmut'):''}<button class="btn" data-act="lform" data-f="vault">存入種原庫</button><button class="btn" data-act="lform" data-f="rename">改名</button><p class="note" style="margin:8px 0 0">想賣給朋友的話，到市集找一個空攤位上架。</p><button class="btn" data-act="lform" data-f="npc">賣給種子行（每顆 ${sp} 金幣）</button><button class="btn warn" data-act="ldiscard">${sheet.confirm?'再按一次，確定丟掉':'丟掉這包種子'}</button>`;
   h+=distHTML(lotDist(l),l.crop,'可能出現的後代',true)+lotUniHTML(l);
   h+=`<h3>母本</h3>`+infoHTML(ph,3,l.m,l.crop,true,null,{parent:true});
   if(cross){const fp=phen(l.f,l.crop);h+=`<h3>父本</h3><div class="lot-top">${fruitSVG(fp,l.crop,64,1,descr(fp,l.crop))}<div><div class="meta">${fp.shapeName}・${colorLabel(fp)}</div><div class="meta">${SIZE_N[fp.sizeCls]}・${PERF_N[fp.perfCls]}</div><div class="badges" style="justify-content:flex-start;margin-top:2px"><span class="badge r${fp.tier}">${TIERS[fp.tier]}</span></div></div></div>`}
@@ -1524,7 +1541,8 @@ function removeSeeds(l,n){if(l.seeds)l.seeds.splice(0,n);else l.count-=n;if(!lc(
 async function lotAction(act,b){
   const l=state.lots.find(x=>x.id===sheet.lot);if(!l)return closeSheet();
   if(l.obs){toast('已絕版的種子只能查看');return}
-  if(act==='ltray'){const id=l.id;if(scene!=='farm'||viewing){toast('回到自己的農場才能使用育苗盤');return}closeSheet();traySow(id);openTray();return}
+  if(act==='lmut'){sheet.trayMut=!!b.checked;renderSheet();return}
+  if(act==='ltray'){const id=l.id,mx=!!sheet.trayMut;if(scene!=='farm'||viewing){toast('回到自己的農場才能使用育苗盤');return}closeSheet();traySow(id,mx);openTray();return}
   if(act==='lsow'){const id=l.id;closeSheet();if(scene!=='farm'||viewing){toast('回到自己的農場才能播種');return}openSow(id);return}
   if(act==='lform'){sheet.form=b.dataset.f;sheet.err='';sheet.d1=sheet.form==='rename'?l.name:sheet.form==='npc'?String(lc(l)):sheet.form==='vault'?'':'1';sheet.d2='';renderSheet();return}
   if(act==='vdep'){const c=vaultCabs().find(x=>x.id===b.dataset.c);if(!c)return;state.lots=state.lots.filter(x=>x!==l);c.lots.unshift(l);for(const p of state.plots)if(p&&p.lotId===l.id)p.lotId=null;save();renderAll();closeSheet();toast(`「${l.name}」已存入「${c.name}」`);return}
@@ -1812,14 +1830,11 @@ function renderSheet(){
   }
   if(!p){
     h+=`<h2>第 ${i+1} 塊土地</h2><p class="stage">空地。選一包種子播種，每次種下一顆。</p><button class="btn" data-act="sowmode">連續播種（一次種很多塊）</button><div class="filters">${filtersHTML(uiCrop,'data-sc')}</div>`;
-    const lots=state.lots.filter(l=>uiCrop==='all'||l.crop===uiCrop).sort((a,b)=>(a.slot??99)-(b.slot??99)),it=state.items||{};
+    const lots=state.lots.filter(l=>uiCrop==='all'||l.crop===uiCrop).sort((a,b)=>(a.slot??99)-(b.slot??99));
     if(!lots.length&&state.lots.length)h+=`<p class="note">目前只顯示「${CROPS[uiCrop].n}」，這種作物的種子已經沒有了。</p><button class="btn primary" data-sc="all">顯示全部種子</button>`;
-    if(sheet.gf&&!(it['g'+sheet.gf]>0))sheet.gf=0;
-    const gf=sheet.gf||0;
-    if([1,2,3].some(l=>it['g'+l]>0))h+=`<div class="ferts"><span class="lbl">搭配發芽肥料（播種時用掉一個）</span><button class="fchip" data-gf="0" aria-pressed="${!gf}">不用</button>${[1,2,3].filter(l=>it['g'+l]>0).map(l=>`<button class="fchip" data-gf="${l}" aria-pressed="${gf===l}">${LV[l]} +${Math.round(GB[l]*100)}%（${it['g'+l]}）</button>`).join('')}</div>`;
     if(!lots.length)h+=`<p class="note">這個分類沒有種子。</p>`;
-    const pickRow=(l,gf)=>`<button class="pick" data-act="plant" data-lot="${l.id}">${(lk=>`<span class="seedic">${fruitSVG(lk.app,l.crop,44)}<i>${pctTxt(lk.p)}</i></span>`)(likely(l))}<span><b>${esc(l.name)}</b><span class="meta">${CROPS[l.crop].n}・剩 ${lc(l)} 顆・發芽率 ${Math.round(Math.min(0.99,l.germ+GB[gf])*100)}%${gf?'（含肥料）':''}</span></span></button>`;
-    {const my=lots.filter(l=>l.slot!=null&&l.slot<MY_SLOTS),rest=lots.filter(l=>!(l.slot!=null&&l.slot<MY_SLOTS));const row=l=>{try{return pickRow(l,gf)}catch(e){logErr(e,'pick');return ''}};if(my.length)h+=`<h3>常用種子</h3>`+my.map(row).join('');if(rest.length)h+=(my.length?`<h3>備用種子</h3>`:'')+rest.map(row).join('')}
+    const pickRow=l=>`<button class="pick" data-act="plant" data-lot="${l.id}">${(lk=>`<span class="seedic">${fruitSVG(lk.app,l.crop,44)}<i>${pctTxt(lk.p)}</i></span>`)(likely(l))}<span><b>${esc(l.name)}</b><span class="meta">${CROPS[l.crop].n}・剩 ${lc(l)} 顆・發芽率 ${Math.round(l.germ*100)}%</span></span></button>`;
+    {const my=lots.filter(l=>l.slot!=null&&l.slot<MY_SLOTS),rest=lots.filter(l=>!(l.slot!=null&&l.slot<MY_SLOTS));const row=l=>{try{return pickRow(l)}catch(e){logErr(e,'pick');return ''}};if(my.length)h+=`<h3>常用種子</h3>`+my.map(row).join('');if(rest.length)h+=(my.length?`<h3>備用種子</h3>`:'')+rest.map(row).join('')}
 
   }else if(p.obs){
     h+=`<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・已絕版</p><p class="note">這株的外觀在新版本中已經不存在，已停止生長，只能拔掉。</p><button class="btn warn" data-act="uproot">${sheet.confirm?'再按一次確定拔掉':'拔掉這株'}</button>`;
@@ -1838,9 +1853,8 @@ function renderSheet(){
       const others=state.plots.map((q,j)=>({q,j})).filter(o=>o.q&&o.j!==i&&o.q.stage==='flower'&&!o.q.obs&&(o.q.crop===p.crop||isWide(p,o.q))).sort((a,b)=>dist(a.j)-dist(b.j));
       h+=others.length?`<h3>選擇雜交對象</h3>`+others.map(o=>polCard(p,i,o)).join(''):`<p class="note">想雜交的話，需要另一株同時開花的${CROPS[p.crop].n}。</p>`;
     }
-    {const it=state.items||{};
-      if(p.yf)h+=`<p class="note" style="margin-top:10px">已使用增產肥料（${LV[p.yf]}），取種時多 ${YB[p.yf]} 顆。</p>`;
-      else if([1,2,3].some(l=>it['y'+l]>0))h+=`<p class="note" style="margin-top:10px">增產肥料：取種時能多得幾顆種子，每株只能用一次。</p><div class="ybtns">${[1,2,3].filter(l=>it['y'+l]>0).map(l=>`<button class="btn" data-act="yfert" data-l="${l}">${LV[l]}（${it['y'+l]}）<br>多 ${YB[l]} 顆</button>`).join('')}</div>`;}
+    if(p.stage==='seedling'||p.stage==='fruit'){const na=(state.items||{}).acc||0;
+      h+=na>0?`<div class="row2" style="margin-top:10px"><button class="btn" data-act="accel">使用加速劑（剩 ${na} 次）</button><button class="btn" data-act="accelmode">連續使用<br><small>點或滑過多株</small></button></div><p class="note">每用一次，這株這個階段剩下的生長時間減半，可以重複使用。</p>`:`<p class="note" style="margin-top:10px">生長加速劑：讓這個階段剩下的生長時間減半。到探索世界可以撿到。</p>`;}
     if(p.stage==='ripe'){
       const left=ph.harvests-(p.hv||0)-1;
       if(sheet.seedName!=null)h+=`<div class="regbox"><b>替這包種子取名字</b><p class="note">取種 ${seedCount(p)} 顆。取個好記的名字，之後比較不會忘記是哪一包（1–8 個字）。</p><input id="seedName" maxlength="8" value="${esc(sheet.seedName)}" aria-label="種子名稱"><div class="err">${sheet.seedErr||''}</div><div class="row2"><button class="btn primary" data-act="seedok">確定取種</button><button class="btn" data-act="seedcancel">取消</button></div></div>`;
@@ -1859,7 +1873,6 @@ function renderSheet(){
 sb.addEventListener('click',e=>{
   if(!sheet)return;
   const fc=e.target.closest('[data-sc]');if(fc){uiCrop=fc.dataset.sc;renderSheet();return}
-  const gfb=e.target.closest('[data-gf]');if(gfb){sheet.gf=+gfb.dataset.gf;renderSheet();return}
   const b=e.target.closest('[data-act]');if(!b)return;
   if(b.dataset.act==='close')return closeSheet();
   if(sheet.harvest)return harvestAction(b);
@@ -1881,21 +1894,20 @@ sb.addEventListener('click',e=>{
   if(act==='close')return closeSheet();
   if(p&&p.obs&&act!=='uproot')return;
   if(act==='sowmode'){openSow(null);return}
-  {const am={water:'water',fert:'water',yfert:'water',plant:'plant',seedok:'harvest',sell:'harvest',deliver:'harvest',self:'pollinate',cross:'pollinate'};if(am[act])playAct(am[act])}
+  {const am={water:'water',accel:'water',plant:'plant',seedok:'harvest',sell:'harvest',deliver:'harvest',self:'pollinate',cross:'pollinate'};if(am[act])playAct(am[act])}
   if(act==='register')return doRegister(i);
   if(act==='applyright'&&p){applyRight(i);return}
   if(act==='record')return doRecord(i);
   if(act==='plant'){
     const lot=state.lots.find(l=>l.id===+b.dataset.lot);if(!lot||!lc(lot))return;
-    const g=drawSeed(lot),gf=sheet.gf||0,it=state.items||(state.items={});let germ=lot.germ;
-    if(gf&&it['g'+gf]>0){it['g'+gf]--;germ=Math.min(0.99,germ+GB[gf])}
+    const g=drawSeed(lot),germ=lot.germ;
     if(!lc(lot))state.lots=state.lots.filter(l=>l!==lot);
     if(rnd()<germ){state.plots[i]=plantFromLot(lot,g);toast('發芽了');tutEv('plant')}
     else toast('這顆種子沒有發芽');
   }
   if(act==='water'&&p){p.watered=true;toast('澆好水了');tutEv('water')}
-  if(act==='fert'&&p){p.fert=true;toast('施肥完成，這個階段會長得比較快')}
-  if(act==='yfert'&&p&&!p.yf){const l=+b.dataset.l,it=state.items||{};if(it['y'+l]>0){it['y'+l]--;p.yf=l;toast(`用了增產肥料（${LV[l]}），取種時會多 ${YB[l]} 顆`)}}
+  if(act==='accel'&&p)useAccel(i);
+  if(act==='accelmode'){closeSheet();openAccel();return}
   if(act==='polopen'){sheet.openPol=sheet.openPol===b.dataset.k?null:b.dataset.k;renderSheet();return}
   if(act==='self'&&p)pollinate(i,null);
   if(act==='cross'&&p)pollinate(i,+b.dataset.j);
@@ -1938,7 +1950,7 @@ function polCard(p,i,o){
 }
 function sellPlot(i,quiet){const p=state.plots[i],ph=phen(p.g,p.crop),total=sellPrice(p);state.coins+=total;if(!quiet)toast(`賣出 5 個果實，得到 ${total} 金幣`);harvested(ph);afterHarvest(i);return total}
 function sellPrice(p){const ph=phen(p.g,p.crop);return Math.round(CROPS[p.crop].price*5*(0.6+0.8*ph.ab.size/100)*(1+0.3*ph.tier))}
-function seedCount(p){const ph=phen(p.g,p.crop),cross=p.pollen&&p.pollen.type==='cross';let n=ph.seedBase+ph.yBonus+YB[p.yf||0];if(p.wide&&!cross)n=Math.max(1,Math.floor(n/2));return n}
+function seedCount(p){const ph=phen(p.g,p.crop),cross=p.pollen&&p.pollen.type==='cross';let n=ph.seedBase+ph.yBonus;if(p.wide&&!cross)n=Math.max(1,Math.floor(n/2));return n}
 function afterHarvest(i){
   const p=state.plots[i];if(!p)return;const ph=phen(p.g,p.crop);
   p.hv=(p.hv||0)+1;
@@ -2020,7 +2032,7 @@ function renderSpeed(){
   renderCtrl();
   const el=document.getElementById('testBox');if(!el)return;
   if(!TEST_MODE){el.innerHTML='';return}
-  el.innerHTML=`<h3 style="margin-top:0">測試模式</h3><p class="note">金幣、肥料照正式規則計算。發芽率、雜交成功率、突變與稀有度照正式規則。</p><p class="note" style="margin:6px 0 2px">時間加速</p><div class="row2" style="grid-template-columns:repeat(4,1fr)">${SPEEDS.map(v=>`<button class="btn${state.speed===v?' primary':''}" data-spd="${v}">×${v}</button>`).join('')}</div>
+  el.innerHTML=`<h3 style="margin-top:0">測試模式</h3><p class="note">金幣、道具照正式規則計算。發芽率、雜交成功率、突變與稀有度照正式規則。</p><p class="note" style="margin:6px 0 2px">時間加速</p><div class="row2" style="grid-template-columns:repeat(4,1fr)">${SPEEDS.map(v=>`<button class="btn${state.speed===v?' primary':''}" data-spd="${v}">×${v}</button>`).join('')}</div>
   <button class="btn" data-tool="excap">探索每日上限：${exCapOn()?'開啟':'關閉'}（按一下切換）</button><button class="btn" data-tool="adv">所有植株進入下一階段</button><button class="btn" data-tool="geno">${state.showG?'隱藏':'顯示'}植株的完整因子</button><button class="btn" data-tool="ex">領取辣椒、茄子、南瓜野生種原</button>${isAdmin()?'<button class="btn warn" data-tool="wipe">管理員：清空伺服器的圖鑑、品種權與市集</button>':''}`;
 }
 function renderAll(){if(!state)return;renderCoins();renderWorld();if(curPanel==='bag')renderBag();renderSpeed();refreshAct()}
@@ -2399,7 +2411,7 @@ const sceneEl=document.getElementById('scene');
 function updateCam(){
   if(!state)return;
   if(scene==='explore'){const r=camRect();sceneEl.setAttribute('viewBox',`${r.x.toFixed(1)} ${r.y.toFixed(1)} ${r.w.toFixed(1)} ${r.h.toFixed(1)}`);if(exRange(r).key!==exKey)renderWorld();return}
-  const vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zoom,w=vw/k,h=vh/k,{W,H}=scene==='market'?WORLD.market:WORLD.farm,m=(buildMode||shovelMode||sowMode)?buildCam:curMe();
+  const vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zoom,w=vw/k,h=vh/k,{W,H}=scene==='market'?WORLD.market:WORLD.farm,m=(buildMode||shovelMode||sowMode||accelMode)?buildCam:curMe();
   let x=m.x-w/2,y=m.y-h*0.55;
   x=W<=w?(W-w)/2:clamp(x,0,W-w);y=H+80<=h?(H-h)/2:clamp(y,-70,H-h+80);
   sceneEl.setAttribute('viewBox',`${x.toFixed(1)} ${y.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
@@ -2414,7 +2426,7 @@ function renderMarket(){if(scene==='market')renderWorld();if(sheet&&sheet.stall!
 function listingCard(l){try{return listingCard_(l)}catch(e){logErr(e,'market');return ''}}
 function listingCard_(l){
   if(l.kind==='spec'){const o=lotOf(l),sp=o.spec,ph=phen(sp.g,sp.crop),mine=l.sellerUid===uid;return `<div class="lot"><div class="lot-top">${fruitSVG(ph,sp.crop,60)}<div><div class="lot-name">${sp.kind==='gem'?'珍品標本':'果實標本'}・${CROPS[sp.crop].n}</div><div class="meta">${ph.shapeName}・${colorLabel(ph)}・${TIERS[ph.tier]}</div><div class="meta">${sp.kind==='spec'&&!takenBy(sp.crop,sp.key)?'可以送鑑定取得品種權':'收藏用'}・賣家：${esc(l.sellerName||'')}</div></div></div>${mine?`<button class="btn" data-act="scancel" data-id="${l.id}">收回（售價 ${l.price} 金幣）</button>`:`<button class="btn primary" data-act="sbuy" data-id="${l.id}">用 ${l.price} 金幣購買</button>`}</div>`}
-  if(l.kind==='item'){const mine=l.sellerUid===uid;return `<div class="lot"><div class="lot-top">${itemIcon(l.item)}<div><div class="lot-name">${esc(itemName(l.item))} × ${l.count}</div><div class="meta">${itemEff(l.item)}</div><div class="meta">賣家：${esc(l.sellerName||'')}</div></div></div>${mine?`<button class="btn" data-act="scancel" data-id="${l.id}">收回（售價 ${l.price} 金幣）</button>`:`<button class="btn primary" data-act="sbuy" data-id="${l.id}">用 ${l.price} 金幣購買</button>`}</div>`}
+  if(l.kind==='item'){const mine=l.sellerUid===uid;return `<div class="lot"><div class="lot-top">${itemIcon(l.item)}<div><div class="lot-name">${esc(itemName(l.item))} × ${l.count} ${itemUnit(l.item)}</div><div class="meta">${itemEff(l.item)}</div><div class="meta">賣家：${esc(l.sellerName||'')}</div></div></div>${mine?`<button class="btn" data-act="scancel" data-id="${l.id}">收回（售價 ${l.price} 金幣）</button>`:`<button class="btn primary" data-act="sbuy" data-id="${l.id}">用 ${l.price} 金幣購買</button>`}</div>`}
   const lot=lotOf(l),lt={...lot,crop:l.crop},lk=likely(lt),ph=phen(lot.m,l.crop),mine=l.sellerUid===uid;
   return `<div class="lot"><div class="lot-top"><span class="seedic">${fruitSVG(lk.app,l.crop,64)}<i>最可能 ${pctTxt(lk.p)}</i></span><div><div class="lot-name">${esc(l.name)}</div><div class="meta">${CROPS[l.crop].n}・${l.count} 顆・發芽率 ${Math.round(lot.germ*100)}%</div><div class="meta">母本：${ph.shapeName}・${colorLabel(ph)}・${TIERS[ph.tier]}</div><div class="meta">血統：${esc(l.source)}</div></div></div>${distHTML(lotDist(lt),l.crop,'可能出現的後代',false)}${mine?`<button class="btn" data-act="scancel" data-id="${l.id}">收回這包（售價 ${l.price} 金幣）</button>`:`<button class="btn primary" data-act="sbuy" data-id="${l.id}">用 ${l.price} 金幣購買</button>`}</div>`;
 }
@@ -2435,15 +2447,19 @@ function stallHTML(){
     if(sheet.ksel){h+=`<div class="regbox sellbox"><label>價格（金幣）<input id="f2" type="number" inputmode="numeric" min="1" value="${esc(sheet.d2)}"></label><div class="err" id="ferr">${sheet.err}</div><button class="btn primary" data-act="ksave">確定上架</button></div>`}
     return h+`<button class="btn" data-act="sback">返回</button>`;
   }
-  if(sheet.step==='ipick'){
-    const it=state.items||{},have=IKEYS.filter(k=>it[k]>0);
-    h+=`<p class="note">選一種要上架的道具。</p>`;
-    h+=have.length?have.map(k=>`<button class="pick" data-act="ipick" data-k="${k}">${itemIcon(k)}<span><b>${itemName(k)}</b><span class="meta">持有 ${it[k]} 個・${itemEff(k)}</span></span></button>`).join(''):'<p class="note">目前沒有可以上架的道具。到探索世界撿肥料吧。</p>';
+  if(sheet.step==='ipick'||sheet.step==='npick'){
+    const it=state.items||{},have=IKEYS.filter(k=>it[k]>0),npc=sheet.step==='npick';
+    h+=npc?`<p class="note">道具行隨時收購：生長加速劑每次 ${NPC_BUY.acc} 金幣、誘變劑每瓶 ${NPC_BUY.mut} 金幣。選一種要賣的道具。</p>`:`<p class="note">選一種要上架的道具。生長加速劑以「次」為單位上架，誘變劑以「瓶」為單位。</p>`;
+    h+=have.length?have.map(k=>`<button class="pick" data-act="${npc?'npick':'ipick'}" data-k="${k}">${itemIcon(k)}<span><b>${itemName(k)}</b><span class="meta">持有 ${it[k]} ${itemUnit(k)}・${npc?`每${itemUnit(k)} ${NPC_BUY[k]} 金幣`:itemEff(k)}</span></span></button>`).join(''):`<p class="note">目前沒有可以${npc?'賣':'上架'}的道具。到探索世界撿撿看吧。</p>`;
     return h+`<button class="btn" data-act="sback">返回</button>`;
+  }
+  if(sheet.step==='nform'){
+    const k=sheet.ik,n=(state.items||{})[k]||0;if(!n){sheet.step='npick';return stallHTML()}
+    return h+`<div class="lot-top">${itemIcon(k)}<div><div class="lot-name">賣給道具行：${itemName(k)}</div><div class="meta">持有 ${n} ${itemUnit(k)}・每${itemUnit(k)} ${NPC_BUY[k]} 金幣</div></div></div><div class="regbox sellbox"><label>數量（最多 ${n} ${itemUnit(k)}）<input id="f1" type="number" inputmode="numeric" min="1" max="${n}" value="${esc(sheet.d1)}"></label><p class="note" id="ntotal">共 ${(parseInt(sheet.d1,10)||0)*NPC_BUY[k]} 金幣</p><div class="err" id="ferr">${sheet.err}</div><div class="row2"><button class="btn primary" data-act="nsave">確定賣出</button><button class="btn" data-act="sback">返回</button></div></div>`;
   }
   if(sheet.step==='iform'){
     const k=sheet.ik,n=(state.items||{})[k]||0;if(!n){sheet.step='ipick';return stallHTML()}
-    return h+`<div class="lot-top">${itemIcon(k)}<div><div class="lot-name">${itemName(k)}</div><div class="meta">持有 ${n} 個</div></div></div><div class="regbox sellbox"><label>數量（最多 ${n} 個）<input id="f1" type="number" inputmode="numeric" min="1" max="${n}" value="${esc(sheet.d1)}"></label><label>價格（金幣，整批）<input id="f2" type="number" inputmode="numeric" min="1" value="${esc(sheet.d2)}"></label><div class="err" id="ferr">${sheet.err}</div><div class="row2"><button class="btn primary" data-act="isave">確定上架</button><button class="btn" data-act="sback">返回</button></div></div>`;
+    return h+`<div class="lot-top">${itemIcon(k)}<div><div class="lot-name">${itemName(k)}</div><div class="meta">持有 ${n} ${itemUnit(k)}</div></div></div><div class="regbox sellbox"><label>數量（最多 ${n} ${itemUnit(k)}）<input id="f1" type="number" inputmode="numeric" min="1" max="${n}" value="${esc(sheet.d1)}"></label><label>價格（金幣，整批）<input id="f2" type="number" inputmode="numeric" min="1" value="${esc(sheet.d2)}"></label><div class="err" id="ferr">${sheet.err}</div><div class="row2"><button class="btn primary" data-act="isave">確定上架</button><button class="btn" data-act="sback">返回</button></div></div>`;
   }
   if(sheet.step==='form'){
     const l=state.lots.find(x=>x.id===sheet.lot);if(!l){sheet.step='pick';return stallHTML()}
@@ -2453,19 +2469,27 @@ function stallHTML(){
   if(!inf.owner)h+=`<p class="note">這個攤位目前沒人使用。在這裡上架種子或道具就能占用它，全部賣完後攤位會自動空出來，讓別人使用。</p><div class="row2"><button class="btn primary" data-act="sstart">上架種子</button><button class="btn primary" data-act="istart">上架道具</button></div>`;
   else if(inf.owner===uid)h+=`<p class="note">你有 ${inf.ls.length} 件商品在這裡販售。朋友買走後，金幣會自動入帳。</p><div class="row2"><button class="btn primary" data-act="sstart">再上架種子</button><button class="btn primary" data-act="istart">再上架道具</button></div>`+inf.ls.map(listingCard).join('');
   else h+=`<p class="note">${esc(inf.ownerName)} 正在販售 ${inf.ls.length} 件商品。</p>`+inf.ls.map(listingCard).join('');
+  h+=`<div class="regbox" style="margin-top:12px"><b>道具行</b><p class="note">隨時收購道具：生長加速劑每次 ${NPC_BUY.acc} 金幣、誘變劑每瓶 ${NPC_BUY.mut} 金幣。</p><button class="btn" data-act="nstart">賣道具給道具行</button></div>`;
   return h;
 }
 function bindStall(){
   const f1=document.getElementById('f1'),f2=document.getElementById('f2');
   const clr=()=>{if(sheet.err){sheet.err='';const e=document.getElementById('ferr');if(e)e.textContent=''}};
-  if(f1)f1.addEventListener('input',()=>{sheet.d1=f1.value;clr()});
+  if(f1)f1.addEventListener('input',()=>{sheet.d1=f1.value;clr();const t=document.getElementById('ntotal');if(t&&NPC_BUY[sheet.ik])t.textContent=`共 ${(parseInt(f1.value,10)||0)*NPC_BUY[sheet.ik]} 金幣`});
   if(f2)f2.addEventListener('input',()=>{sheet.d2=f2.value;clr()});
 }
 async function stallAction(b){
   const act=b.dataset.act,i=sheet.stall;
   if(act==='sstart'){sheet.step='pick';renderSheet();return}
-  if(act==='sback'){sheet.step=sheet.step==='form'?'pick':sheet.step==='iform'?'ipick':'view';sheet.ksel=null;sheet.err='';renderSheet();return}
+  if(act==='sback'){sheet.step=sheet.step==='form'?'pick':sheet.step==='iform'?'ipick':sheet.step==='nform'?'npick':'view';sheet.ksel=null;sheet.err='';renderSheet();return}
   if(act==='istart'){sheet.step='ipick';renderSheet();return}
+  if(act==='nstart'){sheet.step='npick';renderSheet();return}
+  if(act==='npick'){sheet.ik=b.dataset.k;sheet.step='nform';sheet.d1=String((state.items||{})[sheet.ik]||1);sheet.err='';renderSheet();return}
+  if(act==='nsave'){
+    const k=sheet.ik,it=state.items||{},n=it[k]||0,c=parseInt(sheet.d1,10);
+    if(!NPC_BUY[k])return;if(!(c>=1&&c<=n)){sheet.err=`數量要在 1 到 ${n} 之間`;renderSheet();return}
+    const total=c*NPC_BUY[k];it[k]-=c;state.coins+=total;save();renderAll();sheet.step='view';renderSheet();toast(`賣給道具行 ${c} ${itemUnit(k)}${itemName(k)}，得到 ${total} 金幣`);return;
+  }
   if(act==='kstart'){sheet.step='kpick';sheet.ksel=null;sheet.d2='';sheet.err='';renderSheet();return}
   if(act==='kpick'){sheet.ksel=b.dataset.k;renderSheet();return}
   if(act==='ksave'){
@@ -2487,7 +2511,7 @@ async function stallAction(b){
     b.disabled=true;
     try{
       await db.collection('listings').add({kind:'item',item:k,crop:'',name:itemName(k),source:'道具',sellerUid:uid,sellerName:myName(),price,count:c,stall:i,lot:'{}',sold:false,createdAt:TS()});
-      it[k]-=c;save();renderAll();sheet.step='view';renderSheet();toast(`已上架 ${c} 個${itemName(k)}，售價 ${price} 金幣`);
+      it[k]-=c;save();renderAll();sheet.step='view';renderSheet();toast(`已上架 ${c} ${itemUnit(k)}${itemName(k)}，售價 ${price} 金幣`);
     }catch(e){sheet.err='上架失敗，請檢查網路後再試一次';renderSheet()}
     return;
   }
@@ -2516,7 +2540,7 @@ async function stallAction(b){
       await db.runTransaction(async tx=>{const ref=db.collection('listings').doc(l.id),d=await tx.get(ref);if(!d.exists||d.data().sold)throw new Error('gone');tx.update(ref,{sold:true,buyerUid:uid,buyerName:myName(),soldAt:TS()})});
       paid=true;
       if(l.kind==='spec'){state.coins-=l.price;const o=lotOf(l);if(!state.specimens)state.specimens=[];if(o&&o.spec)state.specimens.unshift({...o.spec,id:'S'+Date.now().toString(36)});save();renderAll();toast('買到標本了，在「圖鑑 → 標本與品種權」');return}
-      if(l.kind==='item'){state.coins-=l.price;if(!state.items)state.items={};state.items[l.item]=(state.items[l.item]||0)+l.count;save();renderAll();toast(`買到 ${l.count} 個${itemName(l.item)}`);return}
+      if(l.kind==='item'){state.coins-=l.price;if(isOldFert(l.item)){const c=oldFertCoin(l.item)*l.count;state.coins+=c;save();renderAll();toast(`買到的是舊肥料，已直接換成 ${c} 金幣`,6000);return}if(!state.items)state.items={};state.items[l.item]=(state.items[l.item]||0)+l.count;save();renderAll();toast(`買到 ${l.count} ${itemUnit(l.item)}${itemName(l.item)}`);return}
       const lot=lotOf(l);state.coins-=l.price;
       state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop:l.crop,name:l.name,source:`${l.source}（向 ${l.sellerName} 購買）`,m:lot.m,f:lot.f,count:lot.seeds?0:lot.count,seeds:lot.seeds||undefined,germ:lot.germ,wide:!!lot.wide,rel:!!lot.rel,gen:lot.gen==null?undefined:lot.gen,par:lot.par,gpar:lot.gpar,ptier:lot.ptier});
       save();renderAll();toast(`買到 ${l.count} 顆「${l.name}」，已放進種子袋`);
@@ -2534,7 +2558,7 @@ async function stallAction(b){
     try{
       await db.collection('listings').doc(l.id).delete();
       if(l.kind==='spec'){const o=lotOf(l);if(!state.specimens)state.specimens=[];if(o&&o.spec)state.specimens.unshift(o.spec);save();renderAll();toast('已收回標本');return}
-      if(l.kind==='item'){if(!state.items)state.items={};state.items[l.item]=(state.items[l.item]||0)+l.count;save();renderAll();toast('已收回，道具放回背包');return}
+      if(l.kind==='item'){if(isOldFert(l.item)){const c=oldFertCoin(l.item)*l.count;state.coins+=c;save();renderAll();toast(`已收回，舊肥料換成 ${c} 金幣`);return}if(!state.items)state.items={};state.items[l.item]=(state.items[l.item]||0)+l.count;save();renderAll();toast('已收回，道具放回背包');return}
       const lot=lotOf(l);
       state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop:l.crop,name:l.name,source:l.source,m:lot.m,f:lot.f,count:lot.seeds?0:lot.count,seeds:lot.seeds||undefined,germ:lot.germ,wide:!!lot.wide,rel:!!lot.rel,gen:lot.gen==null?undefined:lot.gen,par:lot.par,gpar:lot.gpar,ptier:lot.ptier});
       save();renderAll();toast('已收回，種子放回種子袋');
@@ -2557,7 +2581,7 @@ document.getElementById('pdim').onclick=closePanel;
 for(const b of document.querySelectorAll('.panel [data-close]'))b.onclick=closePanel;
 document.getElementById('sheetX').onclick=()=>closeSheet();
 const iconbarClick=e=>{
-  const b=e.target.closest('button');if(!b||!state)return;if(buildMode)exitBuild();if(shovelMode)exitShovel();if(sowMode)exitSow();
+  const b=e.target.closest('button');if(!b||!state)return;if(buildMode)exitBuild();if(shovelMode)exitShovel();if(sowMode)exitSow();if(accelMode)exitAccel();
   const o=b.dataset.open,a=b.dataset.do;
   if(o)return curPanel===o?closePanel():openPanel(o);
   closePanel();
@@ -2574,7 +2598,7 @@ function renderHUD(){
   const mb=document.getElementById('ibMarket');mb.querySelector('span').textContent=scene==='market'?'回農場':'市集';
   document.getElementById('ibHome').hidden=!(viewing||scene==='explore');
   const own=scene==='farm'&&!viewing;
-  document.getElementById('fertBtn').hidden=!own||!!buildMode||shovelMode||sowMode;document.getElementById('waterAll').hidden=!own||!!buildMode||shovelMode||sowMode;{const tb=document.getElementById('trayBtn');tb.hidden=!own||!!buildMode||shovelMode||sowMode;const tn=state.tray&&state.tray.cells?state.tray.cells.length:0;const th=tn?`育苗盤<br>${tn}`:'育苗盤';if(tb.innerHTML!==th)tb.innerHTML=th}document.getElementById('shovelBtn').hidden=!own||!!buildMode||shovelMode||sowMode;document.getElementById('sowBtn').hidden=!own||!!buildMode||shovelMode||sowMode;
+  document.getElementById('fertBtn').hidden=!own||!!buildMode||shovelMode||sowMode||accelMode;document.getElementById('waterAll').hidden=!own||!!buildMode||shovelMode||sowMode||accelMode;{const tb=document.getElementById('trayBtn');tb.hidden=!own||!!buildMode||shovelMode||sowMode||accelMode;const tn=state.tray&&state.tray.cells?state.tray.cells.length:0;const th=tn?`育苗盤<br>${tn}`:'育苗盤';if(tb.innerHTML!==th)tb.innerHTML=th}document.getElementById('shovelBtn').hidden=!own||!!buildMode||shovelMode||sowMode||accelMode;document.getElementById('sowBtn').hidden=!own||!!buildMode||shovelMode||sowMode||accelMode;
   document.getElementById('ibDecor').hidden=!own;document.getElementById('ibBuild').hidden=!own;
 }
 
@@ -2800,13 +2824,13 @@ function ensureDaily(){
   }
   const wk=weekKey();
   if(!state.weekly||state.weekly.wk!==wk){const R=srand(hashStr(wk+uid));
-    state.weekly={wk,done:false,...(R()<.5?{c:{minLevel:3},r:600,prize:'rare',pt:'珍稀種原 1 包'}:{c:{minTier:3},r:500,prize:'y3',pt:'高級增產肥料 2 個'})}}
+    state.weekly={wk,done:false,...(R()<.5?{c:{minLevel:3},r:600,prize:'rare',pt:'珍稀種原 1 包'}:{c:{minTier:3},r:500,prize:'acc',pt:'生長加速劑 20 次'})}}
 }
 function deliverables(p,ph){ensureDaily();const out=state.daily.list.filter(o=>!o.done&&condOk(o.c,p,ph)).map(o=>({id:o.id,t:condTxt(o.c),r:o.r}));if(!state.weekly.done&&condOk(state.weekly.c,p,ph))out.push({id:'w',t:condTxt(state.weekly.c),r:state.weekly.r,pt:state.weekly.pt});return out}
 function deliver(i,oid){
   const p=state.plots[i];if(!p||p.stage!=='ripe')return;const ph=phen(p.g,p.crop);ensureDaily();
   if(oid==='w'){const w=state.weekly;if(w.done||!condOk(w.c,p,ph))return;w.done=true;state.coins+=w.r;
-    if(w.prize==='rare'){const r=giveWild(BIOME_KEYS[Math.floor(rnd()*BIOME_KEYS.length)],true);toast(`完成每週挑戰！得到 ${w.r} 金幣和珍稀種原「${r.name}」`)}else{state.items.y3=(state.items.y3||0)+2;toast(`完成每週挑戰！得到 ${w.r} 金幣和高級增產肥料 2 個`)}}
+    if(w.prize==='rare'){const r=giveWild(BIOME_KEYS[Math.floor(rnd()*BIOME_KEYS.length)],true);toast(`完成每週挑戰！得到 ${w.r} 金幣和珍稀種原「${r.name}」`)}else{if(!state.items)state.items={};state.items.acc=(state.items.acc||0)+20;toast(`完成每週挑戰！得到 ${w.r} 金幣和生長加速劑 20 次`)}}
   else{const o=state.daily.list.find(x=>x.id===oid);if(!o||o.done||!condOk(o.c,p,ph))return;o.done=true;state.coins+=o.r;toast(`完成每日訂單，得到 ${o.r} 金幣`)}
   harvested(ph);afterHarvest(i);
 }
@@ -2858,12 +2882,14 @@ function signAction(b){if(b.dataset.act==='close')return closeSheet();if(b.datas
 
 
 // ===== 探索世界 =====
-const OL='#3B2A18',EXC=360,EX_LIMIT=30,EXGATE=[0,60];
+const OL='#3B2A18',EXC=360,EX_LIMIT=6,EXGATE=[0,60];
 const f1=v=>v.toFixed(1);
-const LV=['','初級','中級','高級'],GB=[0,0.1,0.2,0.3],YB=[0,1,2,3],IKEYS=['g1','g2','g3','y1','y2','y3'];
-const itemName=k=>k==='wild'?'野生種原':k==='rare'?'珍稀種原':(k[0]==='g'?'發芽肥料':'增產肥料')+'（'+LV[+k[1]]+'）';
-const itemEff=k=>k[0]==='g'?`播種時發芽率 +${Math.round(GB[+k[1]]*100)}%`:`取種時多 ${YB[+k[1]]} 顆種子`;
-const IW=[['g1',26],['g2',12],['g3',4],['y1',24],['y2',11],['y3',4]];
+/* 14g 道具改版：只保留生長加速劑（acc，單位「次」）與誘變劑（mut，單位「瓶」） */
+const IKEYS=['acc','mut'],ACC_PACK=10,NPC_BUY={acc:3,mut:150};
+const itemName=k=>k==='wild'?'野生種原':k==='rare'?'珍稀種原':k==='acc'?'生長加速劑':k==='mut'?'誘變劑':isOldFert(k)?'舊肥料（已停用）':'道具';
+const itemUnit=k=>k==='acc'?'次':k==='mut'?'瓶':'個';
+const itemEff=k=>k==='acc'?'每次讓一株幼苗或結果中的作物，這個階段剩下的時間減半':k==='mut'?'撒進育苗盤時使用，這次撒的種子更容易突變，發芽率 ×0.7':isOldFert(k)?`已停用，買到會直接換成每個 ${oldFertCoin(k)} 金幣`:'';
+const IW=[['acc',80],['mut',20]];
 const dayKey=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
 function ensureEx(){
   if(!state.items)state.items={};for(const k of IKEYS)state.items[k]=state.items[k]||0;
@@ -2970,11 +2996,12 @@ function itemArt(x,y,t){
     const c=t==='rare'?'#F2C230':'#C08A55',c2=t==='rare'?'#FFE68A':'#DDB07C';
     s+=`<path d="M${x-10} ${y-1} Q${x-13} ${y-15} ${x-5} ${y-18} L${x+5} ${y-18} Q${x+13} ${y-15} ${x+10} ${y-1} Q${x} ${y+2} ${x-10} ${y-1}Z" fill="${c}" stroke="${OL}" stroke-width="1.4" stroke-linejoin="round"/><path d="M${x-5} ${y-18} L${x-8} ${y-24} L${x+8} ${y-24} L${x+5} ${y-18}Z" fill="${c2}" stroke="${OL}" stroke-width="1.3" stroke-linejoin="round"/><path d="M${x-6} ${y-18} H${x+6}" stroke="#8A2A1E" stroke-width="2"/><path d="M${x} ${y-4} C${x-7} ${y-6} ${x-7} ${y-13} ${x} ${y-14} C${x+7} ${y-13} ${x+7} ${y-6} ${x} ${y-4}Z M${x} ${y-4} V${y-13}" fill="#5FB043" stroke="#2F6B1E" stroke-width="1"/>`;
     if(t==='rare')s+=`<path d="M${x+11} ${y-30} l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6 -4 -4 -1.6 4 -1.6z" fill="#FFF6C2" stroke="#B9840F" stroke-width="1"/>`;
+  }else if(t==='acc'){
+    s+=`<rect x="${x-5}" y="${y-30}" width="10" height="5" rx="1.2" fill="#C98A4B" stroke="${OL}" stroke-width="1.2"/><path d="M${x-4} ${y-25} h8 v4 l6 6 v13 q0 2 -2 2 h-16 q-2 0 -2 -2 v-13 l6 -6z" fill="#7FD36A" stroke="${OL}" stroke-width="1.4" stroke-linejoin="round"/><path d="M${x+2} ${y-17} l-6 8 h4 l-2 6 7 -9 h-4 l2 -5z" fill="#FFF3A0" stroke="#6B4A10" stroke-width=".9" stroke-linejoin="round"/>`;
+  }else if(t==='mut'){
+    s+=`<rect x="${x-4.5}" y="${y-31}" width="9" height="5" rx="1.2" fill="#C98A4B" stroke="${OL}" stroke-width="1.2"/><path d="M${x-3} ${y-26} h6 v7 q9 4 9 11 q0 8 -12 8 q-12 0 -12 -8 q0 -7 9 -11z" fill="#B48CE0" stroke="${OL}" stroke-width="1.4" stroke-linejoin="round"/><circle cx="${x-4}" cy="${y-7}" r="2" fill="#E9DBFA"/><circle cx="${x+3}" cy="${y-11}" r="1.4" fill="#E9DBFA"/><path d="M${x+11} ${y-28} l1.4 3.4 3.4 1.4 -3.4 1.4 -1.4 3.4 -1.4 -3.4 -3.4 -1.4 3.4 -1.4z" fill="#FFF6C2" stroke="#B9840F" stroke-width="1"/>`;
   }else{
-    const l=+t[1],band=['','#C98A4B','#B8C4CE','#F2C230'][l];
-    s+=`<path d="M${x-10} ${y} L${x-12} ${y-15} Q${x-12} ${y-21} ${x-6} ${y-22} L${x+6} ${y-22} Q${x+12} ${y-21} ${x+12} ${y-15} L${x+10} ${y} Z" fill="#F4E6C4" stroke="${OL}" stroke-width="1.4" stroke-linejoin="round"/><path d="M${x-5} ${y-22} l-2 -5 M${x} ${y-22} v-6 M${x+5} ${y-22} l2 -5" stroke="${OL}" stroke-width="1.4" stroke-linecap="round"/><rect x="${x-11.5}" y="${y-17}" width="23" height="6" fill="${band}" stroke="${OL}" stroke-width="1"/>`;
-    for(let k=0;k<l;k++)s+=`<circle cx="${x-4+k*4}" cy="${y-14}" r="1.2" fill="#FFFFFF"/>`;
-    s+=t[0]==='g'?`<path d="M${x} ${y-2} V${y-7} M${x} ${y-7} q-5 0 -6 -3 q5 -1 6 3 q1 -4 6 -3 q-1 3 -6 3" stroke="#2F6B1E" stroke-width="1" fill="#5FB043" stroke-linejoin="round"/>`:`<ellipse cx="${x-4}" cy="${y-5}" rx="2" ry="2.8" fill="#9A6A3A"/><ellipse cx="${x}" cy="${y-6}" rx="2" ry="2.8" fill="#B98A5A"/><ellipse cx="${x+4}" cy="${y-5}" rx="2" ry="2.8" fill="#9A6A3A"/>`;
+    s+=`<path d="M${x-10} ${y} L${x-12} ${y-15} Q${x-12} ${y-21} ${x-6} ${y-22} L${x+6} ${y-22} Q${x+12} ${y-21} ${x+12} ${y-15} L${x+10} ${y} Z" fill="#E4DCCB" stroke="${OL}" stroke-width="1.4" stroke-linejoin="round"/>`;
   }
   return s;
 }
@@ -3002,7 +3029,7 @@ function exItems(bk,cx,cy){
   const key=bk+'|'+cx+'|'+cy+'|'+state.ex.day;let c=exItemCache.get(key);if(c)return c;
   if(exItemCache.size>400)exItemCache.clear();
   const R=seededRnd(hashStr('i|'+key)),x0=cx*EXC,y0=cy*EXC,out=[];
-  let n=R()<0.6?1:0;if(R()<0.18)n++;
+  let n=R()<0.15?1:0;if(R()<0.045)n++;/* 14g：道具變少（約 15%，再多一件 4.5%） */
   for(let k=0;k<n;k++){const t=wpickR(IW,R)[0],x=x0+30+R()*(EXC-60),y=y0+30+R()*(EXC-60);if(Math.hypot(x-EXGATE[0],y-EXGATE[1])<70)continue;out.push({key:key+'|'+k,x,y,t})}
   exItemCache.set(key,out);return out;
 }
@@ -3083,17 +3110,17 @@ function pickItem(it){
   state.ex.got.push(it.key);state.ex.picks++;
   let msg;
   if(it.t==='wild'||it.t==='rare'){const w=giveWild(exBiome,it.t==='rare');msg=`撿到${it.t==='rare'?'珍稀種原':'野生種原'}「${w.name}」（${CROPS[w.crop].n}），放進種子袋了`}
-  else{state.items[it.t]=(state.items[it.t]||0)+1;msg=`撿到${itemName(it.t)}`}
+  else{const add=it.t==='acc'?ACC_PACK:1;state.items[it.t]=(state.items[it.t]||0)+add;msg=it.t==='acc'?`撿到一瓶生長加速劑（+${add} 次）`:`撿到${itemName(it.t)} 1 瓶`}
   save();hoverItem=null;renderWorld();refreshAct();
   const left=EX_LIMIT-state.ex.picks;toast(msg+(!exCapOn()?'':left>0?`，今天還能撿 ${left} 件`:'，今天的份撿完了'),5000);
 }
 function renderExplore(){
   ensureEx();
   const el=document.getElementById('exploreBody'),left=EX_LIMIT-state.ex.picks;
-  let h=`<p class="note">選一個地區出發。地圖會一直延伸下去，路上能撿到肥料，也會遇到野生植株，可以採種或摘果實。${exCapOn()?`每天最多撿 ${EX_LIMIT} 件道具、採 ${EX_PLANT_LIMIT} 株野生植株；今天還能撿 ${Math.max(0,left)} 件、採 ${Math.max(0,EX_PLANT_LIMIT-(state.ex.plants||0))} 株。`:'目前沒有每日上限（測試模式）。'}</p>`;
+  let h=`<p class="note">選一個地區出發。地圖會一直延伸下去，路上偶爾能撿到道具，也會遇到野生植株，可以採種或摘果實。${exCapOn()?`每天最多撿 ${EX_LIMIT} 件道具、採 ${EX_PLANT_LIMIT} 株野生植株；今天還能撿 ${Math.max(0,left)} 件、採 ${Math.max(0,EX_PLANT_LIMIT-(state.ex.plants||0))} 株。`:'目前沒有每日上限（測試模式）。'}</p>`;
   if(scene==='explore')h+=`<button class="btn" data-ex="home" style="margin:0 0 12px">回農場</button>`;
   h+=BIOME_KEYS.map(k=>{const B=BIOMES[k];return `<button class="biome" data-ex="${k}"${scene==='explore'&&exBiome===k?' aria-current="true"':''}>${biomeThumb(k)}<span class="lr"><b>${B.n}${scene==='explore'&&exBiome===k?'（你在這裡）':''}</b><span class="meta">${B.desc}</span><span class="meta">可能遇到：常見 ${B.crops.filter(c=>c[1]>=2).map(c=>CROPS[c[0]].n).join('、')}；其他作物也可能出現，但機率較低</span></span></button>`}).join('');
-  h+=`<h3>我的道具</h3><div class="items">${IKEYS.map(k=>`<div class="itm">${itemIcon(k)}<span class="lr"><b>${itemName(k)}</b><span class="meta">${itemEff(k)}</span><span class="meta">持有 ${state.items[k]||0} 個</span></span></div>`).join('')}</div><p class="note">發芽肥料在播種時選用。增產肥料在植株的詳細資料裡使用，每株只能用一次。</p>`;
+  h+=`<h3>我的道具</h3><div class="items">${IKEYS.map(k=>`<div class="itm">${itemIcon(k)}<span class="lr"><b>${itemName(k)}</b><span class="meta">${itemEff(k)}</span><span class="meta">持有 ${state.items[k]||0} ${itemUnit(k)}</span></span></div>`).join('')}</div><p class="note">生長加速劑：在植株的詳細資料裡使用，或選「連續使用」一次用在很多株；只能用在幼苗和結果中的作物。誘變劑：撒進育苗盤時勾選使用。</p>`;
   el.innerHTML=h;
 }
 document.getElementById('exploreBody').addEventListener('click',e=>{const b=e.target.closest('[data-ex]');if(!b||!state)return;if(b.dataset.ex==='home'){closePanel();goFarm();return}goExplore(b.dataset.ex)});
@@ -3211,13 +3238,6 @@ function interact(){
   const p=state.plots[n.i];
   openPlot(n.i);
 }
-function fertNear(){
-  const n=nearest();if(!n||n.t!=='plot'||viewing||scene!=='farm'){toast('走到成長中的作物旁邊再施肥');return}
-  const p=state.plots[n.i];
-  if(!p||!(p.stage==='seedling'||p.stage==='fruit')){toast('這株現在不能施肥');return}
-  if(p.fert){toast('這個階段已經施過肥了');return}
-  p.fert=true;save();renderAll();toast('施肥完成，這個階段會長得比較快');
-}
 document.getElementById('fertBtn').onclick=()=>selfAll();
 document.getElementById('shovelBtn').onclick=openShovel;
 document.getElementById('shovelBar').addEventListener('click',e=>{const b=e.target.closest('[data-sv]');if(!b)return;if(b.dataset.sv==='done'){exitShovel();toast(shovelN?'剷除完成':'結束剷除');return}if(b.dataset.sv==='trash'){sheet={trash:true,confirm:false};renderSheet();openSheetUI()}});
@@ -3229,7 +3249,7 @@ let ctrlMode='joy';/* 點擊移動已移除，只用搖桿 */
 let joy={id:null,vx:0,vy:0};
 function setCtrl(m){ctrlMode=m;try{localStorage.setItem('sw_ctrl',m)}catch(e){}moveTo=null;applyCtrl();renderCtrl();toast(m==='joy'?'已改成搖桿操作':'已改成點擊移動')}
 function applyCtrl(){
-  const j=ctrlMode==='joy'&&!buildMode&&!shovelMode&&!sowMode;
+  const j=ctrlMode==='joy'&&!buildMode&&!shovelMode&&!sowMode&&!accelMode;
   document.body.classList.toggle('joymode',ctrlMode==='joy');
   document.getElementById('joy').hidden=!j;document.getElementById('actBtn').hidden=!j;
   if(typeof refreshAct==='function')refreshAct();
@@ -3292,13 +3312,14 @@ function handleTap(e,cx,cy){
 const ptrs=new Map();let pinch=null,tapStart=null,dragPlot=null,panStart=null;
 sceneEl.addEventListener('pointerdown',e=>{
   if(!state)return;
-  if(e.isPrimary){ptrs.clear();pinch=null;panStart=null;dragPlot=null;sowing=false;shoveling=false}/* 新的觸控開始：清掉殘留的手指紀錄 */
+  if(e.isPrimary){ptrs.clear();pinch=null;panStart=null;dragPlot=null;sowing=false;shoveling=false;acceling=false}/* 新的觸控開始：清掉殘留的手指紀錄 */
   ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
   try{sceneEl.setPointerCapture(e.pointerId)}catch(_){}
   if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:zoom};tapStart=null;dragPlot=null;panStart=null;return}
   tapStart={x:e.clientX,y:e.clientY,t:Date.now(),target:e.target,moved:false};
   if(sowMode){const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&!state.plots[+g.dataset.plot]){sowing=true;sowAt(e.clientX,e.clientY)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
   if(shovelMode){const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&state.plots[+g.dataset.plot]){shoveling=true;shovelAt(e.clientX,e.clientY)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
+  if(accelMode){accelHit.clear();const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&state.plots[+g.dataset.plot]){acceling=true;accelAt(e.clientX,e.clientY)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
   if(buildMode){
     const g=e.target.closest&&e.target.closest('[data-plot]');
     if(buildMode==='move'&&g){const i=+g.dataset.plot;dragPlot={i,from:state.plotPos[i].slice(),x:0,y:0}}
@@ -3311,6 +3332,7 @@ sceneEl.addEventListener('pointermove',e=>{
   if(pinch&&ptrs.size>=2){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);if(pinch.d>0)setZoom(pinch.z*d/pinch.d);return}
   if(tapStart&&Math.hypot(e.clientX-tapStart.x,e.clientY-tapStart.y)>10)tapStart.moved=true;
   if(shoveling){shovelAt(e.clientX,e.clientY);return}
+  if(acceling){accelAt(e.clientX,e.clientY);return}
   if(sowing){sowAt(e.clientX,e.clientY);return}
   if(dragPlot&&tapStart&&tapStart.moved){const w=screenToWorld(e.clientX,e.clientY);dragPlot.x=w.x;dragPlot.y=w.y;dragPlot.on=true;renderWorld();return}
   if(panStart&&tapStart&&tapStart.moved){const r=sceneEl.getBoundingClientRect(),vb=sceneEl.viewBox.baseVal,s=vb.width/r.width;buildCam.x=panStart.cx-(e.clientX-panStart.x)*s;buildCam.y=panStart.cy-(e.clientY-panStart.y)*s;updateCam()}
@@ -3322,6 +3344,7 @@ const ptrEnd=e=>{
   panStart=null;
   if(sowMode){if(sowing){sowing=false;save()}tapStart=null;return}
   if(shovelMode){if(shoveling){shoveling=false;save()}tapStart=null;return}
+  if(accelMode){if(acceling){acceling=false;save()}tapStart=null;return}
   if(tapStart&&!tapStart.moved&&e.type==='pointerup'){const ts=tapStart;tapStart=null;handleTap({target:ts.target},e.clientX,e.clientY);return}
   tapStart=null;
 };
@@ -3418,19 +3441,24 @@ const TRAY_N=30;
 function trayObj(){if(!state.tray||!Array.isArray(state.tray.cells))state.tray={cells:[],srcs:[]};return state.tray}
 function trayFree(){return TRAY_N-trayObj().cells.length}
 function trayEmptyPlots(){const out=[];state.plots.forEach((p,i)=>{if(!p&&state.plotPos&&state.plotPos[i])out.push(i)});return out}
-function traySow(lotId){
+function traySow(lotId,mx){
   const t=trayObj(),l=state.lots.find(x=>x.id===lotId);if(!l)return;
   if(l.obs){toast('已絕版的種子不能播種');return}
   const free=trayFree();if(free<=0){toast('育苗盤滿了，先移植或丟掉一些幼苗');return}
   const n=Math.min(free,lc(l));if(!n){toast('這包沒有種子了');return}
   let si=t.srcs.findIndex(s=>s.id===l.id);
   if(si<0){t.srcs.push({id:l.id,lid:l.lid,crop:l.crop,name:l.name,m:clone(l.m),par:l.par||[],gpar:l.gpar||[],wide:!!l.wide,rel:!!l.rel,gen:l.gen});si=t.srcs.length-1}
+  const it=state.items||(state.items={});if(mx&&!(it.mut>0))mx=false;if(mx)it.mut--;
+  const gk=g=>JSON.stringify([g.s,g.sp,g.c1,g.c2,g.pc]);
   let ok=0;
-  for(let k=0;k<n;k++){const g=drawSeed(l);if(rnd()<l.germ){t.cells.push({g,s:si,sel:false});ok++}}
+  for(let k=0;k<n;k++){const g=drawSeed(l);let odd=false;
+    if(mx){const b0=gk(g),k0=phen(g,l.crop).key;if(mutateX(g)&&gk(g)!==b0&&phen(g,l.crop).key===k0)odd=true}/* 外觀看不出來的突變：育苗盤加閃光 */
+    if(rnd()<l.germ*(mx?0.7:1)){const c={g,s:si,sel:false};if(odd)c.odd=1;t.cells.push(c);ok++}}
   if(!lc(l))state.lots=state.lots.filter(x=>x!==l);
   trayPrune();save();renderAll();
-  toast(`撒了 ${n} 顆，${ok} 顆發芽${n-ok?`，${n-ok} 顆沒有發芽`:''}`);
+  toast(`撒了 ${n} 顆，${ok} 顆發芽${n-ok?`，${n-ok} 顆沒有發芽`:''}${mx?`（用了 1 瓶誘變劑，剩 ${it.mut} 瓶）`:''}`);
 }
+function mutChk(nm,act){return `<label class="mutchk"><input type="checkbox" data-act="${act}"${sheet.trayMut?' checked':''}><span><b>使用誘變劑（剩 ${nm} 瓶）</b><span class="meta">只用在這次撒下的種子：更容易突變，發芽率 ×0.7</span></span></label>`}
 function trayPrune(){const t=trayObj(),used=[...new Set(t.cells.map(c=>c.s))].sort((a,b)=>a-b),map={};t.srcs=used.map((s,k)=>{map[s]=k;return t.srcs[s]});t.cells.forEach(c=>c.s=map[c.s])}
 function trayPlant(){
   const t=trayObj(),sel=t.cells.filter(c=>c.sel);if(!sel.length){toast('先點選想移植的幼苗');return}
@@ -3451,9 +3479,10 @@ function trayHTML(){
   let h=`<h2>育苗盤</h2><p class="stage">已用 ${t.cells.length} / ${TRAY_N} 格</p>`;
   if(sheet.trayPick||!t.cells.length){
     h+=`<p class="note">${t.cells.length?'':'育苗盤是空的。'}選一包種子撒進育苗盤，幼苗會直接顯示將來的外觀，只把想要的移植到田裡。</p>`;
-    const lots=state.lots.filter(l=>lc(l)>0&&!l.obs);
+    const lots=state.lots.filter(l=>lc(l)>0&&!l.obs),nm=(state.items||{}).mut||0;if(!nm)sheet.trayMut=false;const gm=sheet.trayMut?0.7:1;
+    if(nm)h+=mutChk(nm,'traymut');
     if(!lots.length)h+='<p class="note">種子袋裡沒有可以撒的種子。</p>';
-    h+=lots.map(l=>{try{const lk=likely(l);return `<button class="pick" data-act="traysow" data-lot="${l.id}"${trayFree()?'':' disabled'}><span class="seedic">${fruitSVG(lk.app,l.crop,44)}<i>${pctTxt(lk.p)}</i></span><span><b>${esc(l.name)}</b><span class="meta">${CROPS[l.crop].n}${genTxt(l.gen)}・剩 ${lc(l)} 顆・發芽率 ${Math.round(l.germ*100)}%・可撒 ${Math.min(lc(l),trayFree())} 顆</span></span></button>`}catch(e){return ''}}).join('');
+    h+=lots.map(l=>{try{const lk=likely(l);return `<button class="pick" data-act="traysow" data-lot="${l.id}"${trayFree()?'':' disabled'}><span class="seedic">${fruitSVG(lk.app,l.crop,44)}<i>${pctTxt(lk.p)}</i></span><span><b>${esc(l.name)}</b><span class="meta">${CROPS[l.crop].n}${genTxt(l.gen)}・剩 ${lc(l)} 顆・發芽率 ${Math.round(l.germ*gm*100)}%・可撒 ${Math.min(lc(l),trayFree())} 顆</span></span></button>`}catch(e){return ''}}).join('');
     if(t.cells.length)h+=`<button class="btn" data-act="trayback">回到育苗盤</button>`;
     return h+`<button class="btn" data-act="close">關閉</button>`;
   }
@@ -3461,10 +3490,11 @@ function trayHTML(){
   t.cells.forEach((c,k)=>{const src=t.srcs[c.s]||{},crop=src.crop||'tomato',ph=phen(c.g,crop),key=crop+'|'+ph.key;if(!groups.has(key))groups.set(key,{crop,ph,ks:[]});groups.get(key).ks.push(k)});
   const nSel=t.cells.filter(c=>c.sel).length,nEmpty=trayEmptyPlots().length;
   h+=`<p class="note">點幼苗可以選取，同一種外觀可以按「全選」。選好後移植到田裡，沒選的可以丟掉。</p>`;
+  if(t.cells.some(c=>c.odd))h+=`<p class="note"><b class="todd-l" aria-hidden="true">✦</b> 有閃光的幼苗：這株好像有點不一樣。</p>`;
   for(const gr of [...groups.values()].sort((a,b)=>b.ph.tier-a.ph.tier||b.ks.length-a.ks.length)){
     const allSel=gr.ks.every(k=>t.cells[k].sel);let rs='';try{rs=regStatus(gr.crop,gr.ph.key)}catch(e){}
     h+=`<div class="hvgrp"><div class="hvhead">${fruitSVG(gr.ph,gr.crop,36)}<span style="flex:1;min-width:0"><b>${CROPS[gr.crop].n}・${tagName(gr.ph,gr.crop)}・${colorLabel(gr.ph)}</b><span class="meta">${gr.ks.length} 株・${TIERS[gr.ph.tier]}${rs?'・'+rs:''}</span></span><button class="fchip" data-act="traygrp" data-k="${gr.ks.join(',')}" aria-pressed="${allSel}">${allSel?'取消全選':'全選'}</button></div><div class="tcells">`;
-    for(const k of gr.ks){const c=t.cells[k],ph=phen(c.g,gr.crop);h+=`<button class="tcell${c.sel?' on':''}" data-act="traycell" data-k="${k}" aria-pressed="${!!c.sel}" aria-label="${SIZE_N[ph.sizeCls]}、${PERF_N[ph.perfCls]}">${fruitSVG(ph,gr.crop,30)}<i>${SIZE_N[ph.sizeCls]}</i></button>`}
+    for(const k of gr.ks){const c=t.cells[k],ph=phen(c.g,gr.crop);h+=`<button class="tcell${c.sel?' on':''}" data-act="traycell" data-k="${k}" aria-pressed="${!!c.sel}" aria-label="${SIZE_N[ph.sizeCls]}、${PERF_N[ph.perfCls]}${c.odd?'、這株好像有點不一樣':''}"${c.odd?' title="這株好像有點不一樣"':''}>${fruitSVG(ph,gr.crop,30)}<i>${SIZE_N[ph.sizeCls]}</i>${c.odd?'<b class="todd" aria-hidden="true">✦</b>':''}</button>`}
     h+=`</div></div>`;
   }
   h+=`<button class="btn primary" data-act="trayplant"${nSel?'':' disabled'}>移植選取的 ${nSel} 株到田裡（空地 ${nEmpty} 塊）</button>`;
@@ -3475,7 +3505,8 @@ function trayHTML(){
 function trayAction(b){
   const a=b.dataset.act,t=trayObj();
   if(a!=='trayclear')sheet.confirm=false;
-  if(a==='traysow'){traySow(+b.dataset.lot);sheet.trayPick=false;renderSheet();return}
+  if(a==='traymut'){sheet.trayMut=!!b.checked;renderSheet();return}
+  if(a==='traysow'){traySow(+b.dataset.lot,!!sheet.trayMut);sheet.trayMut=false;sheet.trayPick=false;renderSheet();return}
   if(a==='traymore'){sheet.trayPick=true;renderSheet();return}
   if(a==='trayback'){sheet.trayPick=false;renderSheet();return}
   if(a==='traycell'){const c=t.cells[+b.dataset.k];if(c){c.sel=!c.sel;renderSheet()}return}
@@ -3484,20 +3515,13 @@ function trayAction(b){
   if(a==='traydrop'){trayDiscard('unsel');return}
   if(a==='trayclear'){if(!sheet.confirm){sheet.confirm=true;renderSheet();return}sheet.confirm=false;trayDiscard('all');return}
 }
-// ===== 全部施肥 =====
-function fertAll(){
-  if(!state||viewing||scene!=='farm')return;let n=0;
-  for(const p of state.plots){if(p&&(p.stage==='seedling'||p.stage==='fruit')&&!p.fert){p.fert=true;n++}}
-  if(!n){toast('目前沒有需要施肥的作物');return}
-  playAct('water');save();renderAll();toast(`幫 ${n} 株作物施肥了，這個階段會長得比較快`);
-}
 
 
 // ===== 播種模式：選一包種子，點或滑過空地連續播種 =====
-let sowMode=false,sowLot=null,sowGf=0,sowing=false,sowHist=[],sowN=0,sowOK=0;const sowFx={};
+let sowMode=false,sowLot=null,sowing=false,sowHist=[],sowN=0,sowOK=0;const sowFx={};
 function openSow(lotId){
   if(scene!=='farm'||viewing){toast('回到自己的農場才能播種');return}
-  closeSheet();closePanel();if(shovelMode)exitShovel();if(buildMode)exitBuild();
+  closeSheet();closePanel();if(shovelMode)exitShovel();if(buildMode)exitBuild();if(accelMode)exitAccel();
   const m=curMe();buildCam={x:m.x,y:m.y};sowMode=true;moveTo=null;sowHist=[];sowN=0;sowOK=0;
   sowLot=lotId!=null&&state.lots.some(l=>l.id===lotId&&lc(l)>0)?lotId:null;
   renderSowBar();renderHUD();applyCtrl();updateCam();
@@ -3511,9 +3535,7 @@ const sowCurLot=()=>state.lots.find(l=>l.id===sowLot&&lc(l)>0)||null;
 function sowAt(cx,cy){const el=document.elementFromPoint(cx,cy),g=el&&el.closest&&el.closest('[data-plot]');if(!g)return;const i=+g.dataset.plot;if(state.plots[i]||!posOf(state,i))return;sowOne(i)}
 function sowOne(i){
   const lot=sowCurLot();if(!lot){sowing=false;openSowPick();return}
-  const it=state.items||(state.items={});let germ=lot.germ,gf=0;
-  if(sowGf&&it['g'+sowGf]>0){it['g'+sowGf]--;gf=sowGf;germ=Math.min(0.99,germ+GB[sowGf])}else if(sowGf)sowGf=0;
-  const g=drawSeed(lot),ok=rnd()<germ,h={i,lot,g,gf,ok,removed:false};
+  const g=drawSeed(lot),ok=rnd()<lot.germ,h={i,lot,g,ok,removed:false};
   if(!lc(lot)){state.lots=state.lots.filter(l=>l!==lot);h.removed=true}
   if(ok){state.plots[i]=plantFromLot(lot,g);h.plant=state.plots[i];sowOK++;tutEv('plant')}else sowFx[i]=Date.now();
   sowHist.push(h);if(sowHist.length>60)sowHist.shift();sowN++;
@@ -3526,17 +3548,15 @@ function sowUndo(){
   if(h.ok){if(state.plots[h.i]!==h.plant){toast('這株已經有變化，無法復原');return}state.plots[h.i]=null;sowOK--;if(state.counts[h.lot.lid])state.counts[h.lot.lid]--}
   if(h.removed&&!state.lots.includes(h.lot)){delete h.lot.slot;state.lots.unshift(h.lot)}
   if(h.lot.seeds)h.lot.seeds.push(h.g);else h.lot.count=(h.lot.count||0)+1;
-  if(h.gf){const it=state.items||(state.items={});it['g'+h.gf]=(it['g'+h.gf]||0)+1}
   delete sowFx[h.i];sowN--;sowLot=h.lot.id;ensureSlots();save();renderWorld();renderSowBar();toast('已退回一顆種子');
 }
 function renderSowBar(){
   const el=document.getElementById('sowBar');if(!el)return;if(!sowMode){el.hidden=true;return}el.hidden=false;
-  const l=sowCurLot(),it=state.items||{};
+  const l=sowCurLot();
   let info='<div class="bbtip">先選一包種子</div>';
   if(l){let ic='';try{ic=fruitSVG(likely(l).app,l.crop,40)}catch(e){}
-    info=`<div class="sowinfo">${ic}<span><b>${esc(l.name)}</b><small>${CROPS[l.crop].n}${genTxt(l.gen)}・剩 ${lc(l)} 顆・發芽率 ${Math.round(Math.min(0.99,l.germ+GB[sowGf])*100)}%${sowGf?'（含肥料）':''}</small></span></div>`}
-  const gfs=[0,1,2,3].filter(k=>!k||it['g'+k]>0);
-  el.innerHTML=`${info}<div class="bbtip"><small>點一下或用手指滑過空地就能播種・拖曳空白處可以移動畫面</small></div>${gfs.length>1?`<div class="sowgf">${gfs.map(k=>`<button data-sw="gf" data-l="${k}" aria-pressed="${sowGf===k}">${k?`${LV[k]}肥料（${it['g'+k]}）`:'不用肥料'}</button>`).join('')}</div>`:''}<div class="bbrow" style="grid-template-columns:1fr 1fr 1fr"><button data-sw="pick">換一包</button><button data-sw="undo"${sowHist.length?'':' disabled'}>復原上一顆</button><button data-sw="done" class="done">完成</button></div>`;
+    info=`<div class="sowinfo">${ic}<span><b>${esc(l.name)}</b><small>${CROPS[l.crop].n}${genTxt(l.gen)}・剩 ${lc(l)} 顆・發芽率 ${Math.round(l.germ*100)}%</small></span></div>`}
+  el.innerHTML=`${info}<div class="bbtip"><small>點一下或用手指滑過空地就能播種・拖曳空白處可以移動畫面</small></div><div class="bbrow" style="grid-template-columns:1fr 1fr 1fr"><button data-sw="pick">換一包</button><button data-sw="undo"${sowHist.length?'':' disabled'}>復原上一顆</button><button data-sw="done" class="done">完成</button></div>`;
 }
 function openSowPick(){sheet={sowPick:true};renderSheet();openSheetUI()}
 function sowPickHTML(){
@@ -3582,11 +3602,35 @@ function renderGenes(){
   h+=`<div class="gcard"><h3>專屬造型 ${tag('r')}</h3><p class="note">和特殊造型是同一組因子，對一般造型為隱性。與特殊造型同時存在時，<b>專屬造型優先表現</b>。只會在原生作物身上出現，其他作物要靠遠緣雜交導入。瓜科指櫛瓜、南瓜、苦瓜、哈密瓜。</p>
     <div class="ladder">${Object.entries(EXN).map(([v,n])=>{const cl=Object.keys(EX_OF).filter(c=>EX_OF[c]===+v),crops=cl.length>1?'瓜科':CROPS[cl[0]].n;return unk(`${n}<br><span class="meta">${crops}</span>`)}).join('')}</div></div>`;
   h+=`<div class="gcard"><h3>大小、完美度 ${tag('a')}</h3><p class="note">各由 10 組數值因子決定，沒有顯隱性，取全部因子的平均。雙親的數值高，後代通常也高，但每顆種子會有差異。只影響賣價與紀錄，不影響稀有度與品種權，想挑戰紀錄再選拔就好。</p></div>`;
-  h+=`<div class="gcard"><h3>突變</h3><p class="note">每顆種子：一般突變 0.1%、特殊色 0.2%、特殊造型 0.05%；原生作物另有 0.02% 出現專屬造型。</p></div>`;
+  h+=`<div class="gcard"><h3>突變</h3><p class="note">每顆種子：一般突變 0.1%、特殊色 0.2%、特殊造型 0.05%；原生作物另有 0.02% 出現專屬造型。</p><p class="note">撒進育苗盤時使用誘變劑：這次的每顆種子會再多一次突變機會，機率是平常的 25 倍（特殊色 5%、特殊造型 1.25%、一般 2.5%；專屬造型不會因此出現），但發芽率變成 0.7 倍。</p></div>`;
   el.innerHTML=h;
 }
 document.getElementById('sizeBox').addEventListener('toggle',e=>{if(e.target.open)document.getElementById('sizeInfo').innerHTML=sizeReportHTML()});
-document.getElementById('sowBar').addEventListener('click',e=>{const b=e.target.closest('[data-sw]');if(!b)return;const k=b.dataset.sw;if(k==='done')return exitSow();if(k==='pick')return openSowPick();if(k==='undo')return sowUndo();if(k==='gf'){sowGf=+b.dataset.l;renderSowBar()}});
+document.getElementById('sowBar').addEventListener('click',e=>{const b=e.target.closest('[data-sw]');if(!b)return;const k=b.dataset.sw;if(k==='done')return exitSow();if(k==='pick')return openSowPick();if(k==='undo')return sowUndo()});
+
+// ===== 生長加速劑（14g）：每次讓一株幼苗或結果中的作物，這個階段剩下的生長時間減半 =====
+var accelMode=false,accelN=0,acceling=false;const accelHit=new Set();
+const accelOk=p=>!!p&&!p.obs&&(p.stage==='seedling'||p.stage==='fruit');
+function useAccel(i,quiet){
+  const p=state.plots[i],it=state.items||(state.items={});
+  if(!accelOk(p)){if(!quiet)toast('加速劑只能用在幼苗或結果中的作物');return false}
+  if(!(it.acc>0)){if(!quiet)toast('生長加速劑用完了，到探索世界撿撿看');return false}
+  const dur=stageDur(p,phen(p.g,p.crop));p.prog=Math.min(dur,p.prog+Math.max(0,dur-p.prog)/2);it.acc--;/* 進度存在 p.prog，離線生長也從這裡接著算 */
+  if(!quiet)toast(`用了 1 次加速劑，這個階段剩下的時間減半（剩 ${it.acc} 次）`);
+  return true;
+}
+function openAccel(){
+  if(scene!=='farm'||viewing){toast('回到自己的農場才能使用');return}
+  if(!((state.items||{}).acc>0)){toast('沒有生長加速劑了，到探索世界撿撿看');return}
+  closeSheet();closePanel();if(shovelMode)exitShovel();if(sowMode)exitSow();if(buildMode)exitBuild();
+  const m=curMe();buildCam={x:m.x,y:m.y};accelMode=true;accelN=0;moveTo=null;renderAccelBar();renderHUD();applyCtrl();updateCam();renderWorld();
+  toast('加速模式：點或滑過幼苗、結果中的作物，每株用一次',3000);
+}
+function exitAccel(){if(!accelMode)return;accelMode=false;acceling=false;renderAccelBar();renderHUD();applyCtrl();updateCam();renderWorld();save();toast(accelN?`用了 ${accelN} 次加速劑`:'結束加速');accelN=0}
+function renderAccelBar(){const el=document.getElementById('accelBar');if(!el)return;if(!accelMode){el.hidden=true;return}el.hidden=false;const left=(state.items||{}).acc||0;
+  el.innerHTML=`<div class="bbtip">點一下或用手指滑過幼苗、結果中的作物，每株用一次<br><small>開花等授粉的植株會略過・想對同一株再用，就再點一次・拖曳空白處可以移動畫面</small></div><div class="bbtip"><b>已用 ${accelN} 次，剩 ${left} 次</b></div><div class="bbrow" style="grid-template-columns:1fr"><button data-ac="done" class="done">完成</button></div>`}
+function accelAt(cx,cy){const el=document.elementFromPoint(cx,cy),g=el&&el.closest&&el.closest('[data-plot]');if(!g)return;const i=+g.dataset.plot;if(accelHit.has(i))return;accelHit.add(i);if(!accelOk(state.plots[i]))return;if(!((state.items||{}).acc>0)){toast('生長加速劑用完了');return}if(useAccel(i,true)){accelN++;renderWorld();renderAccelBar()}}
+document.getElementById('accelBar').addEventListener('click',e=>{const b=e.target.closest('[data-ac]');if(b&&b.dataset.ac==='done')exitAccel()});
 
 // ===== 剷除模式與垃圾桶 =====
 let shovelMode=false,shovelN=0,shoveling=false;
@@ -3754,6 +3798,7 @@ auth.onAuthStateChanged(async user=>{
   if(state){const raw=state._raw||packState(state);delete state._raw;const r=repairState(state);if(repTotal(r)){await backupSave(raw,'repair'+Date.now());repaired=r}}
   if(cloud)delete cloud._raw;
   if(!state)newGame();
+  {const c=state._oldFert;delete state._oldFert;if(cloud)delete cloud._oldFert;if(local)delete local._oldFert;if(c)setTimeout(()=>toast(`舊肥料已換成 ${c} 金幣`,6000),1500)}/* 14g */
   ensureCrops();shapeMigrate();cleanupObs();
   dirty=true;flush();
   db.collection('profiles').doc(uid).set({name:myName(),avatar:state.avatar||AV_DEF,at:TS()},{merge:true}).catch(()=>{});

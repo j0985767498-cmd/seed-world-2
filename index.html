@@ -90,6 +90,7 @@ button{font:inherit;color:inherit}
 .intro{margin:2px auto 8px;max-width:320px;text-align:center;font-size:13px;font-weight:700;color:#6A4A00;background:linear-gradient(90deg,#FFF4C8,#FFE08A,#FFF4C8);border:1px solid #D9A62E;border-radius:10px;padding:4px 10px}
 .slot .obs{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(70,70,70,.5);color:#fff;font-style:normal;font-size:12px;font-weight:700;pointer-events:none}
 .badge.obs{background:#888;color:#fff}
+.sztab{width:100%;font-size:13px;border-collapse:collapse;margin:4px 0 8px}.sztab td{padding:3px 4px;border-bottom:1px solid rgba(0,0,0,.08)}.sztab td:last-child{text-align:right;white-space:nowrap}
 .chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:6px 0 10px}
 .chip{background:var(--chip);border-radius:999px;padding:2px 10px;font-size:13px}
 .scores{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
@@ -378,7 +379,7 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
 <div class="panel" id="p-social" hidden role="dialog" aria-label="朋友"><div class="ph"><h2>朋友</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><button class="btn" id="avatarBtn2" style="margin:0 0 8px">打扮我的角色</button><h3 style="margin-top:4px">朋友</h3><div id="friends"></div><h3>公共聊天室</h3><div id="chat" aria-live="polite"></div><div class="chatbar"><input id="chatIn" maxlength="300" placeholder="輸入訊息" aria-label="聊天訊息" aria-describedby="chatErr"><button class="mini big" id="chatSend">傳送</button></div><div class="err" id="chatErr"></div></div></div>
 <div class="panel" id="p-decor" hidden role="dialog" aria-label="裝飾農場"><div class="ph"><h2>裝飾農場</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><p class="note">所有裝飾都免費。走到想放的位置，選一個裝飾，它會放在角色腳邊；點已放好的裝飾可以移動或收起。「標示」裡有大、小告示牌，可以寫 2 到 8 個字。</p><div class="filters" id="decorCats"></div><div class="decorItems" id="decorItems"></div></div></div>
 <div class="panel" id="p-explore" hidden role="dialog" aria-label="探索世界"><div class="ph"><h2>探索世界</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb" id="exploreBody"></div></div>
-<div class="panel" id="p-settings" hidden role="dialog" aria-label="設定"><div class="ph"><h2>設定</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div class="settings"><div id="ctrlBox"></div><div id="testBox"></div><details class="dist"><summary>錯誤紀錄（回報問題時截圖給開發者）</summary><pre id="errLog" style="white-space:pre-wrap;font-size:12px;margin:6px 0 0">目前沒有錯誤</pre></details><button class="btn" id="allSeedsBtn">測試：領取全部 8 種原始品種</button><button class="btn warn" id="resetBtn">重新開始</button><p class="note" id="account" style="margin-top:16px"></p><button class="btn" id="logoutBtn">登出</button></div></div></div>
+<div class="panel" id="p-settings" hidden role="dialog" aria-label="設定"><div class="ph"><h2>設定</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div class="settings"><div id="ctrlBox"></div><div id="testBox"></div><details class="dist"><summary>錯誤紀錄（回報問題時截圖給開發者）</summary><pre id="errLog" style="white-space:pre-wrap;font-size:12px;margin:6px 0 0">目前沒有錯誤</pre></details><button class="btn" id="allSeedsBtn">測試：領取全部 8 種原始品種</button><button class="btn warn" id="resetBtn">重新開始</button><details class="dist" id="sizeBox"><summary>存檔大小</summary><div id="sizeInfo"><p class="note">打開時會計算目前存檔的大小。</p></div></details><p class="note" id="account" style="margin-top:16px"></p><button class="btn" id="logoutBtn">登出</button></div></div></div>
 <div id="tut" hidden role="status"><div class="tuth"><img class="gp" src="data:image/jpeg;base64,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" width="44" height="44" alt="">農會阿伯<span class="stp" id="tutStep"></span></div><p id="tutText"></p><div class="tutb"><button id="tutSkip">跳過教學</button><button id="tutNext" hidden></button></div></div>
 <div id="backdrop"></div>
 <div id="sheet" role="dialog" aria-modal="true" aria-label="詳細資料"><div class="shead"><div class="grip"></div><button id="sheetX" class="xbtn" aria-label="關閉">✕</button></div><div class="sheet-wrap" id="sheetBody"></div></div>
@@ -597,8 +598,46 @@ function genName(crop,used){
 }
 
 let state=null,uiCrop='all';
-const lc=l=>l.seeds?l.seeds.length:(l.count||0);
-function drawSeed(l){if(l.seeds&&l.seeds.length)return l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0];l.count--;return child(l.m,l.f).g}
+const lc=l=>l.seeds?l.seeds.length:l.zs?l.zs.n:(l.count||0);
+// ===== 種原庫壓縮：每個位置建立對偶基因字典，每顆種子只記索引（位元打包），可完全還原 =====
+function gFlat(g){const a=[];for(const p of g.s)a.push(p[0],p[1]);for(const k of ['sp','pw','c1','c2','pc','pf'])a.push(g[k][0],g[k][1]);for(const k of ABIL)for(const p of g.n[k])a.push(p[0],p[1]);a.push(g.sv||0);for(const k of OLOCI){const o=g.o&&g.o[k];a.push(o?o[0]||null:null,o?o[1]||null:null)}return a}
+function gUnflat(a){let i=0;const g={s:[],n:{}};for(let k=0;k<SHN;k++)g.s.push([a[i++],a[i++]]);for(const k of ['sp','pw','c1','c2','pc','pf'])g[k]=[a[i++],a[i++]];for(const k of ABIL){g.n[k]=[];for(let q=0;q<NUMN;q++)g.n[k].push([a[i++],a[i++]])}const sv=a[i++];if(sv)g.sv=sv;const o={};let has=false;for(const k of OLOCI){o[k]=[a[i++],a[i++]];if(o[k][0]||o[k][1])has=true}if(has)g.o=o;return g}
+const zbits=n=>n<=1?0:Math.ceil(Math.log2(n));
+function zipSeeds(seeds){
+  const F=seeds.map(gFlat),P=F[0].length,pools=[],idx=[];
+  for(let p=0;p<P;p++){const m=new Map(),pool=[];for(const f of F){const k=JSON.stringify(f[p]);if(!m.has(k)){m.set(k,pool.length);pool.push(f[p])}}pools.push(pool);idx.push(m)}
+  const bits=pools.map(x=>zbits(x.length)),per=bits.reduce((a,b)=>a+b,0),buf=new Uint8Array(Math.ceil(per*F.length/8));let pos=0;
+  for(const f of F)for(let p=0;p<P;p++){const b=bits[p];if(!b)continue;const v=idx[p].get(JSON.stringify(f[p]));for(let k=b-1;k>=0;k--){if((v>>k)&1)buf[pos>>3]|=1<<(7-(pos&7));pos++}}
+  let bin='';for(let i=0;i<buf.length;i++)bin+=String.fromCharCode(buf[i]);
+  return {v:1,n:F.length,p:pools,b:btoa(bin)};
+}
+function unzipSeeds(z){
+  const bin=atob(z.b),buf=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)buf[i]=bin.charCodeAt(i);
+  const bits=z.p.map(x=>zbits(x.length)),out=[];let pos=0;
+  for(let s=0;s<z.n;s++){const a=[];for(let p=0;p<z.p.length;p++){const b=bits[p];let v=0;for(let k=0;k<b;k++){v=(v<<1)|((buf[pos>>3]>>(7-(pos&7)))&1);pos++}a.push(z.p[p][v])}out.push(gUnflat(a))}
+  return out;
+}
+// 包內索引：實際的外觀與顆數、能力值範圍、大小與完美度等級，查詢時不需要解壓縮
+function packIndex(l){
+  const k={},ab={},sc=new Set(),pc=new Set();
+  for(const g of l.seeds){const ph=phen(g,l.crop);k[ph.key]=(k[ph.key]||0)+1;sc.add(ph.sizeCls);pc.add(ph.perfCls);for(const a of ABIL){const v=ph.ab[a];if(!ab[a])ab[a]=[v,v];else{ab[a][0]=Math.min(ab[a][0],v);ab[a][1]=Math.max(ab[a][1],v)}}}
+  return {k,ab,sc:[...sc],pc:[...pc]};
+}
+function zipLot(l){
+  if(l.zs||!Array.isArray(l.seeds)||l.seeds.length<4||l.znz===l.seeds.length)return;
+  try{const z=zipSeeds(l.seeds),back=unzipSeeds(z);if(packState(back)!==packState(l.seeds)){l.znz=l.seeds.length;return}
+    if(byteLen(JSON.stringify(z))>=byteLen(packState(l.seeds))){l.znz=l.seeds.length;return}delete l.znz;
+    l.zi=packIndex(l);l.zs=z;delete l.seeds}catch(e){}
+}
+function unzipLot(l){if(!l||!l.zs)return;l.seeds=unzipSeeds(l.zs);delete l.zs;delete l.zi}
+function zipPass(){if(!state)return;for(const l of state.lots)unzipLot(l);for(const c of vaultCabs())for(const l of c.lots)zipLot(l)}
+// 包內實際外觀（壓縮的讀索引；逐顆記錄的直接計算；只記顆數的用理論機率）
+function packKeys(l){
+  if(l.zi)return Object.entries(l.zi.k).map(([key,n])=>({key,n}));
+  if(l.seeds){const k={};for(const g of l.seeds){const ph=phen(g,l.crop);k[ph.key]=(k[ph.key]||0)+1}return Object.entries(k).map(([key,n])=>({key,n}))}
+  return lotDist(l).map(x=>({key:x.key,p:x.p}));
+}
+function drawSeed(l){if(l.zs)unzipLot(l);if(l.seeds&&l.seeds.length)return l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0];l.count--;return child(l.m,l.f).g}
 function newGame(){state={vault:[],v:4,mapV:MAPV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},orders:{},shapeV:2,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null}}
 const WILD={tomato:'red',strawberry:'red',zucchini:'green',bittergourd:'green',corn:'yellow',broccoli:'white',sweetpotato:'purple',melon:'yellow',chili:'red',pumpkin:'orange',eggplant:'purple'};
 function originalFor(crop){
@@ -626,6 +665,7 @@ function giveAllOriginals(){
 // 從絕版種子救回：保留顏色、花紋與能力值，造型重新隨機生成為現有的基本造型
 const RESCUE_N=5;
 function rescueLot(l,cab){
+  unzipLot(l);
   const n=Math.min(RESCUE_N,lc(l)),nP=Math.floor(rnd()*6),idx=pickIdx(SHN,nP);
   const fix=g=>{const x=clone(g);x.sv=2;x.sp=[0,0];delete x.o;x.s=Array.from({length:SHN},(_,i)=>idx.includes(i)?[1,1]:[0,0]);return x};
   const raw=[];for(let k=0;k<n;k++){if(l.seeds&&l.seeds.length)raw.push(l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0]);else{l.count--;raw.push(fuse(gamete(l.m),gamete(l.f)))}}
@@ -693,6 +733,7 @@ const myName=()=>(auth.currentUser&&auth.currentUser.displayName)||'玩家';
 const lsKey=()=>LS_KEY+'_'+uid;
 function setSync(k){const t={loading:'讀取雲端存檔中…',saving:'儲存中…',ok:'已存到雲端',err:'暫時無法連線，恢復後會自動存檔'}[k]||'';const el=document.getElementById('sync');if(el)el.textContent=t}
 function save(){if(state)try{ensureSlots()}catch(e){}
+  if(state)try{zipPass()}catch(e){}
   if(!state||!uid)return;
   state.savedAt=Date.now();
   try{localStorage.setItem(lsKey(),packState(state))}catch(e){}
@@ -752,6 +793,7 @@ function repairState(o){
   if(!o||!Array.isArray(o.lots))return rep_;
   o.lots=o.lots.filter(l=>{
     if(!l||typeof l!=='object'){rep_.lots.push({name:'（無名稱）',source:''});return false}
+    if(l.zs&&typeof l.zs==='object'&&l.zs.n>0){const m0=fixGeno(l.m);if(!m0||!CROPS[l.crop]){rep_.lots.push({name:l.name||'（無名稱）',source:l.source||''});return false}l.m=m0;l.f=fixGeno(l.f)||m0;return true}
     if(Array.isArray(l.seeds)){const n0=l.seeds.length;l.seeds=l.seeds.map(fixGeno).filter(Boolean);rep_.seeds+=n0-l.seeds.length}
     let m=fixGeno(l.m);if(!m&&Array.isArray(l.seeds)&&l.seeds.length)m=l.seeds[0];
     if(!m||!CROPS[l.crop]){rep_.lots.push({name:l.name||'（無名稱）',source:l.source||''});return false}
@@ -794,6 +836,19 @@ window.addEventListener('unhandledrejection',ev=>logErr(ev.reason,'錯誤'));
 // ===== 存檔保護 =====
 const SESSION=Math.random().toString(36).slice(2,10);
 let saveBlocked=false,lastBak=0,sizeWarned=false,selfUnsub=null,lastSaveErr='';
+const SAVE_LIMIT=1048576,SAVE_WARN=900000;
+const byteLen=t=>{try{return new TextEncoder().encode(t).length}catch(e){return t.length*2}};
+function sizeReportHTML(){
+  if(!state)return '';
+  const kb=x=>Math.round(byteLen(packState(x))/1024),total=byteLen(packState(state));
+  const parts=[['種子袋',state.lots],['種原庫',state.vault],['田裡的植株',state.plots],['垃圾桶',state.trash],['標本',state.specimens],['收集紀錄',state.seen],['裝飾',state.decor]].filter(p=>p[1]!=null);
+  const rows=parts.map(([n,v])=>[n,kb(v)]);const other=Math.max(0,Math.round(total/1024)-rows.reduce((s,r)=>s+r[1],0));rows.push(['其他',other]);
+  const big=[];const add=(l,where)=>{const k=kb(l);if(k>=8)big.push([l.name,where,k,lc(l)])};
+  state.lots.forEach(l=>add(l,'種子袋'));vaultCabs().forEach(c=>c.lots.forEach(l=>add(l,c.name)));big.sort((a,b)=>b[2]-a[2]);
+  let h=`<p class="note">目前約 <b>${Math.round(total/1024)} KB</b>，雲端上限 1024 KB（${Math.round(total/SAVE_LIMIT*100)}%）。</p><table class="sztab">${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]} KB</td></tr>`).join('')}</table>`;
+  if(big.length)h+=`<p class="note">佔空間最多的種子包：</p><table class="sztab">${big.slice(0,8).map(b=>`<tr><td>${esc(b[0])}（${esc(b[1])}，${b[3]} 顆）</td><td>${b[2]} KB</td></tr>`).join('')}</table><p class="note">逐顆記錄的種子包（例如放回原包、救回的種子）每顆都會佔空間。存進種原庫的種子包會自動壓縮；常放在種子袋的大包種子，可以先存進種原庫。</p>`;
+  return h;
+}
 function blockSaves(msg){
   saveBlocked=true;clearTimeout(saveTimer);
   let el=document.getElementById('saveGuard');
@@ -814,10 +869,10 @@ async function flush(){
   if(!uid||!dirty||!state||saveBlocked)return;
   dirty=false;clearTimeout(saveTimer);
   const json=packState(state);
-  if(json.length>850000&&!sizeWarned){sizeWarned=true;toast('存檔快到雲端上限了，建議把用不到的種子賣掉或丟掉')}
+  const bytes=byteLen(json);if(bytes>SAVE_WARN&&!sizeWarned){sizeWarned=true;toast(`存檔約 ${Math.round(bytes/1024)} KB，接近雲端上限 1024 KB。到「設定 → 存檔大小」看看是哪裡佔空間`,8000)}
   if(Date.now()-lastBak>30*60e3){lastBak=Date.now();backupSave(json,'auto')}
   try{await db.collection('players').doc(uid).set({save:json,savedAt:state.savedAt,session:SESSION,build:BUILD,name:myName(),updatedAt:TS()},{merge:true});lastSaveErr='';if(!dirty)setSync('ok')}
-  catch(e){dirty=true;setSync('err');const code=(e&&(e.code||e.message))||'unknown';if(code!==lastSaveErr){lastSaveErr=code;toast(`雲端存檔失敗（${code}，存檔大小約 ${Math.round(json.length/1024)} KB）。請截圖給開發者`,8000)}clearTimeout(saveTimer);saveTimer=setTimeout(flush,8000)}
+  catch(e){dirty=true;setSync('err');const code=(e&&(e.code||e.message))||'unknown';if(code!==lastSaveErr){lastSaveErr=code;toast(`雲端存檔失敗（${code}，存檔大小約 ${Math.round(byteLen(json)/1024)} KB）。請截圖給開發者`,8000)}clearTimeout(saveTimer);saveTimer=setTimeout(flush,8000)}
 }
 function load(){try{const s=localStorage.getItem(lsKey());if(s){const o=unpack(s);if(o&&o.v===4)return migrate(o)}}catch(e){}return null}
 const tms=x=>x&&x.toMillis?x.toMillis():Infinity;
@@ -1126,7 +1181,7 @@ function lotRow(l,inner){try{return lotRow_(l,inner)}catch(e){logErr(e,'lotRow')
 function lotRow_(l,inner){const ph=phen(l.m,l.crop),lk=likely(l);return `<button class="lotrow${inner?' inner':''}" data-lot="${l.id}"><span class="seedic">${fruitSVG(lk.app,l.crop,inner?44:52)}<i>最可能 ${pctTxt(lk.p)}</i></span><span class="lr"><b>${esc(l.name)}${l.wide?'・遠緣雜種':''}${l.obs?'・已絕版':''}</b><span class="meta">${inner?'':CROPS[l.crop].n+'・'}${lc(l)} 顆${inner?'':'・'+shapeNameOf(lk.app,l.crop)+'・'+colorLabelA(lk.app)}</span><span class="meta">母本：${SIZE_N[ph.sizeCls]}・${PERF_N[ph.perfCls]}・發芽率 ${Math.round(l.germ*100)}%</span><span class="badges" style="justify-content:flex-start;margin-top:2px"><span class="badge r${ph.tier}">${l.ptier!=null&&l.ptier>=3?TIERS[l.ptier]+'母本':TIERS[ph.tier]}</span></span></span></button>`}
 // ===== 種原庫 =====
 let bagTab='bag',vaultCrop='all',vaultOpen=new Set(),vDraft={name:'',crop:'',err:''};
-let vq={crop:'all',shape:'any',skin:'any',pat:'any',size:'any',perf:'any',tier:'0',stab:'0',speed:'',yield:'',vigor:'',scope:'vault'};
+let vq={crop:'all',shape:'any',skin:'any',pat:'any',pc:'any',by:'m',size:'any',perf:'any',tier:'0',stab:'0',speed:'',yield:'',vigor:'',scope:'vault'};
 const vaultCabs=()=>state.vault||(state.vault=[]);
 const cabOf=lotId=>vaultCabs().find(c=>c.lots.some(l=>l.id===lotId));
 function findLotAny(id){const b=state.lots.find(l=>l.id===id);if(b)return {l:b,cab:null};for(const c of vaultCabs()){const l=c.lots.find(x=>x.id===id);if(l)return {l,cab:c}}return null}
@@ -1148,12 +1203,14 @@ function vaultHTML(){
 function searchHTML(){
   const opt=(k,list)=>list.map(([v,n])=>`<option value="${v}"${vq[k]===v?' selected':''}>${n}</option>`).join('');
   const cropShapes=(vq.crop!=='all'?CROPS[vq.crop]:CROPS.tomato).shapes;
-  let h=`<p class="note">依母本的性狀查詢，條件不選就是不限。</p><div class="vq">
+  let h=`<p class="note">條件不選就是不限。「依包內實際的種子」會檢查包裡每一顆種子的外觀，混合的種子包也找得到。</p><div class="vq">
+  <label>查詢依據<select data-vq="by">${opt('by',[['m','母本'],['pack','包內實際的種子']])}</select></label>
   <label>範圍<select data-vq="scope">${opt('scope',[['vault','只查種原庫'],['all','種原庫＋種子袋']])}</select></label>
   <label>作物<select data-vq="crop">${opt('crop',[['all','全部'],...CROP_KEYS.map(k=>[k,CROPS[k].n])])}</select></label>
   <label>形狀<select data-vq="shape">${opt('shape',[['any','不限'],...cropShapes.map((n,i)=>['B'+i,n+(i<3?' 以上':'')]),...SPN.slice(1).map((n,i)=>['S'+(i+1),n+'（特殊）']),...Object.entries(EXN).map(([v,n])=>['S'+v,n+'（專屬）'])])}</select></label>
   <label>果皮顏色<select data-vq="skin">${opt('skin',[['any','不限'],...COLOR_ORDER.slice().reverse().map(c=>[c,CN[c]])])}</select></label>
   <label>花紋<select data-vq="pat">${opt('pat',[['any','不限'],['yes','有花紋'],['no','沒有花紋'],...PFN.map((n,i)=>['f'+i,n])])}</select></label>
+  <label>花紋顏色<select data-vq="pc">${opt('pc',[['any','不限'],...COLOR_ORDER.slice().reverse().map(c=>[c,CN[c]])])}</select></label>
   <label>大小<select data-vq="size">${opt('size',[['any','不限'],...SIZE_N.map((n,i)=>[String(i),n])])}</select></label>
   <label>完美度<select data-vq="perf">${opt('perf',[['any','不限'],...PERF_N.map((n,i)=>[String(i),n])])}</select></label>
   <label>稀有度<select data-vq="tier">${opt('tier',TIERS.map((n,i)=>[String(i),n+(i?' 以上':'（全部）')]))}</select></label>
@@ -1164,26 +1221,45 @@ function searchHTML(){
   <button class="btn" data-vact="qreset">清除條件</button>`;
   const pool=[];for(const c of vaultCabs())for(const l of c.lots)pool.push({l,where:c.name});if(vq.scope==='all')for(const l of state.lots)pool.push({l,where:'種子袋'});
   const num=v=>v===''?null:+v;
-  const res=pool.filter(({l})=>{try{
-    if(vq.crop!=='all'&&l.crop!==vq.crop)return false;
+  const appOk=a=>{
+    if(vq.shape!=='any'){const n=+vq.shape.slice(1);if(vq.shape[0]==='B'){if(a.sp||a.legacy||a.level<n)return false}else if(a.sp!==n||a.legacy)return false}
+    if(vq.skin!=='any'&&a.skin!==vq.skin)return false;
+    if(vq.pat==='yes'&&!a.pat)return false;if(vq.pat==='no'&&a.pat)return false;if(vq.pat[0]==='f'&&(!a.pat||a.pat.f!==+vq.pat.slice(1)))return false;
+    if(vq.pc!=='any'&&(!a.pat||a.pat.c!==vq.pc))return false;return true};
+  const res=[];
+  for(const it of pool){const l=it.l;try{
+    if(vq.crop!=='all'&&l.crop!==vq.crop)continue;
     const ph=phen(l.m,l.crop);
-    if(vq.shape!=='any'){const n=+vq.shape.slice(1);if(vq.shape[0]==='B'){if(ph.sp||ph.legacy||ph.level<n)return false}else if(ph.sp!==n||ph.legacy)return false}
-    if(vq.skin!=='any'&&ph.skin!==vq.skin)return false;
-    if(vq.pat==='yes'&&!ph.pat)return false;if(vq.pat==='no'&&ph.pat)return false;if(vq.pat[0]==='f'&&(!ph.pat||ph.pat.f!==+vq.pat.slice(1)))return false;
-    if(vq.size!=='any'&&ph.sizeCls!==+vq.size)return false;if(vq.perf!=='any'&&ph.perfCls!==+vq.perf)return false;
-    if(ph.tier<+vq.tier)return false;if(+vq.stab&&likely(l).p<+vq.stab)return false;
-    for(const k of ['speed','yield','vigor']){const m=num(vq[k]);if(m!=null&&ph.ab[k]<m)return false}
-    return true}catch(e){return false}});
-  h+=`<h3>找到 ${res.length} 包</h3>`+(res.length?res.slice(0,80).map(({l,where})=>`<div class="vres">${lotRow(l,false)}<span class="meta">位置：${esc(where)}</span></div>`).join('')+(res.length>80?'<p class="note">只列出前 80 包，請再加條件縮小範圍。</p>':''):'<p class="note">沒有符合條件的種子。</p>');
+    if(vq.by==='pack'){
+      const hit=packKeys(l).filter(e=>{const a=appFromKey(e.key);return appOk(a)&&rarityOf(a,50,50).tier>=+vq.tier});if(!hit.length)continue;
+      const zi=l.zi||(l.seeds?packIndex(l):null);
+      if(vq.size!=='any'&&!(zi?zi.sc.includes(+vq.size):ph.sizeCls===+vq.size))continue;
+      if(vq.perf!=='any'&&!(zi?zi.pc.includes(+vq.perf):ph.perfCls===+vq.perf))continue;
+      let bad=false;for(const k of ['speed','yield','vigor']){const m=num(vq[k]);if(m!=null&&(zi?zi.ab[k][1]:ph.ab[k])<m)bad=true}if(bad)continue;
+      const cnt=hit.reduce((s,e)=>s+(e.n||0),0),pp=hit.reduce((s,e)=>s+(e.p||0),0);
+      res.push({...it,note:cnt?`包內有 ${cnt} 顆符合外觀條件`:`後代約 ${pctTxt(pp)} 符合外觀條件`});
+    }else{
+      if(!appOk(ph))continue;
+      if(vq.size!=='any'&&ph.sizeCls!==+vq.size)continue;if(vq.perf!=='any'&&ph.perfCls!==+vq.perf)continue;
+      if(ph.tier<+vq.tier)continue;if(+vq.stab&&likely(l).p<+vq.stab)continue;
+      let bad=false;for(const k of ['speed','yield','vigor']){const m=num(vq[k]);if(m!=null&&ph.ab[k]<m)bad=true}if(bad)continue;
+      res.push(it);
+    }}catch(e){}}
+  h+=`<h3>找到 ${res.length} 包</h3>`+(res.length?res.slice(0,80).map(({l,where,note})=>`<div class="vres">${lotRow(l,false)}<span class="meta">位置：${esc(where)}${note?'・'+note:''}</span></div>`).join('')+(res.length>80?'<p class="note">只列出前 80 包，請再加條件縮小範圍。</p>':''):'<p class="note">沒有符合條件的種子。</p>');
   return h;
 }
 function depositHTML(l){
   const cabs=vaultCabs().filter(c=>c.crop===l.crop);
   return `<div class="regbox"><b>存入種原庫</b><p class="note">選一個${CROPS[l.crop].n}的保存櫃，或直接建立新的。</p>${cabs.map(c=>`<button class="btn" data-act="vdep" data-c="${c.id}">存入「${esc(c.name)}」（${c.lots.length} 包）</button>`).join('')}<label class="note">新保存櫃名稱<input id="f1" maxlength="10" value="${esc(sheet.d1)}" placeholder="例如：${CROPS[l.crop].n}素材"></label><div class="err" id="ferr">${sheet.err}</div><div class="row2"><button class="btn primary" data-act="vdepnew">建立並存入</button><button class="btn" data-act="lcancel">取消</button></div></div>`;
 }
+function packContentHTML(l){
+  if(!l.zi&&!l.seeds)return '';
+  const e=packKeys(l).sort((a,b)=>b.n-a.n),show=e.slice(0,6).map(x=>{const a=appFromKey(x.key);return `${tagName(a,l.crop)}・${colorLabelA(a)} ×${x.n}`}).join('<br>');
+  return `<div class="regbox"><b>包內實際的種子${l.zs?'（已壓縮保存）':''}</b><p class="note">${show}${e.length>6?`<br>另有 ${e.length-6} 種外觀`:''}</p>${abilRange(l)}</div>`;
+}
 function vaultLotHTML(l,cab){
   const ph=phen(l.m,l.crop),others=vaultCabs().filter(c=>c.crop===l.crop&&c!==cab);
-  let h=`<h2>${esc(l.name)}</h2><p class="stage">${CROPS[l.crop].n}・${lc(l)} 顆・發芽率 ${Math.round(l.germ*100)}%・存放在「${esc(cab.name)}」</p><p class="note">血統：${esc(l.source)}</p>`;
+  let h=`<h2>${esc(l.name)}</h2><p class="stage">${CROPS[l.crop].n}・${lc(l)} 顆・發芽率 ${Math.round(l.germ*100)}%・存放在「${esc(cab.name)}」</p><p class="note">血統：${esc(l.source)}</p>${packContentHTML(l)}`;
   if(l.obs){h+=`<p class="note">這包種子已絕版。可以取出最多 ${RESCUE_N} 顆：顏色、花紋與能力值保留，外觀會隨機重新生成為現有的基本造型。取出的種子可以正常使用，剩下的仍維持絕版。</p><button class="btn primary" data-act="vrescue">取出 ${Math.min(RESCUE_N,lc(l))} 顆（保留顏色）</button>`;
     return h+distHTML(lotDist(l),l.crop,'原本的後代外觀',false)+`<h3>母本</h3>`+infoHTML(ph,3,l.m,l.crop,true)+'<button class="btn" data-act="close">關閉</button>'}
   h+=`<button class="btn primary" data-act="vget">取回種子袋</button>`;
@@ -1197,7 +1273,7 @@ function vaultSheetAction(act,b){
   if(act==='close')return closeSheet();
   if(l.obs&&act==='vrescue'){const r=rescueLot(l,cab);closeSheet();renderAll();toast(`取出 ${r.n} 顆「${r.name}」，放進種子袋了。顏色保留，外觀已重新生成`,6000);return}
   if(l.obs){toast('已絕版的種子只能查看');return}
-  if(act==='vget'){cab.lots=cab.lots.filter(x=>x!==l);state.lots.unshift(l);save();closeSheet();renderBag();toast(`「${l.name}」已取回種子袋`);return}
+  if(act==='vget'){unzipLot(l);cab.lots=cab.lots.filter(x=>x!==l);state.lots.unshift(l);save();closeSheet();renderBag();toast(`「${l.name}」已取回種子袋`);return}
   if(act==='vmove'){const to=vaultCabs().find(c=>c.id===b.dataset.c);if(!to)return;cab.lots=cab.lots.filter(x=>x!==l);to.lots.unshift(l);save();closeSheet();renderBag();toast(`已移到「${to.name}」`);return}
   if(act==='vdiscard'){if(!sheet.confirm){sheet.confirm=true;renderSheet();return}cab.lots=cab.lots.filter(x=>x!==l);save();closeSheet();renderBag();toast('已丟掉這包種子');return}
 }
@@ -1208,8 +1284,8 @@ function vaultAction(b){
     if(vaultCabs().some(x=>x.crop===c&&norm(x.name)===norm(v))){vDraft.err='這種作物已經有同名的保存櫃了';renderBag();return}
     const cab={id:'V'+Date.now().toString(36),name:v,crop:c,lots:[],at:Date.now()};vaultCabs().push(cab);vaultOpen.add(cab.id);vDraft={name:'',crop:'',err:''};save();renderBag();toast(`建立了保存櫃「${v}」`);return}
   if(a==='rencab'){const c=vaultCabs().find(x=>x.id===b.dataset.c);if(!c)return;const v=prompt('新的保存櫃名稱（1–10 個字）',c.name);if(v==null)return;const t=v.trim();if(!glen(t)||glen(t)>10){toast('名稱需要 1 到 10 個字');return}c.name=t;save();renderBag();return}
-  if(a==='delcab'){const c=vaultCabs().find(x=>x.id===b.dataset.c);if(!c)return;if(vDraft.del!==c.id){vDraft.del=c.id;renderBag();return}vDraft.del=null;state.lots.unshift(...c.lots);state.vault=vaultCabs().filter(x=>x!==c);save();renderBag();toast(`已刪除「${c.name}」，${c.lots.length} 包種子放回種子袋`);return}
-  if(a==='qreset'){vq={crop:'all',shape:'any',skin:'any',pat:'any',size:'any',perf:'any',tier:'0',stab:'0',speed:'',yield:'',vigor:'',scope:vq.scope};renderBag();return}
+  if(a==='delcab'){const c=vaultCabs().find(x=>x.id===b.dataset.c);if(!c)return;if(vDraft.del!==c.id){vDraft.del=c.id;renderBag();return}vDraft.del=null;c.lots.forEach(unzipLot);state.lots.unshift(...c.lots);state.vault=vaultCabs().filter(x=>x!==c);save();renderBag();toast(`已刪除「${c.name}」，${c.lots.length} 包種子放回種子袋`);return}
+  if(a==='qreset'){vq={crop:'all',shape:'any',skin:'any',pat:'any',pc:'any',by:vq.by,size:'any',perf:'any',tier:'0',stab:'0',speed:'',yield:'',vigor:'',scope:vq.scope};renderBag();return}
 }
 
 // ===== 格子式種子袋 =====
@@ -1793,6 +1869,7 @@ function takeSeeds(i,custom,opt){
 }
 // 逐顆記錄的種子包：顯示包內能力值範圍
 function abilRange(l){
+  if(l.zi){const nm={size:'大小',perf:'完美度',speed:'速度',yield:'產量',vigor:'生命力'};return `<p class="note">包內能力值範圍：${ABIL.map(k=>{const r=l.zi.ab[k];return r?`${nm[k]} ${r[0]===r[1]?r[0]:r[0]+'–'+r[1]}`:''}).filter(Boolean).join('・')}</p>`}
   if(!l.seeds||l.seeds.length<2)return '';
   try{const nm={size:'大小',perf:'完美度',speed:'速度',yield:'產量',vigor:'生命力'};
     const parts=ABIL.map(k=>{const v=l.seeds.map(g=>abilOf(g,k));const a=Math.min(...v),b=Math.max(...v);return `${nm[k]} ${a===b?a:a+'–'+b}`});
@@ -3163,6 +3240,7 @@ function sowPickHTML(){
   return h+`<button class="btn" data-act="close">${sowMode?'先不換':'關閉'}</button>`;
 }
 document.getElementById('sowBtn').onclick=()=>openSow(null);
+document.getElementById('sizeBox').addEventListener('toggle',e=>{if(e.target.open)document.getElementById('sizeInfo').innerHTML=sizeReportHTML()});
 document.getElementById('sowBar').addEventListener('click',e=>{const b=e.target.closest('[data-sw]');if(!b)return;const k=b.dataset.sw;if(k==='done')return exitSow();if(k==='pick')return openSowPick();if(k==='undo')return sowUndo();if(k==='gf'){sowGf=+b.dataset.l;renderSowBar()}});
 
 // ===== 剷除模式與垃圾桶 =====
@@ -3316,7 +3394,7 @@ document.getElementById('logoutBtn').onclick=async()=>{await flush();leavePresen
 auth.onAuthStateChanged(async user=>{
   if(!user){if(selfUnsub){selfUnsub();selfUnsub=null}stopListeners();uid=null;state=null;closeSheet();loginEl.hidden=false;return}
   uid=user.uid;loginEl.hidden=true;setSync('loading');
-  document.getElementById('account').textContent='目前登入：'+(user.displayName||'')+(user.email?'（'+user.email+'）':'');
+  document.getElementById('account').textContent='目前登入：'+(user.displayName||'')+(user.email?'（'+user.email+'）':'')+'・遊戲版本 '+BUILD;
   try{const rs=await db.collection('registry').get();regList=rs.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.v===4);sortReg()}catch(e){}
   let cloud=null,snap=null,readOk=false;
   for(let k=0;k<3&&!readOk;k++){try{snap=await db.collection('players').doc(uid).get();readOk=true}catch(e){await new Promise(r=>setTimeout(r,1500))}}

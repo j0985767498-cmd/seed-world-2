@@ -793,7 +793,7 @@ window.addEventListener('error',ev=>logErr(ev.error||ev.message,'錯誤'));
 window.addEventListener('unhandledrejection',ev=>logErr(ev.reason,'錯誤'));
 // ===== 存檔保護 =====
 const SESSION=Math.random().toString(36).slice(2,10);
-let saveBlocked=false,lastBak=0,sizeWarned=false,selfUnsub=null;
+let saveBlocked=false,lastBak=0,sizeWarned=false,selfUnsub=null,lastSaveErr='';
 function blockSaves(msg){
   saveBlocked=true;clearTimeout(saveTimer);
   let el=document.getElementById('saveGuard');
@@ -816,8 +816,8 @@ async function flush(){
   const json=packState(state);
   if(json.length>850000&&!sizeWarned){sizeWarned=true;toast('存檔快到雲端上限了，建議把用不到的種子賣掉或丟掉')}
   if(Date.now()-lastBak>30*60e3){lastBak=Date.now();backupSave(json,'auto')}
-  try{await db.collection('players').doc(uid).set({save:json,savedAt:state.savedAt,session:SESSION,build:BUILD,name:myName(),updatedAt:TS()},{merge:true});if(!dirty)setSync('ok')}
-  catch(e){dirty=true;setSync('err');clearTimeout(saveTimer);saveTimer=setTimeout(flush,8000)}
+  try{await db.collection('players').doc(uid).set({save:json,savedAt:state.savedAt,session:SESSION,build:BUILD,name:myName(),updatedAt:TS()},{merge:true});lastSaveErr='';if(!dirty)setSync('ok')}
+  catch(e){dirty=true;setSync('err');const code=(e&&(e.code||e.message))||'unknown';if(code!==lastSaveErr){lastSaveErr=code;toast(`雲端存檔失敗（${code}，存檔大小約 ${Math.round(json.length/1024)} KB）。請截圖給開發者`,8000)}clearTimeout(saveTimer);saveTimer=setTimeout(flush,8000)}
 }
 function load(){try{const s=localStorage.getItem(lsKey());if(s){const o=unpack(s);if(o&&o.v===4)return migrate(o)}}catch(e){}return null}
 const tms=x=>x&&x.toMillis?x.toMillis():Infinity;

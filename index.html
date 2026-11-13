@@ -2409,15 +2409,23 @@ async function stallAction(b){
   if(act==='sbuy'){
     const l=listings.find(x=>x.id===b.dataset.id);if(!l||l.sold)return;
     if(state.coins<l.price){toast('金幣不夠');return}
-    b.disabled=true;
+    // 先確認商品資料讀得到，避免付款後才發現無法放進種子袋
+    if(l.kind!=='item'){const o0=lotOf(l);if(!o0||(l.kind==='spec'?!(o0.spec&&o0.spec.g):!o0.m)){toast('這個商品的資料讀不到，請重新整理遊戲後再試一次');return}}
+    b.disabled=true;let paid=false;
     try{
       await db.runTransaction(async tx=>{const ref=db.collection('listings').doc(l.id),d=await tx.get(ref);if(!d.exists||d.data().sold)throw new Error('gone');tx.update(ref,{sold:true,buyerUid:uid,buyerName:myName(),soldAt:TS()})});
+      paid=true;
       if(l.kind==='spec'){if(!TEST_MODE)state.coins-=l.price;const o=lotOf(l);if(!state.specimens)state.specimens=[];if(o&&o.spec)state.specimens.unshift({...o.spec,id:'S'+Date.now().toString(36)});save();renderAll();toast('買到標本了，在「圖鑑 → 標本與品種權」');return}
       if(l.kind==='item'){if(TEST_MODE)state.coins+=l.price;state.coins-=l.price;if(!state.items)state.items={};state.items[l.item]=(state.items[l.item]||0)+l.count;save();renderAll();toast(`買到 ${l.count} 個${itemName(l.item)}`);return}
       const lot=lotOf(l);if(!TEST_MODE)state.coins-=l.price;
       state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop:l.crop,name:l.name,source:`${l.source}（向 ${l.sellerName} 購買）`,m:lot.m,f:lot.f,count:lot.seeds?0:lot.count,seeds:lot.seeds||undefined,germ:lot.germ,wide:!!lot.wide,rel:!!lot.rel,gen:lot.gen==null?undefined:lot.gen,par:lot.par,gpar:lot.gpar,ptier:lot.ptier});
       save();renderAll();toast(`買到 ${l.count} 顆「${l.name}」，已放進種子袋`);
-    }catch(err){toast('這包種子已經被買走了');b.disabled=false}
+    }catch(err){
+      b.disabled=false;const code=(err&&(err.code||err.message))||'unknown';logErr(err,'購買');
+      if(paid)toast(`購買已成立，但放進種子袋時出錯（${code}）。請截圖給開發者`,9000);
+      else if(code==='gone')toast('這個商品已經被別人買走了');
+      else toast(`購買失敗（${code}），沒有扣金幣。請確認網路後再試一次；若從 LINE 或 Instagram 開啟，請改用 Safari 或 Chrome`,9000);
+    }
     return;
   }
   if(act==='scancel'){

@@ -103,6 +103,19 @@ button{font:inherit;color:inherit}
 @keyframes xpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 @keyframes xbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
 @keyframes xwob{0%,100%{transform:skewX(0) rotate(0)}25%{transform:skewX(-8deg) rotate(-2deg)}75%{transform:skewX(8deg) rotate(2deg)}}
+.gcard{background:#FFF8E8;border:2px solid #E3C38A;border-radius:12px;padding:10px 12px;margin:8px 0}
+.gcard h3{margin:0 0 6px;font-size:16px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}.gcard h4{margin:8px 0 4px;font-size:13px;color:#8A5A2B}.gcard p{margin:4px 0}
+.ladder{display:flex;flex-wrap:wrap;align-items:flex-start;gap:2px 2px;margin:4px 0}
+.lstep{display:flex;flex-direction:column;align-items:center;min-width:40px;max-width:64px;font-size:11px;text-align:center;line-height:1.25}
+.lstep small{font-size:11px;margin-top:2px}.lstep svg{width:40px;height:42px}
+.sw{display:block;width:30px;height:30px;border-radius:50%;border:2px solid rgba(0,0,0,.25);box-shadow:inset 0 -3px 0 rgba(0,0,0,.12)}
+.sw.unk{background:radial-gradient(circle at 35% 30%,#7A7A7A,#262626);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
+.gt{font-size:20px;font-weight:800;color:#B07A44;align-self:center;margin-top:-12px;padding:0 1px}
+.gop{font-size:18px;font-weight:800;color:#8A5A2B;align-self:center;margin-top:-12px}
+.mixes{display:flex;flex-wrap:wrap;gap:6px 14px}.mix{display:flex;align-items:flex-start;gap:2px}
+.gdom,.grec,.gadd{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:1px 8px;color:#fff}
+.gdom{background:#D9473A}.grec{background:#4A86D8}.gadd{background:#6E9E3A}
+.glegend{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:6px;font-size:13px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:6px 0 10px}
 .chip{background:var(--chip);border-radius:999px;padding:2px 10px;font-size:13px}
 .scores{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
@@ -365,6 +378,7 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
   <button data-open="bag"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h8l2 4v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9z"/><path d="M8 6l1-3h6l1 3"/><path d="M12 12c-2 1.5-2 4 0 5.5 2-1.5 2-4 0-5.5z" fill="currentColor" stroke="none"/></svg><span>種子袋</span></button>
   <button data-open="dex"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6M9 12h6"/></svg><span>圖鑑</span></button>
   <button id="ordersBtn"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v18l-5-3-5 3z"/><path d="M10 8h4M10 12h4"/></svg><span>訂單</span><i id="ordersBadge" hidden></i></button>
+  <button data-open="genes"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3c0 6 10 6 10 12s-10 6-10 6"/><path d="M17 3c0 6-10 6-10 12s10 6 10 6"/><path d="M8.5 7h7M8.5 17h7M10 12h4"/></svg><span>遺傳</span></button>
   <button data-open="social"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M15 15.5c2.8-.6 6 1.2 6 4.5"/></svg><span>朋友</span></button>
 </div>
 <div id="iconbar" class="iconbar">
@@ -392,20 +406,8 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
 <div class="panel" id="p-social" hidden role="dialog" aria-label="朋友"><div class="ph"><h2>朋友</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><button class="btn" id="avatarBtn2" style="margin:0 0 8px">打扮我的角色</button><h3 style="margin-top:4px">朋友</h3><div id="friends"></div><h3>公共聊天室</h3><div id="chat" aria-live="polite"></div><div class="chatbar"><input id="chatIn" maxlength="300" placeholder="輸入訊息" aria-label="聊天訊息" aria-describedby="chatErr"><button class="mini big" id="chatSend">傳送</button></div><div class="err" id="chatErr"></div></div></div>
 <div class="panel" id="p-decor" hidden role="dialog" aria-label="裝飾農場"><div class="ph"><h2>裝飾農場</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><p class="note">所有裝飾都免費。走到想放的位置，選一個裝飾，它會放在角色腳邊；點已放好的裝飾可以移動或收起。「標示」裡有大、小告示牌，可以寫 2 到 8 個字。</p><div class="filters" id="decorCats"></div><div class="decorItems" id="decorItems"></div></div></div>
 <div class="panel" id="p-explore" hidden role="dialog" aria-label="探索世界"><div class="ph"><h2>探索世界</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb" id="exploreBody"></div></div>
-<div class="panel" id="p-settings" hidden role="dialog" aria-label="設定"><div class="ph"><h2>設定</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div class="settings"><div id="ctrlBox"></div><div id="testBox"></div><details class="dist"><summary>錯誤紀錄（回報問題時截圖給開發者）</summary><pre id="errLog" style="white-space:pre-wrap;font-size:12px;margin:6px 0 0">目前沒有錯誤</pre></details><button class="btn" id="allSeedsBtn">測試：領取全部 8 種原始品種</button><button class="btn warn" id="resetBtn">重新開始</button><details class="dist"><summary>性狀顯隱性表</summary><div class="gtab">
-<p class="note">每個性狀由一對因子決定（一個來自母本、一個來自父本）。「顯性」只要帶一個就會表現；「隱性」要兩個都帶才會表現。</p>
-<table class="sztab">
-<tr><td><b>基本造型</b><br>（6 組尖因子）</td><td>「尖」為隱性。兩個都帶尖的組數決定造型：0–1 組、2–3 組、4–5 組、6 組，依序由圓到尖共 4 類（例：番茄 扁圓→圓球→桃尖→長尖）。不同組的尖因子可以累加，兩個不太尖的親本也可能生出更尖的後代。</td></tr>
-<tr><td><b>特殊造型</b></td><td>對一般造型為隱性，兩個都帶才會表現。彼此之間：正方形 ＞ 三角形 ＞ 愛心 ＞ 星形 ＞ 月牙形 ＞ 甜甜圈（左側為顯性）。</td></tr>
-<tr><td><b>專屬造型</b></td><td>和特殊造型同一組因子，對一般造型為隱性；與特殊造型同時存在時，專屬造型優先表現。皇冠（番茄）、鈴鐺（茄子）、火焰（辣椒）、葫蘆（櫛瓜、南瓜、苦瓜、哈密瓜）、鑽石（草莓）、火箭（玉米）、大樹（花椰菜）、元寶（甘藷）。</td></tr>
-<tr><td><b>主色、副色</b></td><td>各一組因子，較強的顏色為顯性。<br>特殊色：彩虹 ＞ 星空 ＞ 水晶 ＞ 黑曜 ＞ 金 ＞ 藍 ＞ 珍珠白 ＞ 銀<br>基本色：黑 ＞ 紫 ＞ 紅 ＞ 黃 ＞ 綠 ＞ 白<br>特殊色一律強於基本色。</td></tr>
-<tr><td><b>果皮顏色</b></td><td>主色與副色相同時就是該顏色；不同時：紅＋黃＝橙、紅＋白＝粉、紫＋白＝淡紫、綠＋黃＝黃綠；其他組合顯示較強的顏色；有特殊色時顯示特殊色。</td></tr>
-<tr><td><b>花紋有無</b></td><td>「有花紋」為隱性，兩個都帶才會出現花紋。</td></tr>
-<tr><td><b>花紋顏色</b></td><td>強弱與果皮顏色相同。花紋顏色和果皮顏色一樣時，花紋看不出來。</td></tr>
-<tr><td><b>花紋形式</b></td><td>條紋 ＞ 斑點 ＞ 雲紋 ＞ 星點 ＞ 漸層 ＞ 雙色（左側為顯性）。</td></tr>
-<tr><td><b>大小、完美度、生長速度、產量、生命力</b></td><td>各由 10 組數值因子決定，沒有顯隱性，取全部因子的平均（加性）。雙親數值高，後代通常也高，但會有分離。</td></tr>
-<tr><td><b>突變</b></td><td>每顆種子：一般突變 0.1%、特殊色 0.2%、特殊造型 0.05%；原生作物另有 0.02% 出現專屬造型。</td></tr>
-</table></div></details>
+<div class="panel" id="p-genes" hidden role="dialog" aria-label="遺傳規則"><div class="ph"><h2>遺傳規則</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div id="genes"></div></div></div>
+<div class="panel" id="p-settings" hidden role="dialog" aria-label="設定"><div class="ph"><h2>設定</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div class="settings"><div id="ctrlBox"></div><div id="testBox"></div><details class="dist"><summary>錯誤紀錄（回報問題時截圖給開發者）</summary><pre id="errLog" style="white-space:pre-wrap;font-size:12px;margin:6px 0 0">目前沒有錯誤</pre></details><button class="btn" id="allSeedsBtn">測試：領取全部 8 種原始品種</button><button class="btn warn" id="resetBtn">重新開始</button><button class="btn" id="genesBtn">打開遺傳規則（顯隱性與強弱表）</button>
 <details class="dist" id="sizeBox"><summary>存檔大小</summary><div id="sizeInfo"><p class="note">打開時會計算目前存檔的大小。</p></div></details><p class="note" id="account" style="margin-top:16px"></p><button class="btn" id="logoutBtn">登出</button></div></div></div>
 <div id="tut" hidden role="status"><div class="tuth"><img class="gp" src="data:image/jpeg;base64,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" width="44" height="44" alt="">農會阿伯<span class="stp" id="tutStep"></span></div><p id="tutText"></p><div class="tutb"><button id="tutSkip">跳過教學</button><button id="tutNext" hidden></button></div></div>
 <div id="backdrop"></div>
@@ -826,7 +828,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN+2&&v.startsWi
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-14b';
+const BUILD='2026-11-14c';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object')return false;
@@ -891,7 +893,7 @@ const byteLen=t=>{try{return new TextEncoder().encode(t).length}catch(e){return 
 function sizeReportHTML(){
   if(!state)return '';
   const kb=x=>Math.round(byteLen(packState(x))/1024),total=byteLen(packState(state));
-  const parts=[['種子袋',state.lots],['種原庫',state.vault],['田裡的植株',state.plots],['垃圾桶',state.trash],['標本',state.specimens],['收集紀錄',state.seen],['裝飾',state.decor]].filter(p=>p[1]!=null);
+  const parts=[['種子袋',state.lots],['種原庫',state.vault],['田裡的植株',state.plots],['垃圾桶',state.trash],['收集紀錄',state.seen],['裝飾',state.decor]].filter(p=>p[1]!=null);
   const rows=parts.map(([n,v])=>[n,kb(v)]);const other=Math.max(0,Math.round(total/1024)-rows.reduce((s,r)=>s+r[1],0));rows.push(['其他',other]);
   const big=[];const add=(l,where)=>{const k=kb(l);if(k>=8)big.push([l.name,where,k,lc(l)])};
   state.lots.forEach(l=>add(l,'種子袋'));vaultCabs().forEach(c=>c.lots.forEach(l=>add(l,c.name)));big.sort((a,b)=>b[2]-a[2]);
@@ -949,7 +951,8 @@ function startListeners(){
   unsubs.push(db.collection('news').orderBy('at','desc').limit(20).onSnapshot(snap=>{onNews(snap.docs.map(d=>({id:d.id,...d.data()})))},()=>{}));
   unsubs.push(db.collection('boards').onSnapshot(snap=>{boardsList=snap.docs.map(d=>({id:d.id,...d.data()})).filter(e=>e.v===4);if(curPanel==='dex'&&(dexTab==='boards'||dexTab==='rank'||dexTab==='me'))renderDex()},()=>{}));
   unsubs.push(db.collection('rights').onSnapshot(snap=>{rightsList=snap.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.v===4);fixRights();collectPayouts();const ae=document.activeElement;if(curPanel==='dex'&&!(ae&&(ae.dataset&&(ae.dataset.rname||ae.dataset.rprice)||ae.id==='dexQ')))renderDex()},()=>{}));
-  unsubs.push(db.collection('listings').onSnapshot(snap=>{listings=snap.docs.map(d=>({id:d.id,...d.data()})).filter(l=>l.kind==='item'||(l.v===4&&(()=>{try{const o=lotOf(l);return l.kind==='spec'?!!(o.spec&&o.spec.g):!!o.m}catch(e){return false}})()));collectSales();renderMarket()},()=>{}));
+  unsubs.push(db.collection('listings').onSnapshot(snap=>{snap.docs.forEach(d=>{const x=d.data();if(x.kind==='spec'&&x.sellerUid===uid&&!x.sold)d.ref.delete().catch(()=>{})});
+  listings=snap.docs.map(d=>({id:d.id,...d.data()})).filter(l=>l.kind!=='spec').filter(l=>l.kind==='item'||(l.v===4&&(()=>{try{const o=lotOf(l);return l.kind==='spec'?!!(o.spec&&o.spec.g):!!o.m}catch(e){return false}})()));collectSales();renderMarket()},()=>{}));
 }
 function stopListeners(){unsubs.forEach(u=>u());unsubs=[]}
 const collecting=new Set();
@@ -1555,7 +1558,7 @@ function boardStats(u){let pts=0;const places=[];for(const c of CROP_KEYS)for(co
 
 // ===== 圖鑑面板：分頁 =====
 let dexTab='dex',dexQ='',dexTier=-1,rdraft={},rerr={},rconfirm=null;
-function dexTabsHTML(){return `<div class="filters" role="tablist">${[['dex','品種圖鑑'],['rights','標本與品種權'],['boards','紀錄榜'],['rank','育種家排行'],['me','我的成就']].map(([k,n])=>`<button class="fchip" role="tab" data-dtab="${k}" aria-pressed="${dexTab===k}">${n}</button>`).join('')}</div>`}
+function dexTabsHTML(){return `<div class="filters" role="tablist">${[['dex','品種圖鑑'],['rights','品種權'],['boards','紀錄榜'],['rank','育種家排行'],['me','我的成就']].map(([k,n])=>`<button class="fchip" role="tab" data-dtab="${k}" aria-pressed="${dexTab===k}">${n}</button>`).join('')}</div>`}
 function renderDex(){
   if(!state)return;const el=document.getElementById('dex');if(!el)return;
   document.getElementById('dexTabs').innerHTML=dexTabsHTML();
@@ -1611,8 +1614,7 @@ function rightCard(r,mine){
 function rightsHTML(){
   const sps=state.specimens||[],my=rightsList.filter(r=>r.ownerUid===uid&&rActive(r)),sale=rightsList.filter(r=>r.ownerUid!==uid&&r.status==='pending'&&rActive(r)&&r.price);
   const hot=rightsList.filter(r=>rActive(r)&&r.status==='pending').sort((a,b)=>(b.history||[]).length-(a.history||[]).length||(b.price||0)-(a.price||0)).slice(0,5);
-  let h=`<p class="note">外觀穩定度 95% 以上、而且外觀和所有品種都不同的植株，取種時會得到果實標本。送到品種鑑定所通過後取得品種權，${RIGHT_DAYS} 天內${TEST_MODE?'（測試模式依加速倍率縮短）':''}命名並公開，就會永久登上圖鑑。</p>`;
-  h+=`<h3>我的標本（${sps.length}）</h3>`+(sps.length?sps.map(specCard).join(''):'<p class="note">還沒有標本。</p>');
+  let h=`<p class="note">外觀穩定度 95% 以上、稀有以上，而且外觀和所有品種都不同的植株，成熟時可以在植株資訊中直接申請品種權。取得後 ${RIGHT_DAYS} 天內${TEST_MODE?'（測試模式依加速倍率縮短）':''}命名並公開，就會永久登上圖鑑。</p>`;
   h+=`<h3>我的品種權（${my.length}）</h3>`+(my.length?my.map(r=>rightCard(r,true)).join(''):'<p class="note">還沒有品種權。</p>');
   h+=`<h3>品種權市場</h3>`+(sale.length?sale.map(r=>rightCard(r,false)).join(''):'<p class="note">目前沒有出售中的品種權。</p>');
   if(hot.length)h+=`<h3>熱門品種權</h3>`+hot.map((r,i)=>{let ph;try{ph=phen(JSON.parse(r.g),r.crop)}catch(e){return ''}return `<div class="prow">${i+1}. ${fruitSVG(ph,r.crop,32)}<span class="pl"><b>${r.name?esc(r.name):CROPS[r.crop].n+'・'+ph.shapeName}</b><span class="meta">轉手 ${(r.history||[]).length} 次${r.price?`・出售中 ${r.price} 金幣`:''}</span></span></div>`}).join('');
@@ -1686,9 +1688,9 @@ function regHTML(p,ph){
     return `<div class="regbox"><b>品種</b><p class="note">${v.inventorUid==='system'?`這個外觀由系統持有（${esc(v.name)}），不能申請品種權。`:`這株屬於品種「${esc(v.name)}」（命名者：${esc(v.inventorName)}）。成熟時會自動檢查紀錄。<br>${t(rc.big,'最大','big')}・${t(rc.small,'最小','small')}・${t(rc.perfect,'最完美','perfect')}・${t(rc.weird,'最奇異','weird')}`}</p></div>`}
   const r=rightsList.find(x=>x.crop===p.crop&&x.akey===ph.key&&rActive(x));
   if(r)return `<div class="regbox"><b>品種權</b><p class="note">這個外觀已經${r.ownerUid===uid?'是你的':'被別人申請了'}品種權（未公開，${leftTxt(r)}）。</p></div>`;
-  if(appScore(ph.key)<REG_MIN)return `<div class="regbox"><b>品種權</b><p class="note">普通、少見的外觀不能申請品種權，需要稀有以上（只看形狀、顏色、花紋，不計大小與完美度）。這個外觀會記在你的收集進度裡。${ph.tier>=3&&ph.stab<0.95?'<br>這株是史詩以上的珍品，取種時會得到珍品標本。':''}</p></div>`;
-  if(ph.stab<0.95)return `<div class="regbox"><b>品種權</b><p class="note">外觀穩定度需要 95% 以上才能申請品種權，這株目前約 ${pctTxt(ph.stab)}。繼續自交、挑選保留這個外觀的植株，穩定度就會提高。${ph.tier>=3?'<br>這株是史詩以上的珍品，取種時會得到珍品標本。':''}</p></div>`;
-  return `<div class="regbox"><b>可以申請品種權！</b><p class="note">這個外觀還沒有人發現過，而且夠穩定。<b>取種</b>時會得到一個果實標本，再到「圖鑑 → 標本與品種權」送到品種鑑定所。</p></div>`;
+  if(appScore(ph.key)<REG_MIN)return `<div class="regbox"><b>品種權</b><p class="note">普通、少見的外觀不能申請品種權，需要稀有以上（只看形狀、顏色、花紋，不計大小與完美度）。這個外觀會記在你的收集進度裡。</p></div>`;
+  if(ph.stab<0.95)return `<div class="regbox"><b>品種權</b><p class="note">外觀穩定度需要 95% 以上才能申請品種權，這株目前約 ${pctTxt(ph.stab)}。繼續自交、挑選保留這個外觀的植株，穩定度就會提高。</p></div>`;
+  return `<div class="regbox"><b>可以申請品種權！</b><p class="note">這個外觀還沒有人發現過，而且夠穩定。收成或拔掉之後就不能再申請，記得先申請。</p>${p.stage==='ripe'?`<button class="btn primary" data-act="applyright">申請品種權（鑑定費 ${appraiseFee(p.crop)} 金幣）</button>`:'<p class="note">植株成熟後就能申請。</p>'}</div>`;
 }
 async function doRegister(i){
   const p=state.plots[i];if(!p||p.stage!=='ripe')return;
@@ -1833,6 +1835,7 @@ sb.addEventListener('click',e=>{
   if(act==='sowmode'){openSow(null);return}
   {const am={water:'water',fert:'water',yfert:'water',plant:'plant',seedok:'harvest',sell:'harvest',deliver:'harvest',self:'pollinate',cross:'pollinate'};if(am[act])playAct(am[act])}
   if(act==='register')return doRegister(i);
+  if(act==='applyright'&&p){applyRight(i);return}
   if(act==='record')return doRecord(i);
   if(act==='plant'){
     const lot=state.lots.find(l=>l.id===+b.dataset.lot);if(!lot||!lc(lot))return;
@@ -1933,7 +1936,7 @@ function takeSeeds(i,custom,opt){
     msg=`得到 ${n} 顆種子，放進種子袋了`;
   }
   const sp=addSpecimen(p,ph);
-  toast((mu?msg+'，裡面好像有特別的變化':msg)+(sp?`，還得到一個${sp.kind==='gem'?'珍品':'果實'}標本`:''));
+  toast(mu?msg+'，裡面好像有特別的變化':msg);
   harvested(ph);if(cross)orderDone('cross');else orderDone('selfseed');
   afterHarvest(i);
 }
@@ -2397,8 +2400,8 @@ function stallHTML(){
     const ph=phen(l.m,l.crop),n=lc(l);
     return h+`<div class="lot-top">${fruitSVG(ph,l.crop,56)}<div><div class="lot-name">${esc(l.name)}</div><div class="meta">${CROPS[l.crop].n}・剩 ${n} 顆</div></div></div><div class="regbox sellbox"><label>數量（最多 ${n} 顆）<input id="f1" type="number" inputmode="numeric" min="1" max="${n}" value="${esc(sheet.d1)}"></label><label>價格（金幣）<input id="f2" type="number" inputmode="numeric" min="1" value="${esc(sheet.d2)}"></label><div class="err" id="ferr">${sheet.err}</div><div class="row2"><button class="btn primary" data-act="ssave">確定上架</button><button class="btn" data-act="sback">返回</button></div></div>`;
   }
-  if(!inf.owner)h+=`<p class="note">這個攤位目前沒人使用。在這裡上架種子或道具就能占用它，全部賣完後攤位會自動空出來，讓別人使用。</p><div class="row2"><button class="btn primary" data-act="sstart">上架種子</button><button class="btn primary" data-act="istart">上架道具</button></div><button class="btn" data-act="kstart">上架標本</button>`;
-  else if(inf.owner===uid)h+=`<p class="note">你有 ${inf.ls.length} 件商品在這裡販售。朋友買走後，金幣會自動入帳。</p><div class="row2"><button class="btn primary" data-act="sstart">再上架種子</button><button class="btn primary" data-act="istart">再上架道具</button></div><button class="btn" data-act="kstart">上架標本</button>`+inf.ls.map(listingCard).join('');
+  if(!inf.owner)h+=`<p class="note">這個攤位目前沒人使用。在這裡上架種子或道具就能占用它，全部賣完後攤位會自動空出來，讓別人使用。</p><div class="row2"><button class="btn primary" data-act="sstart">上架種子</button><button class="btn primary" data-act="istart">上架道具</button></div>`;
+  else if(inf.owner===uid)h+=`<p class="note">你有 ${inf.ls.length} 件商品在這裡販售。朋友買走後，金幣會自動入帳。</p><div class="row2"><button class="btn primary" data-act="sstart">再上架種子</button><button class="btn primary" data-act="istart">再上架道具</button></div>`+inf.ls.map(listingCard).join('');
   else h+=`<p class="note">${esc(inf.ownerName)} 正在販售 ${inf.ls.length} 件商品。</p>`+inf.ls.map(listingCard).join('');
   return h;
 }
@@ -2495,7 +2498,7 @@ function openPanel(name){if(name==='bag')uiCrop='all';
   closeSheet();curPanel=name;
   for(const p of document.querySelectorAll('.panel'))p.hidden=p.id!=='p-'+name;
   document.getElementById('pdim').hidden=false;
-  if(name==='bag')renderBag();if(name==='dex')renderDex();if(name==='social')renderSocial(true);if(name==='decor')renderDecorPanel();if(name==='settings')renderSpeed();if(name==='explore')renderExplore();
+  if(name==='bag')renderBag();if(name==='dex')renderDex();if(name==='social')renderSocial(true);if(name==='decor')renderDecorPanel();if(name==='settings')renderSpeed();if(name==='genes')renderGenes();if(name==='explore')renderExplore();
   const pb=document.querySelector('#p-'+name+' .pb');if(pb)pb.scrollTop=0;
 }
 function closePanel(){curPanel=null;for(const p of document.querySelectorAll('.panel'))p.hidden=true;document.getElementById('pdim').hidden=true}
@@ -2610,7 +2613,8 @@ const myPending=()=>rightsList.filter(r=>r.ownerUid===uid&&r.status==='pending'&
 const daysLeft=r=>Math.max(0,(r.expiresAt-Date.now())/DAY);
 function leftTxt(r){const ms=r.expiresAt-Date.now();if(ms<=0)return '已失效';const h=ms/3600e3;return h>=24?`剩 ${Math.floor(h/24)} 天 ${Math.floor(h%24)} 小時`:h>=1?`剩 ${Math.floor(h)} 小時`:`剩 ${Math.max(1,Math.floor(ms/60e3))} 分鐘`}
 function nameTaken(v,exceptId){const n=norm(v);return regList.some(r=>r.norm===n)||rightsList.some(r=>r.id!==exceptId&&rActive(r)&&r.name&&norm(r.name)===n)}
-function addSpecimen(p,ph){
+function addSpecimen(p,ph){return null; // 標本機制已移除，改為在植株上直接申請品種權
+
   if(!state.specimens)state.specimens=[];
   const reg=ph.stab>=0.95&&!takenBy(p.crop,ph.key)&&appScore(ph.key)>=REG_MIN,gem=ph.tier>=3&&ph.stab<0.95;
   if(!reg&&!gem)return null;
@@ -2618,6 +2622,28 @@ function addSpecimen(p,ph){
   const sp={id:'S'+Date.now().toString(36)+Math.floor(rnd()*1e4),kind:reg?'spec':'gem',crop:p.crop,key:ph.key,tier:ph.tier,g:clone(p.g),from:pname(p),at:Date.now()};
   state.specimens.unshift(sp);
   return sp;
+}
+// 在植株上直接申請品種權
+async function applyRight(i){
+  const p=state.plots[i];if(!p||p.stage!=='ripe'||p.obs)return;
+  const ph=phen(p.g,p.crop),fee=appraiseFee(p.crop);
+  if(ph.legacy){toast('這株的外觀已絕版，無法申請');return}
+  if(ph.stab<0.95){toast('外觀穩定度需要 95% 以上');return}
+  if(appScore(ph.key)<REG_MIN){toast('普通、少見的外觀不能申請品種權，需要稀有以上');return}
+  if(takenBy(p.crop,ph.key)){toast('這個外觀已經有人申請或登錄了');return}
+  if(myPending()>=RIGHT_MAX){toast(`同時最多只能持有 ${RIGHT_MAX} 個未公開的品種權，先命名公開或等它失效`);return}
+  if(state.coins<fee){toast('金幣不夠');return}
+  const ref=db.collection('rights').doc(rid(p.crop,ph.key)),me=myName(),now=Date.now();
+  try{
+    await db.runTransaction(async tx=>{
+      const d=await tx.get(ref);
+      if(d.exists){const r=d.data();if(r.status==='public'||(r.status==='pending'&&r.expiresAt>now))throw new Error('taken')}
+      tx.set(ref,{v:4,crop:p.crop,app:ph.key,g:JSON.stringify(p.g),tier:ph.tier,ownerUid:uid,ownerName:me,firstUid:uid,name:'',createdAt:now,expiresAt:now+RIGHT_DAYS*DAY/tScale(),status:'pending',price:null,history:[],payouts:{}});
+    });
+    state.coins-=fee;save();renderAll();renderSheet();
+    toast(`申請成功！取得品種權，請在 ${RIGHT_DAYS} 天內到「圖鑑 → 品種權」命名並公開`,6000);
+    postNews('right',`📜 ${me} 成功申請了一個${TIERS[ph.tier]}級${CROPS[p.crop].n}的品種權！${TIER_DECO(ph.tier)}`,ph.tier);
+  }catch(e){toast(e.message==='taken'?'這個外觀已經有人申請品種權了':`申請失敗（${(e&&(e.code||e.message))||'unknown'}），請檢查網路後再試一次`)}
 }
 async function appraise(spId){
   const sp=(state.specimens||[]).find(x=>x.id===spId);if(!sp||sp.kind!=='spec')return;
@@ -3318,6 +3344,41 @@ function sowPickHTML(){
   return h+`<button class="btn" data-act="close">${sowMode?'先不換':'關閉'}</button>`;
 }
 document.getElementById('sowBtn').onclick=()=>openSow(null);
+document.getElementById('genesBtn').onclick=()=>openPanel('genes');
+function renderGenes(){
+  const el=document.getElementById('genes');if(!el)return;
+  const sw=c=>`<span class="sw" style="background:${rgbS(RGBC[c])}"></span>`;
+  const step=(inner,name)=>`<span class="lstep">${inner}<small>${name}</small></span>`;
+  const gt='<span class="gt" aria-label="強於">›</span>';
+  const ladder=items=>`<div class="ladder">${items.join(gt)}</div>`;
+  const icon=(a,crop,sz)=>fruitSVG({perfCls:2,seed:7,pat:null,...a},crop||'tomato',sz||40);
+  const unk=n=>step('<span class="sw unk" aria-hidden="true">？</span>',n);
+  const tag=k=>k==='d'?'<span class="gdom">顯性</span>':k==='r'?'<span class="grec">隱性</span>':'<span class="gadd">加性</span>';
+  const specOrder=SPECIAL.slice().reverse(),basicOrder=BASIC.slice().reverse();
+  let h=`<div class="gcard"><p class="note" style="margin:0">每個性狀由一對因子決定，一個來自母本、一個來自父本。</p>
+    <div class="glegend"><span>${tag('d')} 只要帶一個就會表現</span><span>${tag('r')} 兩個都帶才會表現</span><span>${tag('a')} 沒有顯隱性，取平均</span></div>
+    <p class="note" style="margin:6px 0 0">「›」表示左邊比右邊強：兩種一起出現時，表現左邊那一種。</p></div>`;
+  h+=`<div class="gcard"><h3>顏色強弱 ${tag('d')}</h3><p class="note">主色、副色、花紋顏色都依這個順序，較強的顏色為顯性。</p>
+    <h4>特殊色（一律強於基本色）</h4>${ladder(specOrder.map(c=>unk({silver:'銀色',pearl:'珍珠白',blue:'藍色',gold:'金色',obsidian:'黑曜',crystal:'水晶',starry:'星空色',rainbow:'彩虹'}[c])))}
+    <p class="note">特殊色只能靠突變取得，實際顏色要親自培育出來才看得到。</p>
+    <h4>基本色</h4>${ladder(basicOrder.map(c=>step(sw(c),CN[c])))}</div>`;
+  h+=`<div class="gcard"><h3>果皮顏色的混色</h3><p class="note">主色和副色表現的顏色不同時，以下組合會混成新顏色；其他組合顯示較強的那一色，有特殊色時顯示特殊色。</p>
+    <div class="mixes">${Object.entries(MIXC).map(([k,v])=>{const [a,b]=k.split('|');return `<div class="mix">${step(sw(a),CN[a])}<span class="gop">＋</span>${step(sw(b),CN[b])}<span class="gop">＝</span>${step(sw(v),CN[v])}</div>`}).join('')}</div></div>`;
+  h+=`<div class="gcard"><h3>花紋</h3>
+    <p><b>有沒有花紋</b> ${tag('r')}　兩個都帶「有花紋」才會出現。</p>
+    <p><b>花紋顏色</b> ${tag('d')}　強弱和上面的顏色相同；和果皮同色時看不出來。</p>
+    <p><b>花紋形式</b> ${tag('d')}</p>${ladder(PFN.map((n,i)=>step(icon({level:1,sp:0,skin:'red',pat:{c:'white',f:i}}),n)))}</div>`;
+  h+=`<div class="gcard"><h3>基本造型 ${tag('r')}</h3><p class="note">由 6 組「尖因子」決定，「尖」為隱性。兩個都帶尖的組數越多越尖；不同組的尖因子可以累加，所以兩個不太尖的親本也可能生出更尖的後代。</p>
+    <div class="ladder">${[0,1,2,3].map(k=>step(icon({level:k,sp:0,skin:'red'}),`${CROPS.tomato.shapes[k]}<br>${['0–1','2–3','4–5','6'][k]} 組`)).join('<span class="gt">→</span>')}</div>
+    <p class="note">以番茄為例，其他作物的名稱不同，規則相同。</p></div>`;
+  h+=`<div class="gcard"><h3>特殊造型 ${tag('r')}</h3><p class="note">對一般造型為隱性，兩個都帶才會表現。所有作物都可能出現。</p>
+    ${ladder(SPN.slice(1).map((n,i)=>step(icon({level:0,sp:i+1,skin:'red'}),n)))}</div>`;
+  h+=`<div class="gcard"><h3>專屬造型 ${tag('r')}</h3><p class="note">和特殊造型是同一組因子，對一般造型為隱性。與特殊造型同時存在時，<b>專屬造型優先表現</b>。只會在原生作物身上出現，其他作物要靠遠緣雜交導入。瓜科指櫛瓜、南瓜、苦瓜、哈密瓜。</p>
+    <div class="ladder">${Object.entries(EXN).map(([v,n])=>{const cl=Object.keys(EX_OF).filter(c=>EX_OF[c]===+v),crops=cl.length>1?'瓜科':CROPS[cl[0]].n;return unk(`${n}<br><span class="meta">${crops}</span>`)}).join('')}</div></div>`;
+  h+=`<div class="gcard"><h3>大小、完美度、生長速度、產量、生命力 ${tag('a')}</h3><p class="note">各由 10 組數值因子決定，沒有顯隱性，取全部因子的平均。雙親的數值高，後代通常也高，但每顆種子會有差異，需要選拔。</p></div>`;
+  h+=`<div class="gcard"><h3>突變</h3><p class="note">每顆種子：一般突變 0.1%、特殊色 0.2%、特殊造型 0.05%；原生作物另有 0.02% 出現專屬造型。</p></div>`;
+  el.innerHTML=h;
+}
 document.getElementById('sizeBox').addEventListener('toggle',e=>{if(e.target.open)document.getElementById('sizeInfo').innerHTML=sizeReportHTML()});
 document.getElementById('sowBar').addEventListener('click',e=>{const b=e.target.closest('[data-sw]');if(!b)return;const k=b.dataset.sw;if(k==='done')return exitSow();if(k==='pick')return openSowPick();if(k==='undo')return sowUndo();if(k==='gf'){sowGf=+b.dataset.l;renderSowBar()}});
 
@@ -3431,7 +3492,7 @@ const TUT=[
   {t:'澆了水就會慢慢長大，每個階段都要再澆一次。想快一點，可以在右邊「設定」開啟加速測試。等它開花吧。',ev:'flower'},
   {t:'開花了！點它可以自交，或和另一株同時開花的同種作物雜交。',ev:'pollinate'},
   {t:'再澆水讓果實長大，成熟後點它，可以賣掉換金幣，或取種留著培育。',ev:'harvest'},
-  {t:'做得很好！右邊的圖示可以打開種子袋、圖鑑、朋友和裝飾；種出穩定、稀有以上的新外觀，取種時會得到標本，可以到圖鑑申請品種權；按「建設」可以開墾、拆除或拖移農地。點農場最下面的大門，或按「市集」，就能去市集擺攤、和大家見面。完成「訂單」還有金幣可拿喔！',btn:'開始玩'}
+  {t:'做得很好！右邊的圖示可以打開種子袋、圖鑑、朋友和裝飾；種出穩定、稀有以上的新外觀，可以在植株資訊中直接申請品種權；按「建設」可以開墾、拆除或拖移農地。點農場最下面的大門，或按「市集」，就能去市集擺攤、和大家見面。完成「訂單」還有金幣可拿喔！',btn:'開始玩'}
 ];
 function tutRender(){
   const el=document.getElementById('tut'),t=state&&state.tut;

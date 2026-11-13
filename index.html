@@ -318,6 +318,15 @@ body.joymode #waterAll{right:22px !important;bottom:calc(118px + env(safe-area-i
 body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-inset-bottom,0px)) !important;width:60px;height:60px}
 #joy[hidden],#actBtn[hidden]{display:none}
 
+.hvgrp{border:2px solid #E2C796;border-radius:14px;background:#FFFDF6;margin:8px 0;padding:6px 10px}
+.hvhead{display:flex;gap:8px;align-items:center;padding:2px 0 6px;border-bottom:1px dashed #E2C796}
+.hvhead .meta{display:block}
+.hvrow{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.06)}
+.hvrow:last-child{border-bottom:none}
+.hvrow .meta{font-size:12px}
+.hvrow .badge{font-size:11px}
+.hvbtns{display:flex;gap:4px;flex:none}
+.hvbtns .fchip{padding:6px 9px}
 .polcard{border:2px solid #E2C796;border-radius:14px;background:#FFFDF6;margin:8px 0;overflow:hidden}
 .polcard.open{border-color:#5DBB3A}
 .polhead{display:flex;align-items:center;gap:8px;width:100%;background:none;border:0;padding:8px 10px 2px;text-align:left;font:inherit;color:inherit}
@@ -394,8 +403,8 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
 <button id="actBtn" hidden>互動</button>
 <button id="sowBtn" class="sbtn">播種</button>
 <button id="shovelBtn" class="sbtn">剷除</button>
-<button id="fertBtn" class="sbtn">全部<br>施肥</button>
-<button id="waterAll" class="sbtn">全部<br>澆水</button>
+<button id="fertBtn" class="sbtn">全部<br>自交</button>
+<button id="waterAll" class="sbtn">全部<br>收成</button>
 <div id="buildBar" hidden></div>
 <div id="shovelBar" class="toolbar2" hidden></div>
 <div id="sowBar" class="toolbar2" hidden></div>
@@ -594,7 +603,7 @@ function phen(g,crop='tomato'){
   const a=appParts(g),ab_=Object.fromEntries(ABIL.map(k=>[k,abilOf(g,k)])),r=rarityOf(a,ab_.size,ab_.perf),key=appKey(a);
   const ph={...a,key,ab:ab_,tier:r.tier,score:r.score,sizeCls:sizeCls(ab_.size),perfCls:perfCls(ab_.perf),
     shapeName:shapeNameOf(a,crop),cname:CN[a.skin],germ:GERM[r.tier],seedBase:SEEDB[r.tier],
-    harvests:Math.min(5,1+Math.floor(ab_.vigor/20)),yBonus:Math.min(3,Math.floor(ab_.yield/25)),
+    harvests:3,yBonus:2,/* 生命力、產量已移除，固定為採收 3 次、取種多 2 顆 */
     seed:hashStr(JSON.stringify(g.n.perf).slice(0,60))};
   let st=null;Object.defineProperty(ph,'stab',{get(){if(st==null)st=offspringDist(g,g).get(key)||0;return st}});
   phCache.set(g,{crop,ph});
@@ -680,7 +689,7 @@ function packKeys(l){
   return lotDist(l).map(x=>({key:x.key,p:x.p}));
 }
 function drawSeed(l){if(l.zs)unzipLot(l);if(l.seeds&&l.seeds.length)return l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0];l.count--;return child(l.m,l.f).g}
-function newGame(){state={vault:[],v:4,mapV:MAPV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null}}
+function newGame(){state={vault:[],v:4,mapV:MAPV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},tutV:2,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null}}
 const WILD={tomato:'red',strawberry:'red',zucchini:'green',bittergourd:'green',corn:'yellow',broccoli:'white',sweetpotato:'purple',melon:'yellow',chili:'red',pumpkin:'orange',eggplant:'purple'};
 function originalFor(crop){
   const wild=rnd()<0.7,col=wild?WILD[crop]:pk(['red','yellow','green','white','purple'].filter(c=>c!==WILD[crop]));
@@ -747,7 +756,9 @@ function migrate(o){
   while(o.plots.length<64)o.plots.push(null);
   if(!o.selfC)o.selfC={};
   if(!o.items)o.items={};
-  if(!o.decor)o.decor=[];if(!o.avatar)o.avatar={...AV_DEF};if(!o.tut)o.tut={step:0,done:false};if(!o.orders)o.orders={};
+  if(!o.decor)o.decor=[];if(!o.avatar)o.avatar={...AV_DEF};if(!o.tut)o.tut={step:0,done:false};
+  if(!o.tutV){if(o.tut&&!o.tut.done)o.tut.step=[0,1,1,2,3,4][Math.min(o.tut.step|0,5)];o.tutV=2}/* 教學拿掉澆水步驟後的進度換算（只做一次） */
+  if(!o.orders)o.orders={};
   if(!o.mapV){
     if(!o.me||o.me.x>440)o.me={x:230,y:545};
     if(o.decor.some(d=>d.x>460))o.decor=o.decor.map(d=>({...d,x:Math.round(clamp(40+(d.x-780)/356*380,40,420)),y:Math.round(clamp(575+(d.y-84)/202*245,575,820))}));
@@ -828,7 +839,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN+2&&v.startsWi
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-14c';
+const BUILD='2026-11-14e';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object')return false;
@@ -1157,7 +1168,7 @@ function fruitSVG(ph,crop,size=80,ripe=1,label=''){
   return `<svg viewBox="-1.5 -1.6 3 3.2" width="${size}" height="${Math.round(size*3.2/3)}" ${label?`role="img" aria-label="${esc(label)}"`:'aria-hidden="true"'}>${fruitInner(ph,ripe,crop)}</svg>`;
 }
 
-function stageDur(p,ph){const f=1.3-0.6*ph.ab.speed/100;return CROPS[p.crop].min*60e3*(p.stage==='seedling'?0.4:0.6)*f}
+function stageDur(p,ph){const f=1;/* 生長速度已移除，固定 ×1.0 */return CROPS[p.crop].min*60e3*(p.stage==='seedling'?0.4:0.6)*f}
 const leaf=(x,y,a,s)=>`<path d="M0 0 Q${6*s} ${-6*s} ${15*s} 0 Q${6*s} ${6*s} 0 0Z" fill="#6CC24A" stroke="#2F6B1E" stroke-width="1.2" stroke-linejoin="round" transform="translate(${x} ${y}) rotate(${a})"/>`;
 const leafW=(x,y,a,s)=>`<path d="M0 0 Q${8*s} ${-10*s} ${17*s} 0 Q${8*s} ${10*s} 0 0Z" fill="#6CC24A" stroke="#2F6B1E" stroke-width="1.2" stroke-linejoin="round" transform="translate(${x} ${y}) rotate(${a})"/>`;
 const leafL=(x,y,a,s)=>`<path d="M0 0 Q${12*s} ${-4*s} ${28*s} ${5*s} Q${12*s} ${2*s} 0 0Z" fill="#6CC24A" stroke="#2F6B1E" stroke-width="1.2" stroke-linejoin="round" transform="translate(${x} ${y}) rotate(${a})"/>`;
@@ -1196,7 +1207,7 @@ function plantSVG(p,x,y){
     }
   }
   if(p.pollen&&p.pollen.failed&&p.stage!=='flower')s+=`<g stroke="#7A2A1A" stroke-width="1.4"><circle cx="${x+24}" cy="${y-74}" r="7" fill="#FFE1D6"/><path d="M${x+21} ${y-77} l6 6 M${x+27} ${y-77} l-6 6" stroke-linecap="round"/></g>`;
-  if((p.stage==='seedling'||p.stage==='fruit')&&!p.watered)s+=`<path d="M${x-26} ${y-80} c0 0 -7 9 -7 13 a7 7 0 0 0 14 0 c0 -4 -7 -13 -7 -13z" fill="var(--water)" stroke="var(--paper)" stroke-width="1.5"/>`;
+  if(p.stage==='flower'&&!p.pollen)s+=`<g aria-hidden="true"><circle cx="${x-26}" cy="${y-76}" r="9" fill="#FFFDF6" stroke="#B07A44" stroke-width="1.5"/>${[0,1,2,3,4].map(k=>{const a=k*1.2566-1.5708;return `<circle cx="${(x-26+3.6*Math.cos(a)).toFixed(1)}" cy="${(y-76+3.6*Math.sin(a)).toFixed(1)}" r="2.6" fill="#F28DB2"/>`}).join('')}<circle cx="${x-26}" cy="${y-76}" r="2" fill="#FFD54A"/></g>`;/* 等待授粉 */
   plantCache.set(p,{key,svg:s});
   return s;
 }
@@ -1277,9 +1288,7 @@ function searchHTML(){
   <label>完美度<select data-vq="perf">${opt('perf',[['any','不限'],...PERF_N.map((n,i)=>[String(i),n])])}</select></label>
   <label>稀有度<select data-vq="tier">${opt('tier',TIERS.map((n,i)=>[String(i),n+(i?' 以上':'（全部）')]))}</select></label>
   <label>最可能外觀機率<select data-vq="stab">${opt('stab',[['0','不限'],['0.5','50% 以上'],['0.8','80% 以上'],['0.95','95% 以上']])}</select></label>
-  <label>生長速度 ≥<input data-vq="speed" type="number" inputmode="numeric" min="0" max="100" value="${esc(vq.speed)}"></label>
-  <label>產量 ≥<input data-vq="yield" type="number" inputmode="numeric" min="0" max="100" value="${esc(vq.yield)}"></label>
-  <label>生命力 ≥<input data-vq="vigor" type="number" inputmode="numeric" min="0" max="100" value="${esc(vq.vigor)}"></label></div>
+  </div>
   <button class="btn" data-vact="qreset">清除條件</button>`+selBarHTML('search');
   const pool=[];for(const c of vaultCabs())for(const l of c.lots)pool.push({l,where:c.name});if(vq.scope==='all')for(const l of state.lots)pool.push({l,where:'種子袋'});
   const num=v=>v===''?null:+v;
@@ -1324,11 +1333,11 @@ function vaultLotHTML(l,cab){
   const ph=phen(l.m,l.crop),others=vaultCabs().filter(c=>c.crop===l.crop&&c!==cab);
   let h=`<h2>${esc(l.name)}</h2><p class="stage">${CROPS[l.crop].n}・${lc(l)} 顆・發芽率 ${Math.round(l.germ*100)}%・存放在「${esc(cab.name)}」</p><p class="note">血統：${esc(l.source)}</p>${packContentHTML(l)}`;
   if(l.obs){h+=`<p class="note">這包種子已絕版。可以取出最多 ${RESCUE_N} 顆：顏色、花紋與能力值保留，外觀會隨機重新生成為現有的基本造型。取出的種子可以正常使用，剩下的仍維持絕版。</p><button class="btn primary" data-act="vrescue">取出 ${Math.min(RESCUE_N,lc(l))} 顆（保留顏色）</button>`;
-    return h+distHTML(lotDist(l),l.crop,'原本的後代外觀',false)+`<h3>母本</h3>`+infoHTML(ph,3,l.m,l.crop,true)+'<button class="btn" data-act="close">關閉</button>'}
+    return h+distHTML(lotDist(l),l.crop,'原本的後代外觀',false)+`<h3>母本</h3>`+infoHTML(ph,3,l.m,l.crop,true,null,{parent:true})+'<button class="btn" data-act="close">關閉</button>'}
   h+=`<button class="btn primary" data-act="vget">取回種子袋</button>`;
   if(others.length)h+=`<details class="dist"><summary>移到其他保存櫃</summary>${others.map(c=>`<button class="btn" data-act="vmove" data-c="${c.id}">移到「${esc(c.name)}」</button>`).join('')}</details>`;
   h+=`<button class="btn warn" data-act="vdiscard">${sheet.confirm?'再按一次，確定丟掉':'丟掉這包種子'}</button>`;
-  h+=distHTML(lotDist(l),l.crop,'可能出現的後代',false)+`<h3>母本</h3>`+infoHTML(ph,3,l.m,l.crop,true);
+  h+=distHTML(lotDist(l),l.crop,'可能出現的後代',false)+lotUniHTML(l)+`<h3>母本</h3>`+infoHTML(ph,3,l.m,l.crop,true,null,{parent:true});
   return h+'<button class="btn" data-act="close">關閉</button>';
 }
 function vaultSheetAction(act,b){
@@ -1463,15 +1472,15 @@ function seedPrice(l){const ph=phen(l.m,l.crop);return Math.max(1,Math.round(CRO
 function lotSheetHTML(l){
   const ph=phen(l.m,l.crop),n=lc(l),cross=l.cross!=null?l.cross:gdist(l.m,l.f)>0,sp=seedPrice(l),f=sheet.form;
   let h=`<h2>${esc(l.name)}</h2><p class="stage">${CROPS[l.crop].n}${genTxt(l.gen)}${l.obs?'・已絕版':''}・剩 ${n} 顆・發芽率 ${Math.round(l.germ*100)}%</p>${abilRange(l)}<p class="note">血統：${esc(l.source)}${l.wide?'<br>遠緣雜種：發芽率減半，自交取種數減半；再和同種作物雜交一次即可恢復。':''}</p>`;
-  if(l.obs)return h+'<p class="note">這包種子的外觀在新版本中已經不存在，已絕版，只能查看，不能播種、雜交或交易。</p>'+`<h3>母本</h3>`+infoHTML(ph,3,l.m,l.crop,true);
+  if(l.obs)return h+'<p class="note">這包種子的外觀在新版本中已經不存在，已絕版，只能查看，不能播種、雜交或交易。</p>'+`<h3>母本</h3>`+infoHTML(ph,3,l.m,l.crop,true,null,{parent:true});
   const err=`<div class="err" id="ferr">${sheet.err}</div>`;
   if(f==='rename')h+=`<div class="regbox"><b>改名</b><p class="note">只會改這一包種子的名字，以及從這包種下去的植株。最多 8 個字。</p><input id="f1" maxlength="8" value="${esc(sheet.d1)}" aria-label="新名稱">${err}<div class="row2"><button class="btn primary" data-act="lsave">儲存</button><button class="btn" data-act="lcancel">取消</button></div></div>`;
   else if(f==='sell')h+=`<div class="regbox sellbox"><b>上架到市場</b><label>數量（最多 ${n} 顆）<input id="f1" type="number" inputmode="numeric" min="1" max="${n}" value="${esc(sheet.d1)}"></label><label>價格（金幣）<input id="f2" type="number" inputmode="numeric" min="1" value="${esc(sheet.d2)}"></label>${err}<div class="row2"><button class="btn primary" data-act="lsave">確定上架</button><button class="btn" data-act="lcancel">取消</button></div></div>`;
   else if(f==='npc')h+=`<div class="regbox sellbox"><b>賣給種子行</b><p class="note">每顆 ${sp} 金幣，越稀有收購價越高。</p><label>數量（最多 ${n} 顆）<input id="f1" type="number" inputmode="numeric" min="1" max="${n}" value="${esc(sheet.d1)}"></label><p class="note" id="ftotal">共 ${(parseInt(sheet.d1,10)||0)*sp} 金幣</p>${err}<div class="row2"><button class="btn primary" data-act="lsave">確定賣出</button><button class="btn" data-act="lcancel">取消</button></div></div>`;
   else if(f==='vault')h+=depositHTML(l);
   else h+=`<button class="btn primary" data-act="lsow">連續播種</button><button class="btn" data-act="lform" data-f="vault">存入種原庫</button><button class="btn" data-act="lform" data-f="rename">改名</button><p class="note" style="margin:8px 0 0">想賣給朋友的話，到市集找一個空攤位上架。</p><button class="btn" data-act="lform" data-f="npc">賣給種子行（每顆 ${sp} 金幣）</button><button class="btn warn" data-act="ldiscard">${sheet.confirm?'再按一次，確定丟掉':'丟掉這包種子'}</button>`;
-  h+=distHTML(lotDist(l),l.crop,'可能出現的後代',true);
-  h+=`<h3>母本</h3>`+infoHTML(ph,3,l.m,l.crop,true);
+  h+=distHTML(lotDist(l),l.crop,'可能出現的後代',true)+lotUniHTML(l);
+  h+=`<h3>母本</h3>`+infoHTML(ph,3,l.m,l.crop,true,null,{parent:true});
   if(cross){const fp=phen(l.f,l.crop);h+=`<h3>父本</h3><div class="lot-top">${fruitSVG(fp,l.crop,64,1,descr(fp,l.crop))}<div><div class="meta">${fp.shapeName}・${colorLabel(fp)}</div><div class="meta">${SIZE_N[fp.sizeCls]}・${PERF_N[fp.perfCls]}</div><div class="badges" style="justify-content:flex-start;margin-top:2px"><span class="badge r${fp.tier}">${TIERS[fp.tier]}</span></div></div></div>`}
   return h;
 }
@@ -1650,6 +1659,7 @@ document.getElementById('dex').addEventListener('click',e=>{const bc=e.target.cl
 document.getElementById('dex').addEventListener('input',e=>{const t=e.target;if(t.dataset.rname){rdraft[t.dataset.rname]=t.value;rerr[t.dataset.rname]=''}if(t.id==='dexQ'){dexQ=t.value;const pos=t.selectionStart;renderDex();const n=document.getElementById('dexQ');if(n){n.focus();n.setSelectionRange(pos,pos)}}});
 document.getElementById('dex').addEventListener('change',e=>{if(e.target.id==='dexTier'){dexTier=+e.target.value;renderDex()}});
 
+function clsRow(name,v,show,note=''){return `<div class="stat"><span>${name}</span><span class="v" style="grid-column:2/4;text-align:left">${show?v:'？'}</span></div>${note&&show?`<div class="note" style="margin:-2px 0 4px">${note}</div>`:''}`}
 function statRow(name,v,show,note=''){return `<div class="stat"><span>${name}</span><div class="bar"><i style="width:${show?v:0}%"></i></div><span class="v">${show?Math.round(v):'？'}</span></div>${note&&show?`<div class="note" style="margin:-2px 0 4px">${note}</div>`:''}`}
 function chipsHTML(ph){
   const t=spType(ph);let h=`<span class="chip${t===2?' myth':t===1?' leg':''}">${ph.shapeName}</span>`;
@@ -1668,16 +1678,21 @@ function introHTML(g,crop,ph){
   return out.map(([t,s2])=>`<div class="intro">✦ 遠緣導入：${t}（來自${CROPS[s2].n}）</div>`).join('');
 }
 const tagName=(a,crop)=>{const t=spType(a),n=shapeNameOf(a,crop);return t?`<span class="tg ${t===2?'myth':'leg'}">${n}</span>`:n};
-function infoHTML(ph,lvl,g,crop,noSims,p){
+function infoHTML(ph,lvl,g,crop,noSims,p,opt){
+  opt=opt||{};
   let h='';
   if(lvl>=3){
     const hs=sizeScale(ph.ab.size);
     h+=`<div class="hero">${fruitSVG(ph,crop,Math.round(130*hs),1,descr(ph,crop))}</div><div class="chips">${chipsHTML(ph)}<span class="chip${ph.sizeCls===4?' xbig':ph.sizeCls===0?' xmini':''}">${SIZE_N[ph.sizeCls]}</span><span class="chip${ph.perfCls===3?' xperf':ph.perfCls===0?' xweird':''}">${PERF_N[ph.perfCls]}</span></div>${g?introHTML(g,crop,ph):''}`;
-    h+=`<div class="badges"><span class="badge r${ph.tier}">${TIERS[ph.tier]}</span><span class="badge">${stabName(ph.stab)}</span></div><p class="note" style="text-align:center">外觀穩定度：自交後約 ${pctTxt(ph.stab)} 會保留這個外觀。</p>`;
+    h+=`<div class="badges"><span class="badge r${ph.tier}">${TIERS[ph.tier]}</span><span class="badge">${opt.parent?'母本':''}${stabName(ph.stab)}</span></div><p class="note" style="text-align:center">${opt.parent?'母本':'這株'}的外觀穩定度：如果自交，約 ${pctTxt(ph.stab)} 會保留這個外觀。</p>`;
   }else if(lvl<2)h+=`<p class="note">外觀會在開花時揭曉。</p>`;
   const hv=p?`（已採收 ${p.hv||0} 次）`:'';
-  h+=statRow('大小',ph.ab.size,lvl>=2,`${SIZE_N[ph.sizeCls]}：決定賣價，也有最大、最小紀錄。`)+statRow('完美度',ph.ab.perf,lvl>=2,`${PERF_N[ph.perfCls]}：有最完美、最奇異紀錄。`)+statRow('生長速度',ph.ab.speed,lvl>=1,`每輪時間 ×${(1.3-0.6*ph.ab.speed/100).toFixed(2)}`)+statRow('產量',ph.ab.yield,lvl>=2,`每次取種多 ${ph.yBonus} 顆`)+statRow('生命力',ph.ab.vigor,lvl>=2,`可以採收 ${ph.harvests} 次${hv}`);
-  if(lvl>=3&&!noSims)h+=simsHTML(g,g,crop,'這株自交的後代');
+  h+=clsRow('大小',SIZE_N[ph.sizeCls],lvl>=2,'決定賣價，也有最大、最小紀錄。不影響稀有度與品種權。')+clsRow('完美度',PERF_N[ph.perfCls],lvl>=2,'有最完美、最奇異紀錄。不影響稀有度與品種權。');
+  if(lvl>=3&&!noSims){
+    const pc=p&&p.pollen&&p.pollen.type==='cross'&&p.pollen.fatherG?p.pollen:null;
+    if(pc)h+=simsHTML(g,pc.fatherG,crop,`收下的種子種下去會長出（與 ${esc(pc.fatherName||'另一株')} 雜交）`)+(pc.wide?'<p class="note">遠緣雜種，發芽率減半。</p>':'');
+    else h+=simsHTML(g,g,crop,'這株自交的後代');
+  }
   if(TEST_MODE&&state.showG&&g)h+=`<details class="dist" open><summary>完整因子（測試）</summary><pre style="white-space:pre-wrap;font-size:12px;margin:6px 0 0">${esc(genoTxt(g))}</pre></details>`;
   return h;
 }
@@ -1728,9 +1743,8 @@ bd.addEventListener('click',closeSheet);
 function fmt(ms){ms=Math.max(0,ms);const s=Math.ceil(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;return h?`${h} 小時 ${m} 分`:m?`${m} 分 ${r} 秒`:`${r} 秒`}
 function progInfo(p){
   const ph=phen(p.g,p.crop);
-  if(p.stage==='flower')return {pct:p.flowerT/(24*HOUR)*100,txt:`若不處理，${fmt((24*HOUR-p.flowerT)/state.speed)}後會自動自交`};
+  if(p.stage==='flower')return {pct:100,txt:'等待授粉：可以自交，或和另一株同時開花的作物雜交。沒處理會一直等著。'};
   const dur=stageDur(p,ph),pct=clamp(p.prog/dur*100,0,100);
-  if(!p.watered)return {pct,txt:'需要澆水才會繼續生長'};
   return {pct,txt:`約 ${fmt((dur-p.prog)/((p.fert?1.25:1)*state.speed))}後進入下一階段`};
 }
 // 遠緣雜交組合：櫛瓜 × 南瓜；番茄、茄子、辣椒互相
@@ -1747,6 +1761,7 @@ function renderSheet(){
   if(sheet.sowPick){sb.innerHTML=sowPickHTML();return}
   if(sheet.avatar){sb.innerHTML=avatarEditorHTML();return}
   if(sheet.orders){sb.innerHTML=ordersHTML();return}
+  if(sheet.harvest){sb.innerHTML=harvestHTML();return}
   if(sheet.build){sb.innerHTML=buildHTML();return}
   if(sheet.trash){sb.innerHTML=trashHTML();return}
   if(sheet.sign!=null){sb.innerHTML=signHTML();bindSign();return}
@@ -1784,7 +1799,6 @@ function renderSheet(){
       if(ref)h+=`<div class="hero">${fruitSVG(ref,p.crop,Math.round(110*(own&&ref===ph?sizeScale(ph.ab.size):1)),fl?1:own?Math.max(0.15,clamp(p.prog/stageDur(p,ph),0,1)*0.4):1,fl?'這株將結出的果實':own?'這株正在長的果實':'親本的樣子')}</div><p class="note" style="text-align:center">${fl?`開花了！這株會結出：${ph.shapeName}・${colorLabel(ph)}・${SIZE_N[ph.sizeCls]}`:own?'這株正在長大，顏色會在成熟時揭曉。':'這是親本的樣子。這株自己的樣子會在開花時出現，可能和親本不同。'}</p>`;
       const pi=progInfo(p);h+=`<div class="bar"><i id="pbar" style="width:${pi.pct}%"></i></div><p class="note" id="ptime">${pi.txt}</p>`;
     }
-    if(p.stage==='seedling'||p.stage==='fruit')h+=`<div class="row2"><button class="btn primary" data-act="water" ${p.watered?'disabled':''}>${p.watered?'已澆水':'澆水'}</button><button class="btn" data-act="fert" ${p.fert?'disabled':''}>${p.fert?'已施肥':'施肥'}</button></div>`;
     if(p.stage==='flower'){
       h+=`<p class="note" style="margin-top:12px">按卡片右側的按鈕就能授粉；想看全部的後代預覽，點卡片展開。預覽只包含形狀、顏色、花紋；大小和完美度會大約介於兩個親本之間。</p>`;
       h+=polCard(p,i,null);
@@ -1798,7 +1812,7 @@ function renderSheet(){
     if(p.stage==='ripe'){
       const left=ph.harvests-(p.hv||0)-1;
       if(sheet.seedName!=null)h+=`<div class="regbox"><b>替這包種子取名字</b><p class="note">取種 ${seedCount(p)} 顆。取個好記的名字，之後比較不會忘記是哪一包（1–8 個字）。</p><input id="seedName" maxlength="8" value="${esc(sheet.seedName)}" aria-label="種子名稱"><div class="err">${sheet.seedErr||''}</div><div class="row2"><button class="btn primary" data-act="seedok">確定取種</button><button class="btn" data-act="seedcancel">取消</button></div></div>`;
-      else h+=`<div class="row2"><button class="btn primary" data-act="sell">賣果實，得 ${sellPrice(p)} 金幣</button><button class="btn" data-act="${canMerge(p)?'seedmerge':'seed'}">取種 ${seedCount(p)} 顆${canMerge(p)?'<br><small>放回原包</small>':''}</button></div>${canMerge(p)?'<button class="btn" data-act="seed">另外包一包（自己取名）</button>':''}<p class="note">每次採收二選一。${left>0?`這株還能再採收 ${left} 次，採收後會重新開花。`:'這是最後一次採收，之後植株會枯萎。'}</p>`;
+      else h+=`<div class="row2"><button class="btn primary" data-act="sell">賣果實，得 ${sellPrice(p)} 金幣</button><button class="btn" data-act="${canMerge(p)?'seedmerge':'seed'}">取種 ${seedCount(p)} 顆${canMerge(p)?'<br><small>放回原包</small>':''}</button></div>${canMerge(p)?'<button class="btn" data-act="seed">另外包一包</button>':''}<p class="note">每次採收二選一。${left>0?`這株還能再採收 ${left} 次，採收後會重新開花。`:'這是最後一次採收，之後植株會枯萎。'}</p>`;
       const dl=deliverables(p,ph);
       if(dl.length)h+=`<p class="note" style="margin-top:8px">這顆果實符合訂單：</p>`+dl.map(o=>`<button class="btn" data-act="deliver" data-o="${o.id}">交給訂單：${o.t}（${o.r} 金幣${o.pt?'＋'+o.pt:''}）</button>`).join('');
       h+=regHTML(p,ph);
@@ -1816,6 +1830,7 @@ sb.addEventListener('click',e=>{
   const gfb=e.target.closest('[data-gf]');if(gfb){sheet.gf=+gfb.dataset.gf;renderSheet();return}
   const b=e.target.closest('[data-act]');if(!b)return;
   if(b.dataset.act==='close')return closeSheet();
+  if(sheet.harvest)return harvestAction(b);
   if(sheet.stall!=null)return stallAction(b);
   if(sheet.avatar)return avatarAction(b);
   if(sheet.orders)return orderAction(b);
@@ -1842,7 +1857,7 @@ sb.addEventListener('click',e=>{
     const g=drawSeed(lot),gf=sheet.gf||0,it=state.items||(state.items={});let germ=lot.germ;
     if(gf&&it['g'+gf]>0){it['g'+gf]--;germ=Math.min(0.99,germ+GB[gf])}
     if(!lc(lot))state.lots=state.lots.filter(l=>l!==lot);
-    if(rnd()<germ){state.plots[i]=plantFromLot(lot,g);toast('發芽了，記得澆水');tutEv('plant')}
+    if(rnd()<germ){state.plots[i]=plantFromLot(lot,g);toast('發芽了');tutEv('plant')}
     else toast('這顆種子沒有發芽');
   }
   if(act==='water'&&p){p.watered=true;toast('澆好水了');tutEv('water')}
@@ -1853,8 +1868,8 @@ sb.addEventListener('click',e=>{
   if(act==='cross'&&p)pollinate(i,+b.dataset.j);
   if(act==='uproot'&&p){if(!sheet.confirm){sheet.confirm=true;renderSheet();return}trashPlant(i);toast('已拔掉，可以到垃圾桶找回')}
   if(act==='deliver'&&p)deliver(i,b.dataset.o);
-  if(act==='sell'&&p){const ph=phen(p.g,p.crop),total=sellPrice(p);state.coins+=total;toast(`賣出 5 個果實，得到 ${total} 金幣`);harvested(ph);afterHarvest(i)}
-  if(act==='seed'&&p){sheet.seedName=defaultSeedName(p);renderSheet();setTimeout(()=>{const n=document.getElementById('seedName');if(n){n.focus();n.select()}},50);return}
+  if(act==='sell'&&p)sellPlot(i);
+  if(act==='seed'&&p){playAct('harvest');takeSeeds(i,autoSeedName(p))}
   if(act==='seedcancel'){sheet.seedName=null;renderSheet();return}
   if(act==='seedmerge'&&p){playAct('harvest');takeSeeds(i,'',{merge:true})}
   if(act==='seedok'&&p){const v=(sheet.seedName||'').trim();if(!glen(v)||glen(v)>8){sheet.seedErr='名稱需要 1 到 8 個字';renderSheet();return}sheet.seedName=null;sheet.seedErr='';takeSeeds(i,v)}
@@ -1883,11 +1898,12 @@ function polCard(p,i,o){
   h+=`<div class="polrow"><div class="polstrip" data-act="polopen" data-k="${k}">${top.map(x=>`<span class="pth">${fruitSVG(x.app,p.crop,34)}<i>${pctTxt(x.p)}</i></span>`).join('')}${more>0?`<span class="pmore">還有 ${more} 種</span>`:''}</div>${self?`<button class="polgo" data-act="self">自交</button>`:`<button class="polgo" data-act="cross" data-j="${o.j}">雜交</button>`}</div>`;
   if(open){
     h+=`<div class="polbody">`+d.map(x=>`<div class="prow">${fruitSVG(x.app,p.crop,40)}<span class="pl"><b>${shapeNameOf(x.app,p.crop)}・${colorLabelA(x.app)}</b><span class="meta">${regStatus(p.crop,x.key)}</span></span><span class="pp">${pctTxt(x.p)}</span></div>`).join('');
-    h+=`<p class="note" style="margin:6px 0">另有約 0.35% 機率突變。${self?'':`<br>親本大小 ${pp.ab.size}／${qp.ab.size}、完美度 ${pp.ab.perf}／${qp.ab.perf}，後代大約介於兩者之間。<br>如果雜交失敗，會改為自交。`}</p>`;
+    h+=`<p class="note" style="margin:6px 0">另有約 0.35% 機率突變。${self?'':`<br>親本大小：${SIZE_N[pp.sizeCls]}／${SIZE_N[qp.sizeCls]}；完美度：${PERF_N[pp.perfCls]}／${PERF_N[qp.perfCls]}，後代大約介於兩者之間。<br>如果雜交失敗，會改為自交。`}</p>`;
     h+=`</div>`;
   }
   return h+`</div>`;
 }
+function sellPlot(i,quiet){const p=state.plots[i],ph=phen(p.g,p.crop),total=sellPrice(p);state.coins+=total;if(!quiet)toast(`賣出 5 個果實，得到 ${total} 金幣`);harvested(ph);afterHarvest(i);return total}
 function sellPrice(p){const ph=phen(p.g,p.crop);return Math.round(CROPS[p.crop].price*5*(0.6+0.8*ph.ab.size/100)*(1+0.3*ph.tier))}
 function seedCount(p){const ph=phen(p.g,p.crop),cross=p.pollen&&p.pollen.type==='cross';let n=ph.seedBase+ph.yBonus+YB[p.yf||0];if(p.wide&&!cross)n=Math.max(1,Math.floor(n/2));return n}
 function afterHarvest(i){
@@ -1942,11 +1958,11 @@ function takeSeeds(i,custom,opt){
 }
 // 逐顆記錄的種子包：顯示包內能力值範圍
 function abilRange(l){
-  if(l.zi){const nm={size:'大小',perf:'完美度',speed:'速度',yield:'產量',vigor:'生命力'};return `<p class="note">包內能力值範圍：${ABIL.map(k=>{const r=l.zi.ab[k];return r?`${nm[k]} ${r[0]===r[1]?r[0]:r[0]+'–'+r[1]}`:''}).filter(Boolean).join('・')}</p>`}
+  const rg=(k,a,b)=>{const N=k==='size'?SIZE_N:PERF_N,f=k==='size'?sizeCls:perfCls,x=N[f(a)],y=N[f(b)];return `${k==='size'?'大小':'完美度'} ${x===y?x:x+'～'+y}`};
+  if(l.zi){const parts=['size','perf'].map(k=>{const r=l.zi.ab&&l.zi.ab[k];return r?rg(k,r[0],r[1]):''}).filter(Boolean);return parts.length?`<p class="note">包內範圍：${parts.join('・')}</p>`:''}
   if(!l.seeds||l.seeds.length<2)return '';
-  try{const nm={size:'大小',perf:'完美度',speed:'速度',yield:'產量',vigor:'生命力'};
-    const parts=ABIL.map(k=>{const v=l.seeds.map(g=>abilOf(g,k));const a=Math.min(...v),b=Math.max(...v);return `${nm[k]} ${a===b?a:a+'–'+b}`});
-    return `<p class="note">包內能力值範圍：${parts.join('・')}</p>`}catch(e){return ''}
+  try{const parts=['size','perf'].map(k=>{const v=l.seeds.map(g=>abilOf(g,k));return rg(k,Math.min(...v),Math.max(...v))});
+    return `<p class="note">包內範圍：${parts.join('・')}</p>`}catch(e){return ''}
 }
 function tick(){
   if(!state)return;
@@ -1956,8 +1972,8 @@ function tick(){
   state.plots.forEach((p,i)=>{
     if(!p||p.obs)return;
     if(p.stage==='seedling'||p.stage==='fruit'){
-      if(p.watered){p.prog+=gdt*(p.fert?1.25:1);if(p.prog>=stageDur(p,phen(p.g,p.crop))){p.prog=0;p.watered=false;p.fert=false;if(p.stage==='seedling')flowered=true;p.stage=p.stage==='seedling'?'flower':'ripe';p.flowerT=0;changed=true;if(p.stage==='ripe'){doRecord(i);noteSeen(p);submitBoards(p)}}}
-    }else if(p.stage==='flower'){p.flowerT+=gdt;if(p.flowerT>=24*HOUR){pollinate(i,null);changed=true}}
+      {p.prog+=gdt*(p.fert?1.25:1);if(p.prog>=stageDur(p,phen(p.g,p.crop))){p.prog=0;p.watered=false;p.fert=false;if(p.stage==='seedling')flowered=true;p.stage=p.stage==='seedling'?'flower':'ripe';p.flowerT=0;changed=true;if(p.stage==='ripe'){doRecord(i);noteSeen(p);submitBoards(p)}}}
+    }else if(p.stage==='flower'){p.flowerT+=gdt}
   });
   if(flowered)tutEv('flower');
   if(changed){save();renderAll()}else if(scene==='farm'&&!viewing)renderWorld();
@@ -2041,7 +2057,7 @@ function waterAll(){
   if(!n){toast('目前沒有需要澆水的植株');return}
   save();renderAll();if(sheet&&sheet.i!=null)renderSheet();toast(`幫 ${n} 株澆好水了`);tutEv('water');
 }
-document.getElementById('waterAll').onclick=waterAll;
+document.getElementById('waterAll').onclick=()=>openHarvest();
 const WC='#A8743F',WD='#7E5530';
 const dd=(k,n,cat,f,flat)=>({k,n,cat,f,flat:!!flat});
 const DIA=(x,y,c)=>`<polygon points="${x},${y-12} ${x+22},${y} ${x},${y+12} ${x-22},${y}" fill="${c}"/>`;
@@ -2551,7 +2567,7 @@ const isInf=()=>TEST_MODE;
 // ===== 測試模式 =====
 const TEST_MODE=true;                 // 測試期間開啟；正式版改成 false
 const ADMIN_EMAILS=[];                // 管理員的 Google 帳號 email，例如 ['you@gmail.com']
-const SPEEDS=[1,5,20,60];
+const SPEEDS=[1,5,10,20];
 const isAdmin=()=>!!(auth.currentUser&&ADMIN_EMAILS.includes(auth.currentUser.email));
 const tScale=()=>TEST_MODE?Math.max(1,state.speed||1):1;
 function testRefill(){if(!TEST_MODE||!state)return;if(state.coins<1e9)state.coins=1e9;if(!state.items)state.items={};for(const k of IKEYS)state.items[k]=99}
@@ -2864,11 +2880,11 @@ const OBJ={
 const BIOMES={
   desert:{n:'沙漠',ch:'沙',base:'#F1D398',patch:'#E7C07C',patch2:'#F8E3B4',dens:9,crops:[['chili',4],['tomato',2],['melon',2],['sweetpotato',2]],cols:['red','red','yellow'],pf:[0,1],prof:{pr:[.62,.74],py:[.3,.42],pp:[.02,.06]},desc:'乾燥炎熱。野生植株的尖因子特別多；氣候嚴苛，常見迷你植株。',
     objs:[{f:OBJ.cactus,w:5},{f:OBJ.sandrock,w:3},{f:OBJ.dryshrub,w:3},{f:OBJ.dune,w:4,flat:1},{f:OBJ.pebbles,w:3,flat:1}],thumb:[['dune',40,82],['sandrock',128,74],['cactus',62,76],['cactus',112,50],['dryshrub',22,58]]},
-  grass:{n:'草原',ch:'原',base:'#A9DA73',patch:'#97CC62',patch2:'#BCE48A',dens:12,crops:[['pumpkin',4],['corn',2],['strawberry',2],['tomato',2]],cols:['yellow','yellow','red'],pf:[3,4],prof:{pr:[.24,.34],py:[.66,.78],pp:[.02,.06]},desc:'陽光充足。野生種原的產量特別高，常見黃色果實。',
+  grass:{n:'草原',ch:'原',base:'#A9DA73',patch:'#97CC62',patch2:'#BCE48A',dens:12,crops:[['pumpkin',4],['corn',2],['strawberry',2],['tomato',2]],cols:['yellow','yellow','red'],pf:[3,4],prof:{pr:[.24,.34],py:[.66,.78],pp:[.02,.06]},desc:'陽光充足。常見黃色果實。',
     objs:[{f:OBJ.tuft,w:5,flat:1},{f:OBJ.flowers,w:4,flat:1},{f:OBJ.bush,w:3},{f:OBJ.boulder,w:1.5}],thumb:[['flowers',30,80],['tuft',96,86],['bush',58,66],['boulder',128,74],['bush',118,46]]},
-  forest:{n:'森林',ch:'林',base:'#76B354',patch:'#64A246',patch2:'#88C163',dens:13,crops:[['strawberry',3],['pumpkin',3],['broccoli',3],['bittergourd',3],['tomato',1],['zucchini',1],['corn',1],['sweetpotato',1],['melon',1],['chili',1],['eggplant',1]],cols:['purple','purple','black'],pf:[4,4,1],prof:{pr:[.5,.6],py:[.1,.2],pp:[.38,.5]},desc:'樹林茂密。野生種原生命力特別高；黑色只在這裡出現。',
+  forest:{n:'森林',ch:'林',base:'#76B354',patch:'#64A246',patch2:'#88C163',dens:13,crops:[['strawberry',3],['pumpkin',3],['broccoli',3],['bittergourd',3],['tomato',1],['zucchini',1],['corn',1],['sweetpotato',1],['melon',1],['chili',1],['eggplant',1]],cols:['purple','purple','black'],pf:[4,4,1],prof:{pr:[.5,.6],py:[.1,.2],pp:[.38,.5]},desc:'樹林茂密。黑色只在這裡出現。',
     objs:[{f:OBJ.tree,w:6},{f:OBJ.mushroom,w:2},{f:OBJ.fern,w:3,flat:1},{f:OBJ.log,w:1.5}],thumb:[['fern',100,86],['tree',40,84],['tree',132,62],['mushroom',84,80],['tree',92,44]]},
-  snow:{n:'雪原',ch:'雪',base:'#EEF4F6',patch:'#DCE7EE',patch2:'#FFFFFF',dens:10,crops:[['broccoli',3],['sweetpotato',2],['strawberry',2],['eggplant',2]],cols:['white'],pf:[2,5],prof:{pr:[.04,.12],py:[.04,.12],pp:[.02,.08]},desc:'寒冷少雨。野生植株長得特別快，常見白色果實與迷你植株。',
+  snow:{n:'雪原',ch:'雪',base:'#EEF4F6',patch:'#DCE7EE',patch2:'#FFFFFF',dens:10,crops:[['broccoli',3],['sweetpotato',2],['strawberry',2],['eggplant',2]],cols:['white'],pf:[2,5],prof:{pr:[.04,.12],py:[.04,.12],pp:[.02,.08]},desc:'寒冷少雨。常見白色果實與迷你植株。',
     objs:[{f:OBJ.pine,w:5},{f:OBJ.drift,w:3,flat:1},{f:OBJ.icepond,w:1.5,flat:1},{f:OBJ.snowrock,w:2},{f:OBJ.sparkle,w:3,flat:1}],thumb:[['icepond',112,80],['drift',36,84],['pine',46,72],['pine',128,52],['snowrock',84,62]]},
   marsh:{n:'濕地',ch:'澤',base:'#93C27E',patch:'#7FB06C',patch2:'#A7D08F',dens:11,crops:[['eggplant',4],['bittergourd',2],['zucchini',2],['pumpkin',2]],cols:['purple','green'],pf:[1,3],prof:{pr:[.3,.4],py:[.04,.1],pp:[.66,.76]},desc:'水氣充沛。野生植株常長得巨大，也是特殊造型最容易出現的地區。',
     objs:[{f:OBJ.pond,w:2.5,flat:1},{f:OBJ.reeds,w:5},{f:OBJ.mud,w:2,flat:1},{f:OBJ.marshtuft,w:4,flat:1}],thumb:[['pond',96,76],['mud',30,82],['reeds',40,70],['reeds',140,58],['marshtuft',120,90]]}
@@ -3139,7 +3155,6 @@ function actInfo(n){
   if(viewing){const p=viewing.st&&viewing.st.plots[n.i];return {label:p?'查看':'空地',on:!!p}}
   const p=state.plots[n.i];
   if(!p)return {label:'播種',on:true};
-  if((p.stage==='seedling'||p.stage==='fruit')&&!p.watered)return {label:'澆水',on:true};
   if(p.stage==='flower')return {label:'授粉',on:true};
   if(p.stage==='ripe')return {label:'收成',on:true};
   return {label:'查看',on:true};
@@ -3160,7 +3175,6 @@ function interact(){
   if(n.t==='stall'){openStall(n.i);return}
   if(viewing){const p=viewing.st&&viewing.st.plots[n.i];if(p)openFriendPlot(p);return}
   const p=state.plots[n.i];
-  if(p&&(p.stage==='seedling'||p.stage==='fruit')&&!p.watered){p.watered=true;save();renderAll();toast('澆好水了');tutEv('water');return}
   openPlot(n.i);
 }
 function fertNear(){
@@ -3170,14 +3184,14 @@ function fertNear(){
   if(p.fert){toast('這個階段已經施過肥了');return}
   p.fert=true;save();renderAll();toast('施肥完成，這個階段會長得比較快');
 }
-document.getElementById('fertBtn').onclick=fertAll;
+document.getElementById('fertBtn').onclick=()=>selfAll();
 document.getElementById('shovelBtn').onclick=openShovel;
 document.getElementById('shovelBar').addEventListener('click',e=>{const b=e.target.closest('[data-sv]');if(!b)return;if(b.dataset.sv==='done'){exitShovel();toast(shovelN?'剷除完成':'結束剷除');return}if(b.dataset.sv==='trash'){sheet={trash:true,confirm:false};renderSheet();openSheetUI()}});
 document.getElementById('buildBar').addEventListener('click',e=>{const b=e.target.closest('[data-bm]');if(!b)return;if(b.dataset.bm==='done'){exitBuild();toast('結束建設');return}buildMode=b.dataset.bm;renderBuildBar()});
 
 // ===== 移動 =====
 let raf=null,lastF=0;
-let ctrlMode=(()=>{try{return localStorage.getItem('sw_ctrl')==='joy'?'joy':'tap'}catch(e){return 'tap'}})();
+let ctrlMode='joy';/* 點擊移動已移除，只用搖桿 */
 let joy={id:null,vx:0,vy:0};
 function setCtrl(m){ctrlMode=m;try{localStorage.setItem('sw_ctrl',m)}catch(e){}moveTo=null;applyCtrl();renderCtrl();toast(m==='joy'?'已改成搖桿操作':'已改成點擊移動')}
 function applyCtrl(){
@@ -3186,7 +3200,7 @@ function applyCtrl(){
   document.getElementById('joy').hidden=!j;document.getElementById('actBtn').hidden=!j;
   if(typeof refreshAct==='function')refreshAct();
 }
-function renderCtrl(){const el=document.getElementById('ctrlBox');if(!el)return;el.innerHTML=`<h3 style="margin-top:0">操作方式</h3><div class="row2"><button class="btn${ctrlMode==='tap'?' primary':''}" data-ctrl="tap">點擊移動</button><button class="btn${ctrlMode==='joy'?' primary':''}" data-ctrl="joy">搖桿</button></div><p class="note">${ctrlMode==='tap'?'點地面就走過去；點作物、攤位、大門會走過去並直接使用。':'用左下角的搖桿移動，走到作物或攤位旁按右下角的按鈕。點作物也能直接打開。'}這個設定只套用在這台裝置。</p>`}
+function renderCtrl(){const el=document.getElementById('ctrlBox');if(!el)return;el.innerHTML=`<h3 style="margin-top:0">操作方式</h3><p class="note">用左下角的搖桿移動，走到作物、攤位或大門旁邊，按右下角的按鈕。點作物也可以直接打開。</p>`}
 document.getElementById('ctrlBox').addEventListener('click',e=>{const b=e.target.closest('[data-ctrl]');if(b&&b.dataset.ctrl!==ctrlMode)setCtrl(b.dataset.ctrl)});
 const joyEl=document.getElementById('joy'),knob=document.getElementById('joyKnob');
 function joySet(e){const r=joyEl.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const R=r.width/2-16,len=Math.hypot(dx,dy);if(len>R){dx*=R/len;dy*=R/len}knob.style.transform=`translate(${dx}px,${dy}px)`;joy.vx=dx/R;joy.vy=dy/R}
@@ -3209,7 +3223,6 @@ function screenToWorld(cx,cy){const pt=sceneEl.createSVGPoint();pt.x=cx;pt.y=cy;
 function interactPlot(i){
   if(viewing){const p=viewing.st&&viewing.st.plots[i];if(p)openFriendPlot(p);return}
   const p=state.plots[i];
-  if(p&&(p.stage==='seedling'||p.stage==='fruit')&&!p.watered){p.watered=true;playAct('water');save();renderAll();toast('澆好水了');tutEv('water');return}
   openPlot(i);
 }
 function gatePos(){return scene==='explore'?EXGATE:scene==='market'?GATE.market:GATE.farm}
@@ -3244,7 +3257,9 @@ function handleTap(e,cx,cy){
 // 場景上的觸控：點擊、雙指縮放、建設模式的拖移
 const ptrs=new Map();let pinch=null,tapStart=null,dragPlot=null,panStart=null;
 sceneEl.addEventListener('pointerdown',e=>{
-  if(!state)return;ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(!state)return;
+  if(e.isPrimary){ptrs.clear();pinch=null;panStart=null;dragPlot=null;sowing=false;shoveling=false}/* 新的觸控開始：清掉殘留的手指紀錄 */
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
   try{sceneEl.setPointerCapture(e.pointerId)}catch(_){}
   if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:zoom};tapStart=null;dragPlot=null;panStart=null;return}
   tapStart={x:e.clientX,y:e.clientY,t:Date.now(),target:e.target,moved:false};
@@ -3258,6 +3273,7 @@ sceneEl.addEventListener('pointerdown',e=>{
 });
 sceneEl.addEventListener('pointermove',e=>{
   if(!ptrs.has(e.pointerId))return;ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pinch&&ptrs.size<2)pinch=null;
   if(pinch&&ptrs.size>=2){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);if(pinch.d>0)setZoom(pinch.z*d/pinch.d);return}
   if(tapStart&&Math.hypot(e.clientX-tapStart.x,e.clientY-tapStart.y)>10)tapStart.moved=true;
   if(shoveling){shovelAt(e.clientX,e.clientY);return}
@@ -3276,8 +3292,92 @@ const ptrEnd=e=>{
   tapStart=null;
 };
 sceneEl.addEventListener('pointerup',ptrEnd);sceneEl.addEventListener('pointercancel',ptrEnd);
+// 手指訊號遺失時的保險：任何地方放開手指、切到背景，都清掉殘留紀錄
+const ptrDrop=e=>{if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(pinch&&ptrs.size<2)pinch=null;tapStart=null};
+sceneEl.addEventListener('lostpointercapture',ptrDrop);
+window.addEventListener('pointerup',ptrDrop);window.addEventListener('pointercancel',ptrDrop);
+function resetPtrs(){ptrs.clear();pinch=null;tapStart=null;panStart=null;dragPlot=null}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)resetPtrs()});
+window.addEventListener('blur',resetPtrs);window.addEventListener('pagehide',resetPtrs);
+// iPhone Safari 會忽略禁止縮放的設定：攔截網頁本身的縮放手勢，雙指只縮放遊戲畫面
+for(const t of ['gesturestart','gesturechange','gestureend'])document.addEventListener(t,e=>e.preventDefault(),{passive:false});
+document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false});
 sceneEl.addEventListener('wheel',e=>{if(!state)return;e.preventDefault();setZoom(zoom*(e.deltaY<0?1.1:1/1.1))},{passive:false});
 
+
+// ===== 種子包的整齊度說明 =====
+function lotUniHTML(l){try{const d=lotDist(l);if(!d.length)return '';
+  if(d.length===1||d[0].p>=0.9995)return `<p class="note">${l.cross?'這包是雜交的種子，種下去會長得一樣（整齊）。但長出來的植株自交後，後代通常會再分離，還不算穩定。':'這包種下去會長得一樣。'}</p>`;
+  return `<p class="note">這包種下去會長出 ${d.length} 種外觀，還在分離中。</p>`}catch(e){return ''}}
+// ===== 自動命名：用外觀與世代命名，不再跳出命名視窗 =====
+const shortApp=ph=>`${ph.cname}・${ph.shapeName}`;
+function autoSeedName(p){
+  const ph=phen(p.g,p.crop),cross=p.pollen&&p.pollen.type==='cross';
+  if(cross){let f='';try{f=shortApp(phen(p.pollen.fatherG,p.pollen.fatherCrop||p.crop))}catch(e){f=p.pollen.fatherName||'？'}return `${shortApp(ph)} × ${f}`}
+  const gen=p.gen==null?undefined:(p.gen===0?0:p.gen+1);
+  return shortApp(ph)+(gen?` ${gen}代`:'');
+}
+// ===== 全部自交 =====
+function selfAll(){
+  if(!state||viewing||scene!=='farm')return;let n=0;
+  state.plots.forEach((p,i)=>{if(p&&!p.obs&&p.stage==='flower'){pollinate(i,null);n++}});
+  if(!n){toast('目前沒有開花、等待授粉的植株');return}
+  playAct('pollinate');save();renderAll();toast(`${n} 株已經自交`);
+}
+// ===== 全部收成：依外觀分組，一次決定取種、賣果實或先不收 =====
+function canRegNow(p,ph){try{return !findVariety(p.crop,ph.key)&&!rightsList.some(x=>x.crop===p.crop&&x.akey===ph.key&&rActive(x))&&appScore(ph.key)>=REG_MIN&&ph.stab>=0.95}catch(e){return false}}
+function harvestRows(){
+  const out=[];
+  state.plots.forEach((p,i)=>{if(!p||p.obs||p.stage!=='ripe')return;
+    const ph=phen(p.g,p.crop),cross=!!(p.pollen&&p.pollen.type==='cross');let dl=0;try{dl=deliverables(p,ph).length}catch(e){}
+    out.push({i,p,ph,cross,reg:canRegNow(p,ph),dl:dl>0,gk:p.crop+'|'+ph.key+'|'+(cross?'x'+p.lid+'>'+(p.pollen.fatherLid||''):'s')})});
+  return out;
+}
+function openHarvest(){
+  if(!state||viewing||scene!=='farm')return;
+  const rows=harvestRows();if(!rows.length){toast('目前沒有成熟的作物');return}
+  const best={},acts={};
+  for(const r of rows){if(r.reg)continue;const b=best[r.gk];if(!b||r.ph.stab>b.ph.stab+1e-9||(Math.abs(r.ph.stab-b.ph.stab)<=1e-9&&r.ph.ab.size>b.ph.ab.size))best[r.gk]=r}
+  for(const r of rows)acts[r.i]=r.reg?'keep':best[r.gk]===r?'seed':'sell';
+  closeSheet();if(curPanel)closePanel();
+  sheet={harvest:{acts,best:Object.values(best).map(r=>r.i)}};renderSheet();openSheetUI();
+}
+function harvestHTML(){
+  const hv=sheet.harvest,rows=harvestRows().filter(r=>hv.acts[r.i]);
+  if(!rows.length)return `<h2>全部收成</h2><p class="note">目前沒有成熟的作物。</p><button class="btn" data-act="close">關閉</button>`;
+  const groups=new Map();for(const r of rows){if(!groups.has(r.gk))groups.set(r.gk,[]);groups.get(r.gk).push(r)}
+  let h=`<h2>全部收成</h2><p class="note">同一種外觀，預設只從外觀穩定度最高的那株取種，其他賣掉。可以申請品種權的植株預設先不收，記得先申請。點按鈕可以改。</p>`;
+  let ns=0,nl=0,nk=0,coins=0;
+  for(const rs of groups.values()){
+    const r0=rs[0],ph=r0.ph;
+    h+=`<div class="hvgrp"><div class="hvhead">${fruitSVG(ph,r0.p.crop,40)}<span><b>${CROPS[r0.p.crop].n}・${tagName(ph,r0.p.crop)}・${colorLabel(ph)}</b><span class="meta">${r0.cross?`雜交：${esc(r0.p.name)} × ${esc(r0.p.pollen.fatherName||'')}`:'自交'}・${rs.length} 株</span></span></div>`;
+    for(const r of rs){
+      const a=hv.acts[r.i];if(a==='seed')ns++;else if(a==='sell'){nl++;coins+=sellPrice(r.p)}else nk++;
+      const tags=[];if(hv.best.includes(r.i))tags.push('<span class="badge r2">建議取種</span>');if(r.reg)tags.push('<span class="badge r4">可以申請品種權</span>');if(r.dl)tags.push('<span class="badge r1">符合訂單</span>');
+      h+=`<div class="hvrow"><div><b>${esc(pname(r.p))}</b> ${tags.join(' ')}<div class="meta">外觀穩定度 ${pctTxt(r.ph.stab)}・${SIZE_N[r.ph.sizeCls]}・${PERF_N[r.ph.perfCls]}${canMerge(r.p)?'・取種會放回原包':''}</div></div><div class="hvbtns">${[['seed','取種'],['sell','賣'],['keep','不收']].map(([v,t])=>`<button class="fchip" data-act="hvset" data-i="${r.i}" data-v="${v}" aria-pressed="${a===v}">${t}</button>`).join('')}</div></div>`;
+    }
+    h+=`</div>`;
+  }
+  const ndl=rows.filter(r=>r.dl&&hv.acts[r.i]!=='keep').length;
+  if(ndl)h+=`<p class="note">有 ${ndl} 株符合訂單。想交訂單的話，先把它改成「不收」，再點那株植株交訂單。</p>`;
+  h+=`<p class="note" style="margin-top:10px">取種 ${ns} 株、賣果實 ${nl} 株（約 ${coins} 金幣）、先不收 ${nk} 株。</p><button class="btn primary" data-act="hvgo"${ns+nl?'':' disabled'}>確定收成</button><button class="btn" data-act="close">取消</button>`;
+  return h;
+}
+function harvestAction(b){
+  const hv=sheet.harvest,act=b.dataset.act;
+  if(act==='hvset'){hv.acts[+b.dataset.i]=b.dataset.v;renderSheet();return}
+  if(act!=='hvgo')return;
+  let ns=0,nl=0,coins=0;
+  for(const [k,v] of Object.entries(hv.acts)){
+    const i=+k,p=state.plots[i];if(!p||p.obs||p.stage!=='ripe')continue;
+    try{
+      if(v==='sell'){coins+=sellPlot(i,true);nl++}
+      else if(v==='seed'){if(canMerge(p))takeSeeds(i,'',{merge:true});else takeSeeds(i,autoSeedName(p));ns++}
+    }catch(e){logErr(e,'harvestAll')}
+  }
+  playAct('harvest');closeSheet();save();renderAll();
+  toast(`收成完成：取種 ${ns} 株、賣果實 ${nl} 株${nl?`，得到 ${coins} 金幣`:''}`,3500);
+}
 // ===== 全部施肥 =====
 function fertAll(){
   if(!state||viewing||scene!=='farm')return;let n=0;
@@ -3375,7 +3475,7 @@ function renderGenes(){
     ${ladder(SPN.slice(1).map((n,i)=>step(icon({level:0,sp:i+1,skin:'red'}),n)))}</div>`;
   h+=`<div class="gcard"><h3>專屬造型 ${tag('r')}</h3><p class="note">和特殊造型是同一組因子，對一般造型為隱性。與特殊造型同時存在時，<b>專屬造型優先表現</b>。只會在原生作物身上出現，其他作物要靠遠緣雜交導入。瓜科指櫛瓜、南瓜、苦瓜、哈密瓜。</p>
     <div class="ladder">${Object.entries(EXN).map(([v,n])=>{const cl=Object.keys(EX_OF).filter(c=>EX_OF[c]===+v),crops=cl.length>1?'瓜科':CROPS[cl[0]].n;return unk(`${n}<br><span class="meta">${crops}</span>`)}).join('')}</div></div>`;
-  h+=`<div class="gcard"><h3>大小、完美度、生長速度、產量、生命力 ${tag('a')}</h3><p class="note">各由 10 組數值因子決定，沒有顯隱性，取全部因子的平均。雙親的數值高，後代通常也高，但每顆種子會有差異，需要選拔。</p></div>`;
+  h+=`<div class="gcard"><h3>大小、完美度 ${tag('a')}</h3><p class="note">各由 10 組數值因子決定，沒有顯隱性，取全部因子的平均。雙親的數值高，後代通常也高，但每顆種子會有差異。只影響賣價與紀錄，不影響稀有度與品種權，想挑戰紀錄再選拔就好。</p></div>`;
   h+=`<div class="gcard"><h3>突變</h3><p class="note">每顆種子：一般突變 0.1%、特殊色 0.2%、特殊造型 0.05%；原生作物另有 0.02% 出現專屬造型。</p></div>`;
   el.innerHTML=h;
 }
@@ -3487,12 +3587,11 @@ document.getElementById('resetBtn').onclick=e=>{
 };
 
 const TUT=[
-  {t:'歡迎來到種子的世界！我是農會的阿伯。點一塊空地，角色會走過去，挑一包種子種下去吧。用兩根手指捏合可以縮放畫面。',ev:'plant'},
-  {t:'發芽了！頭上的水滴代表需要澆水。點它就會走過去澆水，或按右下角的「全部澆水」。',ev:'water'},
-  {t:'澆了水就會慢慢長大，每個階段都要再澆一次。想快一點，可以在右邊「設定」開啟加速測試。等它開花吧。',ev:'flower'},
-  {t:'開花了！點它可以自交，或和另一株同時開花的同種作物雜交。',ev:'pollinate'},
-  {t:'再澆水讓果實長大，成熟後點它，可以賣掉換金幣，或取種留著培育。',ev:'harvest'},
-  {t:'做得很好！右邊的圖示可以打開種子袋、圖鑑、朋友和裝飾；種出穩定、稀有以上的新外觀，可以在植株資訊中直接申請品種權；按「建設」可以開墾、拆除或拖移農地。點農場最下面的大門，或按「市集」，就能去市集擺攤、和大家見面。完成「訂單」還有金幣可拿喔！',btn:'開始玩'}
+  {t:'歡迎來到種子的世界！我是農會的阿伯。用左下角的搖桿走路，點一塊空地，挑一包種子種下去吧。用兩根手指捏合可以縮放畫面。',ev:'plant'},
+  {t:'發芽了！作物會自己長大，不用澆水。想快一點，可以在右邊「設定」開啟加速測試。等它開花吧。',ev:'flower'},
+  {t:'開花了！點它可以自交，或和另一株同時開花的同種作物雜交。沒處理的花會一直等著，頭上的小花就是提醒。也可以按「全部自交」一次處理。',ev:'pollinate'},
+  {t:'授粉後果實會自己長大。成熟後點它，可以賣掉換金幣，或取種留著培育。很多株一起成熟時，按「全部收成」可以一次處理。',ev:'harvest'},
+  {t:'做得很好！右邊的圖示可以打開種子袋、圖鑑、朋友和裝飾；種出穩定、稀有以上的新外觀，可以在植株資訊中直接申請品種權；按「建設」可以開墾、拆除或拖移農地。走到農場最下面的大門按右下角的按鈕，或按「市集」，就能去市集擺攤、和大家見面。完成「訂單」還有金幣可拿喔！',btn:'開始玩'}
 ];
 function tutRender(){
   const el=document.getElementById('tut'),t=state&&state.tut;

@@ -713,12 +713,29 @@ function gdec(t){
   return g;
 }
 const GLEN=SHN*2+2+2+6+2+ABIL.length*NUMN*4;
-function gReplacer(k,v){if(v&&typeof v==='object'&&v.s&&v.n&&v.c1&&v.pw){try{const t=genc(v);if(t.length===GLEN&&!t.includes('-'))return 'G:'+t}catch(e){}}return v}
-function gReviver(k,v){return typeof v==='string'&&v.length===GLEN+2&&v.startsWith('G:')?gdec(v.slice(2)):v}
+// 新版格式 H：另外記錄新版造型標記（sv）、造型值（36 進位）與遠緣導入的來源作物
+const OCROPS=['tomato','strawberry','zucchini','bittergourd','corn','broccoli','sweetpotato','melon','chili','pumpkin','eggplant'];
+const HLEN=GLEN+1+OLOCI.length*2;
+const needH=v=>(v.sv&&(v.sp[0]||v.sp[1]))||v.sp[0]>9||v.sp[1]>9||(v.o&&OLOCI.some(k=>v.o[k]&&(v.o[k][0]||v.o[k][1])));
+function genc2(g){
+  let t=g.s.map(p=>''+p[0]+p[1]).join('')+g.sp.map(x=>(+x).toString(36)).join('')+g.pw.join('')+[...g.c1,...g.c2,...g.pc].map(c=>GCOLS.indexOf(c).toString(36)).join('')+g.pf.join('');
+  for(const k of ABIL)for(const p of g.n[k])for(const v of p)t+=Math.round(v*1000).toString(36).padStart(2,'0');
+  t+=g.sv?'2':'0';
+  for(const k of OLOCI)for(const j of [0,1]){const c=g.o&&g.o[k]?g.o[k][j]:null,ix=c?OCROPS.indexOf(c):-1;t+=ix>=0?(ix+1).toString(36):'0'}
+  return t;
+}
+function gdec2(t){
+  const g=gdec(t.slice(0,GLEN));g.sp=[parseInt(t[SHN*2],36),parseInt(t[SHN*2+1],36)];
+  let i=GLEN;if(t[i++]==='2')g.sv=2;
+  let has=false;const o={};for(const k of OLOCI){o[k]=[];for(const j of [0,1]){const c=t[i++],ix=parseInt(c,36);o[k].push(ix>0?OCROPS[ix-1]:null);if(ix>0)has=true}}
+  if(has)g.o=o;return g;
+}
+function gReplacer(k,v){if(v&&typeof v==='object'&&v.s&&v.n&&v.c1&&v.pw){try{if(needH(v)){const t=genc2(v);if(t.length===HLEN&&!t.includes('-'))return 'H:'+t}else{const t=genc(v);if(t.length===GLEN&&!t.includes('-'))return 'G:'+t}}catch(e){}}return v}
+function gReviver(k,v){return typeof v==='string'?(v.length===GLEN+2&&v.startsWith('G:')?gdec(v.slice(2)):v.length===HLEN+2&&v.startsWith('H:')?gdec2(v.slice(2)):v):v}
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-12b';
+const BUILD='2026-11-14a';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object')return false;
@@ -729,7 +746,7 @@ function isGeno(g){
   for(const k of ABIL){const a=g.n[k];if(!Array.isArray(a)||a.length!==NUMN||!a.every(p=>isPair(p)&&typeof p[0]==='number'&&typeof p[1]==='number'))return false}
   return true;
 }
-function fixGeno(g){if(typeof g==='string'&&g.startsWith('G:')&&g.length===GLEN+2){try{g=gdec(g.slice(2))}catch(e){return null}}return isGeno(g)?g:null}
+function fixGeno(g){if(typeof g==='string'){try{if(g.startsWith('G:')&&g.length===GLEN+2)g=gdec(g.slice(2));else if(g.startsWith('H:')&&g.length===HLEN+2)g=gdec2(g.slice(2))}catch(e){return null}}return isGeno(g)?g:null}
 function repairState(o){
   const rep_={lots:[],seeds:0,fathers:0,plants:0};
   if(!o||!Array.isArray(o.lots))return rep_;

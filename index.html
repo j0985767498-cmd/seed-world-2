@@ -623,6 +623,17 @@ function giveAllOriginals(){
   for(const c of BASE_CROPS){if(state.given.includes(c))continue;const o=originalFor(c),g=o.g,name=genName(c,used);state.lots.push({id:state.nextLot++,lid:'L'+(state.nextLid++),crop:c,name,source:o.wild?'原始品種（野生型）':'原始品種（地方品種）',m:g,f:g,count:10,gen:0,germ:GERM[phen(g,c).tier]});fresh.push({crop:c,name,g});state.given.push(c)}
   if(fresh.length){save();registerOriginals(fresh)}return fresh.length;
 }
+// 從絕版種子救回：保留顏色、花紋與能力值，造型重新隨機生成為現有的基本造型
+const RESCUE_N=5;
+function rescueLot(l,cab){
+  const n=Math.min(RESCUE_N,lc(l)),nP=Math.floor(rnd()*6),idx=pickIdx(SHN,nP);
+  const fix=g=>{const x=clone(g);x.sv=2;x.sp=[0,0];delete x.o;x.s=Array.from({length:SHN},(_,i)=>idx.includes(i)?[1,1]:[0,0]);return x};
+  const raw=[];for(let k=0;k<n;k++){if(l.seeds&&l.seeds.length)raw.push(l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0]);else{l.count--;raw.push(fuse(gamete(l.m),gamete(l.f)))}}
+  if(!lc(l))cab.lots=cab.lots.filter(x=>x!==l);
+  const m=fix(l.m),f=fix(l.f),seeds=raw.map(fix),ph=phen(m,l.crop),name=(l.name.replace(/・救回$/,'')+'・救回').slice(0,12);
+  state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop:l.crop,name,source:`從絕版種子「${l.name}」救回（外觀重新生成）`,m,f,seeds,germ:GERM[ph.tier],ptier:ph.tier});
+  ensureSlots();save();return {n,name};
+}
 // 造型改版：跟不上新版的種子、植株與標本標記為已絕版
 function shapeMigrate(){
   if(!state||state.shapeV===2)return;
@@ -1156,6 +1167,8 @@ function depositHTML(l){
 function vaultLotHTML(l,cab){
   const ph=phen(l.m,l.crop),others=vaultCabs().filter(c=>c.crop===l.crop&&c!==cab);
   let h=`<h2>${esc(l.name)}</h2><p class="stage">${CROPS[l.crop].n}・${lc(l)} 顆・發芽率 ${Math.round(l.germ*100)}%・存放在「${esc(cab.name)}」</p><p class="note">血統：${esc(l.source)}</p>`;
+  if(l.obs){h+=`<p class="note">這包種子已絕版。可以取出最多 ${RESCUE_N} 顆：顏色、花紋與能力值保留，外觀會隨機重新生成為現有的基本造型。取出的種子可以正常使用，剩下的仍維持絕版。</p><button class="btn primary" data-act="vrescue">取出 ${Math.min(RESCUE_N,lc(l))} 顆（保留顏色）</button>`;
+    return h+distHTML(lotDist(l),l.crop,'原本的後代外觀',false)+`<h3>母本</h3>`+infoHTML(ph,3,l.m,l.crop,true)+'<button class="btn" data-act="close">關閉</button>'}
   h+=`<button class="btn primary" data-act="vget">取回種子袋</button>`;
   if(others.length)h+=`<details class="dist"><summary>移到其他保存櫃</summary>${others.map(c=>`<button class="btn" data-act="vmove" data-c="${c.id}">移到「${esc(c.name)}」</button>`).join('')}</details>`;
   h+=`<button class="btn warn" data-act="vdiscard">${sheet.confirm?'再按一次，確定丟掉':'丟掉這包種子'}</button>`;
@@ -1165,6 +1178,7 @@ function vaultLotHTML(l,cab){
 function vaultSheetAction(act,b){
   const f=findLotAny(sheet.vlot);if(!f||!f.cab){closeSheet();return}const {l,cab}=f;
   if(act==='close')return closeSheet();
+  if(l.obs&&act==='vrescue'){const r=rescueLot(l,cab);closeSheet();renderAll();toast(`取出 ${r.n} 顆「${r.name}」，放進種子袋了。顏色保留，外觀已重新生成`,6000);return}
   if(l.obs){toast('已絕版的種子只能查看');return}
   if(act==='vget'){cab.lots=cab.lots.filter(x=>x!==l);state.lots.unshift(l);save();closeSheet();renderBag();toast(`「${l.name}」已取回種子袋`);return}
   if(act==='vmove'){const to=vaultCabs().find(c=>c.id===b.dataset.c);if(!to)return;cab.lots=cab.lots.filter(x=>x!==l);to.lots.unshift(l);save();closeSheet();renderBag();toast(`已移到「${to.name}」`);return}

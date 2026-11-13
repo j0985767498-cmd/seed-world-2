@@ -165,7 +165,7 @@ nav button{padding:8px 2px;font-size:15px}
 #farmBox{position:relative}
 #joy{position:absolute;left:10px;bottom:10px;width:104px;height:104px;border-radius:50%;background:rgba(255,255,255,.35);border:2px solid rgba(0,0,0,.15);touch-action:none;z-index:5}
 #joyKnob{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:var(--paper);border:2px solid var(--line);box-shadow:0 2px 6px rgba(0,0,0,.2);pointer-events:none}
-#actBtn{position:absolute;right:12px;bottom:22px;width:78px;height:78px;border-radius:50%;border:0;background:var(--accent);color:var(--onAccent);font-weight:700;font-size:16px;z-index:5;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+
 #visitBar{display:flex;align-items:center;gap:8px;background:var(--chip);border-radius:12px;padding:6px 10px;margin-bottom:8px;font-size:14px}
 #visitBar[hidden]{display:none}
 #visitBar span{flex:1}
@@ -218,8 +218,8 @@ body.game{overflow:hidden;position:fixed;inset:0;touch-action:none;overscroll-be
 #ordersBadge[hidden]{display:none}
 #joy{position:fixed;left:18px;bottom:calc(24px + env(safe-area-inset-bottom,0px));width:124px;height:124px;border-radius:50%;background:rgba(255,255,255,.35);border:2px solid rgba(0,0,0,.18);touch-action:none;z-index:10}
 #joyKnob{position:absolute;left:50%;top:50%;width:50px;height:50px;margin:-25px 0 0 -25px;border-radius:50%;background:var(--paper);border:2px solid var(--line);box-shadow:0 2px 6px rgba(0,0,0,.22);pointer-events:none}
-#actBtn{position:fixed;right:20px;bottom:calc(30px + env(safe-area-inset-bottom,0px));width:92px;height:92px;border-radius:50%;border:0;background:var(--accent);color:var(--onAccent);font:inherit;font-weight:700;font-size:18px;z-index:10;box-shadow:0 3px 8px rgba(0,0,0,.25);touch-action:manipulation}
-#actBtn.off{opacity:.55}
+
+
 .sbtn{position:fixed;width:60px;height:60px;border-radius:50%;border:1px solid var(--line);background:var(--paper);color:var(--ink);font:inherit;font-size:13px;font-weight:500;z-index:10;line-height:1.2;box-shadow:0 2px 6px rgba(0,0,0,.18);touch-action:manipulation}
 .sbtn[hidden]{display:none}
 #fertBtn{right:124px;bottom:calc(34px + env(safe-area-inset-bottom,0px))}
@@ -249,8 +249,8 @@ body.game{background:#5E9E38}
 #iconbar button{border:2px solid #5A3416;background:#FFF6DE;color:#5A3416;box-shadow:0 3px 0 #5A3416;border-radius:16px;font-weight:700}
 #iconbar button:active{transform:translateY(2px);box-shadow:0 1px 0 #5A3416}
 .hudTop .coins,.sceneName{border:2px solid #5A3416;background:#FFF6DE;color:#5A3416;font-weight:700;box-shadow:0 2px 0 #5A3416}
-#actBtn{background:#5DBB3A;border:3px solid #2F6B1E;box-shadow:0 5px 0 #2F6B1E;text-shadow:0 2px 0 #2F6B1E}
-#actBtn:active{transform:translateY(3px);box-shadow:0 2px 0 #2F6B1E}
+
+
 .sbtn{border:2px solid #5A3416;background:#FFF6DE;color:#5A3416;box-shadow:0 3px 0 #5A3416;font-weight:700}
 #joy{background:rgba(255,255,255,.4);border:3px solid rgba(90,52,22,.55)}
 #joyKnob{background:#FFF6DE;border:3px solid #5A3416;box-shadow:0 3px 0 #5A3416}
@@ -310,12 +310,12 @@ body.game{background:#5E9E38}
 .slot .nm{position:absolute;left:1px;right:1px;bottom:1px;font-size:10px;line-height:1.2;color:#5A3416;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
 .slot.ghost{position:fixed;z-index:999;pointer-events:none;box-shadow:0 6px 14px rgba(0,0,0,.35);transform:scale(1.08)}
 
-body.joymode #actBtn{right:14px;bottom:calc(18px + env(safe-area-inset-bottom,0px));width:86px;height:86px}
+
 body.joymode #waterAll{right:22px !important;bottom:calc(118px + env(safe-area-inset-bottom,0px)) !important;width:60px;height:60px}
 #trayBtn{right:22px;bottom:calc(322px + env(safe-area-inset-bottom,0px))}
 body.joymode #trayBtn{right:22px !important;bottom:calc(322px + env(safe-area-inset-bottom,0px)) !important;width:60px;height:60px}
 body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-inset-bottom,0px)) !important;width:60px;height:60px}
-#joy[hidden],#actBtn[hidden]{display:none}
+#joy[hidden]{display:none}
 
 .slot.dim{opacity:.3}
 .slot .cat{position:absolute;left:3px;bottom:13px;font-size:10px;font-style:normal;font-weight:700;color:#fff;background:#8A6A3A;border-radius:4px;padding:0 3px;pointer-events:none}
@@ -331,6 +331,23 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 .hvgrp{border:2px solid #E2C796;border-radius:14px;background:#FFFDF6;margin:8px 0;padding:6px 10px}
 .hvhead{display:flex;gap:8px;align-items:center;padding:2px 0 6px;border-bottom:1px dashed #E2C796}
 .hvhead .meta{display:block}
+#wx{position:fixed;inset:0;pointer-events:none;z-index:3;overflow:hidden}#wx[hidden]{display:none}
+#wx.paused *{animation-play-state:paused!important}
+#wx i{position:absolute;display:block;top:-6vh;left:var(--x);animation:var(--a) var(--d) linear var(--l) infinite;will-change:transform}
+#wx.wx-snow i{width:var(--s);height:var(--s);border-radius:50%;background:#fff;opacity:.9;box-shadow:0 0 3px rgba(255,255,255,.9)}
+@keyframes wxFall{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--dx),112vh,0)}}
+#wx.wx-desert{background:linear-gradient(rgba(230,190,120,.08),rgba(230,190,120,.2))}
+#wx.wx-desert i{top:var(--y);left:-20vw;width:var(--w);height:2px;border-radius:2px;background:rgba(200,150,80,.55)}
+@keyframes wxBlow{from{transform:translate3d(0,0,0)}to{transform:translate3d(140vw,var(--dy),0)}}
+#wx.wx-marsh .fog{position:absolute;left:-30%;width:160%;height:45%;background:radial-gradient(ellipse at center,rgba(255,255,255,.38),rgba(255,255,255,0) 70%);animation:wxFog 26s ease-in-out infinite alternate}
+@keyframes wxFog{from{transform:translateX(-8%)}to{transform:translateX(8%)}}
+#wx.wx-marsh i{top:var(--y);width:5px;height:5px;border-radius:50%;background:#FFF59A;box-shadow:0 0 8px 3px rgba(255,240,120,.7);animation:wxFly var(--d) ease-in-out var(--l) infinite alternate}
+@keyframes wxFly{0%{transform:translate(0,0);opacity:.1}50%{opacity:1}100%{transform:translate(var(--dx),var(--dy));opacity:.2}}
+#wx.wx-forest i,#wx.wx-grass i{width:var(--s);height:calc(var(--s)*.6);border-radius:0 80% 0 80%;background:var(--c);opacity:.9}
+@keyframes wxLeaf{0%{transform:translate3d(0,0,0) rotate(0)}50%{transform:translate3d(calc(var(--dx)*.5 + 3vw),56vh,0) rotate(200deg)}100%{transform:translate3d(var(--dx),112vh,0) rotate(400deg)}}
+@media (prefers-reduced-motion: reduce){#wx{display:none!important}}
+#exHint{position:fixed;left:50%;transform:translateX(-50%);top:calc(52px + env(safe-area-inset-top,0px));z-index:10;max-width:calc(100vw - 150px);text-align:center;background:rgba(255,246,222,.92);border:2px solid #5A3416;border-radius:10px;padding:3px 8px;font-size:12px;line-height:1.3;color:#5A3416;pointer-events:none}#exHint[hidden]{display:none}
+.hvextra{display:flex;flex-direction:column;gap:4px;padding:0 0 8px}.hvextra .btn{margin:0;font-size:14px;padding:8px}
 .hvrow{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.06)}
 .hvrow:last-child{border-bottom:none}
 .hvrow .meta{font-size:12px}
@@ -361,9 +378,9 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-100%)}}
 @media (prefers-reduced-motion:reduce){#marquee span{padding-left:0;animation:none !important}}
 
-#shovelBar,#sowBar,#accelBar{position:fixed;left:8px;right:8px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:12;background:#FFF6DE;border:3px solid #5A3416;border-radius:16px;box-shadow:0 4px 0 #5A3416;padding:8px}
-#shovelBar .bbtip,#sowBar .bbtip,#accelBar .bbtip{font-size:14px;color:#5A3416;text-align:center;margin-bottom:6px;line-height:1.35}#shovelBar small,#sowBar small,#accelBar small{color:#8A6A4A}
-#shovelBar .bbrow,#sowBar .bbrow,#accelBar .bbrow{display:grid;gap:6px}#shovelBar button,#sowBar button,#accelBar button{min-height:46px;border-radius:12px;border:2px solid #5A3416;background:#fff;color:#5A3416;font:inherit;font-weight:700;font-size:15px}#shovelBar button.done,#sowBar button.done,#accelBar button.done{background:#E8A33C;color:#fff;border-color:#8A5A12}
+#shovelBar,#sowBar,#accelBar,#decoBar{position:fixed;left:8px;right:8px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:12;background:#FFF6DE;border:3px solid #5A3416;border-radius:16px;box-shadow:0 4px 0 #5A3416;padding:8px}
+#shovelBar .bbtip,#sowBar .bbtip,#accelBar .bbtip,#decoBar .bbtip{font-size:14px;color:#5A3416;text-align:center;margin-bottom:6px;line-height:1.35}#shovelBar small,#sowBar small,#accelBar small,#decoBar small{color:#8A6A4A}
+#shovelBar .bbrow,#sowBar .bbrow,#accelBar .bbrow,#decoBar .bbrow{display:grid;gap:6px}#shovelBar button,#sowBar button,#accelBar button,#decoBar button{min-height:46px;border-radius:12px;border:2px solid #5A3416;background:#fff;color:#5A3416;font:inherit;font-weight:700;font-size:15px}#shovelBar button.done,#sowBar button.done,#accelBar button.done,#decoBar button.done{background:#E8A33C;color:#fff;border-color:#8A5A12}
 #sowBtn{right:236px !important;bottom:calc(18px + env(safe-area-inset-bottom,0px)) !important;width:66px;height:66px}
 body.joymode #sowBtn{right:22px !important;bottom:calc(254px + env(safe-area-inset-bottom,0px)) !important;width:60px;height:60px}
 #sowBar .sowinfo{display:flex;align-items:center;gap:8px;margin-bottom:4px;color:#5A3416}
@@ -388,6 +405,8 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
   <p class="err" id="loginErr" style="max-width:320px;margin-top:12px"></p>
 </div>
 <svg id="scene" viewBox="0 0 400 800" role="application" aria-label="遊戲畫面"><g id="worldLayer"></g><g id="charLayer"></g></svg>
+<div id="wx" aria-hidden="true" hidden></div>
+<div id="exHint" hidden></div>
 <div class="hudTop"><div class="coins" aria-label="金幣"><span class="coin" aria-hidden="true"></span><span id="coins">0</span></div><div class="sceneName" id="sceneName">我的農場</div><div class="sync" id="sync" role="status"></div></div>
 <div id="marquee" hidden role="status" aria-live="polite"><b aria-hidden="true">📢</b><div class="mqwin"><span></span></div></div>
 <div id="iconbarL" class="iconbar">
@@ -401,28 +420,29 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
   <button id="ibMarket" data-do="market"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l2-6h14l2 6"/><path d="M3 10c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3"/><path d="M5 13v8h14v-8"/></svg><span>市集</span></button>
   <button id="ibHome" data-do="home" hidden><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>回家</span></button>
   <button id="ibExplore" data-open="explore"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z" fill="currentColor" stroke-width="1.2"/></svg><span>探索</span></button>
-  <button id="ibDecor" data-open="decor"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-3 2-5 5-5 8a5 5 0 0 0 10 0c0-3-2-6-5-8z"/><path d="M12 16v5M9 21h6"/></svg><span>裝飾</span></button>
+  <button id="ibDecor" data-do="decor"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-3 2-5 5-5 8a5 5 0 0 0 10 0c0-3-2-6-5-8z"/><path d="M12 16v5M9 21h6"/></svg><span>裝飾</span></button>
   <button id="ibBuild" data-do="build"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15l9-5 9 5-9 5z"/><path d="M12 3v6M9 6h6"/></svg><span>建設</span></button>
   <button data-do="avatar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><span>角色</span></button>
   <button data-open="settings"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span>設定</span></button>
 </div>
 <div id="joy" aria-label="移動搖桿" hidden><div id="joyKnob"></div></div>
-<button id="actBtn" hidden>互動</button>
 <button id="sowBtn" class="sbtn">播種</button>
 <button id="shovelBtn" class="sbtn">剷除</button>
 <button id="fertBtn" class="sbtn">全部<br>自交</button>
 <button id="waterAll" class="sbtn">全部<br>收成</button>
 <button id="trayBtn" class="sbtn">育苗盤</button>
+<button id="accelBtn" class="sbtn" hidden>加速劑</button>
 <div id="buildBar" hidden></div>
 <div id="shovelBar" class="toolbar2" hidden></div>
 <div id="accelBar" class="toolbar2" hidden></div>
+<div id="decoBar" class="toolbar2" hidden></div>
 <div id="sowBar" class="toolbar2" hidden></div>
 <div id="decorEdit" hidden></div>
 <div id="pdim" hidden></div>
 <div class="panel" id="p-bag" hidden role="dialog" aria-label="種子袋"><div class="ph"><h2>種子袋</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div class="filters" id="bagTabs" role="tablist"></div><div class="bagtools"><div class="filters" id="bagFilter"></div><label class="sortl">排列<select id="bagSort"><option value="new">最新放入</option><option value="tier">稀有度</option><option value="size">大小</option><option value="perf">完美度</option><option value="stab">最可能機率</option><option value="count">數量</option><option value="name">名稱</option></select></label></div><div id="bag"></div></div></div>
 <div class="panel" id="p-dex" hidden role="dialog" aria-label="品種圖鑑"><div class="ph"><h2>品種圖鑑</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div id="dexTabs"></div><div class="filters" id="dexFilter"></div><div id="dex"></div></div></div>
 <div class="panel" id="p-social" hidden role="dialog" aria-label="朋友"><div class="ph"><h2>朋友</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><button class="btn" id="avatarBtn2" style="margin:0 0 8px">打扮我的角色</button><h3 style="margin-top:4px">朋友</h3><div id="friends"></div><h3>公共聊天室</h3><div id="chat" aria-live="polite"></div><div class="chatbar"><input id="chatIn" maxlength="300" placeholder="輸入訊息" aria-label="聊天訊息" aria-describedby="chatErr"><button class="mini big" id="chatSend">傳送</button></div><div class="err" id="chatErr"></div></div></div>
-<div class="panel" id="p-decor" hidden role="dialog" aria-label="裝飾農場"><div class="ph"><h2>裝飾農場</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><p class="note">所有裝飾都免費。走到想放的位置，選一個裝飾，它會放在角色腳邊；點已放好的裝飾可以移動或收起。「標示」裡有大、小告示牌，可以寫 2 到 8 個字。</p><div class="filters" id="decorCats"></div><div class="decorItems" id="decorItems"></div></div></div>
+<div class="panel" id="p-decor" hidden role="dialog" aria-label="裝飾農場"><div class="ph"><h2>裝飾農場</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><p class="note">所有裝飾都免費。選一個裝飾，它會出現在畫面中央，用手指拖到想放的位置。圍籬、地面會自動對齊，放好後可以用手指滑過去連續鋪設。「標示」裡有大、小告示牌，可以寫 2 到 8 個字。</p><div class="filters" id="decorCats"></div><div class="decorItems" id="decorItems"></div></div></div>
 <div class="panel" id="p-explore" hidden role="dialog" aria-label="探索世界"><div class="ph"><h2>探索世界</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb" id="exploreBody"></div></div>
 <div class="panel" id="p-genes" hidden role="dialog" aria-label="遺傳規則"><div class="ph"><h2>遺傳規則</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div id="genes"></div></div></div>
 <div class="panel" id="p-settings" hidden role="dialog" aria-label="設定"><div class="ph"><h2>設定</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div class="settings"><div id="ctrlBox"></div><div id="testBox"></div><details class="dist"><summary>錯誤紀錄（回報問題時截圖給開發者）</summary><pre id="errLog" style="white-space:pre-wrap;font-size:12px;margin:6px 0 0">目前沒有錯誤</pre></details><button class="btn" id="allSeedsBtn">測試：領取全部 8 種原始品種</button><button class="btn warn" id="resetBtn">重新開始</button><button class="btn" id="genesBtn">打開遺傳規則（顯隱性與強弱表）</button>
@@ -869,7 +889,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN+2&&v.startsWi
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-14g';
+const BUILD='2026-11-14h';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object')return false;
@@ -1526,9 +1546,8 @@ function lotSheetHTML(l){
   else if(f==='npc')h+=`<div class="regbox sellbox"><b>賣給種子行</b><p class="note">每顆 ${sp} 金幣，越稀有收購價越高。</p><label>數量（最多 ${n} 顆）<input id="f1" type="number" inputmode="numeric" min="1" max="${n}" value="${esc(sheet.d1)}"></label><p class="note" id="ftotal">共 ${(parseInt(sheet.d1,10)||0)*sp} 金幣</p>${err}<div class="row2"><button class="btn primary" data-act="lsave">確定賣出</button><button class="btn" data-act="lcancel">取消</button></div></div>`;
   else if(f==='vault')h+=depositHTML(l);
   else h+=`<button class="btn primary" data-act="lsow">連續播種</button><button class="btn" data-act="ltray">撒進育苗盤（最多 ${Math.min(n,trayFree())} 顆）</button>${(state.items||{}).mut>0?mutChk(state.items.mut,'lmut'):''}<button class="btn" data-act="lform" data-f="vault">存入種原庫</button><button class="btn" data-act="lform" data-f="rename">改名</button><p class="note" style="margin:8px 0 0">想賣給朋友的話，到市集找一個空攤位上架。</p><button class="btn" data-act="lform" data-f="npc">賣給種子行（每顆 ${sp} 金幣）</button><button class="btn warn" data-act="ldiscard">${sheet.confirm?'再按一次，確定丟掉':'丟掉這包種子'}</button>`;
+  h+=lotParentHTML(l,ph,cross)+lotTargetHTML(l,ph);
   h+=distHTML(lotDist(l),l.crop,'可能出現的後代',true)+lotUniHTML(l);
-  h+=`<h3>母本</h3>`+infoHTML(ph,3,l.m,l.crop,true,null,{parent:true});
-  if(cross){const fp=phen(l.f,l.crop);h+=`<h3>父本</h3><div class="lot-top">${fruitSVG(fp,l.crop,64,1,descr(fp,l.crop))}<div><div class="meta">${fp.shapeName}・${colorLabel(fp)}</div><div class="meta">${SIZE_N[fp.sizeCls]}・${PERF_N[fp.perfCls]}</div><div class="badges" style="justify-content:flex-start;margin-top:2px"><span class="badge r${fp.tier}">${TIERS[fp.tier]}</span></div></div></div>`}
   return h;
 }
 function bindLotForm(l){
@@ -2011,6 +2030,7 @@ function abilRange(l){
 }
 function tick(){
   if(!state)return;
+  if(scene==='explore')exHintUpd();
   testRefill();
   const now=Date.now();let dt=now-state.last;if(dt<0)dt=0;state.last=now;
   const gdt=dt*state.speed;let changed=false,flowered=false;
@@ -2035,7 +2055,20 @@ function renderSpeed(){
   el.innerHTML=`<h3 style="margin-top:0">測試模式</h3><p class="note">金幣、道具照正式規則計算。發芽率、雜交成功率、突變與稀有度照正式規則。</p><p class="note" style="margin:6px 0 2px">時間加速</p><div class="row2" style="grid-template-columns:repeat(4,1fr)">${SPEEDS.map(v=>`<button class="btn${state.speed===v?' primary':''}" data-spd="${v}">×${v}</button>`).join('')}</div>
   <button class="btn" data-tool="excap">探索每日上限：${exCapOn()?'開啟':'關閉'}（按一下切換）</button><button class="btn" data-tool="adv">所有植株進入下一階段</button><button class="btn" data-tool="geno">${state.showG?'隱藏':'顯示'}植株的完整因子</button><button class="btn" data-tool="ex">領取辣椒、茄子、南瓜野生種原</button>${isAdmin()?'<button class="btn warn" data-tool="wipe">管理員：清空伺服器的圖鑑、品種權與市集</button>':''}`;
 }
-function renderAll(){if(!state)return;renderCoins();renderWorld();if(curPanel==='bag')renderBag();renderSpeed();refreshAct()}
+function renderAll(){if(!state)return;renderCoins();renderWorld();if(curPanel==='bag')renderBag();renderSpeed();refreshAct();layoutSbtns()}
+/* 14h：右下角按鈕。下排固定：播種、育苗盤、剷除；上排只在用得到時出現：全部收成、全部自交、加速劑（由右往左排） */
+function sbtnNeed(st){
+  const ps=(st&&st.plots)||[],has=f=>ps.some(p=>p&&!p.obs&&f(p)),acc=((st&&st.items)||{}).acc||0;
+  return {waterAll:has(p=>p.stage==='ripe'),fertBtn:has(p=>p.stage==='flower'),accelBtn:acc>0&&has(p=>p.stage==='seedling'||p.stage==='fruit')};
+}
+function layoutSbtns(){
+  if(!state)return;
+  const ok=scene==='farm'&&!viewing&&!buildMode&&!shovelMode&&!sowMode&&!accelMode&&!decoMode,nd=sbtnNeed(state);
+  const put=(id,vis,col,row)=>{const el=document.getElementById(id);if(!el)return;el.hidden=!vis;if(!vis)return;el.style.setProperty('right',(14+col*70)+'px','important');el.style.setProperty('bottom',`calc(${18+row*70}px + env(safe-area-inset-bottom,0px))`,'important');el.style.setProperty('width','60px','important');el.style.setProperty('height','60px','important')};
+  put('sowBtn',ok,0,0);put('trayBtn',ok,1,0);put('shovelBtn',ok,2,0);
+  let c=0;for(const id of ['waterAll','fertBtn','accelBtn']){const v=ok&&nd[id];put(id,v,c,1);if(v)c++}
+  const ab=document.getElementById('accelBtn');if(ab&&!ab.hidden){const h=`加速劑<br>${state.items.acc}`;if(ab.innerHTML!==h)ab.innerHTML=h}
+}
 let toastT;
 function toast(m,ms){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),ms||2600)}
 let profiles=[],msgPub=[],msgTo=[],msgFrom=[];const dmUnread=new Set();let msgReady=false;
@@ -2146,7 +2179,7 @@ const DECOR=[
 const DECOR_MAP=Object.fromEntries(DECOR.map(d=>[d.k,d]));
 const DECOR_CATS=['圍籬','地面','植栽','照明','家具','設施','標示','水景'];
 const YARD={x0:40,x1:420,y0:575,y1:820};
-function decorSVG(d,sel){const it=DECOR_MAP[d.t];if(!it)return '';return `<g data-decor="${d.i}" stroke="#3A2416" stroke-width="1.3" stroke-linejoin="round">${it.f(d.x,d.y,d.txt||'')}${sel?`<ellipse cx="${d.x}" cy="${d.y}" rx="28" ry="9" fill="none" stroke="var(--mustard)" stroke-width="2.5" stroke-dasharray="4 3"/>`:''}</g>`}
+function decorSVG(d,sel,bad){const it=DECOR_MAP[d.t];if(!it)return '';return `<g data-decor="${d.i}" stroke="#3A2416" stroke-width="1.3" stroke-linejoin="round"${bad?' opacity=".8"':''}>${it.f(d.x,d.y,d.txt||'')}${bad?`<ellipse cx="${d.x}" cy="${d.y-8}" rx="28" ry="18" fill="#E53935" fill-opacity=".38" stroke="#C0392B" stroke-width="2.5"/>`:''}${sel?`<ellipse cx="${d.x}" cy="${d.y}" rx="28" ry="9" fill="none" stroke="var(--mustard)" stroke-width="2.5" stroke-dasharray="4 3"/>`:''}</g>`}
 
 // ===== 角色 =====
 const SKINS=['#FAD9C0','#F1C27D','#E0AC69','#C68642','#8D5524','#5C3A21'];
@@ -2369,7 +2402,7 @@ function farmWorld(st,hov,selD){
   let s=`<rect x="-600" y="-600" width="${W+1200}" height="${H+1200}" fill="#5E9E38"/><rect x="10" y="60" width="${W-20}" height="${H-70}" rx="40" fill="#8FD45E" stroke="#4E8A2C" stroke-width="3"/>${GROUND}`;
   s+=`<path d="M${gx} ${gy-48} V${gy+4}" stroke="#C9A363" stroke-width="44" stroke-linecap="round"/><path d="M${gx} ${gy-48} V${gy+4}" stroke="#F0D49A" stroke-width="36" stroke-linecap="round"/>`+gateSVG(gx,gy+4,'往市集');
   const all=[];
-  (st.decor||[]).forEach((d,i)=>{const it=DECOR_MAP[d.t];if(!it)return;all.push({z:it.flat?-1e5+d.y:d.y,h:()=>decorSVG({...d,i},selD===i)})});
+  (st.decor||[]).forEach((d,i)=>{const it=DECOR_MAP[d.t];if(!it)return;all.push({z:it.flat?-1e5+d.y:d.y,h:()=>decorSVG({...d,i},selD===i,st===state&&!!decoDrag&&decoDrag.on&&decoDrag.i===i&&decoDrag.bad)})});
   for(let i=0;i<st.plots.length;i++){const pos=posOf(st,i);if(!pos)continue;if(st===state&&dragPlot&&dragPlot.on&&dragPlot.i===i){const [gx,gy]=snapPos(dragPlot.x,dragPlot.y),ok=!plotSpotErr(state,gx,gy,i);const fake={...state,plotPos:state.plotPos.slice()};fake.plotPos[i]=[gx,gy];all.push({z:1e6,h:()=>`<g opacity=".75">${plotSVG(fake,i,null)}</g><polygon points="${gx-41},${gy} ${gx},${gy-23} ${gx+41},${gy} ${gx},${gy+23}" fill="none" stroke="${ok?'#2F9E3A':'#C0392B'}" stroke-width="3" stroke-dasharray="6 4"/>`});continue}all.push({z:pos[1]+20,h:()=>plotSVG(st,i,hov)})}
   all.sort((a,b)=>a.z-b.z);
   for(const o of all)s+=o.h();
@@ -2411,7 +2444,7 @@ const sceneEl=document.getElementById('scene');
 function updateCam(){
   if(!state)return;
   if(scene==='explore'){const r=camRect();sceneEl.setAttribute('viewBox',`${r.x.toFixed(1)} ${r.y.toFixed(1)} ${r.w.toFixed(1)} ${r.h.toFixed(1)}`);if(exRange(r).key!==exKey)renderWorld();return}
-  const vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zoom,w=vw/k,h=vh/k,{W,H}=scene==='market'?WORLD.market:WORLD.farm,m=(buildMode||shovelMode||sowMode||accelMode)?buildCam:curMe();
+  const vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zoom,w=vw/k,h=vh/k,{W,H}=scene==='market'?WORLD.market:WORLD.farm,m=(buildMode||shovelMode||sowMode||accelMode||decoMode)?buildCam:curMe();
   let x=m.x-w/2,y=m.y-h*0.55;
   x=W<=w?(W-w)/2:clamp(x,0,W-w);y=H+80<=h?(H-h)/2:clamp(y,-70,H-h+80);
   sceneEl.setAttribute('viewBox',`${x.toFixed(1)} ${y.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
@@ -2581,7 +2614,7 @@ document.getElementById('pdim').onclick=closePanel;
 for(const b of document.querySelectorAll('.panel [data-close]'))b.onclick=closePanel;
 document.getElementById('sheetX').onclick=()=>closeSheet();
 const iconbarClick=e=>{
-  const b=e.target.closest('button');if(!b||!state)return;if(buildMode)exitBuild();if(shovelMode)exitShovel();if(sowMode)exitSow();if(accelMode)exitAccel();
+  const b=e.target.closest('button');if(!b||!state)return;const wasDeco=decoMode;if(buildMode)exitBuild();if(shovelMode)exitShovel();if(sowMode)exitSow();if(accelMode)exitAccel();if(decoMode)exitDecor();
   const o=b.dataset.open,a=b.dataset.do;
   if(o)return curPanel===o?closePanel():openPanel(o);
   closePanel();
@@ -2589,6 +2622,7 @@ const iconbarClick=e=>{
   if(a==='home')return goFarm();
   if(a==='avatar')return openAvatar();
   if(a==='build')return openBuild();
+  if(a==='decor'){if(!wasDeco)openDecor();return}
   if(a==='orders'){sheet={orders:true};renderSheet();openSheetUI()}
 };
 document.querySelectorAll('.iconbar').forEach(el=>el.addEventListener('click',iconbarClick));
@@ -2598,7 +2632,8 @@ function renderHUD(){
   const mb=document.getElementById('ibMarket');mb.querySelector('span').textContent=scene==='market'?'回農場':'市集';
   document.getElementById('ibHome').hidden=!(viewing||scene==='explore');
   const own=scene==='farm'&&!viewing;
-  document.getElementById('fertBtn').hidden=!own||!!buildMode||shovelMode||sowMode||accelMode;document.getElementById('waterAll').hidden=!own||!!buildMode||shovelMode||sowMode||accelMode;{const tb=document.getElementById('trayBtn');tb.hidden=!own||!!buildMode||shovelMode||sowMode||accelMode;const tn=state.tray&&state.tray.cells?state.tray.cells.length:0;const th=tn?`育苗盤<br>${tn}`:'育苗盤';if(tb.innerHTML!==th)tb.innerHTML=th}document.getElementById('shovelBtn').hidden=!own||!!buildMode||shovelMode||sowMode||accelMode;document.getElementById('sowBtn').hidden=!own||!!buildMode||shovelMode||sowMode||accelMode;
+  {const tb=document.getElementById('trayBtn');const tn=state.tray&&state.tray.cells?state.tray.cells.length:0;const th=tn?`育苗盤<br>${tn}`:'育苗盤';if(tb.innerHTML!==th)tb.innerHTML=th}layoutSbtns();
+  setWeather(scene==='explore'?exBiome:null);exHintUpd();
   document.getElementById('ibDecor').hidden=!own;document.getElementById('ibBuild').hidden=!own;
 }
 
@@ -2851,30 +2886,84 @@ document.getElementById('p-decor').addEventListener('click',e=>{
   const c=e.target.closest('[data-dc2]');if(c){decorCat=c.dataset.dc2;renderDecorPanel();return}
   const it=e.target.closest('[data-item]');if(!it)return;
   if(scene!=='farm'||viewing){toast('只能在自己的農場佈置');return}
-  const m=curMe();
-  if(!inYard(m)){toast('這裡太靠近農場邊緣了，往裡面走一點');closePanel();return}
+  if(!decoMode)openDecor();if(!decoMode)return;
   if(state.decor.length>=400){toast('裝飾最多 400 個');return}
-  state.decor.push({t:it.dataset.item,x:Math.round(m.x),y:Math.round(m.y-14)});
-  save();renderWorld();closePanel();toast(`放好「${DECOR_MAP[it.dataset.item].n}」了，點它可以移動或收起`);
-  if(isSign(it.dataset.item))openSign(state.decor.length-1);
+  const t=it.dataset.item,n=DECOR_MAP[t].n,p=decoFree(t,buildCam.x,buildCam.y-20,false);
+  if(!p){toast('畫面中央附近沒有空位，移動一下畫面再放');return}
+  state.decor.push({t,x:p[0],y:p[1]});selDecor=state.decor.length-1;decoPaint=decoGrid(t)?t:null;
+  save();closePanel();renderWorld();renderDecoBar();
+  toast(decoPaint?`放好「${n}」了，用手指滑過去可以連續鋪設`:`放好「${n}」了，按住可以拖到想放的位置`,3500);
+  if(isSign(t))openSign(selDecor);
 });
 const inYard=p=>p.x>=40&&p.x<=WORLD.farm.W-40&&p.y>=110&&p.y<=WORLD.farm.H-60;
 const isSign=t=>t==='sign'||t==='signS';
-function renderDecorEdit(){
-  const el=document.getElementById('decorEdit');
-  if(selDecor==null||!state.decor[selDecor]){el.hidden=true;return}
-  const d=state.decor[selDecor];el.hidden=false;
-  el.innerHTML=`<b>${DECOR_MAP[d.t].n}</b><button class="mini big" data-de="here">移到我旁邊</button>${isSign(d.t)?'<button class="mini big" data-de="text">改文字</button>':''}<button class="mini big" data-de="del">收起</button><button class="mini big" data-de="done">完成</button>`;
+function renderDecorEdit(){const el=document.getElementById('decorEdit');if(el)el.hidden=true;renderDecoBar()}
+// ===== 裝飾模式（14h）：拖曳擺放；圍籬、地面對齊格線並可滑動連續鋪設 =====
+var decoMode=false;let decoDrag=null,decoPaint=null,decoPainting=false;const decoPainted=new Set();
+/* 格線 [x 間距, y 間距, 菱形交錯]：圍籬寬 44 → 一排 44 一格；地面菱形 44×24 → 22×12 交錯排列剛好拼滿 */
+const DECO_GRID={'圍籬':[44,12,0],'地面':[22,12,1]};
+function decoGrid(t){const it=DECOR_MAP[t];return it&&DECO_GRID[it.cat]||null}
+function decoSnap(t,x,y){const g=decoGrid(t);if(!g)return [Math.round(x),Math.round(y)];const [sx,sy,dia]=g;let a=Math.round(x/sx),b=Math.round(y/sy);if(dia&&((a+b)&1)){const da=x/sx-a,db=y/sy-b;if(Math.abs(da)>Math.abs(db))a+=da>0?1:-1;else b+=db>0?1:-1}return [a*sx,b*sy]}
+function decoErr(x,y){
+  if(!inYard({x,y}))return '這裡太靠近農場邊緣了';
+  const [gx,gy]=GATE.farm;if(Math.hypot(x-gx,(y-gy)*1.4)<90)return '大門前面要留通道';
+  for(const p of state.plotPos||[]){if(p&&Math.abs(p[0]-x)/46+Math.abs(p[1]-y)/26<1)return '不能壓到農地'}
+  return '';
 }
-document.getElementById('decorEdit').addEventListener('click',e=>{
-  const b=e.target.closest('[data-de]');if(!b||selDecor==null)return;const d=state.decor[selDecor];if(!d)return;
-  const a=b.dataset.de;
-  if(a==='here'){const m=curMe();if(!inYard(m)){toast('這裡太靠近農場邊緣了');return}d.x=Math.round(m.x);d.y=Math.round(m.y-14);save()}
+function decoOcc(t,x,y,skip){const g=decoGrid(t);if(!g)return false;const cat=DECOR_MAP[t].cat;return state.decor.some((d,k)=>k!==skip&&DECOR_MAP[d.t]&&DECOR_MAP[d.t].cat===cat&&d.x===x&&d.y===y)}
+function decoFree(t,x,y,beside){
+  const g=decoGrid(t),sx=g?g[0]:48,sy=g?g[1]*2:30;
+  for(let r=beside?1:0;r<=10;r++){const cand=[];for(let i=-r;i<=r;i++)for(let j=-r;j<=r;j++)if(Math.max(Math.abs(i),Math.abs(j))===r)cand.push([i,j]);
+    cand.sort((a,b)=>Math.abs(a[1])-Math.abs(b[1])||b[0]-a[0]);
+    for(const [i,j] of cand){const [px,py]=decoSnap(t,x+i*sx,y+j*sy);if(!decoErr(px,py)&&!decoOcc(t,px,py,-1))return [px,py]}}
+  return null;
+}
+function openDecor(){
+  if(scene!=='farm'||viewing){toast('只能在自己的農場佈置');return}
+  closeSheet();if(curPanel)closePanel();if(shovelMode)exitShovel();if(sowMode)exitSow();if(accelMode)exitAccel();if(buildMode)exitBuild();
+  const m=curMe();buildCam={x:m.x,y:m.y};decoMode=true;moveTo=null;selDecor=null;decoPaint=null;decoDrag=null;
+  renderDecoBar();renderHUD();applyCtrl();updateCam();renderWorld();
+  toast('裝飾模式：按「新增」放裝飾，按住裝飾可以拖曳',3000);
+}
+function decoCancel(){decoPainting=false;if(decoDrag){const d=state.decor[decoDrag.i];if(d&&decoDrag.on&&decoDrag.bad){d.x=decoDrag.fx;d.y=decoDrag.fy}decoDrag=null}}
+function exitDecor(){if(!decoMode)return;decoCancel();decoMode=false;decoPaint=null;selDecor=null;renderDecoBar();renderHUD();applyCtrl();updateCam();renderWorld();save()}
+function renderDecoBar(){
+  const el=document.getElementById('decoBar');if(!el)return;if(!decoMode){el.hidden=true;return}el.hidden=false;
+  const d=selDecor!=null?state.decor[selDecor]:null;let top;
+  if(decoPaint){const it=DECOR_MAP[decoPaint];top=`<div class="bbtip"><b>鋪設中：${it?it.n:''}</b><br><small>用手指滑過想鋪的地方，會自動對齊・要移動畫面或拖曳裝飾，先按「停止鋪設」</small></div><div class="bbrow" style="grid-template-columns:1fr"><button data-dk="stop">停止鋪設</button></div>`}
+  else if(d){const it=DECOR_MAP[d.t],sg=isSign(d.t);top=`<div class="bbtip"><b>${it?it.n:'裝飾'}</b>　<small>按住可以拖曳移動</small></div><div class="bbrow" style="grid-template-columns:repeat(${sg?4:3},1fr)">${sg?'<button data-dk="text">改文字</button>':''}<button data-dk="del">收起</button><button data-dk="dup">再放一個</button><button data-dk="unsel">取消選取</button></div>${decoGrid(d.t)?'<div class="bbrow" style="grid-template-columns:1fr;margin-top:6px"><button data-dk="paint">用手指滑動連續鋪設</button></div>':''}`}
+  else top=`<div class="bbtip">按「新增」選裝飾；按住已放的裝飾可以拖曳，點一下可以選取<br><small>拖曳空白處可以移動畫面・紅色表示不能放，放開會彈回原位</small></div>`;
+  el.innerHTML=top+`<div class="bbrow" style="grid-template-columns:1fr 1fr;margin-top:6px"><button data-dk="add">新增</button><button data-dk="done" class="done">完成</button></div>`;
+}
+document.getElementById('decoBar').addEventListener('click',e=>{
+  const b=e.target.closest('[data-dk]');if(!b||!decoMode)return;const a=b.dataset.dk;
+  if(a==='done'){exitDecor();toast('結束裝飾');return}
+  if(a==='add'){openPanel('decor');return}
+  if(a==='stop'){decoPaint=null;renderDecoBar();return}
+  const d=selDecor!=null?state.decor[selDecor]:null;if(!d)return;
   if(a==='text')return openSign(selDecor);
+  if(a==='paint'){decoPaint=d.t;renderDecoBar();toast('用手指滑過想鋪的地方',2500);return}
   if(a==='del'){state.decor.splice(selDecor,1);selDecor=null;save();toast('已收起')}
-  if(a==='done')selDecor=null;
-  renderWorld();renderDecorEdit();
+  if(a==='unsel')selDecor=null;
+  if(a==='dup'){if(state.decor.length>=400){toast('裝飾最多 400 個');return}const p=decoFree(d.t,d.x,d.y,true);if(!p){toast('旁邊沒有空位了');return}const nd={t:d.t,x:p[0],y:p[1]};if(d.txt)nd.txt=d.txt;state.decor.push(nd);selDecor=state.decor.length-1;save()}
+  renderWorld();renderDecoBar();
 });
+function decoPaintAt(cx,cy){
+  if(!decoPaint)return;const w=screenToWorld(cx,cy),[x,y]=decoSnap(decoPaint,w.x,w.y),k=x+','+y;
+  if(decoPainted.has(k))return;decoPainted.add(k);
+  if(decoErr(x,y)||decoOcc(decoPaint,x,y,-1))return;
+  if(state.decor.length>=400){toast('裝飾最多 400 個');return}
+  state.decor.push({t:decoPaint,x,y});renderWorld();
+}
+function decoDragTo(cx,cy){
+  const dd=decoDrag,d=state.decor[dd.i];if(!d)return;const w=screenToWorld(cx,cy),[x,y]=decoSnap(d.t,w.x+dd.ox,w.y+dd.oy);
+  d.x=x;d.y=y;dd.on=true;dd.msg=decoErr(x,y)||(decoOcc(d.t,x,y,dd.i)?'這裡已經有了':'');dd.bad=!!dd.msg;selDecor=dd.i;renderWorld();
+}
+function decoDrop(){
+  const dd=decoDrag;decoDrag=null;if(!dd)return;const d=state.decor[dd.i];
+  if(d&&dd.on){if(dd.bad){d.x=dd.fx;d.y=dd.fy;toast(dd.msg+'，已放回原位')}else save()}
+  if(d)selDecor=dd.i;renderWorld();renderDecoBar();
+}
 function openSign(i){sheet={sign:i,draft:state.decor[i].txt||'',err:''};renderSheet();openSheetUI()}
 function signHTML(){const d=state.decor[sheet.sign];return `<h2>${d&&d.t==='signS'?'小告示牌':'大告示牌'}的文字</h2><p class="note">2 到 8 個字，寫什麼都可以，例如「南瓜田」「父本」「母本」。來拜訪的朋友也看得到。</p><div class="regbox"><input id="signIn" maxlength="8" value="${esc(sheet.draft)}" aria-label="告示牌文字" aria-describedby="signErr"><div class="err" id="signErr">${sheet.err}</div></div><button class="btn primary" data-act="signsave">儲存</button><button class="btn" data-act="close">取消</button>`}
 function bindSign(){const i=document.getElementById('signIn');if(i){i.focus();i.addEventListener('input',()=>{sheet.draft=i.value;if(sheet.err){sheet.err='';document.getElementById('signErr').textContent=''}})}}
@@ -3117,7 +3206,7 @@ function pickItem(it){
 function renderExplore(){
   ensureEx();
   const el=document.getElementById('exploreBody'),left=EX_LIMIT-state.ex.picks;
-  let h=`<p class="note">選一個地區出發。地圖會一直延伸下去，路上偶爾能撿到道具，也會遇到野生植株，可以採種或摘果實。${exCapOn()?`每天最多撿 ${EX_LIMIT} 件道具、採 ${EX_PLANT_LIMIT} 株野生植株；今天還能撿 ${Math.max(0,left)} 件、採 ${Math.max(0,EX_PLANT_LIMIT-(state.ex.plants||0))} 株。`:'目前沒有每日上限（測試模式）。'}</p>`;
+  let h=`<p class="note">選一個地區出發。地圖會一直延伸下去，路上偶爾能撿到道具，也會遇到野生植株，可以採種或摘果實。${exRefreshTxt()}。${exCapOn()?`每天最多撿 ${EX_LIMIT} 件道具、採 ${EX_PLANT_LIMIT} 株野生植株；今天還能撿 ${Math.max(0,left)} 件、採 ${Math.max(0,EX_PLANT_LIMIT-(state.ex.plants||0))} 株。`:'目前沒有每日上限（測試模式）。'}</p>`;
   if(scene==='explore')h+=`<button class="btn" data-ex="home" style="margin:0 0 12px">回農場</button>`;
   h+=BIOME_KEYS.map(k=>{const B=BIOMES[k];return `<button class="biome" data-ex="${k}"${scene==='explore'&&exBiome===k?' aria-current="true"':''}>${biomeThumb(k)}<span class="lr"><b>${B.n}${scene==='explore'&&exBiome===k?'（你在這裡）':''}</b><span class="meta">${B.desc}</span><span class="meta">可能遇到：常見 ${B.crops.filter(c=>c[1]>=2).map(c=>CROPS[c[0]].n).join('、')}；其他作物也可能出現，但機率較低</span></span></button>`}).join('');
   h+=`<h3>我的道具</h3><div class="items">${IKEYS.map(k=>`<div class="itm">${itemIcon(k)}<span class="lr"><b>${itemName(k)}</b><span class="meta">${itemEff(k)}</span><span class="meta">持有 ${state.items[k]||0} ${itemUnit(k)}</span></span></div>`).join('')}</div><p class="note">生長加速劑：在植株的詳細資料裡使用，或選「連續使用」一次用在很多株；只能用在幼苗和結果中的作物。誘變劑：撒進育苗盤時勾選使用。</p>`;
@@ -3223,7 +3312,6 @@ function actInfo(n){
 function refreshAct(){
   if(!state)return;
   const n=nearest();
-  {const b=document.getElementById('actBtn');if(b&&!b.hidden){const a=actInfo(n);if(b.textContent!==a.label)b.textContent=a.label;b.classList.toggle('off',!a.on)}}
   const hp=n&&n.t==='plot'?n.i:null,hs=n&&n.t==='stall'?n.i:null,hi=n&&n.t==='item'?n.it.key:null,hw=n&&n.t==='wp'?n.w.key:null;
   if(hp!==hoverPlot||hs!==hoverStall||hi!==hoverItem||hw!==hoverWp){hoverPlot=hp;hoverStall=hs;hoverItem=hi;hoverWp=hw;renderWorld()}
 }
@@ -3239,6 +3327,7 @@ function interact(){
   openPlot(n.i);
 }
 document.getElementById('fertBtn').onclick=()=>selfAll();
+document.getElementById('accelBtn').onclick=()=>openAccel();
 document.getElementById('shovelBtn').onclick=openShovel;
 document.getElementById('shovelBar').addEventListener('click',e=>{const b=e.target.closest('[data-sv]');if(!b)return;if(b.dataset.sv==='done'){exitShovel();toast(shovelN?'剷除完成':'結束剷除');return}if(b.dataset.sv==='trash'){sheet={trash:true,confirm:false};renderSheet();openSheetUI()}});
 document.getElementById('buildBar').addEventListener('click',e=>{const b=e.target.closest('[data-bm]');if(!b)return;if(b.dataset.bm==='done'){exitBuild();toast('結束建設');return}buildMode=b.dataset.bm;renderBuildBar()});
@@ -3249,12 +3338,12 @@ let ctrlMode='joy';/* 點擊移動已移除，只用搖桿 */
 let joy={id:null,vx:0,vy:0};
 function setCtrl(m){ctrlMode=m;try{localStorage.setItem('sw_ctrl',m)}catch(e){}moveTo=null;applyCtrl();renderCtrl();toast(m==='joy'?'已改成搖桿操作':'已改成點擊移動')}
 function applyCtrl(){
-  const j=ctrlMode==='joy'&&!buildMode&&!shovelMode&&!sowMode&&!accelMode;
+  const j=ctrlMode==='joy'&&!buildMode&&!shovelMode&&!sowMode&&!accelMode&&!decoMode;
   document.body.classList.toggle('joymode',ctrlMode==='joy');
-  document.getElementById('joy').hidden=!j;document.getElementById('actBtn').hidden=!j;
+  document.getElementById('joy').hidden=!j;
   if(typeof refreshAct==='function')refreshAct();
 }
-function renderCtrl(){const el=document.getElementById('ctrlBox');if(!el)return;el.innerHTML=`<h3 style="margin-top:0">操作方式</h3><p class="note">用左下角的搖桿移動，走到作物、攤位或大門旁邊，按右下角的按鈕。點作物也可以直接打開。</p>`}
+function renderCtrl(){const el=document.getElementById('ctrlBox');if(!el)return;el.innerHTML=`<h3 style="margin-top:0">操作方式</h3><p class="note">用左下角的搖桿移動。作物、攤位、大門、野外的植株和道具，直接點一下就能打開；離太遠時角色會自己走過去。</p>`}
 document.getElementById('ctrlBox').addEventListener('click',e=>{const b=e.target.closest('[data-ctrl]');if(b&&b.dataset.ctrl!==ctrlMode)setCtrl(b.dataset.ctrl)});
 const joyEl=document.getElementById('joy'),knob=document.getElementById('joyKnob');
 function joySet(e){const r=joyEl.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const R=r.width/2-16,len=Math.hypot(dx,dy);if(len>R){dx*=R/len;dy*=R/len}knob.style.transform=`translate(${dx}px,${dy}px)`;joy.vx=dx/R;joy.vy=dy/R}
@@ -3262,7 +3351,6 @@ joyEl.addEventListener('pointerdown',e=>{e.preventDefault();moveTo=null;joy.id=e
 joyEl.addEventListener('pointermove',e=>{if(e.pointerId===joy.id){e.preventDefault();joySet(e)}});
 const joyEnd=e=>{if(e.pointerId!==joy.id)return;joy={id:null,vx:0,vy:0};knob.style.transform=''};
 joyEl.addEventListener('pointerup',joyEnd);joyEl.addEventListener('pointercancel',joyEnd);
-document.getElementById('actBtn').onclick=interact;
 function startLoop(){if(!raf){lastF=performance.now();raf=requestAnimationFrame(walkLoop)}}
 const keys={};
 window.addEventListener('keydown',e=>{if(!state||e.target.closest('input,textarea,select')||curPanel||sheet)return;const k=['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','a','d','w','s'].includes(e.key);if(k){keys[e.key]=1;moveTo=null;e.preventDefault();startLoop()}if(e.key==='e'||e.key===' '){e.preventDefault();interact()}});
@@ -3286,11 +3374,11 @@ function handleTap(e,cx,cy){
   if(buildMode){buildTap(w,t);return}
   if(ctrlMode==='joy'){
     const g2=t&&t.closest&&t.closest('[data-plot]'),st2=t&&t.closest&&t.closest('[data-stall]'),dg2=t&&t.closest&&t.closest('[data-decor]'),ie2=t&&t.closest&&t.closest('[data-item]');
-    if(scene==='explore'){const we2=t&&t.closest&&t.closest('[data-wp]');if(we2){const w=exVisiblePlants().find(x=>x.key===we2.dataset.wp);if(w){const m=curMe();if(Math.hypot(w.x-m.x,w.y-m.y)<90)openWp(w);else toast('走近一點才能查看')}return}if(ie2){const it=exVisibleItems().find(x=>x.key===ie2.dataset.item);if(it){const m=curMe();if(Math.hypot(it.x-m.x,it.y-m.y)<80)pickItem(it);else toast('走近一點才能撿起來')}}return}
+    const we2=t&&t.closest&&t.closest('[data-wp]');
+    if(!g2&&!st2&&!ie2&&!we2){const [gx,gy]=gatePos();if(Math.hypot(w.x-gx,w.y-gy)<60){const go=()=>{scene==='farm'?goMarket():goFarm()},m=curMe();if(Math.hypot(m.x-gx,m.y-gy)<56)go();else walkTo(gx,gy-10,go);return}}/* 14h：大門直接點 */
+    if(scene==='explore'){if(we2){const w=exVisiblePlants().find(x=>x.key===we2.dataset.wp);if(w){const m=curMe();if(Math.hypot(w.x-m.x,w.y-m.y)<90)openWp(w);else walkTo(w.x,w.y+10,()=>openWp(w))}return}if(ie2){const it=exVisibleItems().find(x=>x.key===ie2.dataset.item);if(it){const m=curMe();if(Math.hypot(it.x-m.x,it.y-m.y)<80)pickItem(it);else walkTo(it.x,it.y+6,()=>pickItem(it))}}return}
     if(scene==='market'){if(st2)openStall(+st2.dataset.stall);return}
     if(viewing){if(g2){const p=viewing.st&&viewing.st.plots[+g2.dataset.plot];if(p)openFriendPlot(p)}return}
-    if(dg2){selDecor=+dg2.dataset.decor;renderWorld();renderDecorEdit();return}
-    if(selDecor!=null){selDecor=null;renderWorld();renderDecorEdit();return}
     if(g2)openPlot(+g2.dataset.plot);
     return;
   }
@@ -3300,8 +3388,6 @@ function handleTap(e,cx,cy){
   if(scene==='market'){let si=stg?+stg.dataset.stall:-1;if(si<0){let bd=90;STALLS.forEach(([x,y],k)=>{const d=Math.hypot(x-w.x,(y-20-w.y)*0.9);if(d<bd){bd=d;si=k}})}if(si>=0){const [sx,sy]=STALLS[si];walkTo(sx,sy+34,()=>openStall(si));return}}
   if(scene==='explore'&&!ie){let best=null,bd=34;for(const it of exVisibleItems()){const d=Math.hypot(it.x-w.x,it.y-w.y);if(d<bd){bd=d;best=it}}if(best){walkTo(best.x,best.y+6,()=>pickItem(best));return}}
   if(scene==='farm'&&!viewing){
-    if(dg){selDecor=+dg.dataset.decor;renderWorld();renderDecorEdit();return}
-    if(selDecor!=null){selDecor=null;renderWorld();renderDecorEdit();return}
   }
   if(scene==='farm'&&g){const i=+g.dataset.plot,pos=posOf(viewing?viewing.st:state,i);if(pos){walkTo(pos[0],pos[1]+4,()=>interactPlot(i));return}}
   const [gx,gy]=gatePos();
@@ -3312,13 +3398,18 @@ function handleTap(e,cx,cy){
 const ptrs=new Map();let pinch=null,tapStart=null,dragPlot=null,panStart=null;
 sceneEl.addEventListener('pointerdown',e=>{
   if(!state)return;
-  if(e.isPrimary){ptrs.clear();pinch=null;panStart=null;dragPlot=null;sowing=false;shoveling=false;acceling=false}/* 新的觸控開始：清掉殘留的手指紀錄 */
+  if(e.isPrimary){ptrs.clear();pinch=null;panStart=null;dragPlot=null;sowing=false;shoveling=false;acceling=false;if(decoMode)decoCancel()}/* 新的觸控開始：清掉殘留的手指紀錄 */
   ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
   try{sceneEl.setPointerCapture(e.pointerId)}catch(_){}
-  if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:zoom};tapStart=null;dragPlot=null;panStart=null;return}
+  if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:zoom};tapStart=null;dragPlot=null;panStart=null;if(decoMode)decoCancel();return}
   tapStart={x:e.clientX,y:e.clientY,t:Date.now(),target:e.target,moved:false};
   if(sowMode){const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&!state.plots[+g.dataset.plot]){sowing=true;sowAt(e.clientX,e.clientY)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
   if(shovelMode){const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&state.plots[+g.dataset.plot]){shoveling=true;shovelAt(e.clientX,e.clientY)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
+  if(decoMode){decoPainted.clear();
+    if(decoPaint){decoPainting=true;decoPaintAt(e.clientX,e.clientY);return}
+    const dg=e.target.closest&&e.target.closest('[data-decor]');
+    if(dg){const i=+dg.dataset.decor,d=state.decor[i];if(d){const w=screenToWorld(e.clientX,e.clientY);decoDrag={i,fx:d.x,fy:d.y,ox:d.x-w.x,oy:d.y-w.y,on:false,bad:false,msg:''};return}}
+    panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
   if(accelMode){accelHit.clear();const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&state.plots[+g.dataset.plot]){acceling=true;accelAt(e.clientX,e.clientY)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
   if(buildMode){
     const g=e.target.closest&&e.target.closest('[data-plot]');
@@ -3333,6 +3424,8 @@ sceneEl.addEventListener('pointermove',e=>{
   if(tapStart&&Math.hypot(e.clientX-tapStart.x,e.clientY-tapStart.y)>10)tapStart.moved=true;
   if(shoveling){shovelAt(e.clientX,e.clientY);return}
   if(acceling){accelAt(e.clientX,e.clientY);return}
+  if(decoPainting){decoPaintAt(e.clientX,e.clientY);return}
+  if(decoDrag){if(tapStart&&tapStart.moved)decoDragTo(e.clientX,e.clientY);return}
   if(sowing){sowAt(e.clientX,e.clientY);return}
   if(dragPlot&&tapStart&&tapStart.moved){const w=screenToWorld(e.clientX,e.clientY);dragPlot.x=w.x;dragPlot.y=w.y;dragPlot.on=true;renderWorld();return}
   if(panStart&&tapStart&&tapStart.moved){const r=sceneEl.getBoundingClientRect(),vb=sceneEl.viewBox.baseVal,s=vb.width/r.width;buildCam.x=panStart.cx-(e.clientX-panStart.x)*s;buildCam.y=panStart.cy-(e.clientY-panStart.y)*s;updateCam()}
@@ -3340,6 +3433,11 @@ sceneEl.addEventListener('pointermove',e=>{
 const ptrEnd=e=>{
   if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);
   if(pinch){if(ptrs.size<2)pinch=null;return}
+  if(decoMode){panStart=null;
+    if(decoPainting){decoPainting=false;save();tapStart=null;return}
+    if(decoDrag){decoDrop();tapStart=null;return}
+    if(tapStart&&!tapStart.moved&&e.type==='pointerup'&&selDecor!=null){selDecor=null;renderWorld();renderDecoBar()}
+    tapStart=null;return}
   if(dragPlot){const d=dragPlot;dragPlot=null;if(d.on){const [x,y]=snapPos(d.x,d.y),err=plotSpotErr(state,x,y,d.i);if(err){toast(err)}else{state.plotPos[d.i]=[x,y];save();toast('農地移好了')}renderWorld();tapStart=null;return}}
   panStart=null;
   if(sowMode){if(sowing){sowing=false;save()}tapStart=null;return}
@@ -3363,6 +3461,10 @@ sceneEl.addEventListener('wheel',e=>{if(!state)return;e.preventDefault();setZoom
 
 
 // ===== 種子包的整齊度說明 =====
+/* 14h：種子包只寫一行親本；育種中的種子包另顯示目標外觀 */
+function lotParentHTML(l,ph,cross){let f='';if(cross){try{f=shortApp(phen(l.f,l.crop))}catch(e){f='？'}}return `<p class="note"><b>親本：</b>${shortApp(ph)}${cross?' × '+f:''}</p>`}
+function lotTarget(l){const c=lotCat(l);return c.c==='breed'?c.r:null}
+function lotTargetHTML(l,ph){const r=lotTarget(l);if(r==null)return '';return `<div class="lot-top" style="margin:4px 0 8px">${fruitSVG(ph,l.crop,48)}<div><b>目標外觀</b><div class="meta">${ph.shapeName}・${colorLabel(ph)}</div><div class="meta">種下去約 ${pctTxt(r)} 會長成這樣</div></div></div>`}
 function lotUniHTML(l){try{const d=lotDist(l);if(!d.length)return '';
   if(d.length===1||d[0].p>=0.9995)return `<p class="note">${l.cross?'這包是雜交的種子，種下去會長得一樣（整齊）。但長出來的植株自交後，後代通常會再分離，還不算穩定。':'這包種下去會長得一樣。'}</p>`;
   return `<p class="note">這包種下去會長出 ${d.length} 種外觀，還在分離中。</p>`}catch(e){return ''}}
@@ -3394,36 +3496,41 @@ function openHarvest(){
   if(!state||viewing||scene!=='farm')return;
   const rows=harvestRows();if(!rows.length){toast('目前沒有成熟的作物');return}
   const best={},acts={};
-  for(const r of rows){if(r.reg)continue;const b=best[r.gk];if(!b||r.ph.stab>b.ph.stab+1e-9||(Math.abs(r.ph.stab-b.ph.stab)<=1e-9&&r.ph.ab.size>b.ph.ab.size))best[r.gk]=r}
-  for(const r of rows)acts[r.i]=r.reg?'keep':best[r.gk]===r?'seed':'sell';
+  for(const r of rows){const b=best[r.gk];if(!b||r.ph.stab>b.ph.stab+1e-9||(Math.abs(r.ph.stab-b.ph.stab)<=1e-9&&r.ph.ab.size>b.ph.ab.size))best[r.gk]=r}
+  for(const r of rows)acts[r.i]=best[r.gk]===r?'seed':'sell';
   closeSheet();if(curPanel)closePanel();
-  sheet={harvest:{acts,best:Object.values(best).map(r=>r.i)}};renderSheet();openSheetUI();
+  sheet={harvest:{acts,best:Object.values(best).map(r=>r.i),reged:{},warn:false}};renderSheet();openSheetUI();
 }
 function harvestHTML(){
   const hv=sheet.harvest,rows=harvestRows().filter(r=>hv.acts[r.i]);
   if(!rows.length)return `<h2>全部收成</h2><p class="note">目前沒有成熟的作物。</p><button class="btn" data-act="close">關閉</button>`;
   const groups=new Map();for(const r of rows){if(!groups.has(r.gk))groups.set(r.gk,[]);groups.get(r.gk).push(r)}
-  let h=`<h2>全部收成</h2><p class="note">同一種外觀，預設只從外觀穩定度最高的那株取種，其他賣掉。可以申請品種權的植株預設先不收，記得先申請。點按鈕可以改。</p>`;
-  let ns=0,nl=0,nk=0,coins=0;
+  let h=`<h2>全部收成</h2><p class="note">同一種外觀，預設只從外觀穩定度最高的那株取種，其他賣掉。點按鈕可以改。可以申請品種權、符合訂單的植株，直接在那一列申請或交訂單。</p>`;
+  let ns=0,nl=0,coins=0;
   for(const rs of groups.values()){
     const r0=rs[0],ph=r0.ph;
     h+=`<div class="hvgrp"><div class="hvhead">${fruitSVG(ph,r0.p.crop,40)}<span><b>${CROPS[r0.p.crop].n}・${tagName(ph,r0.p.crop)}・${colorLabel(ph)}</b><span class="meta">${r0.cross?`雜交：${esc(r0.p.name)} × ${esc(r0.p.pollen.fatherName||'')}`:'自交'}・${rs.length} 株</span></span></div>`;
     for(const r of rs){
-      const a=hv.acts[r.i];if(a==='seed')ns++;else if(a==='sell'){nl++;coins+=sellPrice(r.p)}else nk++;
-      const tags=[];if(hv.best.includes(r.i))tags.push('<span class="badge r2">建議取種</span>');if(r.reg)tags.push('<span class="badge r4">可以申請品種權</span>');if(r.dl)tags.push('<span class="badge r1">符合訂單</span>');
-      h+=`<div class="hvrow"><div><b>${esc(pname(r.p))}</b> ${tags.join(' ')}<div class="meta">外觀穩定度 ${pctTxt(r.ph.stab)}・${SIZE_N[r.ph.sizeCls]}・${PERF_N[r.ph.perfCls]}${canMerge(r.p)?'・取種會放回原包':''}</div></div><div class="hvbtns">${[['seed','取種'],['sell','賣'],['keep','不收']].map(([v,t])=>`<button class="fchip" data-act="hvset" data-i="${r.i}" data-v="${v}" aria-pressed="${a===v}">${t}</button>`).join('')}</div></div>`;
+      const a=hv.acts[r.i]==='sell'?'sell':'seed';if(a==='seed')ns++;else{nl++;coins+=sellPrice(r.p)}
+      const reg=r.reg&&!hv.reged[r.i];let dls=[];if(r.dl){try{dls=deliverables(r.p,r.ph)}catch(e){}}
+      const tags=[];if(hv.best.includes(r.i))tags.push('<span class="badge r2">建議取種</span>');
+      const extra=(reg?`<button class="btn primary hvx" data-act="hvreg" data-i="${r.i}">申請品種權（${appraiseFee(r.p.crop)} 金幣）</button>`:'')+dls.map(o=>`<button class="btn hvx" data-act="hvdl" data-i="${r.i}" data-o="${o.id}">交訂單：${o.t}（${o.r} 金幣${o.pt?'＋'+o.pt:''}）</button>`).join('');
+      h+=`<div class="hvrow"><div><b>${esc(pname(r.p))}</b> ${tags.join(' ')}<div class="meta">外觀穩定度 ${pctTxt(r.ph.stab)}・${SIZE_N[r.ph.sizeCls]}・${PERF_N[r.ph.perfCls]}${canMerge(r.p)?'・取種會放回原包':''}</div></div><div class="hvbtns">${[['seed','取種'],['sell','賣']].map(([v,t])=>`<button class="fchip" data-act="hvset" data-i="${r.i}" data-v="${v}" aria-pressed="${a===v}">${t}</button>`).join('')}</div></div>${extra?`<div class="hvextra">${extra}</div>`:''}`;
     }
     h+=`</div>`;
   }
-  const ndl=rows.filter(r=>r.dl&&hv.acts[r.i]!=='keep').length;
-  if(ndl)h+=`<p class="note">有 ${ndl} 株符合訂單。想交訂單的話，先把它改成「不收」，再點那株植株交訂單。</p>`;
-  h+=`<p class="note" style="margin-top:10px">取種 ${ns} 株、賣果實 ${nl} 株（約 ${coins} 金幣）、先不收 ${nk} 株。</p><button class="btn primary" data-act="hvgo"${ns+nl?'':' disabled'}>確定收成</button><button class="btn" data-act="close">取消</button>`;
+  const nreg=rows.filter(r=>r.reg&&!hv.reged[r.i]).length;
+  if(hv.warn&&nreg)h+=`<p class="note" style="color:var(--danger);font-weight:700">還有 ${nreg} 株可以申請品種權，收成後就不能再申請了。確定要收的話，再按一次「確定收成」。</p>`;
+  h+=`<p class="note" style="margin-top:10px">取種 ${ns} 株、賣果實 ${nl} 株（約 ${coins} 金幣）。</p><button class="btn primary" data-act="hvgo"${ns+nl?'':' disabled'}>${hv.warn&&nreg?'再按一次，確定收成':'確定收成'}</button><button class="btn" data-act="close">取消</button>`;
   return h;
 }
 function harvestAction(b){
   const hv=sheet.harvest,act=b.dataset.act;
-  if(act==='hvset'){hv.acts[+b.dataset.i]=b.dataset.v;renderSheet();return}
+  if(act==='hvset'){hv.acts[+b.dataset.i]=b.dataset.v;hv.warn=false;renderSheet();return}
+  if(act==='hvreg'){const i=+b.dataset.i,c0=state.coins;b.disabled=true;Promise.resolve(applyRight(i)).then(()=>{if(state.coins<c0)hv.reged[i]=1;if(sheet&&sheet.harvest)renderSheet()});return}
+  if(act==='hvdl'){const i=+b.dataset.i;playAct('harvest');deliver(i,b.dataset.o);delete hv.acts[i];save();renderAll();renderSheet();return}
   if(act!=='hvgo')return;
+  {const nreg=harvestRows().filter(r=>hv.acts[r.i]&&r.reg&&!hv.reged[r.i]).length;if(nreg&&!hv.warn){hv.warn=true;renderSheet();return}}
   let ns=0,nl=0,coins=0;
   for(const [k,v] of Object.entries(hv.acts)){
     const i=+k,p=state.plots[i];if(!p||p.obs||p.stage!=='ripe')continue;
@@ -3608,6 +3715,28 @@ function renderGenes(){
 document.getElementById('sizeBox').addEventListener('toggle',e=>{if(e.target.open)document.getElementById('sizeInfo').innerHTML=sizeReportHTML()});
 document.getElementById('sowBar').addEventListener('click',e=>{const b=e.target.closest('[data-sw]');if(!b)return;const k=b.dataset.sw;if(k==='done')return exitSow();if(k==='pick')return openSowPick();if(k==='undo')return sowUndo()});
 
+// ===== 探索（14h）：刷新提示與天氣特效（獨立覆蓋層，不參與地圖方塊產生，換新地圖時可沿用） =====
+function exRefreshLeft(now){now=now||new Date();const nx=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);return (nx-now)/3.6e6}/* 與 dayKey 一樣用手機本地時間 */
+function exRefreshTxt(now){const h=exRefreshLeft(now);return `野外植株每天 0 點換一批，還有${h<1?'不到 1 小時':`約 ${Math.round(h)} 小時`}`}
+function exHintUpd(){const el=document.getElementById('exHint');if(!el)return;const on=scene==='explore';if(el.hidden===on)el.hidden=!on;if(on){const t=exRefreshTxt();if(el.textContent!==t)el.textContent=t}}
+let wxCur=null;
+const WXN={snow:30,desert:22,marsh:14,forest:16,grass:7};/* 粒子數量控制在 40 個以內 */
+function wxReduced(){try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}}
+function setWeather(bk){
+  const el=document.getElementById('wx');if(!el)return;if(wxReduced()||!WXN[bk])bk=null;if(bk===wxCur)return;wxCur=bk;
+  if(!bk){el.hidden=true;el.className='';el.innerHTML='';return}
+  const r=Math.random,f=(v,d)=>v.toFixed(d==null?1:d);let h='';
+  if(bk==='marsh')h+='<div class="fog" style="top:8%"></div><div class="fog" style="top:55%;animation-duration:34s;animation-delay:-9s"></div>';
+  for(let k=0;k<WXN[bk];k++){let st;
+    if(bk==='snow')st=`--x:${f(r()*100)}vw;--s:${f(3+r()*4)}px;--dx:${f(r()*16-8)}vw;--d:${f(7+r()*7)}s;--l:${f(-r()*14)}s;--a:wxFall`;
+    else if(bk==='desert')st=`--y:${f(r()*100)}vh;--w:${f(20+r()*50,0)}px;--dy:${f(r()*10-3)}vh;--d:${f(1.6+r()*1.8,2)}s;--l:${f(-r()*3.4,2)}s;--a:wxBlow`;
+    else if(bk==='marsh')st=`--x:${f(r()*100)}vw;--y:${f(15+r()*80)}vh;--dx:${f(r()*60-30,0)}px;--dy:${f(r()*50-25,0)}px;--d:${f(3+r()*4)}s;--l:${f(-r()*6)}s`;
+    else st=`--x:${f(r()*100)}vw;--s:${f((bk==='grass'?6:8)+r()*5,0)}px;--dx:${f(r()*30-10)}vw;--d:${f(9+r()*8)}s;--l:${f(-r()*16)}s;--a:wxLeaf;--c:${bk==='grass'?['#F7B6C8','#FFE1EA','#F2C94C'][k%3]:['#D9822B','#C9473A','#E8B13A','#6FA544'][k%4]}`;
+    h+=`<i style="${st}"></i>`}
+  el.className='wx-'+bk;el.innerHTML=h;el.hidden=false;
+}
+document.addEventListener('visibilitychange',()=>{const el=document.getElementById('wx');if(el)el.classList.toggle('paused',document.hidden)});
+
 // ===== 生長加速劑（14g）：每次讓一株幼苗或結果中的作物，這個階段剩下的生長時間減半 =====
 var accelMode=false,accelN=0,acceling=false;const accelHit=new Set();
 const accelOk=p=>!!p&&!p.obs&&(p.stage==='seedling'||p.stage==='fruit');
@@ -3741,7 +3870,7 @@ const TUT=[
   {t:'發芽了！作物會自己長大，不用澆水。想快一點，可以在右邊「設定」開啟加速測試。等它開花吧。',ev:'flower'},
   {t:'開花了！點它可以自交，或和另一株同時開花的同種作物雜交。沒處理的花會一直等著，頭上的小花就是提醒。也可以按「全部自交」一次處理。',ev:'pollinate'},
   {t:'授粉後果實會自己長大。成熟後點它，可以賣掉換金幣，或取種留著培育。很多株一起成熟時，按「全部收成」可以一次處理。',ev:'harvest'},
-  {t:'做得很好！右邊的圖示可以打開種子袋、圖鑑、朋友和裝飾；種出穩定、稀有以上的新外觀，可以在植株資訊中直接申請品種權；按「建設」可以開墾、拆除或拖移農地。走到農場最下面的大門按右下角的按鈕，或按「市集」，就能去市集擺攤、和大家見面。完成「訂單」還有金幣可拿喔！',btn:'開始玩'}
+  {t:'做得很好！右邊的圖示可以打開種子袋、圖鑑、朋友和裝飾；種出穩定、稀有以上的新外觀，可以在植株資訊中直接申請品種權；按「建設」可以開墾、拆除或拖移農地。點農場最下面的大門，或按「市集」，就能去市集擺攤、和大家見面。完成「訂單」還有金幣可拿喔！',btn:'開始玩'}
 ];
 function tutRender(){
   const el=document.getElementById('tut'),t=state&&state.tut;

@@ -494,17 +494,26 @@ const CROPS={
   tomato:{n:'番茄',short:'番茄',min:6,price:10,body:'bush',fl:'#F3CC45',fx:3,fy:-34,fs:50,deco:'calyx',ribs:true,bumps:true,shapes:['圓形','扁圓','水滴','愛心','星形'],surf:['光滑','稜紋','瘤狀'],tpl:[ell(1,1),ell(1.18,0.8),tearUp(1.15,1.05),heart,star(5,.72,.33)]},
   strawberry:{n:'草莓',short:'草莓',min:5,price:8,body:'rosette',fl:'#FFFFFF',fx:12,fy:-12,fs:36,deco:'berry',ribs:true,bumps:false,shapes:['圓錐','圓球','扁扇','愛心','星形'],surf:['光滑','淺溝','深溝'],tpl:[tearDown(1,1.1),ell(1,1),tearDown(1.35,0.8),heart,star(5,.72,.3)]},
   zucchini:{n:'櫛瓜',short:'櫛瓜',min:6,price:10,body:'vine',fl:'#F2B632',fx:12,fy:-14,fs:48,deco:'stem',ribs:true,bumps:true,shapes:['長棒','圓球','飛碟','葫蘆','星形'],surf:['光滑','稜紋','瘤狀'],tpl:[superE(0.38,1.2),ell(1,1),lobe(ell(1.25,0.55),10,0.1),gourd,star(5,.7,.3)]},
-  bittergourd:{n:'苦瓜',short:'苦瓜',min:8,price:13,body:'vine',fl:'#F3D44A',fx:12,fy:-16,fs:48,deco:'warts',ribs:false,bumps:false,shapes:['紡錘','短圓','細長','彎月','螺旋'],surf:['淺瘤','稜紋','深瘤'],tpl:[spindle(0.6,1.2),ell(0.85,0.95),spindle(0.38,1.35),bend(spindle(0.42,1.25),0.7),wav(spindle(0.45,1.25),0.22,4)]},
   corn:{n:'玉米',short:'玉米',min:9,price:15,body:'tall',fl:'#D8C27A',fx:10,fy:-50,fs:46,deco:'kernels',ribs:false,bumps:false,shapes:['圓柱','錐形','短胖','彎月','螺旋'],surf:['飽滿','皺粒','爆裂粒'],tpl:[superE(0.5,1.15),tearDown(0.65,1.15),superE(0.68,0.85),bend(superE(0.45,1.15),0.5),wav(superE(0.48,1.15),0.18,4)]},
-  broccoli:{n:'花椰菜',short:'花椰',min:10,price:17,body:'rosette',fl:'#F3E36A',fx:0,fy:-26,fs:52,deco:'florets',ribs:false,bumps:false,shapes:['圓頂','扁平','尖塔','螺旋塔','愛心'],surf:['細密','顆粒','捲曲'],tpl:[flatB(ell(1.15,0.95),0.35),flatB(ell(1.3,0.65),0.3),tearUp(1,1.1),lobe(tearUp(1,1.1),9,0.07),heart]},
-  sweetpotato:{n:'甘藷',short:'甘藷',min:13,price:22,body:'vine',fl:'#C9A3E0',fx:10,fy:-6,fs:46,deco:'roots',ribs:false,bumps:true,shapes:['紡錘','圓球','長條','心形','捲曲'],surf:['光滑','凹紋','瘤狀'],tpl:[rot(spindle(0.55,1.3)),ell(0.95,0.95),rot(spindle(0.35,1.45)),heart,rot(wav(spindle(0.45,1.3),0.22,4))]},
-  melon:{n:'哈密瓜',short:'蜜瓜',min:15,price:25,body:'vine',fl:'#F3CC45',fx:12,fy:-14,fs:48,deco:'net',ribs:false,bumps:false,shapes:['圓球','橢圓','扁圓','愛心','星形'],surf:['光滑','淺紋','深紋'],tpl:[ell(1,1),ell(0.85,1.1),ell(1.2,0.82),heart,star(5,.75,.28)]},
+  broccoli:{n:'甘藍家族',short:'甘藍',min:10,price:17,body:'rosette',fl:'#F3E36A',fx:0,fy:-26,fs:52,deco:'florets',ribs:false,bumps:false,shapes:['圓頂','扁平','尖塔','螺旋塔','愛心'],surf:['細密','顆粒','捲曲'],tpl:[flatB(ell(1.15,0.95),0.35),flatB(ell(1.3,0.65),0.3),tearUp(1,1.1),lobe(tearUp(1,1.1),9,0.07),heart]},
+  melon:{n:'甜瓜',short:'甜瓜',min:15,price:25,body:'vine',fl:'#F3CC45',fx:12,fy:-14,fs:48,deco:'net',ribs:false,bumps:false,shapes:['圓球','橢圓','扁圓','愛心','星形'],surf:['光滑','淺紋','深紋'],tpl:[ell(1,1),ell(0.85,1.1),ell(1.2,0.82),heart,star(5,.75,.28)]},
   chili:{n:'辣椒',short:'辣椒',min:7,price:12,body:'bush',fl:'#FFFFFF',fx:5,fy:-30,fs:44,deco:'pepper',ribs:true,bumps:true,shapes:['長角','櫻桃','燈籠','愛心','螺旋'],surf:['光滑','皺皮','瘤皮'],tpl:[bend(tearDown(0.42,1.3),0.35),ell(0.9,0.9),lobe(superE(0.95,0.95,0.6),4,0.07),heart,wav(tearDown(0.42,1.3),0.22,4)]},
   pumpkin:{n:'南瓜',short:'南瓜',min:12,price:20,body:'vine',fl:'#F2A81E',fx:12,fy:-14,fs:52,deco:'pumpkin',ribs:true,bumps:true,shapes:['扁圓','圓球','葫蘆','愛心','星形'],surf:['光滑','溝紋','瘤狀'],tpl:[lobe(ell(1.3,0.82),8,0.05),ell(1,1),gourd,heart,star(5,.72,.3)]},
   eggplant:{n:'茄子',short:'茄子',min:8,price:14,body:'bush',fl:'#B79AE0',fx:4,fy:-26,fs:50,deco:'cap',ribs:false,bumps:true,shapes:['長條','蛋形','圓球','愛心','彎月'],surf:['光滑','細紋','瘤狀'],tpl:[ell(0.42,1.25),tearUp(0.8,1.1),ell(1,1),heart,bend(ell(0.42,1.2),0.6)]}
 };
-const BASE_CROPS=['tomato','strawberry','zucchini','bittergourd','corn','broccoli','sweetpotato','melon'];
+const BASE_CROPS=['tomato','chili','strawberry','eggplant','corn','pumpkin','zucchini','melon','broccoli'];
 const CROP_KEYS=Object.keys(CROPS);
+const ACTIVE_CROPS=CROP_KEYS.filter(k=>!CROPS[k].retired);/* 14l：9 種作物（苦瓜、甘藷已從定義刪除） */
+/* 每種作物 3 種基本造型的輪廓：null＝原本的作物輪廓、[寬,高]＝把原本輪廓縮放、函式＝另一種輪廓、'zucchini'＝借用櫛瓜輪廓 */
+CROPS.tomato.bt=[null,[1.16,0.8],[0.84,1.18]];
+CROPS.chili.bt=[null,lobe(superE(0.95,0.95,0.6),4,0.07),tearDown(0.55,0.95)];
+CROPS.strawberry.bt=[null,tearDown(1.35,0.8),ell(1,1)];
+CROPS.eggplant.bt=[null,ell(1,1),tearUp(0.8,1.1)];
+CROPS.corn.bt=[null,superE(0.68,0.85),tearDown(0.5,0.85)];
+CROPS.pumpkin.bt=[null,[1.18,0.74],lobe(ell(1.25,0.55),10,0.1)];
+CROPS.zucchini.bt=[null,ell(1,1),bend(tearUp(0.72,1.25),0.6)];
+CROPS.melon.bt=[null,ell(0.85,1.1),ell(0.62,1.25)];CROPS.melon.tdeco=['net','stripe','stripe'];
+CROPS.broccoli.bt=[null,lobe(tearUp(1,1.1),9,0.07),ell(1.05,1)];CROPS.broccoli.tdeco=['florets','florets','cabbage'];
 
 let _rng=Math.random;const rnd=()=>_rng();
 function withSeed(seed,fn){const o=_rng;_rng=seededRnd(seed);try{return fn()}finally{_rng=o}}
@@ -519,25 +528,41 @@ const pickIdx=(n,k)=>shuffle([...Array(n).keys()]).slice(0,k);
 const rr=r=>r[0]+rnd()*(r[1]-r[0]);
 function esc(v){return String(v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
-// ===== v0.4 遺傳引擎 =====
-const SHN=6,NUMN=10,ABIL=['size','perf','speed','yield','vigor'];
+// ===== v0.5 遺傳引擎（14l：第 20 節遺傳規則改版＋第 24 節作物精簡）=====
+/* 基因型 v3：{sv:3, b:[x,y] 基本造型類型 0–2, sp:[a,b] 特殊／專屬造型, pw:[a,b] 有沒有花紋, c:[x,y] 果皮顏色, pc:[x,y] 花紋顏色, pf:[x,y] 花紋形式 0–3, n:{size,perf} 各 10 組, o?:{sp,c,pc,pf} 遠緣導入來源}
+   兩句話規則：顏色、花紋顏色、花紋形式「看到什麼就是什麼」（兩個一樣是純的；不一樣就混色、淡特殊色、雙色，或兩種花紋一起出現）；
+   基本造型、特殊造型、有沒有花紋「要兩個一樣才會出現」（否則是第 0 種造型／沒有花紋，可能隔代冒出來）。 */
+const NUMN=10,ABIL=['size','perf'];
+const SHN=6;/* 舊版尖因子組數：只用來轉換舊資料 */
 const BASIC=['white','green','yellow','red','purple','black'];
 const SPECIAL=['silver','pearl','blue','gold','obsidian','crystal','starry','rainbow'];
 const CSTR={};BASIC.forEach((c,i)=>CSTR[c]=i+1);SPECIAL.forEach((c,i)=>CSTR[c]=10+i);
 const isSpecC=c=>CSTR[c]>=10;
-const MIXC={'red|yellow':'orange','red|white':'pink','purple|white':'lavender','green|yellow':'yellowgreen'};
-const CN={white:'白',green:'綠',yellow:'黃',red:'紅',purple:'紫',black:'黑',orange:'橙',pink:'粉',lavender:'淡紫',yellowgreen:'黃綠',silver:'銀',pearl:'珍珠白',blue:'藍',gold:'金',obsidian:'黑曜',crystal:'水晶',starry:'星空',rainbow:'彩虹'};
-const COLOR_ORDER=['rainbow','starry','crystal','obsidian','gold','blue','pearl','silver','black','purple','red','orange','pink','lavender','yellow','yellowgreen','green','white'];
-const PFN=['條紋','斑點','雲紋','星點','漸層','雙色'];
-// 特殊造型（所有作物）1–6；專屬造型 7–14（各作物一個，瓜科共用葫蘆）
+/* 15 種混色（兩個不同的基本色）。鍵值依字母排序 */
+const MIX15={'green|white':'mint','white|yellow':'cream','red|white':'pink','purple|white':'lavender','black|white':'gray','green|yellow':'yellowgreen','green|red':'brown','green|purple':'slate','black|green':'darkgreen','red|yellow':'orange','purple|yellow':'amber','black|yellow':'olive','purple|red':'wine','black|red':'crimson','black|purple':'plum'};
+const mixOf=(a,b)=>MIX15[[a,b].sort().join('|')];
+const MIXSET=new Set(Object.values(MIX15));
+const MIX_OF={};for(const [k,v] of Object.entries(MIX15))MIX_OF[v]=k.split('|');
+const CN={white:'白',green:'綠',yellow:'黃',red:'紅',purple:'紫',black:'黑',orange:'橙',pink:'粉',lavender:'淡紫',yellowgreen:'黃綠',mint:'薄荷綠',cream:'奶油黃',gray:'灰',brown:'棕',slate:'青灰',darkgreen:'深綠',amber:'琥珀',olive:'橄欖',wine:'酒紅',crimson:'深紅',plum:'深紫',silver:'銀',pearl:'珍珠白',blue:'藍',gold:'金',obsidian:'黑曜',crystal:'水晶',starry:'星空',rainbow:'彩虹'};
+/* 一對顏色因子 → 看到的顏色鍵值：純色 'red'、混色 'orange'、特殊色 'starry'、淡特殊色 'l-starry'、雙色 'd-gold-starry' */
+function colKey(p){const a=p[0],b=p[1];if(a===b)return a;const sa=isSpecC(a),sb=isSpecC(b);if(sa&&sb)return 'd-'+[a,b].sort().join('-');if(sa)return 'l-'+a;if(sb)return 'l-'+b;return mixOf(a,b)||a}
+function colParts(k){k=k||'';if(k.startsWith('l-'))return {t:'l',a:k.slice(2)};if(k.startsWith('d-')){const q=k.split('-');return {t:'d',a:q[1],b:q[2]}}return {t:isSpecC(k)?'s':MIXSET.has(k)?'m':'p',a:k}}
+function cnOf(k){if(!k)return '';const p=colParts(k);return p.t==='l'?'淡'+CN[p.a]:p.t==='d'?CN[p.a]+CN[p.b]+'雙色':(CN[k]||k)}
+const isSpecK=k=>{const p=colParts(k);return p.t==='s'||p.t==='l'||p.t==='d'};
+const COLOR_ORDER=['rainbow','starry','crystal','obsidian','gold','blue','pearl','silver','black','plum','crimson','wine','purple','darkgreen','slate','brown','olive','amber','red','orange','pink','lavender','gray','yellow','cream','yellowgreen','green','mint','white'];
+const colOrd=k=>{const p=colParts(k),i=COLOR_ORDER.indexOf(p.a);return (i<0?99:i)+(p.t==='l'?0.3:p.t==='d'?-0.3:0)};
+const ALL_SKINS=(()=>{const out=[...BASIC,...Object.values(MIX15),...SPECIAL,...SPECIAL.map(s=>'l-'+s)];for(let i=0;i<SPECIAL.length;i++)for(let j=i+1;j<SPECIAL.length;j++)out.push('d-'+[SPECIAL[i],SPECIAL[j]].sort().join('-'));return out})();
+const PFN=['條紋','斑點','星點','漸層'];
+const pfName=(f,f2)=>f2==null?PFN[f]:PFN[f]+'＋'+PFN[f2];
+const PF_OLD=[0,1,1,2,3,3];/* 舊花紋形式 條紋、斑點、雲紋、星點、漸層、雙色 → 新編號 */
+// 特殊造型（所有作物）1–6；專屬造型 7–14（各作物一個；14 元寶隨甘藷停用）
 const SPN=['','正方形','三角形','愛心','星形','月牙形','甜甜圈'];
 const EXN={7:'皇冠',8:'鈴鐺',9:'火焰',10:'葫蘆',11:'鑽石',12:'火箭',13:'大樹',14:'元寶'};
-const EX_OF={tomato:7,eggplant:8,chili:9,zucchini:10,pumpkin:10,bittergourd:10,melon:10,strawberry:11,corn:12,broccoli:13,sweetpotato:14};
+const EX_OF={tomato:7,eggplant:8,chili:9,zucchini:10,pumpkin:10,melon:10,strawberry:11,corn:12,broccoli:13};
 const LEGACY_SPN=['','彎曲','雙頭','分節','扁盤','多稜'];
-const spStr=v=>v>=7?100-v:(v?50-v:0);
-const spExpr=sp=>sp[0]&&sp[1]?(spStr(sp[0])>=spStr(sp[1])?sp[0]:sp[1]):0;
-const lvCls=n=>n<=1?0:n<=3?1:n<=5?2:3;
-const isLegacyG=g=>!!g&&!g.sv&&!!(g.sp[0]||g.sp[1]);
+const spExpr=sp=>sp[0]&&sp[0]===sp[1]?sp[0]:0;/* 兩個一樣才會出現，沒有強弱 */
+const lvCls=n=>n<=1?0:n<=3?1:n<=5?2:3;/* 舊版尖因子分類，只用來轉換 */
+const isLegacyG=g=>!!g&&!g.sv&&!!g.sp&&!!(g.sp[0]||g.sp[1]);
 const spType=a=>a.legacy||!a.sp?0:a.sp>=7?2:1;
 const spLabel=v=>v>=7?EXN[v]:SPN[v];
 const SPEC_W=[['silver',22],['pearl',22],['blue',16],['gold',16],['obsidian',9],['crystal',9],['starry',4.5],['rainbow',1.5]];
@@ -546,7 +571,7 @@ const TIERS=['普通','少見','稀有','史詩','傳說','神話'],GERM=[0.9,0.
 const SIZE_N=['迷你','小','中','大','巨大'],PERF_N=['奇異造型','歪斜','良好','完美'];
 const wpk=w=>{let t=w.reduce((s,x)=>s+x[1],0)*rnd();for(const x of w){if((t-=x[1])<0)return x[0]}return w[w.length-1][0]};
 const pk=a=>a[Math.floor(rnd()*a.length)];
-const strongC=(a,b)=>CSTR[a]>=CSTR[b]?a:b;
+const strongC=(a,b)=>CSTR[a]>=CSTR[b]?a:b;/* 舊版顏色強弱，只用來轉換 */
 function numLoci(target,spread=0.22){
   const v=Array.from({length:NUMN},()=>clamp(target+gauss()*spread,0,1));
   const m=v.reduce((s,x)=>s+x,0)/NUMN,d=target-m;
@@ -554,81 +579,75 @@ function numLoci(target,spread=0.22){
 }
 const patSwitch=rare=>{const r=rnd();return rare?(r<.5?[1,1]:[1,0]):(r<.3?[1,1]:r<.7?[1,0]:[0,0])};
 function makeOriginal(o={}){
-  const nP=o.pointed!=null?o.pointed:Math.floor(rnd()*3);
-  const idx=pickIdx(SHN,Math.min(SHN,nP));
+  const bt=o.bt!=null?o.bt:wpk([[0,6],[1,3],[2,2]]);
   const col=o.color||pk(['red','yellow','green','white','purple']);
-  const pf=o.pf!=null?o.pf:Math.floor(rnd()*6);
+  const pf=o.pf!=null?o.pf:Math.floor(rnd()*4);
   const spc=o.specialty||pk(['big','small','prolific']);
   const r=(a,b)=>(a+rnd()*(b-a))/100;
-  const g={sv:2,s:Array.from({length:SHN},(_,i)=>idx.includes(i)?[1,1]:[0,0]),sp:[0,0],pw:patSwitch(o.rare),
-    c1:[col,col],c2:[col,col],pc:[col,col],pf:[pf,pf],n:{}};
+  const g={sv:3,b:[bt,bt],sp:[0,0],pw:patSwitch(o.rare),c:[col,col],pc:[col,col],pf:[pf,pf],n:{}};
   g.n.size=numLoci(spc==='big'?r(65,75):spc==='small'?r(25,35):r(36,64));
-  g.n.perf=numLoci(r(30,60));g.n.speed=numLoci(r(30,60));
-  g.n.yield=numLoci(spc==='prolific'?r(65,75):r(30,60));g.n.vigor=numLoci(spc==='prolific'?r(65,75):r(30,60));
+  g.n.perf=numLoci(r(30,60));
   return g;
 }
 const half=p=>p[rnd()<.5?0:1];
-const OLOCI=['sp','c1','c2','pc','pf'];
-function gamete(g){const o=g.o||{},go={},out={s:g.s.map(half),pw:half(g.pw),n:Object.fromEntries(ABIL.map(k=>[k,g.n[k].map(half)]))};
+const OLOCI=['sp','c','pc','pf'];
+function gamete(g){const o=g.o||{},go={},out={b:half(g.b),pw:half(g.pw),n:{size:g.n.size.map(half),perf:g.n.perf.map(half)}};
   for(const k of OLOCI){const j=rnd()<.5?0:1;out[k]=g[k][j];go[k]=o[k]?o[k][j]||null:null}out.o=go;return out}
-function fuse(a,b){const g={sv:2,s:a.s.map((x,i)=>[x,b.s[i]]),sp:[a.sp,b.sp],pw:[a.pw,b.pw],c1:[a.c1,b.c1],c2:[a.c2,b.c2],pc:[a.pc,b.pc],pf:[a.pf,b.pf],n:Object.fromEntries(ABIL.map(k=>[k,a.n[k].map((x,i)=>[x,b.n[k][i]])]))};
+function fuse(a,b){const g={sv:3,b:[a.b,b.b],sp:[a.sp,b.sp],pw:[a.pw,b.pw],c:[a.c,b.c],pc:[a.pc,b.pc],pf:[a.pf,b.pf],n:{size:a.n.size.map((x,i)=>[x,b.n.size[i]]),perf:a.n.perf.map((x,i)=>[x,b.n.perf[i]])}};
   const ao=a.o||{},bo=b.o||{};if(OLOCI.some(k=>ao[k]||bo[k])){g.o={};for(const k of OLOCI)g.o[k]=[ao[k]||null,bo[k]||null]}return g}
 const clrO=(g,k,j)=>{if(g.o&&g.o[k])g.o[k][j]=null};
-function mutate(g){
+/* 突變（每顆種子）：特殊色 0.2%、特殊造型 0.05%、一般 0.1%（基本色、基本造型類型或大小完美度）；誘變劑 mult=25 */
+function mutRound(g,mult,keepEx){
   let mu=null;const j=rnd()<.5?0:1;
-  if(rnd()<0.002){const k=pk(['c1','c2','pc']);g[k][j]=wpk(SPEC_W);clrO(g,k,j);mu='spec'}
-  if(rnd()<0.0005){g.sp[j]=wpk(SPSH_W);clrO(g,'sp',j);mu=mu||'spsh'}
-  if(rnd()<0.001){
+  if(rnd()<0.002*mult){const k=pk(['c','pc']);g[k][j]=wpk(SPEC_W);clrO(g,k,j);mu='spec'}
+  if(rnd()<0.0005*mult&&!(keepEx&&g.sp[j]>6)){g.sp[j]=wpk(SPSH_W);clrO(g,'sp',j);mu=mu||'spsh'}
+  if(rnd()<0.001*mult){
     const r=rnd();
-    if(r<0.3){const k=pk(['c1','c2','pc']);if(!isSpecC(g[k][j])){g[k][j]=pk(BASIC.filter(c=>c!==g[k][j]));clrO(g,k,j)}}
-    else if(r<0.6){const i=Math.floor(rnd()*SHN);g.s[i][j]^=1}
+    if(r<0.3){const k=pk(['c','pc']);if(!isSpecC(g[k][j])){g[k][j]=pk(BASIC.filter(c=>c!==g[k][j]));clrO(g,k,j)}}
+    else if(r<0.6){g.b[j]=pk([0,1,2].filter(x=>x!==g.b[j]))}
     else{const k=pk(ABIL),i=Math.floor(rnd()*NUMN);g.n[k][i][j]=r3(clamp(g.n[k][i][j]+gauss()*0.2,0,1))}
     mu=mu||'gen';
   }
   return mu;
 }
-/* 14g 誘變劑：再做一次突變判定，機率為平常的 25 倍（特殊色 5%、特殊造型 1.25%、一般 2.5%）；不產生專屬造型，也不會蓋掉已有的專屬造型因子 */
-function mutateX(g){
-  let mu=null;const j=rnd()<.5?0:1;
-  if(rnd()<0.05){const k=pk(['c1','c2','pc']);g[k][j]=wpk(SPEC_W);clrO(g,k,j);mu='spec'}
-  if(rnd()<0.0125&&!(g.sp[j]>6)){g.sp[j]=wpk(SPSH_W);clrO(g,'sp',j);mu=mu||'spsh'}
-  if(rnd()<0.025){
-    const r=rnd();
-    if(r<0.3){const k=pk(['c1','c2','pc']);if(!isSpecC(g[k][j])){g[k][j]=pk(BASIC.filter(c=>c!==g[k][j]));clrO(g,k,j)}}
-    else if(r<0.6){const i=Math.floor(rnd()*SHN);g.s[i][j]^=1}
-    else{const k=pk(ABIL),i=Math.floor(rnd()*NUMN);g.n[k][i][j]=r3(clamp(g.n[k][i][j]+gauss()*0.2,0,1))}
-    mu=mu||'gen';
-  }
-  return mu;
-}
+function mutate(g){return mutRound(g,1,false)}
+/* 14g 誘變劑：再做一次突變判定，機率為平常的 25 倍；不產生專屬造型，也不會蓋掉已有的專屬造型因子 */
+function mutateX(g){return mutRound(g,25,true)}
 function child(m,f){const g=fuse(gamete(m),gamete(f));const mu=mutate(g);return {g,mu}}
 const perfConv=v=>Math.max(0,Math.min(100,Math.round((v-6)/94*100)));
 const abilOf=(g,k)=>{const v=Math.round(g.n[k].reduce((s,p)=>s+p[0]+p[1],0)/(2*NUMN)*100);return k==='perf'?perfConv(v):v};
-function skinOf(c1,c2){const M=strongC(c1[0],c1[1]),S=strongC(c2[0],c2[1]);if(M===S)return M;if(isSpecC(M)||isSpecC(S))return strongC(M,S);return MIXC[[M,S].sort().join('|')]||strongC(M,S)}
 function appParts(g){
-  const n=g.s.reduce((k,p)=>k+(p[0]&&p[1]?1:0),0);
-  const skin=skinOf(g.c1,g.c2),P=strongC(g.pc[0],g.pc[1]),F=Math.min(g.pf[0],g.pf[1]);
-  const pat=(g.pw[0]&&g.pw[1]&&P!==skin)?{c:P,f:F}:null;
-  if(isLegacyG(g))return {legacy:true,level:n,sp:g.sp[0]&&g.sp[1]?Math.min(g.sp[0],g.sp[1]):0,skin,pat};
-  return {level:lvCls(n),sp:spExpr(g.sp),skin,pat};
+  const sp=spExpr(g.sp),level=g.b[0]===g.b[1]?g.b[0]:0,skin=colKey(g.c);
+  let pat=null;if(g.pw[0]&&g.pw[1]){const c=colKey(g.pc),f=Math.min(g.pf[0],g.pf[1]);pat=g.pf[0]===g.pf[1]?{c,f}:{c,f,f2:Math.max(g.pf[0],g.pf[1])}}
+  return {level,sp,skin,pat};
 }
-const appKey=a=>`${a.legacy?(a.sp?'X'+a.sp:'L'+a.level):(a.sp?'S'+a.sp:'B'+a.level)}|${a.skin}|${a.pat?a.pat.c+'/'+a.pat.f:'-'}`;
-function appFromKey(k){const [s,skin,pt]=k.split('|');const pp=pt==='-'?null:pt.split('/'),c=s[0],v=+s.slice(1),leg=c==='L'||c==='X';return {legacy:leg||undefined,level:c==='L'||c==='B'?v:0,sp:c==='X'||c==='S'?v:0,skin,pat:pp?{c:pp[0],f:+pp[1]}:null}}
-// 舊版圖鑑外觀對應到新版：舊 0–4 級依尖因子數歸入新的 4 類；舊愛心、星形與舊特殊造型已絕版
-function legacyMap(k){const c=k[0];if(c!=='L'&&c!=='X')return k;if(c==='X')return null;const n=+k.split('|')[0].slice(1);if(n>=5)return null;return 'B'+lvCls(n)+k.slice(k.indexOf('|'))}
+const patKey=p=>p?p.c+'/'+p.f+(p.f2!=null?'+'+p.f2:''):'-';
+/* 外觀鍵值（v3，小寫開頭）：'b{0-2}' 基本造型、'p{1-14}' 特殊／專屬造型 | 果皮 | 花紋顏色/形式 */
+const appKey=a=>a.legacy?a.okey:`${a.sp?'p'+a.sp:'b'+a.level}|${a.skin}|${patKey(a.pat)}`;
+/* 舊鍵值（大寫開頭）→ 新鍵值：基本造型 4 類 → 3 種（第 1 類→0、第 2 類→1、第 3、4 類→2），花紋形式照 PF_OLD；舊特殊造型 X 已絕版 */
+function keyV3(k){
+  if(!k||typeof k!=='string')return null;const c=k[0];if(c==='b'||c==='p')return k;
+  const parts=k.split('|');if(parts.length<3)return null;const v=+parts[0].slice(1);
+  let s;if(c==='B')s='b'+[0,1,2,2][v];else if(c==='S')s='p'+v;else if(c==='L'){if(v>=5)return null;s='b'+[0,1,2,2][lvCls(v)]}else return null;
+  const pt=parts[2]==='-'?'-':(()=>{const [pc,f]=parts[2].split('/');return pc+'/'+(PF_OLD[+f]??0)})();
+  return s+'|'+parts[1]+'|'+pt;
+}
+const legacyMap=keyV3;
+function appFromKey(k){
+  const nk=keyV3(k);
+  if(!nk){const [s,skin]=String(k).split('|');return {legacy:true,okey:k,level:0,sp:+String(s).slice(1)||0,skin:skin||'white',pat:null}}
+  const [s,skin,pt]=nk.split('|'),c=s[0],v=+s.slice(1);let pat=null;
+  if(pt&&pt!=='-'){const i=pt.lastIndexOf('/'),pc=pt.slice(0,i),fs=pt.slice(i+1).split('+').map(Number);pat=fs.length>1?{c:pc,f:fs[0],f2:fs[1]}:{c:pc,f:fs[0]}}
+  return {level:c==='b'?v:0,sp:c==='p'?v:0,skin,pat};
+}
 const sizeCls=v=>v<=15?0:v<=35?1:v<=64?2:v<=84?3:4;
 const perfCls=v=>v<=5?0:v<=46?1:v<=83?2:3;
-const CSCORE={red:0,yellow:0,green:0,white:1,purple:1,black:2,orange:2,pink:2,lavender:2,yellowgreen:2,silver:6,pearl:6,blue:7,gold:7,obsidian:8,crystal:8,starry:9,rainbow:10};
-// 稀有度（新版）：依外觀條件決定等級，大小與完美度不影響等級
-const MIXSET=new Set(['orange','pink','lavender','yellowgreen']);
+// 稀有度：依外觀條件決定等級，大小與完美度不影響等級。淡特殊色、雙色視同特殊色
 const TIER_BASE=[0,2,4,7,10,14],TIER_W=[2,2,3,3,4,99];
 function rarityOf(a,size,perf){
-  if(a.legacy){let s=a.sp?5:[0,0,1,1,2,3,4][a.level];s+=CSCORE[a.skin];
-    if(a.pat){s+=1+[0,0,1,1,2,2][a.pat.f];if(isSpecC(a.pat.c))s+=CSCORE[a.pat.c]/2}
-    const sc=sizeCls(size),pc=perfCls(perf);if(sc===0||sc===4)s+=1;if(pc===0||pc===3)s+=2;
-    return {score:s,tier:s<=1?0:s<=3?1:s<=6?2:s<=9?3:s<=13?4:5}}
-  const ex=a.sp>=7,spc=a.sp>=1&&a.sp<=6,skinS=isSpecC(a.skin),patS=!!(a.pat&&isSpecC(a.pat.c)),colS=skinS||patS;
-  const f=(a.pat?1:0)+(MIXSET.has(a.skin)?1:0)+(a.skin==='black'?1:0)+(!a.sp&&a.level>=2?1:0);
+  if(a.legacy)return {score:0,tier:0};
+  const ex=a.sp>=7,spc=a.sp>=1&&a.sp<=6,skinS=isSpecK(a.skin),patS=!!(a.pat&&isSpecK(a.pat.c)),colS=skinS||patS;
+  const f=(a.pat?1:0)+(MIXSET.has(a.skin)?1:0)+(a.skin==='black'?1:0)+(!a.sp&&a.level>=1?1:0);
   let t=0;
   if((ex&&colS)||(spc&&skinS&&patS))t=5;
   else if(ex||(spc&&colS))t=4;
@@ -638,35 +657,45 @@ function rarityOf(a,size,perf){
   return {score:TIER_BASE[t]+Math.min(f,TIER_W[t]-1),tier:t};
 }
 
-function shapeNameOf(a,crop){const cd=CROPS[crop]||CROPS.tomato;if(a.legacy)return a.sp?LEGACY_SPN[a.sp]:cd.oldShapes[a.level];return a.sp?spLabel(a.sp):cd.shapes[a.level]}
-function colorLabelA(a){return a.pat?`${CN[a.skin]}皮・${CN[a.pat.c]}色${PFN[a.pat.f]}`:`${CN[a.skin]}色`}
+function shapeNameOf(a,crop){const cd=CROPS[crop]||CROPS.tomato;if(a.legacy)return a.sp?(LEGACY_SPN[a.sp]||spLabel(a.sp)||'舊造型'):'舊造型';return a.sp?spLabel(a.sp):cd.shapes[a.level]}
+function colorLabelA(a){return a.pat?`${cnOf(a.skin)}皮・${cnOf(a.pat.c)}色${pfName(a.pat.f,a.pat.f2)}`:`${cnOf(a.skin)}色`}
 function locusDist(a,b){const o=new Map();for(const x of a)for(const y of b){const k=JSON.stringify([x,y]);o.set(k,(o.get(k)||0)+0.25)}return [...o].map(([k,p])=>[JSON.parse(k),p])}
 function offspringDist(m,f){
-  let lv=[1];for(let i=0;i<SHN;i++){const p=(m.s[i].filter(x=>x).length/2)*(f.s[i].filter(x=>x).length/2);const n=Array(lv.length+1).fill(0);lv.forEach((q,k)=>{n[k]+=q*(1-p);n[k+1]+=q*p});lv=n}
-  const shapeP=new Map();
-  const leg=isLegacyG(m)||isLegacyG(f);
-  for(const [sp,ps] of locusDist(m.sp,f.sp)){const e=leg?(sp[0]&&sp[1]?Math.min(sp[0],sp[1]):0):spExpr(sp);const sk=e?(leg?'X':'S')+e:null;if(sk)shapeP.set(sk,(shapeP.get(sk)||0)+ps);else lv.forEach((q,k)=>{if(q){const bk=leg?'L'+k:'B'+lvCls(k);shapeP.set(bk,(shapeP.get(bk)||0)+ps*q)}})}
+  const add=(map,k,p)=>{if(p>0)map.set(k,(map.get(k)||0)+p)};
+  const shapeP=new Map(),bD=locusDist(m.b,f.b);
+  for(const [sp,ps] of locusDist(m.sp,f.sp)){const e=spExpr(sp);if(e)add(shapeP,'p'+e,ps);else for(const [b,pb] of bD)add(shapeP,'b'+(b[0]===b[1]?b[0]:0),ps*pb)}
   const pwOn=locusDist(m.pw,f.pw).reduce((s,[z,p])=>s+(z[0]&&z[1]?p:0),0);
-  const colP=new Map(),add=(k,p)=>{if(p>0)colP.set(k,(colP.get(k)||0)+p)};
-  const c1=locusDist(m.c1,f.c1),c2=locusDist(m.c2,f.c2),pc=locusDist(m.pc,f.pc),pf=locusDist(m.pf,f.pf);
-  for(const [a,pa] of c1)for(const [b,pb] of c2){const skin=skinOf(a,b);for(const [c,pcp] of pc){const P=strongC(c[0],c[1]),q=pa*pb*pcp;
-    if(P===skin){add(skin+'|-',q);continue}
-    add(skin+'|-',q*(1-pwOn));for(const [d,pd] of pf)add(`${skin}|${P}/${Math.min(d[0],d[1])}`,q*pwOn*pd)}}
+  const skins=new Map();for(const [c,p] of locusDist(m.c,f.c))add(skins,colKey(c),p);
+  const pats=new Map();for(const [c,p] of locusDist(m.pc,f.pc))for(const [d,q] of locusDist(m.pf,f.pf)){const fa=Math.min(d[0],d[1]);add(pats,patKey(d[0]===d[1]?{c:colKey(c),f:fa}:{c:colKey(c),f:fa,f2:Math.max(d[0],d[1])}),p*q)}
+  const colP=new Map();for(const [sk,p] of skins){add(colP,sk+'|-',p*(1-pwOn));for(const [pt,q] of pats)add(colP,sk+'|'+pt,p*pwOn*q)}
   const out=new Map();for(const [s,p1] of shapeP)for(const [c,p2] of colP)out.set(s+'|'+c,(out.get(s+'|'+c)||0)+p1*p2);
   return out;
 }
 function gdist(a,b){
   let d=0,n=0;const disc=(x,y)=>{d+=(x[0]===y[0]&&x[1]===y[1])||(x[0]===y[1]&&x[1]===y[0])?0:(x.includes(y[0])||x.includes(y[1]))?0.5:1;n++};
-  a.s.forEach((p,i)=>disc(p,b.s[i]));['sp','pw','c1','c2','pc','pf'].forEach(k=>disc(a[k],b[k]));
+  ['b','sp','pw','c','pc','pf'].forEach(k=>disc(a[k],b[k]));
   for(const k of ABIL){d+=Math.abs(abilOf(a,k)-abilOf(b,k))/100;n++}
   return d/n;
+}
+/* 舊基因型（v1、v2）→ v3。crop＝這個基因型所屬的作物，用來處理遠緣來源（苦瓜、甘藷改成作物本身） */
+function geno3(g,crop){
+  if(!g||typeof g!=='object')return g;if(g.sv===3&&Array.isArray(g.b))return g;
+  if(!Array.isArray(g.s)||!Array.isArray(g.c1)||!Array.isArray(g.c2))return g;
+  const nP=g.s.reduce((k,p)=>k+(p[0]&&p[1]?1:0),0),bt=[0,1,2,2][lvCls(nP)];
+  const M=strongC(g.c1[0],g.c1[1]),S=strongC(g.c2[0],g.c2[1]);
+  const fixO=c=>{if(!c)return null;if(c==='bittergourd'||c==='sweetpotato')return null;return c===crop?null:c};
+  const out={sv:3,b:[bt,bt],sp:isLegacyG(g)?[0,0]:[g.sp[0]|0,g.sp[1]|0],pw:[g.pw[0]?1:0,g.pw[1]?1:0],c:[M,S],pc:g.pc.slice(),pf:g.pf.map(f=>PF_OLD[f]??0),n:{size:g.n.size,perf:g.n.perf}};
+  if(g.o){const pick=(o,pair,val)=>o?(o[pair[0]===val?0:1]||null):null;
+    const o={sp:(g.o.sp||[null,null]).map(fixO),c:[pick(g.o.c1,g.c1,M),pick(g.o.c2,g.c2,S)].map(fixO),pc:(g.o.pc||[null,null]).map(fixO),pf:(g.o.pf||[null,null]).map(fixO)};
+    if(OLOCI.some(k=>o[k][0]||o[k][1]))out.o=o}
+  return out;
 }
 const phCache=new WeakMap();
 function phen(g,crop='tomato'){
   const hit=phCache.get(g);if(hit&&hit.crop===crop)return hit.ph;
   const a=appParts(g),ab_=Object.fromEntries(ABIL.map(k=>[k,abilOf(g,k)])),r=rarityOf(a,ab_.size,ab_.perf),key=appKey(a);
   const ph={...a,key,ab:ab_,tier:r.tier,score:r.score,sizeCls:sizeCls(ab_.size),perfCls:perfCls(ab_.perf),
-    shapeName:shapeNameOf(a,crop),cname:CN[a.skin],germ:GERM[r.tier],seedBase:SEEDB[r.tier],
+    shapeName:shapeNameOf(a,crop),cname:cnOf(a.skin),germ:GERM[r.tier],seedBase:SEEDB[r.tier],
     harvests:3,yBonus:2,/* 生命力、產量已移除，固定為採收 3 次、取種多 2 顆 */
     seed:hashStr(JSON.stringify(g.n.perf).slice(0,60))};
   let st=null;Object.defineProperty(ph,'stab',{get(){if(st==null)st=offspringDist(g,g).get(key)||0;return st}});
@@ -693,15 +722,15 @@ function distHTML(d,crop,label,open){
 }
 const OLD_SHAPES={
   tomato:['扁圓','圓球','微尖','水滴','水滴心形','愛心','星形'],strawberry:['扁扇','圓球','短錐','圓錐','長錐','愛心','星形'],
-  zucchini:['短胖','長棒','尖棒','紡錘','尖紡錘','心形','星形'],bittergourd:['短圓','紡錘','尖紡錘','細長','尖細長','心形','星形'],
+  zucchini:['短胖','長棒','尖棒','紡錘','尖紡錘','心形','星形'],
   corn:['短胖','圓柱','微錐','錐形','尖錐','心形','星形'],broccoli:['扁平','圓頂','微尖','尖頂','尖塔','愛心','星形'],
-  sweetpotato:['圓球','紡錘','微尖','尖紡錘','長尖','心形','星形'],melon:['扁圓','圓球','橢圓','微尖','水滴','愛心','星形'],
+  melon:['扁圓','圓球','橢圓','微尖','水滴','愛心','星形'],
   chili:['櫻桃','燈籠','短角','長角','尖角','愛心','星形'],pumpkin:['扁圓','圓球','微尖','水滴','水滴心形','愛心','星形'],
   eggplant:['圓球','蛋形','微尖','長條','尖長條','愛心','星形']};
 const BASE_SHAPES={
-  tomato:['扁圓','圓球','桃尖','長尖'],strawberry:['扁圓','圓錐','長錐','細長錐'],zucchini:['短胖','長棒','尖棒','細長尖'],bittergourd:['短圓','紡錘','長紡錘','細長尖'],
-  corn:['短胖','圓柱','錐形','細長錐'],broccoli:['扁平','圓頂','尖頂','尖塔'],sweetpotato:['圓球','紡錘','長紡錘','細長'],melon:['扁圓','圓球','橢圓','長橢圓'],
-  chili:['櫻桃','燈籠','短角','長角'],pumpkin:['扁圓','圓球','橢圓','長筒'],eggplant:['圓球','蛋形','長條','細長條']};
+  tomato:['圓形','扁圓','長橢圓'],chili:['長角椒','燈籠椒','小尖椒'],strawberry:['圓錐','楔形','圓球'],eggplant:['長茄','圓茄','蛋形'],
+  corn:['長穗','短胖穗','小爆裂玉米'],pumpkin:['圓南瓜','扁南瓜','飛碟瓜'],melon:['圓形網紋','橢圓','長形'],broccoli:['花椰菜','青花菜','甘藍球'],
+  zucchini:['長棒','圓櫛瓜','彎頸瓜']};
 for(const k in OLD_SHAPES)CROPS[k].oldShapes=OLD_SHAPES[k];
 for(const k in BASE_SHAPES)CROPS[k].shapes=BASE_SHAPES[k];
 
@@ -715,8 +744,10 @@ function genName(crop,used){
 let state=null,uiCrop='all';
 const lc=l=>l.seeds?l.seeds.length:l.zs?l.zs.n:(l.count||0);
 // ===== 種原庫壓縮：每個位置建立對偶基因字典，每顆種子只記索引（位元打包），可完全還原 =====
-function gFlat(g){const a=[];for(const p of g.s)a.push(p[0],p[1]);for(const k of ['sp','pw','c1','c2','pc','pf'])a.push(g[k][0],g[k][1]);for(const k of ABIL)for(const p of g.n[k])a.push(p[0],p[1]);a.push(g.sv||0);for(const k of OLOCI){const o=g.o&&g.o[k];a.push(o?o[0]||null:null,o?o[1]||null:null)}return a}
-function gUnflat(a){let i=0;const g={s:[],n:{}};for(let k=0;k<SHN;k++)g.s.push([a[i++],a[i++]]);for(const k of ['sp','pw','c1','c2','pc','pf'])g[k]=[a[i++],a[i++]];for(const k of ABIL){g.n[k]=[];for(let q=0;q<NUMN;q++)g.n[k].push([a[i++],a[i++]])}const sv=a[i++];if(sv)g.sv=sv;const o={};let has=false;for(const k of OLOCI){o[k]=[a[i++],a[i++]];if(o[k][0]||o[k][1])has=true}if(has)g.o=o;return g}
+function gFlat(g){const a=[];for(const k of ['b','sp','pw','c','pc','pf'])a.push(g[k][0],g[k][1]);for(const k of ABIL)for(const p of g.n[k])a.push(p[0],p[1]);for(const k of OLOCI){const o=g.o&&g.o[k];a.push(o?o[0]||null:null,o?o[1]||null:null)}return a}
+function gUnflat(a){let i=0;const g={sv:3,n:{}};for(const k of ['b','sp','pw','c','pc','pf'])g[k]=[a[i++],a[i++]];for(const k of ABIL){g.n[k]=[];for(let q=0;q<NUMN;q++)g.n[k].push([a[i++],a[i++]])}const o={};let has=false;for(const k of OLOCI){o[k]=[a[i++],a[i++]];if(o[k][0]||o[k][1])has=true}if(has)g.o=o;return g}
+/* 舊版（14k 以前）壓縮格式還原，只在遷移時用 */
+function gUnflatOld(a){let i=0;const g={s:[],n:{}};for(let k=0;k<SHN;k++)g.s.push([a[i++],a[i++]]);for(const k of ['sp','pw','c1','c2','pc','pf'])g[k]=[a[i++],a[i++]];for(const k of ABIL_OLD){g.n[k]=[];for(let q=0;q<NUMN;q++)g.n[k].push([a[i++],a[i++]])}const sv=a[i++];if(sv)g.sv=sv;const o={};let has=false;for(const k of OLOCI_OLD){o[k]=[a[i++],a[i++]];if(o[k][0]||o[k][1])has=true}if(has)g.o=o;return g}
 const zbits=n=>n<=1?0:Math.ceil(Math.log2(n));
 function zipSeeds(seeds){
   const F=seeds.map(gFlat),P=F[0].length,pools=[],idx=[];
@@ -724,12 +755,12 @@ function zipSeeds(seeds){
   const bits=pools.map(x=>zbits(x.length)),per=bits.reduce((a,b)=>a+b,0),buf=new Uint8Array(Math.ceil(per*F.length/8));let pos=0;
   for(const f of F)for(let p=0;p<P;p++){const b=bits[p];if(!b)continue;const v=idx[p].get(JSON.stringify(f[p]));for(let k=b-1;k>=0;k--){if((v>>k)&1)buf[pos>>3]|=1<<(7-(pos&7));pos++}}
   let bin='';for(let i=0;i<buf.length;i++)bin+=String.fromCharCode(buf[i]);
-  return {v:1,n:F.length,p:pools,b:btoa(bin)};
+  return {v:3,n:F.length,p:pools,b:btoa(bin)};
 }
 function unzipSeeds(z){
   const bin=atob(z.b),buf=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)buf[i]=bin.charCodeAt(i);
   const bits=z.p.map(x=>zbits(x.length)),out=[];let pos=0;
-  for(let s=0;s<z.n;s++){const a=[];for(let p=0;p<z.p.length;p++){const b=bits[p];let v=0;for(let k=0;k<b;k++){v=(v<<1)|((buf[pos>>3]>>(7-(pos&7)))&1);pos++}a.push(z.p[p][v])}out.push(gUnflat(a))}
+  for(let s=0;s<z.n;s++){const a=[];for(let p=0;p<z.p.length;p++){const b=bits[p];let v=0;for(let k=0;k<b;k++){v=(v<<1)|((buf[pos>>3]>>(7-(pos&7)))&1);pos++}a.push(z.p[p][v])}out.push(z.v===3?gUnflat(a):gUnflatOld(a))}
   return out;
 }
 // 包內索引：實際的外觀與顆數、能力值範圍、大小與完美度等級，查詢時不需要解壓縮
@@ -744,7 +775,7 @@ function zipLot(l){
     if(byteLen(JSON.stringify(z))>=byteLen(packState(l.seeds))){l.znz=l.seeds.length;return}delete l.znz;
     l.zi=packIndex(l);l.zs=z;delete l.seeds}catch(e){}
 }
-function unzipLot(l){if(!l||!l.zs)return;l.seeds=unzipSeeds(l.zs);delete l.zs;delete l.zi}
+function unzipLot(l){if(!l||!l.zs)return;l.seeds=unzipSeeds(l.zs).map(g=>geno3(g,l.crop));delete l.zs;delete l.zi}
 function zipPass(){if(!state)return;for(const l of state.lots)unzipLot(l);for(const c of vaultCabs())for(const l of c.lots)zipLot(l)}
 // 包內實際外觀（壓縮的讀索引；逐顆記錄的直接計算；只記顆數的用理論機率）
 function packKeys(l){
@@ -753,11 +784,10 @@ function packKeys(l){
   return lotDist(l).map(x=>({key:x.key,p:x.p}));
 }
 function drawSeed(l){if(l.zs)unzipLot(l);if(l.seeds&&l.seeds.length)return l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0];l.count--;return child(l.m,l.f).g}
-function newGame(){state={vault:[],v:4,mapV:MAPV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1}}
-const WILD={tomato:'red',strawberry:'red',zucchini:'green',bittergourd:'green',corn:'yellow',broccoli:'white',sweetpotato:'purple',melon:'yellow',chili:'red',pumpkin:'orange',eggplant:'purple'};
+function newGame(){state={vault:[],v:4,mapV:MAPV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3}}
+const WILD={tomato:'red',strawberry:'red',zucchini:'green',corn:'yellow',broccoli:'white',melon:'yellow',chili:'red',pumpkin:'yellow',eggplant:'purple'};
 function originalFor(crop){
   const wild=rnd()<0.7,col=wild?WILD[crop]:pk(['red','yellow','green','white','purple'].filter(c=>c!==WILD[crop]));
-  if(col==='orange'){const g=makeOriginal({color:'red'});g.c2=['yellow','yellow'];g.pc=['red','red'];g.pw=[0,0];return {g,wild}}
   return {g:makeOriginal({color:col}),wild};
 }
 function ensureCrops(){
@@ -782,7 +812,7 @@ const RESCUE_N=5;
 function rescueLot(l,cab){
   unzipLot(l);
   const n=Math.min(RESCUE_N,lc(l)),nP=Math.floor(rnd()*6),idx=pickIdx(SHN,nP);
-  const fix=g=>{const x=clone(g);x.sv=2;x.sp=[0,0];delete x.o;x.s=Array.from({length:SHN},(_,i)=>idx.includes(i)?[1,1]:[0,0]);return x};
+  const bt=Math.floor(rnd()*3),fix=g=>{const x=clone(geno3(g,l.crop));x.sp=[0,0];delete x.o;x.b=[bt,bt];return x};
   const raw=[];for(let k=0;k<n;k++){if(l.seeds&&l.seeds.length)raw.push(l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0]);else{l.count--;raw.push(fuse(gamete(l.m),gamete(l.f)))}}
   if(!lc(l))cab.lots=cab.lots.filter(x=>x!==l);
   const m=fix(l.m),f=fix(l.f),seeds=raw.map(fix),ph=phen(m,l.crop),name=(l.name.replace(/・救回$/,'')+'・救回').slice(0,12);
@@ -819,9 +849,39 @@ function shapeMigrate(){
 function isOldFert(k){return /^[gy][1-3]$/.test(k)}
 function oldFertCoin(k){return [0,20,50,100][+k[1]]}
 function convOldFert(it){if(!it)return 0;let c=0;for(const k of Object.keys(it))if(isOldFert(k)){c+=Math.max(0,it[k]|0)*oldFertCoin(k);delete it[k]}return c}
+/* 14l：遺傳規則改版＋作物精簡的一次性遷移（旗標 geneV=3，newGame 同步）。所有基因型轉成 v3；苦瓜、甘藷換成金幣（作物定義已刪除） */
+const DEAD_CROPS=['bittergourd','sweetpotato'],DEAD_PRICE={bittergourd:13,sweetpotato:22};
+const deadSeedVal=(g,crop)=>{try{return Math.max(1,Math.round(DEAD_PRICE[crop]*0.3*(1+0.6*phen(g,'tomato').tier)))}catch(e){return 1}};
+const deadFruitVal=(g,crop)=>{try{const ph=phen(g,'tomato');return Math.round(DEAD_PRICE[crop]*5*(0.6+0.8*ph.ab.size/100)*(1+0.3*ph.tier))}catch(e){return 1}};
+function geneMigrate(o){
+  if(o.geneV===3)return;
+  let coins=0,nLot=0,nPl=0;const dead=c=>DEAD_CROPS.includes(c);
+  const cvLot=l=>{if(!l)return;if(l.zs){try{l.seeds=unzipSeeds(l.zs)}catch(e){}delete l.zs;delete l.zi;delete l.znz}
+    const cr=l.crop;l.m=geno3(l.m,cr);l.f=geno3(l.f||l.m,cr);if(Array.isArray(l.seeds))l.seeds=l.seeds.map(g=>geno3(g,cr))};
+  const cvPlant=p=>{const cr=p.crop;p.g=geno3(p.g,cr);if(p.m)p.m=geno3(p.m,cr);
+    if(p.pollen&&p.pollen.fatherG)p.pollen.fatherG=geno3(p.pollen.fatherG,p.pollen.fatherCrop||cr)};
+  const lotVal=l=>{try{return deadSeedVal(l.m,l.crop)*lc(l)}catch(e){return 0}};
+  o.lots=(o.lots||[]).filter(l=>{cvLot(l);if(dead(l.crop)){coins+=lotVal(l);nLot++;return false}return true});
+  for(const c of (o.vault||[])){c.lots=(c.lots||[]).filter(l=>{cvLot(l);if(dead(l.crop)){coins+=lotVal(l);nLot++;return false}return true})}
+  if(Array.isArray(o.vault))o.vault=o.vault.filter(c=>!dead(c.crop));
+  o.plots=(o.plots||[]).map(p=>{if(!p)return p;cvPlant(p);if(dead(p.crop)){coins+=deadFruitVal(p.g,p.crop);nPl++;return null}return p});
+  if(Array.isArray(o.trash))o.trash=o.trash.filter(t=>{if(!t||!t.plant)return false;cvPlant(t.plant);if(dead(t.plant.crop)){coins+=deadFruitVal(t.plant.g,t.plant.crop);nPl++;return false}return true});
+  if(o.tray&&Array.isArray(o.tray.cells)){const S=o.tray.srcs||[],oc=S.map(x=>x&&x.crop);
+    S.forEach(x=>{if(!x)return;x.m=geno3(x.m,x.crop);if(x.f)x.f=geno3(x.f,x.crop)});
+    o.tray.cells=o.tray.cells.filter(c=>{const cr=oc[c.s];c.g=geno3(c.g,cr);if(dead(cr)){coins+=deadSeedVal(c.g,cr);nPl++;return false}return true})}
+  if(Array.isArray(o.specs)){o.specs=o.specs.filter(e=>!dead(e.crop));o.specs.forEach(e=>{const k=keyV3(e.key);if(k)e.key=k})}
+  if(o.seen){for(const c of DEAD_CROPS)delete o.seen[c];for(const c of Object.keys(o.seen))if(Array.isArray(o.seen[c]))o.seen[c]=[...new Set(o.seen[c].map(k=>keyV3(k)||k))]}
+  if(Array.isArray(o.given))o.given=o.given.filter(c=>!dead(c));
+  const cvCond=c=>{if(!c)return;if(c.minLevel!=null){c.bt=c.minLevel>=2?2:1;delete c.minLevel}};
+  if(o.daily&&Array.isArray(o.daily.list)){if(o.daily.list.some(x=>x.c&&dead(x.c.crop)))delete o.daily;else o.daily.list.forEach(x=>cvCond(x.c))}
+  if(o.weekly&&o.weekly.c)cvCond(o.weekly.c);
+  o.shapeV=2;o.cleanV=1;o.geneV=3;
+  if(coins||nLot||nPl){o.coins=(o.coins||0)+coins;o._cropMsg={coins,nLot,nPl}}
+}
 function migrate(o){
   if(!o.nextLid)o.nextLid=1;if(!o.counts)o.counts={};
   while(o.plots.length<64)o.plots.push(null);
+  geneMigrate(o);
   if(!o.selfC)o.selfC={};
   if(!o.items)o.items={};
   if(!Array.isArray(o.specs))o.specs=[];if(o.specimens)delete o.specimens;/* 14i：舊版標本（已移除的功能）直接清掉；新標本在 o.specs */
@@ -885,13 +945,14 @@ function gdec(t){
   const g={s:[],n:{}};let i=0;const d=()=>+t[i++];
   for(let k=0;k<SHN;k++)g.s.push([d(),d()]);g.sp=[d(),d()];g.pw=[d(),d()];
   const c=()=>GCOLS[parseInt(t[i++],36)];g.c1=[c(),c()];g.c2=[c(),c()];g.pc=[c(),c()];g.pf=[d(),d()];
-  for(const k of ABIL){g.n[k]=[];for(let q=0;q<NUMN;q++){const a=parseInt(t.substr(i,2),36)/1000,b=parseInt(t.substr(i+2,2),36)/1000;i+=4;g.n[k].push([a,b])}}
+  for(const k of ABIL_OLD){g.n[k]=[];for(let q=0;q<NUMN;q++){const a=parseInt(t.substr(i,2),36)/1000,b=parseInt(t.substr(i+2,2),36)/1000;i+=4;g.n[k].push([a,b])}}
   return g;
 }
-const GLEN=SHN*2+2+2+6+2+ABIL.length*NUMN*4;
+const ABIL_OLD=['size','perf','speed','yield','vigor'],OLOCI_OLD=['sp','c1','c2','pc','pf'];/* 舊格式（G:、H:）只用來讀取舊存檔 */
+const GLEN=SHN*2+2+2+6+2+ABIL_OLD.length*NUMN*4;
 // 新版格式 H：另外記錄新版造型標記（sv）、造型值（36 進位）與遠緣導入的來源作物
 const OCROPS=['tomato','strawberry','zucchini','bittergourd','corn','broccoli','sweetpotato','melon','chili','pumpkin','eggplant'];
-const HLEN=GLEN+1+OLOCI.length*2;
+const HLEN=GLEN+1+OLOCI_OLD.length*2;
 const needH=v=>(v.sv&&(v.sp[0]||v.sp[1]))||v.sp[0]>9||v.sp[1]>9||(v.o&&OLOCI.some(k=>v.o[k]&&(v.o[k][0]||v.o[k][1])));
 function genc2(g){
   let t=g.s.map(p=>''+p[0]+p[1]).join('')+g.sp.map(x=>(+x).toString(36)).join('')+g.pw.join('')+[...g.c1,...g.c2,...g.pc].map(c=>GCOLS.indexOf(c).toString(36)).join('')+g.pf.join('');
@@ -903,26 +964,41 @@ function genc2(g){
 function gdec2(t){
   const g=gdec(t.slice(0,GLEN));g.sp=[parseInt(t[SHN*2],36),parseInt(t[SHN*2+1],36)];
   let i=GLEN;if(t[i++]==='2')g.sv=2;
-  let has=false;const o={};for(const k of OLOCI){o[k]=[];for(const j of [0,1]){const c=t[i++],ix=parseInt(c,36);o[k].push(ix>0?OCROPS[ix-1]:null);if(ix>0)has=true}}
+  let has=false;const o={};for(const k of OLOCI_OLD){o[k]=[];for(const j of [0,1]){const c=t[i++],ix=parseInt(c,36);o[k].push(ix>0?OCROPS[ix-1]:null);if(ix>0)has=true}}
   if(has)g.o=o;return g;
 }
-function gReplacer(k,v){if(v&&typeof v==='object'&&v.s&&v.n&&v.c1&&v.pw){try{if(needH(v)){const t=genc2(v);if(t.length===HLEN&&!t.includes('-'))return 'H:'+t}else{const t=genc(v);if(t.length===GLEN&&!t.includes('-'))return 'G:'+t}}catch(e){}}return v}
-function gReviver(k,v){return typeof v==='string'?(v.length===GLEN+2&&v.startsWith('G:')?gdec(v.slice(2)):v.length===HLEN+2&&v.startsWith('H:')?gdec2(v.slice(2)):v):v}
+/* 14l 新格式 K：v3 基因型（b、sp、pw、c、pc、pf、大小與完美度各 10 組、遠緣來源） */
+const GLEN3=2+2+2+4+2+ABIL.length*NUMN*4+OLOCI.length*2;
+function genc3(g){
+  let t=g.b.join('')+g.sp.map(x=>(+x).toString(36)).join('')+g.pw.join('')+[...g.c,...g.pc].map(c=>GCOLS.indexOf(c).toString(36)).join('')+g.pf.join('');
+  for(const k of ABIL)for(const p of g.n[k])for(const v of p)t+=Math.round(v*1000).toString(36).padStart(2,'0');
+  for(const k of OLOCI)for(const j of [0,1]){const c=g.o&&g.o[k]?g.o[k][j]:null,ix=c?OCROPS.indexOf(c):-1;t+=ix>=0?(ix+1).toString(36):'0'}
+  return t;
+}
+function gdec3(t){
+  let i=0;const d=()=>+t[i++],b36=()=>parseInt(t[i++],36),col=()=>GCOLS[parseInt(t[i++],36)];
+  const g={sv:3,b:[d(),d()],sp:[b36(),b36()],pw:[d(),d()]};g.c=[col(),col()];g.pc=[col(),col()];g.pf=[d(),d()];g.n={};
+  for(const k of ABIL){g.n[k]=[];for(let q=0;q<NUMN;q++){const a=parseInt(t.substr(i,2),36)/1000,b=parseInt(t.substr(i+2,2),36)/1000;i+=4;g.n[k].push([a,b])}}
+  let has=false;const o={};for(const k of OLOCI){o[k]=[];for(const j of [0,1]){const ix=parseInt(t[i++],36);o[k].push(ix>0?OCROPS[ix-1]:null);if(ix>0)has=true}}if(has)g.o=o;
+  return g;
+}
+function gReplacer(k,v){if(v&&typeof v==='object'&&v.sv===3&&Array.isArray(v.b)&&v.n&&v.c&&v.pw){try{const t=genc3(v);if(t.length===GLEN3&&!t.includes('-'))return 'K:'+t}catch(e){}return v}if(v&&typeof v==='object'&&v.s&&v.n&&v.c1&&v.pw){try{if(needH(v)){const t=genc2(v);if(t.length===HLEN&&!t.includes('-'))return 'H:'+t}else{const t=genc(v);if(t.length===GLEN&&!t.includes('-'))return 'G:'+t}}catch(e){}}return v}
+function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsWith('K:')?gdec3(v.slice(2)):v.length===GLEN+2&&v.startsWith('G:')?gdec(v.slice(2)):v.length===HLEN+2&&v.startsWith('H:')?gdec2(v.slice(2)):v):v}
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-14k';
+const BUILD='2026-11-14l';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
-  if(!g||typeof g!=='object')return false;
-  if(!Array.isArray(g.s)||g.s.length!==SHN||!g.s.every(isPair))return false;
-  for(const k of ['sp','pw','c1','c2','pc','pf'])if(!isPair(g[k]))return false;
-  if(![...g.c1,...g.c2,...g.pc].every(c=>CSTR[c]))return false;
+  if(!g||typeof g!=='object'||g.sv!==3)return false;
+  for(const k of ['b','sp','pw','c','pc','pf'])if(!isPair(g[k]))return false;
+  if(![...g.c,...g.pc].every(c=>CSTR[c]))return false;
+  if(!g.b.every(x=>x===0||x===1||x===2)||!g.pf.every(x=>x>=0&&x<=3))return false;
   if(!g.n||typeof g.n!=='object')return false;
   for(const k of ABIL){const a=g.n[k];if(!Array.isArray(a)||a.length!==NUMN||!a.every(p=>isPair(p)&&typeof p[0]==='number'&&typeof p[1]==='number'))return false}
   return true;
 }
-function fixGeno(g){if(typeof g==='string'){try{if(g.startsWith('G:')&&g.length===GLEN+2)g=gdec(g.slice(2));else if(g.startsWith('H:')&&g.length===HLEN+2)g=gdec2(g.slice(2))}catch(e){return null}}return isGeno(g)?g:null}
+function fixGeno(g,crop){if(typeof g==='string'){try{if(g.startsWith('K:')&&g.length===GLEN3+2)g=gdec3(g.slice(2));else if(g.startsWith('G:')&&g.length===GLEN+2)g=gdec(g.slice(2));else if(g.startsWith('H:')&&g.length===HLEN+2)g=gdec2(g.slice(2))}catch(e){return null}}try{g=geno3(g,crop)}catch(e){return null}return isGeno(g)?g:null}
 function repairState(o){
   const rep_={lots:[],seeds:0,fathers:0,plants:0};
   if(!o||!Array.isArray(o.lots))return rep_;
@@ -1015,7 +1091,7 @@ function sortReg(){regList.sort((a,b)=>tms(a.at)-tms(b.at));const seen=new Set()
 function fixRights(){for(const r of rightsList){r.akey=r.app?legacyMap(r.app):null;r.obs=!r.akey}}
 function obsPh(r){const a=appFromKey(r.app);return {...a,key:r.app,tier:r.tier||0,score:0,shapeName:shapeNameOf(a,r.crop),cname:CN[a.skin],perfCls:2,sizeCls:2,seed:7,ab:{size:50,perf:50,speed:50,yield:50,vigor:50}}}
 const gCache=new Map();
-function regG(r){if(!gCache.has(r.id||r.name))gCache.set(r.id||r.name,JSON.parse(r.g));return gCache.get(r.id||r.name)}
+function regG(r){if(!gCache.has(r.id||r.name))gCache.set(r.id||r.name,geno3(JSON.parse(r.g),r.crop));return gCache.get(r.id||r.name)}
 function findVariety(crop,key){return regList.find(r=>r.crop===crop&&!r.obs&&(r.akey||r.app)===key)}
 async function registerOriginals(list,label='原始品種'){
   for(const o of list){
@@ -1028,15 +1104,21 @@ async function registerOriginals(list,label='原始品種'){
 function startListeners(){
   stopListeners();
   unsubs.push(db.collection('registry').onSnapshot(snap=>{
-    regList=snap.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.v===4);sortReg();renderDex();
+    regList=snap.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.v===4&&CROPS[r.crop]);sortReg();renderDex();
     if(sheet&&!(document.activeElement&&document.activeElement.id==='regName'))renderSheet();
   },()=>{}));
   unsubs.push(db.collection('news').orderBy('at','desc').limit(20).onSnapshot(snap=>{onNews(snap.docs.map(d=>({id:d.id,...d.data()})))},()=>{}));
-  unsubs.push(db.collection('boards').onSnapshot(snap=>{boardsList=snap.docs.map(d=>({id:d.id,...d.data()})).filter(e=>e.v===4);if(curPanel==='dex'&&(dexTab==='boards'||dexTab==='rank'||dexTab==='me'))renderDex()},()=>{}));
+  unsubs.push(db.collection('boards').onSnapshot(snap=>{boardsList=snap.docs.map(d=>({id:d.id,...d.data()})).filter(e=>e.v===4&&CROPS[e.crop]);if(curPanel==='dex'&&(dexTab==='boards'||dexTab==='rank'||dexTab==='me'))renderDex()},()=>{}));
   /* 14i：不再監聽整個 rights 集合（品種權已由標本取代），只查一次自己還沒領的舊品種權轉手收入 */
   db.collection('rights').where('payouts.'+uid,'>',0).get().then(qs=>{payRights=qs.docs.map(d=>({id:d.id,...d.data()}));collectPayouts()}).catch(()=>{});
   unsubs.push(db.collection('listings').onSnapshot(snap=>{snap.docs.forEach(d=>{const x=d.data();if(x.kind==='spec'&&x.sellerUid===uid&&!x.sold)d.ref.delete().catch(()=>{})});
-  listings=snap.docs.map(d=>({id:d.id,...d.data()})).filter(l=>l.kind!=='spec').filter(l=>l.kind==='item'||(l.v===4&&(()=>{try{const o=lotOf(l);return l.kind==='spec'?!!(o.spec&&o.spec.g):!!o.m}catch(e){return false}})()));collectSales();renderMarket()},()=>{}));
+  const raw=snap.docs.map(d=>({id:d.id,...d.data()}));retireListings(raw);
+  listings=raw.filter(l=>l.kind==='item'||(CROPS[l.crop]&&!CROPS[l.crop].retired)).filter(l=>l.kind!=='spec').filter(l=>l.kind==='item'||(l.v===4&&(()=>{try{const o=lotOf(l);return l.kind==='spec'?!!(o.spec&&o.spec.g):!!o.m}catch(e){return false}})()));collectSales();renderMarket()},()=>{}));
+}
+const retiring=new Set();
+function retireListings(list){
+  for(const l of list){if(l.sellerUid!==uid||l.sold||retiring.has(l.id)||!DEAD_CROPS.includes(l.crop))continue;retiring.add(l.id);
+    db.collection('listings').doc(l.id).delete().then(()=>{let v=0;try{const o=lotOf(l);v=deadSeedVal(o.m,l.crop)*(l.count||0)}catch(e){}state.coins+=v;save();renderCoins();toast(`市集上的${{bittergourd:'苦瓜',sweetpotato:'甘藷'}[l.crop]}種子已下架，換成 ${v} 金幣`,6000)}).catch(()=>retiring.delete(l.id))}
 }
 function stopListeners(){unsubs.forEach(u=>u());unsubs=[]}
 const collecting=new Set();
@@ -1055,6 +1137,7 @@ let BM_STYLE=1,PAT2_STYLE='cloud';
 const TEX_KERN='iVBORw0KGgoAAAANSUhEUgAAAGAAAACACAAAAADRtzNmAAAZTklEQVR42mV6SbckV5LW95ldd4+IN+SgHKSUVCqhpiag6aKHHTsO/wRYwI/gh7Blx5YVfXoDp/ocaJquUhdVKpWGKg2ZysyX+YaY3P2afSxuRGZWE+e8VcS7fq9dc7NvMP6n7f0fLbRcapoAyBCputve7AFSWcJIoSDgKaZM8GrwSE6yhZhzX60sTlcrpzD0Nu0jN1/9voPViadld+vHyzh92KNWjfs5IFi/fGv9zT4hWTLTDdWoSBkYgCDuzQNliiLXYrlaDnLj4qQrBdo90fKD9UU3j/28Kd2PVuGlTysFS+Dls34GkKvVmo40jKt7gwcmoVbJYFgkmbrcmKlMKtO9O4NBQL67AABwNcxc/uDvxrS0LB/eDkvB0D6nN5MBgEXtJEPeebQKNxROEKGQfAgw3v76GWAxk3eHaoLN9xciAIgA4/SHf1fGgMr7ALjdnLT11S3mBAlVMoh69kEJM1l0b3UGQFEvx5I0fcDHpGt6sJQT4nGLYl1HJ9179HkvoVCMgm/u3OoBAWBSErOyoszLdw3GcHQPu8MCOH9+U4KK+y93kKwwqKQ0ta+5f4IuwfLhxQZMA2SCv/jmxQySeZMJCLnPVOD+glBS1TqobRB+txMS2d9WirMikUDadkcgp6dfz5Yg4/Z7FWIRBEimFxcnJ6w3swGQRIH17BYIki2ubYNirQYCvPtdRqcZJpBIfduXOkcCAijGo08rUJAkBCZ9e+PhJkKCEoTO+pQDgG/Wp4cIMZ+DFJjLYYNgQBCJUm3aghQBUlRd3Pu6SxNNECRUdBwQUEqpkJJ3YUyQMjx+vo3ImPeXX42sAkA7S5PVJCHj5LW6RaVAKDPIR6xZxGQ7OhRCGiAoaqTPt4dwMY2W5jdrCgDCShAiyRWknAVPCAwkZJAhIQCJs+V1McIgKPOQQjQy55wDyhOjjEoASigkSc4gQSCx8hQqlGKKoIEAlJQAcuIJZDcBECKPWahkzFklWfFD6gBIgZJE5eG2icESGZUimC0J1K4AUu42UyFsO5PE6/UBKqpCJFwJHdNH7RMJZcvXaqzKGpISxKs8RoqM7XqshAzbGRIk5fEHOYItHCIlAvn68YKQkYoE4EqlPNZzWwJAexJjuw10GTLf7yIBZUpSZiZjJkNASnQIDOn1+ZBpQoICKEBRx4nG9ghSMOV8vQlXzGKhb3UOGYSWwtJEKIVUaJrcxLQ0w2E9QaIFLaEKApx2YgpkwiglkLsJnt34wlTk2OPU29oJwOo6re1vnLEbVlE9u+P2WxwUNsqSgSBoIgRAVMosUXdrQcTzzRAFArax7ERLE6HYjNk5lNQ+5HUckgWQwPZCtsY3h1OBNFA0ZSGoNGXUOk5RmMP8RRdWSpSI/Qg3KwhkaC9YpsK4GQtiZ0XtbEgccxEVpnI509PFyGqRmZkROYcBJawvn1+f1ijz6eRAqgqmKZHmKUtC6dvNnSh1v3IcEvMYJc9tmvNmLkinnWyuQEFIiaVDiktbfPtpP0PlVz8+mylCaT6BcEV0phIm4vktECMXMjtmIClhnMMV9SWDGDqgYAuHMwEyNXR0ffu38JkoT9c/eoSpzGmYpsoEWQYz62arfn11O8zG0Um2mpIQUoBJ3eM1WXkrZcbTnZRs9WK5jMX+15+YT0yVsv3F0++du0lBdA6600qcLGaI+c1JR3mKEjAfaiIAE4bNV0DG8hRVS7GPORDs3Lo+pq8+vxarJbOwy68v7ty9vyrH3p+QEJHg2F///iMXIyWw1bIQIdC6/adpiZmXbxXByNKBoGHaPnl2sc1ilZJYAoXTd8+/Orlzvug7L0SqTvtvrjuFZfdM3185mZIObxlJeMHNpzurvo/9J3fev0Vasiim3f7qarufaapmGF0qpcqDNu6em3X9UIqbNG5VlEqQT64fPTyzjGj1kqJIbp882fcVczXj0+e3TymPeTdv9gBFj0rOoAPkf0Q/w80ED1GUg9Z5K1kmIjU8uL1cFjggCqFp8+K76kjW2bqKrDUFSeEmSC5FjQY3If6Xc24v15sqGWhptCyEGQxCa68R6oah780ARB2nfdIhZFWXQVUoU2YImOYK2upuiRcvqjHBjx1Zp/3V86ttJmluTGAwkBCgBgnUgAJgSYGlirRRRYIqqJzlYiWSw/ntt847t/rNL5+7xI9tUgVp4/XNejOHkOxNtTS4AgEGpMnYjqS0lAHMmn1S6fMEq6KK2+nZ+a2lt0zsdr/8PJJ/b0shxq3oHWudr2d0q7L95eZ2yKOb0GcGGNkJSdJJI7rwnCI9PG23uLcaZO4YBpmXxVCW/fQ50v0XHwc/PnvXTHONabzceANZ1fzZrxNQV5ffX2RVVhktaelW0MEKUF9+MYPi7u5Hd1JGpiWHW3e8EABuPkcU/Oy3BWdFQt9DeffqeYABdRjfeviVJ/arH66cJCkmNGQkozeZIsuD6XOrwPvfGyqhZJb53bcPRZE4W24I/vFFqceLBLt7eDlBjkA/X1TBux+ctLyDy1RCBc514eRQ+sPHa9T+Qa+CUFE3PXz7FcYUSy3B039RuseL1aFdkYClAQZcXhZheu+8NTd1c571cXrqxbT5dnQZjMu3f9Xb5uqWqtES5EpHBEK+uOkSiPul2m9PT88XBETUSgaD6b+fO9azd8LDSZmWj7bzwwUA8OzDzxJBCO98uZc9+56YRhlobKAZ3D65piUkKxKvb54t7g4D55tLhXkAOd14Fj0aMDuNlnr39OxAXqDu1guawOjf+3UfVy/vKAVm2tWZA0Ruv7mmI6k0lIZG11vvrI4yZIbJt5Pn1N0jixkhLPqpA18h+OgACXj4WXD3/FbKJBa83J+flJd1t010GQYyrYBJBaktnBJb29pUQ743iD0AwPbTKu1IkaarkpRk9fTe7wc+f8+TBBS+3SGR3ikrnAgSBWjIUiYkgQQl2ycRt/qK1qUcT945ASAQnL9tPRZpvgjZzWzINIoyA0wIHBCbrBbBgKQalTiABk1BllUStDAhbP/FrVuLnsB29zgtCViKsTRx2iwyCglCCSRBwABLIFkOmOlwfAGipFk+D0MLl4gMx8WLbpWKeVogIVIg0DEZ1/covW6natgDJCAv+QpYN3DHnJFKKry0f1HjCNR8HTR2k0l22IwhjTsA4XwToQNAABpZDgtDhwhrDNByNnX+ClHTkG0xKBCkmAKSCppq4jWPOGJwMB37dRTqCHsBID0qGx/JbGzicGAQFBIi2EAGlE4S2UjYPzyAIK0nK6IoUdbClwe2oqoErUHRRPJQw0SQZEMAiaDSEmlKa7E4cgQC3O2NJezArAAwAWXJ7CgqwhNqz7B2jGTraCmAqskaRJMGrF1x2yZJpc03aTBkVeaBIQEwJAgDMIVCDZUSImQNvLNxIYWgMaF0I5CCAJoBZgbB64t9L5WbxdCkpsMekwkLS2EaBxxkmEbOEzxQKgBATeM+PTQcLgZsyUsAyN11dulW1tvFMDjpgAQDWGPBBTP3E3K2ZR6eYDqcTiJFSIS2KakjpHQTKIhAzFOMs4x0Kx7rtdlQ6KApMK/3na86BXc3bwXHUpDG1OGeRElySxtFThtFwSLFeezcYJnIeZZCMlpRd1UAWsamVTmqSmZmhYA9fZ/ors8KRWsppEatyPQ6Ud36pWXYQobLqQdgTFKAwcM4dLb/XzZ4gdKKUVKQ5mkDF6zybzZSYL2bBZrRaO5m9OKw3YtqnjcjOQ09SXMnIZiZkaLK4mzw6b8/K8Ny1n6KQxLPAm+fGneZ1q9/9xMYxj364kY3EMhERMYsdkr+Lmi639G1mGbAICZlVDf0zO7Z3zxeleKmAXONKsGKdUOxze++FMPt0/fPa2VoH00gaCAPADw7pz997OF234N2+2wzVgMcVrpSXOn561/szmr52Q/v9UJ3eNGNbuPjT552DM9h89t/Fost0gxMJho1AIWwZafpN5M59Ht74KTds4iEE2SicP/Nr59gmFR++8W9R++fDW6EIOb2+aePOczsZ1f5/M73akmECDhlhxJBDKdd2q++Lgl2Fy/O331wcuLsAqCExPbyyXffxRAp8N8n2Q93bg9d6fu6uX72QkvWQsxJ5uLPHwTHfSRbH5FQYH0/iP7x/15FLKyzeW9268G5C5AU+/3l811opZlJ8T8ArXQWsMPEvsGrBPZuVeXPPwxaDUTjyrQiN6Ty/35syP4ESY5Rc6YDsIQkujNmWOk3cykbWfFiAo1YGGdYlAArNQPjzzY/7GSlkXBrak3tyuNfPB7SyiIMGRLcg6DMoaKIKXnr7MGj/unP+V+vnr18OQMGOt0Y1U3mULWcu2St7/z4rZWnWvMkzLK++PbT4GyxNJKqykzLSoPZ3oC+P3v71tkZq/kN/xrTfL3e7vfTuCPCrJpbK/A5OwXNdu/e7duL0iUkzdP28uZyUzBJhb0rJQWjKunwslotT0/unXiJKQwdebF/tp8roFpjnvfbq+1+7kQqyckT2Gsx9r2G4oMiIqSKLmpFIVcVmRBnj5O3zs4Wzm4psVsNp2fL7WcVFIXcv3y+mwAsHYZ5f/XpVz2Qoo+muZzlWmkHzcaQJE3+8GH/+dNFcDJS0OKjD08MKdQo8+rDMweAiy8ZfhDzso7rZ5dLV5LIT/4+PAWvs/3oJ8vYXz27utkjUyLUDSeLe++eFFz/z+c+GmGyD39w3vTj6u8+YGOoED97KX+jgeDTS0sQZHzzfzakoS7/4r2GyOu0G2smi5kPJyRMtKufPTNSi+4nHyA9jUT88+6IkSF+8QIqr1EA39mECUTgvacfr4Ld/KfvzjQiVIr3q5Ou0zxPGT67gLj1J/8DE3z90aNqBiNRH3WvVW7kCKrUggMhVh9sunj0cwi2/vG71YGkGx7cUSkEEJo/XzdIlg8ffN3VOfbJLE6BGl5hFoJPbrqAffF8PKiyfEYqFRB2LzvYvPoBDXDA7ME7i2VHSPCy/GhhBoqZH0phpjigRpYXTb0FifGzL0say/rl8mQ1LAeOz542WBJpl2tPjD+6FS6kIcrDoygIQIs7Tx0KinffetZFP27PlWlQcv3l/RMAuRtfXtVFMrKgTOMFO1fM9HCQIp/sXNm/56JJIMz+ALMRSDoC3dsXkm8uz5JROkH2/MWJIWpUFAsRLA3yxUx0KYfqpvblJopN79wLthLE2C9eJZtAmtIp0m57YMY2xGRHAK4bQihFISDZrJ1MOhAJpOHqcjvtkIr7Cx2AoNUn8SqZyatngBMG5WkvZt3EQfVFyoqZe9Qj2SgHIf2IdQRI+zWVw6O05jWY7OY353eHBqiu1i8Ol2EZw+m1S7uG1YX0A0dwZNNAVSDQjvxZTO/3GqsBy5PQkVRL9ckFSWYKszUfJZUqt78RtM0ujqvgoN825wYoTSg7gFKQuLXLccqSfXlD2UcWoIISWDIIUVCVLSTaHH3zFvhmsjXOYyBJtjcsE8jlsk6zSUMRjg+XpAxJQmYejksJGCxh06TUq1WPL1rDgdZMkYQpW+/U6bCbxRxcf5CZWVMpkIedSlXS0JlpnmjFXhGHNz9WDmc6UhkyFzYhEEbxDziRHVQvHSwgZRp6rwTVuVtaw+JvJDSSpfkuPMQCAmERpuSRsVA4cMrGiywF2OF8hjDmTONxTb0RLAJ20O0zdLDhEgYTMhqQxoG3tAKDQ+tvfgehyAxleENVOOLj15EtEgi8gueA6CCQ9ajN/MPLO0SUIYC1QpnJdqk4nurAicDZJKUySbZcAchMS45ovq+ODFI4sKwmYLUvECkqJYJGYzOhzASKhduL0tiRtxdaDf04LG1Xm/h2NAePIX4V4QSoOiORBzJKPygASQMxbbdTlBdDb0apOa6WzAQjif3UZSumwusEgA6MVkwxbZzLa+/FdDAZTLXud3NQpVyidLTi5qiQTkzGDoLV7So9KDbEhUNCgSA85JkUtU0q5YSkiXBBiDrPMScMwlSQ0yyYAMFh1oscoPTri/thBJsBdgwRQZCia59Mm75xVreOEqaLIAJosq1gSZRFiUazQaayxNRTGkQB3/wRkzbveqcZvNUWSkxmzVG9gN1LqYR1KWXKFEcmDmhW6c6WZZiafpAGKOmW4MBq8q+ub4vIyx27rtDY2m1zCMPKCiCe7UzKfkjCLJIpHUi1lWW3XATL25E5z1UEOveuJ5DslKXbPr4jpZ/ta90BR+mFBoBmvUmav4guQR+SRH+/1hrtnvuhc4Aii7nlsS6TqUSWQWnp9us/8jQ7211nupnU4DsJmXcLA+LiSVc7X78zZJHZSmx9hodXl/7yV4WWEmTMY7KVp5/MblB5+pt/Uk3dg/PNvkYFxSSY5jYs+iLV+vPMkvVs+s1HnkyzFF3NCjOTnn752VX5/O5qYdGINpnA5aef707GdHj84sFb80LlfMWoo1JKI2l9Z1BN5N+8lEuL0+nn3/7Tt51VNCTNAOS0//rzZ+uu8N/2J/dvnS+Lkxkxri+/3CyFGgXCdOfP3i+EZVOeJBEpyKAM2/7t70KMk16oo33w4Pa5u6TMGDdXL65e7GV9gP+OESJLIaSQQHdDItIitPpHP7w7zO39ala0KInMfPrxV12aygCJNUZ0vZsRc51jDhS4TZpYQsUSyvEgj7tlu8kEaodPvn5w7707RuQru5sd6v7isy/GDoqlpYE1ZDaOB0mTXqww5+rLf3yH/6YaaZAx0aaHFsoCKqXqoE2+uvvu7bNTp1nzv9c3z5+83FtfoztJNmPKxurOJNtUAVP96t737t12/ucXV9e7Kc0gWekWy+kFmU5lps39vu8qQ93J6aLrDbXux812FKxMu+FEg8xjRnK8g3WkyBThw8nd8ztvLT1A/pVNMyMSgnXF+zL9/BcLB2xOQvXR5c5KMUTkG6IZa8zL+/0TFINnBsdH/3K5nypqStZ1Q0mkOpeMX8+xv9lXXxa2CY6YPvnVSMuAYfvTn+xefvd0N5OlVURTDZh39z64f7v+5berAB3Y3PrXd9NMSYicYfDlYlmyXqw5S5x26/UNHW1IBPb4ZzesYG7/+C/6Bebd1eV+HKGaIQ2lX3bnd086pX/23zoyyzDd/9O7wdYOTDmcnK+KMUHcPOYoGcC4+jYEExEme/JXO1Yf3/lXSwcI7yfUoCAaWQ7tK5l//fcn4Vr96KNFKzdMj9WDE4ccElj1tXWdmTH11tsmA5AkYzFFILs/O20AIvZTBWFmFopRU6Dh2J/e29UIe4+TUiRAnr17hoS3aZN+P5ZoSn+JgX00tGDDpxNl+z9994BgCedwzt4ATFNddylawvL0z/7SE9vdWbI1JsOtXkZDEul59XQqYUyCwpIBQCYKT3crn+7/CTwgJmH1zsOTVxjm5eOpUXjo++9/1mO7bzNSouA9VSJowHy5uUZfHp8tjS6Pl3EsCNxddEz7ySrUaiNy+OANpHpn+5xBC0D+g99XxtUR3gg5niBJ5na926XFXJ5dlDIMnruN2CY35NcvDTr7XujY8utdew1UpUIwzSqkR29/MczfBUQZIMPz6cRQ19sqFASzOOZph1CjvhQJu1wvke+cZpMQCSLewINobpkkWQ63krrY95RBciAuLtIgMzFEWUkYQE8iDxNgyGepxAOLV+M0w3p9esSPJHZpBFpvuYO0q33fxguZoMOShjwg+eYTZ7YJqMMIy7MuzZYOWuOvivz0u3qgKjn+7vIwRGAClgif10dewOa9CM0RBFHa+91cHRMFcb4Bk33Fa4oGfP317XNRGNdjLdUaGLNIN1Aby6M+ARFEWhszE8oxc0gkmURynMHo/QiuD2gOFy/EFDuYcPBQCTrkmpkFxwg3egVrEKnwQIUPTRkgpwkkjG/CdxHdwcg6wuD2Z6VmrWDaYckjbTxMsrXCgnztEwljMNOYaXZ8hGVzqUSBbaj1iCQJYD54XG9SisMOyms2JVmjP1O1BJkHrkJAtGzsCgTgeRzTOeCfmgAQRyLWWEJ7VnnFbPVq/CnSgA6j+u7VsWiHWTW1MYU224f0mpQq0via/r2ah9Ox9h4cyMO5xSws2tSyXPqBc8NbPjWj58CdK1NTFCJeZxtfKzI4ssw3OBiRYKaDCi/zOPghTIo/DC8oG/dHCnWMxz/8WKC85pzNI5IAszbY6Jq65BETHTL21V5ylpHzYUbx/zMbCSApeyUuZLafCWQSc7Wgz6/o2auZx9dmqIjk2Dw6HAcFcUBQB47YGv0rHpzKOAxNSjRrSOIwo/Z6VrDR5xoCcu9KGoGIpF6nKiHJOLVLbgOEVOwLFCwRrOMZ4TVcUJjU3tP2dAppmtKFuiXJ4jMaPm/8lc04jO1uXXaltE6ROc9jvdVldD6brXfmhfvr8xLoos3qtLbbhpjsYioGjGsA9BRDN+qG3phGSKzjvNtJ5dvidhhgjLSlqtWFzQvGy/cUZXG9uXOKhNpkVJNCaIjpclcKUHY3YKqPhDTvjIVGGjJrRBJA8QyRLTlKCEwtF9eZ9u2PC2G6ma5XJz0t00VCNMV+dz3NDgm4XJtovRKJYao+NiUgRYIUUKJdM0GJwwLVstx6LnYXm9tCKTZtb4oth45MUlmncUZUL+HFFN/NXRR0qAYYX1nJIJUUhKI4epRmCaQndFsG33/xU3mejVOX+7yW28FshAEwzOWEwPozB3Po9llCXGa+Gp0VmQbL/wdk/7ihCwPs/wAAAABJRU5ErkJggg==';
 const f3=v=>v.toFixed(3);
 const RGBC={white:[246,240,226],green:[88,164,64],yellow:[246,202,44],red:[220,46,42],purple:[118,54,152],black:[58,44,52],orange:[242,132,32],pink:[246,144,172],lavender:[192,154,222],yellowgreen:[172,206,62],
+  mint:[150,214,172],cream:[246,228,158],gray:[150,148,146],brown:[140,86,46],slate:[92,116,140],darkgreen:[40,96,52],amber:[200,140,30],olive:[128,124,36],wine:[136,26,74],crimson:[152,20,30],plum:[86,32,112],
   silver:[186,192,202],pearl:[244,238,246],blue:[70,120,220],gold:[226,176,44],obsidian:[40,30,52],crystal:[176,230,244],starry:[44,40,104],rainbow:[200,120,190]};
 const SPGRAD={silver:['#F4F6F9','#9AA3AE'],pearl:['#FFFFFF','#E3D4EA'],blue:['#9CC6FF','#2346A8'],gold:['#FFF1A8','#B9840F'],obsidian:['#6A5A80','#0E0A14'],crystal:['#F2FDFF','#7FCBE2'],starry:['#3A3F8A','#140F38']};
 const rgbS=v=>`rgb(${v.map(x=>Math.round(clamp(x,0,255))).join(',')})`;
@@ -1118,7 +1201,7 @@ function shapePoints(a,crop){
   const R=srand(a.seed||7),ph1=R()*6.283,ph2=R()*6.283,sk=(R()<.5?-1:1);
   let out;
   if(a.legacy){out=lvXform(bp,a.sp?1:a.level,w,h);if(a.sp)out=spMod(out,a.sp)}
-  else if(!a.sp){out=lvXform(bp,[0,1,3,4][a.level]||0,w,h);if(a.level===3)out=out.map(([x,y])=>[x*0.9,y*1.12])}
+  else if(!a.sp){const bt=(CROPS[crop]||{}).bt,t=bt&&bt[a.level];if(typeof t==='function'){out=[];for(let i=0;i<N;i++)out.push(t(i/N*2*Math.PI))}else if(t==='zucchini'){const f=baseFn('zucchini');out=[];for(let i=0;i<N;i++)out.push(f(i/N*2*Math.PI))}else{const k=Array.isArray(t)?t:[1,1];out=bp.map(([x,y])=>[x*k[0],y*k[1]])}}
   else if(a.sp===10){out=[];for(let i=0;i<N;i++){const p=gourd(i/N*2*Math.PI);out.push([p[0]*Math.max(0.8,w),p[1]*Math.max(0.85,h)/1.1])}}
   else{const k=clamp(Math.sqrt(w*h)*0.95,0.8,1.15);out=geoPts(a.sp,N).map(([x,y])=>[x*k,y*k])}
   const M=out.length;
@@ -1135,20 +1218,33 @@ function shapePoints(a,crop){
   const sc=Math.min(1,1.3/mx,1.3/my);
   return out.map(([x,y])=>[x*sc,y*sc]);
 }
-function patFill(pc){return SPGRAD[pc]?SPGRAD[pc][1]:rgbS(RGBC[pc])}
+const hexRGB=h=>{const n=parseInt(h.slice(1),16);return [n>>16,(n>>8)&255,n&255]};
+const mixRGB=(a,b,t)=>a.map((v,i)=>v+(b[i]-v)*t);
+const RAINBOW=['#E24B4A','#F09A2C','#F2D23C','#5DBB63','#4A86D8','#8E5CC8'];
+/* 花紋顏色：純色、混色照 RGBC；特殊色取漸層的深色；淡特殊色更淺；雙色取第一色 */
+function patFill(k){const p=colParts(k),a=p.a;if(a==='rainbow')return p.t==='l'?'#E3B3DC':'#C878BE';if(p.t==='l')return SPGRAD[a]?rgbS(mixRGB(hexRGB(SPGRAD[a][1]),[255,255,255],0.42)):rgbS(mixRGB(RGBC[a]||RGBC.white,[255,255,255],0.42));if(p.t==='s'||p.t==='d')return SPGRAD[a]?SPGRAD[a][1]:rgbS(RGBC[a]||RGBC.white);return rgbS(RGBC[k]||RGBC.white)}
+/* 特殊色漸層（淡特殊色把每一段往白色拉） */
+function spGradDef(nm,gid,pale){const cols=nm==='rainbow'?RAINBOW:SPGRAD[nm]?[SPGRAD[nm][0],SPGRAD[nm][1],SPGRAD[nm][0]]:['#FFFFFF','#DDDDDD','#FFFFFF'];const fx=c=>pale?rgbS(mixRGB(hexRGB(c),[255,255,255],0.45)):c;return `<linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1">${cols.map((c,i)=>`<stop offset="${(i/(cols.length-1)).toFixed(2)}" stop-color="${fx(c)}"/>`).join('')}</linearGradient>`}
+/* 20.3 特殊色辨識度：珍珠白虹彩、黑曜玻璃反光、銀金屬亮帶 */
+function spSheen(nm,id){
+  if(nm==='pearl')return `<path d="M-1.45 0.35 Q-0.2 -0.85 1.3 -1.05" stroke="url(#ir${id})" stroke-width="0.36" fill="none" stroke-linecap="round" opacity=".85"/><path d="M-1.2 0.85 Q0 -0.1 1.35 -0.35" stroke="url(#ir${id})" stroke-width="0.16" fill="none" stroke-linecap="round" opacity=".6"/>`;
+  if(nm==='obsidian')return `<path d="M-1.15 0.95 L0.95 -1.05" stroke="#A979E8" stroke-width="0.17" opacity=".75"/><path d="M-0.8 1.15 L1.2 -0.75" stroke="#5FD3A6" stroke-width="0.11" opacity=".7"/>`;
+  if(nm==='silver')return `<path d="M-1.4 -0.3 L1.4 -0.62" stroke="#FFFFFF" stroke-width="0.22" opacity=".9"/><path d="M-1.4 0.12 L1.4 -0.16" stroke="#FFFFFF" stroke-width="0.07" opacity=".75"/>`;
+  return '';
+}
 function fruitInner(a,ripe,crop){
-  const cd=CROPS[crop]||CROPS.tomato,id='u'+(UID++),pts=shapePoints(a,crop),ok=ripe>0.5;
-  const spec=ok&&(SPGRAD[a.skin]||a.skin==='rainbow');
-  const base=RGBC[a.skin]||RGBC.red,un=[126,176,84],c=ok?base:base.map((v,q)=>v*ripe+un[q]*(1-ripe));
+  const cd0=CROPS[crop]||CROPS.tomato,cd=(!a.legacy&&!a.sp&&cd0.tdeco)?{...cd0,deco:cd0.tdeco[a.level]||cd0.deco}:cd0,id='u'+(UID++),pts=shapePoints(a,crop),ok=ripe>0.5;
+  const SP=colParts(a.skin),skA=SP.a,isSp=SP.t==='s'||SP.t==='l'||SP.t==='d',spec=ok&&isSp;
+  const base=SP.t==='l'?mixRGB(RGBC[skA]||RGBC.white,[255,255,255],0.42):(RGBC[skA]||RGBC.red),un=[126,176,84],c=ok?base:base.map((v,q)=>v*ripe+un[q]*(1-ripe));
   const fill=spec?`url(#s${id})`:rgbS(c),stroke=rgbS(c.map(v=>v*0.62)),light=rgbS(c.map(v=>v+(255-v)*0.45)),darkc=rgbS(c.map(v=>v*0.75));
-  const ol=rgbS((a.skin==='black'||a.skin==='obsidian'||a.skin==='starry'?[150,130,170]:c).map(v=>v*0.34));
-  const spDef=!spec?'':a.skin==='rainbow'?`<linearGradient id="s${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E24B4A"/><stop offset=".2" stop-color="#F09A2C"/><stop offset=".4" stop-color="#F2D23C"/><stop offset=".6" stop-color="#5DBB63"/><stop offset=".8" stop-color="#4A86D8"/><stop offset="1" stop-color="#8E5CC8"/></linearGradient>`:`<linearGradient id="s${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${SPGRAD[a.skin][0]}"/><stop offset=".55" stop-color="${SPGRAD[a.skin][1]}"/><stop offset="1" stop-color="${SPGRAD[a.skin][0]}"/></linearGradient>`;
+  const lum=0.3*c[0]+0.59*c[1]+0.11*c[2],ol=rgbS((lum<80||skA==='obsidian'||skA==='starry'?[150,130,170]:c).map(v=>v*0.34));
+  const spDef=!spec?'':spGradDef(skA,'s'+id,SP.t==='l')+(SP.t==='d'?spGradDef(SP.b,'t'+id,false):'')+((skA==='pearl'||SP.b==='pearl')?`<linearGradient id="ir${id}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F5A9CB"/><stop offset=".5" stop-color="#FFFFFF"/><stop offset="1" stop-color="#8FC3F2"/></linearGradient>`:'');
   const d='M'+pts.map(p=>f3(p[0])+' '+f3(p[1])).join(' L')+' Z',d2='M'+pts.map(p=>f3(p[0]-0.17)+' '+f3(p[1]-0.2)).join(' L')+' Z';
   let topY=Infinity,botY=-Infinity,minP=pts[0],maxP=pts[0];
   for(const p of pts){if(ab(p[0])<0.25){if(p[1]<topY)topY=p[1];if(p[1]>botY)botY=p[1]}if(p[0]<minP[0])minP=p;if(p[0]>maxP[0])maxP=p}
   if(!isFinite(topY))topY=-0.8;if(!isFinite(botY))botY=0.8;
   const R=srand((a.seed||7)+a.level*97+(a.pat?a.pat.f*13:0));
-  let behind='',deco='',front='',kdef='';
+  let behind='',deco=spec&&SP.t==='d'?`<rect x="0" y="-1.6" width="1.6" height="3.2" fill="url(#t${id})"/>`:'',front='',kdef='';
   // 作物本身的紋理
   if(cd.deco==='berry'){for(let y=-1.3;y<=1.3;y+=0.26)for(let x=-1.3;x<=1.3;x+=0.28){const xx=x+(Math.round(y/0.26)%2?0.14:0);deco+=`<ellipse cx="${f3(xx)}" cy="${f3(y)}" rx="0.035" ry="0.045" fill="#F2D35A" stroke="${darkc}" stroke-width="0.012"/>`}}
   else if(cd.deco==='warts'){
@@ -1196,22 +1292,22 @@ function fruitInner(a,ripe,crop){
   else if(cd.deco==='cap'){
     deco+=`<ellipse cx="-0.25" cy="0.15" rx="0.12" ry="0.75" fill="#fff" opacity=".28" transform="rotate(12 -0.25 0.15)"/>`;
   }
+  else if(cd.deco==='stripe'){for(const k of [-2,-1,0,1,2]){let dd='';for(let v=-1.2;v<=1.21;v+=0.1)dd+=(dd?' L':'M')+f3(k*0.3*Math.sqrt(Math.max(0,1-v*v/1.5)))+' '+f3(v);deco+=`<path d="${dd}" stroke="${light}" stroke-width="0.07" fill="none" opacity=".55"/>`}}
+  else if(cd.deco==='cabbage'){for(const [x0,sg] of [[-0.55,-1],[0.55,1],[0,1]])deco+=`<path d="M${f3(x0*0.3)} 1.1 Q${f3(x0)} 0 ${f3(x0+sg*0.5)} -1.0" stroke="${light}" stroke-width="0.08" fill="none" opacity=".7"/>`;for(const yy of [-0.3,0.25,0.75])deco+=`<path d="M-0.2 ${f3(yy+0.3)} Q-0.7 ${f3(yy)} -1.1 ${f3(yy-0.15)} M0.2 ${f3(yy+0.3)} Q0.7 ${f3(yy)} 1.1 ${f3(yy-0.15)}" stroke="${light}" stroke-width="0.05" fill="none" opacity=".5"/>`}
   // 花紋
   let gdef='';
   if(ok&&a.pat){
-    const pc=patFill(a.pat.c),f=a.pat.f;
-    if(f===0){for(let k=-4;k<=4;k++){let dd='';for(let v=-1.6;v<=1.61;v+=0.1){dd+=(dd?' L':'M')+f3(k*0.3*(1-0.16*v*v)+0.055*S(v*4.2+k*1.3))+' '+f3(v)}deco+=`<path d="${dd}" stroke="${pc}" stroke-width="0.075" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".92"/>`}}
-    else if(f===1){for(let k=0;k<11;k++){const t=R()*6.283,r=sq(R())*0.85,rx=0.08+R()*0.09,cx=C(t)*r,cy=S(t)*r;deco+=`<ellipse cx="${f3(cx)}" cy="${f3(cy)}" rx="${f3(rx)}" ry="${f3(rx*(0.7+R()*0.5))}" fill="${pc}" opacity=".92"/>`}}
-    else if(f===2){
-      if(PAT2_STYLE==='wave'){for(let y=-1.3;y<=1.4;y+=0.42){let dd='';for(let x=-1.6;x<=1.61;x+=0.1)dd+=(dd?' L':'M')+f3(x)+' '+f3(y+0.09*S(x*5.2+y*3));deco+=`<path d="${dd}" stroke="${pc}" stroke-width="0.12" fill="none" stroke-linecap="round" opacity=".92"/>`}}
-      else{for(let k=0;k<5;k++){const cx=(R()-0.5)*2.0,cy=(R()-0.5)*2.2,r=0.22+R()*0.14;let bl='';for(let q=0;q<5;q++){const a=q/5*6.283+R(),rr=r*(0.55+R()*0.4);bl+=`<circle cx="${f3(cx+C(a)*r*0.6)}" cy="${f3(cy+S(a)*r*0.5)}" r="${f3(rr)}"/>`}deco+=`<g fill="${pc}" opacity=".85">${bl}</g>`}}
+    const pc=a.pat.c===a.skin?(lum>150?rgbS(c.map(v=>v*0.68)):rgbS(c.map(v=>v+(255-v)*0.42))):patFill(a.pat.c);
+    for(const f of a.pat.f2!=null?[a.pat.f,a.pat.f2]:[a.pat.f]){
+      if(f===0){for(let k=-4;k<=4;k++){let dd='';for(let v=-1.6;v<=1.61;v+=0.1){dd+=(dd?' L':'M')+f3(k*0.3*(1-0.16*v*v)+0.055*S(v*4.2+k*1.3))+' '+f3(v)}deco+=`<path d="${dd}" stroke="${pc}" stroke-width="0.075" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".92"/>`}}
+      else if(f===1){for(let k=0;k<11;k++){const t=R()*6.283,r=sq(R())*0.85,rx=0.08+R()*0.09,cx=C(t)*r,cy=S(t)*r;deco+=`<ellipse cx="${f3(cx)}" cy="${f3(cy)}" rx="${f3(rx)}" ry="${f3(rx*(0.7+R()*0.5))}" fill="${pc}" opacity=".92"/>`}}
+      else if(f===2){for(let k=0;k<14;k++){const x=(R()-0.5)*2.2,y=(R()-0.5)*2.4,r=0.07+R()*0.05;deco+=`<path d="M${f3(x)} ${f3(y-r*1.6)} L${f3(x+r*0.4)} ${f3(y-r*0.4)} L${f3(x+r*1.6)} ${f3(y)} L${f3(x+r*0.4)} ${f3(y+r*0.4)} L${f3(x)} ${f3(y+r*1.6)} L${f3(x-r*0.4)} ${f3(y+r*0.4)} L${f3(x-r*1.6)} ${f3(y)} L${f3(x-r*0.4)} ${f3(y-r*0.4)}Z" fill="${pc}" opacity=".95"/>`}}
+      else{gdef=`<linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${pc}" stop-opacity=".95"/><stop offset=".85" stop-color="${pc}" stop-opacity="0"/></linearGradient>`;deco+=`<rect x="-1.6" y="-1.6" width="3.2" height="3.2" fill="url(#g${id})"/>`}
     }
-    else if(f===3){for(let k=0;k<14;k++){const x=(R()-0.5)*2.2,y=(R()-0.5)*2.4,r=0.07+R()*0.05;deco+=`<path d="M${f3(x)} ${f3(y-r*1.6)} L${f3(x+r*0.4)} ${f3(y-r*0.4)} L${f3(x+r*1.6)} ${f3(y)} L${f3(x+r*0.4)} ${f3(y+r*0.4)} L${f3(x)} ${f3(y+r*1.6)} L${f3(x-r*0.4)} ${f3(y+r*0.4)} L${f3(x-r*1.6)} ${f3(y)} L${f3(x-r*0.4)} ${f3(y-r*0.4)}Z" fill="${pc}" opacity=".95"/>`}}
-    else if(f===4){gdef=`<linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${pc}" stop-opacity=".95"/><stop offset=".85" stop-color="${pc}" stop-opacity="0"/></linearGradient>`;deco+=`<rect x="-1.6" y="-1.6" width="3.2" height="3.2" fill="url(#g${id})"/>`}
-    else deco+=`<rect x="0" y="-1.6" width="1.6" height="3.2" fill="${pc}" opacity=".95"/>`;
   }
-  if(a.skin==='starry'&&ok)for(let k=0;k<16;k++)deco+=`<circle cx="${f3((R()-0.5)*2.4)}" cy="${f3((R()-0.5)*2.6)}" r="${f3(0.02+R()*0.03)}" fill="#fff" opacity=".9"/>`;
-  if(['calyx','berry','stem','pepper','pumpkin','cap','warts','net'].includes(cd.deco)){let tp=pts[0];for(const p of pts)if(p[1]<tp[1])tp=p;topY=tp[1];var capX=tp[0]}else var capX=0;
+  if(ok&&isSp){const sh=(SP.t==='d'?[SP.a,SP.b]:[skA]).map(n=>spSheen(n,id)).join('');if(sh)deco+=SP.t==='l'?`<g opacity=".6">${sh}</g>`:sh}
+  if((skA==='starry'||SP.b==='starry')&&ok)for(let k=0;k<(SP.t==='l'?7:16);k++)deco+=`<circle cx="${f3((R()-0.5)*2.4)}" cy="${f3((R()-0.5)*2.6)}" r="${f3(0.02+R()*0.03)}" fill="#fff" opacity=".9"/>`;
+  if(['calyx','berry','stem','pepper','pumpkin','cap','warts','net','stripe'].includes(cd.deco)){let tp=pts[0];for(const p of pts)if(p[1]<tp[1])tp=p;topY=tp[1];var capX=tp[0]}else var capX=0;
   const stem=(col='#6B8E3A')=>`<path d="M0 ${f3(topY+0.06)} L0.04 ${f3(topY-0.2)}" stroke="${col}" stroke-width="0.14" stroke-linecap="round"/>`;
   if(cd.deco==='calyx')front+=`<path d="M0 ${f3(topY+0.04)} q0.05 -0.35 0.22 -0.42" stroke="#3B6D11" stroke-width="0.08" fill="none" stroke-linecap="round"/><polygon points="${[...Array(10).keys()].map(k=>{const t=k/10*6.283-Math.PI/2,r=k%2?0.1:0.3;return f3(C(t)*r)+','+f3(topY+0.06+S(t)*r*0.55)}).join(' ')}" fill="#4E8A2A"/>`;
   else if(cd.deco==='berry')front+=`<polygon points="${[...Array(12).keys()].map(k=>{const t=k/12*6.283-Math.PI/2,r=k%2?0.12:0.45;return f3(C(t)*r)+','+f3(topY+0.05+S(t)*r*0.4)}).join(' ')}" fill="#3F8A2A"/>${stem('#3F7A22')}`;
@@ -1221,12 +1317,12 @@ function fruitInner(a,ripe,crop){
   else if(cd.deco==='pumpkin')front+=`<path d="M-0.09 ${f3(topY+0.1)} L-0.12 ${f3(topY-0.22)} Q0 ${f3(topY-0.34)} 0.14 ${f3(topY-0.24)} L0.09 ${f3(topY+0.1)}Z" fill="#7A6A2A"/>`;
   else if(cd.deco==='cap'){const t0=topY;front+=[-0.42,-0.18,0.18,0.42].map(x=>`<path d="M0 ${f3(t0+0.02)} Q${f3(x*0.9)} ${f3(t0+0.02)} ${f3(x)} ${f3(t0+0.38)} Q${f3(x*0.5)} ${f3(t0+0.2)} 0 ${f3(t0+0.12)}Z" fill="#4E7F2A"/>`).join('')+`<ellipse cx="0" cy="${f3(t0+0.06)}" rx="0.32" ry="0.12" fill="#5A8E32"/><path d="M-0.07 ${f3(t0+0.04)} L-0.05 ${f3(t0-0.32)} Q0.02 ${f3(t0-0.4)} 0.08 ${f3(t0-0.3)} L0.07 ${f3(t0+0.04)}Z" fill="#6E9A3E"/>`}
   else if(cd.deco==='warts')front+=stem();
-  else if(cd.deco==='net')front+=`<path d="M0 ${f3(topY+0.05)} L0 ${f3(topY-0.2)}" stroke="#7A8A3A" stroke-width="0.1" stroke-linecap="round"/><path d="M-0.16 ${f3(topY-0.2)} H0.16" stroke="#7A8A3A" stroke-width="0.09" stroke-linecap="round"/>`;
+  else if(cd.deco==='net'||cd.deco==='stripe')front+=`<path d="M0 ${f3(topY+0.05)} L0 ${f3(topY-0.2)}" stroke="#7A8A3A" stroke-width="0.1" stroke-linecap="round"/><path d="M-0.16 ${f3(topY-0.2)} H0.16" stroke="#7A8A3A" stroke-width="0.09" stroke-linecap="round"/>`;
   else if(cd.deco==='kernels'){
     const b=botY,hk=sx=>`<path d="M${f3(sx*0.05)} ${f3(b+0.12)} C${f3(sx*0.75)} ${f3(b+0.05)} ${f3(sx*0.85)} ${f3(b-0.7)} ${f3(sx*0.62)} ${f3(b-1.35)} C${f3(sx*0.5)} ${f3(b-0.8)} ${f3(sx*0.3)} ${f3(b-0.35)} ${f3(sx*0.02)} ${f3(b-0.15)}Z" fill="#78B84E" stroke="#2F6B1E" stroke-width="0.055" stroke-linejoin="round"/><path d="M${f3(sx*0.12)} ${f3(b)} Q${f3(sx*0.55)} ${f3(b-0.5)} ${f3(sx*0.58)} ${f3(b-1.15)}" stroke="#4E9234" stroke-width="0.04" fill="none" stroke-linecap="round"/>`;
     front+=`<path d="M-0.06 ${f3(topY+0.05)} q-0.12 -0.25 -0.28 -0.32 M0 ${f3(topY+0.05)} q0 -0.3 0.05 -0.36 M0.06 ${f3(topY+0.05)} q0.14 -0.22 0.3 -0.28" stroke="#C9935A" stroke-width="0.05" fill="none" stroke-linecap="round"/><rect x="-0.12" y="${f3(b+0.02)}" width="0.24" height="0.22" rx="0.05" fill="#8DBF5E" stroke="#3E6E22" stroke-width="0.045"/>`+hk(-1)+hk(1);
   }
-  else if(cd.deco==='florets'){
+  else if(cd.deco==='florets'||cd.deco==='cabbage'){
     const b=botY,lf=(sx)=>`<path d="M${f3(sx*0.12)} ${f3(b+0.12)} C${f3(sx*0.9)} ${f3(b+0.12)} ${f3(sx*1.38)} ${f3(b-0.32)} ${f3(sx*1.32)} ${f3(b-0.72)} C${f3(sx*1.0)} ${f3(b-0.45)} ${f3(sx*0.6)} ${f3(b-0.24)} ${f3(sx*0.08)} ${f3(b-0.2)}Z" fill="#62AE48" stroke="#2F6B1E" stroke-width="0.06" stroke-linejoin="round"/><path d="M${f3(sx*0.2)} ${f3(b+0.02)} Q${f3(sx*0.9)} ${f3(b-0.14)} ${f3(sx*1.2)} ${f3(b-0.6)}" stroke="#3E8A2C" stroke-width="0.045" fill="none" stroke-linecap="round"/>`;
     front+=`<rect x="-0.17" y="${f3(b-0.12)}" width="0.34" height="0.34" rx="0.07" fill="#A6CC72" stroke="#4E7A2A" stroke-width="0.05"/>`+lf(-1)+lf(1);
   }
@@ -1291,12 +1387,12 @@ function renderCoins(){document.getElementById('coins').textContent=Math.round(s
 function hashStr(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
 function seededRnd(a){return function(){a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function simsHTML(m,f,crop,label){return distHTML(lotDist({m,f,crop}),crop,label,false)}
-function filtersHTML(cur,attr){return ['all',...CROP_KEYS].map(k=>`<button class="fchip" ${attr}="${k}" aria-pressed="${cur===k}">${k==='all'?'全部':CROPS[k].n}</button>`).join('')}
+function filtersHTML(cur,attr){return ['all',...ACTIVE_CROPS].map(k=>`<button class="fchip" ${attr}="${k}" aria-pressed="${cur===k}">${k==='all'?'全部':CROPS[k].n}</button>`).join('')}
 let bagSort='new',renaming=null,selling=null;
 function lotKey(l,k){try{return lotKey_(l,k)}catch(e){return 0}}
 function lotKey_(l,k){const ph=phen(l.m,l.crop);return k==='tier'?ph.tier*1000+ph.score:k==='size'?ph.ab.size:k==='perf'?ph.ab.perf:k==='stab'?likely(l).p:k==='count'?lc(l):0}
 const openGroups=new Set();
-function gsig(g){const n=p=>JSON.stringify(p[0])<JSON.stringify(p[1])?[p[0],p[1]]:[p[1],p[0]];return JSON.stringify([g.s.map(n),n(g.sp),n(g.pw),n(g.c1),n(g.c2),n(g.pc),n(g.pf),ABIL.map(k=>g.n[k].map(n))])}
+function gsig(g){const n=p=>JSON.stringify(p[0])<JSON.stringify(p[1])?[p[0],p[1]]:[p[1],p[0]];return JSON.stringify([...['b','sp','pw','c','pc','pf'].map(k=>n(g[k])),ABIL.map(k=>g.n[k].map(n))])}
 function lotSig(l){const a=gsig(l.m),b=gsig(l.f);return l.crop+'|'+(a<b?a+'|'+b:b+'|'+a)}
 function mergeIdentical(){
   if(!state)return 0;const seen=new Map();let merged=0;
@@ -1352,11 +1448,11 @@ function searchHTML(){
   let h=`<p class="note">條件不選就是不限。「依包內實際的種子」會檢查包裡每一顆種子的外觀，混合的種子包也找得到。</p><div class="vq">
   <label>查詢依據<select data-vq="by">${opt('by',[['m','母本'],['pack','包內實際的種子']])}</select></label>
   <label>範圍<select data-vq="scope">${opt('scope',[['vault','只查種原庫'],['all','種原庫＋種子袋']])}</select></label>
-  <label>作物<select data-vq="crop">${opt('crop',[['all','全部'],...CROP_KEYS.map(k=>[k,CROPS[k].n])])}</select></label>
-  <label>形狀<select data-vq="shape">${opt('shape',[['any','不限'],...cropShapes.map((n,i)=>['B'+i,n+(i<3?' 以上':'')]),...SPN.slice(1).map((n,i)=>['S'+(i+1),n+'（特殊）']),...Object.entries(EXN).map(([v,n])=>['S'+v,n+'（專屬）'])])}</select></label>
-  <label>果皮顏色<select data-vq="skin">${opt('skin',[['any','不限'],...COLOR_ORDER.slice().reverse().map(c=>[c,CN[c]])])}</select></label>
+  <label>作物<select data-vq="crop">${opt('crop',[['all','全部'],...ACTIVE_CROPS.map(k=>[k,CROPS[k].n])])}</select></label>
+  <label>形狀<select data-vq="shape">${opt('shape',[['any','不限'],...cropShapes.map((n,i)=>['B'+i,n]),...SPN.slice(1).map((n,i)=>['S'+(i+1),n+'（特殊）']),...Object.entries(EXN).map(([v,n])=>['S'+v,n+'（專屬）'])])}</select></label>
+  <label>果皮顏色<select data-vq="skin">${opt('skin',[['any','不限'],...ALL_SKINS.map(c=>[c,cnOf(c)])])}</select></label>
   <label>花紋<select data-vq="pat">${opt('pat',[['any','不限'],['yes','有花紋'],['no','沒有花紋'],...PFN.map((n,i)=>['f'+i,n])])}</select></label>
-  <label>花紋顏色<select data-vq="pc">${opt('pc',[['any','不限'],...COLOR_ORDER.slice().reverse().map(c=>[c,CN[c]])])}</select></label>
+  <label>花紋顏色<select data-vq="pc">${opt('pc',[['any','不限'],...ALL_SKINS.map(c=>[c,cnOf(c)])])}</select></label>
   <label>大小<select data-vq="size">${opt('size',[['any','不限'],...SIZE_N.map((n,i)=>[String(i),n])])}</select></label>
   <label>完美度<select data-vq="perf">${opt('perf',[['any','不限'],...PERF_N.map((n,i)=>[String(i),n])])}</select></label>
   <label>稀有度<select data-vq="tier">${opt('tier',TIERS.map((n,i)=>[String(i),n+(i?' 以上':'（全部）')]))}</select></label>
@@ -1366,9 +1462,9 @@ function searchHTML(){
   const pool=[];for(const c of vaultCabs())for(const l of c.lots)pool.push({l,where:c.name});if(vq.scope==='all')for(const l of state.lots)pool.push({l,where:'種子袋'});
   const num=v=>v===''?null:+v;
   const appOk=a=>{
-    if(vq.shape!=='any'){const n=+vq.shape.slice(1);if(vq.shape[0]==='B'){if(a.sp||a.legacy||a.level<n)return false}else if(a.sp!==n||a.legacy)return false}
+    if(vq.shape!=='any'){const n=+vq.shape.slice(1);if(vq.shape[0]==='B'){if(a.sp||a.legacy||a.level!==n)return false}else if(a.sp!==n||a.legacy)return false}
     if(vq.skin!=='any'&&a.skin!==vq.skin)return false;
-    if(vq.pat==='yes'&&!a.pat)return false;if(vq.pat==='no'&&a.pat)return false;if(vq.pat[0]==='f'&&(!a.pat||a.pat.f!==+vq.pat.slice(1)))return false;
+    if(vq.pat==='yes'&&!a.pat)return false;if(vq.pat==='no'&&a.pat)return false;if(vq.pat[0]==='f'&&(!a.pat||(a.pat.f!==+vq.pat.slice(1)&&a.pat.f2!==+vq.pat.slice(1))))return false;
     if(vq.pc!=='any'&&(!a.pat||a.pat.c!==vq.pc))return false;return true};
   const res=[];
   for(const it of pool){const l=it.l;try{
@@ -1459,10 +1555,11 @@ function ensureSlots(){
 function lotCat(l){
   try{
     if(l.obs)return {c:'obs'};
-    if(l.cross)return {c:'germ',t:'雜交'};
     const s=l.source||'';if(/野生種原|珍稀種原|原始品種/.test(s)&&!/（母本）/.test(s))return {c:'germ',t:'種原'};
-    const k=phen(l.m,l.crop).key,x=lotDist(l).find(e=>e.key===k),r=x?x.p:0;
-    return r>=0.9995?{c:'done',r:1}:{c:'breed',r};
+    const d=lotDist(l);if(d[0]&&d[0].p>=0.9995)return {c:'done',r:1,t:l.cross?'雜交成品':null};
+    if(l.cross)return {c:'germ',t:'雜交'};
+    const k=phen(l.m,l.crop).key,x=d.find(e=>e.key===k),r=x?x.p:0;
+    return {c:'breed',r};
   }catch(e){return {c:'breed',r:0}}
 }
 let bagCat='all';const CATN={all:'全部',breed:'育種中',done:'成品',germ:'種原'};
@@ -1472,14 +1569,14 @@ function slotCell(k,lot){
   let ic='',sz=50;try{sz=phen(lot.m,lot.crop).ab.size;const pct=Math.round(30+32*sizeScale(sz));
     if(ct.c==='breed')ic=fruitSVG(phen(lot.m,lot.crop),lot.crop,44).replace('<svg ',`<svg style="width:${pct}%;height:${pct}%;opacity:${(0.3+0.7*ct.r).toFixed(2)}" `);
     else ic=fruitSVG(likely(lot).app,lot.crop,44).replace('<svg ',`<svg style="width:${pct}%;height:${pct}%" `)}catch(e){ic='？'}
-  const szc=sizeCls(sz),lab=ct.c==='breed'?Math.round(ct.r*100)+'%':ct.c==='done'?'成品':ct.c==='germ'?ct.t:'';
+  const szc=sizeCls(sz),lab=ct.c==='breed'?Math.round(ct.r*100)+'%':ct.c==='done'?(ct.t||'成品'):ct.c==='germ'?ct.t:'';
   const dim=bagCat!=='all'&&ct.c!==bagCat;
   return `<button class="slot${k<MY_SLOTS?' my':''}${dim?' dim':''}" data-slot="${k}" data-lot="${lot.id}" aria-label="${esc(lot.name)}，${CROPS[lot.crop].n}，${lc(lot)} 顆，${ct.c==='breed'?'育種中，目標外觀 '+lab:CATN[ct.c]||''}">${ic}${szc===0||szc===4?`<i class="szt${szc===4?' big':''}">${SIZE_N[szc]}</i>`:''}<b class="cnt">${lc(lot)}</b>${lot.obs?'<i class="obs">絕版</i>':''}${lot.gen!=null?`<i class="gen">${lot.gen?lot.gen+'代':'原始'}</i>`:''}${lab?`<i class="cat c-${ct.c}">${lab}</i>`:''}<span class="nm">${esc(lot.name)}</span></button>`;
 }
 function bagGridHTML(){
   const by={};for(const l of state.lots)if(l.slot!=null)by[l.slot]=l;
   const cnt={all:state.lots.length,breed:0,done:0,germ:0};for(const l of state.lots){const c=lotCat(l).c;if(cnt[c]!=null)cnt[c]++}
-  const CATNOTE={all:'',breed:'還在分離中。百分比是種下去會長成目標外觀（母本的外觀）的比例，選到 100% 就變成成品。',done:'種下去會長得一樣，可以登錄、販售或當雜交親本。',germ:'野生採集與雜交得到的種子，是育種的材料。'};
+  const CATNOTE={all:'',breed:'種下去還會長出不同樣子。百分比是會長成目標外觀（母本的外觀）的比例，選到 100% 就變成成品。',done:'種下去全部長一樣，可以採收標本、販售或當雜交親本。「雜交成品」是兩個純的親本雜交的整齊種子，自交後會分開。',germ:'野生採集與雜交得到的種子，是育種的材料。'};
   let h=`<div class="bagcats">${['all','breed','done','germ'].map(c=>`<button class="fchip" data-bagcat="${c}" aria-pressed="${bagCat===c}">${CATN[c]} ${cnt[c]}</button>`).join('')}</div>${CATNOTE[bagCat]?`<p class="note" style="margin:0 0 6px">${CATNOTE[bagCat]}</p>`:''}<h3 class="slh">常用種子</h3><div class="slots">`;for(let k=0;k<MY_SLOTS;k++)h+=slotCell(k,by[k]);h+='</div>';
   h+=`<div class="slh2"><h3 class="slh">備用種子</h3><button class="mini" data-bagsort="1">整理</button></div><div class="slots">`;for(let k=MY_SLOTS;k<BAG_SLOTS;k++)h+=slotCell(k,by[k]);h+='</div>';
   h+=`<p class="note">點一下打開種子；按住拖曳可以換位置（電腦可以直接拖）。正在用的放「常用種子」，播種時會排在最前面。長期不用的可以存進種原庫。</p>`;
@@ -1685,7 +1782,7 @@ function dexListHTML(){
   let list=regList.filter(r=>r.g&&!r.obs&&(dexCrop==='all'||r.crop===dexCrop)&&ok(r)).map(r=>({r,ph:r.obs?obsPh(r):phen(regG(r),r.crop)}));
   if(dexTier>=0)list=list.filter(x=>x.ph.tier===dexTier);
   const q=norm(dexQ||'');if(q)list=list.filter(x=>norm(x.r.name).includes(q)||norm(x.r.inventorName||'').includes(q));
-  list.sort((a,b)=>b.ph.tier-a.ph.tier||COLOR_ORDER.indexOf(a.ph.skin)-COLOR_ORDER.indexOf(b.ph.skin));
+  list.sort((a,b)=>b.ph.tier-a.ph.tier||colOrd(a.ph.skin)-colOrd(b.ph.skin));
   const pend=rightsList.filter(r=>r.status==='pending'&&rActive(r)&&(dexCrop==='all'||r.crop===dexCrop));
   const recTxt=(o,n)=>o&&o.by?`${n} ${o.v}（${esc(o.by)}）`:`${n} －`;
   let h=`<div class="dexq"><input id="dexQ" value="${esc(dexQ)}" placeholder="搜尋品種名稱或命名者" aria-label="搜尋圖鑑"><select id="dexTier" aria-label="稀有度"><option value="-1">全部稀有度</option>${TIERS.map((t,i)=>`<option value="${i}"${dexTier===i?' selected':''}>${t}</option>`).join('')}</select></div><p class="note">共 ${list.length} 個品種${pend.length?`，另有 ${pend.length} 個未公開品種權`:''}，依稀有度排列。</p>`;
@@ -1728,8 +1825,8 @@ function clsRow(name,v,show,note=''){return `<div class="stat"><span>${name}</sp
 function statRow(name,v,show,note=''){return `<div class="stat"><span>${name}</span><div class="bar"><i style="width:${show?v:0}%"></i></div><span class="v">${show?Math.round(v):'？'}</span></div>${note&&show?`<div class="note" style="margin:-2px 0 4px">${note}</div>`:''}`}
 function chipsHTML(ph){
   const t=spType(ph);let h=`<span class="chip${t===2?' myth':t===1?' leg':''}">${ph.shapeName}</span>`;
-  h+=`<span class="chip${isSpecC(ph.skin)?' leg':''}">${CN[ph.skin]}${ph.pat?'皮':'色'}</span>`;
-  if(ph.pat)h+=`<span class="chip${isSpecC(ph.pat.c)?' leg':''}">${CN[ph.pat.c]}色${PFN[ph.pat.f]}</span>`;
+  h+=`<span class="chip${isSpecK(ph.skin)?' leg':''}">${cnOf(ph.skin)}${ph.pat?'皮':'色'}</span>`;
+  if(ph.pat)h+=`<span class="chip${isSpecK(ph.pat.c)?' leg':''}">${cnOf(ph.pat.c)}色${pfName(ph.pat.f,ph.pat.f2)}</span>`;
   return h;
 }
 // 遠緣導入：表現出來的性狀，若對應的因子全部來自其他作物，就標示來源
@@ -1737,9 +1834,9 @@ function introHTML(g,crop,ph){
   if(!g||!g.o||ph.legacy)return '';const o=g.o,out=[];
   const fo=(keys,val)=>{const src=[];for(const k of keys)for(const j of [0,1])if(g[k][j]===val)src.push(o[k]?o[k][j]:null);return src.length&&src.every(x=>x&&x!==crop)?src[0]:null};
   if(ph.sp){const s=fo(['sp'],ph.sp);if(s)out.push([spLabel(ph.sp),s])}
-  const M=strongC(g.c1[0],g.c1[1]),S2=strongC(g.c2[0],g.c2[1]),comps=ph.skin===M||ph.skin===S2?[ph.skin]:[M,S2],cs=comps.map(c=>fo(['c1','c2'],c));
-  if(cs.every(Boolean))out.push([CN[ph.skin]+(ph.pat?'皮':'色'),cs[0]]);
-  if(ph.pat){const a=fo(['pc'],ph.pat.c);if(a)out.push([CN[ph.pat.c]+'色花紋',a]);const b=fo(['pf'],ph.pat.f);if(b)out.push([PFN[ph.pat.f],b])}
+  const both=k=>{const a=o[k]||[null,null];return a[0]&&a[0]===a[1]&&a[0]!==crop?a[0]:null};
+  {const s=both('c');if(s)out.push([cnOf(ph.skin)+(ph.pat?'皮':'色'),s])}
+  if(ph.pat){const a=both('pc');if(a)out.push([cnOf(ph.pat.c)+'色花紋',a]);const b=both('pf');if(b)out.push([pfName(ph.pat.f,ph.pat.f2),b])}
   return out.map(([t,s2])=>`<div class="intro">✦ 遠緣導入：${t}（來自${CROPS[s2].n}）</div>`).join('');
 }
 const tagName=(a,crop)=>{const t=spType(a),n=shapeNameOf(a,crop);return t?`<span class="tg ${t===2?'myth':'leg'}">${n}</span>`:n};
@@ -1936,7 +2033,8 @@ sb.addEventListener('click',e=>{
   if(act==='pdel'&&!p){if(!sheet.confirm){sheet.confirm=true;renderSheet();return}state.plotPos[i]=null;state.coins+=PLOT_REFUND;save();closeSheet();renderAll();renderCoins();toast(`已拆除，退回 ${PLOT_REFUND} 金幣`);return}
   save();sheet.stage=state.plots[i]?state.plots[i].stage:'empty';sheet.confirm=false;sheet.crossFrom=null;renderAll();renderSheet();
 });
-function plantFromLot(lot,g){return {par:lot.par||[],gpar:lot.gpar||[],wide:!!lot.wide,rel:!!lot.rel,gen:lot.gen,hv:0,g,m:clone(lot.m),crop:lot.crop,name:lot.name,lid:lot.lid,lotId:lot.id,no:(state.counts[lot.lid]=(state.counts[lot.lid]||0)+1),stage:'seedling',prog:0,watered:false,fert:false,flowerT:0,pollen:null}}
+function lotUniFor(lot,g){try{const k=phen(g,lot.crop).key,x=lotDist({m:lot.m,f:lot.f||lot.m,crop:lot.crop}).find(e=>e.key===k);return !!x&&x.p>=0.9995}catch(e){return false}}
+function plantFromLot(lot,g){return {uni:lotUniFor(lot,g),par:lot.par||[],gpar:lot.gpar||[],wide:!!lot.wide,rel:!!lot.rel,gen:lot.gen,hv:0,g,m:clone(lot.m),crop:lot.crop,name:lot.name,lid:lot.lid,lotId:lot.id,no:(state.counts[lot.lid]=(state.counts[lot.lid]||0)+1),stage:'seedling',prog:0,watered:false,fert:false,flowerT:0,pollen:null}}
 function pollinate(i,j){
   const p=state.plots[i];
   if(j==null)p.pollen={type:'self'};
@@ -2508,7 +2606,7 @@ window.addEventListener('resize',updateCam);
 // ===== 市集攤位 =====
 let mkCrop='all';
 const lotCache=new Map();
-function lotOf(l){if(!lotCache.has(l.id)){const o=unpack(l.lot);if(o&&o.spec){o.spec.g=fixGeno(o.spec.g);lotCache.set(l.id,o.spec.g?o:{});return lotCache.get(l.id)}if(o&&typeof o==='object'){o.m=fixGeno(o.m);o.f=fixGeno(o.f)||o.m;if(Array.isArray(o.seeds))o.seeds=o.seeds.map(fixGeno).filter(Boolean)}lotCache.set(l.id,o)}return lotCache.get(l.id)}
+function lotOf(l){if(!lotCache.has(l.id)){const o=unpack(l.lot);if(o&&o.spec){o.spec.g=fixGeno(o.spec.g);lotCache.set(l.id,o.spec.g?o:{});return lotCache.get(l.id)}if(o&&typeof o==='object'){o.m=fixGeno(o.m,l.crop);o.f=fixGeno(o.f,l.crop)||o.m;if(Array.isArray(o.seeds))o.seeds=o.seeds.map(g=>fixGeno(g,l.crop)).filter(Boolean)}lotCache.set(l.id,o)}return lotCache.get(l.id)}
 function renderMarket(){if(scene==='market')renderWorld();if(sheet&&sheet.stall!=null&&sheet.step==='view')renderSheet()}
 function listingCard(l){try{return listingCard_(l)}catch(e){logErr(e,'market');return ''}}
 function listingCard_(l){
@@ -2714,7 +2812,7 @@ async function adminWipe(){
   }
   toast('已清空伺服器的圖鑑、品種權、市集、發現紀錄與紀錄榜');
 }
-const genoTxt=g=>`形狀：${g.s.map(p=>p.map(x=>x?'尖':'圓').join('')).join(' ')}\n特殊造型：${g.sp.map(x=>x?SPN[x]:'一般').join('/')}　花紋開關：${g.pw.map(x=>x?'開':'關').join('/')}\n主色：${g.c1.map(c=>CN[c]).join('/')}　副色：${g.c2.map(c=>CN[c]).join('/')}　花紋色：${g.pc.map(c=>CN[c]).join('/')}　花紋形式：${g.pf.map(f=>PFN[f]).join('/')}\n`+ABIL.map(k=>`${{size:'大小',perf:'完美度',speed:'速度',yield:'產量',vigor:'生命力'}[k]}：${g.n[k].map(p=>Math.round((p[0]+p[1])*50)).join(' ')}`).join('\n');
+const genoTxt=g=>`基本造型：${g.b.join('/')}　特殊造型：${g.sp.map(x=>x?spLabel(x):'一般').join('/')}　花紋開關：${g.pw.map(x=>x?'開':'關').join('/')}\n果皮：${g.c.map(c=>CN[c]).join('/')}　花紋色：${g.pc.map(c=>CN[c]).join('/')}　花紋形式：${g.pf.map(f=>PFN[f]).join('/')}\n`+ABIL.map(k=>`${{size:'大小',perf:'完美度'}[k]}：${g.n[k].map(p=>p.map(v=>Math.round(v*100)).join('/')).join(' ')}`).join('\n');
 
 // ===== 全服跑馬燈 =====
 const NEWS_T0=Date.now();let newsSeen=new Set(),newsQ=[],newsBusy=false;
@@ -2790,7 +2888,7 @@ function specBlock(p,ph){
   if(ph.legacy)return '這株的外觀已絕版';
   if(ph.tier<SPEC_MIN_TIER)return '普通、少見的外觀不能做標本，需要稀有以上';
   if(hasSpec(specId(p.crop,ph.key)))return '你已經有這個品種的標本了';
-  if(ph.stab<SPEC_STAB)return '外觀要完全穩定（成品）才能做標本';
+  if(!(p.uni!=null?p.uni:ph.stab>=SPEC_STAB))return '要從「成品」種子包種出來的才能做標本';
   return '';
 }
 function specCanNow(p,ph){if(specBlock(p,ph))return false;const sp=specGet(specId(p.crop,ph.key));return sp===undefined||specCount(sp)<SPEC_CAP[ph.tier]}
@@ -2801,7 +2899,7 @@ function specBoxHTML(p,ph){
   if(ph.tier<SPEC_MIN_TIER)return box('普通、少見的外觀不能做標本，需要稀有以上（只看形狀、顏色、花紋，不計大小與完美度）。');
   const id=specId(p.crop,ph.key);
   if(hasSpec(id))return box('你已經有這個品種的標本了，到「圖鑑 → 收藏櫃」可以看到。');
-  if(ph.stab<SPEC_STAB)return box(`要做標本，這株的外觀要完全穩定（就是種子袋裡的「成品」：種下去全部長一樣）。這株目前約 ${pctTxt(ph.stab)}，繼續自交、挑選就會越來越穩定。`);
+  if(!(p.uni!=null?p.uni:ph.stab>=SPEC_STAB))return box('要做標本，這株要是從「成品」種子包（種下去全部長一樣，包含整齊的雜交成品）種出來的。繼續自交、挑選，或用兩個純的親本雜交，就能做出成品。');
   const sp=specGet(id);if(sp===undefined)return box('正在讀取這個品種的全服名額…');
   const n=specCount(sp),cap=SPEC_CAP[ph.tier];
   if(n>=cap)return box(`這個品種的全服名額已滿（${n}／${cap}）。照樣可以種、賣果實和種子，但不能再採收標本。`);
@@ -2963,11 +3061,11 @@ const weekKey=()=>{const d=new Date(),j=new Date(d.getFullYear(),0,1);return `${
 function ownedCrops(){const s=new Set();state.lots.forEach(l=>s.add(l.crop));state.plots.forEach(p=>p&&s.add(p.crop));return [...s].length?[...s]:['tomato']}
 function condTxt(c){
   const crop=c.crop?CROPS[c.crop].n:'任何作物';const bits=[];
-  if(c.minLevel!=null)bits.push(`形狀達到「${(CROPS[c.crop||'tomato']).shapes[c.minLevel]}」以上`);
-  if(c.skin)bits.push(`${CN[c.skin]}色`);if(c.pat)bits.push('有花紋');if(c.minSize!=null)bits.push(`${SIZE_N[c.minSize]}以上`);if(c.minTier!=null)bits.push(`${TIERS[c.minTier]}以上`);
+  if(c.bt!=null)bits.push(c.crop?`形狀是「${CROPS[c.crop].shapes[c.bt]}」`:`形狀是第 ${c.bt+1} 種造型（例如番茄${CROPS.tomato.shapes[c.bt]}）`);
+  if(c.skin)bits.push(`${cnOf(c.skin)}色`);if(c.pat)bits.push('有花紋');if(c.minSize!=null)bits.push(`${SIZE_N[c.minSize]}以上`);if(c.minTier!=null)bits.push(`${TIERS[c.minTier]}以上`);
   return `交出一顆${bits.join('、')}的${crop}`;
 }
-function condOk(c,p,ph){return (!c.crop||c.crop===p.crop)&&(c.minLevel==null||(!ph.sp&&ph.level>=c.minLevel))&&(!c.skin||ph.skin===c.skin)&&(!c.pat||!!ph.pat)&&(c.minSize==null||ph.sizeCls>=c.minSize)&&(c.minTier==null||ph.tier>=c.minTier)}
+function condOk(c,p,ph){return (!c.crop||c.crop===p.crop)&&(c.bt==null||(!ph.sp&&ph.level===c.bt))&&(!c.skin||ph.skin===c.skin)&&(!c.pat||!!ph.pat)&&(c.minSize==null||ph.sizeCls>=c.minSize)&&(c.minTier==null||ph.tier>=c.minTier)}
 function ensureDaily(){
   const dk=dayKey();
   if(!state.daily||state.daily.day!==dk){
@@ -2976,12 +3074,12 @@ function ensureDaily(){
     const c1=pickC(),sk=skinsOf(c1),c2=pickC(),c3=pickC();
     state.daily={day:dk,list:[
       {id:'d1',c:{crop:c1,skin:sk[Math.floor(R()*sk.length)]},r:50+10*Math.floor(R()*6),done:false},
-      {id:'d2',c:R()<.5?{crop:c2,pat:true}:{crop:c2,minLevel:2},r:150+10*Math.floor(R()*11),done:false},
+      {id:'d2',c:R()<.5?{crop:c2,pat:true}:{crop:c2,bt:1+Math.floor(R()*2)},r:150+10*Math.floor(R()*11),done:false},
       {id:'d3',c:{crop:c3,minSize:3},r:200+10*Math.floor(R()*11),done:false}]};
   }
   const wk=weekKey();
   if(!state.weekly||state.weekly.wk!==wk){const R=srand(hashStr(wk+uid));
-    state.weekly={wk,done:false,...(R()<.5?{c:{minLevel:3},r:600,prize:'rare',pt:'珍稀種原 1 包'}:{c:{minTier:3},r:500,prize:'acc',pt:'生長加速劑 20 次'})}}
+    state.weekly={wk,done:false,...(R()<.5?{c:{bt:2,pat:true},r:600,prize:'rare',pt:'珍稀種原 1 包'}:{c:{minTier:3},r:500,prize:'acc',pt:'生長加速劑 20 次'})}}
 }
 function deliverables(p,ph){ensureDaily();const out=state.daily.list.filter(o=>!o.done&&condOk(o.c,p,ph)).map(o=>({id:o.id,t:condTxt(o.c),r:o.r}));if(!state.weekly.done&&condOk(state.weekly.c,p,ph))out.push({id:'w',t:condTxt(state.weekly.c),r:state.weekly.r,pt:state.weekly.pt});return out}
 function deliver(i,oid){
@@ -3149,35 +3247,32 @@ const OBJ={
   marshtuft:(x,y,R)=>blades(x,y,R,'#3E7F2E',6,15)
 };
 const BIOMES={
-  desert:{n:'沙漠',ch:'沙',base:'#F1D398',patch:'#E7C07C',patch2:'#F8E3B4',dens:9,crops:[['chili',4],['tomato',2],['melon',2],['sweetpotato',2]],cols:['red','red','yellow'],pf:[0,1],prof:{pr:[.62,.74],py:[.3,.42],pp:[.02,.06]},desc:'乾燥炎熱。野生植株的尖因子特別多；氣候嚴苛，常見迷你植株。',
+  desert:{n:'沙漠',ch:'沙',base:'#F1D398',patch:'#E7C07C',patch2:'#F8E3B4',dens:9,crops:[['chili',4],['tomato',2],['melon',2],['corn',2]],cols:['red','red','yellow'],pf:[0,1],prof:{pr:[.62,.74],py:[.3,.42],pp:[.02,.06]},desc:'乾燥炎熱。野生植株常是各作物的第 2、3 種造型；氣候嚴苛，常見迷你植株。',
     objs:[{f:OBJ.cactus,w:5},{f:OBJ.sandrock,w:3},{f:OBJ.dryshrub,w:3},{f:OBJ.dune,w:4,flat:1},{f:OBJ.pebbles,w:3,flat:1}],thumb:[['dune',40,82],['sandrock',128,74],['cactus',62,76],['cactus',112,50],['dryshrub',22,58]]},
-  grass:{n:'草原',ch:'原',base:'#A9DA73',patch:'#97CC62',patch2:'#BCE48A',dens:12,crops:[['pumpkin',4],['corn',2],['strawberry',2],['tomato',2]],cols:['yellow','yellow','red'],pf:[3,4],prof:{pr:[.24,.34],py:[.66,.78],pp:[.02,.06]},desc:'陽光充足。常見黃色果實。',
+  grass:{n:'草原',ch:'原',base:'#A9DA73',patch:'#97CC62',patch2:'#BCE48A',dens:12,crops:[['pumpkin',4],['corn',2],['strawberry',2],['tomato',2]],cols:['yellow','yellow','red'],pf:[2,3],prof:{pr:[.24,.34],py:[.66,.78],pp:[.02,.06]},desc:'陽光充足。常見黃色果實。',
     objs:[{f:OBJ.tuft,w:5,flat:1},{f:OBJ.flowers,w:4,flat:1},{f:OBJ.bush,w:3},{f:OBJ.boulder,w:1.5}],thumb:[['flowers',30,80],['tuft',96,86],['bush',58,66],['boulder',128,74],['bush',118,46]]},
-  forest:{n:'森林',ch:'林',base:'#76B354',patch:'#64A246',patch2:'#88C163',dens:13,crops:[['strawberry',3],['pumpkin',3],['broccoli',3],['bittergourd',3],['tomato',1],['zucchini',1],['corn',1],['sweetpotato',1],['melon',1],['chili',1],['eggplant',1]],cols:['purple','purple','black'],pf:[4,4,1],prof:{pr:[.5,.6],py:[.1,.2],pp:[.38,.5]},desc:'樹林茂密。黑色只在這裡出現。',
+  forest:{n:'森林',ch:'林',base:'#76B354',patch:'#64A246',patch2:'#88C163',dens:13,crops:[['strawberry',3],['pumpkin',3],['broccoli',3],['eggplant',2],['tomato',1],['zucchini',1],['corn',1],['melon',1],['chili',1]],cols:['purple','purple','black'],pf:[3,3,1],prof:{pr:[.5,.6],py:[.1,.2],pp:[.38,.5]},desc:'樹林茂密。黑色只在這裡出現。',
     objs:[{f:OBJ.tree,w:6},{f:OBJ.mushroom,w:2},{f:OBJ.fern,w:3,flat:1},{f:OBJ.log,w:1.5}],thumb:[['fern',100,86],['tree',40,84],['tree',132,62],['mushroom',84,80],['tree',92,44]]},
-  snow:{n:'雪原',ch:'雪',base:'#EEF4F6',patch:'#DCE7EE',patch2:'#FFFFFF',dens:10,crops:[['broccoli',3],['sweetpotato',2],['strawberry',2],['eggplant',2]],cols:['white'],pf:[2,5],prof:{pr:[.04,.12],py:[.04,.12],pp:[.02,.08]},desc:'寒冷少雨。常見白色果實與迷你植株。',
+  snow:{n:'雪原',ch:'雪',base:'#EEF4F6',patch:'#DCE7EE',patch2:'#FFFFFF',dens:10,crops:[['broccoli',3],['strawberry',2],['eggplant',2],['pumpkin',2]],cols:['white'],pf:[1,3],prof:{pr:[.04,.12],py:[.04,.12],pp:[.02,.08]},desc:'寒冷少雨。常見白色果實與迷你植株。',
     objs:[{f:OBJ.pine,w:5},{f:OBJ.drift,w:3,flat:1},{f:OBJ.icepond,w:1.5,flat:1},{f:OBJ.snowrock,w:2},{f:OBJ.sparkle,w:3,flat:1}],thumb:[['icepond',112,80],['drift',36,84],['pine',46,72],['pine',128,52],['snowrock',84,62]]},
-  marsh:{n:'濕地',ch:'澤',base:'#93C27E',patch:'#7FB06C',patch2:'#A7D08F',dens:11,crops:[['eggplant',4],['bittergourd',2],['zucchini',2],['pumpkin',2]],cols:['purple','green'],pf:[1,3],prof:{pr:[.3,.4],py:[.04,.1],pp:[.66,.76]},desc:'水氣充沛。野生植株常長得巨大，也是特殊造型最容易出現的地區。',
+  marsh:{n:'濕地',ch:'澤',base:'#93C27E',patch:'#7FB06C',patch2:'#A7D08F',dens:11,crops:[['eggplant',4],['zucchini',2],['pumpkin',2],['melon',2]],cols:['purple','green'],pf:[1,2],prof:{pr:[.3,.4],py:[.04,.1],pp:[.66,.76]},desc:'水氣充沛。野生植株常長得巨大，也是特殊造型最容易出現的地區。',
     objs:[{f:OBJ.pond,w:2.5,flat:1},{f:OBJ.reeds,w:5},{f:OBJ.mud,w:2,flat:1},{f:OBJ.marshtuft,w:4,flat:1}],thumb:[['pond',96,76],['mud',30,82],['reeds',40,70],['reeds',140,58],['marshtuft',120,90]]}
 };
 const BIOME_KEYS=Object.keys(BIOMES);
 // 每種作物在各地區都可能出現，非主要作物機率較低
-for(const k of BIOME_KEYS){const have=new Set(BIOMES[k].crops.map(c=>c[0]));for(const c of Object.keys(CROPS))if(!have.has(c))BIOMES[k].crops.push([c,0.5])}
+for(const k of BIOME_KEYS){const have=new Set(BIOMES[k].crops.map(c=>c[0]));for(const c of ACTIVE_CROPS)if(!have.has(c))BIOMES[k].crops.push([c,0.5])}
 
 // --- 野生種原 ---
 function makeWild(crop,bk,rare){
   const B=BIOMES[bk];
-  let nP=rare?3+Math.floor(rnd()*2):1+Math.floor(rnd()*3);if(bk==='desert')nP++;
-  const col=pk(B.cols),pfw=B.pf||[0,1,2,3,4,5];
-  const g=makeOriginal({pointed:Math.min(SHN,nP),color:col,pf:pk(pfw),rare});
+  const btW=bk==='desert'?[[0,3],[1,3.5],[2,3.5]]:rare?[[0,4],[1,3],[2,3]]:[[0,6],[1,2.5],[2,1.5]];
+  const col=pk(B.cols),pfw=B.pf||[0,1,2,3];
+  const g=makeOriginal({bt:wpk(btW),color:col,pf:pk(pfw),rare});
   if(rare)g.sp=[0,wpk(SPSH_W)];
   {const ps=bk==='marsh'?0.03:0.01;if(rnd()<ps){const v=wpk(SPSH_W);g.sp=[v,v]}}
   if(EX_OF[crop]){const r=rnd(),e=EX_OF[crop];if(r<0.003)g.sp=[e,e];else if(r<0.023&&!(g.sp[0]&&g.sp[1]))g.sp=[0,e]}
   if(bk==='marsh'&&rnd()<0.5)g.n.size=numLoci(0.88,0.06);
   if((bk==='desert'||bk==='snow')&&rnd()<0.4)g.n.size=numLoci(0.1,0.06);
-  if(bk==='forest')g.n.vigor=numLoci(0.72+rnd()*0.1);
-  if(bk==='grass')g.n.yield=numLoci(0.72+rnd()*0.1);
-  if(bk==='snow')g.n.speed=numLoci(0.72+rnd()*0.1);
   if(rare){const hi=rnd()<.5;g.n.perf=numLoci(hi?0.85+rnd()*0.1:0.05+rnd()*0.05,0.06)}
   return g;
 }
@@ -3187,7 +3282,7 @@ function wildName(bk,crop,rare){
   for(let k=0;k<300;k++){const n=p+NAME_A[Math.floor(rnd()*NAME_A.length)]+CROPS[crop].short;if(!used.has(norm(n)))return n}
   return p+CROPS[crop].short+Math.floor(rnd()*900+100);
 }
-// 珍稀種原：外觀因子特殊（多組尖、隱性特殊造型、極端完美度），但產量、生命力、速度偏低
+// 珍稀種原：外觀因子特殊（第 2、3 種造型較多、帶一個特殊造型因子、極端完美度）
 function makeRel(crop,bk){return makeWild(crop,bk,true)}
 function addWildLot(crop,bk,g,rel,source){
   const name=wildName(bk,crop,rel),ph=phen(g,crop);
@@ -3789,8 +3884,8 @@ function lotParentHTML(l,ph,cross){let f='';if(cross){try{f=shortApp(phen(l.f,l.
 function lotTarget(l){const c=lotCat(l);return c.c==='breed'?c.r:null}
 function lotTargetHTML(l,ph){const r=lotTarget(l);if(r==null)return '';return `<div class="lot-top" style="margin:4px 0 8px">${fruitSVG(ph,l.crop,48)}<div><b>目標外觀</b><div class="meta">${ph.shapeName}・${colorLabel(ph)}</div><div class="meta">種下去約 ${pctTxt(r)} 會長成這樣</div></div></div>`}
 function lotUniHTML(l){try{const d=lotDist(l);if(!d.length)return '';
-  if(d.length===1||d[0].p>=0.9995)return `<p class="note">${l.cross?'這包是雜交的種子，種下去會長得一樣（整齊）。但長出來的植株自交後，後代通常會再分離，還不算穩定。':'這包種下去會長得一樣。'}</p>`;
-  return `<p class="note">這包種下去會長出 ${d.length} 種外觀，還在分離中。</p>`}catch(e){return ''}}
+  if(d.length===1||d[0].p>=0.9995)return `<p class="note">${l.cross?'這包是雜交成品：種下去全部長一樣。但長出來的植株自交後，後代會分開，想一直有這個樣子，要留著兩個純的親本再雜交。':'這包種下去會長得一樣。'}</p>`;
+  return `<p class="note">這包種下去會長出 ${d.length} 種外觀。</p>`}catch(e){return ''}}
 // ===== 自動命名：用外觀與世代命名，不再跳出命名視窗 =====
 const shortApp=ph=>`${ph.cname}・${ph.shapeName}`;
 function autoSeedName(p){
@@ -3877,9 +3972,9 @@ function traySow(lotId,mx){
   const free=trayFree();if(free<=0){toast('育苗盤滿了，先移植或丟掉一些幼苗');return}
   const n=Math.min(free,lc(l));if(!n){toast('這包沒有種子了');return}
   let si=t.srcs.findIndex(s=>s.id===l.id);
-  if(si<0){t.srcs.push({id:l.id,lid:l.lid,crop:l.crop,name:l.name,m:clone(l.m),par:l.par||[],gpar:l.gpar||[],wide:!!l.wide,rel:!!l.rel,gen:l.gen});si=t.srcs.length-1}
+  if(si<0){t.srcs.push({id:l.id,lid:l.lid,crop:l.crop,name:l.name,m:clone(l.m),f:clone(l.f||l.m),cross:!!l.cross,par:l.par||[],gpar:l.gpar||[],wide:!!l.wide,rel:!!l.rel,gen:l.gen});si=t.srcs.length-1}
   const it=state.items||(state.items={});if(mx&&!(it.mut>0))mx=false;if(mx)it.mut--;
-  const gk=g=>JSON.stringify([g.s,g.sp,g.c1,g.c2,g.pc]);
+  const gk=g=>JSON.stringify(g.sp);/* 14l：顏色突變當代就看得到，只標看不出來的特殊造型突變 */
   let ok=0;
   for(let k=0;k<n;k++){const g=drawSeed(l);let odd=false;
     if(mx){const b0=gk(g),k0=phen(g,l.crop).key;if(mutateX(g)&&gk(g)!==b0&&phen(g,l.crop).key===k0)odd=true}/* 外觀看不出來的突變：育苗盤加閃光 */
@@ -4031,36 +4126,35 @@ function plantPickAction(b){
 document.getElementById('genesBtn').onclick=()=>openPanel('genes');
 function renderGenes(){
   const el=document.getElementById('genes');if(!el)return;
-  const sw=c=>`<span class="sw" style="background:${rgbS(RGBC[c])}"></span>`;
+  /* 14l：新規則只有兩句話；介面不用顯性、隱性等詞 */
+  const swc=c=>{const p=colParts(c);if(p.t==='s')return c==='rainbow'?`linear-gradient(135deg,${RAINBOW.join(',')})`:`linear-gradient(135deg,${SPGRAD[c][0]},${SPGRAD[c][1]})`;return rgbS(RGBC[c]||RGBC.white)};
+  const sw=c=>`<span class="sw" style="background:${swc(c)}"></span>`;
   const step=(inner,name)=>`<span class="lstep">${inner}<small>${name}</small></span>`;
-  const gt='<span class="gt" aria-label="強於">›</span>';
-  const ladder=items=>`<div class="ladder">${items.join(gt)}</div>`;
-  const icon=(a,crop,sz)=>fruitSVG({perfCls:2,seed:7,pat:null,...a},crop||'tomato',sz||40);
-  const unk=n=>step('<span class="sw unk" aria-hidden="true">？</span>',n);
-  const tag=k=>k==='d'?'<span class="gdom">顯性</span>':k==='r'?'<span class="grec">隱性</span>':'<span class="gadd">加性</span>';
-  const specOrder=SPECIAL.slice().reverse(),basicOrder=BASIC.slice().reverse();
-  let h=`<div class="gcard"><p class="note" style="margin:0">每個性狀由一對因子決定，一個來自母本、一個來自父本。</p>
-    <div class="glegend"><span>${tag('d')} 只要帶一個就會表現</span><span>${tag('r')} 兩個都帶才會表現</span><span>${tag('a')} 沒有顯隱性，取平均</span></div>
-    <p class="note" style="margin:6px 0 0">「›」表示左邊比右邊強：兩種一起出現時，表現左邊那一種。</p></div>`;
-  h+=`<div class="gcard"><h3>顏色強弱 ${tag('d')}</h3><p class="note">主色、副色、花紋顏色都依這個順序，較強的顏色為顯性。</p>
-    <h4>特殊色（一律強於基本色）</h4>${ladder(specOrder.map(c=>unk({silver:'銀色',pearl:'珍珠白',blue:'藍色',gold:'金色',obsidian:'黑曜',crystal:'水晶',starry:'星空色',rainbow:'彩虹'}[c])))}
-    <p class="note">特殊色只能靠突變取得，實際顏色要親自培育出來才看得到。</p>
-    <h4>基本色</h4>${ladder(basicOrder.map(c=>step(sw(c),CN[c])))}</div>`;
-  h+=`<div class="gcard"><h3>果皮顏色的混色</h3><p class="note">主色和副色表現的顏色不同時，以下組合會混成新顏色；其他組合顯示較強的那一色，有特殊色時顯示特殊色。</p>
-    <div class="mixes">${Object.entries(MIXC).map(([k,v])=>{const [a,b]=k.split('|');return `<div class="mix">${step(sw(a),CN[a])}<span class="gop">＋</span>${step(sw(b),CN[b])}<span class="gop">＝</span>${step(sw(v),CN[v])}</div>`}).join('')}</div></div>`;
+  const icon=(a,crop,sz)=>fruitSVG({perfCls:2,seed:7,pat:null,level:0,sp:0,...a},crop||'tomato',sz||40);
+  const eq='<span class="gop">＝</span>',plus='<span class="gop">＋</span>';
+  let h=`<div class="gcard"><h3>兩句話規則</h3>
+    <p><b>① 顏色、花紋顏色、花紋形式：看到什麼就是什麼。</b>純的種下去不會變；混的（例如橙色、淡星空、兩種花紋一起出現）種下去會分開。</p>
+    <p><b>② 基本造型、特殊造型、有沒有花紋：要兩個一樣才會出現。</b>只帶一個的時候看不出來，可能隔代冒出來。</p>
+    <p class="note" style="margin-top:6px">每個特徵都有一對因子，一個來自母本、一個來自父本。種子包的預覽已經把機率算好了，不懂也能玩。</p></div>`;
+  h+=`<div class="gcard"><h3>果皮顏色</h3><p class="note">基本色 6 種。兩個一樣是純色；兩種不同的基本色會混成新的顏色。</p>
+    <h4>基本色</h4><div class="ladder">${BASIC.map(c=>step(sw(c),CN[c])).join('')}</div>
+    <h4>混色（15 種）</h4><div class="mixes">${Object.entries(MIX15).map(([k,v])=>{const [a,b]=k.split('|');return `<div class="mix">${step(sw(a),CN[a])}${plus}${step(sw(b),CN[b])}${eq}${step(icon({skin:v}),CN[v])}</div>`}).join('')}</div>
+    <p class="note">混色自己種下去會分開（例如橙色自交：紅、橙、黃大約 1：2：1）。想一直有橙色，就留著純紅、純黃兩個親本，每次雜交一次，種出來全部都是橙色。</p></div>`;
+  h+=`<div class="gcard"><h3>特殊色</h3><p class="note">只能靠突變取得。兩個一樣是完整的特殊色；特殊色＋基本色是「淡」的版本，效果較弱，一看就知道還不是純的；兩種不同的特殊色是雙色。</p>
+    <div class="mix">${step(icon({skin:'starry'}),'星空')}${step(icon({skin:'l-starry'}),'淡星空')}${step(icon({skin:'d-gold-starry'}),'金星空雙色')}</div></div>`;
   h+=`<div class="gcard"><h3>花紋</h3>
-    <p><b>有沒有花紋</b> ${tag('r')}　兩個都帶「有花紋」才會出現。</p>
-    <p><b>花紋顏色</b> ${tag('d')}　強弱和上面的顏色相同；和果皮同色時看不出來。</p>
-    <p><b>花紋形式</b> ${tag('d')}</p>${ladder(PFN.map((n,i)=>step(icon({level:1,sp:0,skin:'red',pat:{c:'white',f:i}}),n)))}</div>`;
-  h+=`<div class="gcard"><h3>基本造型 ${tag('r')}</h3><p class="note">由 6 組「尖因子」決定，「尖」為隱性。兩個都帶尖的組數越多越尖；不同組的尖因子可以累加，所以兩個不太尖的親本也可能生出更尖的後代。</p>
-    <div class="ladder">${[0,1,2,3].map(k=>step(icon({level:k,sp:0,skin:'red'}),`${CROPS.tomato.shapes[k]}<br>${['0–1','2–3','4–5','6'][k]} 組`)).join('<span class="gt">→</span>')}</div>
-    <p class="note">以番茄為例，其他作物的名稱不同，規則相同。</p></div>`;
-  h+=`<div class="gcard"><h3>特殊造型 ${tag('r')}</h3><p class="note">對一般造型為隱性，兩個都帶才會表現。所有作物都可能出現。</p>
-    ${ladder(SPN.slice(1).map((n,i)=>step(icon({level:0,sp:i+1,skin:'red'}),n)))}</div>`;
-  h+=`<div class="gcard"><h3>專屬造型 ${tag('r')}</h3><p class="note">和特殊造型是同一組因子，對一般造型為隱性。與特殊造型同時存在時，<b>專屬造型優先表現</b>。只會在原生作物身上出現，其他作物要靠遠緣雜交導入。瓜科指櫛瓜、南瓜、苦瓜、哈密瓜。</p>
-    <div class="ladder">${Object.entries(EXN).map(([v,n])=>{const cl=Object.keys(EX_OF).filter(c=>EX_OF[c]===+v),crops=cl.length>1?'瓜科':CROPS[cl[0]].n;return unk(`${n}<br><span class="meta">${crops}</span>`)}).join('')}</div></div>`;
-  h+=`<div class="gcard"><h3>大小、完美度 ${tag('a')}</h3><p class="note">各由 10 組數值因子決定，沒有顯隱性，取全部因子的平均。雙親的數值高，後代通常也高，但每顆種子會有差異。只影響賣價與紀錄，不影響稀有度與品種權，想挑戰紀錄再選拔就好。</p></div>`;
-  h+=`<div class="gcard"><h3>突變</h3><p class="note">每顆種子：一般突變 0.1%、特殊色 0.2%、特殊造型 0.05%；原生作物另有 0.02% 出現專屬造型。</p><p class="note">撒進育苗盤時使用誘變劑：這次的每顆種子會再多一次突變機會，機率是平常的 25 倍（特殊色 5%、特殊造型 1.25%、一般 2.5%；專屬造型不會因此出現），但發芽率變成 0.7 倍。</p></div>`;
+    <p><b>有沒有花紋</b>：要兩個「有花紋」才會出現。</p>
+    <p><b>花紋顏色</b>：和果皮同一條規則（純色、混色、特殊色、淡特殊色）。和果皮同色時會畫成稍深或稍淺的花紋。</p>
+    <p><b>花紋形式</b>：4 種，兩個不同就兩種一起出現。</p>
+    <div class="ladder">${PFN.map((n,i)=>step(icon({skin:'red',pat:{c:'white',f:i}}),n)).join('')}${step(icon({skin:'red',pat:{c:'white',f:0,f2:1}}),'條紋＋斑點')}</div></div>`;
+  h+=`<div class="gcard"><h3>基本造型</h3><p class="note">每種作物有 3 種真實的造型。兩個一樣就是那一種；不一樣時會長成第一種（最常見的）。</p>
+    ${ACTIVE_CROPS.map(c=>`<h4>${CROPS[c].n}</h4><div class="ladder">${[0,1,2].map(k=>step(icon({level:k,skin:WILD[c]||'red'},c,44),CROPS[c].shapes[k])).join('')}</div>`).join('')}</div>`;
+  h+=`<div class="gcard"><h3>特殊造型</h3><p class="note">所有作物都可能出現。和基本造型一樣，要兩個一樣才會出現；兩種不同的特殊造型（例如星形＋愛心）會長成一般造型，但兩個都會傳下去。</p>
+    <div class="ladder">${SPN.slice(1).map((n,i)=>step(icon({sp:i+1,skin:'red'}),n)).join('')}</div></div>`;
+  h+=`<div class="gcard"><h3>專屬造型</h3><p class="note">和特殊造型是同一組因子，規則相同。只會在原生作物身上出現，其他作物要靠遠緣雜交（番茄、茄子、辣椒互相；櫛瓜和南瓜互相）導入。</p>
+    <div class="ladder">${ACTIVE_CROPS.filter(c=>EX_OF[c]).map(c=>step(icon({sp:EX_OF[c],skin:WILD[c]||'red'},c,44),`${EXN[EX_OF[c]]}<br><span class="meta">${CROPS[c].n}</span>`)).join('')}</div></div>`;
+  h+=`<div class="gcard"><h3>大小、完美度</h3><p class="note">各由 10 組數值因子決定，取全部的平均。雙親的數值高，後代通常也高，但每顆種子會有差異。只影響賣價與紀錄，不影響稀有度與標本。</p></div>`;
+  h+=`<div class="gcard"><h3>突變</h3><p class="note">每顆種子：一般突變 0.1%、特殊色 0.2%、特殊造型 0.05%；原生作物另有 0.02% 出現專屬造型。</p><p class="note">撒進育苗盤時使用誘變劑：這次的每顆種子會再多一次突變機會，機率是平常的 25 倍（專屬造型不會因此出現），但發芽率變成 0.7 倍。</p></div>`;
   el.innerHTML=h;
 }
 document.getElementById('sizeBox').addEventListener('toggle',e=>{if(e.target.open)document.getElementById('sizeInfo').innerHTML=sizeReportHTML()});
@@ -4214,7 +4308,7 @@ sb.addEventListener('click',e=>{if(!sheet||!sheet.avatar)return;const b=e.target
 const avB=document.getElementById('avatarBtn2');if(avB)avB.onclick=()=>{closePanel();openAvatar()};
 
 
-document.getElementById('allSeedsBtn').onclick=()=>{const n=giveAllOriginals();renderAll();toast(n?`領取了 ${n} 種原始品種`:'已經有全部 8 種了')};
+document.getElementById('allSeedsBtn').onclick=()=>{const n=giveAllOriginals();renderAll();toast(n?`領取了 ${n} 種原始品種`:'已經有全部 9 種了')};
 let wipeArm=false;
 document.getElementById('testBox').addEventListener('click',e=>{
   const sp=e.target.closest('[data-spd]');if(sp){tick();state.speed=+sp.dataset.spd;save();renderSpeed();toast(`時間加速 ×${state.speed}`);return}
@@ -4278,7 +4372,7 @@ auth.onAuthStateChanged(async user=>{
   if(!user){if(selfUnsub){selfUnsub();selfUnsub=null}stopListeners();uid=null;state=null;closeSheet();loginEl.hidden=false;return}
   uid=user.uid;loginEl.hidden=true;setSync('loading');
   document.getElementById('account').textContent='目前登入：'+(user.displayName||'')+(user.email?'（'+user.email+'）':'')+'・遊戲版本 '+BUILD;
-  try{const rs=await db.collection('registry').get();regList=rs.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.v===4);sortReg()}catch(e){}
+  try{const rs=await db.collection('registry').get();regList=rs.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.v===4&&CROPS[r.crop]);sortReg()}catch(e){}
   let cloud=null,snap=null,readOk=false;
   for(let k=0;k<3&&!readOk;k++){try{snap=await db.collection('players').doc(uid).get();readOk=true}catch(e){await new Promise(r=>setTimeout(r,1500))}}
   if(!readOk){setSync('err');blockSaves('讀取雲端存檔失敗。為了避免用空白存檔蓋掉你的進度，遊戲先不啟動，請確認網路後重新整理。');return}
@@ -4294,6 +4388,7 @@ auth.onAuthStateChanged(async user=>{
   if(cloud)delete cloud._raw;
   if(!state)newGame();
   {const c=state._oldFert;delete state._oldFert;if(cloud)delete cloud._oldFert;if(local)delete local._oldFert;if(c)setTimeout(()=>toast(`舊肥料已換成 ${c} 金幣`,6000),1500)}/* 14g */
+  {const m=state._cropMsg;delete state._cropMsg;if(cloud)delete cloud._cropMsg;if(local)delete local._cropMsg;if(m)setTimeout(()=>toast(`苦瓜、甘藷已從遊戲移除，你的 ${m.nLot} 包種子、${m.nPl} 株植株已換成 ${m.coins} 金幣`,7000),2600)}/* 14l */
   ensureCrops();shapeMigrate();cleanupObs();
   dirty=true;flush();
   db.collection('profiles').doc(uid).set({name:myName(),avatar:avNorm(state.avatar),at:TS()},{merge:true}).catch(()=>{});

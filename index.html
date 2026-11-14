@@ -334,8 +334,8 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 #wx{position:fixed;inset:0;pointer-events:none;z-index:3;overflow:hidden}#wx[hidden]{display:none}
 #wx.paused *{animation-play-state:paused!important}
 #wx i{position:absolute;display:block;top:-6vh;left:var(--x);animation:var(--a) var(--d) linear var(--l) infinite;will-change:transform}
-#wx.wx-snow i{width:var(--s);height:var(--s);border-radius:50%;background:#fff;opacity:.9;box-shadow:0 0 3px rgba(255,255,255,.9)}
-@keyframes wxFall{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--dx),112vh,0)}}
+#wx.wx-snow i{width:var(--s);height:var(--s);border-radius:50%;background:#fff;opacity:var(--o,.9);box-shadow:0 0 3px rgba(255,255,255,.9)}
+@keyframes wxFall{0%{transform:translate3d(0,0,0)}50%{transform:translate3d(calc(var(--dx)*.5 + var(--sw,0px)),56vh,0)}100%{transform:translate3d(var(--dx),112vh,0)}}
 #wx.wx-desert{background:linear-gradient(rgba(230,190,120,.08),rgba(230,190,120,.2))}
 #wx.wx-desert i{top:var(--y);left:-20vw;width:var(--w);height:2px;border-radius:2px;background:rgba(200,150,80,.55)}
 @keyframes wxBlow{from{transform:translate3d(0,0,0)}to{transform:translate3d(140vw,var(--dy),0)}}
@@ -347,6 +347,17 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 @keyframes wxLeaf{0%{transform:translate3d(0,0,0) rotate(0)}50%{transform:translate3d(calc(var(--dx)*.5 + 3vw),56vh,0) rotate(200deg)}100%{transform:translate3d(var(--dx),112vh,0) rotate(400deg)}}
 @media (prefers-reduced-motion: reduce){#wx{display:none!important}}
 #exHint{position:fixed;left:50%;transform:translateX(-50%);top:calc(52px + env(safe-area-inset-top,0px));z-index:10;max-width:calc(100vw - 150px);text-align:center;background:rgba(255,246,222,.92);border:2px solid #5A3416;border-radius:10px;padding:3px 8px;font-size:12px;line-height:1.3;color:#5A3416;pointer-events:none}#exHint[hidden]{display:none}
+#mapBanner{position:fixed;left:10px;top:calc(76px + env(safe-area-inset-top,0px));z-index:11;background:rgba(36,50,64,.88);color:#fff;font-weight:700;font-size:15px;padding:6px 12px;border-radius:10px;pointer-events:none;animation:bannerIn 2.5s ease forwards}#mapBanner[hidden]{display:none}
+@keyframes bannerIn{0%{opacity:0;transform:translateY(-6px)}12%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0}}
+#mapBtn{position:fixed;right:8px;top:calc(252px + env(safe-area-inset-top,0px));z-index:10;width:54px;height:44px;border-radius:14px;border:2px solid #5A3416;background:#FFF6DE;color:#5A3416;font:inherit;font-weight:700;font-size:13px;box-shadow:0 3px 0 #5A3416}#mapBtn[hidden]{display:none}
+#mapPanel{position:fixed;right:8px;top:calc(302px + env(safe-area-inset-top,0px));z-index:20;background:#FFF6DE;border:2px solid #5A3416;border-radius:14px;padding:8px;width:min(310px,calc(100vw - 24px));color:#3B2A18}#mapPanel[hidden]{display:none}
+#fadeOv{position:fixed;inset:0;background:#0E1A26;opacity:0;pointer-events:none;transition:opacity .15s;z-index:40}
+.sway{animation:sway 5s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}@keyframes sway{0%,100%{transform:rotate(-.9deg)}50%{transform:rotate(.9deg)}}
+.glw{animation:glw 3s ease-in-out infinite}@keyframes glw{50%{opacity:.5}}
+.fp{fill:rgba(110,140,165,.55);animation:fpFade 7s linear forwards}@keyframes fpFade{from{opacity:1}to{opacity:0}}
+#wx.wx-cave i{top:var(--y);width:3px;height:3px;border-radius:50%;background:#D6F3FF;box-shadow:0 0 6px 2px rgba(180,230,255,.7);animation:wxDrip var(--d) ease-in var(--l) infinite}
+@keyframes wxDrip{0%{transform:translateY(0);opacity:0}10%{opacity:1}70%{opacity:.8}100%{transform:translateY(14vh);opacity:0}}
+@media (prefers-reduced-motion: reduce){.sway,.glw{animation:none}.fp{animation:none;opacity:.35}}
 .hvextra{display:flex;flex-direction:column;gap:4px;padding:0 0 8px}.hvextra .btn{margin:0;font-size:14px;padding:8px}
 .hvrow{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.06)}
 .hvrow:last-child{border-bottom:none}
@@ -404,9 +415,13 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
   <p class="note" id="inapp" hidden style="max-width:320px;margin-top:16px">你現在是在 LINE 或其他 App 裡開啟網頁，Google 不允許在這裡登入。請點右上角選單，選擇「用預設瀏覽器開啟」，改用 Chrome 或 Safari 開啟這個網址。</p>
   <p class="err" id="loginErr" style="max-width:320px;margin-top:12px"></p>
 </div>
-<svg id="scene" viewBox="0 0 400 800" role="application" aria-label="遊戲畫面"><g id="worldLayer"></g><g id="charLayer"></g></svg>
+<svg id="scene" viewBox="0 0 400 800" role="application" aria-label="遊戲畫面"><g id="worldLayer"></g><g id="fxLayer" pointer-events="none"></g><g id="charLayer"></g><g id="fgLayer" pointer-events="none"></g></svg>
 <div id="wx" aria-hidden="true" hidden></div>
 <div id="exHint" hidden></div>
+<div id="mapBanner" hidden></div>
+<button id="mapBtn" hidden aria-label="雪原地圖">地圖</button>
+<div id="mapPanel" hidden role="dialog" aria-label="雪原地圖"></div>
+<div id="fadeOv" aria-hidden="true"></div>
 <div class="hudTop"><div class="coins" aria-label="金幣"><span class="coin" aria-hidden="true"></span><span id="coins">0</span></div><div class="sceneName" id="sceneName">我的農場</div><div class="sync" id="sync" role="status"></div></div>
 <div id="marquee" hidden role="status" aria-live="polite"><b aria-hidden="true">📢</b><div class="mqwin"><span></span></div></div>
 <div id="iconbarL" class="iconbar">
@@ -889,7 +904,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN+2&&v.startsWi
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-14i';
+const BUILD='2026-11-14j';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object')return false;
@@ -2411,7 +2426,8 @@ function marketWorld(hl){
 function renderWorld(){
   if(!state)return;const L=document.getElementById('worldLayer');
   if(scene==='market'){L.innerHTML=marketWorld(hoverStall);return}
-  if(scene==='explore'){L.innerHTML=exploreWorld();return}
+  {const F=document.getElementById('fgLayer');if(F&&snowFg&&!(scene==='explore'&&exBiome==='snow')){F.innerHTML='';snowFg=''}}
+  if(scene==='explore'){L.innerHTML=exploreWorld();if(exBiome==='snow'){const F=document.getElementById('fgLayer');if(F)F.innerHTML=snowFg}return}
   if(viewing){L.innerHTML=viewing.st?farmWorld(viewing.st,hoverPlot,null):`<text x="230" y="300" text-anchor="middle" font-size="16" fill="var(--muted)">讀取朋友的農場中…</text>`;return}
   L.innerHTML=farmWorld(state,hoverPlot,selDecor);
 }
@@ -2420,6 +2436,7 @@ function renderHint(){}
 const sceneEl=document.getElementById('scene');
 function updateCam(){
   if(!state)return;
+  if(scene==='explore'&&exBiome==='snow'){snowCam();return}
   if(scene==='explore'){const r=camRect();sceneEl.setAttribute('viewBox',`${r.x.toFixed(1)} ${r.y.toFixed(1)} ${r.w.toFixed(1)} ${r.h.toFixed(1)}`);if(exRange(r).key!==exKey)renderWorld();return}
   const vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zoom,w=vw/k,h=vh/k,{W,H}=scene==='market'?WORLD.market:WORLD.farm,m=(buildMode||shovelMode||sowMode||accelMode||decoMode)?buildCam:curMe();
   let x=m.x-w/2,y=m.y-h*0.55;
@@ -2585,12 +2602,13 @@ const iconbarClick=e=>{
 document.querySelectorAll('.iconbar').forEach(el=>el.addEventListener('click',iconbarClick));
 function renderHUD(){
   if(!state)return;
-  document.getElementById('sceneName').textContent=scene==='market'?'市集':scene==='explore'?`探索：${BIOMES[exBiome].n}`:viewing?`${viewing.name} 的農場`:'我的農場';
+  document.getElementById('sceneName').textContent=scene==='market'?'市集':scene==='explore'?(exBiome==='snow'?`雪原・${SNOW_MAPS[snowMap].n}`:`探索：${BIOMES[exBiome].n}`):viewing?`${viewing.name} 的農場`:'我的農場';
   const mb=document.getElementById('ibMarket');mb.querySelector('span').textContent=scene==='market'?'回農場':'市集';
   document.getElementById('ibHome').hidden=!(viewing||scene==='explore');
   const own=scene==='farm'&&!viewing;
   {const tb=document.getElementById('trayBtn');const tn=state.tray&&state.tray.cells?state.tray.cells.length:0;const th=tn?`育苗盤<br>${tn}`:'育苗盤';if(tb.innerHTML!==th)tb.innerHTML=th}layoutSbtns();
-  setWeather(scene==='explore'?exBiome:null);exHintUpd();
+  setWeather(scene==='explore'?(exBiome==='snow'&&SNOW_MAPS[snowMap].cave?'cave':exBiome):null);exHintUpd();
+  {const sn=scene==='explore'&&exBiome==='snow',mb=document.getElementById('mapBtn');if(mb&&mb.hidden===sn)mb.hidden=!sn;if(!sn){const mp=document.getElementById('mapPanel');if(mp&&!mp.hidden)mp.hidden=true;snowFxClear()}}
   document.getElementById('ibDecor').hidden=!own;document.getElementById('ibBuild').hidden=!own;
 }
 
@@ -3180,7 +3198,7 @@ function exPlants(bk,cx,cy){
   wpCache.set(key,out);return out;
 }
 function wpGeno(w){if(!w.g)w.g=withSeed(w.seed,()=>w.rel?makeRel(w.crop,w.bk):makeWild(w.crop,w.bk,false));return w.g}
-function exVisiblePlants(){if(!exRg||!state.ex)return [];const out=[];for(let cy=exRg.cy0;cy<=exRg.cy1;cy++)for(let cx=exRg.cx0;cx<=exRg.cx1;cx++)for(const w of exPlants(exBiome,cx,cy))if(!state.ex.got.includes(w.key))out.push(w);return out}
+function exVisiblePlants(){if(exBiome==='snow'&&state&&state.ex)return snowPlants(snowMap).filter(w=>!state.ex.got.includes(w.key));if(!exRg||!state.ex)return [];const out=[];for(let cy=exRg.cy0;cy<=exRg.cy1;cy++)for(let cx=exRg.cx0;cx<=exRg.cx1;cx++)for(const w of exPlants(exBiome,cx,cy))if(!state.ex.got.includes(w.key))out.push(w);return out}
 function wpSVG(w,hl){
   const cd=CROPS[w.crop],ph=phen(wpGeno(w),w.crop),x=Math.round(w.x),y=Math.round(w.y),sz=cd.fs*sizeScale(ph.ab.size);
   return `<g data-wp="${w.key}" role="button" aria-label="野生的${cd.n}">${w.rel?`<ellipse cx="${x}" cy="${y-4}" rx="36" ry="14" fill="#F2C230" opacity=".38"/>`:''}${hl?`<ellipse cx="${x}" cy="${y+1}" rx="30" ry="10" fill="none" stroke="#FFD54A" stroke-width="3" stroke-dasharray="5 3"/>`:''}${shadow(x,y+1,18)}${bodySVG(cd.body,x,y,false,cd.fl)}<svg x="${f1(x+cd.fx-sz/2)}" y="${f1(y+cd.fy-sz*0.53)}" width="${f1(sz)}" height="${f1(sz*3.2/3)}" viewBox="-1.5 -1.6 3 3.2" stroke="none">${fruitInner(ph,1,w.crop)}</svg></g>`;
@@ -3208,9 +3226,9 @@ function wpAction(b){
   else{const pr=wpPrice(w,ph);state.coins+=pr;renderCoins();playAct('harvest');toast(`賣出野生${CROPS[w.crop].n}的果實，得到 ${pr} 金幣`)}
   save();closeSheet();hoverWp=null;renderWorld();refreshAct();
 }
-function exVisibleItems(){if(!exRg||!state.ex)return [];const out=[];for(let cy=exRg.cy0;cy<=exRg.cy1;cy++)for(let cx=exRg.cx0;cx<=exRg.cx1;cx++)for(const it of exItems(exBiome,cx,cy))if(!state.ex.got.includes(it.key))out.push(it);return out}
+function exVisibleItems(){if(exBiome==='snow'&&state&&state.ex)return snowItems(snowMap).filter(it=>!state.ex.got.includes(it.key));if(!exRg||!state.ex)return [];const out=[];for(let cy=exRg.cy0;cy<=exRg.cy1;cy++)for(let cx=exRg.cx0;cx<=exRg.cx1;cx++)for(const it of exItems(exBiome,cx,cy))if(!state.ex.got.includes(it.key))out.push(it);return out}
 function exploreWorld(){
-  ensureEx();
+  ensureEx();if(exBiome==='snow')return snowWorld();
   const B=BIOMES[exBiome],r=camRect();exRg=exRange(r);exKey=exRg.key;
   let s=`<rect x="${f1(r.x-900)}" y="${f1(r.y-900)}" width="${f1(r.w+1800)}" height="${f1(r.h+1800)}" fill="${B.base}"/>`;const tall=[];
   for(let cy=exRg.cy0;cy<=exRg.cy1;cy++)for(let cx=exRg.cx0;cx<=exRg.cx1;cx++){const c=exChunk(exBiome,cx,cy);s+=c.flat;for(const t of c.tall)tall.push(t)}
@@ -3220,6 +3238,207 @@ function exploreWorld(){
   for(const w of exVisiblePlants())s+=wpSVG(w,w.key===hoverWp);
   return s;
 }
+// ===== 雪原原型（14j）：固定設計、彼此相連的小地圖（其他地區仍是無限方塊） =====
+/* 新增地區照同樣格式：每張圖 {n 名稱, gx/gy 小地圖格位, cave 洞內, rare 珍稀機率, W/H,
+   exits:[{side:'n|s|e|w', c 出口中心, w 寬, to 目標圖} 或 {door:[x0,y0,x1,y1], arrive:[x,y], to}]（兩張圖的出口要互相指向對方，to:'farm' 回農場）,
+   objs:[[種類,x,y,告示牌文字?]]（x,y＝底部中央）, rows/cols:[[種類,起,迄,位置,間距]]（排成一排的樹牆、冰岩，整排擋路）,
+   blocks:[[x0,y0,x1,y1]] 額外擋路, walks:[[x0,y0,x1,y1]] 可走（橋、石階，優先於擋路）, lakes:[[cx,cy,rx,ry]] 湖面,
+   cliff:[y0,y1,gap0,gap1] 懸崖（程式畫）, paths:[[[x,y],...]] 小路, spawns:[[x,y]] 植株刷新點, items:[[x,y]] 道具點} */
+const SNOW_IMG={bare_tree:[259,300],boulder:[116,110],bridge:[182,150],bush:[171,140],cabin:[244,260],glow_crystal:[110,180],ice_boulder:[177,160],ice_cave:[300,280],ice_crystals:[109,110],log:[121,90],rock_wall:[273,160],signpost:[120,160],small_pine:[214,280],snowman:[132,170],stairs:[152,140],stalagmites:[151,180],stones:[123,100],vault_door:[239,240]};
+/* [檔名, 顯示高度, 碰撞寬, 碰撞高]：碰撞只算底部（樹＝樹幹、石頭＝底座），比圖略小 */
+const SNOW_ART={pine:['small_pine',150,22,14],bigpine:['small_pine',190,26,16],bare:['bare_tree',150,22,14],bush:['bush',62,50,16],stones:['stones',46,44,14],log:['log',42,70,14],crystals:['ice_crystals',52,36,12],snowman:['snowman',84,34,14],sign:['signpost',74,16,8],bridge:['bridge',165,0,0],stairs:['stairs',92,0,0],rockwall:['rock_wall',84,126,24],boulder:['boulder',56,50,18],cave:['ice_cave',160,0,0],cabin:['cabin',132,110,44],iceboulder:['ice_boulder',80,78,22],glow:['glow_crystal',90,28,12],stalag:['stalagmites',88,56,16],vault:['vault_door',130,122,30]};
+const SNOW_FLAT={bridge:1,stairs:1},SNOW_SWAY={pine:1,bigpine:1,bare:1,bush:1};
+const SNOW_MAPS={
+  entry:{n:'雪原入口',gx:1,gy:2,
+    exits:[{side:'s',c:400,w:120,to:'farm'},{side:'n',c:400,w:120,to:'forest'},{side:'e',c:640,w:120,to:'lake'}],
+    paths:[[[400,1110],[400,820],[420,640],[810,640]],[[420,640],[400,420],[400,-10]]],
+    objs:[['sign',480,995,'雪原'],['pine',150,300],['bigpine',215,350],['pine',115,430],['pine',620,260],['bare',700,310],['bush',250,720],['bush',560,830],['bush',150,900],['stones',610,440],['bare',690,890],['crystals',290,500],['snowman',640,1000]],
+    spawns:[[260,560],[560,520],[320,880],[650,760]],items:[[150,640],[700,420]]},
+  forest:{n:'針葉林',gx:1,gy:1,
+    exits:[{side:'s',c:400,w:120,to:'entry'},{side:'e',c:300,w:120,to:'cabin'}],
+    rows:[['pine',44,600,820,40],['pine',200,756,560,40]],cols:[['pine',300,130,420,36]],
+    paths:[[[400,1110],[400,900],[690,900],[690,690],[110,690],[110,480],[420,470],[600,300],[810,300]]],
+    objs:[['bare',560,985],['bush',160,980],['bush',650,1015],['bigpine',470,250],['stones',650,180],['crystals',230,330]],
+    spawns:[[520,960],[140,700],[660,700],[560,250]],items:[[150,200],[700,960]]},
+  cabin:{n:'小木屋',gx:2,gy:1,
+    exits:[{side:'w',c:300,w:120,to:'forest'},{side:'s',c:600,w:120,to:'lake'}],
+    paths:[[[-10,300],[300,300],[440,560],[600,700],[600,1110]]],
+    objs:[['cabin',430,470],['snowman',250,630],['log',570,560],['log',600,590],['bush',660,420],['bush',710,700],['bare',150,860],['pine',650,880],['pine',720,960],['bigpine',140,200],['stones',350,900]],
+    spawns:[[300,820],[520,760],[690,250],[200,450]],items:[[720,560]]},
+  lake:{n:'結冰湖',gx:2,gy:2,
+    exits:[{side:'w',c:820,w:120,to:'entry'},{side:'n',c:600,w:120,to:'cabin'},{side:'e',c:300,w:120,to:'cave_front'}],
+    lakes:[[330,560,150,110],[610,560,150,110],[470,560,80,60]],walks:[[440,470,500,650]],
+    paths:[[[-10,820],[470,780],[470,460],[600,300],[600,-10]],[[600,300],[810,300]],[[110,820],[110,350],[600,300]]],
+    objs:[['bridge',470,655],['pine',250,900],['pine',700,960],['pine',120,1000],['bush',330,250],['bush',160,190],['crystals',720,790],['boulder',560,890]],
+    spawns:[[300,800],[640,760],[260,320],[560,240],[110,560]],items:[[700,410],[170,1030]]},
+  cave_front:{n:'冰洞前',gx:3,gy:2,
+    exits:[{side:'w',c:820,w:120,to:'lake'},{door:[380,282,420,332],arrive:[400,368],to:'cave1'}],
+    cliff:[440,500,365,435],blocks:[[44,440,365,500],[435,440,756,500],[320,200,480,286],[320,286,378,334],[422,286,480,334]],walks:[[365,430,435,512]],
+    paths:[[[-10,820],[400,780],[400,520],[400,340]]],
+    objs:[['cave',400,334],['stairs',400,516],['rockwall',110,446],['rockwall',235,446],['rockwall',565,446],['rockwall',690,446],['boulder',180,385],['boulder',640,375],['crystals',555,405],['pine',150,700],['pine',650,650],['pine',700,900],['bush',300,860],['stones',500,760],['log',260,620]],
+    spawns:[[560,820],[200,930],[720,330],[160,580]],items:[[720,560]]},
+  cave1:{n:'冰洞',gx:3,gy:1,cave:1,rare:0.1,
+    exits:[{side:'s',c:400,w:120,to:'cave_front'},{side:'n',c:400,w:120,to:'cave2'}],
+    rows:[['iceboulder',44,520,640,64]],
+    paths:[[[400,1110],[650,900],[650,560],[400,400],[400,-10]]],
+    objs:[['iceboulder',560,860],['stalag',150,520],['stalag',680,470],['stalag',300,330],['glow',620,900],['glow',180,300],['glow',700,250],['crystals',250,850],['iceboulder',600,380]],
+    spawns:[[690,990],[150,900],[700,560],[420,220]],items:[[120,760]]},
+  cave2:{n:'冰洞深處',gx:3,gy:0,cave:1,rare:0.15,
+    exits:[{side:'s',c:400,w:120,to:'cave1'}],
+    paths:[[[400,1110],[300,820],[400,600],[400,280]]],
+    objs:[['vault',400,250],['glow',220,300],['glow',580,300],['glow',150,720],['glow',650,820],['stalag',250,600],['stalag',560,560],['iceboulder',430,850],['crystals',680,420],['crystals',120,420]],
+    spawns:[[200,450],[600,450],[400,640],[300,920],[620,980]],items:[[400,380]]}
+};
+var snowMap='entry',snowBusy=false,snowFg='',snowSplitLast=-1;
+const SNOW_DEF={W:800,H:1100,B:{x0:44,x1:756,y0:104,y1:1060}};
+function snowPrep(id){
+  const M=SNOW_MAPS[id];if(M._p)return M;M.id=id;M.W=M.W||SNOW_DEF.W;M.H=M.H||SNOW_DEF.H;M.B=M.B||{...SNOW_DEF.B};
+  const R=seededRnd(hashStr('snow|'+id)),blk=(M.blocks||[]).map(r=>r.slice()),objs=[];
+  const inExit=(side,v,pad)=>M.exits.some(e=>e.side===side&&Math.abs(v-e.c)<e.w/2+pad);
+  for(const o of M.objs||[]){objs.push(o);const a=SNOW_ART[o[0]];if(a&&a[2])blk.push([o[1]-a[2]/2,o[2]-a[3],o[1]+a[2]/2,o[2]+2])}
+  for(const [t,a0,a1,y,st] of M.rows||[]){for(let x=a0;x<=a1+0.1;x+=st)objs.push([t,x,y+R()*4-2]);blk.push([a0-14,y-14,a1+14,y+2])}
+  for(const [t,x,b0,b1,st] of M.cols||[]){for(let y=b0;y<=b1+0.1;y+=st)objs.push([t,x+R()*4-2,y]);blk.push([x-13,b0-14,x+13,b1+2])}
+  if(!M.cave){/* 邊界：上、左、右是樹牆，下方是灌木，出口處留路 */
+    for(let x=28;x<=M.W-28;x+=52)if(!inExit('n',x,24))objs.push(['pine',x+R()*10-5,98+R()*6,null,1]);
+    for(let y=190;y<=M.H-90;y+=74){if(!inExit('w',y,30))objs.push(['pine',20+R()*6,y,null,1]);if(!inExit('e',y+30,30))objs.push(['pine',M.W-20-R()*6,y+30,null,1])}
+    for(let x=36;x<=M.W-36;x+=58)if(!inExit('s',x,26))objs.push(['bush',x+R()*8-4,M.H-6,null,1]);
+    for(const e of M.exits){if(!e.side||e.to==='farm')continue;const nm='↑↓←→'['nswe'.indexOf(e.side)]+' '+SNOW_MAPS[e.to].n,h=e.w/2;
+      const p=e.side==='n'?[e.c+h+18,M.B.y0+46]:e.side==='s'?[e.c+h+18,M.B.y1-6]:e.side==='w'?[M.B.x0+26,e.c-h-14]:[M.B.x1-26,e.c-h-14];
+      objs.push(['sign',p[0],p[1],nm]);blk.push([p[0]-8,p[1]-8,p[0]+8,p[1]+2])}
+  }
+  M.blk=blk;M.wlk=M.walks||[];M.lk=M.lakes||[];
+  const SR=seededRnd(hashStr('sway|'+id));
+  M._objs=objs.filter(o=>!SNOW_FLAT[o[0]]).map(o=>({y:o[2],h:snowObjHTML(o,M.cave,SR)})).sort((a,b)=>a.y-b.y);
+  M._ys=M._objs.map(o=>o.y);M._ground=snowGroundHTML(M,objs.filter(o=>SNOW_FLAT[o[0]]));M._p=1;return M;
+}
+function snowObjHTML(o,cave,R){
+  const a=SNOW_ART[o[0]];if(!a)return '';const [iw,ih]=SNOW_IMG[a[0]],dh=a[1],w=dh*iw/ih,x=o[1],y=o[2];
+  let s=`<ellipse cx="${f1(x)}" cy="${f1(y-1)}" rx="${f1(w*0.34)}" ry="${f1(Math.max(4,w*0.08))}" fill="${cave?'rgba(0,0,0,.3)':'rgba(70,95,120,.2)'}"/>`;
+  if(o[0]==='glow')s+=`<circle class="glw" cx="${f1(x)}" cy="${f1(y-dh*0.45)}" r="58" fill="url(#sglow)"/>`;
+  const img=`<image href="assets/snow/${a[0]}.png" x="${f1(x-w/2)}" y="${f1(y-dh)}" width="${f1(w)}" height="${dh}"/>`;
+  s+=SNOW_SWAY[o[0]]&&R()<0.4?`<g class="sway" style="animation-delay:-${(R()*5).toFixed(1)}s">${img}</g>`:img;
+  if(o[0]==='sign'&&o[3])s+=`<text x="${f1(x)}" y="${f1(y-dh*0.64)}" text-anchor="middle" font-size="${o[3].length>4?8.5:11}" font-weight="700" fill="#4A3020" font-family="Noto Sans TC,sans-serif">${esc(o[3])}</text>`;
+  return s;
+}
+function snowGroundHTML(M,flat){
+  const cave=M.cave,R=seededRnd(hashStr('ground|'+M.id)),W=M.W,H=M.H,B=M.B;
+  let s=`<defs><radialGradient id="sglow"><stop offset="0" stop-color="#C8F4FF" stop-opacity=".7"/><stop offset="1" stop-color="#C8F4FF" stop-opacity="0"/></radialGradient></defs>`;
+  s+=`<rect x="-600" y="-600" width="${W+1200}" height="${H+1200}" fill="${cave?'#1E272F':'#E3EAF0'}"/><rect x="0" y="0" width="${W}" height="${H}" fill="${cave?'#3D4A56':'#E9EFF4'}"/>`;
+  for(let k=0;k<10;k++)s+=`<path d="${blob(R()*W,R()*H,60+R()*90,30+R()*50,R,10,0.3)}" fill="${cave?(R()<.5?'#36424D':'#475663'):(R()<.5?'#DDE6ED':'#F3F7F9')}" opacity=".85"/>`;
+  for(const p of M.paths||[]){const pts=p.map(q=>q.join(',')).join(' ');s+=`<polyline points="${pts}" fill="none" stroke="${cave?'#4E5D6B':'#D3DDE6'}" stroke-width="54" stroke-linecap="round" stroke-linejoin="round"/><polyline points="${pts}" fill="none" stroke="${cave?'#566676':'#DEE7EE'}" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/>`}
+  for(const [cx,cy,rx,ry] of M.lk)s+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx+9}" ry="${ry+8}" fill="#9DBCCD"/>`;
+  for(const [cx,cy,rx,ry] of M.lk)s+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#C7E0EC"/>`;
+  for(const [cx,cy,rx,ry] of M.lk)s+=`<path d="M${cx-rx*0.5} ${cy-ry*0.35} q${rx*0.25} ${-ry*0.12} ${rx*0.5} 0 M${cx-rx*0.2} ${cy+ry*0.3} l${rx*0.3} ${-ry*0.1}" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".7" fill="none"/>`;
+  if(M.cliff){const [y0,y1,g0,g1]=M.cliff;for(const [a,b] of [[-20,g0],[g1,W+20]])s+=`<rect x="${a}" y="${y0}" width="${b-a}" height="${y1-y0}" fill="#8D9299" stroke="#4A3020" stroke-width="2"/><rect x="${a}" y="${y0+(y1-y0)*0.55}" width="${b-a}" height="${(y1-y0)*0.45}" fill="#767B83"/><rect x="${a}" y="${y0-8}" width="${b-a}" height="14" rx="7" fill="#FFFFFF" stroke="#4A3020" stroke-width="1.5"/>`}
+  if(cave){/* 洞壁：程式畫，出口處留開口 */
+    const seg=(side,a0,a1)=>{const gs=M.exits.filter(e=>e.side===side).map(e=>[e.c-e.w/2,e.c+e.w/2]).sort((p,q)=>p[0]-q[0]);const out=[];let a=a0;for(const [g0,g1] of gs){if(g0>a)out.push([a,g0]);a=g1}if(a<a1)out.push([a,a1]);return out};
+    for(const [a,b] of seg('n',-600,W+600))s+=`<rect x="${a}" y="-600" width="${b-a}" height="${600+B.y0-20}" fill="#27313A" stroke="#86A9BE" stroke-width="3"/>`;
+    for(const [a,b] of seg('s',-600,W+600))s+=`<rect x="${a}" y="${B.y1+18}" width="${b-a}" height="600" fill="#27313A" stroke="#86A9BE" stroke-width="3"/>`;
+    s+=`<rect x="-600" y="-600" width="${600+B.x0-14}" height="${H+1200}" fill="#27313A" stroke="#86A9BE" stroke-width="3"/><rect x="${B.x1+14}" y="-600" width="600" height="${H+1200}" fill="#27313A" stroke="#86A9BE" stroke-width="3"/>`;
+  }
+  for(const o of flat)s+=snowObjHTML(o,cave,R);
+  if(M.exits.some(e=>e.to==='farm')){const e=M.exits.find(x=>x.to==='farm');s+=gateSVG(e.c,M.H-22,'回農場')}
+  return s;
+}
+const snowSplitN=()=>{const M=snowPrep(snowMap),y=curMe().y;let n=0;for(const v of M._ys){if(v<=y)n++;else break}return n};
+function snowWorld(){
+  ensureEx();const M=snowPrep(snowMap),me=curMe();snowSplitLast=snowSplitN();
+  const bg=[];let fg='';for(const o of M._objs){if(o.y<=me.y)bg.push(o);else fg+=o.h}
+  for(const it of exVisibleItems())bg.push({y:it.y,h:itemSVG(it,it.key===hoverItem)});
+  for(const w of exVisiblePlants())bg.push({y:w.y,h:wpSVG(w,w.key===hoverWp)});
+  bg.sort((a,b)=>a.y-b.y);snowFg=fg;return M._ground+bg.map(o=>o.h).join('');
+}
+function snowBlocked(M,x,y){
+  const B=M.B;if(x<B.x0||x>B.x1||y<B.y0||y>B.y1)return true;
+  for(const r of M.wlk)if(x>=r[0]&&x<=r[2]&&y>=r[1]&&y<=r[3])return false;/* 橋、石階上可以走 */
+  const fx0=x-7,fx1=x+7,fy0=y-3,fy1=y+3;
+  for(const r of M.blk)if(fx1>r[0]&&fx0<r[2]&&fy1>r[1]&&fy0<r[3])return true;
+  for(const [cx,cy,rx,ry] of M.lk){const a=(x-cx)/(rx-6),b=(y-cy)/(ry-6);if(a*a+b*b<1)return true}
+  return false;
+}
+function snowExitAt(M,x,y){
+  const B=M.B;
+  for(const e of M.exits){
+    if(e.door){if(x>=e.door[0]&&x<=e.door[2]&&y>=e.door[1]&&y<=e.door[3])return e;continue}
+    const h=e.w/2;
+    if(e.side==='n'&&y<B.y0&&Math.abs(x-e.c)<=h)return e;if(e.side==='s'&&y>B.y1&&Math.abs(x-e.c)<=h)return e;
+    if(e.side==='w'&&x<B.x0&&Math.abs(y-e.c)<=h)return e;if(e.side==='e'&&x>B.x1&&Math.abs(y-e.c)<=h)return e;
+  }
+  return null;
+}
+function snowArrival(id,from){
+  const M=snowPrep(id),B=M.B,e=M.exits.find(x=>x.to===from);if(!e)return [400,600];
+  if(e.door)return e.arrive.slice();
+  return e.side==='n'?[e.c,B.y0+18]:e.side==='s'?[e.c,B.y1-18]:e.side==='w'?[B.x0+18,e.c]:[B.x1-18,e.c];
+}
+function snowMove(m,dx,dy){
+  if(snowBusy)return;const M=snowPrep(snowMap),nx=m.x+dx,ny=m.y+dy;
+  const ex=snowExitAt(M,nx,ny);if(ex){snowGo(ex);return}
+  if(snowBlocked(M,m.x,m.y)){if(!(nx<M.B.x0||nx>M.B.x1||ny<M.B.y0||ny>M.B.y1)){m.x=nx;m.y=ny}return}/* 萬一卡在障礙裡，讓角色走出來 */
+  if(!snowBlocked(M,nx,ny)){m.x=nx;m.y=ny}else if(!snowBlocked(M,nx,m.y))m.x=nx;else if(!snowBlocked(M,m.x,ny))m.y=ny;/* 撞到時沿邊緣滑開 */
+}
+function snowGo(e){
+  if(snowBusy)return;if(e.to==='farm'){goFarm();return}
+  snowBusy=true;moveTo=null;const ov=document.getElementById('fadeOv'),from=snowMap;
+  try{ov.style.opacity='1'}catch(err){}
+  setTimeout(()=>{snowEnter(e.to,from);try{ov.style.opacity='0'}catch(err){}snowBusy=false},150);
+}
+function snowEnter(id,from){
+  snowMap=id;const p=snowArrival(id,from);exMe.x=p[0];exMe.y=p[1];moveTo=null;
+  if(!state.snowSeen)state.snowSeen={};state.snowSeen[id]=1;
+  snowFxClear();snowSplitLast=-1;hoverItem=null;hoverWp=null;
+  joinFarm('ex_snow_'+id);/* 多人同步：每張小地圖各自一個頻道，只看得到同一張圖的玩家 */
+  renderHUD();renderWorld();renderChars();updateCam();refreshAct();
+  snowBanner('雪原・'+SNOW_MAPS[id].n);
+  const mp=document.getElementById('mapPanel');if(mp&&!mp.hidden)renderSnowMap();
+}
+function snowPlants(id,day){
+  if(day==null){ensureEx();day=state.ex.day}const key='w|snow|'+id+'|'+day;/* 同一天、同一張圖全服相同 */let c=wpCache.get(key);if(c)return c;
+  const M=SNOW_MAPS[id],R=seededRnd(hashStr(key)),out=[];
+  M.spawns.forEach(([x,y],k)=>{const on=R()<0.55,crop=wpickR(BIOMES.snow.crops,R)[0],rel=R()<(M.rare||0.08),seed=Math.floor(R()*1e9);if(on)out.push({key:key+'|'+k,x,y,crop,rel,seed,bk:'snow'})});
+  wpCache.set(key,out);return out;
+}
+function snowItems(id,day){
+  if(day==null){ensureEx();day=state.ex.day}const key='i|snow|'+id+'|'+day;let c=exItemCache.get(key);if(c)return c;
+  const M=SNOW_MAPS[id],R=seededRnd(hashStr(key)),out=[];
+  M.items.forEach(([x,y],k)=>{const on=R()<0.5,t=wpickR(IW,R)[0];if(on)out.push({key:key+'|'+k,x,y,t})});
+  exItemCache.set(key,out);return out;
+}
+function snowCam(){
+  const M=snowPrep(snowMap),vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zoom,w=vw/k,h=vh/k,m=curMe();
+  let x=m.x-w/2,y=m.y-h*0.55;x=M.W<=w?(M.W-w)/2:clamp(x,0,M.W-w);y=M.H<=h?(M.H-h)/2:clamp(y,0,M.H-h);
+  sceneEl.setAttribute('viewBox',`${x.toFixed(1)} ${y.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
+  if(snowSplitN()!==snowSplitLast)renderWorld();/* 角色走過物件的 y：重新分前景、背景（被樹冠遮住） */
+}
+const snowGatePos=()=>{const M=snowPrep(snowMap),e=M.exits.find(x=>x.to==='farm');return e?[e.c,M.B.y1-10]:[-1e5,-1e5]};
+let fpLast=null,fpSide=1;
+function snowStep(){
+  if(SNOW_MAPS[snowMap].cave)return;const m=curMe();if(!fpLast){fpLast={x:m.x,y:m.y};return}
+  const dx=m.x-fpLast.x,dy=m.y-fpLast.y,d=Math.hypot(dx,dy);if(d<16)return;
+  const ang=Math.atan2(dy,dx),px=-Math.sin(ang)*3.5*fpSide,py=Math.cos(ang)*3.5*fpSide;fpSide=-fpSide;fpLast={x:m.x,y:m.y};
+  try{const L=document.getElementById('fxLayer');const e=document.createElementNS('http://www.w3.org/2000/svg','ellipse'),cx=(m.x+px).toFixed(1),cy=(m.y-1+py).toFixed(1);
+    e.setAttribute('cx',cx);e.setAttribute('cy',cy);e.setAttribute('rx','2.4');e.setAttribute('ry','3.8');e.setAttribute('transform',`rotate(${(ang*180/Math.PI+90).toFixed(0)} ${cx} ${cy})`);e.setAttribute('class','fp');
+    L.appendChild(e);while(L.childNodes.length>36)L.removeChild(L.firstChild)}catch(err){}
+}
+function snowFxClear(){fpLast=null;try{const L=document.getElementById('fxLayer');if(L)L.innerHTML=''}catch(e){}}
+let bannerT=null;
+function snowBanner(t){try{const el=document.getElementById('mapBanner');el.textContent=t;el.hidden=true;void el.offsetWidth;el.hidden=false;clearTimeout(bannerT);bannerT=setTimeout(()=>{el.hidden=true},2500)}catch(e){}}
+function snowMapSVG(){
+  const seen=(state&&state.snowSeen)||{},P=id=>{const M=SNOW_MAPS[id];return [30+(M.gx-1)*92,24+M.gy*58]};
+  let s='';const done=new Set();
+  for(const [id,M] of Object.entries(SNOW_MAPS))for(const e of M.exits){const k=[id,e.to].sort().join('|');if(done.has(k))continue;done.add(k);
+    const a=P(id),b=e.to==='farm'?[30,24+3*58]:P(e.to);s+=`<line x1="${a[0]+30}" y1="${a[1]+13}" x2="${b[0]+30}" y2="${b[1]+13}" stroke="#8A6A4A" stroke-width="3" ${e.door||SNOW_MAPS[e.to]&&SNOW_MAPS[e.to].cave&&!M.cave?'stroke-dasharray="5 4"':''}/>`}
+  s+=`<rect x="30" y="${24+3*58}" width="60" height="26" rx="8" fill="#BFE3A8" stroke="#5A3416" stroke-width="1.5"/><text x="60" y="${24+3*58+17}" text-anchor="middle" font-size="11" fill="#3B2A18">農場</text>`;
+  for(const [id,M] of Object.entries(SNOW_MAPS)){const [x,y]=P(id),cur=scene==='explore'&&exBiome==='snow'&&snowMap===id,v=seen[id];
+    s+=`<rect x="${x}" y="${y}" width="60" height="26" rx="8" fill="${cur?'#F2C230':v?(M.cave?'#B8C9D6':'#E3EEF5'):'#D8D2C8'}" stroke="#5A3416" stroke-width="${cur?2.5:1.5}"/><text x="${x+30}" y="${y+17}" text-anchor="middle" font-size="${M.n.length>3?9.5:11}" fill="#3B2A18">${v||cur?M.n:'？'}</text>`;
+    if(cur)s+=`<circle cx="${x+56}" cy="${y+2}" r="6" fill="#D9473A" stroke="#fff" stroke-width="2"/>`}
+  return `<svg viewBox="0 0 310 230" width="100%" aria-label="雪原地圖">${s}</svg>`;
+}
+function renderSnowMap(){const el=document.getElementById('mapPanel');if(!el)return;el.innerHTML=`<b>雪原地圖</b><span class="meta">　黃色是你現在的位置，虛線是洞口</span>${snowMapSVG()}<button class="btn" data-mp="close" style="margin:4px 0 0">關閉</button>`}
+let snowLoaded=false;
+function snowPreload(){if(snowLoaded||typeof Image==='undefined')return;snowLoaded=true;for(const f of Object.keys(SNOW_IMG)){try{const i=new Image();i.src='assets/snow/'+f+'.png'}catch(e){}}}
+try{document.getElementById('mapBtn').addEventListener('click',()=>{const el=document.getElementById('mapPanel');el.hidden=!el.hidden;if(!el.hidden)renderSnowMap()});document.getElementById('mapPanel').addEventListener('click',e=>{if(e.target.closest('[data-mp]'))document.getElementById('mapPanel').hidden=true})}catch(e){}
+
 function biomeThumb(k){
   const B=BIOMES[k],R=seededRnd(hashStr('thumb|'+k));
   let s=`<rect width="160" height="96" fill="${B.base}"/><path d="${blob(44,66,52,20,R)}" fill="${B.patch}"/><path d="${blob(124,34,42,14,R)}" fill="${B.patch2}"/>`;
@@ -3233,8 +3452,8 @@ function goExplore(bk){
   if(viewing){if(viewing.unsub)viewing.unsub();viewing=null}
   selDecor=null;renderDecorEdit();ensureEx();
   scene='explore';exBiome=bk;exMe={x:0,y:-10};hoverPlot=null;hoverStall=null;hoverItem=null;exKey='';
-  joinFarm('ex_'+bk);renderHUD();renderWorld();renderChars();updateCam();refreshAct();
-  toast(`來到${BIOMES[bk].n}了！走近發亮的袋子可以撿道具，點野外的植株可以查看、採種`);
+  if(bk==='snow'){snowPreload();snowEnter('entry','farm')}else{joinFarm('ex_'+bk);renderHUD();renderWorld();renderChars();updateCam();refreshAct()}
+  toast(bk==='snow'?'來到雪原了！沿著小路走，地圖邊緣的路口可以通往別的地方；右邊的「地圖」可以看去過哪裡':`來到${BIOMES[bk].n}了！走近發亮的袋子可以撿道具，點野外的植株可以查看、採種`,4500);
 }
 function pickItem(it){
   ensureEx();
@@ -3248,11 +3467,11 @@ function pickItem(it){
   const left=EX_LIMIT-state.ex.picks;toast(msg+(!exCapOn()?'':left>0?`，今天還能撿 ${left} 件`:'，今天的份撿完了'),5000);
 }
 function renderExplore(){
-  ensureEx();
+  ensureEx();snowPreload();
   const el=document.getElementById('exploreBody'),left=EX_LIMIT-state.ex.picks;
   let h=`<p class="note">選一個地區出發。地圖會一直延伸下去，路上偶爾能撿到道具，也會遇到野生植株，可以採種或摘果實。${exRefreshTxt()}。${exCapOn()?`每天最多撿 ${EX_LIMIT} 件道具、採 ${EX_PLANT_LIMIT} 株野生植株；今天還能撿 ${Math.max(0,left)} 件、採 ${Math.max(0,EX_PLANT_LIMIT-(state.ex.plants||0))} 株。`:'目前沒有每日上限（測試模式）。'}</p>`;
   if(scene==='explore')h+=`<button class="btn" data-ex="home" style="margin:0 0 12px">回農場</button>`;
-  h+=BIOME_KEYS.map(k=>{const B=BIOMES[k];return `<button class="biome" data-ex="${k}"${scene==='explore'&&exBiome===k?' aria-current="true"':''}>${biomeThumb(k)}<span class="lr"><b>${B.n}${scene==='explore'&&exBiome===k?'（你在這裡）':''}</b><span class="meta">${B.desc}</span><span class="meta">可能遇到：常見 ${B.crops.filter(c=>c[1]>=2).map(c=>CROPS[c[0]].n).join('、')}；其他作物也可能出現，但機率較低</span></span></button>`}).join('');
+  h+=BIOME_KEYS.map(k=>{const B=BIOMES[k];return `<button class="biome" data-ex="${k}"${scene==='explore'&&exBiome===k?' aria-current="true"':''}>${biomeThumb(k)}<span class="lr"><b>${B.n}${scene==='explore'&&exBiome===k?'（你在這裡）':''}</b><span class="meta">${B.desc}${k==='snow'?'（新版：7 張相連的小地圖，有冰洞）':''}</span><span class="meta">可能遇到：常見 ${B.crops.filter(c=>c[1]>=2).map(c=>CROPS[c[0]].n).join('、')}；其他作物也可能出現，但機率較低</span></span></button>`}).join('');
   h+=`<h3>我的道具</h3><div class="items">${IKEYS.map(k=>`<div class="itm">${itemIcon(k)}<span class="lr"><b>${itemName(k)}</b><span class="meta">${itemEff(k)}</span><span class="meta">持有 ${state.items[k]||0} ${itemUnit(k)}</span></span></div>`).join('')}</div><p class="note">生長加速劑：在植株的詳細資料裡使用，或選「連續使用」一次用在很多株；只能用在幼苗和結果中的作物。誘變劑：撒進育苗盤時勾選使用。</p>`;
   el.innerHTML=h;
 }
@@ -3325,7 +3544,7 @@ function updateMe(){const g=document.getElementById('meG');if(!g){renderChars();
 function nearest(){
   const m=curMe();
   if(scene==='explore'){
-    if(Math.hypot(EXGATE[0]-m.x,EXGATE[1]-m.y)<56)return {t:'gate'};
+    {const [gx,gy]=gatePos();if(Math.hypot(gx-m.x,gy-m.y)<56)return {t:'gate'}}
     let best=null,bdist=46;for(const it of exVisibleItems()){const d=Math.hypot(it.x-m.x,(it.y-m.y)*1.3);if(d<bdist){bdist=d;best={t:'item',it}}}
     for(const w of exVisiblePlants()){const d=Math.hypot(w.x-m.x,(w.y-m.y)*1.3)-8;if(d<bdist){bdist=d;best={t:'wp',w}}}
     return best;
@@ -3411,7 +3630,7 @@ function interactPlot(i){
   const p=state.plots[i];
   openPlot(i);
 }
-function gatePos(){return scene==='explore'?EXGATE:scene==='market'?GATE.market:GATE.farm}
+function gatePos(){return scene==='explore'?(exBiome==='snow'?snowGatePos():EXGATE):scene==='market'?GATE.market:GATE.farm}
 function handleTap(e,cx,cy){
   if(!state||curPanel)return;
   const w=screenToWorld(cx,cy),t=e&&e.target;
@@ -3792,7 +4011,7 @@ function exRefreshLeft(now){now=now||new Date();const nx=new Date(now.getFullYea
 function exRefreshTxt(now){const h=exRefreshLeft(now);return `野外植株每天 0 點換一批，還有${h<1?'不到 1 小時':`約 ${Math.round(h)} 小時`}`}
 function exHintUpd(){const el=document.getElementById('exHint');if(!el)return;const on=scene==='explore';if(el.hidden===on)el.hidden=!on;if(on){const t=exRefreshTxt();if(el.textContent!==t)el.textContent=t}}
 let wxCur=null;
-const WXN={snow:30,desert:22,marsh:14,forest:16,grass:7};/* 粒子數量控制在 40 個以內 */
+const WXN={snow:34,desert:22,marsh:14,forest:16,grass:7,cave:8};/* 粒子數量控制在 40 個以內 */
 function wxReduced(){try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}}
 function setWeather(bk){
   const el=document.getElementById('wx');if(!el)return;if(wxReduced()||!WXN[bk])bk=null;if(bk===wxCur)return;wxCur=bk;
@@ -3800,7 +4019,8 @@ function setWeather(bk){
   const r=Math.random,f=(v,d)=>v.toFixed(d==null?1:d);let h='';
   if(bk==='marsh')h+='<div class="fog" style="top:8%"></div><div class="fog" style="top:55%;animation-duration:34s;animation-delay:-9s"></div>';
   for(let k=0;k<WXN[bk];k++){let st;
-    if(bk==='snow')st=`--x:${f(r()*100)}vw;--s:${f(3+r()*4)}px;--dx:${f(r()*16-8)}vw;--d:${f(7+r()*7)}s;--l:${f(-r()*14)}s;--a:wxFall`;
+    if(bk==='snow'){const near=k<12;st=near?`--x:${f(r()*100)}vw;--s:${f(5+r()*3)}px;--o:.95;--dx:${f(r()*14-7)}vw;--sw:${f(r()*8-4)}vw;--d:${f(5+r()*3)}s;--l:${f(-r()*8)}s;--a:wxFall`:`--x:${f(r()*100)}vw;--s:${f(2+r()*1.5)}px;--o:.55;--dx:${f(r()*10-5)}vw;--sw:${f(r()*6-3)}vw;--d:${f(10+r()*6)}s;--l:${f(-r()*16)}s;--a:wxFall`}
+    else if(bk==='cave')st=`--x:${f(r()*100)}vw;--y:${f(5+r()*55)}vh;--d:${f(3+r()*3)}s;--l:${f(-r()*6)}s`;
     else if(bk==='desert')st=`--y:${f(r()*100)}vh;--w:${f(20+r()*50,0)}px;--dy:${f(r()*10-3)}vh;--d:${f(1.6+r()*1.8,2)}s;--l:${f(-r()*3.4,2)}s;--a:wxBlow`;
     else if(bk==='marsh')st=`--x:${f(r()*100)}vw;--y:${f(15+r()*80)}vh;--dx:${f(r()*60-30,0)}px;--dy:${f(r()*50-25,0)}px;--d:${f(3+r()*4)}s;--l:${f(-r()*6)}s`;
     else st=`--x:${f(r()*100)}vw;--s:${f((bk==='grass'?6:8)+r()*5,0)}px;--dx:${f(r()*30-10)}vw;--d:${f(9+r()*8)}s;--l:${f(-r()*16)}s;--a:wxLeaf;--c:${bk==='grass'?['#F7B6C8','#FFE1EA','#F2C94C'][k%3]:['#D9822B','#C9473A','#E8B13A','#6FA544'][k%4]}`;
@@ -3893,10 +4113,10 @@ function walkLoop(t){
   const mv=Math.hypot(vx,vy)>0.12&&state&&!curPanel;
   if(mv){
     const m=curMe(),{W,H}=scene==='market'?WORLD.market:WORLD.farm,len=Math.max(1,Math.hypot(vx,vy));
-    if(scene==='explore'){m.x+=vx/len*Math.min(1,len)*160*dt;m.y+=vy/len*Math.min(1,len)*130*dt}
+    if(scene==='explore'){const ddx=vx/len*Math.min(1,len)*160*dt,ddy=vy/len*Math.min(1,len)*130*dt;if(exBiome==='snow')snowMove(m,ddx,ddy);else{m.x+=ddx;m.y+=ddy}}
     else{m.x=clamp(m.x+vx/len*Math.min(1,len)*160*dt,24,W-24);m.y=clamp(m.y+vy/len*Math.min(1,len)*130*dt,74,H-26)}
-    if(moveTo){const mm=curMe();if(mm._lx!=null&&Math.hypot(mm.x-mm._lx,mm.y-mm._ly)<0.01){const fn=moveTo.then;moveTo=null;if(fn)setTimeout(fn,0)}mm._lx=mm.x;mm._ly=mm.y}
-    if(Math.hypot(vx,vy)>0.15){meFace=dirIdx(vx,vy);meDir=faceFlip(meFace)?-1:1}walkPh+=dt*12;updateMe();updateCam();pushPos(false);refreshAct();
+    if(moveTo){const mm=curMe();if(mm._lx!=null&&Math.hypot(mm.x-mm._lx,mm.y-mm._ly)<0.01){const fn=moveTo.then,mt=moveTo;moveTo=null;if(fn){if(scene==='explore'&&exBiome==='snow'&&Math.hypot(mm.x-mt.x,mm.y-mt.y)>60)toast('前面被擋住了，換條路走過去吧');else setTimeout(fn,0)}}mm._lx=mm.x;mm._ly=mm.y}
+    if(Math.hypot(vx,vy)>0.15){meFace=dirIdx(vx,vy);meDir=faceFlip(meFace)?-1:1}walkPh+=dt*12;updateMe();updateCam();pushPos(false);refreshAct();if(scene==='explore'&&exBiome==='snow')snowStep();
     raf=requestAnimationFrame(walkLoop);
   }else{raf=null;walkPh=0;if(state){updateMe();pushPos(true);if(scene==='farm'&&!viewing)save()}}
   if(arrive&&moveTo){const fn=moveTo.then;moveTo=null;if(fn)fn()}

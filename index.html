@@ -992,7 +992,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-14x';
+const BUILD='2026-11-14y';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -1287,7 +1287,7 @@ function fruitPaint(B,a,ripe,seed){
     return [hit,grad]};
   /* 特殊效果用的閃點 */
   const fxs=ok?sk.fx:[],spark=[];
-  if(fxs.some(f=>['gold','crystal','starry'].includes(f.n)))for(let k=0;k<22;k++)spark.push([x0+W*rnd(),y0+H*rnd(),W*(0.012+rnd()*0.012),rnd()]);/* 半徑跟著果實寬，縮小後還看得到 */
+  if(fxs.some(f=>['gold','crystal','starry'].includes(f.n)))for(let k=0;k<11;k++)spark.push([x0+W*rnd(),y0+H*rnd(),W*(0.009+rnd()*0.008),rnd()]);/* 半徑跟著果實寬；31.6 數量減半、縮小 */
   for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x,o=i*4;
     if(body[i]){
       const u=(x-x0)/W,v=(y-y0)/H;let c=sk.at(u,v);
@@ -1474,16 +1474,13 @@ function bodySVG(type,x,y,fl,fc){
 }
 /* ===== 作物植株圖片（14w，第 26 節 26.4、26.3）=====
    assets/crops/<作物>_1（幼苗）、_2（開花）、_3（結果、成熟）。用到才載入；還沒載好或載入失敗時照舊畫法（bodySVG），植株不會消失。
-   PLANT_H：_3 在植株座標裡的顯示高度（番茄 72 為基準；瓜類橫向鋪開，限制寬度約 110）。
-   FRUIT_AT[作物]=[[x,y,s]×3]：果實中心在 _3 圖上的比例座標與大小比例；剩幾次採收就畫前幾個點。
-   FRUIT_ONE：只有 1 顆的作物（甘藍家族），依採收次數畫第 1、2、3 個點（同一處、依次縮小）。
-   掛點用 tools/fruit_anchor.html 調整後把 JSON 貼回 FRUIT_AT。 */
+   PLANT_H：_3 在植株座標裡的顯示高度（14y 照 31.6 縮成 14w 的 0.75：番茄 54 為基準，各作物比例照 26.4）。
+   FRUIT_AT[作物]={x,y,s}：每株只畫 1 顆果實（31.6）；x、y 是果實中心在 _3 圖上的比例座標，s 是大小比例（約 14w 的 1.3 倍）。
+   採收次數仍是 3 次，剩幾次只在植株資訊顯示。掛點用 tools/fruit_anchor.html 調整後把 JSON 貼回 FRUIT_AT。 */
 const PLANT_IMG={tomato:[[148,140],[257,300],[271,300]],chili:[[143,134],[253,256],[325,300]],strawberry:[[136,148],[286,229],[359,281]],eggplant:[[152,132],[295,300],[318,300]],corn:[[137,148],[122,300],[137,300]],pumpkin:[[102,88],[294,184],[494,213]],zucchini:[[131,89],[339,281],[415,300]],melon:[[118,89],[300,170],[448,196]],broccoli:[[156,116],[278,219],[395,278]]};
-const PLANT_H={tomato:72,chili:72,eggplant:72,corn:97,pumpkin:46,zucchini:58,melon:48,broccoli:50,strawberry:40};
-const FRUIT_AT={tomato:[[0.3,0.5,0.55],[0.68,0.42,0.55],[0.5,0.68,0.55]],chili:[[0.3,0.48,0.6],[0.7,0.42,0.6],[0.52,0.66,0.6]],strawberry:[[0.28,0.82,0.45],[0.52,0.88,0.45],[0.75,0.8,0.45]],
-  eggplant:[[0.33,0.55,0.6],[0.68,0.5,0.6],[0.5,0.74,0.55]],corn:[[0.62,0.5,0.6],[0.38,0.62,0.6],[0.62,0.74,0.6]],pumpkin:[[0.28,0.7,0.48],[0.52,0.78,0.52],[0.76,0.7,0.48]],
-  zucchini:[[0.3,0.8,0.55],[0.55,0.85,0.55],[0.76,0.78,0.55]],melon:[[0.28,0.68,0.48],[0.52,0.74,0.52],[0.76,0.66,0.48]],broccoli:[[0.5,0.52,0.72],[0.5,0.52,0.62],[0.5,0.52,0.52]]};
-const FRUIT_ONE={broccoli:1};
+const PLANT_H={tomato:54,chili:54,eggplant:54,corn:73,pumpkin:35,zucchini:44,melon:36,broccoli:38,strawberry:30};
+const FRUIT_AT={tomato:{x:0.5,y:0.55,s:0.72},chili:{x:0.5,y:0.55,s:0.78},strawberry:{x:0.5,y:0.82,s:0.58},eggplant:{x:0.5,y:0.6,s:0.78},corn:{x:0.55,y:0.55,s:0.78},
+  pumpkin:{x:0.5,y:0.72,s:0.65},zucchini:{x:0.5,y:0.8,s:0.72},melon:{x:0.5,y:0.68,s:0.65},broccoli:{x:0.5,y:0.52,s:0.94}};
 const PB={};
 const plantSrc=k=>'assets/crops/'+k+'.png?v='+BUILD;
 function plantImg(crop,st){
@@ -1497,32 +1494,28 @@ function plantImgSVG(crop,stage,x,y,prr){
   const H0=PLANT_H[crop]||72,h=st===1?Math.max(18,H0*(0.35+0.2*prr)):st===2?H0*0.95:H0,w=h*dim[0]/dim[1];
   return {svg:`<image href="${plantSrc(crop+'_'+st)}" x="${f1(x-w/2)}" y="${f1(y-h)}" width="${f1(w)}" height="${f1(h)}"/>`,w,h};
 }
-/* 掛在植株上的果實：n＝剩下的果實數，mul＝階段大小（結果期 0.7） */
-function plantFruitsSVG(crop,ph,x,y,w,h,n,ripe,mul){
-  const cd=CROPS[crop],pts=FRUIT_AT[crop];if(!pts||n<=0)return '';
-  const list=FRUIT_ONE[crop]?[pts[clamp(pts.length-n,0,pts.length-1)]]:pts.slice(0,n);let s='';
-  for(const [u,v,k] of list){const sz=cd.fs*sizeScale(ph.ab.size)*mul*k,cx=x-w/2+u*w,cy=y-h+v*h;
-    s+=`<svg x="${f1(cx-sz/2)}" y="${f1(cy-sz*0.53)}" width="${f1(sz)}" height="${f1(sz*3.2/3)}" viewBox="-1.5 -1.6 3 3.2" stroke="none">${fruitInner(ph,ripe,crop)}</svg>`}
-  return s;
+/* 掛在植株上的果實（每株 1 顆，31.6）：mul＝階段大小（結果期 0.7、成熟 1） */
+function plantFruitsSVG(crop,ph,x,y,w,h,ripe,mul){
+  const cd=CROPS[crop],a=FRUIT_AT[crop];if(!a)return '';
+  const sz=cd.fs*sizeScale(ph.ab.size)*mul*a.s,cx=x-w/2+a.x*w,cy=y-h+a.y*h;
+  return `<svg x="${f1(cx-sz/2)}" y="${f1(cy-sz*0.53)}" width="${f1(sz)}" height="${f1(sz*3.2/3)}" viewBox="-1.5 -1.6 3 3.2" stroke="none">${fruitInner(ph,ripe,crop)}</svg>`;
 }
 const plantCache=new WeakMap();
 function plantSVG(p,x,y){
   const cd=CROPS[p.crop],ph=phen(p.g,p.crop);
   const prr=(p.stage==='seedling'||p.stage==='fruit')?clamp(p.prog/stageDur(p,ph),0,1):1;
-  const key=p.stage+'|'+Math.floor(prr*12)+'|'+p.watered+'|'+x+'|'+y+'|'+!!(p.pollen&&p.pollen.failed)+'|'+(p.hv||0)+'|'+FRUIT_VER;/* FRUIT_VER：素模、植株圖片載好後重畫；hv：剩下幾顆果實 */
+  const key=p.stage+'|'+Math.floor(prr*12)+'|'+p.watered+'|'+x+'|'+y+'|'+!!(p.pollen&&p.pollen.failed)+'|'+FRUIT_VER;/* FRUIT_VER：素模、植株圖片載好後重畫 */
   const hit=plantCache.get(p);if(hit&&hit.key===key)return hit.svg;
   let s='',mk=0;/* mk：狀態標示（小花、成熟星星）往上移多少，跟著植株高度 */
   const im=plantImgSVG(p.crop,p.stage,x,y,prr);
   if(im){s+=im.svg;mk=Math.max(im.h,40)+12-78;
-    if(p.stage==='fruit'||p.stage==='ripe')s+=plantFruitsSVG(p.crop,ph,x,y,im.w,im.h,(ph.harvests||3)-(p.hv||0),p.stage==='ripe'?1:prr*0.4,p.stage==='ripe'?1:0.7);
-    if(p.stage==='ripe')s+=`<path d="M${x+26} ${y-78-mk} l2.5 6 6 2.5 -6 2.5 -2.5 6 -2.5 -6 -6 -2.5 6 -2.5z" fill="#FFD54A" stroke="#9A6A00" stroke-width="1.2" stroke-linejoin="round"/>`}
+    if(p.stage==='fruit'||p.stage==='ripe')s+=plantFruitsSVG(p.crop,ph,x,y,im.w,im.h,p.stage==='ripe'?1:prr*0.4,p.stage==='ripe'?1:0.7);}/* 31.6：成熟星星拿掉 */
   else if(p.stage==='seedling'){const h=10+22*prr;s+=`<path d="M${x} ${y} L${x} ${y-h}" stroke="#3F8F2A" stroke-width="3" stroke-linecap="round"/>`+leaf(x,y-h+2,-150,0.7+0.4*prr)+leaf(x,y-h+2,-30,0.7+0.4*prr)}
   else{
     s+=bodySVG(cd.body,x,y,p.stage==='flower',cd.fl);
     if(p.stage==='fruit'||p.stage==='ripe'){
       const sz=(p.stage==='ripe'?1:0.7)*cd.fs*sizeScale(ph.ab.size);/* 26.3 結果期 70% 大小 */
       s+=`<svg x="${x+cd.fx-sz/2}" y="${y+cd.fy-sz*0.53}" width="${sz}" height="${sz*3.2/3}" viewBox="-1.5 -1.6 3 3.2" stroke="none">${fruitInner(ph,p.stage==='ripe'?1:prr*0.4,p.crop)}</svg>`;
-      if(p.stage==='ripe')s+=`<path d="M${x+26} ${y-78} l2.5 6 6 2.5 -6 2.5 -2.5 6 -2.5 -6 -6 -2.5 6 -2.5z" fill="#FFD54A" stroke="#9A6A00" stroke-width="1.2" stroke-linejoin="round"/>`;
     }
   }
   {const ym=y-mk;
@@ -2807,7 +2800,7 @@ const AWN=['#D9473A','#3F86C4','#E0A82E','#3F7B38','#8E5CC8','#E0823D','#E26F9A'
 let scene='farm',viewing=null,visitMe={x:550,y:2100},marketMe={x:230,y:690},hoverPlot=null,hoverStall=null,selDecor=null,curPanel=null;
 const curMe=()=>scene==='market'?marketMe:scene==='explore'?exMe:viewing?visitMe:(state.me||(state.me={...ME0}));
 function gateSVG(x,y,label){return `<g stroke="#4A2A12" stroke-width="1.6" stroke-linejoin="round"><rect x="${x-38}" y="${y-50}" width="8" height="50" rx="2" fill="#B5763C"/><rect x="${x+30}" y="${y-50}" width="8" height="50" rx="2" fill="#B5763C"/><path d="M${x-50} ${y-58} Q${x} ${y-78} ${x+50} ${y-58} L${x+46} ${y-46} Q${x} ${y-64} ${x-46} ${y-46}Z" fill="#D9473A"/><rect x="${x-34}" y="${y-62}" width="68" height="20" rx="6" fill="#FFF3D6"/><text x="${x}" y="${y-47}" text-anchor="middle" font-size="12" font-weight="700" fill="#4A2A12" stroke="none" font-family="Noto Sans TC,sans-serif">${label}</text></g>`}
-const GROUND=(()=>{const R=srand(4242);let t='';for(let k=0;k<420;k++){const x=30+R()*1040,y=80+R()*2080,r=R();t+=r<0.6?`<path d="M${x.toFixed(0)} ${y.toFixed(0)} l2.5 -6 l2.5 6 M${(x+4).toFixed(0)} ${y.toFixed(0)} l2 -4.5 l2 4.5" stroke="#5FA83A" stroke-width="1.6" fill="none" stroke-linecap="round"/>`:`<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="2.6" fill="${['#FFF2A8','#FFB6C9','#FFFFFF','#C9B6FF'][Math.floor(R()*4)]}" stroke="#5A8A2A" stroke-width=".8"/>`}return t})();
+const GROUND=(()=>{const R=srand(4242);let t='';for(let k=0;k<420;k++){const x=30+R()*1040,y=80+R()*2080,r=R();if(r<0.45)t+=`<path d="M${x.toFixed(0)} ${y.toFixed(0)} l2.5 -6 l2.5 6 M${(x+4).toFixed(0)} ${y.toFixed(0)} l2 -4.5 l2 4.5" stroke="#8FAA62" stroke-width="1.4" fill="none" stroke-linecap="round"/>`}return t})();/* 31.6：低彩度草叢、拿掉彩色小點 */
 function plotSVG(st,i,hov){
   const pos=posOf(st,i);if(!pos)return '';
   const [x,y]=pos,p=st.plots[i];
@@ -2821,7 +2814,7 @@ function plotSVG(st,i,hov){
 }
 function farmWorld(st,hov,selD){
   const {W,H}=WORLD.farm,[gx,gy]=GATE.farm;
-  let s=`<rect x="-600" y="-600" width="${W+1200}" height="${H+1200}" fill="#5E9E38"/><rect x="10" y="60" width="${W-20}" height="${H-70}" rx="40" fill="#8FD45E" stroke="#4E8A2C" stroke-width="3"/>${GROUND}`;
+  let s=`<rect x="-600" y="-600" width="${W+1200}" height="${H+1200}" fill="#93AE66"/><rect x="10" y="60" width="${W-20}" height="${H-70}" rx="40" fill="#A8C478" stroke="#7E9A58" stroke-width="3"/>${GROUND}`;
   s+=`<path d="M${gx} ${gy-48} V${gy+4}" stroke="#C9A363" stroke-width="44" stroke-linecap="round"/><path d="M${gx} ${gy-48} V${gy+4}" stroke="#F0D49A" stroke-width="36" stroke-linecap="round"/>`+gateSVG(gx,gy+4,'往市集');
   const all=[];
   (st.decor||[]).forEach((d,i)=>{const it=DECOR_MAP[d.t];if(!it)return;all.push({z:it.flat?-1e5+d.y:d.y,h:()=>decorSVG({...d,i},selD===i,st===state&&!!decoDrag&&decoDrag.on&&decoDrag.i===i&&decoDrag.bad)})});
@@ -3644,7 +3637,7 @@ function wpGeno(w){if(!w.g)w.g=withSeed(w.seed,()=>w.rel?makeRel(w.crop,w.bk):ma
 function exVisiblePlants(){if(regHas(exBiome)&&state&&state.ex)return regPlants(exBiome,regMap).filter(w=>!state.ex.got.includes(w.key));if(!exRg||!state.ex)return [];const out=[];for(let cy=exRg.cy0;cy<=exRg.cy1;cy++)for(let cx=exRg.cx0;cx<=exRg.cx1;cx++)for(const w of exPlants(exBiome,cx,cy))if(!state.ex.got.includes(w.key))out.push(w);return out}
 function wpSVG(w,hl){
   const cd=CROPS[w.crop],ph=phen(wpGeno(w),w.crop),x=Math.round(w.x),y=Math.round(w.y),sz=cd.fs*sizeScale(ph.ab.size),im=plantImgSVG(w.crop,'ripe',x,y,1);/* 14w：植株圖片＋掛點果實；圖片還沒載好照舊畫法 */
-  const body=im?im.svg+plantFruitsSVG(w.crop,ph,x,y,im.w,im.h,3,1,1):`${bodySVG(cd.body,x,y,false,cd.fl)}<svg x="${f1(x+cd.fx-sz/2)}" y="${f1(y+cd.fy-sz*0.53)}" width="${f1(sz)}" height="${f1(sz*3.2/3)}" viewBox="-1.5 -1.6 3 3.2" stroke="none">${fruitInner(ph,1,w.crop)}</svg>`;
+  const body=im?im.svg+plantFruitsSVG(w.crop,ph,x,y,im.w,im.h,1,1):`${bodySVG(cd.body,x,y,false,cd.fl)}<svg x="${f1(x+cd.fx-sz/2)}" y="${f1(y+cd.fy-sz*0.53)}" width="${f1(sz)}" height="${f1(sz*3.2/3)}" viewBox="-1.5 -1.6 3 3.2" stroke="none">${fruitInner(ph,1,w.crop)}</svg>`;
   return `<g data-wp="${w.key}" role="button" aria-label="野生的${cd.n}">${w.rel?`<ellipse cx="${x}" cy="${y-4}" rx="36" ry="14" fill="#F2C230" opacity=".38"/>`:''}${hl?`<ellipse cx="${x}" cy="${y+1}" rx="30" ry="10" fill="none" stroke="#FFD54A" stroke-width="3" stroke-dasharray="5 3"/>`:''}${shadow(x,y+1,18)}${body}</g>`;
 }
 const wpPrice=(w,ph)=>Math.round(CROPS[w.crop].price*5*(0.6+0.8*ph.ab.size/100)*(1+0.3*ph.tier));

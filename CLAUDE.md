@@ -1545,3 +1545,67 @@ vm 測試：上色函式對同一外觀只計算一次（快取命中）；素�
 - **拿掉每株頭上的成熟星星**：果實本身與「全部收成」按鈕已足夠。開花待授粉的小花標示保留。特殊色的閃光保留，但縮小、數量減半。
 - **草地**：改成程式畫的低彩度灰綠（約 #A8C478，與 27.1 草原地面同色），拿掉彩色小點（或改成極淡、稀疏）。
 - 完成後請使用者用同一個農場（約 40 株）再截圖比較。
+## 32. 城鎮（市集廣場）（2026-11-15 已確定方案；素材待畫，尚未實作）
+
+取代第 14 節第五版「城鎮」的描述。市集從「功能畫面」改成一張可以走動的廣場地圖，NPC 站在地圖上，建築走到門口打開功能面板（不做室內）。
+
+### 32.1 地圖
+- 一張 800×1100，沿用 27.1 通用化後的地圖格式（`REGION_MAPS.town.plaza`，`REGION_CFG.town`）：碰撞、遮擋、y 排序、淡出切換、地名橫幅、多人同步（presence 頻道 `town`）全部照 9.12。
+- 進出：農場大門與右上角「市集」按鈕 → 城鎮南側入口（入口拱門 `gate`）；南出口 → 農場。
+- 地面由程式畫：暖灰米色石板廣場（低對比、細格線即可）＋通往各建築的淺色小路；邊緣排矮樹籬或花台。不使用 AI 地面紋理（18.4）。
+- 開放等級：Lv 2（28.4）。等級不足時大門提示「Lv 2 開放」。（28.4 實作前照現狀開放。）
+- 天氣：無。旗串、路燈可輕微晃動或發光（同 `.sway`／`.glw`）。
+
+### 32.2 配置（概略，實際座標照格式設計）
+- **北側三棟建築**：中央 農會（最大）、西 品種鑑定所、東 交誼廳。
+- **中央**：圓形噴水池（地標，擋路）。
+- **中南**：市集攤位區，約 6 個攤位排成兩排，中間留走道；箱子、籃子、木桶點綴。
+- **東南**：甜點店（小莓姊）。**西南**：道具行。
+- 公布欄放在入口附近。
+
+### 32.3 互動（走到旁邊直接點，太遠會走過去，同 14h）
+
+| 物件 | 點了之後 |
+| --- | --- |
+| 任一攤位 | 打開現有市集交易介面（`stallHTML`）。交易程式不改 |
+| 道具行 | 現有「賣道具給道具行」（`npick`／`nform`） |
+| 品種鑑定所 | 圖鑑、紀錄榜、收藏櫃（現有介面，原本的入口保留） |
+| 交誼廳 | 線上玩家、留言板（`boards`）、朋友（現有介面） |
+| 農會 | 主線、委託、等級（第 28.4、29、30 節實作前顯示「即將開放」） |
+| 甜點店 | 小莓姊的委託與好感度（第 30 節實作前顯示「即將開放」） |
+| 公布欄 | 本週新品種、跑馬燈內容 |
+| NPC | 對話；好感度階段獎勵在這裡領（30.6） |
+
+- NPC 站位：阿土伯 農會門口、小莓姊 甜點店門口、墨先生 鑑定所門口、阿凱 入口公布欄旁。外觀用現有換裝系統組（29.2）。第 29、30 節實作前可以先站著，點了只說一句招呼。
+- 建築名稱由程式寫在門上方的小招牌（素材本身不含文字）。
+
+### 32.4 素材（AI，3 張物件表，約 210 額度）
+- 放 `assets/town/`。顯示高度：建築 150–190、入口拱門 140、攤位 90–110、噴水池 110、路燈 100、小物 40–70。碰撞只算底部；建築的門口留一塊可走的觸發區。
+- 參考圖：三張都上傳 `assets/farm/greenhouse.png`（同一批固定同一張）。模型 GPT Image 2.6 Sunburst（18.9）。
+- 處理：`claude/asset_tools_v2.py grid`；建築與拱門用 `--pocket 1`，路燈 `--pocket 0`。
+
+共用畫風描述（每張都完整貼上，不要刪）：
+```
+3/4 view from slightly above, 2D flat vector cartoon illustration, not 3D, not a render, not a photo, thin dark brown outline on every object, 2-tone cel shading, light from top-left, soft muted pastel colors, cute and simple, plain white background, no shadow, no text, no letters
+```
+
+**物件表 A：攤位與市集小物**（`stall_red, stall_green, crates, veg_basket, barrel, lamp_post`）
+```
+game asset sheet, 6 separate objects arranged in a 3x2 grid with plenty of empty space between them, not touching: a wooden market stall with a red and cream striped fabric awning and an empty wooden counter, a wooden market stall with a sage green and cream striped fabric awning and a few small wooden crates on the counter, a stack of three wooden crates filled with red tomatoes and yellow squash, a woven wicker basket full of mixed vegetables, a wooden barrel with metal bands, an old-fashioned dark iron street lamp post with a warm glowing lantern on top. 3/4 view from slightly above, 2D flat vector cartoon illustration, not 3D, not a render, not a photo, thin dark brown outline on every object, 2-tone cel shading, light from top-left, soft muted pastel colors, cute and simple, plain white background, no shadow, no text, no letters
+```
+
+**物件表 B：廣場裝飾**（`fountain, bench, planter, notice_board, potted_shrub, bunting`）
+```
+game asset sheet, 6 separate objects arranged in a 3x2 grid with plenty of empty space between them, not touching: a round stone fountain made of angular light gray stones with flat facets and a small water spout, a wooden park bench, a rectangular stone flower planter with pink and yellow flowers, a wooden notice board on two posts with blank paper notes pinned on it, a small round shrub in a terracotta pot, a string of small triangular cloth bunting flags in soft colors hanging between two wooden poles. 3/4 view from slightly above, 2D flat vector cartoon illustration, not 3D, not a render, not a photo, thin dark brown outline on every object, 2-tone cel shading, light from top-left, soft muted pastel colors, cute and simple, plain white background, no shadow, no text, no letters
+```
+
+**物件表 C：建築**（`farm_hall, appraisal, lounge, dessert_shop, item_shop, gate`）
+```
+game asset sheet, 6 separate objects arranged in a 3x2 grid with plenty of empty space between them, not touching: a large two-story wooden farmers' hall with a sage green tiled roof, a big double wooden door and a small round clock on the gable, a brick and wood office building with a slate blue roof, a round window and a large magnifying glass emblem above the door, a cozy wooden cottage lounge with a warm orange roof and wide windows glowing with warm light, a small cream-colored cottage dessert shop with a pink striped awning and a cake emblem above the door, a narrow wooden item shop with a brown roof and a hanging glass bottle emblem, a wooden town entrance archway covered with green vines and small flowers. 3/4 view from slightly above, 2D flat vector cartoon illustration, not 3D, not a render, not a photo, thin dark brown outline on every object, 2-tone cel shading, light from top-left, soft muted pastel colors, cute and simple, plain white background, no shadow, no text, no letters
+```
+
+### 32.5 順序
+1. 使用者畫物件表 A、B、C → 聊天室去背、和角色、植株、果實、農場素材並排檢查畫風 → 交給使用者放進 `assets/town/`。
+2. 第 27 節沙漠（通用化）完成後，照本節實作城鎮地圖與互動。
+3. 第 28.4、29、30 節實作時，再把農會、甜點店、NPC 對話接上。
+

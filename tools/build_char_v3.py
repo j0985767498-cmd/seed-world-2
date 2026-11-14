@@ -114,7 +114,7 @@ def roles(a):
     role[(br | db) & (yn > 0.78)] = 'boot'
     role[db & (yn >= 0.5) & (yn <= 0.78)] = 'line'
     # 皮膚陰影色也出現在頭髮亮部：一塊一塊看，周圍頭髮比亮皮膚多就算頭髮
-    shd = body & (kd == 'skin') & (lum[np.maximum(lab, 0)] < 200) & (yn < 0.5)
+    shd = body & (kd == 'skin') & (lum[np.maximum(lab, 0)] < 200) & (yn < 0.36)
     sl, sn_ = nd.label(shd)
     for i in range(1, sn_ + 1):
         m = sl == i
@@ -160,7 +160,9 @@ def fmt(v):
     if t in ('0.0', '-0.0'): return '0'
     return t.replace('-0.', '-.') if t.startswith('-0.') else (t[1:] if t.startswith('0.') else t)
 
-def trace(mask, ox, oy, s, tol=0.9, min_area=6):
+TOL = 1.3  # 描邊簡化程度（原圖像素）；越大資料越小、越不精細
+def trace(mask, ox, oy, s, tol=None, min_area=6):
+    tol = TOL if tol is None else tol
     lm, nn = nd.label(mask)
     if nn:
         sizes = nd.sum(mask, lm, range(1, nn + 1))
@@ -200,7 +202,7 @@ def tone_k(r, c):
     return round(float(k) * 20) / 20
 
 def part_layers(mask, lab, role, ox, oy, s):
-    L = [{'r': 'ol', 'd': trace(mask, ox, oy, s, 0.8, 3)}]
+    L = [{'r': 'ol', 'd': trace(mask, ox, oy, s, TOL * 0.9, 3)}]
     for r in ROLES:
         m = mask & (role == r)
         if not m.any(): continue
@@ -212,7 +214,7 @@ def part_layers(mask, lab, role, ox, oy, s):
             if abs(k) < 0.08: continue
             ks.setdefault(k, []).append(c)
         for k, cs in sorted(ks.items()):
-            d = trace(m & np.isin(lab, cs), ox, oy, s, 0.9, 10)
+            d = trace(m & np.isin(lab, cs), ox, oy, s, TOL, 12)
             if d: L.append({'r': r, 'k': k, 'd': d})
     return [x for x in L if x['d']]
 
@@ -232,16 +234,25 @@ for v in VIEWS:
     ox = (lr.min() + lr.max() + 1) / 2
     part = np.zeros(body.shape, int)  # 0 身體
     arms = []
-    for i, (nm, fn, pv) in enumerate(cfg['arms']):
-        m = body & fn(Y, X)
-        if cfg.get('sidearm'):
-            m = m & np.isin(role, ['skin', 'line'])
-            lm, nn = nd.label(m)
-            if nn:
-                sz = nd.sum(m, lm, range(1, nn + 1)); m = lm == (int(np.argmax(sz)) + 1)
-            m = nd.binary_dilation(m, iterations=1) & body
+    # 手：袖口以下的皮膚區塊（自動找），左右各一；支點在袖口
+    yspan = bot - top
+    skin_arm = body & (role == 'skin') & (Y > top + 0.47 * yspan) & (Y < top + 0.8 * yspan)
+    lm, nn = nd.label(skin_arm)
+    comps = []
+    for j in range(1, nn + 1):
+        m = lm == j
+        if m.sum() < 150: continue
+        ys_, xs_ = np.nonzero(m)
+        comps.append((m.sum(), xs_.mean(), m, ys_.min()))
+    comps.sort(key=lambda c: -c[0])
+    comps = comps[:len(cfg['arms'])]
+    comps.sort(key=lambda c: c[1])  # 由左到右：a0 在左
+    for i, (_, cxm, m0, ytop) in enumerate(comps):
+        m = nd.binary_dilation(m0, iterations=3) & body & ~np.isin(role, ['pants', 'shirt', 'cream', 'hair'])
+        xs_ = np.nonzero(m0[ytop:ytop + 6])[1]
+        p = ((xs_.min() + xs_.max() + 1) / 2, ytop + 2)
         part[m] = 10 + i
-        arms.append((nm, m, pv))
+        arms.append((cfg['arms'][i][0], m, p))
     hip = cfg['hip']
     armm = part >= 10
     legs = []
@@ -255,10 +266,13 @@ for v in VIEWS:
             legs.append((f'l{i}', lm, ((cx.min() + cx.max() + 1) / 2 if len(cx) else ox, hip)))
     bodym = body & (Y <= hip) & ~armm
     role_b = role.copy(); lab_b = lab.copy()
+    # 手拿掉後留下的洞補成吊帶褲底色（側面的手整隻蓋在身體上，所以把手的內部也算進去）
     if cfg.get('sidearm'):
-        # 側面的手蓋在身體上：手轉開後露出的地方補成吊帶褲底色
         filled = nd.binary_fill_holes(bodym | (armm & (Y <= hip) & nd.binary_erosion(body, iterations=3)))
-        hole = filled & ~bodym
+    else:
+        filled = nd.binary_fill_holes(bodym)
+    hole = filled & ~bodym
+    if hole.any():
         role_b[hole] = 'pants'; lab_b[hole] = BASE['pants']
         bodym = filled
     pv = lambda p: [round((p[0] - ox) * S, 2), round((p[1] - oy) * S, 2)]
@@ -337,6 +351,7 @@ label{{font-size:13px;margin-right:10px}}</style></head><body>
 {avatar}
 const AV3={json.dumps(DATA, ensure_ascii=False, separators=(',', ':'))};
 {V3JS}
+avUseV3=function(){{return false}};/* 試做頁：avatarSVG 一律用舊畫法，方便對照 */
 const REF={json.dumps(REF)},REFW={json.dumps(REFW)};
 </script>
 <script>
@@ -380,6 +395,12 @@ function bench(fn){{const g=document.createElementNS('http://www.w3.org/2000/svg
 setTimeout(()=>{{const tN=bench(i=>av3SVG(AV_DEF,false,{{view:'front',ph:i*0.3,t:i*0.08}})),tO=bench(i=>avatarSVG(AV_DEF,false,{{view:'front',ph:i*0.3,t:i*0.08}}));
 document.getElementById('perf').textContent=`每畫一次（走路中）：新 ${{tN.toFixed(2)}} ms、舊 ${{tO.toFixed(2)}} ms（電腦上量的，iPhone 會慢幾倍）。新畫法 5 個方向的路徑資料共約 {round(total/1024)} KB。`}},500);
 </script></body></html>"""
+# 遊戲用的資料檔（index.html 會讀 assets/char/av3.js）
+os.makedirs(os.path.join(ROOT, 'assets', 'char'), exist_ok=True)
+jsout = os.path.join(ROOT, 'assets', 'char', 'av3.js')
+NL = chr(10)
+open(jsout, 'w', encoding='utf8', newline=NL).write('/* 由 tools/build_char_v3.py 產生，不要手改。 */' + NL + 'const AV3=' + json.dumps(DATA, ensure_ascii=False, separators=(',', ':')) + ';' + NL + V3JS)
+print('寫入', jsout, round(os.path.getsize(jsout) / 1024), 'KB')
 out = os.path.join(ROOT, 'tools', 'char_v3.html')
 open(out, 'w', encoding='utf8', newline='\n').write(page)
 print('寫入', out)

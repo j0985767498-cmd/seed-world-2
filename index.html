@@ -987,7 +987,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-14m';
+const BUILD='2026-11-14n';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2369,6 +2369,7 @@ function avHairBack(H){
 }
 function avatarSVG(av,flip,pose){
   av=avNorm(av);
+  if(avUseV3(av))return av3SVG(av,flip,pose);/* 14n 新畫法 */
   if(typeof pose!=='object'||pose===null)pose={bob:pose||0};
   const view=pose.view||'front',isSide=view==='side',isBack=view==='back'||view==='bq',fq=view==='fq',bq=view==='bq',fxo=fq?2.2:bq?-1.6:0;
   const sk=SKINS[av.skin]||SKINS[0],hc=HAIRC[av.hairC]||HAIRC[0],hcd=shade(hc,-0.32),hcl=shade(hc,0.28);
@@ -2590,6 +2591,12 @@ function avatarSVG(av,flip,pose){
   return s;
 }
 
+/* ===== 人物新畫法（14n）=====
+   照參考圖 assets/ref/v3/ 描出來的預設造型（短髮＋條紋T＋吊帶褲＋靴子），5 個方向＋走路，顏色照色票換。
+   資料與畫法在 assets/char/av3.js（tools/build_char_v3.py 產生），進遊戲時另外載入；載入前或失敗時用舊畫法。
+   其他造型（還沒有參考圖的髮型、衣服等）照舊畫法。 */
+function avUseV3(av){return typeof av3SVG==='function'&&typeof AV3!=='undefined'&&av.hair===0&&av.hat===0&&av.top===2&&av.shoe===0&&av.acc===0&&av.face===0&&!av.blush&&!(av.fab&&av.fab.top)}
+(function(){try{const s=document.createElement('script');s.src='assets/char/av3.js?v='+BUILD;s.async=true;s.onload=()=>{try{if(typeof renderChars==='function')renderChars()}catch(e){}};document.head.appendChild(s)}catch(e){}})();
 // ===== 角色動畫 =====
 let meAct=null;const ACT_DUR={water:900,plant:800,harvest:900,pollinate:1100};
 function playAct(type){meAct={type,at:Date.now()};pushPos(true)}

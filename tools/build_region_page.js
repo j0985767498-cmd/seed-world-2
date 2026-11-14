@@ -19,7 +19,7 @@ const C=T.REGION_CFG[bk],fix=s=>s.replace(/href="assets\//g,'href="../assets/');
 const exitPt=(M,id,e)=>e.to==='farm'?[e.c,M.B.y1-18]:T.regArrival(bk,id,e.to);
 function bfs(M,s0){const seen=new Set(),q=[[Math.round(s0[0]/10),Math.round(s0[1]/10)]];
   while(q.length){const [gx,gy]=q.pop(),k=gx+','+gy;if(seen.has(k))continue;seen.add(k);for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=gx+dx,ny=gy+dy;if(!seen.has(nx+','+ny)&&!T.regBlocked(M,nx*10,ny*10))q.push([nx,ny])}}return seen}
-const day=1000;let cards='',maxX=1,maxY=1;
+const day=1000;let cards='',maxX=1,maxY=1;const oy=-Math.min(0,...Object.values(MS).map(M=>M.gy));/* 有負的 gy（森林的神木）時整張往下移 */
 for(const [id,M0] of Object.entries(MS)){const M=T.regPrep(bk,id);maxX=Math.max(maxX,M0.gx);maxY=Math.max(maxY,M0.gy+1);
   const seen=bfs(M,exitPt(M,id,M.exits[0]));
   let un='';for(let y=M.B.y0;y<=M.B.y1;y+=10)for(let x=M.B.x0;x<=M.B.x1;x+=10){const k=Math.round(x/10)+','+Math.round(y/10);if(!seen.has(k)&&!T.regBlocked(M,x,y))un+=`<rect x="${x-5}" y="${y-5}" width="10" height="10" fill="#555" opacity=".45"/>`}
@@ -33,7 +33,7 @@ for(const [id,M0] of Object.entries(MS)){const M=T.regPrep(bk,id);maxX=Math.max(
   for(const [x,y] of M.spawns)ov+=`<circle cx="${x}" cy="${y}" r="16" fill="none" stroke="#0A8A2A" stroke-width="5"/>`;
   for(const [x,y] of M.items)ov+=`<path d="M${x} ${y-18} L${x+14} ${y} L${x} ${y+18} L${x-14} ${y}Z" fill="#F2C230" stroke="#7A5A00" stroke-width="3"/>`;
   const objs=M._objs.map(o=>o.h).join('');
-  cards+=`<div class="card" style="grid-column:${M0.gx};grid-row:${M0.gy+1}"><b>${M0.n}</b>${M0.cave?'（洞內）':''}<small> ${id}・植株 ${M.spawns.length}・道具 ${M.items.length}</small>
+  cards+=`<div class="card" style="grid-column:${M0.gx};grid-row:${M0.gy+oy+1}"><b>${M0.n}</b>${M0.cave?'（洞內）':''}<small> ${id}・植株 ${M.spawns.length}・道具 ${M.items.length}</small>
   <svg viewBox="-20 -20 ${M.W+40} ${M.H+40}" width="260">${fix(M._ground)}${objs.replace(/href="assets\//g,'href="../assets/')}<g class="ov">${un}${ov}</g></svg></div>`;
 }
 /* 實際比例：入口那張圖的一角＋角色＋野生植株 */

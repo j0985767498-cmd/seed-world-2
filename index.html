@@ -461,6 +461,7 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
 <div id="buildBar" hidden></div>
 <div id="shovelBar" class="toolbar2" hidden></div>
 <div id="accelBar" class="toolbar2" hidden></div>
+<div id="pickBar" class="toolbar2" hidden></div>
 <div id="decoBar" class="toolbar2" hidden></div>
 <div id="sowBar" class="toolbar2" hidden></div>
 <div id="decorEdit" hidden></div>
@@ -992,7 +993,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-14y';
+const BUILD='2026-11-14z';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2039,8 +2040,10 @@ async function doRecord(i){
 }
 let sheet=null;
 const sb=document.getElementById('sheetBody'),sheetEl=document.getElementById('sheet'),bd=document.getElementById('backdrop');
-function openPlot(i){const p=state.plots[i];if(!p)uiCrop='all';sheet={i,stage:p?p.stage:'empty',confirm:false,crossFrom:null};regDraft='';regErr='';renderSheet();sheetEl.classList.add('open');bd.style.display='block'}
-function closeSheet(){sheet=null;sheetEl.classList.remove('open');bd.style.display='none'}
+var srcHL=null;/* 31.4：植株資訊打開時，同一包種子（同 lotId）的其他植株加淡色外框 */
+const srcSame=(p,i)=>p&&p.lotId!=null?state.plots.reduce((n,q,j)=>n+(q&&j!==i&&q.lotId===p.lotId?1:0),0):0;
+function openPlot(i){const p=state.plots[i];if(!p)uiCrop='all';srcHL=p&&p.lotId!=null&&srcSame(p,i)?p.lotId:null;if(srcHL!=null)try{renderWorld()}catch(e){}sheet={i,stage:p?p.stage:'empty',confirm:false,crossFrom:null};regDraft='';regErr='';renderSheet();sheetEl.classList.add('open');bd.style.display='block'}
+function closeSheet(){sheet=null;sheetEl.classList.remove('open');bd.style.display='none';if(srcHL!=null){srcHL=null;try{renderWorld()}catch(e){}}}
 bd.addEventListener('click',closeSheet);
 function fmt(ms){ms=Math.max(0,ms);const s=Math.ceil(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;return h?`${h} 小時 ${m} 分`:m?`${m} 分 ${r} 秒`:`${r} 秒`}
 function progInfo(p){
@@ -2065,6 +2068,7 @@ function renderSheet(){
   if(sheet.avatar){sb.innerHTML=avatarEditorHTML();return}
   if(sheet.orders){sb.innerHTML=ordersHTML();return}
   if(sheet.harvest){sb.innerHTML=harvestHTML();return}
+  if(sheet.sbc){sb.innerHTML=sbChoiceHTML();return}
   if(sheet.tray){sb.innerHTML=trayHTML();return}
   if(sheet.build){sb.innerHTML=buildHTML();return}
   if(sheet.trash){sb.innerHTML=trashHTML();return}
@@ -2094,7 +2098,7 @@ function renderSheet(){
     h+=`<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・已絕版</p><p class="note">這株的外觀在新版本中已經不存在，已停止生長，只能拔掉。</p><button class="btn warn" data-act="uproot">${sheet.confirm?'再按一次確定拔掉':'拔掉這株'}</button>`;
   }else{
     const ph=phen(p.g,p.crop),lvl=p.stage==='seedling'?1:p.stage==='ripe'?3:2;
-    h+=`<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・第 ${i+1} 塊土地・${stageLabel(p)}${p.pollen?`・${p.pollen.type==='cross'?`與 ${esc(p.pollen.fatherName)} 雜交`:'自交'}`:''}${p.wide?'・遠緣雜種':''}${genTxt(p.gen)}</p>${p.pollen&&p.pollen.failed?'<p class="note" style="color:var(--danger)">雜交沒有成功，這次改為自交。</p>':''}<button class="mini warn uptop" data-act="uproot">${sheet.confirm?'再按一次確定拔掉':'拔掉這株'}</button>`;
+    h+=`<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・第 ${i+1} 塊土地・${stageLabel(p)}${p.pollen?`・${p.pollen.type==='cross'?`與 ${esc(p.pollen.fatherName)} 雜交`:'自交'}`:''}${p.wide?'・遠緣雜種':''}${genTxt(p.gen)}</p>${srcSame(p,i)?`<p class="note">同一包種子還有 ${srcSame(p,i)} 株（田裡有淡色外框的那些）</p>`:''}${p.pollen&&p.pollen.failed?'<p class="note" style="color:var(--danger)">雜交沒有成功，這次改為自交。</p>':''}<button class="mini warn uptop" data-act="uproot">${sheet.confirm?'再按一次確定拔掉':'拔掉這株'}</button>`;
     if(p.stage!=='ripe'){
       const own=p.stage==='fruit'||p.stage==='flower',fl=p.stage==='flower',pm=p.m||(state.lots.find(l=>l.lid===p.lid)||{}).m,ref=own?ph:(pm?phen(pm,p.crop):null);
       if(ref)h+=`<div class="hero">${fruitSVG(ref,p.crop,Math.round(110*(own&&ref===ph?sizeScale(ph.ab.size):1)),fl?1:own?Math.max(0.15,clamp(p.prog/stageDur(p,ph),0,1)*0.4):1,fl?'這株將結出的果實':own?'這株正在長的果實':'親本的樣子')}</div><p class="note" style="text-align:center">${fl?`開花了！這株會結出：${ph.shapeName}・${colorLabel(ph)}・${SIZE_N[ph.sizeCls]}`:own?'這株正在長大，顏色會在成熟時揭曉。':'這是親本的樣子。這株自己的樣子會在開花時出現，可能和親本不同。'}</p>`;
@@ -2130,6 +2134,7 @@ sb.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b)return;
   if(b.dataset.act==='close')return closeSheet();
   if(sheet.harvest)return harvestAction(b);
+  if(sheet.sbc)return sbChoiceAction(b);
   if(sheet.tray)return trayAction(b);
   if(sheet.stall!=null)return stallAction(b);
   if(sheet.avatar)return avatarAction(b);
@@ -2299,7 +2304,7 @@ function sbtnNeed(st){
 }
 function layoutSbtns(){
   if(!state)return;
-  const ok=scene==='farm'&&!viewing&&!buildMode&&!shovelMode&&!sowMode&&!accelMode&&!decoMode,nd=sbtnNeed(state);
+  const ok=scene==='farm'&&!viewing&&!buildMode&&!shovelMode&&!sowMode&&!accelMode&&!decoMode&&!pickMode,nd=sbtnNeed(state);
   for(const id of ['trayBtn','shovelBtn']){const el=document.getElementById(id);if(el)el.hidden=true}/* 育苗盤併入「種植」、剷除移到建設工具列 */
   const ids=['sowBtn','waterAll','fertBtn','accelBtn'].filter(id=>ok&&(id==='sowBtn'||nd[id]));
   for(const id of ['sowBtn','waterAll','fertBtn','accelBtn']){const el=document.getElementById(id);if(el)el.hidden=!ids.includes(id)}
@@ -2376,7 +2381,7 @@ function waterAll(){
   if(!n){toast('目前沒有需要澆水的植株');return}
   save();renderAll();if(sheet&&sheet.i!=null)renderSheet();toast(`幫 ${n} 株澆好水了`);tutEv('water');
 }
-document.getElementById('waterAll').onclick=()=>openHarvest();
+document.getElementById('waterAll').onclick=()=>openHarvest();/* 總表裡有「選幾株收成」 */
 document.getElementById('trayBtn').onclick=()=>openTray();
 const WC='#A8743F',WD='#7E5530';
 const dd=(k,n,cat,f,flat)=>({k,n,cat,f,flat:!!flat});
@@ -2808,6 +2813,8 @@ function plotSVG(st,i,hov){
   let s=`<g data-plot="${i}" role="button" aria-label="${esc(lbl)}" stroke="#4A2A12" stroke-width="1.5" stroke-linejoin="round"><polygon points="${x-41},${y} ${x},${y+23} ${x},${y+32} ${x-41},${y+9}" fill="#9C6635"/><polygon points="${x},${y+23} ${x+41},${y} ${x+41},${y+9} ${x},${y+32}" fill="#80502A"/><polygon points="${x},${y-23} ${x+41},${y} ${x},${y+23} ${x-41},${y}" fill="#D9A15F"${hov===i?' stroke="#FFD54A" stroke-width="3.5"':''}/><polygon points="${x},${y-17} ${x+32},${y} ${x},${y+17} ${x-32},${y}" fill="#8C5A32" stroke-width="1"/>`;
   for(const a of [.3,.5,.7])s+=`<line x1="${x-32+32*a+3}" y1="${y-17*a+1.6}" x2="${x+32*a-3}" y2="${y+17-17*a-1.6}" stroke="#6A4022" stroke-width="2" stroke-linecap="round"/>`;
   s+=`</g>`;
+  if(st===state&&p&&(pickMode&&pickSet.has(i)||srcHL!=null&&p.lotId===srcHL&&!(sheet&&sheet.i===i))){const on=pickMode&&pickSet.has(i);/* 31.4 */
+    s+=`<polygon points="${x-41},${y} ${x},${y-23} ${x+41},${y} ${x},${y+23}" fill="${on?'rgba(255,213,74,.28)':'none'}" stroke="${on?'#FFD54A':'#FFF6C2'}" stroke-width="${on?3:2}"${on?'':' stroke-dasharray="6 4"'} pointer-events="none"/>`}
   if(p)s+=`<g pointer-events="none" transform="translate(${x} ${y+3}) scale(0.72) translate(${-x} ${-y-3})">${plantSVG(p,x,y+3)}</g>`;
   else if(st===state&&typeof sowFx!=='undefined'&&sowFx[i]&&Date.now()-sowFx[i]<1200)s+=`<g pointer-events="none"><circle cx="${x}" cy="${y-6}" r="10" fill="#FFE1D6" stroke="#7A2A1A" stroke-width="1.5"/><path d="M${x-4} ${y-10} l8 8 M${x+4} ${y-10} l-8 8" stroke="#7A2A1A" stroke-width="2" stroke-linecap="round"/></g>`;
   return s;
@@ -2819,6 +2826,7 @@ function farmWorld(st,hov,selD){
   const all=[];
   (st.decor||[]).forEach((d,i)=>{const it=DECOR_MAP[d.t];if(!it)return;all.push({z:it.flat?-1e5+d.y:d.y,h:()=>decorSVG({...d,i},selD===i,st===state&&!!decoDrag&&decoDrag.on&&decoDrag.i===i&&decoDrag.bad)})});
   for(let i=0;i<st.plots.length;i++){const pos=posOf(st,i);if(!pos)continue;if(st===state&&dragPlot&&dragPlot.on&&dragPlot.i===i){const [gx,gy]=snapPos(dragPlot.x,dragPlot.y),ok=!plotSpotErr(state,gx,gy,i);const fake={...state,plotPos:state.plotPos.slice()};fake.plotPos[i]=[gx,gy];all.push({z:1e6,h:()=>`<g opacity=".75">${plotSVG(fake,i,null)}</g><polygon points="${gx-41},${gy} ${gx},${gy-23} ${gx+41},${gy} ${gx},${gy+23}" fill="none" stroke="${ok?'#2F9E3A':'#C0392B'}" stroke-width="3" stroke-dasharray="6 4"/>`});continue}all.push({z:pos[1]+20,h:()=>plotSVG(st,i,hov)})}
+  if(st===state&&buildMode==='build'&&buildBad&&Date.now()-buildBad.t<900){const {x,y}=buildBad;all.push({z:1e6+1,h:()=>`<polygon points="${x-41},${y} ${x},${y-23} ${x+41},${y} ${x},${y+23}" fill="rgba(192,57,43,.25)" stroke="#C0392B" stroke-width="3" pointer-events="none"/>`})}/* 31.1：不合法的位置閃紅 */
   all.sort((a,b)=>a.z-b.z);
   for(const o of all)s+=o.h();
   return s;
@@ -2861,7 +2869,7 @@ function updateCam(){
   if(!state)return;
   if(regIn()){regCam();return}
   if(scene==='explore'){const r=camRect();sceneEl.setAttribute('viewBox',`${r.x.toFixed(1)} ${r.y.toFixed(1)} ${r.w.toFixed(1)} ${r.h.toFixed(1)}`);if(exRange(r).key!==exKey)renderWorld();return}
-  const vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zoom,w=vw/k,h=vh/k,{W,H}=scene==='market'?WORLD.market:WORLD.farm,m=(buildMode||shovelMode||sowMode||accelMode||decoMode)?buildCam:curMe();
+  const vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zoom,w=vw/k,h=vh/k,{W,H}=scene==='market'?WORLD.market:WORLD.farm,m=(buildMode||shovelMode||sowMode||accelMode||decoMode||pickMode)?buildCam:curMe();
   let x=m.x-w/2,y=m.y-h*0.55;
   x=W<=w?(W-w)/2:clamp(x,0,W-w);y=H+80<=h?(H-h)/2:clamp(y,-70,H-h+80);
   sceneEl.setAttribute('viewBox',`${x.toFixed(1)} ${y.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
@@ -3011,7 +3019,7 @@ document.getElementById('pdim').onclick=closePanel;
 for(const b of document.querySelectorAll('.panel [data-close]'))b.onclick=closePanel;
 document.getElementById('sheetX').onclick=()=>closeSheet();
 const iconbarClick=e=>{
-  const b=e.target.closest('button');if(!b||!state)return;const wasDeco=decoMode;if(buildMode)exitBuild();if(shovelMode)exitShovel();if(sowMode)exitSow();if(accelMode)exitAccel();if(decoMode)exitDecor();
+  const b=e.target.closest('button');if(!b||!state)return;const wasDeco=decoMode;if(buildMode)exitBuild();if(shovelMode)exitShovel();if(sowMode)exitSow();if(accelMode)exitAccel();if(decoMode)exitDecor();if(pickMode)exitPick();
   const o=b.dataset.open,a=b.dataset.do;
   if(o)return curPanel===o?closePanel():openPanel(o);
   closePanel();
@@ -3405,7 +3413,7 @@ function decoFree(t,x,y,beside){
 }
 function openDecor(){
   if(scene!=='farm'||viewing){toast('只能在自己的農場佈置');return}
-  closeSheet();if(curPanel)closePanel();if(shovelMode)exitShovel();if(sowMode)exitSow();if(accelMode)exitAccel();if(buildMode)exitBuild();
+  closeSheet();if(curPanel)closePanel();if(shovelMode)exitShovel();if(sowMode)exitSow();if(accelMode)exitAccel();if(buildMode)exitBuild();if(pickMode)exitPick();
   const m=curMe();buildCam={x:m.x,y:m.y};decoMode=true;moveTo=null;selDecor=null;decoPaint=null;decoDrag=null;
   renderDecoBar();renderHUD();applyCtrl();updateCam();renderWorld();
   toast('裝飾模式：按「新增」放裝飾，按住裝飾可以拖曳',3000);
@@ -4298,8 +4306,8 @@ function interact(){
   const p=state.plots[n.i];
   openPlot(n.i);
 }
-document.getElementById('fertBtn').onclick=()=>selfAll();
-document.getElementById('accelBtn').onclick=()=>openAccel();
+document.getElementById('fertBtn').onclick=()=>{if(!state||viewing||scene!=='farm')return;closeSheet();if(curPanel)closePanel();sheet={sbc:'self'};renderSheet();openSheetUI()};
+document.getElementById('accelBtn').onclick=()=>{if(!state||viewing||scene!=='farm')return;closeSheet();if(curPanel)closePanel();sheet={sbc:'accel'};renderSheet();openSheetUI()};
 document.getElementById('shovelBtn').onclick=openShovel;
 document.getElementById('shovelBar').addEventListener('click',e=>{const b=e.target.closest('[data-sv]');if(!b)return;if(b.dataset.sv==='done'){exitShovel();toast(shovelN?'剷除完成':'結束剷除');return}if(b.dataset.sv==='trash'){sheet={trash:true,confirm:false};renderSheet();openSheetUI()}});
 document.getElementById('buildBar').addEventListener('click',e=>{const b=e.target.closest('[data-bm]');if(!b)return;if(b.dataset.bm==='done'){exitBuild();toast('結束建設');return}if(b.dataset.bm==='trash'){sheet={trash:true,confirm:false};renderSheet();openSheetUI();return}buildMode=b.dataset.bm;shovelMode=buildMode==='shovel';shoveling=false;renderBuildBar()});
@@ -4310,7 +4318,7 @@ let ctrlMode='joy';/* 點擊移動已移除，只用搖桿 */
 let joy={id:null,vx:0,vy:0};
 function setCtrl(m){ctrlMode=m;try{localStorage.setItem('sw_ctrl',m)}catch(e){}moveTo=null;applyCtrl();renderCtrl();toast(m==='joy'?'已改成搖桿操作':'已改成點擊移動')}
 function applyCtrl(){
-  const j=ctrlMode==='joy'&&!buildMode&&!shovelMode&&!sowMode&&!accelMode&&!decoMode;
+  const j=ctrlMode==='joy'&&!buildMode&&!shovelMode&&!sowMode&&!accelMode&&!decoMode&&!pickMode;
   document.body.classList.toggle('joymode',ctrlMode==='joy');
   document.getElementById('joy').hidden=!j;
   if(typeof refreshAct==='function')refreshAct();
@@ -4370,7 +4378,7 @@ function handleTap(e,cx,cy){
 const ptrs=new Map();let pinch=null,tapStart=null,dragPlot=null,panStart=null;
 sceneEl.addEventListener('pointerdown',e=>{
   if(!state)return;
-  if(e.isPrimary){ptrs.clear();pinch=null;panStart=null;dragPlot=null;sowing=false;shoveling=false;acceling=false;if(decoMode)decoCancel()}/* 新的觸控開始：清掉殘留的手指紀錄 */
+  if(e.isPrimary){ptrs.clear();pinch=null;panStart=null;dragPlot=null;sowing=false;shoveling=false;acceling=false;buildPainting=false;picking=false;if(decoMode)decoCancel()}/* 新的觸控開始：清掉殘留的手指紀錄 */
   ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
   try{sceneEl.setPointerCapture(e.pointerId)}catch(_){}
   if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:zoom};tapStart=null;dragPlot=null;panStart=null;if(decoMode)decoCancel();return}
@@ -4382,10 +4390,12 @@ sceneEl.addEventListener('pointerdown',e=>{
     const dg=e.target.closest&&e.target.closest('[data-decor]');
     if(dg){const i=+dg.dataset.decor,d=state.decor[i];if(d){const w=screenToWorld(e.clientX,e.clientY);decoDrag={i,fx:d.x,fy:d.y,ox:d.x-w.x,oy:d.y-w.y,on:false,bad:false,msg:''};return}}
     panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
+  if(pickMode){pickHit.clear();const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&state.plots[+g.dataset.plot]){picking=true;pickDir=!pickSet.has(+g.dataset.plot);strokeLast=null;strokeTo(e.clientX,e.clientY,pickAt)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
   if(accelMode){accelHit.clear();const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&state.plots[+g.dataset.plot]){acceling=true;accelAt(e.clientX,e.clientY)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
   if(buildMode){
     const g=e.target.closest&&e.target.closest('[data-plot]');
     if(buildMode==='move'&&g){const i=+g.dataset.plot;dragPlot={i,from:state.plotPos[i].slice(),x:0,y:0}}
+    else if(buildMode==='build'&&!g){buildHit.clear();buildPainting=true;strokeLast=null;strokeTo(e.clientX,e.clientY,buildAt)}/* 31.1 從空地開始＝鋪設；從田開始＝移動畫面 */
     else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};
   }
 });
@@ -4396,6 +4406,8 @@ sceneEl.addEventListener('pointermove',e=>{
   if(tapStart&&Math.hypot(e.clientX-tapStart.x,e.clientY-tapStart.y)>10)tapStart.moved=true;
   if(shoveling){shovelAt(e.clientX,e.clientY);return}
   if(acceling){accelAt(e.clientX,e.clientY);return}
+  if(buildPainting){strokeTo(e.clientX,e.clientY,buildAt);return}
+  if(picking){strokeTo(e.clientX,e.clientY,pickAt);return}
   if(decoPainting){decoPaintAt(e.clientX,e.clientY);return}
   if(decoDrag){if(tapStart&&tapStart.moved)decoDragTo(e.clientX,e.clientY);return}
   if(sowing){sowAt(e.clientX,e.clientY);return}
@@ -4415,6 +4427,8 @@ const ptrEnd=e=>{
   if(sowMode){if(sowing){sowing=false;save()}tapStart=null;return}
   if(shovelMode){if(shoveling){shoveling=false;save()}tapStart=null;return}
   if(accelMode){if(acceling){acceling=false;save()}tapStart=null;return}
+  if(buildPainting){buildPainting=false;save();tapStart=null;return}
+  if(pickMode){picking=false;tapStart=null;return}
   if(tapStart&&!tapStart.moved&&e.type==='pointerup'){const ts=tapStart;tapStart=null;handleTap({target:ts.target},e.clientX,e.clientY);return}
   tapStart=null;
 };
@@ -4449,6 +4463,38 @@ function autoSeedName(p){
   return shortApp(ph)+(gen?` ${gen}代`:'');
 }
 // ===== 全部自交 =====
+/* 31.4 多選模式：點或滑過多株一次選起來（同一筆劃每株一次，第一株決定這一筆是選取還是取消），再按「執行」。不符合條件的略過並顯示略過幾株。 */
+var pickMode=null,picking=false,pickDir=true;const pickSet=new Set(),pickHit=new Set();
+const PICK={self:{n:'自交',ok:p=>p&&!p.obs&&p.stage==='flower',why:'開花中'},harvest:{n:'收成',ok:p=>p&&!p.obs&&p.stage==='ripe',why:'成熟'},accel:{n:'用加速劑',ok:p=>accelOk(p),why:'幼苗或結果中'}};
+function openPick(kind){
+  if(scene!=='farm'||viewing){toast('回到自己的農場才能使用');return}
+  closeSheet();closePanel();if(shovelMode)exitShovel();if(sowMode)exitSow();if(buildMode)exitBuild();if(accelMode)exitAccel();
+  const m=curMe();buildCam={x:m.x,y:m.y};pickMode=kind;pickSet.clear();moveTo=null;renderPickBar();renderHUD();applyCtrl();updateCam();renderWorld();
+  toast(`多選模式：點或滑過想${PICK[kind].n}的植株，再按「${PICK[kind].n}」`,3000);
+}
+function exitPick(){if(!pickMode)return;pickMode=null;picking=false;pickSet.clear();renderPickBar();renderHUD();applyCtrl();updateCam();renderWorld()}
+function pickAt(cx,cy){const el=document.elementFromPoint(cx,cy),g=el&&el.closest&&el.closest('[data-plot]');if(!g)return;const i=+g.dataset.plot;if(pickHit.has(i)||!state.plots[i])return;pickHit.add(i);if(pickDir)pickSet.add(i);else pickSet.delete(i);renderWorld();renderPickBar()}
+function renderPickBar(){const el=document.getElementById('pickBar');if(!el)return;if(!pickMode){el.hidden=true;return}el.hidden=false;
+  const P=PICK[pickMode],sel=[...pickSet],ok=sel.filter(i=>P.ok(state.plots[i])).length,acc=(state.items||{}).acc||0;
+  el.innerHTML=`<div class="bbtip">點一下或用手指滑過植株來選取，再點一次可以取消<br><small>拖曳空白處可以移動畫面・只有${P.why}的植株會${P.n}</small></div><div class="bbtip"><b>已選 ${sel.length} 株${sel.length&&ok<sel.length?`（${ok} 株可以${P.n}）`:''}</b>${pickMode==='accel'?`<small>・加速劑剩 ${acc} 次</small>`:''}</div><div class="bbrow" style="grid-template-columns:1fr 1fr 1fr 1fr"><button data-pk="all">全選可${P.n}的</button><button data-pk="clear"${sel.length?'':' disabled'}>清除</button><button data-pk="cancel">取消</button><button data-pk="go" class="done"${ok?'':' disabled'}>${P.n}</button></div>`}
+function pickGo(){
+  const kind=pickMode,P=PICK[kind],sel=[...pickSet].filter(i=>state.plots[i]),ok=sel.filter(i=>P.ok(state.plots[i])),skip=sel.length-ok.length;
+  const sk=skip?`，略過 ${skip} 株（不是${P.why}）`:'';
+  if(!ok.length){toast(`選取的植株都不能${P.n}${sk}`);return}
+  exitPick();
+  if(kind==='self'){for(const i of ok)pollinate(i,null);playAct('pollinate');save();renderAll();toast(`${ok.length} 株已經自交${sk}`);return}
+  if(kind==='accel'){let n=0;for(const i of ok){if(!((state.items||{}).acc>0))break;if(useAccel(i,true))n++}save();renderAll();toast(`用了 ${n} 次加速劑${ok.length>n?`，加速劑不夠，${ok.length-n} 株沒用到`:''}${sk}（剩 ${(state.items||{}).acc||0} 次）`);return}
+  if(kind==='harvest'){openHarvest(ok);if(skip)toast(`略過 ${skip} 株（不是成熟的）`);return}
+}
+document.getElementById('pickBar').addEventListener('click',e=>{const b=e.target.closest('[data-pk]');if(!b||!pickMode)return;const a=b.dataset.pk;
+  if(a==='cancel'){exitPick();return}if(a==='clear'){pickSet.clear();renderWorld();renderPickBar();return}
+  if(a==='all'){state.plots.forEach((q,i)=>{if(PICK[pickMode].ok(q))pickSet.add(i)});renderWorld();renderPickBar();return}
+  if(a==='go')pickGo()});
+/* 右下角「全部自交」「加速劑」先問要全部還是多選 */
+function sbChoiceHTML(){const k=sheet.sbc,nf=state.plots.filter(p=>PICK.self.ok(p)).length,na=state.plots.filter(p=>accelOk(p)).length,acc=(state.items||{}).acc||0;
+  if(k==='self')return `<h2>自交</h2><p class="note">開花中、等待授粉的植株有 ${nf} 株。</p><button class="btn primary" data-act="sbself">全部自交（${nf} 株）</button><button class="btn" data-act="sbpick" data-k="self">選幾株自交</button><button class="btn" data-act="close">取消</button>`;
+  return `<h2>${uiIcon('accel',24)}生長加速劑</h2><p class="note">剩 ${acc} 次。可以用的植株（幼苗、結果中）有 ${na} 株。</p><button class="btn primary" data-act="sbpick" data-k="accel">選幾株一起用</button><button class="btn" data-act="sbaccel">連續使用（點到就用）</button><button class="btn" data-act="close">取消</button>`}
+function sbChoiceAction(b){const a=b.dataset.act;if(a==='sbself'){closeSheet();selfAll();return}if(a==='sbaccel'){closeSheet();openAccel();return}if(a==='sbpick'){closeSheet();openPick(b.dataset.k);return}}
 function selfAll(){
   if(!state||viewing||scene!=='farm')return;let n=0;
   state.plots.forEach((p,i)=>{if(p&&!p.obs&&p.stage==='flower'){pollinate(i,null);n++}});
@@ -4464,20 +4510,21 @@ function harvestRows(){
     out.push({i,p,ph,cross,reg:canRegNow(p,ph),dl:dl>0,gk:p.crop+'|'+ph.key+'|'+(cross?'x'+p.lid+'>'+(p.pollen.fatherLid||''):'s')})});
   return out;
 }
-function openHarvest(){
+function openHarvest(only){
   if(!state||viewing||scene!=='farm')return;
-  const rows=harvestRows();if(!rows.length){toast('目前沒有成熟的作物');return}
+  const oset=Array.isArray(only)?new Set(only):null;/* 31.4：多選收成時只放選取的植株 */
+  const rows=harvestRows().filter(r=>!oset||oset.has(r.i));if(!rows.length){toast('目前沒有成熟的作物');return}
   const best={},acts={};
   for(const r of rows){const b=best[r.gk];if(!b||r.ph.stab>b.ph.stab+1e-9||(Math.abs(r.ph.stab-b.ph.stab)<=1e-9&&r.ph.ab.size>b.ph.ab.size))best[r.gk]=r}
   for(const r of rows)acts[r.i]=best[r.gk]===r?'seed':'sell';
   closeSheet();if(curPanel)closePanel();
-  sheet={harvest:{acts,best:Object.values(best).map(r=>r.i),reged:{},warn:false}};renderSheet();openSheetUI();
+  sheet={harvest:{acts,best:Object.values(best).map(r=>r.i),reged:{},warn:false,only:!!oset}};renderSheet();openSheetUI();
 }
 function harvestHTML(){
   const hv=sheet.harvest,rows=harvestRows().filter(r=>hv.acts[r.i]);
   if(!rows.length)return `<h2>全部收成</h2><p class="note">目前沒有成熟的作物。</p><button class="btn" data-act="close">關閉</button>`;
   const groups=new Map();for(const r of rows){if(!groups.has(r.gk))groups.set(r.gk,[]);groups.get(r.gk).push(r)}
-  let h=`<h2>全部收成</h2><p class="note">同一種外觀，預設只從外觀穩定度最高的那株取種，其他賣掉。點按鈕可以改。可以採收標本、符合訂單的植株，直接在那一列採收或交訂單。</p>`;
+  let h=`<h2>全部收成</h2><p class="note">同一種外觀，預設只從外觀穩定度最高的那株取種，其他賣掉。點按鈕可以改。可以採收標本、符合訂單的植株，直接在那一列採收或交訂單。</p>${hv.only?'':'<button class="btn" data-act="hvpick">選幾株收成（點或滑過植株）</button>'}`;
   let ns=0,nl=0,coins=0;
   for(const rs of groups.values()){
     const r0=rs[0],ph=r0.ph;
@@ -4498,6 +4545,7 @@ function harvestHTML(){
 }
 function harvestAction(b){
   const hv=sheet.harvest,act=b.dataset.act;
+  if(act==='hvpick'){openPick('harvest');return}
   if(act==='hvset'){hv.acts[+b.dataset.i]=b.dataset.v;hv.warn=false;renderSheet();return}
   if(act==='hvreg'){const i=+b.dataset.i;b.disabled=true;Promise.resolve(claimSpec(i)).then(ok=>{const p=state.plots[i];if(ok||(p&&hasSpec(specId(p.crop,phen(p.g,p.crop).key))))hv.reged[i]=1;if(sheet&&sheet.harvest)renderSheet()});return}
   if(act==='hvdl'){const i=+b.dataset.i;playAct('harvest');deliver(i,b.dataset.o);delete hv.acts[i];save();renderAll();renderSheet();return}
@@ -4539,14 +4587,12 @@ function traySow(lotId,mx){
 }
 function mutChk(nm,act){return `<label class="mutchk"><input type="checkbox" data-act="${act}"${sheet.trayMut?' checked':''}><span><b>使用誘變劑（剩 ${nm} 瓶）</b><span class="meta">只用在這次撒下的種子：更容易突變，發芽率 ×0.7</span></span></label>`}
 function trayPrune(){const t=trayObj(),used=[...new Set(t.cells.map(c=>c.s))].sort((a,b)=>a-b),map={};t.srcs=used.map((s,k)=>{map[s]=k;return t.srcs[s]});t.cells.forEach(c=>c.s=map[c.s])}
+/* 31.3：移植選位置。按「移植選取的 N 株」後進入連續播種模式（sowTray），點或滑過空田一株一株種下；
+   幼苗已經發芽，不再判定發芽率；沒種完的留在育苗盤（離開時才整理 srcs，復原才對得上）。 */
 function trayPlant(){
   const t=trayObj(),sel=t.cells.filter(c=>c.sel);if(!sel.length){toast('先點選想移植的幼苗');return}
-  const empty=trayEmptyPlots();if(!empty.length){toast('田裡沒有空地了，先收成或剷除一些作物');return}
-  const moved=new Set();let n=0;
-  for(const c of sel){if(n>=empty.length)break;const src=t.srcs[c.s];if(!src)continue;state.plots[empty[n]]=plantFromLot(src,c.g);moved.add(c);n++}
-  t.cells=t.cells.filter(c=>!moved.has(c));trayPrune();
-  tutEv('plant');playAct('plant');save();renderAll();renderSheet();
-  toast(n<sel.length?`移植了 ${n} 株，空地不夠，剩下 ${sel.length-n} 株還在育苗盤`:`移植了 ${n} 株到田裡`);
+  if(!trayEmptyPlots().length){toast('田裡沒有空地了，先收成或剷除一些作物');return}
+  openSow(null,true);
 }
 function trayDiscard(which){const t=trayObj(),before=t.cells.length;t.cells=which==='all'?[]:t.cells.filter(c=>c.sel);trayPrune();save();renderAll();renderSheet();toast(`丟掉了 ${before-t.cells.length} 株幼苗`)}
 function openTray(){
@@ -4576,7 +4622,7 @@ function trayHTML(){
     for(const k of gr.ks){const c=t.cells[k],ph=phen(c.g,gr.crop);h+=`<button class="tcell${c.sel?' on':''}" data-act="traycell" data-k="${k}" aria-pressed="${!!c.sel}" aria-label="${SIZE_N[ph.sizeCls]}、${PERF_N[ph.perfCls]}${c.odd?'、這株好像有點不一樣':''}"${c.odd?' title="這株好像有點不一樣"':''}>${fruitSVG(ph,gr.crop,30)}<i>${SIZE_N[ph.sizeCls]}</i>${c.odd?'<b class="todd" aria-hidden="true">✦</b>':''}</button>`}
     h+=`</div></div>`;
   }
-  h+=`<button class="btn primary" data-act="trayplant"${nSel?'':' disabled'}>移植選取的 ${nSel} 株到田裡（空地 ${nEmpty} 塊）</button>`;
+  h+=`<button class="btn primary" data-act="trayplant"${nSel?'':' disabled'}>移植選取的 ${nSel} 株（點空地種下，空地 ${nEmpty} 塊）</button>`;
   h+=`<div class="row2"><button class="btn" data-act="traydrop"${t.cells.length-nSel?'':' disabled'}>丟掉沒選的</button><button class="btn" data-act="traynew">選新的種子</button></div>`;
   h+=`<button class="btn warn" data-act="trayclear">${sheet.confirm?'再按一次，清空育苗盤':'清空育苗盤'}</button><button class="btn" data-act="close">關閉</button>`;
   return h;
@@ -4598,22 +4644,30 @@ function trayAction(b){
 
 
 // ===== 播種模式：選一包種子，點或滑過空地連續播種 =====
-let sowMode=false,sowLot=null,sowing=false,sowHist=[],sowN=0,sowOK=0;const sowFx={};
-function openSow(lotId){
+let sowMode=false,sowLot=null,sowing=false,sowHist=[],sowN=0,sowOK=0,sowTray=false;const sowFx={};
+const sowTrayLeft=()=>trayObj().cells.filter(c=>c.sel).length;
+function openSow(lotId,fromTray){
   if(scene!=='farm'||viewing){toast('回到自己的農場才能播種');return}
-  closeSheet();closePanel();if(shovelMode)exitShovel();if(buildMode)exitBuild();if(accelMode)exitAccel();
-  const m=curMe();buildCam={x:m.x,y:m.y};sowMode=true;moveTo=null;sowHist=[];sowN=0;sowOK=0;
-  sowLot=lotId!=null&&state.lots.some(l=>l.id===lotId&&lc(l)>0)?lotId:null;
+  closeSheet();closePanel();if(shovelMode)exitShovel();if(buildMode)exitBuild();if(accelMode)exitAccel();if(pickMode)exitPick();
+  const m=curMe();buildCam={x:m.x,y:m.y};sowMode=true;moveTo=null;sowHist=[];sowN=0;sowOK=0;sowTray=!!fromTray;
+  sowLot=!sowTray&&lotId!=null&&state.lots.some(l=>l.id===lotId&&lc(l)>0)?lotId:null;
   renderSowBar();renderHUD();applyCtrl();updateCam();
-  if(sowLot==null)openSowPick();else toast('播種模式：點或滑過空地就能播種',3000);
+  if(sowTray)toast(`移植模式：點或滑過空地，一株一株種下（${sowTrayLeft()} 株）`,3000);
+  else if(sowLot==null)openSowPick();else toast('播種模式：點或滑過空地就能播種',3000);
 }
 function exitSow(){
-  if(!sowMode)return;sowMode=false;sowing=false;renderSowBar();renderHUD();applyCtrl();updateCam();renderWorld();save();
-  toast(sowN?`播了 ${sowN} 顆，發芽 ${sowOK} 株`:'結束播種');sowHist=[];
+  if(!sowMode)return;sowMode=false;sowing=false;
+  if(sowTray){const left=sowTrayLeft();sowTray=false;trayPrune();toast(sowN?`移植了 ${sowN} 株${left?`，還有 ${left} 株留在育苗盤`:''}`:'結束移植');if(sowN){tutEv('plant');playAct('plant')}}
+  else toast(sowN?`播了 ${sowN} 顆，發芽 ${sowOK} 株`:'結束播種');
+  renderSowBar();renderHUD();applyCtrl();updateCam();renderAll();save();sowHist=[];
 }
 const sowCurLot=()=>state.lots.find(l=>l.id===sowLot&&lc(l)>0)||null;
 function sowAt(cx,cy){const el=document.elementFromPoint(cx,cy),g=el&&el.closest&&el.closest('[data-plot]');if(!g)return;const i=+g.dataset.plot;if(state.plots[i]||!posOf(state,i))return;sowOne(i)}
 function sowOne(i){
+  if(sowTray){const t=trayObj(),idx=t.cells.findIndex(c=>c.sel);if(idx<0){sowing=false;exitSow();return}
+    const c=t.cells[idx],src=t.srcs[c.s];if(!src){t.cells.splice(idx,1);return}
+    state.plots[i]=plantFromLot(src,c.g);t.cells.splice(idx,1);sowHist.push({i,tray:c,idx,plant:state.plots[i]});if(sowHist.length>60)sowHist.shift();sowN++;sowOK++;
+    renderWorld();renderSowBar();if(!sowTrayLeft()){sowing=false;exitSow()}return}
   const lot=sowCurLot();if(!lot){sowing=false;openSowPick();return}
   const g=drawSeed(lot),ok=rnd()<lot.germ,h={i,lot,g,ok,removed:false};
   if(!lc(lot)){state.lots=state.lots.filter(l=>l!==lot);h.removed=true}
@@ -4625,6 +4679,7 @@ function sowOne(i){
 }
 function sowUndo(){
   const h=sowHist.pop();if(!h){toast('沒有可以復原的');return}
+  if(h.tray){if(state.plots[h.i]!==h.plant){toast('這株已經有變化，無法復原');return}state.plots[h.i]=null;const t=trayObj();t.cells.splice(Math.min(h.idx,t.cells.length),0,h.tray);sowN--;sowOK--;save();renderWorld();renderSowBar();toast('已放回育苗盤');return}
   if(h.ok){if(state.plots[h.i]!==h.plant){toast('這株已經有變化，無法復原');return}state.plots[h.i]=null;sowOK--;if(state.counts[h.lot.lid])state.counts[h.lot.lid]--}
   if(h.removed&&!state.lots.includes(h.lot)){delete h.lot.slot;state.lots.unshift(h.lot)}
   if(h.lot.seeds)h.lot.seeds.push(h.g);else h.lot.count=(h.lot.count||0)+1;
@@ -4632,6 +4687,8 @@ function sowUndo(){
 }
 function renderSowBar(){
   const el=document.getElementById('sowBar');if(!el)return;if(!sowMode){el.hidden=true;return}el.hidden=false;
+  if(sowTray){const t=trayObj(),c=t.cells.find(q=>q.sel),src=c&&t.srcs[c.s];let ic='';try{if(c)ic=fruitSVG(phen(c.g,src.crop),src.crop,40)}catch(e){}
+    el.innerHTML=`<div class="sowinfo">${ic}<span><b>移植幼苗：還有 ${sowTrayLeft()} 株</b><small>${src?esc(src.name)+'・':''}已經發芽，不會失敗</small></span></div><div class="bbtip"><small>點一下或用手指滑過空地就能種下・拖曳空白處可以移動畫面・沒種完的會留在育苗盤</small></div><div class="bbrow" style="grid-template-columns:1fr 1fr"><button data-sw="undo"${sowHist.length?'':' disabled'}>放回上一株</button><button data-sw="done" class="done">完成</button></div>`;return}
   const l=sowCurLot();
   let info='<div class="bbtip">先選一包種子</div>';
   if(l){let ic='';try{ic=fruitSVG(likely(l).app,l.crop,40)}catch(e){}
@@ -4755,7 +4812,7 @@ function useAccel(i,quiet){
 function openAccel(){
   if(scene!=='farm'||viewing){toast('回到自己的農場才能使用');return}
   if(!((state.items||{}).acc>0)){toast('沒有生長加速劑了，到探索世界撿撿看');return}
-  closeSheet();closePanel();if(shovelMode)exitShovel();if(sowMode)exitSow();if(buildMode)exitBuild();
+  closeSheet();closePanel();if(shovelMode)exitShovel();if(sowMode)exitSow();if(buildMode)exitBuild();if(pickMode)exitPick();
   const m=curMe();buildCam={x:m.x,y:m.y};accelMode=true;accelN=0;moveTo=null;renderAccelBar();renderHUD();applyCtrl();updateCam();renderWorld();
   toast('加速模式：點或滑過幼苗、結果中的作物，每株用一次',3000);
 }
@@ -4788,15 +4845,30 @@ function trashAction(b){const a=b.dataset.act;
 let buildMode=null,buildCam={x:0,y:0};
 function openBuild(){
   if(scene!=='farm'||viewing){toast('只能在自己的農場建設');return}
-  const m=curMe();buildCam={x:m.x,y:m.y};buildMode='build';closePanel();renderBuildBar();renderHUD();updateCam();renderWorld();applyCtrl();
+  if(pickMode)exitPick();
+  const m=curMe();buildCam={x:m.x,y:m.y};buildMode='build';buildN=0;buildMsg='';buildBad=null;closePanel();renderBuildBar();renderHUD();updateCam();renderWorld();applyCtrl();
 }
 function exitBuild(){if(shovelMode){shovelMode=false;shoveling=false;if(shovelN)save();shovelN=0}buildMode=null;dragPlot=null;renderBuildBar();renderHUD();updateCam();renderWorld();applyCtrl()}
 function renderBuildBar(){
   const el=document.getElementById('buildBar');if(!el)return;
   if(!buildMode){el.hidden=true;return}
   el.hidden=false;
-  const tip={build:`點空地蓋農地（每塊 ${PLOT_COST} 金幣）`,del:`點空的農地拆除（退回 ${PLOT_REFUND} 金幣）`,move:'按住農地拖到新位置，植物會一起搬',shovel:'點一下或用手指滑過植株就能剷除，土地會保留'}[buildMode];
-  el.innerHTML=`<div class="bbtip">${tip}<br><small>拖曳空白處可以移動畫面・${buildMode==='shovel'?'剷錯了可以到垃圾桶找回':`農地 ${plotCount(state)}／${PLOT_MAX}`}</small></div>${buildMode==='shovel'?`<div class="bbrow" style="grid-template-columns:1fr;margin-bottom:6px"><button data-bm="trash">垃圾桶（${(state.trash||[]).length}）</button></div>`:''}<div class="bbrow" style="grid-template-columns:repeat(5,1fr)">${[['build','建設'],['del','拆除'],['move','移動'],['shovel','剷除']].map(([k,n])=>`<button data-bm="${k}" aria-pressed="${buildMode===k}">${n}</button>`).join('')}<button data-bm="done" class="done">完成</button></div>`;
+  const tip={build:`點一下或用手指滑過空地，一格一格鋪成田（每格 ${PLOT_COST} 金幣）<br><b>已鋪 ${buildN} 格，剩 ${Math.max(0,PLOT_MAX-plotCount(state))} 格可鋪</b>${buildMsg?`<br><span style="color:var(--danger)">${buildMsg}</span>`:''}`,del:`點空的農地拆除（退回 ${PLOT_REFUND} 金幣）`,move:'按住農地拖到新位置，植物會一起搬',shovel:'點一下或用手指滑過植株就能剷除，土地會保留'}[buildMode];
+  el.innerHTML=`<div class="bbtip">${tip}<br><small>${buildMode==='build'?'從已經有的田開始拖曳可以移動畫面':'拖曳空白處可以移動畫面'}・${buildMode==='shovel'?'剷錯了可以到垃圾桶找回':`農地 ${plotCount(state)}／${PLOT_MAX}`}</small></div>${buildMode==='shovel'?`<div class="bbrow" style="grid-template-columns:1fr;margin-bottom:6px"><button data-bm="trash">垃圾桶（${(state.trash||[]).length}）</button></div>`:''}<div class="bbrow" style="grid-template-columns:repeat(5,1fr)">${[['build','建設'],['del','拆除'],['move','移動'],['shovel','剷除']].map(([k,n])=>`<button data-bm="${k}" aria-pressed="${buildMode===k}">${n}</button>`).join('')}<button data-bm="done" class="done">完成</button></div>`;
+}
+/* 31.1：建設模式的點或滑過鋪設（照裝飾地面鋪設的寫法）；同一筆劃每格只處理一次，不合法的位置閃紅不鋪 */
+let buildPainting=false,buildN=0,buildMsg='',buildBad=null;const buildHit=new Set();
+/* 滑動時兩次觸控點之間每 10px 補一個點，手指滑快也不會跳格（鋪設、多選共用） */
+let strokeLast=null;function strokeTo(cx,cy,fn){if(strokeLast){const dx=cx-strokeLast[0],dy=cy-strokeLast[1],n=Math.min(60,Math.ceil(Math.hypot(dx,dy)/10));for(let k=1;k<n;k++)fn(strokeLast[0]+dx*k/n,strokeLast[1]+dy*k/n)}fn(cx,cy);strokeLast=[cx,cy]}
+function buildPlotErr(x,y){if(plotCount(state)>=PLOT_MAX)return `農地最多 ${PLOT_MAX} 塊`;const e=plotSpotErr(state,x,y,-1);if(e)return e;if(!isInf()&&state.coins<PLOT_COST)return '金幣不夠';return ''}
+function buildAt(cx,cy){
+  const w=screenToWorld(cx,cy),[x,y]=snapPos(w.x,w.y),k=x+','+y;if(buildHit.has(k))return;buildHit.add(k);
+  const err=buildPlotErr(x,y);
+  if(err){if(err==='這裡已經有農地了')return;buildBad={x,y,t:Date.now()};buildMsg=err;renderWorld();renderBuildBar();setTimeout(()=>{if(buildMode)renderWorld()},950);return}
+  if(!isInf())state.coins-=PLOT_COST;
+  let i=state.plotPos.findIndex((q,j)=>!q&&!state.plots[j]);
+  if(i<0){i=state.plotPos.length;state.plotPos.push(null);state.plots.push(null)}
+  state.plotPos[i]=[x,y];state.plots[i]=null;buildN++;buildMsg='';renderWorld();renderCoins();renderBuildBar();
 }
 function buildTap(w,t){
   if(buildMode==='build'){

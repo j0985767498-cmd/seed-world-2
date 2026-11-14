@@ -336,9 +336,9 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 #wx i{position:absolute;display:block;top:-6vh;left:var(--x);animation:var(--a) var(--d) linear var(--l) infinite;will-change:transform}
 #wx.wx-snow i{width:var(--s);height:var(--s);border-radius:50%;background:#fff;opacity:var(--o,.9);box-shadow:0 0 3px rgba(255,255,255,.9)}
 @keyframes wxFall{0%{transform:translate3d(0,0,0)}50%{transform:translate3d(calc(var(--dx)*.5 + var(--sw,0px)),56vh,0)}100%{transform:translate3d(var(--dx),112vh,0)}}
-#wx.wx-desert{background:linear-gradient(rgba(230,190,120,.08),rgba(230,190,120,.2))}
-#wx.wx-desert i{top:var(--y);left:-20vw;width:var(--w);height:2px;border-radius:2px;background:rgba(200,150,80,.55)}
-@keyframes wxBlow{from{transform:translate3d(0,0,0)}to{transform:translate3d(140vw,var(--dy),0)}}
+#wx.wx-desert{background:linear-gradient(rgba(230,190,120,.04),rgba(230,190,120,.12))}
+#wx.wx-desert i{left:-15vw;border-radius:2px;background:rgb(205,160,95)}
+@keyframes wxBlow{0%{transform:translate3d(0,0,0)}25%{transform:translate3d(32vw,calc(var(--dy)*.25 - var(--b)),0)}50%{transform:translate3d(65vw,calc(var(--dy)*.5),0)}75%{transform:translate3d(97vw,calc(var(--dy)*.75 + var(--b)),0)}100%{transform:translate3d(130vw,var(--dy),0)}}
 #wx.wx-marsh .fog{position:absolute;left:-30%;width:160%;height:45%;background:radial-gradient(ellipse at center,rgba(255,255,255,.38),rgba(255,255,255,0) 70%);animation:wxFog 26s ease-in-out infinite alternate}
 @keyframes wxFog{from{transform:translateX(-8%)}to{transform:translateX(8%)}}
 #wx.wx-marsh i{top:var(--y);width:5px;height:5px;border-radius:50%;background:#FFF59A;box-shadow:0 0 8px 3px rgba(255,240,120,.7);animation:wxFly var(--d) ease-in-out var(--l) infinite alternate}
@@ -987,7 +987,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-14s';
+const BUILD='2026-11-14t';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -3838,13 +3838,79 @@ const DESERT_MAPS={
     objs:[['ruins',200,420],['ruins',600,420],['ruins',200,720],['ruins',600,720]],
     spawns:[[400,330],[180,570],[620,570],[400,720],[260,960]],items:[[400,200],[680,1000]]}
 };
+// ===== 濕地地圖（14t，第 27 節 27.5）：6 張相連小地圖＋倒木隧道（洞內）；素材 assets/wetland/（程式鍵 marsh）=====
+/* 斜向步道的小工具：regLineWalk 沿直線產生一串可走的小方塊（放 walks）；regChain 沿斜線排一串物件（從遠到近，近的畫在上面） */
+const regLineWalk=(x0,y0,x1,y1,r)=>{const n=Math.ceil(Math.hypot(x1-x0,y1-y0)/14),o=[];for(let i=0;i<=n;i++){const x=Math.round(x0+(x1-x0)*i/n),y=Math.round(y0+(y1-y0)*i/n);o.push([x-r,y-r,x+r,y+r])}return o};
+const regChain=(t,x0,y0,dx,dy,n)=>Array.from({length:n},(_,k)=>[t,x0+dx*(n-1-k),y0+dy*(n-1-k)]);
+const MARSH_IMG={boardwalk:[317,294],cattails:[226,300],elephant_ear:[274,300],frog_statue:[293,300],giant_lotus:[202,300],lily_pads:[327,198],log_tunnel:[321,300],mossy_log:[325,234],mossy_stump:[325,249],muddy_boulder:[297,214],reed_fence:[297,235],signpost:[211,300],stepping_stones:[306,258],stilt_hut:[261,300],stone_lantern:[206,300],sunken_boat:[290,282],swamp_tree:[251,300],willow:[261,300],'../forest/glow_mushrooms':[232,246]};
+/* [檔名, 顯示高度, 碰撞寬, 碰撞高]：大蓮花、睡蓮、高腳屋、沉船都在水裡（水面本身擋路）；木棧道、踏腳石、睡蓮畫在地面層；
+   倒木隧道的碰撞用 blocks（洞口留空）；隧道裡的發光蘑菇借用森林的素材 */
+const MARSH_ART={willow:['willow',140,22,14],bigwillow:['willow',175,26,16],cattails:['cattails',62,34,10],elephant:['elephant_ear',64,24,10],frog:['frog_statue',100,80,26],
+  lotus:['giant_lotus',110,0,0],lily:['lily_pads',30,0,0],boardwalk:['boardwalk',110,0,0],stones:['stepping_stones',80,0,0],hut:['stilt_hut',150,0,0],lantern:['stone_lantern',84,30,12],
+  boat:['sunken_boat',70,0,0],swamp:['swamp_tree',150,26,14],mossylog:['mossy_log',50,72,14],stump:['mossy_stump',56,50,16],boulder:['muddy_boulder',56,56,18],
+  reedfence:['reed_fence',54,60,10],tunnel:['log_tunnel',140,0,0],glowmush:['../forest/glow_mushrooms',70,28,12],sign:['signpost',78,16,8]};
+const MARSH_FLAT={boardwalk:1,stones:1,lily:1},MARSH_SWAY={willow:1,bigwillow:1,cattails:1,elephant:1};
+const MARSH_MAPS={
+  entry:{n:'濕地入口',gx:1,gy:2,
+    exits:[{side:'s',c:400,w:120,to:'farm'},{side:'n',c:400,w:120,to:'marsh'},{side:'e',c:640,w:120,to:'lotus'}],
+    paths:[[[400,1110],[400,820],[420,640],[810,640]],[[420,640],[400,420],[400,-10]]],
+    lakes:[[620,420,90,50]],
+    objs:[['sign',480,995,'濕地'],['willow',150,300],['bigwillow',230,360],['willow',690,860],['cattails',540,400],['cattails',700,450],['cattails',250,760],['cattails',150,960],
+      ['lily',600,420],['lily',650,405],['elephant',300,520],['elephant',580,760],['mossylog',230,620],['stump',640,1000]],
+    spawns:[[290,450],[560,540],[300,930],[600,850]],items:[[110,560]]},
+  marsh:{n:'蘆葦沼',gx:1,gy:1,
+    exits:[{side:'s',c:400,w:120,to:'entry'},{side:'n',c:620,w:120,to:'village'}],
+    lakes:[[160,580,170,250],[400,580,170,250],[640,580,170,250]],walks:regLineWalk(118,886,734,325,22),
+    paths:[[[400,1110],[400,960],[118,900]],[[734,320],[620,250],[620,-10]]],
+    objs:[...regChain('boardwalk',140,930,56,-51,11),['cattails',100,350],['cattails',330,335],['cattails',540,345],['cattails',520,830],['cattails',290,840],['cattails',690,840],
+      ['lily',300,560],['lily',520,700],['lily',230,420],['reedfence',520,900],['reedfence',580,900],['reedfence',640,900],
+      ['willow',150,980],['willow',690,1000],['mossylog',560,990],['elephant',300,1000],['elephant',300,230],['stump',460,230]],
+    spawns:[[200,220],[420,290],[600,960],[250,980]],items:[[110,200],[720,960]]},
+  lotus:{n:'蓮花池',gx:2,gy:2,
+    exits:[{side:'w',c:640,w:120,to:'entry'},{side:'n',c:600,w:120,to:'frog'}],
+    lakes:[[420,450,430,150]],walks:regLineWalk(200,700,585,287,22),
+    paths:[[[-10,640],[200,700]],[[200,700],[400,820],[650,820]],[[585,287],[600,200],[600,-10]]],
+    objs:[...regChain('stones',218,713,55,-59,7),['lotus',320,470],['lily',600,500],['lily',250,380],['lily',690,430],['lily',450,570],['lily',140,470],
+      ['cattails',120,620],['cattails',700,620],['cattails',520,650],['cattails',300,290],['willow',150,900],['bigwillow',680,720],['elephant',400,950],['stump',650,1000],['elephant',700,230]],
+    spawns:[[300,860],[600,800],[150,990],[250,210],[660,250]],items:[[700,980],[120,200]]},
+  village:{n:'高腳屋聚落',gx:1,gy:0,
+    exits:[{side:'s',c:620,w:120,to:'marsh'},{side:'e',c:820,w:120,to:'frog'}],
+    lakes:[[250,420,170,95],[560,880,80,50]],
+    rows:[['reedfence',60,260,640,50]],cols:[['reedfence',282,640,900,48]],
+    paths:[[[620,1110],[620,820],[810,820]],[[620,820],[450,600],[430,300]]],
+    objs:[['hut',250,470],['boat',560,900],['lantern',430,560],['lantern',140,610],['lantern',520,330],['lantern',640,640],
+      ['lily',180,400],['lily',330,440],['cattails',100,470],['cattails',410,440],['cattails',490,880],['cattails',640,900],
+      ['willow',690,250],['willow',380,1000],['elephant',700,500],['mossylog',480,720],['stump',150,1000]],
+    spawns:[[450,450],[650,450],[450,900],[160,280]],items:[[120,760]]},
+  frog:{n:'青蛙石像',gx:2,gy:1,
+    exits:[{side:'w',c:300,w:120,to:'village'},{side:'s',c:600,w:120,to:'lotus'},{side:'n',c:400,w:120,to:'log'}],
+    rivers:[[[[-20,770],[250,730],[520,790],[820,750]],60]],walks:[[372,700,428,840]],
+    paths:[[[600,1110],[600,900],[400,860],[400,700],[400,520]],[[-10,300],[300,360],[400,520]],[[400,420],[400,-10]]],
+    objs:[['stones',400,805],['frog',400,500],['boulder',200,420],['boulder',620,380],['stump',650,600],['elephant',250,620],['elephant',560,950],['elephant',150,950],
+      ['cattails',200,700],['cattails',620,830],['cattails',720,720],['cattails',90,810],['willow',150,240],['willow',690,950]],
+    spawns:[[250,520],[600,520],[300,950],[650,250]],items:[[700,620],[120,1000]]},
+  log:{n:'倒木',gx:2,gy:0,
+    exits:[{side:'s',c:400,w:120,to:'frog'},{door:[392,392,438,416],arrive:[415,470],to:'tunnel'}],
+    lakes:[[620,720,100,55]],
+    blocks:[[355,390,390,442],[440,390,505,442],[355,330,505,390]],
+    paths:[[[400,1110],[410,700],[415,470]]],
+    objs:[['tunnel',430,440],['swamp',150,350],['swamp',650,330],['swamp',180,800],['swamp',690,890],['mossylog',600,560],['boulder',250,600],['stump',520,960],
+      ['cattails',540,740],['cattails',710,700],['lily',600,720],['elephant',300,960],['elephant',560,420]],
+    spawns:[[200,500],[660,460],[250,950],[600,880]],items:[[120,1000]]},
+  tunnel:{n:'倒木隧道',gx:3,gy:0,cave:1,rare:0.15,
+    exits:[{side:'s',c:400,w:120,to:'log'}],
+    rows:[['boulder',44,520,640,64]],
+    paths:[[[400,1110],[650,900],[650,560],[400,400],[400,200]]],
+    objs:[['glowmush',620,900],['glowmush',180,300],['glowmush',700,250],['glowmush',150,880],['stump',300,330],['stump',560,860],['mossylog',600,380],['boulder',250,850]],
+    spawns:[[690,990],[300,940],[700,560],[420,220],[200,450]],items:[[120,760]]}
+};
 /* ===== 地區地圖通用化（14p，第 27 節 27.1）=====
    REGION_MAPS[地區][id]（格式同上面雪原的說明，另可加 rivers:[[[x,y],…],寬] 折線帶狀水面，擋路；橋、木棧道、踏腳石放 walks）。
    REGION_ART／REGION_IMG／REGION_FLAT／REGION_SWAY／REGION_GLOW 依地區分表；素材在 assets/<REGION_CFG.dir 或地區鍵>/。
    REGION_CFG[地區]：名稱、地面與洞內顏色、邊界自動排的樹與灌木、天氣、腳印。
    雪原的亂數種子、刷新點鍵值、多人頻道名稱和 14j 完全相同（vm 比對過）；還沒有地圖的地區（REGION_MAPS 沒有）照舊用無限方塊。 */
-const REGION_MAPS={snow:SNOW_MAPS,grass:GRASS_MAPS,forest:FOREST_MAPS,desert:DESERT_MAPS};
-const REGION_ART={snow:SNOW_ART,grass:GRASS_ART,forest:FOREST_ART,desert:DESERT_ART},REGION_IMG={snow:SNOW_IMG,grass:GRASS_IMG,forest:FOREST_IMG,desert:DESERT_IMG},REGION_FLAT={snow:SNOW_FLAT,grass:GRASS_FLAT,forest:FOREST_FLAT,desert:DESERT_FLAT},REGION_SWAY={snow:SNOW_SWAY,grass:GRASS_SWAY,forest:FOREST_SWAY,desert:DESERT_SWAY},REGION_GLOW={snow:{glow:1},grass:{},forest:{glowmush:1},desert:{}};
+const REGION_MAPS={snow:SNOW_MAPS,grass:GRASS_MAPS,forest:FOREST_MAPS,desert:DESERT_MAPS,marsh:MARSH_MAPS};
+const REGION_ART={snow:SNOW_ART,grass:GRASS_ART,forest:FOREST_ART,desert:DESERT_ART,marsh:MARSH_ART},REGION_IMG={snow:SNOW_IMG,grass:GRASS_IMG,forest:FOREST_IMG,desert:DESERT_IMG,marsh:MARSH_IMG},REGION_FLAT={snow:SNOW_FLAT,grass:GRASS_FLAT,forest:FOREST_FLAT,desert:DESERT_FLAT,marsh:MARSH_FLAT},REGION_SWAY={snow:SNOW_SWAY,grass:GRASS_SWAY,forest:FOREST_SWAY,desert:DESERT_SWAY,marsh:MARSH_SWAY},REGION_GLOW={snow:{glow:1},grass:{},forest:{glowmush:1},desert:{},marsh:{lantern:1,glowmush:1}};
 const REGION_CFG={
   snow:{name:'雪原',ground:'#E9EFF4',outer:'#E3EAF0',spots:['#DDE6ED','#F3F7F9'],path:['#D3DDE6','#DEE7EE'],water:['#9DBCCD','#C7E0EC'],cliff:['#8D9299','#767B83','#FFFFFF'],
     edgeTree:'pine',edgeBush:'bush',weather:'snow',shadow:'rgba(70,95,120,.2)',glow:'#C8F4FF',footprints:true,
@@ -3859,7 +3925,7 @@ const REGION_CFG={
     edgeTree:'saguaro',edgeBush:'tumbleweed',weather:'desert',shadow:'rgba(110,80,40,.22)',glow:'#FFE6A0',footprints:true,
     caveGround:'#C9A76E',caveOuter:'#5E4527',caveSpots:['#BF9C63','#D3B37C'],cavePath:['#B8955E','#C2A06A'],caveWall:'#8E6E44',caveEdge:'#E2C796'},
   marsh:{name:'濕地',dir:'wetland',ground:'#96AF78',outer:'#8AA36D',spots:['#8DA770','#A1B985'],path:['#A39A74','#B0A782'],water:['#6F9A92','#8FB8B0'],cliff:['#7E7A5E','#68654D','#96AF78'],
-    edgeTree:'willow',edgeBush:'cattails',weather:'marsh',shadow:'rgba(30,50,30,.25)',glow:'#E8FFB0',footprints:false,
+    edgeTree:'willow',edgeBush:'cattails',weather:'marsh',shadow:'rgba(30,50,30,.25)',glow:'#FFE6A8',footprints:false,
     caveGround:'#5E4A34',caveOuter:'#291F14',caveSpots:['#55432E','#6A553C'],cavePath:['#6E5940','#79644A'],caveWall:'#4A3A26',caveEdge:'#927858'}
 };
 const regHas=bk=>!!(REGION_MAPS[bk]&&REGION_MAPS[bk].entry);
@@ -4610,7 +4676,8 @@ function setWeather(bk){
   for(let k=0;k<WXN[bk];k++){let st;
     if(bk==='snow'){const near=k<12;st=near?`--x:${f(r()*100)}vw;--s:${f(5+r()*3)}px;--o:.95;--dx:${f(r()*14-7)}vw;--sw:${f(r()*8-4)}vw;--d:${f(5+r()*3)}s;--l:${f(-r()*8)}s;--a:wxFall`:`--x:${f(r()*100)}vw;--s:${f(2+r()*1.5)}px;--o:.55;--dx:${f(r()*10-5)}vw;--sw:${f(r()*6-3)}vw;--d:${f(10+r()*6)}s;--l:${f(-r()*16)}s;--a:wxFall`}
     else if(bk==='cave')st=`--x:${f(r()*100)}vw;--y:${f(5+r()*55)}vh;--d:${f(3+r()*3)}s;--l:${f(-r()*6)}s`;
-    else if(bk==='desert')st=`--y:${f(r()*100)}vh;--w:${f(20+r()*50,0)}px;--dy:${f(r()*10-3)}vh;--d:${f(1.6+r()*1.8,2)}s;--l:${f(-r()*3.4,2)}s;--a:wxBlow`;
+    else if(bk==='desert'){/* 風沙：高度、長度直接寫成數值（不靠 top:var()），近層 8 顆較長較快、遠層較短較慢較淡，--b 是上下起伏 */const near=k<8;
+      st=`top:${f(2+r()*94)}vh;width:${f(near?26+r()*36:10+r()*20,0)}px;height:${near?2:1}px;opacity:${near?f(.38+r()*.14,2):f(.18+r()*.12,2)};--dy:${f(r()*8-4)}vh;--b:${f(near?1+r()*1.5:.5+r()*1)}vh;--d:${f(near?2.2+r()*1.6:4.5+r()*3,2)}s;--l:${f(-r()*8,2)}s;--a:wxBlow`}
     else if(bk==='marsh')st=`--x:${f(r()*100)}vw;--y:${f(15+r()*80)}vh;--dx:${f(r()*60-30,0)}px;--dy:${f(r()*50-25,0)}px;--d:${f(3+r()*4)}s;--l:${f(-r()*6)}s`;
     else st=`--x:${f(r()*100)}vw;--s:${f((bk==='grass'?6:8)+r()*5,0)}px;--dx:${f(r()*30-10)}vw;--d:${f(9+r()*8)}s;--l:${f(-r()*16)}s;--a:wxLeaf;--c:${bk==='grass'?['#F7B6C8','#FFE1EA','#F2C94C'][k%3]:['#D9822B','#C9473A','#E8B13A','#6FA544'][k%4]}`;
     h+=`<i style="${st}"></i>`}

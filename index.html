@@ -41,7 +41,7 @@ header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
 h1{font-family:"Noto Serif TC","Songti TC",serif;font-size:26px;line-height:1.2;margin:0;letter-spacing:.04em}
 .sub{font-size:13px;color:var(--muted);margin:2px 0 0}
 .coins{display:flex;align-items:center;gap:6px;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 6px;font-weight:500;white-space:nowrap}
-.coin{width:20px;height:20px;border-radius:50%;background:var(--mustard);box-shadow:inset 0 0 0 3px rgba(255,255,255,.35)}
+.coin{width:22px;height:22px;background:url(assets/icons/s/coin.png) center/contain no-repeat}/* 14x 金幣圖示 */
 #farm{width:100%;height:auto;display:block;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .tools{display:flex;gap:12px;justify-content:center;margin:10px 0 4px}
 .tool{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:6px 16px;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:grab;font-size:13px}
@@ -252,6 +252,7 @@ body.game{background:#5E9E38}
 
 
 .sbtn{border:2px solid #5A3416;background:#FFF6DE;color:#5A3416;box-shadow:0 3px 0 #5A3416;font-weight:700}
+.sbtn:not([hidden]){display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0}.sbtn .sbi{height:22px;width:auto;margin-bottom:1px}.sbtn .sbt{font-size:11.5px;line-height:1.1}.sbtn .sbn{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 4px;box-sizing:border-box;border-radius:9px;background:#D9473A;color:#fff;font-size:11px;font-style:normal;line-height:18px;border:1.5px solid #fff}.uic{vertical-align:-5px;margin-right:4px;width:auto}
 #joy{background:rgba(255,255,255,.4);border:3px solid rgba(90,52,22,.55)}
 #joyKnob{background:#FFF6DE;border:3px solid #5A3416;box-shadow:0 3px 0 #5A3416}
 .panel{background:#FFF8E7;border:3px solid #5A3416;border-bottom:0}
@@ -289,7 +290,7 @@ body.game{background:#5E9E38}
 .iconbar{position:fixed;z-index:10;display:flex;flex-direction:column;gap:6px}
 #iconbarL{left:8px;top:calc(116px + env(safe-area-inset-top,0px))}
 .iconbar button{width:54px;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;font:inherit;font-size:11px;line-height:1.2;position:relative;padding:2px;border:2px solid #5A3416;background:#FFF6DE;color:#5A3416;box-shadow:0 3px 0 #5A3416;border-radius:16px;font-weight:700}
-.iconbar button[hidden]{display:none}.iconbar svg{width:24px;height:24px;margin-bottom:1px}.iconbar button:active{transform:translateY(2px);box-shadow:0 1px 0 #5A3416}
+.iconbar button[hidden]{display:none}.iconbar svg{width:24px;height:24px;margin-bottom:1px}.iconbar img.ibimg{width:26px;height:26px;object-fit:contain;margin-bottom:1px}.iconbar button:active{transform:translateY(2px);box-shadow:0 1px 0 #5A3416}
 #waterAll{right:14px !important;bottom:calc(18px + env(safe-area-inset-bottom,0px)) !important;width:66px;height:66px}
 #fertBtn{right:88px !important;bottom:calc(18px + env(safe-area-inset-bottom,0px)) !important;width:66px;height:66px}
 #buildBar{position:fixed;left:8px;right:8px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:12;background:#FFF6DE;border:3px solid #5A3416;border-radius:16px;box-shadow:0 4px 0 #5A3416;padding:8px}
@@ -436,7 +437,7 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
 <div class="hudTop"><div class="coins" aria-label="金幣"><span class="coin" aria-hidden="true"></span><span id="coins">0</span></div><div class="sceneName" id="sceneName">我的農場</div><div class="sync" id="sync" role="status"></div></div>
 <div id="marquee" hidden role="status" aria-live="polite"><b aria-hidden="true">📢</b><div class="mqwin"><span></span></div></div>
 <div id="iconbarL" class="iconbar">
-  <button data-open="bag"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h8l2 4v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9z"/><path d="M8 6l1-3h6l1 3"/><path d="M12 12c-2 1.5-2 4 0 5.5 2-1.5 2-4 0-5.5z" fill="currentColor" stroke="none"/></svg><span>種子袋</span></button>
+  <button data-open="bag"><img class="ibimg" src="assets/icons/s/seed_bag.png" alt="" aria-hidden="true"><span>種子袋</span></button>
   <button data-open="dex"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6M9 12h6"/></svg><span>圖鑑</span></button>
   <button id="ordersBtn"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v18l-5-3-5 3z"/><path d="M10 8h4M10 12h4"/></svg><span>訂單</span><i id="ordersBadge" hidden></i></button>
   <button data-open="genes"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3c0 6 10 6 10 12s-10 6-10 6"/><path d="M17 3c0 6-10 6-10 12s10 6 10 6"/><path d="M8.5 7h7M8.5 17h7M10 12h4"/></svg><span>遺傳</span></button>
@@ -451,12 +452,12 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
   <button data-open="settings"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span>設定</span></button>
 </div>
 <div id="joy" aria-label="移動搖桿" hidden><div id="joyKnob"></div></div>
-<button id="sowBtn" class="sbtn">種植</button>
+<button id="sowBtn" class="sbtn"><img class="sbi" src="assets/icons/s/seed_bag.png" alt="" aria-hidden="true"><span class="sbt">種植</span></button>
 <button id="shovelBtn" class="sbtn">剷除</button>
 <button id="fertBtn" class="sbtn">全部<br>自交</button>
 <button id="waterAll" class="sbtn">全部<br>收成</button>
-<button id="trayBtn" class="sbtn">育苗盤</button>
-<button id="accelBtn" class="sbtn" hidden>加速劑</button>
+<button id="trayBtn" class="sbtn"><img class="sbi" src="assets/icons/s/tray.png" alt="" aria-hidden="true"><span class="sbt">育苗盤</span></button>
+<button id="accelBtn" class="sbtn" hidden><img class="sbi" src="assets/icons/s/accel.png" alt="" aria-hidden="true"><span class="sbt">加速劑</span></button>
 <div id="buildBar" hidden></div>
 <div id="shovelBar" class="toolbar2" hidden></div>
 <div id="accelBar" class="toolbar2" hidden></div>
@@ -991,7 +992,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-14v';
+const BUILD='2026-11-14x';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -1471,14 +1472,51 @@ function bodySVG(type,x,y,fl,fc){
   }
   return s;
 }
+/* ===== 作物植株圖片（14w，第 26 節 26.4、26.3）=====
+   assets/crops/<作物>_1（幼苗）、_2（開花）、_3（結果、成熟）。用到才載入；還沒載好或載入失敗時照舊畫法（bodySVG），植株不會消失。
+   PLANT_H：_3 在植株座標裡的顯示高度（番茄 72 為基準；瓜類橫向鋪開，限制寬度約 110）。
+   FRUIT_AT[作物]=[[x,y,s]×3]：果實中心在 _3 圖上的比例座標與大小比例；剩幾次採收就畫前幾個點。
+   FRUIT_ONE：只有 1 顆的作物（甘藍家族），依採收次數畫第 1、2、3 個點（同一處、依次縮小）。
+   掛點用 tools/fruit_anchor.html 調整後把 JSON 貼回 FRUIT_AT。 */
+const PLANT_IMG={tomato:[[148,140],[257,300],[271,300]],chili:[[143,134],[253,256],[325,300]],strawberry:[[136,148],[286,229],[359,281]],eggplant:[[152,132],[295,300],[318,300]],corn:[[137,148],[122,300],[137,300]],pumpkin:[[102,88],[294,184],[494,213]],zucchini:[[131,89],[339,281],[415,300]],melon:[[118,89],[300,170],[448,196]],broccoli:[[156,116],[278,219],[395,278]]};
+const PLANT_H={tomato:72,chili:72,eggplant:72,corn:97,pumpkin:46,zucchini:58,melon:48,broccoli:50,strawberry:40};
+const FRUIT_AT={tomato:[[0.3,0.5,0.55],[0.68,0.42,0.55],[0.5,0.68,0.55]],chili:[[0.3,0.48,0.6],[0.7,0.42,0.6],[0.52,0.66,0.6]],strawberry:[[0.28,0.82,0.45],[0.52,0.88,0.45],[0.75,0.8,0.45]],
+  eggplant:[[0.33,0.55,0.6],[0.68,0.5,0.6],[0.5,0.74,0.55]],corn:[[0.62,0.5,0.6],[0.38,0.62,0.6],[0.62,0.74,0.6]],pumpkin:[[0.28,0.7,0.48],[0.52,0.78,0.52],[0.76,0.7,0.48]],
+  zucchini:[[0.3,0.8,0.55],[0.55,0.85,0.55],[0.76,0.78,0.55]],melon:[[0.28,0.68,0.48],[0.52,0.74,0.52],[0.76,0.66,0.48]],broccoli:[[0.5,0.52,0.72],[0.5,0.52,0.62],[0.5,0.52,0.52]]};
+const FRUIT_ONE={broccoli:1};
+const PB={};
+const plantSrc=k=>'assets/crops/'+k+'.png?v='+BUILD;
+function plantImg(crop,st){
+  const k=crop+'_'+st,b=PB[k];if(b)return b.st===1?b:null;const nb=PB[k]={st:0};
+  try{const im=new Image();im.onload=()=>{nb.st=1;fruitLoaded()};im.onerror=()=>{nb.st=2};im.src=plantSrc(k)}catch(e){nb.st=2}
+  return null;
+}
+/* 植株圖片：回傳 {svg,w,h}；還沒載好回傳 null（呼叫的地方照舊畫法） */
+function plantImgSVG(crop,stage,x,y,prr){
+  const st=stage==='seedling'?1:stage==='flower'?2:3,dim=(PLANT_IMG[crop]||[])[st-1];if(!dim||!plantImg(crop,st))return null;
+  const H0=PLANT_H[crop]||72,h=st===1?Math.max(18,H0*(0.35+0.2*prr)):st===2?H0*0.95:H0,w=h*dim[0]/dim[1];
+  return {svg:`<image href="${plantSrc(crop+'_'+st)}" x="${f1(x-w/2)}" y="${f1(y-h)}" width="${f1(w)}" height="${f1(h)}"/>`,w,h};
+}
+/* 掛在植株上的果實：n＝剩下的果實數，mul＝階段大小（結果期 0.7） */
+function plantFruitsSVG(crop,ph,x,y,w,h,n,ripe,mul){
+  const cd=CROPS[crop],pts=FRUIT_AT[crop];if(!pts||n<=0)return '';
+  const list=FRUIT_ONE[crop]?[pts[clamp(pts.length-n,0,pts.length-1)]]:pts.slice(0,n);let s='';
+  for(const [u,v,k] of list){const sz=cd.fs*sizeScale(ph.ab.size)*mul*k,cx=x-w/2+u*w,cy=y-h+v*h;
+    s+=`<svg x="${f1(cx-sz/2)}" y="${f1(cy-sz*0.53)}" width="${f1(sz)}" height="${f1(sz*3.2/3)}" viewBox="-1.5 -1.6 3 3.2" stroke="none">${fruitInner(ph,ripe,crop)}</svg>`}
+  return s;
+}
 const plantCache=new WeakMap();
 function plantSVG(p,x,y){
   const cd=CROPS[p.crop],ph=phen(p.g,p.crop);
   const prr=(p.stage==='seedling'||p.stage==='fruit')?clamp(p.prog/stageDur(p,ph),0,1):1;
-  const key=p.stage+'|'+Math.floor(prr*12)+'|'+p.watered+'|'+x+'|'+y+'|'+!!(p.pollen&&p.pollen.failed)+'|'+FRUIT_VER;/* FRUIT_VER：素模載好後重畫 */
+  const key=p.stage+'|'+Math.floor(prr*12)+'|'+p.watered+'|'+x+'|'+y+'|'+!!(p.pollen&&p.pollen.failed)+'|'+(p.hv||0)+'|'+FRUIT_VER;/* FRUIT_VER：素模、植株圖片載好後重畫；hv：剩下幾顆果實 */
   const hit=plantCache.get(p);if(hit&&hit.key===key)return hit.svg;
-  let s='';
-  if(p.stage==='seedling'){const h=10+22*prr;s+=`<path d="M${x} ${y} L${x} ${y-h}" stroke="#3F8F2A" stroke-width="3" stroke-linecap="round"/>`+leaf(x,y-h+2,-150,0.7+0.4*prr)+leaf(x,y-h+2,-30,0.7+0.4*prr)}
+  let s='',mk=0;/* mk：狀態標示（小花、成熟星星）往上移多少，跟著植株高度 */
+  const im=plantImgSVG(p.crop,p.stage,x,y,prr);
+  if(im){s+=im.svg;mk=Math.max(im.h,40)+12-78;
+    if(p.stage==='fruit'||p.stage==='ripe')s+=plantFruitsSVG(p.crop,ph,x,y,im.w,im.h,(ph.harvests||3)-(p.hv||0),p.stage==='ripe'?1:prr*0.4,p.stage==='ripe'?1:0.7);
+    if(p.stage==='ripe')s+=`<path d="M${x+26} ${y-78-mk} l2.5 6 6 2.5 -6 2.5 -2.5 6 -2.5 -6 -6 -2.5 6 -2.5z" fill="#FFD54A" stroke="#9A6A00" stroke-width="1.2" stroke-linejoin="round"/>`}
+  else if(p.stage==='seedling'){const h=10+22*prr;s+=`<path d="M${x} ${y} L${x} ${y-h}" stroke="#3F8F2A" stroke-width="3" stroke-linecap="round"/>`+leaf(x,y-h+2,-150,0.7+0.4*prr)+leaf(x,y-h+2,-30,0.7+0.4*prr)}
   else{
     s+=bodySVG(cd.body,x,y,p.stage==='flower',cd.fl);
     if(p.stage==='fruit'||p.stage==='ripe'){
@@ -1487,8 +1525,9 @@ function plantSVG(p,x,y){
       if(p.stage==='ripe')s+=`<path d="M${x+26} ${y-78} l2.5 6 6 2.5 -6 2.5 -2.5 6 -2.5 -6 -6 -2.5 6 -2.5z" fill="#FFD54A" stroke="#9A6A00" stroke-width="1.2" stroke-linejoin="round"/>`;
     }
   }
-  if(p.pollen&&p.pollen.failed&&p.stage!=='flower')s+=`<g stroke="#7A2A1A" stroke-width="1.4"><circle cx="${x+24}" cy="${y-74}" r="7" fill="#FFE1D6"/><path d="M${x+21} ${y-77} l6 6 M${x+27} ${y-77} l-6 6" stroke-linecap="round"/></g>`;
-  if(p.stage==='flower'&&!p.pollen)s+=`<g aria-hidden="true"><circle cx="${x-26}" cy="${y-76}" r="9" fill="#FFFDF6" stroke="#B07A44" stroke-width="1.5"/>${[0,1,2,3,4].map(k=>{const a=k*1.2566-1.5708;return `<circle cx="${(x-26+3.6*Math.cos(a)).toFixed(1)}" cy="${(y-76+3.6*Math.sin(a)).toFixed(1)}" r="2.6" fill="#F28DB2"/>`}).join('')}<circle cx="${x-26}" cy="${y-76}" r="2" fill="#FFD54A"/></g>`;/* 等待授粉 */
+  {const ym=y-mk;
+  if(p.pollen&&p.pollen.failed&&p.stage!=='flower')s+=`<g stroke="#7A2A1A" stroke-width="1.4"><circle cx="${x+24}" cy="${ym-74}" r="7" fill="#FFE1D6"/><path d="M${x+21} ${ym-77} l6 6 M${x+27} ${ym-77} l-6 6" stroke-linecap="round"/></g>`;
+  if(p.stage==='flower'&&!p.pollen)s+=`<g aria-hidden="true"><circle cx="${x-26}" cy="${ym-76}" r="9" fill="#FFFDF6" stroke="#B07A44" stroke-width="1.5"/>${[0,1,2,3,4].map(k=>{const a=k*1.2566-1.5708;return `<circle cx="${(x-26+3.6*Math.cos(a)).toFixed(1)}" cy="${(ym-76+3.6*Math.sin(a)).toFixed(1)}" r="2.6" fill="#F28DB2"/>`}).join('')}<circle cx="${x-26}" cy="${ym-76}" r="2" fill="#FFD54A"/></g>`;}/* 等待授粉 */
   plantCache.set(p,{key,svg:s});
   return s;
 }
@@ -1867,7 +1906,7 @@ function boardStats(u){let pts=0;const places=[];for(const c of CROP_KEYS)for(co
 
 // ===== 圖鑑面板：分頁 =====
 let dexTab='dex',dexQ='',dexTier=-1,rdraft={},rerr={},rconfirm=null;
-function dexTabsHTML(){return `<div class="filters" role="tablist">${[['dex','品種圖鑑'],['cab','收藏櫃'],['boards','紀錄榜'],['rank','育種家排行'],['me','我的成就']].map(([k,n])=>`<button class="fchip" role="tab" data-dtab="${k}" aria-pressed="${dexTab===k}">${n}</button>`).join('')}</div>`}
+function dexTabsHTML(){return `<div class="filters" role="tablist">${[['dex','品種圖鑑'],['cab','收藏櫃'],['boards','紀錄榜'],['rank','育種家排行'],['me','我的成就']].map(([k,n])=>`<button class="fchip" role="tab" data-dtab="${k}" aria-pressed="${dexTab===k}">${k==='cab'?uiIcon('specimen',16):''}${n}</button>`).join('')}</div>`}
 function renderDex(){
   if(!state)return;const el=document.getElementById('dex');if(!el)return;
   document.getElementById('dexTabs').innerHTML=dexTabsHTML();
@@ -2273,8 +2312,8 @@ function layoutSbtns(){
   for(const id of ['sowBtn','waterAll','fertBtn','accelBtn']){const el=document.getElementById(id);if(el)el.hidden=!ids.includes(id)}
   const L=sbtnLayout(window.innerWidth||390,ids.length);
   ids.forEach((id,k)=>{const el=document.getElementById(id);if(!el)return;const st=el.style;st.setProperty('right',L.right[k]+'px','important');st.setProperty('bottom','calc(18px + env(safe-area-inset-bottom,0px))','important');st.setProperty('width',L.size+'px','important');st.setProperty('height',L.size+'px','important');st.setProperty('font-size',(L.size<56?12:13)+'px','important')});
-  const tn=trayObj().cells.length,sb=document.getElementById('sowBtn');if(sb){const h=tn?`種植<br>${tn}`:'種植';if(sb.innerHTML!==h)sb.innerHTML=h}
-  const ab=document.getElementById('accelBtn');if(ab&&!ab.hidden){const h=`加速劑<br>${state.items.acc}`;if(ab.innerHTML!==h)ab.innerHTML=h}
+  const tn=trayObj().cells.length,sb=document.getElementById('sowBtn');if(sb){const h=sbtnInner('seed_bag','種植',tn);if(sb.innerHTML!==h)sb.innerHTML=h}
+  const ab=document.getElementById('accelBtn');if(ab&&!ab.hidden){const h=sbtnInner('accel','加速劑',state.items.acc);if(ab.innerHTML!==h)ab.innerHTML=h}
 }
 /* 沿底部從右往左排：右邊留 12px，左邊不碰搖桿（左 18＋寬 124＝142px，再留 10px） */
 function sbtnLayout(W,n){const gap=6,left=152,avail=W-12-left;const size=n?Math.max(44,Math.min(60,Math.floor((avail-gap*(n-1))/n))):60;return {size,right:Array.from({length:n},(_,k)=>12+k*(size+gap))}}
@@ -2997,7 +3036,7 @@ function renderHUD(){
   const mb=document.getElementById('ibMarket');mb.querySelector('span').textContent=scene==='market'?'回農場':'市集';
   document.getElementById('ibHome').hidden=!(viewing||scene==='explore');
   const own=scene==='farm'&&!viewing;
-  {const tb=document.getElementById('trayBtn');const tn=state.tray&&state.tray.cells?state.tray.cells.length:0;const th=tn?`育苗盤<br>${tn}`:'育苗盤';if(tb.innerHTML!==th)tb.innerHTML=th}layoutSbtns();
+  {const tb=document.getElementById('trayBtn');const tn=state.tray&&state.tray.cells?state.tray.cells.length:0;const th=sbtnInner('tray','育苗盤',tn);if(tb.innerHTML!==th)tb.innerHTML=th}layoutSbtns();
   setWeather(scene==='explore'?(regHas(exBiome)&&REGION_MAPS[exBiome][regMap].cave?'cave':exBiome):null);exHintUpd();
   {const sn=regIn(),mb=document.getElementById('mapBtn');if(mb&&mb.hidden===sn)mb.hidden=!sn;if(!sn){const mp=document.getElementById('mapPanel');if(mp&&!mp.hidden)mp.hidden=true;regFxClear()}}
   document.getElementById('ibDecor').hidden=!own;document.getElementById('ibBuild').hidden=!own;
@@ -3127,7 +3166,7 @@ function specBlock(p,ph){
 function specCanNow(p,ph){if(specBlock(p,ph))return false;const sp=specGet(specId(p.crop,ph.key));return sp===undefined||specCount(sp)<SPEC_CAP[ph.tier]}
 function specQuotaTxt(p,ph){const sp=specGet(specId(p.crop,ph.key));return `全服 ${sp===undefined?'…':specCount(sp)}／${SPEC_CAP[ph.tier]}`}
 function specBoxHTML(p,ph){
-  const box=(t,btn)=>`<div class="regbox"><b>果實標本</b><p class="note">${t}</p>${btn||''}</div>`;
+  const box=(t,btn)=>`<div class="regbox"><b>${uiIcon('specimen',22)}果實標本</b><p class="note">${t}</p>${btn||''}</div>`;
   if(ph.legacy)return '';
   if(ph.tier<SPEC_MIN_TIER)return box('普通、少見的外觀不能做標本，需要稀有以上（只看形狀、顏色、花紋，不計大小與完美度）。');
   const id=specId(p.crop,ph.key);
@@ -3529,8 +3568,24 @@ function giveWild(bk,rare){
 }
 
 // --- 道具外觀 ---
+/* ===== 道具與介面圖示（14x，第 26 節 26.1、26.7 第 3 步）=====
+   原圖 assets/icons/<名稱>.png（300px 高）；遊戲用縮小版 assets/icons/s/（96px 高，約 12–25 KB）。
+   SVG 裡（野外道具、市集攤位、道具列表）先確認圖片載好才用（iconReady），還沒載好照舊的向量畫法；HTML 的 <img>（按鈕、標題）直接用。 */
+const ICON_DIM={accel:[68,96],coin:[93,96],mutagen:[80,96],seed_bag:[80,96],specimen:[62,96],tray:[149,96]};
+const ICON_OK={};
+const iconSrc=n=>'assets/icons/s/'+n+'.png?v='+BUILD;
+function iconReady(n){const v=ICON_OK[n];if(v!==undefined)return v===1;ICON_OK[n]=0;
+  try{const im=new Image();im.onload=()=>{ICON_OK[n]=1;fruitLoaded()};im.onerror=()=>{ICON_OK[n]=2};im.src=iconSrc(n)}catch(e){ICON_OK[n]=2}return false}
+const uiIcon=(n,h)=>`<img class="uic" src="${iconSrc(n)}" alt="" aria-hidden="true" style="height:${h}px">`;
+const sbtnInner=(n,t,c)=>`<img class="sbi" src="${iconSrc(n)}" alt="" aria-hidden="true"><span class="sbt">${t}</span>${c?`<i class="sbn">${c}</i>`:''}`;
+const ITEM_ICON={acc:'accel',mut:'mutagen',wild:'seed_bag',rare:'seed_bag'};
 function itemArt(x,y,t){
   let s='';
+  {const ik=ITEM_ICON[t];if(ik&&iconReady(ik)){const [iw,ih]=ICON_DIM[ik],h=30,w=h*iw/ih;/* 圖示：底部中央對齊 (x,y)，高 30 */
+    if(t==='rare')s+=`<circle cx="${x}" cy="${y-14}" r="15" fill="#F2C230" opacity=".45"/>`;
+    s+=`<image href="${iconSrc(ik)}" x="${f1(x-w/2)}" y="${y-h}" width="${f1(w)}" height="${h}"/>`;
+    if(t==='rare')s+=`<path d="M${x+11} ${y-30} l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6 -4 -4 -1.6 4 -1.6z" fill="#FFF6C2" stroke="#B9840F" stroke-width="1"/>`;
+    return s}}
   if(t==='wild'||t==='rare'){
     const c=t==='rare'?'#F2C230':'#C08A55',c2=t==='rare'?'#FFE68A':'#DDB07C';
     s+=`<path d="M${x-10} ${y-1} Q${x-13} ${y-15} ${x-5} ${y-18} L${x+5} ${y-18} Q${x+13} ${y-15} ${x+10} ${y-1} Q${x} ${y+2} ${x-10} ${y-1}Z" fill="${c}" stroke="${OL}" stroke-width="1.4" stroke-linejoin="round"/><path d="M${x-5} ${y-18} L${x-8} ${y-24} L${x+8} ${y-24} L${x+5} ${y-18}Z" fill="${c2}" stroke="${OL}" stroke-width="1.3" stroke-linejoin="round"/><path d="M${x-6} ${y-18} H${x+6}" stroke="#8A2A1E" stroke-width="2"/><path d="M${x} ${y-4} C${x-7} ${y-6} ${x-7} ${y-13} ${x} ${y-14} C${x+7} ${y-13} ${x+7} ${y-6} ${x} ${y-4}Z M${x} ${y-4} V${y-13}" fill="#5FB043" stroke="#2F6B1E" stroke-width="1"/>`;
@@ -3588,8 +3643,9 @@ function exPlants(bk,cx,cy){
 function wpGeno(w){if(!w.g)w.g=withSeed(w.seed,()=>w.rel?makeRel(w.crop,w.bk):makeWild(w.crop,w.bk,false));return w.g}
 function exVisiblePlants(){if(regHas(exBiome)&&state&&state.ex)return regPlants(exBiome,regMap).filter(w=>!state.ex.got.includes(w.key));if(!exRg||!state.ex)return [];const out=[];for(let cy=exRg.cy0;cy<=exRg.cy1;cy++)for(let cx=exRg.cx0;cx<=exRg.cx1;cx++)for(const w of exPlants(exBiome,cx,cy))if(!state.ex.got.includes(w.key))out.push(w);return out}
 function wpSVG(w,hl){
-  const cd=CROPS[w.crop],ph=phen(wpGeno(w),w.crop),x=Math.round(w.x),y=Math.round(w.y),sz=cd.fs*sizeScale(ph.ab.size);
-  return `<g data-wp="${w.key}" role="button" aria-label="野生的${cd.n}">${w.rel?`<ellipse cx="${x}" cy="${y-4}" rx="36" ry="14" fill="#F2C230" opacity=".38"/>`:''}${hl?`<ellipse cx="${x}" cy="${y+1}" rx="30" ry="10" fill="none" stroke="#FFD54A" stroke-width="3" stroke-dasharray="5 3"/>`:''}${shadow(x,y+1,18)}${bodySVG(cd.body,x,y,false,cd.fl)}<svg x="${f1(x+cd.fx-sz/2)}" y="${f1(y+cd.fy-sz*0.53)}" width="${f1(sz)}" height="${f1(sz*3.2/3)}" viewBox="-1.5 -1.6 3 3.2" stroke="none">${fruitInner(ph,1,w.crop)}</svg></g>`;
+  const cd=CROPS[w.crop],ph=phen(wpGeno(w),w.crop),x=Math.round(w.x),y=Math.round(w.y),sz=cd.fs*sizeScale(ph.ab.size),im=plantImgSVG(w.crop,'ripe',x,y,1);/* 14w：植株圖片＋掛點果實；圖片還沒載好照舊畫法 */
+  const body=im?im.svg+plantFruitsSVG(w.crop,ph,x,y,im.w,im.h,3,1,1):`${bodySVG(cd.body,x,y,false,cd.fl)}<svg x="${f1(x+cd.fx-sz/2)}" y="${f1(y+cd.fy-sz*0.53)}" width="${f1(sz)}" height="${f1(sz*3.2/3)}" viewBox="-1.5 -1.6 3 3.2" stroke="none">${fruitInner(ph,1,w.crop)}</svg>`;
+  return `<g data-wp="${w.key}" role="button" aria-label="野生的${cd.n}">${w.rel?`<ellipse cx="${x}" cy="${y-4}" rx="36" ry="14" fill="#F2C230" opacity=".38"/>`:''}${hl?`<ellipse cx="${x}" cy="${y+1}" rx="30" ry="10" fill="none" stroke="#FFD54A" stroke-width="3" stroke-dasharray="5 3"/>`:''}${shadow(x,y+1,18)}${body}</g>`;
 }
 const wpPrice=(w,ph)=>Math.round(CROPS[w.crop].price*5*(0.6+0.8*ph.ab.size/100)*(1+0.3*ph.tier));
 function openWp(w){sheet={wp:w.key,wpObj:w};renderSheet();openSheetUI()}
@@ -4506,7 +4562,7 @@ function openTray(){
 }
 function trayHTML(){
   const t=trayObj();
-  let h=`<h2>育苗盤</h2><p class="stage">已用 ${t.cells.length} / ${TRAY_N} 格</p>`;
+  let h=`<h2>${uiIcon('tray',24)}育苗盤</h2><p class="stage">已用 ${t.cells.length} / ${TRAY_N} 格</p>`;
   if(sheet.trayPick||!t.cells.length){
     h+=`<p class="note">${t.cells.length?'':'育苗盤是空的。'}選一包種子撒進育苗盤，幼苗會直接顯示將來的外觀，只把想要的移植到田裡。</p>`;
     const lots=state.lots.filter(l=>lc(l)>0&&!l.obs),nm=(state.items||{}).mut||0;if(!nm)sheet.trayMut=false;const gm=sheet.trayMut?0.7:1;

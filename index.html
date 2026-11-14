@@ -1282,7 +1282,7 @@ function fruitPaint(B,a,ripe,seed){
     return [hit,grad]};
   /* 特殊效果用的閃點 */
   const fxs=ok?sk.fx:[],spark=[];
-  if(fxs.some(f=>['gold','crystal','starry'].includes(f.n)))for(let k=0;k<22;k++)spark.push([x0+W*rnd(),y0+H*rnd(),0.6+rnd()*1.2,rnd()]);
+  if(fxs.some(f=>['gold','crystal','starry'].includes(f.n)))for(let k=0;k<22;k++)spark.push([x0+W*rnd(),y0+H*rnd(),W*(0.012+rnd()*0.012),rnd()]);/* 半徑跟著果實寬，縮小後還看得到 */
   for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x,o=i*4;
     if(body[i]){
       const u=(x-x0)/W,v=(y-y0)/H;let c=sk.at(u,v);

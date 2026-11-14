@@ -1,0 +1,226 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>人物對照頁</title>
+<style>body{margin:0;padding:12px;background:#EEF2F5;font:14px "Noto Sans TC",sans-serif;color:#3B2A18}h2{margin:18px 0 6px;font-size:17px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}.card{background:#fff;border:1px solid #D8CFC0;border-radius:10px;padding:4px 6px;text-align:center;font-size:12px}
+.note{color:#6B5A48;font-size:13px}svg{display:block}</style></head><body>
+<h1 style="font-size:20px;margin:0">人物對照頁（14k）</h1><p class="note">這頁不會放進遊戲，只用來檢查人物畫風：用遊戲實際的繪圖程式（avatarSVG）畫出每個選項的正面、側面、背面，並和參考圖、雪原素材並排。改了 index.html 的角色程式後，要重新產生這一頁。</p>
+<h2>參考圖 ↔ 遊戲人物（預設造型）</h2><div class="row" id="ref"></div>
+<h2>五個方向＋走路</h2><div class="row" id="dirs"></div>
+<h2>和雪原素材並排（遊戲中的實際比例）</h2><div id="scene"></div>
+<div id="opts"></div>
+<script>
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));const rgbS=v=>'rgb('+v.map(x=>Math.round(clamp(x,0,255))).join(',')+')';
+const RGBC={white:[246,240,226],green:[88,164,64],yellow:[246,202,44],red:[220,46,42],purple:[118,54,152],black:[58,44,52],orange:[242,132,32],pink:[246,144,172],lavender:[192,154,222],yellowgreen:[172,206,62],
+  silver:[186,192,202],pearl:[244,238,246],blue:[70,120,220],gold:[226,176,44],obsidian:[40,30,52],crystal:[176,230,244],starry:[44,40,104],rainbow:[200,120,190]};
+// ===== 角色（14k 重畫：照 assets/ref 參考圖，分層紙娃娃）=====
+/* 大頭約 2.3 頭身、橢圓點點眼、小微笑、無腮紅、露耳朵、一塊塊的頭髮、深棕外框、兩階明暗（光從左上）。
+   座標：腳底 (0,0)，頭中心 (0,AVH)；遊戲中外層再 scale(1.15)，大小與舊角色相同。
+   方向 pose.view：front、fq（斜前）、side（朝右，朝左用 flip 鏡像）、bq（斜後）、back。 */
+const SKINS=['#FBE0C8','#F3CBA0','#E3AE80','#C68D5C','#94613F','#6A4429'];
+const HAIRC=['#2E2018','#6B4128','#8B5A2B','#C68E3F','#E8C47E','#B7472A','#8A8A8A','#EFEDE6','#3E5FA8','#C2558F'];
+const CLOTHC=['#4F86C0','#D2584C','#4F8048','#EEC85A','#8C66C2','#EE9DBA','#F6F1E4','#4D4A47','#E08A4C','#5DB3A6','#5B7FAF','#C9B48A','#8A5A34','#93A98A'];
+const AV_OPT={face:['點點眼','笑眼','眨眼','驚訝','瞇眼','開心'],hair:['短髮','長髮','馬尾','雙馬尾','捲髮','丸子頭','平頭','齊瀏海','鮑伯頭','刺蝟頭','旁分'],hat:['無','草帽','毛帽','鴨舌帽','貝雷帽'],top:['T恤','條紋T','吊帶褲','外套','毛衣','帽T'],bottom:['長褲','短褲','裙子'],shoe:['靴子','布鞋'],acc:['無','圍巾','眼鏡','背包','花朵髮飾','草籃','鐮刀']};
+const AV_LBL={skin:'膚色',face:'表情',hair:'髮型',hairC:'髮色',hat:'帽子',hatC:'帽子顏色',top:'上衣',topC:'上衣顏色',bottom:'下身',bottomC:'下身顏色',shoe:'鞋子',shoeC:'鞋子顏色',acc:'配件',accC:'配件顏色'};
+const AV_KEYS=['skin','face','hair','hairC','hat','hatC','top','topC','bottom','bottomC','shoe','shoeC','acc','accC'];
+const AV_DEF={v:2,skin:0,face:0,hair:0,hairC:1,hat:0,hatC:1,top:2,topC:13,bottom:0,bottomC:10,shoe:0,shoeC:12,acc:0,accC:1};
+/* 換裝資料統一入口：新版物件、精簡陣列（位置同步用）、舊版（14j 以前）都轉成新版物件 */
+function avNorm(a){
+  if(Array.isArray(a)){const o={v:2};AV_KEYS.forEach((k,i)=>{if(a[i+1]!=null)o[k]=a[i+1]});if(a[AV_KEYS.length+1]&&typeof a[AV_KEYS.length+1]==='object')o.fab=a[AV_KEYS.length+1];return {...AV_DEF,...o}}
+  a=a||{};if(a.v===2)return {...AV_DEF,...a};
+  const H=[0,8,1,2,9,5,3,4,10,6],F=[0,1,0,2,4,1],T=[0,0,3,5,1,3,0,4],B=[1,0,2,0,0,0],n=(v,d)=>Number.isInteger(v)?v:d;
+  const o={...AV_DEF,skin:n(a.skin,0),face:F[n(a.face,0)]??0,hair:H[n(a.hair,0)]??0,hairC:n(a.hairC,1),top:T[n(a.top,0)]??0,topC:n(a.topC,0),bottom:B[n(a.bottom,1)]??0,bottomC:n(a.bottomC,7),shoe:1,shoeC:7,hat:0,acc:0};
+  if(a.bottom===5)o.top=2;/* 舊的吊帶褲 → 新的吊帶褲（上衣） */
+  const acc=n(a.acc,0);if(acc===1)o.hat=1;else if(acc===2){o.hat=2;o.hatC=1}else if(acc===5){o.hat=3;o.hatC=(o.topC+3)%10}else if(acc===3)o.acc=2;else if(acc===6)o.acc=4;else if(acc===7){o.acc=1;o.accC=1}
+  return o;
+}
+const avPack=a=>{a=avNorm(a);const r=[2,...AV_KEYS.map(k=>a[k])];if(a.fab)r.push(a.fab);return r};
+function shade(hex,k){const n=parseInt(hex.slice(1),16),r=n>>16,g=(n>>8)&255,b=n&255,f=v=>Math.round(clamp(k<0?v*(1+k):v+(255-v)*k,0,255));return `rgb(${f(r)},${f(g)},${f(b)})`}
+const AVH=-36,AV_OL='#4A3020',AV_SH='rgba(74,48,32,.26)',AV_HL='rgba(255,255,255,.28)';
+const avCol=c=>typeof c==='number'?(CLOTHC[c]||CLOTHC[0]):typeof c==='string'?(typeof RGBC!=='undefined'&&RGBC[c]?rgbS(RGBC[c]):c):CLOTHC[0];
+/* 布料：底色＋花紋（條紋、斑點、星點、漸層，與果實相同的花紋系統）＋徽章。之後標本解鎖布料時把 {c,p,pc,b} 放進 av.fab.top/hat/acc 即可 */
+const AV_FAB_P=['條紋','斑點','星點','漸層'];
+function avFab(spec,tag){
+  const base=avCol(spec.c);if(spec.p==null||spec.p<0)return {fill:base,base,defs:''};
+  const pc=avCol(spec.pc!=null?spec.pc:'#F4EBD8'),id='avp'+tag+String(spec.c).replace(/\W/g,'')+spec.p+String(spec.pc??'d').replace(/\W/g,'');
+  if(spec.p===3)return {fill:`url(#${id})`,base,defs:`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${base}"/><stop offset="1" stop-color="${pc}"/></linearGradient>`};
+  const sz=[3.2,4.4,6][spec.p];
+  const inner=spec.p===0?`<rect width="${sz}" height="${sz}" fill="${base}"/><rect y="${sz*0.5}" width="${sz}" height="${sz*0.42}" fill="${pc}"/>`:spec.p===1?`<rect width="${sz}" height="${sz}" fill="${base}"/><circle cx="1.1" cy="1.1" r=".75" fill="${pc}"/><circle cx="3.3" cy="3.3" r=".75" fill="${pc}"/>`:`<rect width="${sz}" height="${sz}" fill="${base}"/><path d="M3 1 l.55 1.2 1.3.12 -1 .85 .3 1.3 -1.15-.68 -1.15.68 .3-1.3 -1-.85 1.3-.12z" fill="${pc}"/>`;
+  return {fill:`url(#${id})`,base,defs:`<pattern id="${id}" patternUnits="userSpaceOnUse" width="${sz}" height="${sz}">${inner}</pattern>`};
+}
+const avBadge=(x,y,b)=>b?`<circle cx="${x}" cy="${y}" r="1.9" fill="#F2C94C"/><path d="M${x} ${y-1.2} l.4 .8 .9 .1 -.7 .6 .2 .9 -.8-.5 -.8 .5 .2-.9 -.7-.6 .9-.1z" fill="#FFF6D0" stroke="none"/>`:'';
+/* ---- 頭髮：各髮型在三個方向的形狀（y 都相對頭中心 AVH）---- */
+const avP=(pts,y0)=>pts.map(([x,y])=>`L${x} ${(y0+y).toFixed(2)}`).join(' ');
+const AV_BANG={
+  chunky:[[11.8,1],[10,-3.6],[8.2,.2],[6,-4.8],[3.6,-.6],[1.2,-5.4],[-1.4,-1.2],[-3.8,-5.3],[-6.2,-.4],[-8.4,-4],[-10.6,.8]],
+  straight:[[11.6,0],[10.6,-2.6],[7.6,-1.8],[5,-2.8],[2,-2],[-1,-2.9],[-4,-2],[-7,-2.8],[-10.6,-2.4],[-11.6,0]],
+  side:[[11.8,.6],[10,-4],[6,-7.6],[1,-6.2],[-3.6,-4.4],[-7.4,-1.8],[-10.6,.6]],
+  high:[[11.4,-3],[7,-6.8],[2.4,-7.8],[-2.4,-7.8],[-7,-6.8],[-11.4,-3]]
+};
+const AV_HAIR=[
+  {bang:'chunky',tuft:1},{bang:'chunky',long:1},{bang:'chunky',tail:1},{bang:'chunky',twin:1},{bang:'chunky',curly:1},{bang:'side',bun:1},
+  {bang:'high',buzz:1},{bang:'straight',panel:4},{bang:'straight',panel:9},{bang:'chunky',spiky:1},{bang:'side',swoop:1}];
+function avHairFront(H,cx){
+  const y=AVH,r=H.buzz?12.1:12.8,ey=H.buzz?-1:2,ex=Math.sqrt(r*r-Math.pow(ey+1.2,2));
+  let d=`M${-ex} ${y+ey} A${r} ${r} 0 1 1 ${ex} ${y+ey} `+avP(AV_BANG[H.bang],y)+'Z';
+  if(H.spiky){d=`M-12.4 ${y+2} L-13 ${y-6} L-11.4 ${y-9} L-10.8 ${y-13.6} L-7 ${y-12.2} L-5 ${y-17.4} L-1.6 ${y-13.6} L1 ${y-18.2} L3.6 ${y-13.6} L6.6 ${y-17} L7.6 ${y-12} L11.6 ${y-13} L11.2 ${y-8.4} L13.2 ${y-5.2} L12.4 ${y+2} `+avP(AV_BANG.chunky,y)+'Z'}
+  return d;
+}
+function avHairSide(H){
+  const y=AVH;
+  if(H.spiky)return `M10 ${y-3.4} L11.6 ${y-9} L8.6 ${y-11} L9.4 ${y-15} L4.4 ${y-14} L3.6 ${y-18.4} L-1 ${y-14.6} L-3.6 ${y-17.6} L-6 ${y-12.6} L-10.8 ${y-13.4} L-10 ${y-8} L-13.4 ${y-4.6} L-11.2 ${y+1.4} L-12.2 ${y+5} L-9.8 ${y+6.6} L-8 ${y+5.2} L-6.4 ${y+8} L-4.8 ${y+3} L-4.2 ${y-1.6} L-1 ${y-4.6} L1.6 ${y-2.6} L3.4 ${y-6} L5.8 ${y-2.2} L7.6 ${y-5.6} L9.8 ${y-1.2}Z`;
+  const r=H.buzz?12.1:12.8,top=H.buzz?`M10.4 ${y-5.4} A${r} ${r} 0 1 0 -9.6 ${y+5.2} L-7.6 ${y+4} L-5.4 ${y+5.4} L-4.6 ${y+1.6} L-4.4 ${y-3} L-1 ${y-6.4} L4 ${y-7.4} L8 ${y-6.6}Z`:null;
+  if(top)return top;
+  const front=H.bang==='straight'?`L-1 ${y-4.4} L2 ${y-2.6} L5 ${y-2.8} L8 ${y-2.4} L10.6 ${y-2.6}`:H.bang==='side'?`L-1 ${y-5.2} L3 ${y-7.4} L6.6 ${y-6.6} L9.4 ${y-4.4} L11 ${y-1.4}`:`L-1 ${y-4.6} L1.6 ${y-2.6} L3.4 ${y-6} L5.8 ${y-2.2} L7.6 ${y-5.6} L9.8 ${y-1.2}`;
+  const nape=H.panel===9?`L-11.4 ${y+8.6} L-6.4 ${y+9.2} L-4.6 ${y+5.6}`:`L-8 ${y+5.6} L-6.4 ${y+8} L-4.8 ${y+3}`;
+  return `M10.4 ${y-3.4} A12.8 12.8 0 1 0 -10 ${y+7.2} ${nape} L-4.2 ${y-1.6} ${front}Z`;
+}
+function avHairBack(H){
+  const y=AVH;
+  if(H.spiky)return `M-12.4 ${y+3} L-13 ${y-6} L-11 ${y-9.4} L-10.8 ${y-13.6} L-7 ${y-12.4} L-4.8 ${y-17.4} L-1.6 ${y-13.8} L1 ${y-18.2} L3.6 ${y-13.8} L6.6 ${y-17} L7.6 ${y-12.2} L11.6 ${y-13} L11.2 ${y-8.4} L13.2 ${y-5.2} L12.4 ${y+3} L11 ${y+7} L8 ${y+5.4} L5.4 ${y+9} L2.4 ${y+6} L0 ${y+9.6} L-2.6 ${y+6} L-5.6 ${y+9} L-8 ${y+5.4} L-11 ${y+7}Z`;
+  if(H.panel===9)return `M-12.6 ${y+3} A12.9 12.9 0 1 1 12.6 ${y+3} L12.4 ${y+9.4} L-12.4 ${y+9.4}Z`;
+  const r=H.buzz?12.1:12.9,b=H.buzz?[[11,4],[6,5.6],[0,6.4],[-6,5.6],[-11,4]]:[[11,7],[8,5.5],[5.5,9],[2.5,6],[0,9.6],[-2.6,6],[-5.6,9],[-8,5.5],[-11,7]];
+  return `M-12.2 ${y+3} A${r} ${r} 0 1 1 12.2 ${y+3} `+avP(b,y)+'Z';
+}
+function avatarSVG(av,flip,pose){
+  av=avNorm(av);
+  if(typeof pose!=='object'||pose===null)pose={bob:pose||0};
+  const view=pose.view||'front',isSide=view==='side',isBack=view==='back'||view==='bq',fq=view==='fq',bq=view==='bq',fxo=fq?2.2:bq?-1.6:0;
+  const sk=SKINS[av.skin]||SKINS[0],hc=HAIRC[av.hairC]||HAIRC[0],hcd=shade(hc,-0.32),hcl=shade(hc,0.28);
+  const walk=pose.ph!=null,ph=pose.ph||0,t=pose.t||0,act=pose.act||null,ap=clamp(pose.actP||0,0,1);
+  const crouch=(act==='plant'||act==='harvest')?Math.sin(ap*Math.PI)*3.2:0;
+  let legA=walk?Math.sin(ph)*(isSide?32:24):0,armA=walk?-Math.sin(ph)*(isSide?30:22):Math.sin(t*1.6)*3;
+  let bob=walk?-Math.abs(Math.sin(ph))*1.8:Math.sin(t*2.2)*0.45;bob+=(pose.bob||0)+crouch;
+  let armF=armA,armB=-armA;const e=Math.sin(ap*Math.PI);
+  if(act==='water'){armF=-70*e+armA*(1-e);armB=armB*(1-e)}
+  else if(act==='plant'){armF=-50*e;armB=-35*e}
+  else if(act==='harvest'){armF=-135*e;armB=-135*e}
+  else if(act==='pollinate'){armF=-60*e+Math.sin(t*14)*10*e;armB=armB*(1-e)}
+  const lean=walk?(isSide?4:2):0,headTilt=walk?Math.sin(ph)*2:Math.sin(t*0.9)*1.5,swing=walk?Math.sin(ph*2)*8:Math.sin(t*1.5)*3;
+  const H=AV_HAIR[av.hair]||AV_HAIR[0],ov=av.top===2,longSl=av.top>=3;
+  const topF=(av.fab&&av.fab.top)||{c:av.topC,p:(av.top===1||ov)?0:-1,pc:'#F4EBD8'};
+  const tf=avFab(topF,'t'),af=avFab((av.fab&&av.fab.acc)||{c:av.accC},'a'),hf=avFab((av.fab&&av.fab.hat)||{c:av.hatC},'h');
+  const tcd=shade(tf.base,-0.28),bc=avCol(av.bottomC),bcd=shade(bc,-0.25),shc=avCol(av.shoeC),skd=shade(sk,-0.14);
+  const y=AVH,hairD=isSide?avHairSide(H):isBack?avHairBack(H):avHairFront(H),hid='avh'+av.hair+(isSide?'s':isBack?'b':'f');
+  const torsoD=isSide?`M-4.4 -25 Q-5.2 -24.6 -5.2 -23 L-4.8 -12.4 Q-4.7 -11.6 -3.8 -11.6 L3.8 -11.6 Q4.8 -11.6 4.9 -12.6 L5.2 -23 Q5.2 -24.6 4.4 -25 Q0 -25.8 -4.4 -25Z`:`M-6.6 -25.2 Q-7.6 -25 -7.6 -23.4 L-6.9 -12.6 Q-6.8 -11.6 -5.7 -11.6 L5.7 -11.6 Q6.8 -11.6 6.9 -12.6 L7.6 -23.4 Q7.6 -25 6.6 -25.2 Q0 -26.4 -6.6 -25.2Z`;
+  const tid=isSide?'avcTs':'avcTf';
+  let s=`<defs>${tf.defs}${af.defs}${hf.defs}<clipPath id="avcH"><ellipse cx="0" cy="${y}" rx="11.6" ry="10.8"/></clipPath><clipPath id="${tid}"><path d="${torsoD}"/></clipPath><clipPath id="${hid}"><path d="${hairD}"/></clipPath></defs>`;
+  s+=`<ellipse cx="0" cy="0" rx="${(11-crouch*0.4).toFixed(1)}" ry="3.8" fill="rgba(40,30,20,.22)"/><g transform="${flip?'scale(-1 1)':''}" stroke="${AV_OL}" stroke-width="0.85" stroke-linejoin="round" stroke-linecap="round">`;
+  const HG=inner=>`<g transform="translate(0 ${(bob-2.6).toFixed(2)}) rotate(${headTilt.toFixed(2)} 0 -25)">${inner}</g>`;
+  /* ---- 身體後面的東西：長髮、雙馬尾、馬尾、帽T 的帽子、背包（側面）---- */
+  let back='';
+  if(H.long)back+=isSide?`<path d="M-11 ${y-2} Q-13.4 ${y+12} -10.4 -21 L-3.6 -21.6 Q-5 ${y+10} -4 ${y+2}Z" fill="${hc}"/>`:`<path d="M-12.8 ${y-1} Q-14 ${y+12} -12.4 -21 L-8 -22.6 L-4 -20.8 L0 -22.4 L4 -20.8 L8 -22.6 L12.4 -21 Q14 ${y+12} 12.8 ${y-1}Z" fill="${hc}"/>`;
+  if(H.twin&&!isBack)back+=isSide?`<g transform="rotate(${(swing).toFixed(1)} -9 ${y-2})"><path d="M-9 ${y-2} Q-15 ${y+6} -12 -24 Q-8 ${y+8} -7 ${y-1}Z" fill="${hc}"/></g>`:`<g transform="rotate(${swing.toFixed(1)} -12 ${y-4})"><path d="M-12 ${y-4} Q-18 ${y+6} -14.6 -24.5 Q-11.4 ${y+6} -10.4 ${y-3}Z" fill="${hc}"/></g><g transform="rotate(${(-swing).toFixed(1)} 12 ${y-4})"><path d="M12 ${y-4} Q18 ${y+6} 14.6 -24.5 Q11.4 ${y+6} 10.4 ${y-3}Z" fill="${hc}"/></g>`;
+  if(H.tail&&isSide)back+=`<g transform="rotate(${(swing*0.8).toFixed(1)} -11 ${y-3})"><path d="M-11 ${y-4} Q-19 ${y+2} -15.4 -23 Q-12.4 ${y+6} -9.4 ${y}Z" fill="${hc}"/><circle cx="-11" cy="${y-2.6}" r="1.7" fill="#D2584C"/></g>`;
+  if(av.top===5&&!isBack)back+=`<path d="${isSide?`M-5.6 -25.4 Q-9 -28 -6 -30.6 Q-2 -30 -1.6 -25.6Z`:`M-7 -24.8 Q-9 -29.4 0 -30.2 Q9 -29.4 7 -24.8Z`}" fill="${tcd}"/>`;
+  if(av.acc===3&&isSide)back+=`<rect x="-10.6" y="-24.6" width="6.4" height="11.6" rx="2.4" fill="${af.fill}"/><rect x="-10.6" y="-24.6" width="6.4" height="4" rx="2" fill="${shade(af.base,-0.2)}"/>`;
+  s+=HG(back);
+  /* ---- 腿與鞋 ---- */
+  const longPants=av.bottom===0||ov,shorts=av.bottom===1&&!ov;
+  const legOne=(side,ang,far)=>{
+    const x0=isSide?-2.5:(side<0?-5.7:0.7),w=5,c=far&&isSide?bcd:bc,skc=far&&isSide?skd:sk;let g='';
+    if(longPants)g+=`<rect x="${x0}" y="-15.2" width="${w}" height="${ov?11.2:12.2}" fill="${c}"/>`+(ov?`<rect x="${x0-0.4}" y="-4.6" width="${w+0.8}" height="2.4" rx=".8" fill="${shade(bc,0.18)}"/>`:'');
+    else if(shorts)g+=`<rect x="${x0+0.6}" y="-10" width="${w-1.2}" height="7.6" fill="${skc}"/><rect x="${x0-0.2}" y="-15.2" width="${w+0.4}" height="5.6" rx="1" fill="${c}"/>`;
+    else g+=`<rect x="${x0+0.6}" y="-13.6" width="${w-1.2}" height="11.2" fill="${skc}"/>`;
+    g+=`<rect x="${x0+w-1.6}" y="-15" width="1.4" height="12.2" fill="${AV_SH}" stroke="none"/>`;
+    if(av.shoe===0)g+=isSide?`<path d="M${x0-0.4} -6.2 h${w+0.8} v4.4 q2.6 .2 2.6 1.8 h-${w+3.4}z" fill="${far?shade(shc,-0.2):shc}"/><rect x="${x0-0.6}" y="-6.6" width="${w+1.2}" height="1.8" rx=".8" fill="${shade(shc,0.2)}"/>`:`<path d="M${x0-0.5} -6.2 h${w+1} v5 q0 1.2 -1.2 1.2 h-${w-1.4} q-1.2 0 -1.2 -1.2z" fill="${shc}"/><rect x="${x0-0.7}" y="-6.6" width="${w+1.4}" height="1.8" rx=".8" fill="${shade(shc,0.2)}"/>`;
+    else g+=isSide?`<path d="M${x0-0.3} -3 h${w+0.4} q2.6 .4 2.6 2 v1 h-${w+3}z" fill="${far?shade(shc,-0.2):shc}"/><rect x="${x0-0.3}" y="-.9" width="${w+2.9}" height=".9" fill="#F6F1E4"/>`:`<path d="M${x0-0.4} -3 h${w+0.8} v2.2 q0 .8 -.8 .8 h-${w-0.8} q-.8 0 -.8 -.8z" fill="${shc}"/><rect x="${x0-0.4}" y="-.9" width="${w+0.8}" height=".9" fill="#F6F1E4"/>`;
+    const px=isSide?0:(side<0?-3.2:3.2),sy=crouch?(1-crouch*0.06):1;
+    return `<g transform="translate(0 ${(crouch*0.55).toFixed(2)}) rotate(${ang.toFixed(1)} ${px} -14.6) translate(0 -14.6) scale(1 ${sy.toFixed(3)}) translate(0 14.6)">${g}</g>`};
+  s+=legOne(-1,-legA,true)+legOne(1,legA,false);
+  s+=`<g transform="translate(0 ${(bob-2.6).toFixed(2)}) rotate(${lean} 0 -12)">`;
+  /* ---- 手臂（側面時遠的那隻在身體後面）---- */
+  const armOne=(side,ang,near)=>{
+    const hx=isSide?0.6:side*(fq&&side<0?6.4:7.6),far=isSide&&!near,ac=longSl?(far?tcd:tf.fill):(far?skd:sk);
+    let g=`<rect x="${hx-1.9}" y="-24.4" width="3.8" height="10.6" rx="1.9" fill="${ac}"/>`;
+    if(!longSl)g+=`<rect x="${hx-2.3}" y="-24.8" width="4.6" height="4.8" rx="1.6" fill="${far?tcd:tf.fill}"/>`;
+    if(av.top===4)g+=`<rect x="${hx-2}" y="-16.4" width="4" height="1.8" rx=".8" fill="${tcd}"/>`;
+    g+=`<rect x="${hx+0.5}" y="-24" width="1.3" height="9.6" fill="${AV_SH}" stroke="none"/><circle cx="${hx}" cy="-13.8" r="1.75" fill="${far?skd:sk}"/>`;
+    if(near&&!act&&!isBack){
+      if(av.acc===5)g+=`<g transform="translate(${hx} -12.6)"><path d="M-3.8 0 h7.6 l-1 4.6 h-5.6z" fill="#D9AE62"/><path d="M-3.8 0 q3.8 -6 7.6 0" fill="none" stroke="${AV_OL}" stroke-width=".9"/><path d="M-3 1.6 h6 M-2.6 3.1 h5.2" stroke="#A97E3A" stroke-width=".6"/></g>`;
+      if(av.acc===6)g+=`<g transform="translate(${hx} -13.6)"><rect x="-.7" y="-1" width="1.4" height="9" rx=".6" fill="#8A5A34"/><path d="M0 7.6 q6 -1 7.4 -6.4 q-1.6 4 -7.4 4.4z" fill="#C9CFD6"/></g>`;
+    }
+    if(near&&act==='water'&&ap<1)g+=`<g transform="translate(${hx} -13)"><rect x="-1" y="-3.5" width="8" height="6.5" rx="1.5" fill="#6FA8DC"/><path d="M7 -2 l5 -3" stroke="${AV_OL}" stroke-width="1.6"/><path d="M0 -3.5 q3 -4 6 0" fill="none" stroke="${AV_OL}" stroke-width="1"/></g>`;
+    if(near&&act==='pollinate'&&ap<1)g+=`<g transform="translate(${hx} -13)"><path d="M0 0 l0 7" stroke="#8A5A2B" stroke-width="1.6"/><circle cx="0" cy="8" r="2" fill="#F5D042"/></g>`;
+    return `<g transform="rotate(${ang.toFixed(1)} ${hx} -23.4)">${g}</g>`};
+  if(isSide)s+=armOne(-1,armB,false);
+  /* ---- 上身 ---- */
+  s+=`<path d="${torsoD}" fill="${tf.fill}"/>`;
+  if(av.bottom===2&&!ov)s+=isSide?`<path d="M-5 -13.6 h10 l2.2 7.4 h-14.4z" fill="${bc}"/>`:`<path d="M-7 -13.6 h14 l2.8 7.6 h-19.6z" fill="${bc}"/><path d="M3 -13.4 l1.4 7.2 h3.6 l-2.6 -7.2z" fill="${AV_SH}" stroke="none"/>`;
+  else if(!ov)s+=`<rect x="${isSide?-4.9:-6.9}" y="-14.2" width="${isSide?9.8:13.8}" height="2.8" rx="1" fill="${bc}"/>`;
+  if(ov){/* 吊帶褲：胸前布、背帶、鈕扣 */
+    if(isSide)s+=`<path d="M-4.9 -18 h8.6 l1.2 6.6 h-10z" fill="${bc}"/><path d="M-2 -25.4 l1.6 7.6" stroke="${AV_OL}" stroke-width="2.4"/><path d="M-2 -25.4 l1.6 7.6" stroke="${bc}" stroke-width="1.5"/><circle cx="-0.4" cy="-18.6" r=".9" fill="#E8B04A"/>`;
+    else if(isBack)s+=`<path d="M-6.9 -16.4 h13.8 l.2 4.8 h-14.2z" fill="${bc}"/><path d="M-4.4 -25.6 L2.6 -16.4 M4.4 -25.6 L-2.6 -16.4" stroke="${AV_OL}" stroke-width="2.6"/><path d="M-4.4 -25.6 L2.6 -16.4 M4.4 -25.6 L-2.6 -16.4" stroke="${bc}" stroke-width="1.6"/><rect x="-5" y="-15.6" width="3.6" height="3.2" rx=".8" fill="${shade(bc,-0.12)}"/><rect x="1.4" y="-15.6" width="3.6" height="3.2" rx=".8" fill="${shade(bc,-0.12)}"/>`;
+    else s+=`<path d="M-4.6 -20.4 h9.2 l.6 3.8 h2 l.2 5 h-14.8 l.2 -5 h2z" fill="${bc}"/><rect x="-2.2" y="-19.6" width="4.4" height="3" rx=".6" fill="${shade(bc,-0.12)}"/><path d="M-4.4 -25.6 v5.6 M4.4 -25.6 v5.6" stroke="${AV_OL}" stroke-width="2.6"/><path d="M-4.4 -25.6 v5.6 M4.4 -25.6 v5.6" stroke="${bc}" stroke-width="1.6"/><circle cx="-4.2" cy="-20.2" r=".9" fill="#E8B04A"/><circle cx="4.2" cy="-20.2" r=".9" fill="#E8B04A"/>`;
+  }
+  if(!isSide&&!isBack){
+    if(av.top===3)s+=`<rect x="-1.4" y="-25" width="2.8" height="13" fill="#F6F1E4"/><path d="M0 -25.6 L-3.8 -21.6 L-1.4 -21 Z M0 -25.6 L3.8 -21.6 L1.4 -21 Z" fill="${tcd}"/><path d="M-1.4 -25 v13 M1.4 -25 v13" stroke="${tcd}" stroke-width=".7"/>`;
+    if(av.top===4)s+=`<rect x="-7" y="-14.4" width="14" height="2.4" rx="1" fill="${tcd}"/><path d="M-3 -25.6 q3 2 6 0" fill="none" stroke="${tcd}" stroke-width="1.6"/>`;
+    if(av.top===5)s+=`<path d="M-4.6 -17.6 h9.2 l1 4.6 h-11.2z" fill="${tcd}"/><path d="M-1.4 -24.6 v4 M1.4 -24.6 v4" stroke="#F6F1E4" stroke-width=".8"/>`;
+    if(av.top<=1||ov)s+=`<path d="M-2.6 -25.7 q2.6 2.2 5.2 0" fill="${sk}"/>`;
+    s+=avBadge(-3.6,-21.4,topF.b);
+  }
+  s+=`<g clip-path="url(#${tid})" stroke="none"><rect x="${isSide?1.6:3.2}" y="-27" width="6" height="16" fill="${AV_SH}"/><rect x="-8" y="-13.4" width="16" height="2" fill="${AV_SH}"/></g>`;
+  if(av.acc===3&&!isSide)s+=isBack?`<rect x="-6.4" y="-24.8" width="12.8" height="12" rx="3" fill="${af.fill}"/><path d="M-6.4 -21 q6.4 -3.6 12.8 0 v-1.2 q0 -2.6 -3 -2.6 h-6.8 q-3 0 -3 2.6z" fill="${shade(af.base,-0.18)}"/><rect x="-3.2" y="-18.4" width="6.4" height="4" rx="1.2" fill="${shade(af.base,0.15)}"/>`:`<path d="M-5.6 -25.4 L-5.4 -16.6 M5.6 -25.4 L5.4 -16.6" stroke="${shade(af.base,-0.25)}" stroke-width="1.8"/>`;
+  if(av.acc===1)s+=`<path d="M-7.2 -26.6 Q0 -22.8 7.2 -26.6 L7.4 -24.2 Q0 -20.2 -7.4 -24.2Z" fill="${af.fill}"/>`+(isBack?`<rect x="-1.6" y="-24.4" width="3.2" height="7.6" rx="1.2" fill="${af.fill}"/>`:isSide?`<rect x="-5.4" y="-24.6" width="3" height="7.4" rx="1.2" fill="${af.fill}"/>`:`<rect x="2.2" y="-24" width="3.2" height="8" rx="1.2" fill="${af.fill}"/><path d="M2.4 -18 h2.8" stroke="${shade(af.base,-0.25)}" stroke-width=".7"/>`);
+  if(isSide){s+=armOne(1,armF,true)}else{s+=armOne(-1,armB,!isBack&&false)+armOne(1,armF,!isBack)}
+  /* ---- 頭 ---- */
+  let h='';
+  const ear=(x)=>`<ellipse cx="${x}" cy="${y+2.2}" rx="2.3" ry="3" fill="${sk}"/><path d="M${x+(x<0?0.6:-0.6)} ${y+1} q${x<0?-1.2:1.2} 1.2 0 2.4" fill="none" stroke="${skd}" stroke-width=".7"/>`;
+  if(!isBack){if(isSide)h+='';else{h+=ear(-11.5+(fq?0.6:0));if(!fq)h+=ear(11.5)}}
+  if(H.bun&&!av.hat)h+=isBack||!isSide?`<circle cx="${isSide?-4:0}" cy="${y-13.4}" r="4.6" fill="${hc}"/><path d="M${(isSide?-4:0)-2} ${y-15} q2 -1.6 4 0" fill="none" stroke="${hcd}" stroke-width=".7"/>`:`<circle cx="-4" cy="${y-13.4}" r="4.6" fill="${hc}"/>`;
+  h+=`<ellipse cx="0" cy="${y}" rx="11.6" ry="10.8" fill="${sk}"/><g clip-path="url(#avcH)" stroke="none"><ellipse cx="${isSide?-9:12.6}" cy="${y+3}" rx="5.4" ry="11" fill="${AV_SH}" opacity=".7"/></g>`;
+  if(isSide)h+=`<ellipse cx="-2.6" cy="${y+2.4}" rx="1.9" ry="2.5" fill="${sk}"/><path d="M-2.2 ${y+1.4} q-1 1 0 2" fill="none" stroke="${skd}" stroke-width=".6"/>`;
+  if(!isBack){/* 臉 */
+    const dk='#2A1A10',blink=!!pose.blink&&[0,2,3,5].includes(av.face),ey=y+1.8;
+    const eye=(x,w,which)=>{
+      if(blink||av.face===4)return `<path d="M${x-1.4} ${ey} h2.8" stroke="${dk}" stroke-width="1"/>`;
+      if(av.face===1||(av.face===2&&which===1))return `<path d="M${x-1.5} ${ey+0.4} q1.5 -2 3 0" stroke="${dk}" stroke-width="1" fill="none"/>`;
+      const rx=(av.face===3?1.6:1.3)*w,ry=av.face===3?2.3:1.95;
+      return `<ellipse cx="${x}" cy="${ey}" rx="${rx}" ry="${ry}" fill="${dk}" stroke="none"/>`};
+    const mouth=(x,w)=>av.face===3?`<ellipse cx="${x}" cy="${y+6.4}" rx="${1*w}" ry="1.2" fill="#8A3A2A" stroke="none"/>`:av.face===5?`<path d="M${x-2*w} ${y+5.4} q${2*w} 3.2 ${4*w} 0z" fill="#B5503E" stroke="${dk}" stroke-width=".7"/>`:`<path d="M${x-1.7*w} ${y+5.6} q${1.7*w} 1.7 ${3.4*w} 0" stroke="${dk}" stroke-width=".9" fill="none"/>`;
+    if(isSide)h+=eye(6.8,0.85,1)+`<path d="M7.6 ${y+5.8} q1.3 1.1 2.6 0" stroke="${dk}" stroke-width=".9" fill="none"/>`;
+    else h+=eye(-4.2*(fq?0.8:1)+fxo,fq?0.85:1,0)+eye(4.2+fxo,1,1)+mouth(fxo,1);
+    if(av.acc===2)h+=isSide?`<ellipse cx="6.9" cy="${ey}" rx="2.4" ry="2.8" fill="rgba(200,230,255,.25)" stroke="#3A3A3A" stroke-width=".8"/><path d="M4.5 ${ey-0.6} h-6" stroke="#3A3A3A" stroke-width=".8"/>`:`<circle cx="${-4.2*(fq?0.8:1)+fxo}" cy="${ey}" r="2.9" fill="rgba(200,230,255,.25)" stroke="#3A3A3A" stroke-width=".8"/><circle cx="${4.2+fxo}" cy="${ey}" r="2.9" fill="rgba(200,230,255,.25)" stroke="#3A3A3A" stroke-width=".8"/><path d="M${-1.3+fxo} ${ey-0.4} h${2.6}" stroke="#3A3A3A" stroke-width=".8"/>`;
+  }
+  /* 頭髮主體＋兩階明暗＋幾道髮束線 */
+  const hx=fq?0.8:bq?-0.8:0;
+  let hh=`<path d="${hairD}" fill="${hc}"/><g clip-path="url(#${hid})" stroke="none"><ellipse cx="${isSide?-6:7}" cy="${y+5}" rx="12" ry="9" fill="${AV_SH}"/><ellipse cx="-5" cy="${y-9}" rx="5.4" ry="2.6" fill="${AV_HL}" transform="rotate(-24 -5 ${y-9})"/></g>`;
+  hh+=isBack?`<path d="M-4 ${y-8} q1 6 -1 11 M3 ${y-9} q1.6 5 0 10 M8 ${y-5} q0 4 -1.6 7" stroke="${hcd}" stroke-width=".7" fill="none"/>`:isSide?`<path d="M-3 ${y-9} q-3 4 -5 8 M2 ${y-10} q-1 3 -1.6 6" stroke="${hcd}" stroke-width=".7" fill="none"/>`:`<path d="M-2 ${y-10} q1 3 0 5.4 M4 ${y-9.6} q-.4 3 .8 4.6 M-7.4 ${y-7} q.6 2.4 -.6 4 M9 ${y-6} q.2 2 -.6 3.4" stroke="${hcd}" stroke-width=".7" fill="none"/>`;
+  if(H.curly){const pts=isSide?[[-11,y-4],[-10,y+3],[-7,y-11],[-1,y-13],[5,y-11.4],[9.6,y-7]]:isBack?[[-11.4,y-3],[-9,y-10],[-3,y-13],[3,y-13],[9,y-10],[11.4,y-3],[-9,y+5],[0,y+7],[9,y+5]]:[[-11.4,y-3],[-9,y-10],[-3,y-13],[3,y-13],[9,y-10],[11.4,y-3]];for(const [a,b] of pts)hh+=`<circle cx="${a}" cy="${b}" r="3.3" fill="${hc}"/>`}
+  if(H.tuft&&!av.hat&&!isBack)hh+=`<path d="M${isSide?-2:-2} ${y-12.4} q-1 -4.6 2.6 -6 q-.4 3.6 1.6 5.6z" fill="${hc}"/>`;
+  if(H.panel&&!isSide&&!isBack)hh+=`<path d="M-12.6 ${y-2} q-1.4 ${H.panel*0.7} .2 ${H.panel} l3 -1 q-.6 ${-H.panel*0.5} .2 ${-H.panel+2}z M12.6 ${y-2} q1.4 ${H.panel*0.7} -.2 ${H.panel} l-3 -1 q.6 ${-H.panel*0.5} -.2 ${-H.panel+2}z" fill="${hc}"/>`;
+  if(H.swoop&&!isBack)hh+=isSide?'':`<path d="M-12.6 ${y-1} q-.6 -9 6 -12.6 q-4 4.6 -3.6 13z" fill="${hc}"/>`;
+  if(H.tail&&isBack)hh+=`<g transform="rotate(${(swing*0.6).toFixed(1)} 0 ${y+2})"><path d="M-2.4 ${y+2} Q-3.4 ${y+12} 0 -24.4 Q3.4 ${y+12} 2.4 ${y+2}Z" fill="${hc}"/><circle cx="0" cy="${y+2.4}" r="1.8" fill="#D2584C"/></g>`;
+  if(H.twin&&isBack)hh+=`<g transform="rotate(${swing.toFixed(1)} -11.6 ${y-2})"><path d="M-11.6 ${y-3} Q-17 ${y+6} -14 -24.5 Q-10.6 ${y+6} -9.4 ${y-1}Z" fill="${hc}"/><circle cx="-11.2" cy="${y-2}" r="1.6" fill="#D2584C"/></g><g transform="rotate(${(-swing).toFixed(1)} 11.6 ${y-2})"><path d="M11.6 ${y-3} Q17 ${y+6} 14 -24.5 Q10.6 ${y+6} 9.4 ${y-1}Z" fill="${hc}"/><circle cx="11.2" cy="${y-2}" r="1.6" fill="#D2584C"/></g>`;
+  if(H.twin&&!isBack)hh+=isSide?`<circle cx="-9" cy="${y-1.6}" r="1.6" fill="#D2584C"/>`:`<circle cx="-11.6" cy="${y-3.4}" r="1.6" fill="#D2584C"/><circle cx="11.6" cy="${y-3.4}" r="1.6" fill="#D2584C"/>`;
+  h+=hx?`<g transform="translate(${hx} 0)">${hh}</g>`:hh;
+  if(isBack){h+=ear(-11.8)+ear(11.8)}
+  /* 帽子 */
+  if(av.hat===1){const bw=isSide?16:17.6;h+=`<ellipse cx="${isSide?1:0}" cy="${y-6}" rx="${bw}" ry="${isSide?3.2:4.6}" fill="#E8C97A"/><path d="M${isSide?-7:-8.6} ${y-6} Q${isSide?-7.6:-9} ${y-16.6} 0 ${y-16.8} Q${isSide?9:9} ${y-16.6} ${isSide?9:8.6} ${y-6}Z" fill="#F0D792"/><path d="M${isSide?-7.2:-8.7} ${y-9.6} h${isSide?16.2:17.4} v2.6 h-${isSide?16.2:17.4}z" fill="${hf.fill}"/><path d="M3 ${y-16.4} q5 1 5.6 9" fill="none" stroke="${AV_SH}" stroke-width="2"/>`}
+  if(av.hat===2){const cx=isSide?-1:0;h+=`<path d="M${cx-12.4} ${y-1.4} Q${cx-12.8} ${y-15.6} ${cx} ${y-15.8} Q${cx+12.8} ${y-15.6} ${cx+12.4} ${y-1.4}Z" fill="${hf.fill}"/><path d="M${cx+4} ${y-14} q6 3 7.6 11" fill="none" stroke="${AV_SH}" stroke-width="2.4"/><rect x="${cx-13}" y="${y-5.2}" width="26" height="4.6" rx="2.2" fill="${shade(hf.base,-0.18)}"/><path d="M${cx-8} ${y-5} v4.2 M${cx-3} ${y-5} v4.2 M${cx+2} ${y-5} v4.2 M${cx+7} ${y-5} v4.2" stroke="${shade(hf.base,-0.35)}" stroke-width=".6"/><circle cx="${cx}" cy="${y-17.4}" r="3.4" fill="${shade(hf.base,0.35)}"/>`}
+  if(av.hat===3){h+=`<path d="M-12 ${y-2.4} Q-12.2 ${y-14.8} 0 ${y-15} Q12.2 ${y-14.8} 12 ${y-2.4}Z" fill="${hf.fill}"/><path d="M4 ${y-13.6} q6 3 7.4 10" fill="none" stroke="${AV_SH}" stroke-width="2.2"/><circle cx="0" cy="${y-15}" r="1.2" fill="${shade(hf.base,-0.2)}"/>`+(isSide?`<path d="M8 ${y-4} L19.4 ${y-2.2} Q19 ${y-0.6} 17 ${y-0.4} L8.4 ${y-1}Z" fill="${shade(hf.base,-0.15)}"/>`:isBack?`<path d="M-2.4 ${y-2.6} h4.8 v-2.6 h-4.8z" fill="${hc}"/>`:`<ellipse cx="${fxo*0.6}" cy="${y-2.6}" rx="10.4" ry="2.8" fill="${shade(hf.base,-0.15)}"/>`)}
+  if(av.hat===4){h+=`<ellipse cx="${isSide?-1:-0.6}" cy="${y-9}" rx="${isSide?13:13.6}" ry="${isSide?4.4:5.2}" fill="${hf.fill}" transform="rotate(${isSide?-6:-8} 0 ${y-9})"/><path d="M-0.6 ${y-14} v-2.4" stroke="${AV_OL}" stroke-width="1.4"/><path d="M2 ${y-11} q6 .4 9 2.6" fill="none" stroke="${AV_SH}" stroke-width="1.8"/>`}
+  if(av.acc===4)h+=(()=>{const fx=isBack?-6.4:isSide?2:7.6,fy=y-7.6;return [0,1,2,3,4].map(k=>{const a=k/5*6.283;return `<circle cx="${(fx+Math.cos(a)*2).toFixed(1)}" cy="${(fy+Math.sin(a)*2).toFixed(1)}" r="1.7" fill="#F28DB2"/>`}).join('')+`<circle cx="${fx}" cy="${fy}" r="1.1" fill="#F2C94C"/>`})();
+  if(av.hat&&hf.defs===''&&(av.fab&&av.fab.hat&&av.fab.hat.b))h+=avBadge(isSide?6:4,y-8,1);
+  s+=`<g transform="rotate(${headTilt.toFixed(2)} 0 -25)">${h}</g>`;
+  s+='</g>';
+  if(act==='water'&&ap<1&&!isBack){for(let k=0;k<3;k++){const q=(ap*3+k/3)%1;s+=`<ellipse cx="${18+k*2}" cy="${(-22+q*18).toFixed(1)}" rx="1.1" ry="1.8" fill="#4FA3E0" stroke="none" opacity="${(1-q).toFixed(2)}"/>`}}
+  s+='</g>';
+  if((act==='harvest'||act==='pollinate')&&ap<1){const q=ap;s+=`<path d="M${(flip?-1:1)*13} ${(-54-q*8).toFixed(1)} l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6 -4 -4 -1.6 4 -1.6z" fill="#FFD54A" stroke="#9A6A00" stroke-width=".8" opacity="${(1-q*0.8).toFixed(2)}"/>`}
+  return s;
+}
+const V=['front','side','back'],VN={front:'正面',fq:'斜前',side:'側面',bq:'斜後',back:'背面'};
+const box=(av,v,w,pose)=>'<svg viewBox="-30 -66 60 70" width="'+w+'" height="'+(w*70/60)+'">'+avatarSVG(av,false,Object.assign({view:v},pose||{}))+'</svg>';
+document.getElementById('ref').innerHTML=['front','side','back'].map(v=>'<div class="card"><img src="../assets/ref/char_'+v+'.png" height="220"><br>參考：'+VN[v]+'</div><div class="card">'+box(AV_DEF,v,190)+'遊戲：'+VN[v]+'</div>').join('');
+document.getElementById('dirs').innerHTML=['front','fq','side','bq','back'].map(v=>'<div class="card">'+box(AV_DEF,v,110)+VN[v]+'</div>').join('')+[0,1.6,3.2].map(p=>'<div class="card">'+box(AV_DEF,'side',110,{ph:p})+'走路</div>').join('');
+const S=[['small_pine',150,214,280,60],['cabin',132,244,260,190],['snowman',84,132,170,300],['bush',62,171,140,380],['boulder',56,116,110,440]];
+let sc='<svg viewBox="0 0 520 220" width="100%" style="max-width:820px;background:#E9EFF4;border-radius:12px">';
+for(const [f,dh,iw,ih,x] of S){const w=dh*iw/ih;sc+='<ellipse cx="'+x+'" cy="199" rx="'+(w*.34)+'" ry="5" fill="rgba(70,95,120,.2)"/><image href="../assets/snow/'+f+'.png" x="'+(x-w/2)+'" y="'+(200-dh)+'" width="'+w+'" height="'+dh+'"/>'}
+[[120,AV_DEF],[250,{...AV_DEF,hair:3,hairC:4,top:3,topC:1,bottom:2,bottomC:7,hat:2,hatC:0,acc:1,accC:3}],[480,{...AV_DEF,hair:9,hairC:0,top:5,topC:9,hat:3,hatC:1,acc:3,accC:12,shoe:1,shoeC:6}]].forEach(([x,av])=>{sc+='<g transform="translate('+x+' 200) scale(1.15)">'+avatarSVG(av,false,{view:'fq'})+'</g>'});
+document.getElementById('scene').innerHTML=sc+'</svg><p class="note">松樹顯示高度 150、小木屋 132、雪人 84（和雪原地圖相同）；人物放大 1.15 倍（和遊戲相同）。作物新植株素材（assets/crops）還沒有，等第 21 節做好再加進來。</p>';
+let o='';const T={face:'表情',hair:'髮型（不戴帽子）',hat:'帽子',top:'上衣',bottom:'下身（上衣用 T 恤，吊帶褲會蓋住下身）',shoe:'鞋子',acc:'配件'};
+for(const k of Object.keys(T)){o+='<h2>'+T[k]+'</h2><div class="row">';AV_OPT[k].forEach((n,i)=>{const av={...AV_DEF,[k]:i};if(k==='hair')av.hat=0;if(k==='bottom'||k==='shoe')av.top=0;o+='<div class="card"><div class="row" style="gap:0">'+V.map(v=>box(av,v,70)).join('')+'</div>'+n+'</div>'});o+='</div>'}
+o+='<h2>膚色與髮色</h2><div class="row">'+SKINS.map((c,i)=>'<div class="card">'+box({...AV_DEF,skin:i},'front',60)+'膚色 '+(i+1)+'</div>').join('')+HAIRC.map((c,i)=>'<div class="card">'+box({...AV_DEF,hairC:i},'front',60)+'髮色 '+(i+1)+'</div>').join('')+'</div>';
+o+='<h2>布料預留（之後標本解鎖用：底色＋花紋＋徽章）</h2><div class="row">'+AV_FAB_P.map((n,p)=>'<div class="card">'+box({...AV_DEF,top:0,fab:{top:{c:['red','starry','blue','gold'][p],p,pc:'white',b:1},acc:{c:3,p:(p+1)%4,pc:6}},acc:1},'front',90)+n+'</div>').join('')+'</div>';
+document.getElementById('opts').innerHTML=o;
+</script></body></html>

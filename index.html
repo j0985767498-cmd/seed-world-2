@@ -332,12 +332,16 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 .hvhead{display:flex;gap:8px;align-items:center;padding:2px 0 6px;border-bottom:1px dashed #E2C796}
 .hvhead .meta{display:block}
 #wx{position:fixed;inset:0;pointer-events:none;z-index:3;overflow:hidden}#wx[hidden]{display:none}
-#wx.paused *{animation-play-state:paused!important}
+#wx.paused,#wx.paused *{animation-play-state:paused!important}
 #wx i{position:absolute;display:block;top:-6vh;left:var(--x);animation:var(--a) var(--d) linear var(--l) infinite;will-change:transform}
 #wx.wx-snow i{width:var(--s);height:var(--s);border-radius:50%;background:#fff;opacity:var(--o,.9);box-shadow:0 0 3px rgba(255,255,255,.9)}
 @keyframes wxFall{0%{transform:translate3d(0,0,0)}50%{transform:translate3d(calc(var(--dx)*.5 + var(--sw,0px)),56vh,0)}100%{transform:translate3d(var(--dx),112vh,0)}}
-#wx.wx-desert{background:linear-gradient(rgba(230,190,120,.04),rgba(230,190,120,.12))}
-#wx.wx-desert i{left:-6vw;border-radius:50%}
+#wx.wx-desert{background:linear-gradient(rgba(230,190,120,0) 35%,rgba(230,190,120,.14));animation:wxGust 9s ease-in-out infinite}
+@keyframes wxGust{0%,100%{opacity:.5}35%{opacity:1}55%{opacity:.85}}
+#wx.wx-desert i{border-radius:50%}
+#wx.wx-desert .sv{position:absolute;left:0;width:70vw;background:radial-gradient(ellipse at center,rgba(248,232,200,.5),rgba(248,232,200,.18) 45%,rgba(248,232,200,0) 70%);animation:wxVeil 8s linear infinite;will-change:transform,opacity}
+@keyframes wxVeil{0%{transform:translate3d(-75vw,0,0) scaleY(.6);opacity:0}20%{opacity:1}50%{transform:translate3d(15vw,-3vh,0) scaleY(1.2)}80%{opacity:1}100%{transform:translate3d(110vw,-6vh,0) scaleY(.8);opacity:0}}
+@keyframes wxLift{0%{transform:translate3d(0,0,0);opacity:0}8%{opacity:1}45%{transform:translate3d(45vw,calc(var(--h)*-1),0)}80%{transform:translate3d(85vw,calc(var(--h)*-.55),0);opacity:1}100%{transform:translate3d(115vw,calc(var(--h)*-.2),0);opacity:0}}
 @keyframes wxBlow{0%{transform:translate3d(0,0,0)}25%{transform:translate3d(28vw,calc(var(--dy)*.25 - var(--b)),0)}50%{transform:translate3d(56vw,calc(var(--dy)*.5),0)}75%{transform:translate3d(84vw,calc(var(--dy)*.75 + var(--b)),0)}100%{transform:translate3d(112vw,var(--dy),0)}}
 #wx.wx-marsh .fog{position:absolute;left:-30%;width:160%;height:45%;background:radial-gradient(ellipse at center,rgba(255,255,255,.38),rgba(255,255,255,0) 70%);animation:wxFog 26s ease-in-out infinite alternate}
 @keyframes wxFog{from{transform:translateX(-8%)}to{transform:translateX(8%)}}
@@ -987,7 +991,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-14u';
+const BUILD='2026-11-14v';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -4666,18 +4670,21 @@ function exRefreshLeft(now){now=now||new Date();const nx=new Date(now.getFullYea
 function exRefreshTxt(now){const h=exRefreshLeft(now);return `野外植株每天 0 點換一批，還有${h<1?'不到 1 小時':`約 ${Math.round(h)} 小時`}`}
 function exHintUpd(){const el=document.getElementById('exHint');if(!el)return;const on=scene==='explore';if(el.hidden===on)el.hidden=!on;if(on){const t=exRefreshTxt();if(el.textContent!==t)el.textContent=t}}
 let wxCur=null;
-const WXN={snow:34,desert:30,marsh:14,forest:16,grass:7,cave:8};/* 粒子數量控制在 40 個以內 */
+const WXN={snow:34,desert:26,marsh:14,forest:16,grass:7,cave:8};/* 粒子數量控制在 40 個以內 */
 function wxReduced(){try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}}
 function setWeather(bk){
   const el=document.getElementById('wx');if(!el)return;if(wxReduced()||!WXN[bk])bk=null;if(bk===wxCur)return;wxCur=bk;
   if(!bk){el.hidden=true;el.className='';el.innerHTML='';return}
   const r=Math.random,f=(v,d)=>v.toFixed(d==null?1:d);let h='';
+  if(bk==='desert')for(let k=0;k<4;k++)h+=`<div class="sv" style="top:${f(52+k*11+r()*6)}vh;height:${f(7+r()*6)}vh;animation-duration:${f(6+r()*4)}s;animation-delay:${f(-r()*8)}s"></div>`;/* 貼地的沙幕 */
   if(bk==='marsh')h+='<div class="fog" style="top:8%"></div><div class="fog" style="top:55%;animation-duration:34s;animation-delay:-9s"></div>';
   for(let k=0;k<WXN[bk];k++){let st;
     if(bk==='snow'){const near=k<12;st=near?`--x:${f(r()*100)}vw;--s:${f(5+r()*3)}px;--o:.95;--dx:${f(r()*14-7)}vw;--sw:${f(r()*8-4)}vw;--d:${f(5+r()*3)}s;--l:${f(-r()*8)}s;--a:wxFall`:`--x:${f(r()*100)}vw;--s:${f(2+r()*1.5)}px;--o:.55;--dx:${f(r()*10-5)}vw;--sw:${f(r()*6-3)}vw;--d:${f(10+r()*6)}s;--l:${f(-r()*16)}s;--a:wxFall`}
     else if(bk==='cave')st=`--x:${f(r()*100)}vw;--y:${f(5+r()*55)}vh;--d:${f(3+r()*3)}s;--l:${f(-r()*6)}s`;
-    else if(bk==='desert'){/* 風沙（14u 改成沙粒）：高度、大小、顏色直接寫成數值（不靠 top:var()），近層 10 顆較大較快、遠層較小較慢較淡，--b 是上下起伏 */const near=k<10,sz=near?2.4+r()*1.8:1.2+r()*1.1,c=['#C9A066','#B88A50','#D8B47A','#A87C46'][Math.floor(r()*4)];
-      st=`top:${f(2+r()*94)}vh;width:${f(sz)}px;height:${f(sz*(.8+r()*.3))}px;background:${c};opacity:${near?f(.45+r()*.15,2):f(.25+r()*.15,2)};--dy:${f(r()*10-5)}vh;--b:${f(near?1.5+r()*2.5:.8+r()*1.5)}vh;--d:${f(near?2+r()*1.5:4+r()*3,2)}s;--l:${f(-r()*8,2)}s;--a:wxBlow`}
+    else if(bk==='desert'){/* 風沙（14v 迎風而起）：前 20 顆從畫面下方被捲起、先揚起再落下（wxLift，--h 揚起高度）；後 6 顆在上方飄（wxBlow）。
+      位置、大小、顏色直接寫數值（不靠 top:var()）；透明度寫在顏色裡，動畫只做 0→1→0 */const lift=k<20,sz=lift?1.6+r()*2.6:1.1+r()*1,c=[[201,160,102],[184,138,80],[216,180,122],[168,124,70]][Math.floor(r()*4)],a=lift?.4+r()*.25:.22+r()*.15;
+      st=`top:${f(lift?52+r()*44:8+r()*45)}vh;left:${f(lift?-12+r()*14:-6)}vw;width:${f(sz)}px;height:${f(sz*(.8+r()*.3))}px;background:rgba(${c.join(',')},${a.toFixed(2)});`+
+        (lift?`--h:${f(6+r()*22)}vh;--d:${f(2+r()*1.8,2)}s;--l:${f(-r()*6,2)}s;--a:wxLift`:`--dy:${f(r()*10-5)}vh;--b:${f(.8+r()*1.5)}vh;--d:${f(4+r()*3,2)}s;--l:${f(-r()*8,2)}s;--a:wxBlow`)}
     else if(bk==='marsh')st=`--x:${f(r()*100)}vw;--y:${f(15+r()*80)}vh;--dx:${f(r()*60-30,0)}px;--dy:${f(r()*50-25,0)}px;--d:${f(3+r()*4)}s;--l:${f(-r()*6)}s`;
     else st=`--x:${f(r()*100)}vw;--s:${f((bk==='grass'?6:8)+r()*5,0)}px;--dx:${f(r()*30-10)}vw;--d:${f(9+r()*8)}s;--l:${f(-r()*16)}s;--a:wxLeaf;--c:${bk==='grass'?['#F7B6C8','#FFE1EA','#F2C94C'][k%3]:['#D9822B','#C9473A','#E8B13A','#6FA544'][k%4]}`;
     h+=`<i style="${st}"></i>`}

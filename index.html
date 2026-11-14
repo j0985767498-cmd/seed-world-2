@@ -987,7 +987,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-14p';
+const BUILD='2026-11-14q';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -1333,7 +1333,7 @@ function fruitImgSVG(a,ripe,crop){
   const name=fruitShapeKey(a,crop),B=fruitBase(name);if(!B)return null;
   const rp=ripe>=1?1:0,key=name+'|'+a.skin+'|'+patKey(rp?a.pat:null)+'|'+rp;
   let url;try{url=fruitURL(B,a,rp,key)}catch(e){return null}
-  const m=FRUIT_SHAPE_MUL[name]||1,s=Math.min(3/B.w,3.2/B.h)*m,w=B.w*s,h=B.h*s;
+  const m=(FRUIT_SHAPE_MUL[name]||1)*0.82,s=Math.min(3/B.w,3.2/B.h)*m,w=B.w*s,h=B.h*s;/* 0.82：和舊畫法的果實大小差不多（舊的果實約佔框的 75–90%） */
   const pc=a.perfCls==null?2:a.perfCls;
   const glint=pc===3&&rp?`<path d="M1.05 -1.2 l0.06 0.16 0.16 0.06 -0.16 0.06 -0.06 0.16 -0.06 -0.16 -0.16 -0.06 0.16 -0.06z" fill="#FFF6C2" stroke="#B9840F" stroke-width="0.02"/>`:'';
   return `<image href="${url}" x="${f3(-w/2)}" y="${f3(-h/2)}" width="${f3(w)}" height="${f3(h)}" preserveAspectRatio="none"/>${glint}`;
@@ -3622,7 +3622,7 @@ function exploreWorld(){
   for(const w of exVisiblePlants())s+=wpSVG(w,w.key===hoverWp);
   return s;
 }
-// ===== 雪原原型（14j）：固定設計、彼此相連的小地圖（其他地區仍是無限方塊） =====
+// ===== 雪原原型（14j）：固定設計、彼此相連的小地圖（14q 起草原也是，見下方草原地圖與地區通用化） =====
 /* 新增地區照同樣格式：每張圖 {n 名稱, gx/gy 小地圖格位, cave 洞內, rare 珍稀機率, W/H,
    exits:[{side:'n|s|e|w', c 出口中心, w 寬, to 目標圖} 或 {door:[x0,y0,x1,y1], arrive:[x,y], to}]（兩張圖的出口要互相指向對方，to:'farm' 回農場）,
    objs:[[種類,x,y,告示牌文字?]]（x,y＝底部中央）, rows/cols:[[種類,起,迄,位置,間距]]（排成一排的樹牆、冰岩，整排擋路）,
@@ -3673,13 +3673,60 @@ const SNOW_MAPS={
     objs:[['vault',400,250],['glow',220,300],['glow',580,300],['glow',150,720],['glow',650,820],['stalag',250,600],['stalag',560,560],['iceboulder',430,850],['crystals',680,420],['crystals',120,420]],
     spawns:[[200,450],[600,450],[400,640],[300,920],[620,980]],items:[[400,380]]}
 };
+// ===== 草原地圖（14q，第 27 節 27.2）：5 張相連小地圖，沒有洞穴；素材 assets/grass/ =====
+const GRASS_IMG={boulder:[308,269],bridge:[336,233],cliff:[320,300],fence:[289,225],flower_bush:[307,226],haystack:[304,300],log:[319,224],mushroom_ring:[269,201],oak:[300,300],round_tree:[223,272],signpost:[206,293],stairs:[324,267],stone_arch:[265,300],stump_house:[324,300],tall_grass:[281,224],well:[241,300],wildflowers:[266,209]};
+/* [檔名, 顯示高度, 碰撞寬, 碰撞高]：碰撞只算底部；野花、高草、蘑菇圈、石拱門不擋路 */
+const GRASS_ART={round_tree:['round_tree',125,22,14],oak:['oak',170,30,16],flower_bush:['flower_bush',58,54,16],haystack:['haystack',82,66,20],
+  flowers:['wildflowers',42,0,0],tallgrass:['tall_grass',46,0,0],mushroom:['mushroom_ring',40,0,0],log:['log',48,70,14],fence:['fence',50,60,10],
+  boulder:['boulder',64,58,18],bridge:['bridge',92,0,0],stairs:['stairs',92,0,0],cliff:['cliff',96,0,0],sign:['signpost',78,16,8],
+  well:['well',120,72,26],arch:['stone_arch',132,0,0],stump:['stump_house',142,112,40]};
+const GRASS_FLAT={bridge:1,stairs:1,mushroom:1},GRASS_SWAY={round_tree:1,oak:1,flower_bush:1,tallgrass:1};
+const GRASS_MAPS={
+  entry:{n:'草原入口',gx:1,gy:2,
+    exits:[{side:'s',c:400,w:120,to:'farm'},{side:'n',c:400,w:120,to:'meadow'},{side:'e',c:640,w:120,to:'river'}],
+    paths:[[[400,1110],[400,820],[420,640],[810,640]],[[420,640],[400,420],[400,-10]]],
+    rows:[['fence',90,270,880,60]],
+    objs:[['sign',480,995,'草原'],['haystack',170,560],['haystack',240,615],['round_tree',150,300],['round_tree',235,350],['round_tree',620,280],['round_tree',695,335],
+      ['flower_bush',250,760],['flower_bush',585,850],['flowers',300,480],['flowers',560,470],['flowers',180,980],['tallgrass',655,760],['tallgrass',120,700],['boulder',625,455],['log',660,905]],
+    spawns:[[265,485],[560,540],[300,960],[660,1000]],items:[[110,650]]},
+  meadow:{n:'野花坡',gx:1,gy:1,
+    exits:[{side:'s',c:400,w:120,to:'entry'},{side:'e',c:300,w:120,to:'hill'}],
+    rows:[['flower_bush',60,290,330,46]],
+    paths:[[[400,1110],[400,700],[600,450],[600,300],[810,300]]],
+    objs:[['oak',250,470],['mushroom',560,700],['round_tree',650,190],['round_tree',470,170],['flower_bush',700,770],['flower_bush',130,965],
+      ['flowers',150,600],['flowers',215,650],['flowers',305,565],['flowers',480,565],['flowers',520,825],['flowers',625,885],['flowers',180,860],['flowers',275,925],['flowers',690,625],['flowers',705,985],['flowers',360,250],['flowers',150,250],
+      ['tallgrass',120,750],['tallgrass',330,785],['tallgrass',645,520],['tallgrass',560,985],['tallgrass',230,200]],
+    spawns:[[400,520],[620,640],[200,760],[500,930]],items:[[110,220],[700,1000]]},
+  river:{n:'小河邊',gx:2,gy:2,
+    exits:[{side:'w',c:700,w:120,to:'entry'},{side:'n',c:600,w:120,to:'hill'},{side:'e',c:300,w:120,to:'old_well'}],
+    rivers:[[[[300,60],[340,300],[400,520],[470,760],[520,900]],70]],lakes:[[530,930,72,46]],walks:[[318,398,432,446]],
+    paths:[[[-10,700],[290,640],[375,425],[600,300],[600,-10]],[[600,300],[810,300]],[[200,700],[300,1012],[680,1012],[680,620],[600,300]]],
+    objs:[['bridge',375,462],['log',215,505],['fence',600,820],['fence',660,820],['round_tree',150,300],['round_tree',225,250],['round_tree',700,600],['round_tree',710,890],
+      ['boulder',565,600],['tallgrass',290,790],['tallgrass',505,470],['tallgrass',455,345],['flowers',150,900],['flowers',700,780],['flowers',250,1000]],
+    spawns:[[200,820],[560,700],[650,450],[690,985]],items:[[110,1010]]},
+  hill:{n:'山丘',gx:2,gy:1,
+    exits:[{side:'w',c:820,w:120,to:'meadow'},{side:'s',c:400,w:120,to:'river'}],
+    cliff:[470,530,365,435],blocks:[[44,470,365,530],[435,470,756,530]],walks:[[365,458,435,548]],
+    paths:[[[-10,820],[400,760],[400,550],[400,350]],[[400,760],[400,1110]]],
+    objs:[['stairs',400,550],['cliff',100,478],['cliff',192,478],['cliff',284,478],['cliff',516,478],['cliff',608,478],['cliff',700,478],
+      ['boulder',250,335],['boulder',565,305],['round_tree',150,225],['round_tree',680,205],['flowers',400,300],['flowers',460,250],
+      ['round_tree',650,905],['round_tree',150,1000],['flower_bush',560,1000],['tallgrass',250,700],['tallgrass',620,650],['flowers',320,950]],
+    spawns:[[300,400],[520,385],[600,760]],items:[[660,340]]},
+  old_well:{n:'古井遺跡',gx:3,gy:2,
+    exits:[{side:'w',c:300,w:120,to:'river'}],
+    rows:[['fence',540,740,880,50]],cols:[['flower_bush',505,890,1000,40]],
+    paths:[[[-10,300],[250,420],[420,610],[420,800]]],
+    objs:[['well',420,560],['arch',250,430],['stump',610,420],['mushroom',520,780],['boulder',150,560],['boulder',690,620],['log',300,820],
+      ['round_tree',150,800],['round_tree',700,250],['round_tree',120,1000],['tallgrass',350,950],['flowers',560,520],['flowers',240,640],['flowers',650,960]],
+    spawns:[[200,700],[600,650],[350,900],[680,300]],items:[[700,1010],[150,200]]}
+};
 /* ===== 地區地圖通用化（14p，第 27 節 27.1）=====
    REGION_MAPS[地區][id]（格式同上面雪原的說明，另可加 rivers:[[[x,y],…],寬] 折線帶狀水面，擋路；橋、木棧道、踏腳石放 walks）。
    REGION_ART／REGION_IMG／REGION_FLAT／REGION_SWAY／REGION_GLOW 依地區分表；素材在 assets/<REGION_CFG.dir 或地區鍵>/。
    REGION_CFG[地區]：名稱、地面與洞內顏色、邊界自動排的樹與灌木、天氣、腳印。
    雪原的亂數種子、刷新點鍵值、多人頻道名稱和 14j 完全相同（vm 比對過）；還沒有地圖的地區（REGION_MAPS 沒有）照舊用無限方塊。 */
-const REGION_MAPS={snow:SNOW_MAPS};
-const REGION_ART={snow:SNOW_ART},REGION_IMG={snow:SNOW_IMG},REGION_FLAT={snow:SNOW_FLAT},REGION_SWAY={snow:SNOW_SWAY},REGION_GLOW={snow:{glow:1}};
+const REGION_MAPS={snow:SNOW_MAPS,grass:GRASS_MAPS};
+const REGION_ART={snow:SNOW_ART,grass:GRASS_ART},REGION_IMG={snow:SNOW_IMG,grass:GRASS_IMG},REGION_FLAT={snow:SNOW_FLAT,grass:GRASS_FLAT},REGION_SWAY={snow:SNOW_SWAY,grass:GRASS_SWAY},REGION_GLOW={snow:{glow:1},grass:{}};
 const REGION_CFG={
   snow:{name:'雪原',ground:'#E9EFF4',outer:'#E3EAF0',spots:['#DDE6ED','#F3F7F9'],path:['#D3DDE6','#DEE7EE'],water:['#9DBCCD','#C7E0EC'],cliff:['#8D9299','#767B83','#FFFFFF'],
     edgeTree:'pine',edgeBush:'bush',weather:'snow',shadow:'rgba(70,95,120,.2)',glow:'#C8F4FF',footprints:true,

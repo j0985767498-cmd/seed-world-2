@@ -603,9 +603,9 @@ function fuse(a,b){const g={sv:3,b:[a.b,b.b],sp:[a.sp,b.sp],pw:[a.pw,b.pw],c:[a.
   const ao=a.o||{},bo=b.o||{};if(OLOCI.some(k=>ao[k]||bo[k])){g.o={};for(const k of OLOCI)g.o[k]=[ao[k]||null,bo[k]||null]}return g}
 const clrO=(g,k,j)=>{if(g.o&&g.o[k])g.o[k][j]=null};
 /* 突變（每顆種子）：特殊色 0.2%、特殊造型 0.05%、一般 0.1%（基本色、基本造型類型或大小完美度）；誘變劑 mult=25 */
-function mutRound(g,mult,keepEx){
+function mutRound(g,mult,keepEx,specMult){
   let mu=null;const j=rnd()<.5?0:1;
-  if(rnd()<0.002*mult){const k=pk(['c','pc']);g[k][j]=wpk(SPEC_W);clrO(g,k,j);mu='spec'}
+  if(rnd()<0.002*(specMult!=null?specMult:mult)){const k=pk(['c','pc']);g[k][j]=wpk(SPEC_W);clrO(g,k,j);mu='spec'}
   if(rnd()<0.0005*mult&&!(keepEx&&g.sp[j]>6)){g.sp[j]=wpk(SPSH_W);clrO(g,'sp',j);mu=mu||'spsh'}
   if(rnd()<0.001*mult){
     const r=rnd();
@@ -618,7 +618,7 @@ function mutRound(g,mult,keepEx){
 }
 function mutate(g){return mutRound(g,1,false)}
 /* 14g 誘變劑：再做一次突變判定，機率為平常的 25 倍；不產生專屬造型，也不會蓋掉已有的專屬造型因子 */
-function mutateX(g){return mutRound(g,25,true)}
+function mutateX(g){return mutRound(g,25,true,7.5)}/* 28.2：特殊色 0.2%×7.5＝1.5%；特殊造型 1.25%、一般 2.5% 不變 */
 function child(m,f){const g=fuse(gamete(m),gamete(f));const mu=mutate(g);return {g,mu}}
 const perfConv=v=>Math.max(0,Math.min(100,Math.round((v-6)/94*100)));
 const abilOf=(g,k)=>{const v=Math.round(g.n[k].reduce((s,p)=>s+p[0]+p[1],0)/(2*NUMN)*100);return k==='perf'?perfConv(v):v};
@@ -648,19 +648,36 @@ function appFromKey(k){
 }
 const sizeCls=v=>v<=15?0:v<=35?1:v<=64?2:v<=84?3:4;
 const perfCls=v=>v<=5?0:v<=46?1:v<=83?2:3;
-// 稀有度：依外觀條件決定等級，大小與完美度不影響等級。淡特殊色、雙色視同特殊色
-const TIER_BASE=[0,2,4,7,10,14],TIER_W=[2,2,3,3,4,99];
-function rarityOf(a,size,perf){
-  if(a.legacy)return {score:0,tier:0};
-  const ex=a.sp>=7,spc=a.sp>=1&&a.sp<=6,skinS=isSpecK(a.skin),patS=!!(a.pat&&isSpecK(a.pat.c)),colS=skinS||patS;
-  const f=(a.pat?1:0)+(MIXSET.has(a.skin)?1:0)+(a.skin==='black'?1:0)+(!a.sp&&a.level>=1?1:0);
-  let t=0;
-  if((ex&&colS)||(spc&&skinS&&patS))t=5;
-  else if(ex||(spc&&colS))t=4;
-  else if(spc||colS)t=3;
-  else if(f>=2)t=2;
-  else if(f===1)t=1;
-  return {score:TIER_BASE[t]+Math.min(f,TIER_W[t]-1),tier:t};
+/* 28.1 稀有度計分制（15a）：每顆果實依外觀加總分數（0–19），再查表成 6 級；大小與完美度不影響。
+   造型（互斥，只算顯示出來的）：非預設基本造型 1、特殊造型 4、專屬造型 7。
+   顏色（果皮；花紋顏色只在有花紋時算）：基本色純色 0（果皮黑色 1）、混色 1、淡特殊色 2、完整特殊色 4、雙特殊色 5。
+   有花紋 1；兩種花紋形式一起出現 1。玩家看不到分數，只看到等級名稱。 */
+const TIER_MIN=[0,1,3,7,10,13];
+const colScore=(k,skin)=>{const t=colParts(k).t;return t==='m'?1:t==='l'?2:t==='s'?4:t==='d'?5:(skin&&k==='black'?1:0)};
+function rarityScore(a){
+  if(!a||a.legacy)return 0;
+  let s=a.sp>=7?7:a.sp>=1?4:(a.level>=1?1:0);
+  s+=colScore(a.skin,true);
+  if(a.pat){s+=1+colScore(a.pat.c,false)+(a.pat.f2!=null?1:0)}
+  return s;
+}
+const tierOfScore=sc=>{let t=0;for(let k=0;k<TIER_MIN.length;k++)if(sc>=TIER_MIN[k])t=k;return t};
+function rarityOf(a,size,perf){if(a.legacy)return {score:0,tier:0};const sc=rarityScore(a);return {score:sc,tier:tierOfScore(sc)}}
+/* 植株資訊的白話提示：只加一項特徵就能升級的最簡單選項（分數增加最少的那個）；沒有就不顯示 */
+function rarityHint(a,crop){
+  if(!a||a.legacy)return '';const sc=rarityScore(a),t=tierOfScore(sc);if(t>=5)return '';const need=TIER_MIN[t+1]-sc,cd=CROPS[crop]||CROPS.tomato,c=[];
+  const shapeS=a.sp>=7?7:a.sp>=1?4:(a.level>=1?1:0),skinS=colScore(a.skin,true),pt=colParts(a.skin).t;
+  if(!a.pat)c.push([1,'加上花紋']);
+  if(!a.sp&&!a.level)c.push([1,`造型換成${cd.shapes[1]}或${cd.shapes[2]}`]);
+  if(pt==='p'&&a.skin!=='black')c.push([1,'果皮變成兩種顏色混出來的顏色']);
+  if(a.pat&&a.pat.f2==null)c.push([1,'再多一種花紋樣式']);
+  if(pt==='p'||pt==='m')c.push([2-skinS,'果皮帶一點特殊色（淡色版）']);
+  if(a.sp<1)c.push([4-shapeS,'變成特殊造型（正方形、愛心、星形…）']);
+  if(skinS<4)c.push([4-skinS,'果皮變成特殊色']);
+  if(a.pat&&colScore(a.pat.c,false)<4)c.push([4-colScore(a.pat.c,false),'花紋變成特殊色']);
+  if(a.sp<7)c.push([7-shapeS,'變成這種作物的專屬造型']);
+  const ok=c.filter(x=>x[0]>0&&x[0]>=need).sort((x,y)=>x[0]-y[0]);if(!ok.length)return '';
+  return `再${ok[0][1]}，就會變成${TIERS[tierOfScore(sc+ok[0][0])]}`;
 }
 
 function shapeNameOf(a,crop){const cd=CROPS[crop]||CROPS.tomato;if(a.legacy)return a.sp?(LEGACY_SPN[a.sp]||spLabel(a.sp)||'舊造型'):'舊造型';return a.sp?spLabel(a.sp):cd.shapes[a.level]}
@@ -904,6 +921,7 @@ function migrate(o){
     o.me={x:o.me.x+MOX,y:o.me.y+MOY};
     o.mapV=MAPV;
   }
+  if(Array.isArray(o.specs))for(const e of o.specs){try{e.tier=rarityOf(appFromKey(e.key)).tier}catch(err){}}/* 28.1：標本等級依新規則重算，標本與名字全部保留（每次載入都算，不用旗標） */
   if(!o.plotPos)o.plotPos=defaultPos();
   if(!Array.isArray(o.vault))o.vault=[];
   while(o.plotPos.length<o.plots.length)o.plotPos.push(null);
@@ -993,7 +1011,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-14z';
+const BUILD='2026-11-15a';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -1093,7 +1111,7 @@ async function flush(){
 }
 function load(){try{const s=localStorage.getItem(lsKey());if(s){const o=unpack(s);if(o&&o.v===4)return migrate(o)}}catch(e){}return null}
 const tms=x=>x&&x.toMillis?x.toMillis():Infinity;
-function sortReg(){regList.sort((a,b)=>tms(a.at)-tms(b.at));const seen=new Set();for(const r of regList){r.akey=r.app?legacyMap(r.app):null;const k=r.crop+'#'+r.akey;r.obs=!r.akey||seen.has(k);if(!r.obs)seen.add(k)}}
+function sortReg(){regList.sort((a,b)=>tms(a.at)-tms(b.at));const seen=new Set();for(const r of regList){r.akey=r.app?legacyMap(r.app):null;if(r.akey){try{r.tier=rarityOf(appFromKey(r.akey)).tier}catch(e){}}/* 28.1 依新規則重算 */const k=r.crop+'#'+r.akey;r.obs=!r.akey||seen.has(k);if(!r.obs)seen.add(k)}}
 function fixRights(){for(const r of rightsList){r.akey=r.app?legacyMap(r.app):null;r.obs=!r.akey}}
 function obsPh(r){const a=appFromKey(r.app);return {...a,key:r.app,tier:r.tier||0,score:0,shapeName:shapeNameOf(a,r.crop),cname:CN[a.skin],perfCls:2,sizeCls:2,seed:7,ab:{size:50,perf:50,speed:50,yield:50,vigor:50}}}
 const gCache=new Map();
@@ -1868,7 +1886,7 @@ const BOARD_PTS=r=>r===1?5:r<=3?3:r<=10?1:0;
 let boardsList=[],boardCrop=null;
 const bVal=(b,ph)=>b==='big'||b==='small'?ph.ab.size:ph.ab.perf;
 const bv=e=>(e.board==='perfect'||e.board==='weird')&&e.s!==2?perfConv(e.value):e.value;
-function boardRank(crop,b){const dir=BOARDS.find(x=>x[0]===b)[3];return boardsList.filter(e=>e.crop===crop&&e.board===b).sort((x,y)=>dir*(bv(y)-bv(x))||(x.at||0)-(y.at||0))}
+function boardRank(crop,b){const dir=BOARDS.find(x=>x[0]===b)[3];const sc=e=>{try{return rarityScore(appFromKey(e.key))}catch(err){return 0}};return boardsList.filter(e=>e.crop===crop&&e.board===b).sort((x,y)=>dir*(bv(y)-bv(x))||sc(y)-sc(x)||(x.at||0)-(y.at||0))}
 async function submitBoards(p){
   if(!uid||!p)return;const ph=phen(p.g,p.crop),me=myName();
   for(const [b,bn,vn,dir] of BOARDS){
@@ -1991,7 +2009,7 @@ function infoHTML(ph,lvl,g,crop,noSims,p,opt){
   if(lvl>=3){
     const hs=sizeScale(ph.ab.size);
     h+=`<div class="hero">${fruitSVG(ph,crop,Math.round(130*hs),1,descr(ph,crop))}</div><div class="chips">${chipsHTML(ph)}<span class="chip${ph.sizeCls===4?' xbig':ph.sizeCls===0?' xmini':''}">${SIZE_N[ph.sizeCls]}</span><span class="chip${ph.perfCls===3?' xperf':ph.perfCls===0?' xweird':''}">${PERF_N[ph.perfCls]}</span></div>${g?introHTML(g,crop,ph):''}`;
-    h+=`<div class="badges"><span class="badge r${ph.tier}">${TIERS[ph.tier]}</span><span class="badge">${opt.parent?'母本':''}${stabName(ph.stab)}</span></div><p class="note" style="text-align:center">${opt.parent?'母本':'這株'}的外觀穩定度：如果自交，約 ${pctTxt(ph.stab)} 會保留這個外觀。</p>`;
+    h+=`<div class="badges"><span class="badge r${ph.tier}">${TIERS[ph.tier]}</span><span class="badge">${opt.parent?'母本':''}${stabName(ph.stab)}</span></div><p class="note" style="text-align:center">${opt.parent?'母本':'這株'}的外觀穩定度：如果自交，約 ${pctTxt(ph.stab)} 會保留這個外觀。</p>${p&&!opt.parent?(t=>t?`<p class="note" style="text-align:center">💡 ${t}</p>`:'')(rarityHint(ph,crop)):''}`;
   }else if(lvl<2)h+=`<p class="note">外觀會在開花時揭曉。</p>`;
   const hv=p?`（已採收 ${p.hv||0} 次）`:'';
   h+=clsRow('大小',SIZE_N[ph.sizeCls],lvl>=2,'決定賣價，也有最大、最小紀錄。不影響稀有度與品種權。')+clsRow('完美度',PERF_N[ph.perfCls],lvl>=2,'有最完美、最奇異紀錄。不影響稀有度與品種權。');
@@ -3131,8 +3149,9 @@ function nameTaken(v,exceptId){const n=norm(v);return regList.some(r=>r.norm===n
 // ===== 果實標本（14i，取代品種權）=====
 /* 品種 = 作物＋完整外觀。資料放在既有的 rights 集合，文件 id 沿用 rid(作物,外觀)，舊品種權文件在同一份上轉換。
    文件：{v:5,kind:'spec',crop,app,tier,g,holders:{uid:{name,at}},n,name,namerUid,namerName,auto,createdAt} */
-const SPEC_CAP=[0,0,5,3,2,1];/* 全服名額，依稀有度：普通、少見不能做；稀有 5、史詩 3、傳說 2、神話 1 */
-const SPEC_MIN_TIER=2,SPEC_STAB=0.9995;
+const SPEC_CAP=[0,0,0,3,2,1];/* 28.3 全服名額只限史詩以上：史詩 3、傳說 2、神話 1；普通～稀有沒有名額（0＝不限） */
+const SPEC_MIN_TIER=0,SPEC_STAB=0.9995,SPEC_CAP_TIER=3;/* SPEC_CAP_TIER：從這一級起有名額、要走全服文件與 transaction、第一個取得者命名 */
+const specCapped=t=>t>=SPEC_CAP_TIER;
 const specId=(crop,key)=>rid(crop,key);
 const specCount=sp=>sp?Object.keys(sp.holders||{}).length:0;
 const hasSpec=id=>((state&&state.specs)||[]).some(x=>x.id===id);
@@ -3147,8 +3166,8 @@ function specNorm(r,now){
 function specClaimStep(sp,c){
   if(!sp)sp={v:5,kind:'spec',crop:c.crop,app:c.key,tier:c.tier,g:c.g,holders:{},name:c.reg?c.reg.name:'',namerUid:c.reg?c.reg.inventorUid:c.uid,namerName:c.reg?c.reg.inventorName:c.me,auto:c.auto,createdAt:c.now};
   const h=sp.holders||{};if(h[c.uid])throw new Error('mine');
-  if(Object.keys(h).length>=SPEC_CAP[sp.tier!=null?sp.tier:c.tier])throw new Error('full');
-  const out={...sp,v:5,kind:'spec',holders:{...h,[c.uid]:{name:c.me,at:c.now}}};out.n=Object.keys(out.holders).length;if(!out.auto)out.auto=c.auto;if(!out.g)out.g=c.g;
+  if(Object.keys(h).length>=SPEC_CAP[c.tier])throw new Error('full');/* 28.1：名額照新規則的等級（文件裡的 tier 可能是舊的） */
+  const out={...sp,v:5,kind:'spec',tier:c.tier,holders:{...h,[c.uid]:{name:c.me,at:c.now}}};out.n=Object.keys(out.holders).length;if(!out.auto)out.auto=c.auto;if(!out.g)out.g=c.g;
   return out;
 }
 const specCache=new Map(),specWait=new Set();
@@ -3159,20 +3178,19 @@ function specGet(id){
 }
 function specBlock(p,ph){
   if(ph.legacy)return '這株的外觀已絕版';
-  if(ph.tier<SPEC_MIN_TIER)return '普通、少見的外觀不能做標本，需要稀有以上';
   if(hasSpec(specId(p.crop,ph.key)))return '你已經有這個品種的標本了';
   if(!(p.uni!=null?p.uni:ph.stab>=SPEC_STAB))return '要從「成品」種子包種出來的才能做標本';
   return '';
 }
-function specCanNow(p,ph){if(specBlock(p,ph))return false;const sp=specGet(specId(p.crop,ph.key));return sp===undefined||specCount(sp)<SPEC_CAP[ph.tier]}
-function specQuotaTxt(p,ph){const sp=specGet(specId(p.crop,ph.key));return `全服 ${sp===undefined?'…':specCount(sp)}／${SPEC_CAP[ph.tier]}`}
+function specCanNow(p,ph){if(specBlock(p,ph))return false;if(!specCapped(ph.tier))return true;const sp=specGet(specId(p.crop,ph.key));return sp===undefined||specCount(sp)<SPEC_CAP[ph.tier]}
+function specQuotaTxt(p,ph){if(!specCapped(ph.tier))return '不限名額';const sp=specGet(specId(p.crop,ph.key));return `全服 ${sp===undefined?'…':specCount(sp)}／${SPEC_CAP[ph.tier]}`}
 function specBoxHTML(p,ph){
   const box=(t,btn)=>`<div class="regbox"><b>${uiIcon('specimen',22)}果實標本</b><p class="note">${t}</p>${btn||''}</div>`;
   if(ph.legacy)return '';
-  if(ph.tier<SPEC_MIN_TIER)return box('普通、少見的外觀不能做標本，需要稀有以上（只看形狀、顏色、花紋，不計大小與完美度）。');
   const id=specId(p.crop,ph.key);
   if(hasSpec(id))return box('你已經有這個品種的標本了，到「圖鑑 → 收藏櫃」可以看到。');
   if(!(p.uni!=null?p.uni:ph.stab>=SPEC_STAB))return box('要做標本，這株要是從「成品」種子包（種下去全部長一樣，包含整齊的雜交成品）種出來的。繼續自交、挑選，或用兩個純的親本雜交，就能做出成品。');
+  if(!specCapped(ph.tier))return box('可以採收標本！放進收藏櫃欣賞，不限名額、不能交易，也不會影響這株。史詩以上的品種才有全服名額和命名權。',p.stage==='ripe'?'<button class="btn primary" data-act="specget">採收標本</button>':'<p class="note">植株成熟後就能採收。</p>');
   const sp=specGet(id);if(sp===undefined)return box('正在讀取這個品種的全服名額…');
   const n=specCount(sp),cap=SPEC_CAP[ph.tier];
   if(n>=cap)return box(`這個品種的全服名額已滿（${n}／${cap}）。照樣可以種、賣果實和種子，但不能再採收標本。`);
@@ -3184,6 +3202,7 @@ async function claimSpec(i){
   const e=specBlock(p,ph);if(e){toast(e);return false}
   const id=specId(p.crop,ph.key),me=myName(),now=Date.now(),reg=findVariety(p.crop,ph.key);
   const c={uid,me,now,crop:p.crop,key:ph.key,tier:ph.tier,g:JSON.stringify(p.g),auto:shortApp(ph),reg};
+  if(!specCapped(ph.tier)){addOwnSpec({id,crop:p.crop,key:ph.key,tier:ph.tier,at:now,auto:c.auto,from:pname(p)});save();if(sheet)renderSheet();toast('採收了果實標本！放進「圖鑑 → 收藏櫃」了',4000);return true}/* 28.3：沒有名額的等級只寫進自己的存檔，不用全服文件 */
   let out=null;
   try{const ref=db.collection('rights').doc(id);await db.runTransaction(async tx=>{const d=await tx.get(ref);out=specClaimStep(specNorm(d.exists?d.data():null,now),c);tx.set(ref,out,{merge:true})})}
   catch(err){const m=err&&err.message;specCache.delete(id);
@@ -3230,19 +3249,20 @@ async function specMigrate(){
   if(n)toast(`你的 ${n} 個品種權已轉成果實標本，放在「圖鑑 → 收藏櫃」`,6000);
 }
 function cabListHTML(list,owner,mine){
-  if(!list.length)return `<p class="note">${mine?'還沒有標本。種出稀有以上、外觀完全穩定的植株（種子袋裡的「成品」種下去），成熟時就能在植株資訊或「全部收成」裡採收標本。':'這位朋友還沒有標本。'}</p>`;
+  if(!list.length)return `<p class="note">${mine?'還沒有標本。把種子袋裡的「成品」種下去，成熟時就能在植株資訊或「全部收成」裡採收標本。':'這位朋友還沒有標本。'}</p>`;
   const dt=t=>{try{const d=new Date(t);return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`}catch(e){return ''}};
-  return list.map(e=>{
-    const sp=specGet(e.id),reg=findVariety(e.crop,e.key),app={...appFromKey(e.key),perfCls:2,seed:7};
+  const sc=e=>{try{return rarityScore(appFromKey(e.key))}catch(err){return 0}};
+  return list.slice().sort((a,b)=>(b.tier||0)-(a.tier||0)||sc(b)-sc(a)||(b.at||0)-(a.at||0)).map(e=>{
+    const sp=specCapped(e.tier)?specGet(e.id):null,reg=findVariety(e.crop,e.key),app={...appFromKey(e.key),perfCls:2,seed:7};
     const nm=(sp&&sp.name)||(reg&&reg.name)||'',namerUid=sp?sp.namerUid:(reg&&reg.inventorUid),namer=sp?sp.namerName:(reg&&reg.inventorName);
-    const title=nm?`${esc(nm)}${namerUid&&namerUid!==owner?`<span class="meta">（命名者：${esc(namer||'')}）</span>`:''}`:`${esc(e.auto||CROPS[e.crop].n)}<span class="meta">（尚未命名）</span>`;
-    let h=`<div class="lot"><div class="lot-top">${fruitSVG(app,e.crop,64)}<div><div class="lot-name">${title}</div><div class="meta">${CROPS[e.crop].n}・取得於 ${dt(e.at)}</div><div class="meta">這個品種全服名額 ${sp?specCount(sp):'…'}／${SPEC_CAP[e.tier]||'?'}</div><div class="badges" style="justify-content:flex-start;margin-top:4px"><span class="badge r${e.tier}">${TIERS[e.tier]||''}</span></div></div></div>`;
-    if(mine&&sp&&sp.namerUid===uid&&!sp.name&&!reg){const d=rdraft[e.id]!=null?rdraft[e.id]:'';
+    const title=nm?`${esc(nm)}${namerUid&&namerUid!==owner?`<span class="meta">（命名者：${esc(namer||'')}）</span>`:''}`:`${esc(e.auto||CROPS[e.crop].n)}${specCapped(e.tier)?'<span class="meta">（尚未命名）</span>':''}`;
+    let h=`<div class="lot"><div class="lot-top">${fruitSVG(app,e.crop,64)}<div><div class="lot-name">${title}</div><div class="meta">${CROPS[e.crop].n}・取得於 ${dt(e.at)}</div>${specCapped(e.tier)?`<div class="meta">這個品種全服名額 ${sp?specCount(sp):'…'}／${SPEC_CAP[e.tier]}</div>`:''}<div class="badges" style="justify-content:flex-start;margin-top:4px"><span class="badge r${e.tier}">${TIERS[e.tier]||''}</span></div></div></div>`;
+    if(mine&&specCapped(e.tier)&&sp&&sp.namerUid===uid&&!sp.name&&!reg){const d=rdraft[e.id]!=null?rdraft[e.id]:'';
       h+=`<label class="note">你是第一個取得標本的人，可以替這個品種命名（2–8 個字，命名後不能修改）<input data-rname="${e.id}" maxlength="8" value="${esc(d)}"></label><div class="err">${rerr[e.id]||''}</div><button class="btn primary" data-ract="sname" data-id="${e.id}">${rconfirm===e.id?'確定命名（之後不能修改）':'命名並登錄到圖鑑'}</button>`}
     return h+'</div>'}).join('');
 }
 function cabHTML(){
-  let h=`<p class="note">果實標本是親手培育的永久收藏，不能交易。每個品種全服名額有限：${TIERS.map((t,i)=>SPEC_CAP[i]?`${t} ${SPEC_CAP[i]} 個`:'').filter(Boolean).join('・')}；每人每個品種一個。</p>`;
+  let h=`<p class="note">果實標本是親手培育的永久收藏，不能交易，每人每個品種一個。所有稀有度都能做；史詩以上的品種全服名額有限（${TIERS.map((t,i)=>SPEC_CAP[i]?`${t} ${SPEC_CAP[i]} 個`:'').filter(Boolean).join('・')}），第一個取得的人可以命名。</p>`;
   if(viewing&&viewing.st)h+=`<h3>${esc(viewing.name)} 的收藏櫃（${(viewing.st.specs||[]).length}）</h3>`+cabListHTML(viewing.st.specs||[],viewing.uid,false);
   return h+`<h3>我的收藏櫃（${(state.specs||[]).length}）</h3>`+cabListHTML(state.specs||[],uid,true);
 }
@@ -4538,7 +4558,7 @@ function harvestHTML(){
     }
     h+=`</div>`;
   }
-  const nreg=rows.filter(r=>r.reg&&!hv.reged[r.i]).length;
+  const nreg=rows.filter(r=>r.reg&&!hv.reged[r.i]&&specCapped(r.ph.tier)).length;/* 28.3：只有有名額的等級才提醒 */
   if(hv.warn&&nreg)h+=`<p class="note" style="color:var(--danger);font-weight:700">還有 ${nreg} 株可以採收標本，收成後這株就不能再採收了（之後再種出來還是可以）。確定要收的話，再按一次「確定收成」。</p>`;
   h+=`<p class="note" style="margin-top:10px">取種 ${ns} 株、賣果實 ${nl} 株（約 ${coins} 金幣）。</p><button class="btn primary" data-act="hvgo"${ns+nl?'':' disabled'}>${hv.warn&&nreg?'再按一次，確定收成':'確定收成'}</button><button class="btn" data-act="close">取消</button>`;
   return h;
@@ -4550,7 +4570,7 @@ function harvestAction(b){
   if(act==='hvreg'){const i=+b.dataset.i;b.disabled=true;Promise.resolve(claimSpec(i)).then(ok=>{const p=state.plots[i];if(ok||(p&&hasSpec(specId(p.crop,phen(p.g,p.crop).key))))hv.reged[i]=1;if(sheet&&sheet.harvest)renderSheet()});return}
   if(act==='hvdl'){const i=+b.dataset.i;playAct('harvest');deliver(i,b.dataset.o);delete hv.acts[i];save();renderAll();renderSheet();return}
   if(act!=='hvgo')return;
-  {const nreg=harvestRows().filter(r=>hv.acts[r.i]&&r.reg&&!hv.reged[r.i]).length;if(nreg&&!hv.warn){hv.warn=true;renderSheet();return}}
+  {const nreg=harvestRows().filter(r=>hv.acts[r.i]&&r.reg&&!hv.reged[r.i]&&specCapped(r.ph.tier)).length;if(nreg&&!hv.warn){hv.warn=true;renderSheet();return}}
   let ns=0,nl=0,coins=0;
   for(const [k,v] of Object.entries(hv.acts)){
     const i=+k,p=state.plots[i];if(!p||p.obs||p.stage!=='ripe')continue;

@@ -1133,7 +1133,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-16f';
+const BUILD='2026-11-16g';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -3806,17 +3806,17 @@ function openDecor(){
   closeSheet();if(curPanel)closePanel();if(shovelMode)exitShovel();if(sowMode)exitSow();if(accelMode)exitAccel();if(buildMode)exitBuild();if(pickMode)exitPick();
   const m=curMe();buildCam={x:m.x,y:m.y};decoMode=true;moveTo=null;selDecor=null;decoPaint=null;decoDrag=null;decoEnd();decoHist.length=0;
   renderDecoBar();renderHUD();applyCtrl();updateCam();renderWorld();
-  toast(decoSel?`點空地放「${DECOR_MAP[decoSel].n}」，點裝飾收回，長按拖著移動`:'按「選裝飾」挑一種，點空地就放',3000);
+  toast(isIso(decoSel)?`「${DECOR_MAP[decoSel].n}」：點或沿著田邊滑過就放，點已經放好的收回`:decoSel?`點空地放「${DECOR_MAP[decoSel].n}」，點裝飾收回，長按拖著移動`:'按「選裝飾」挑一種，點空地就放',3000);
 }
 function decoCancel(){decoPainting=false;if(decoDrag){const d=state.decor[decoDrag.i];if(d&&decoDrag.on&&decoDrag.bad){d.x=decoDrag.fx;d.y=decoDrag.fy}decoDrag=null}}
 function exitDecor(){quickMove=null;if(!decoMode)return;decoEnd();decoCancel();if(recallMode)stopRecall();decoMode=false;decoPaint=null;selDecor=null;renderDecoBar();renderHUD();applyCtrl();updateCam();renderWorld();save()}
 function renderDecoBar(){
   const el=document.getElementById('decoBar');if(!el)return;if(!decoMode){el.hidden=true;return}el.hidden=false;
   const it=decoSel?DECOR_MAP[decoSel]:null,n=decoSel?decoStoreN(decoSel):0,pr=(it&&it.p)||0;
-  const top=it?`<div class="bbtip"><b>目前：${it.n}</b>　<small>${n?`倉庫還有 ${n} 個（免費）`:pr?`每個 ${pr} 金幣`:'免費'}${decoFlip&&!isSign(decoSel)&&!isIso(decoSel)?'・轉向':''}</small><br><small>${isIso(decoSel)?'點或沿著田邊滑過就放，會自動貼齊格線、自動選方向・點已經放好的圍籬收回':`點空地放${decoGrid(decoSel)?'（滑過連續鋪設）':''}・點裝飾收回倉庫・長按裝飾拖著移動`}</small></div>`
+  const top=it?`<div class="bbtip"><b>目前：${it.n}</b>　<small>${n?`倉庫還有 ${n} 個（免費）`:pr?`每個 ${pr} 金幣`:'免費'}${decoFlip&&!isSign(decoSel)&&!isIso(decoSel)?'・轉向':''}</small><br><small>${isIso(decoSel)?`點或沿著${isoHalf?'格子中間的線':'田邊'}滑過就放，會自動貼齊格線、自動選方向・點已經放好的圍籬收回`:`點空地放${decoGrid(decoSel)?'（滑過連續鋪設）':''}・點裝飾收回倉庫・長按裝飾拖著移動`}</small></div>`
     :`<div class="bbtip"><b>先選一種裝飾</b><br><small>按「選裝飾」挑一種，之後點空地就放・點已經放好的裝飾收回倉庫・長按拖著移動</small></div>`;
   const iso=isIso(decoSel);
-  el.innerHTML=top+`<div class="bbrow" style="grid-template-columns:${iso?'1fr 1fr 1fr':'1fr 1fr 1fr 1fr'}"><button data-dk="add">選裝飾</button>${iso?'':`<button data-dk="flip" aria-pressed="${!!decoFlip}">轉向</button>`}<button data-dk="undo"${decoHist.length?'':' disabled'}>復原</button><button data-dk="done" class="done">完成</button></div>`;
+  el.innerHTML=top+`<div class="bbrow" style="grid-template-columns:1fr 1fr 1fr 1fr"><button data-dk="add">選裝飾</button>${iso?`<button data-dk="half" aria-pressed="${!!isoHalf}">錯開半格</button>`:`<button data-dk="flip" aria-pressed="${!!decoFlip}">轉向</button>`}<button data-dk="undo"${decoHist.length?'':' disabled'}>復原</button><button data-dk="done" class="done">完成</button></div>`;
 }
 /* 46（15j）：裝飾模式和開墾一樣。點空地＝放目前選的；點裝飾＝收回倉庫；長按裝飾＝拖著移動。
    同一筆劃第一下決定是放還是收；圍籬、地面類可以滑過連續鋪設，其他裝飾只放第一下那一個，之後拖曳＝移動畫面。 */
@@ -3834,6 +3834,7 @@ document.getElementById('decoBar').addEventListener('click',e=>{
   if(a==='done'){exitDecor();toast('結束裝飾');return}
   if(a==='add'){openPanel('decor');return}
   if(a==='flip'){decoFlip=!decoFlip;renderDecoBar();toast(decoFlip?'接下來放的會左右反過來':'恢復原本的方向',1500);return}
+  if(a==='half'){isoHalf=!isoHalf;renderDecoBar();toast(isoHalf?'錯開半格：圍籬會排在每格田的正中間那條線上，可以和田留半格的距離':'貼齊田邊',2600);return}
   if(a==='undo'){decoUndo();return}
 });
 function decoPaintAt(cx,cy){
@@ -4491,12 +4492,13 @@ const MARSH_MAPS={/* 53（15q）：照 53.2 重擺；水面不畫到邊界樹上
     spawns:[[300,470],[500,560],[320,560],[470,440]],items:[[270,540],[540,500]]}
 };
 // ===== 城鎮（市集廣場，15b，第 32 節）：一張可以走動的廣場；建築走到門口點一下打開功能面板（不做室內）；素材 assets/town/ =====
-const TOWN_IMG={appraisal:[302,372],barrel:[173,220],bench:[224,220],bunting:[299,220],crates:[183,220],dessert_shop:[330,375],farm_hall:[310,380],fountain:[202,220],gate:[348,360],item_shop:[302,380],lamp_post:[70,220],lounge:[346,343],notice_board:[188,220],planter:[280,220],potted_shrub:[166,220],stall_green:[187,220],stall_red:[192,220],veg_basket:[187,220]};
+const TOWN_IMG={appraisal:[302,372],barrel:[173,220],bench:[224,220],bunting:[299,220],crates:[183,220],dessert_shop:[330,375],farm_hall:[310,380],fountain:[202,220],gate:[348,360],item_shop:[302,380],lamp_post:[70,220],lounge:[346,343],notice_board:[188,220],planter:[280,220],potted_shrub:[166,220],stall_green:[187,220],stall_red:[192,220],veg_basket:[187,220],'../farm/s/tree':[195,220],'../farm/s/bush':[118,100],'../farm/s/hedge':[104,48]};/* 68.5：邊界借用農場的樹、灌木、樹籬 */
 /* [檔名, 顯示高度, 碰撞寬, 碰撞高]：建築的碰撞蓋住整個房子（只能從正面靠近門口）；拱門、旗串不擋路 */
 const TOWN_ART={hall:['farm_hall',230,170,125],appraisal:['appraisal',215,160,118],lounge:['lounge',205,190,112],itemshop:['item_shop',210,150,115],dessert:['dessert_shop',210,168,115],/* 15e：門要比角色高（32.4） */
   gate:['gate',150,0,0],fountain:['fountain',110,92,30],lamp:['lamp_post',100,12,8],bench:['bench',52,62,12],planter:['planter',50,74,16],shrub:['potted_shrub',60,30,12],
-  bunting:['bunting',80,0,0],notice:['notice_board',80,60,12],crates:['crates',54,56,14],barrel:['barrel',50,38,14],basket:['veg_basket',42,34,10]};
-const TOWN_FLAT={},TOWN_SWAY={shrub:1,bunting:1},TOWN_GLOW={lamp:0.86};/* 路燈的光暈在燈頭（顯示高度的 86%） */
+  bunting:['bunting',80,0,0],notice:['notice_board',80,60,12],crates:['crates',54,56,14],barrel:['barrel',50,38,14],basket:['veg_basket',42,34,10],
+  tree:['../farm/s/tree',128,0,0],bush:['../farm/s/bush',50,0,0],hedge:['../farm/s/hedge',30,0,0]};
+const TOWN_FLAT={},TOWN_SWAY={shrub:1,bunting:1,tree:1},TOWN_GLOW={lamp:0.86};/* 路燈的光暈在燈頭（顯示高度的 86%） */
 /* 建築與公布欄：k＝TOWN_ART 鍵、door＝門在圖上的左右位置（0–1）、sg＝招牌高度（顯示高度的比例，0＝不放招牌） */
 const TOWN_BLD=[{id:'appraisal',k:'appraisal',x:150,y:365,n:'品種鑑定所',door:0.46,sg:0.37},{id:'hall',k:'hall',x:400,y:365,n:'農會',door:0.5,sg:0.36},{id:'lounge',k:'lounge',x:650,y:365,n:'交誼廳',door:0.32,sg:0.36},
   {id:'item',k:'itemshop',x:140,y:1150,n:'道具行',door:0.33,sg:0.42},{id:'dessert',k:'dessert',x:660,y:1150,n:'甜點店',door:0.47,sg:0.40},{id:'notice',k:'notice',x:540,y:1112,n:'公布欄',door:0.5,sg:0}];
@@ -4506,13 +4508,32 @@ const TOWN_NPC=[
   {id:'mo',n:'墨先生',x:212,y:410,at:'appraisal',glasses:1,av:{...AV_DEF,face:4,hair:10,hairC:0,hat:0,top:7,topC:2,bottom:0,bottomC:7,shoe:1,shoeC:7,acc:2,accC:7},/* 40.1：學者：旁分、眼鏡、墨綠針織背心＋襯衫、深灰長褲、布鞋、黑髮、不戴帽子 */line:'我在收集稀有的果實。鑑定所裡可以看全服的圖鑑和紀錄榜。'},
   {id:'mei',n:'小莓姊',x:738,y:1184,at:'dessert',av:{...AV_DEF,face:5,blush:1,hair:13,hairC:3,top:13,topC:6,bottom:4,bottomC:5,shoe:1,shoeC:5},/* 40.1：甜點師：半紮蝴蝶結、粉色園藝圍裙、百褶裙、布鞋、腮紅 */line:'哈囉～今天也有想請你幫忙種的顏色喔！'},
   {id:'kai',n:'阿凱',x:598,y:1136,at:'notice',av:{...AV_DEF,face:5,hair:15,hairC:2,hat:5,hatC:11,top:3,topC:11,bottom:3,bottomC:13,shoe:0,shoeC:12,acc:3,accC:12},/* 40.1：探險家：蓬鬆亂髮、卡其漁夫帽、卡其外套、橄欖工裝褲、靴子、背包 */line:'我在找一座傳說中的種子庫。各地採到的種子，記得帶回來給我看看！'}];
+/* 68.5（16g）：城鎮邊界。北邊（建築後面）是一排大小不一的樹，中間夾灌木；左右兩側盆栽、樹籬、花台、路燈、長椅交錯；南邊花台、盆栽、樹籬混排。
+   間距、大小、位置都抖動（固定亂數種子），同一種不連續出現三次。邊界的東西不擋路（可走範圍本來就由 M.B 限制）。 */
+function townEdge(M,R,inExit,objs){
+  const pick=(ws,prev)=>{for(let t=0;t<6;t++){let s=0;for(const w of ws)s+=w[1];let r=R()*s;for(const w of ws){r-=w[1];if(r<=0){if(prev.length>=2&&prev[prev.length-1]===w[0]&&prev[prev.length-2]===w[0])break;return w[0]}}}return ws[0][0]};
+  /* 北邊：樹和灌木，把建築後面擋起來 */
+  for(let x=14,k=0;x<=M.W-10;k++){const big=k%3!==1;objs.push([big?'tree':'bush',x+R()*10-5,big?100+R()*8:104+R()*6,null,{s:big?0.86+R()*0.3:0.9+R()*0.35,fl:R()<0.5}]);x+=big?50+R()*18:36+R()*10}
+  /* 左右兩側 */
+  const side=[['shrub',3],['hedge',3],['planter',2],['lamp',1],['bench',1]];
+  for(const sx of [0,1]){const prev=[];for(let y=178+R()*20;y<=M.H-84;){const kd=pick(side,prev);prev.push(kd);const x=sx?M.W-22-R()*8:22+R()*8;
+      if(!inExit(sx?'e':'w',y,30))objs.push([kd,x,y,null,{s:0.88+R()*0.26,fl:kd==='bench'?!!sx:R()<0.5}]);y+=(kd==='hedge'?52:kd==='lamp'?58:68)+R()*16}}
+  /* 南邊 */
+  const south=[['planter',3],['shrub',3],['hedge',2]];{const prev=[];for(let x=30+R()*10;x<=M.W-30;){const kd=pick(south,prev);prev.push(kd);if(!inExit('s',x,34))objs.push([kd,x,M.H-6-R()*4,null,{s:0.9+R()*0.22,fl:R()<0.5}]);x+=(kd==='hedge'?62:54)+R()*12}}
+}
 const TOWN_MAPS={plaza:{n:'城鎮',gx:1,gy:1,W:800,H:1240,B:{x0:44,x1:756,y0:104,y1:1200},
   exits:[{side:'s',c:400,w:110,to:'farm'}],
   paths:[[[400,1250],[400,520]],[[400,520],[400,420]],[[140,420],[660,420]],[[118,1176],[400,1136],[656,1176]]],
   blocks:[[44,104,756,270]].concat(STALLS.map(([x,y])=>[x-40,y-24,x+40,y+2])),
   objs:[...TOWN_BLD.map(b=>[b.k,b.x,b.y]),['fountain',400,520],['bench',262,555],['bench',538,555],['planter',120,500],['planter',680,500],
     ['lamp',330,600],['lamp',470,600],['lamp',330,1090],['lamp',470,1090],['bunting',250,930],['bunting',550,930],
-    ['crates',80,740],['barrel',720,740],['basket',80,860],['crates',720,860],['gate',400,1230]],
+    ['crates',80,740],['barrel',720,740],['basket',80,860],['crates',720,860],['gate',400,1230],
+    /* 68.5：空地補一群一群的小物（大小不一、不擋主要走道） */
+    ['planter',214,474,null,{s:0.9}],['shrub',176,480,null,{s:0.85}],['barrel',250,484,null,{s:0.8,fl:true}],
+    ['planter',586,474,null,{s:0.9,fl:true}],['shrub',624,480,null,{s:0.9}],['crates',550,486,null,{s:0.78}],
+    ['shrub',222,562,null,{s:0.7}],['shrub',578,562,null,{s:0.7,fl:true}],
+    ['crates',286,1016,null,{s:0.9}],['basket',318,1030,null,{s:0.9}],['barrel',256,1026,null,{s:0.85}],
+    ['barrel',514,1016,null,{s:0.95}],['crates',546,1030,null,{s:0.82,fl:true}],['shrub',484,1024,null,{s:0.8}]],
   spawns:[],items:[]}};
 const townFront=b=>{const a=TOWN_ART[b.k],w=a[1]*TOWN_IMG[a[0]][0]/TOWN_IMG[a[0]][1];return [Math.round(b.x+(b.door-0.5)*w),b.y+26]};
 let townFg='',townSplit=-1,townFgOn=false,hoverTown=null;
@@ -4630,7 +4651,7 @@ const REGION_CFG={
     caveGround:'#5E4A34',caveOuter:'#291F14',caveSpots:['#55432E','#6A553C'],cavePath:['#6E5940','#79644A'],caveWall:'#4A3A26',caveEdge:'#927858'},
   /* 15b 城鎮：暖灰米色石板（tiles＝石板細格線），外圍草地；不畫程式大門（noGate，用 gate 素材當入口拱門） */
   town:{name:'城鎮',ground:'#E6DCC6',outer:'#A8C478',spots:['#DED3BC','#ECE3CF'],path:['#D6C6A4','#DED0B2'],water:['#9DBCCD','#C7E0EC'],cliff:['#9C8A6A','#857458','#E6DCC6'],tiles:'#D3C6AA',noGate:true,
-    edgeTree:'shrub',edgeBush:'planter',weather:null,shadow:'rgba(90,70,40,.22)',glow:'#FFE6A8',footprints:false,
+    edgeTree:'shrub',edgeBush:'planter',edgeFn:(M,R,inExit,objs)=>townEdge(M,R,inExit,objs),weather:null,shadow:'rgba(90,70,40,.22)',glow:'#FFE6A8',footprints:false,
     caveGround:'#5A4A38',caveOuter:'#2C241B',caveSpots:['#52432F','#665440'],cavePath:['#6A5844','#74624C'],caveWall:'#3A2E22',caveEdge:'#A08A6A'}
 };
 const regHas=bk=>!!(REGION_MAPS[bk]&&REGION_MAPS[bk].entry);
@@ -4648,7 +4669,8 @@ function regPrep(bk,id){
   for(const o of M.objs||[]){objs.push(o);const a=ART[o[0]];if(a&&a[2])blk.push([o[1]-a[2]/2,o[2]-a[3],o[1]+a[2]/2,o[2]+2])}
   for(const [t,a0,a1,y,st] of M.rows||[]){for(let x=a0;x<=a1+0.1;x+=st)objs.push([t,x,y+R()*4-2]);blk.push([a0-14,y-14,a1+14,y+2])}
   for(const [t,x,b0,b1,st] of M.cols||[]){for(let y=b0;y<=b1+0.1;y+=st)objs.push([t,x+R()*4-2,y]);blk.push([x-13,b0-14,x+13,b1+2])}
-  if(!M.cave){/* 邊界：上、左、右是樹牆，下方是灌木，出口處留路 */
+  if(!M.cave&&C.edgeFn)C.edgeFn(M,R,inExit,objs);/* 68.5：城鎮的邊界自己排（混合、抖動），不用一整圈一樣的盆栽 */
+  else if(!M.cave){/* 邊界：上、左、右是樹牆，下方是灌木，出口處留路 */
     const T=C.edgeTree,U=C.edgeBush;
     for(let x=28;x<=M.W-28;x+=52)if(!inExit('n',x,24))objs.push([T,x+R()*10-5,98+R()*6,null,1]);
     for(let y=190;y<=M.H-90;y+=74){if(!inExit('w',y,30))objs.push([T,20+R()*6,y,null,1]);if(!inExit('e',y+30,30))objs.push([T,M.W-20-R()*6,y+30,null,1])}
@@ -6864,12 +6886,15 @@ const isoPt=(p,q)=>[ISO_O[0]+21*(p+q),ISO_O[1]+12*(p-q)];
 const isoEnds=e=>[isoPt(e[0],e[1]),e[2]?isoPt(e[0],e[1]+2):isoPt(e[0]+2,e[1])];
 const isoMid=e=>{const [a,b]=isoEnds(e);return [(a[0]+b[0])/2,(a[1]+b[1])/2]};
 const isoZ=e=>isoMid(e)[1]+12;/* 前後遮擋：田後面兩條邊的圍籬排在那塊田之前（被植株擋住），前面兩條邊排在之後（擋住植株根部） */
-/* 世界座標 → 最近的一段。貼齊田格角落的位置（偶數）優先，離得夠遠（超過 0.7 格）才用錯開半格的位置。lock＝這一筆劃已經放的第一段：之後都排在同一條線上、首尾相接 */
+/* 世界座標 → 最近的一段。兩套格線：平常貼齊田格的邊（p、q 都是偶數的點之間）；isoHalf＝錯開半格（p、q 都是奇數的點＝每格的正中心之間），
+   兩套各自都能圍成封閉的框。每條邊的中點剛好落在另一套格線上，所以不能靠位置自動分辨要哪一套，改成工具列上的「錯開半格」開關。
+   lock＝這一筆劃已經放的第一段：之後都排在同一條線上、首尾相接。 */
+var isoHalf=false;
 function isoAt(x,y,lock){
   const dx=x-ISO_O[0],dy=y-ISO_O[1],fp=(dx/21+dy/12)/2,fq=(dx/21-dy/12)/2;
   if(lock)return lock[2]===0?[lock[0]+2*Math.round((fp-1-lock[0])/2),lock[1],0]:[lock[0],lock[1]+2*Math.round((fq-1-lock[1])/2),1];
-  const near=v=>{const ev=2*Math.round(v/2);return Math.abs(v-ev)<=0.7?ev:(v>ev?ev+1:ev-1)};
-  return Math.abs(fq-Math.round(fq))<=Math.abs(fp-Math.round(fp))?[near(fp-1),near(fq),0]:[near(fp),near(fq-1),1];
+  const o=isoHalf?1:0,nr=v=>2*Math.round((v-o)/2)+o,fl=v=>2*Math.floor((v-o)/2)+o,p0=nr(fp),q0=nr(fq);
+  return Math.abs(fq-q0)<=Math.abs(fp-p0)?[fl(fp),q0,0]:[p0,fl(fq),1];
 }
 const isoTaken=e=>state.decor.some(d=>d.e&&d.e[2]===e[2]&&(e[2]===0?d.e[1]===e[1]&&Math.abs(d.e[0]-e[0])<2:d.e[0]===e[0]&&Math.abs(d.e[1]-e[1])<2));
 function isoErr(e){const [a,b]=isoEnds(e),m=isoMid(e);if(!inYard({x:a[0],y:a[1]})||!inYard({x:b[0],y:b[1]}))return '這裡太靠近農場邊緣了';const [gx,gy]=GATE.farm;if(Math.hypot(m[0]-gx,(m[1]-gy)*1.4)<90)return '大門前面要留通道';return ''}

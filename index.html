@@ -441,6 +441,8 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 #fxH .pf.ts{font-size:15px;text-shadow:0 0 4px #fff;animation:pfDot 1.2s ease-out forwards}
 @keyframes tbPop{0%{transform:translate(-50%,-50%) scale(.6)}25%{transform:translate(-50%,-75%) scale(1.5)}70%{opacity:1}100%{transform:translate(-50%,-95%) scale(1.25);opacity:0}}
 @keyframes trRay{0%{transform:rotate(var(--r)) scaleY(.2);opacity:1}100%{transform:rotate(var(--r)) translateY(-14px) scaleY(1.3);opacity:0}}
+@keyframes sinkfx{from{transform:none;opacity:1}to{transform:translateY(10px) scale(.35);opacity:0}}
+.sinkfx{transform-box:fill-box;transform-origin:50% 100%;animation:sinkfx .4s ease-in forwards}
 body.joymode #sowBtn{right:22px !important;bottom:calc(254px + env(safe-area-inset-bottom,0px)) !important;width:60px;height:60px}
 #sowBar .sowinfo{display:flex;align-items:center;gap:8px;margin-bottom:4px;color:#5A3416}
 #sowBar .sowinfo svg{width:40px;height:40px;flex:none}
@@ -484,7 +486,7 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
   <button id="ibHome" data-do="home" hidden><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>回家</span></button>
   <button id="ibExplore" data-open="explore"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z" fill="currentColor" stroke-width="1.2"/></svg><span>探索</span></button>
   <button id="ibDecor" data-do="decor"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-3 2-5 5-5 8a5 5 0 0 0 10 0c0-3-2-6-5-8z"/><path d="M12 16v5M9 21h6"/></svg><span>裝飾</span></button>
-  <button id="ibBuild" data-do="build"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15l9-5 9 5-9 5z"/><path d="M12 3v6M9 6h6"/></svg><span>建設</span></button>
+  <button id="ibBuild" data-do="build"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15l9-5 9 5-9 5z"/><path d="M12 3v6M9 6h6"/></svg><span>開墾</span></button>
   <button data-open="settings"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span>設定</span></button>
 </div>
 <div id="joy" aria-label="移動搖桿" hidden><div id="joyKnob"></div></div>
@@ -1048,7 +1050,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-15i';
+const BUILD='2026-11-15j';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2833,9 +2835,9 @@ const AVH_MAP={0:0,1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:19,11:1,12:2,13:13,14:
 const AVH_LIST=[0,1,2,3,4,5,6,7,8,9,13,14,15,19,20,21];/* 打扮頁顯示的 16 種 */
 const AVH_HATS=[0,1,2,3,10];/* 有新畫法的帽子；其他「新款製作中」，暫時不畫 */
 const avHid=h=>AVH_MAP[h]!=null?AVH_MAP[h]:0;
-const AVH_IMG={},AVH_URL=new Map();let AVH_N=0,avhT=null;
+const AVH_DIR='assets/char/h/',AVH_IMG={},AVH_URL=new Map();let AVH_N=0,avhT=null;
 function avhLoaded(){clearTimeout(avhT);avhT=setTimeout(()=>{try{if(typeof renderChars==='function')renderChars();if(sheet&&sheet.avatar)renderSheet()}catch(e){}},60)}
-function avhImg(f){let o=AVH_IMG[f];if(o)return o;o=AVH_IMG[f]={st:0};try{const im=new Image();im.onload=()=>{o.st=1;o.im=im;avhLoaded()};im.onerror=()=>{o.st=2};im.src='assets/char/h/'+f+'.png?v='+BUILD}catch(e){o.st=2}return o}
+function avhImg(f){let o=AVH_IMG[f];if(o)return o;o=AVH_IMG[f]={st:0};try{const im=new Image();im.onload=()=>{o.st=1;o.im=im;avhLoaded()};im.onerror=()=>{o.st=2};im.src=AVH_DIR+f+'.png?v='+BUILD}catch(e){o.st=2}return o}
 function avhLum(r,g,b){return .299*r+.587*g+.114*b}
 /* 換色：k＝亮度／基準亮度；暗的照比例變暗，亮的往白色混（深色頭髮的反光減弱） */
 function avhTint(d,i,t,base,lt){const k=avhLum(d[i],d[i+1],d[i+2])/base;
@@ -3007,13 +3009,14 @@ function plotSVG(st,i,hov){
   const pos=posOf(st,i);if(!pos)return '';
   const [x,y]=pos,p=st.plots[i];
   const lbl=p?`第 ${i+1} 塊土地，${CROPS[p.crop].n}「${pname(p)}」，${stageLabel(p)}`:`第 ${i+1} 塊土地，空地`;
-  let s;if(soilReady())s=`<g data-plot="${i}" role="button" aria-label="${esc(lbl)}"><image href="assets/farm/s/soil_patch.png?v=${BUILD}" x="${x-SOIL_W/2}" y="${(y-SOIL_H*SOIL_CY).toFixed(1)}" width="${SOIL_W}" height="${SOIL_H}"/><polygon points="${x},${y-23} ${x+41},${y} ${x},${y+23} ${x-41},${y}" fill="transparent"${hov===i?' stroke="#FFD54A" stroke-width="3.5"':st===state&&plotEdit()?' stroke="rgba(255,248,220,.55)" stroke-width="1.2"':' stroke="none"'}/></g>`;/* 31.5：建設、選取等模式才畫淡色細框 */  else{s=`<g data-plot="${i}" role="button" aria-label="${esc(lbl)}" stroke="#4A2A12" stroke-width="1.5" stroke-linejoin="round"><polygon points="${x-41},${y} ${x},${y+23} ${x},${y+32} ${x-41},${y+9}" fill="#9C6635"/><polygon points="${x},${y+23} ${x+41},${y} ${x+41},${y+9} ${x},${y+32}" fill="#80502A"/><polygon points="${x},${y-23} ${x+41},${y} ${x},${y+23} ${x-41},${y}" fill="#D9A15F"${hov===i?' stroke="#FFD54A" stroke-width="3.5"':''}/><polygon points="${x},${y-17} ${x+32},${y} ${x},${y+17} ${x-32},${y}" fill="#8C5A32" stroke-width="1"/>`;
+  let s;if(soilReady())s=`<g data-plot="${i}" role="button" aria-label="${esc(lbl)}"><image pointer-events="none" href="assets/farm/s/soil_patch.png?v=${BUILD}" x="${x-SOIL_W/2}" y="${(y-SOIL_H*SOIL_CY).toFixed(1)}" width="${SOIL_W}" height="${SOIL_H}"/><polygon points="${x},${y-23} ${x+41},${y} ${x},${y+23} ${x-41},${y}" fill="transparent"${hov===i?' stroke="#FFD54A" stroke-width="3.5"':st===state&&plotEdit()?' stroke="rgba(255,248,220,.55)" stroke-width="1.2"':' stroke="none"'}/></g>`;/* 31.5：建設、選取等模式才畫淡色細框 */  else{s=`<g data-plot="${i}" role="button" aria-label="${esc(lbl)}" stroke="#4A2A12" stroke-width="1.5" stroke-linejoin="round"><polygon points="${x-41},${y} ${x},${y+23} ${x},${y+32} ${x-41},${y+9}" fill="#9C6635"/><polygon points="${x},${y+23} ${x+41},${y} ${x+41},${y+9} ${x},${y+32}" fill="#80502A"/><polygon points="${x},${y-23} ${x+41},${y} ${x},${y+23} ${x-41},${y}" fill="#D9A15F"${hov===i?' stroke="#FFD54A" stroke-width="3.5"':''}/><polygon points="${x},${y-17} ${x+32},${y} ${x},${y+17} ${x-32},${y}" fill="#8C5A32" stroke-width="1"/>`;
   for(const a of [.3,.5,.7])s+=`<line x1="${x-32+32*a+3}" y1="${y-17*a+1.6}" x2="${x+32*a-3}" y2="${y+17-17*a-1.6}" stroke="#6A4022" stroke-width="2" stroke-linecap="round"/>`;
   s+=`</g>`}
   if(st===state&&p&&(pickMode&&pickSet.has(i)||srcHL!=null&&p.lotId===srcHL&&!(sheet&&sheet.i===i))){const on=pickMode&&pickSet.has(i);/* 31.4 */
     s+=`<polygon points="${x-41},${y} ${x},${y-23} ${x+41},${y} ${x},${y+23}" fill="${on?'rgba(255,213,74,.28)':'none'}" stroke="${on?'#FFD54A':'#FFF6C2'}" stroke-width="${on?3:2}"${on?'':' stroke-dasharray="6 4"'} pointer-events="none"/>`}
   if(p){const k=tfxKind(phen(p.g,p.crop));if(k)s+=tfxRingSVG(k,x,y)}/* 34.3 */
   if(p)s+=`<g pointer-events="none" transform="translate(${x} ${y+3}) scale(0.72) translate(${-x} ${-y-3})">${plantSVG(p,x,y+3)}</g>`;
+  else if(st===state&&shovelFx[i]&&Date.now()-shovelFx[i].t<400){const el=Date.now()-shovelFx[i].t;s+=`<g pointer-events="none" class="sinkfx" style="animation-delay:-${el}ms"><g transform="translate(${x} ${y+3}) scale(0.72) translate(${-x} ${-y-3})">${plantSVG(shovelFx[i].p,x,y+3)}</g></g>`}/* 39.3 */
   else if(st===state&&typeof sowFx!=='undefined'&&sowFx[i]&&Date.now()-sowFx[i]<1200)s+=`<g pointer-events="none"><circle cx="${x}" cy="${y-6}" r="10" fill="#FFE1D6" stroke="#7A2A1A" stroke-width="1.5"/><path d="M${x-4} ${y-10} l8 8 M${x+4} ${y-10} l-8 8" stroke="#7A2A1A" stroke-width="2" stroke-linecap="round"/></g>`;
   return s;
 }
@@ -4644,8 +4647,11 @@ function interact(){
 document.getElementById('fertBtn').onclick=()=>{if(!state||viewing||scene!=='farm')return;closeSheet();if(curPanel)closePanel();sheet={sbc:'self'};renderSheet();openSheetUI()};
 document.getElementById('accelBtn').onclick=()=>{if(!state||viewing||scene!=='farm')return;closeSheet();if(curPanel)closePanel();sheet={sbc:'accel'};renderSheet();openSheetUI()};
 document.getElementById('shovelBtn').onclick=openShovel;
-document.getElementById('shovelBar').addEventListener('click',e=>{const b=e.target.closest('[data-sv]');if(!b)return;if(b.dataset.sv==='done'){exitShovel();toast(shovelN?'剷除完成':'結束剷除');return}if(b.dataset.sv==='trash'){sheet={trash:true,confirm:false};renderSheet();openSheetUI()}});
-document.getElementById('buildBar').addEventListener('click',e=>{const b=e.target.closest('[data-bm]');if(!b)return;if(b.dataset.bm==='done'){exitBuild();toast('結束建設');return}if(b.dataset.bm==='trash'){sheet={trash:true,confirm:false};renderSheet();openSheetUI();return}if(b.dataset.bm==='rundo'){recallUndo();return}if(recallMode&&b.dataset.bm!=='recall')stopRecall();buildMode=b.dataset.bm;shovelMode=buildMode==='shovel';shoveling=false;if(buildMode==='recall'&&!recallMode)startRecall();renderBuildBar()});
+document.getElementById('shovelBar').addEventListener('click',e=>{const b=e.target.closest('[data-sv]');if(!b)return;if(b.dataset.sv==='done'){exitShovel();toast(shovelN?`剷除了 ${shovelN} 株`:'結束剷除');return}
+  if(b.dataset.sv==='yes'){shovelHist.push(shovelAsk);shovelAsk=null;renderShovelBar();return}
+  if(b.dataset.sv==='no'){const st=shovelAsk;shovelAsk=null;shovelUndoStroke(st);toast('已經全部種回去');return}
+  if(b.dataset.sv==='undo'){const st=shovelHist.pop();if(!st)return;const [n,skip]=shovelUndoStroke(st);toast(`種回 ${n} 株${skip?`，${skip} 株沒辦法放回（田已經被用掉或垃圾桶裡沒有了）`:''}`);return}if(b.dataset.sv==='trash'){sheet={trash:true,confirm:false};renderSheet();openSheetUI()}});
+document.getElementById('buildBar').addEventListener('click',e=>{const b=e.target.closest('[data-bm]');if(!b)return;if(b.dataset.bm==='done'){exitBuild();toast('結束建設');return}if(b.dataset.bm==='trash'){sheet={trash:true,confirm:false};renderSheet();openSheetUI();return}if(b.dataset.bm==='rundo'){recallUndo();return}if(b.dataset.bm==='cundo'){cultUndo();return}if(recallMode&&b.dataset.bm!=='recall')stopRecall();buildMode=b.dataset.bm;shovelMode=buildMode==='shovel';shoveling=false;if(buildMode==='recall'&&!recallMode)startRecall();renderBuildBar()});
 
 // ===== 移動 =====
 let raf=null,lastF=0;
@@ -4721,7 +4727,7 @@ sceneEl.addEventListener('pointerdown',e=>{
   if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:zoom};tapStart=null;dragPlot=null;panStart=null;if(decoMode)decoCancel();return}
   tapStart={x:e.clientX,y:e.clientY,t:Date.now(),target:e.target,moved:false};
   if(sowMode){const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&!state.plots[+g.dataset.plot]){sowing=true;sowAt(e.clientX,e.clientY)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
-  if(shovelMode){const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&state.plots[+g.dataset.plot]){shoveling=true;shovelAt(e.clientX,e.clientY)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
+  if(shovelMode){const g=e.target.closest&&e.target.closest('[data-plot]');if(!shovelAsk&&g&&state.plots[+g.dataset.plot]){shoveling=true;shovelStroke=[];strokeLast=null;strokeTo(e.clientX,e.clientY,shovelAt)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
   if(recallMode){const tg=e.target.closest&&(e.target.closest('[data-decor]')||e.target.closest('[data-plot]'));if(tg){recallHit.clear();recallStroke=[];recalling=true;strokeLast=null;strokeTo(e.clientX,e.clientY,recallAt)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}/* 36.7 */
   if(decoMode){decoPainted.clear();
     if(decoPaint){decoPainting=true;decoPaintAt(e.clientX,e.clientY);return}
@@ -4733,7 +4739,12 @@ sceneEl.addEventListener('pointerdown',e=>{
   if(buildMode){
     const g=e.target.closest&&e.target.closest('[data-plot]');
     if(buildMode==='move'&&g){const i=+g.dataset.plot;dragPlot={i,from:state.plotPos[i].slice(),x:0,y:0}}
-    else if(buildMode==='build'&&!g){buildHit.clear();buildPainting=true;strokeLast=null;strokeTo(e.clientX,e.clientY,buildAt)}/* 31.1 從空地開始＝鋪設；從田開始＝移動畫面 */
+    else if(buildMode==='build'&&g){/* 39.2：從田開始＝刪（點一下或滑過）；長按＝拖著移動 */
+      const i=+g.dataset.plot;buildHit.clear();cultEnd();
+      cultPend={i,x:e.clientX,y:e.clientY,t:setTimeout(()=>{if(cultPend&&cultPend.i===i&&state.plotPos[i]){cultPend=null;dragPlot={i,from:state.plotPos[i].slice(),x:0,y:0};try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}toast('拖到新的位置再放開',1500)}},350)}}
+    else if(buildMode==='build'&&!g){const w=screenToWorld(e.clientX,e.clientY),[x,y]=snapPos(w.x,w.y),err=buildPlotErr(x,y);
+      if(!err||err==='這裡已經有農地了'){buildHit.clear();cultEnd();cultPave=[];buildPainting=true;strokeLast=null;strokeTo(e.clientX,e.clientY,buildAt)}
+      else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y}}/* 從不能鋪的地方開始＝移動畫面 */
     else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};
   }
 });
@@ -4742,7 +4753,9 @@ sceneEl.addEventListener('pointermove',e=>{
   if(pinch&&ptrs.size<2)pinch=null;
   if(pinch&&ptrs.size>=2){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);if(pinch.d>0)setZoom(pinch.z*d/pinch.d);return}
   if(tapStart&&Math.hypot(e.clientX-tapStart.x,e.clientY-tapStart.y)>10)tapStart.moved=true;
-  if(shoveling){shovelAt(e.clientX,e.clientY);return}
+  if(cultPend&&tapStart&&tapStart.moved){const c=cultPend;clearTimeout(c.t);cultPend=null;cultDel=[];strokeLast=null;strokeTo(c.x,c.y,cultDelAt)}
+  if(cultDel){strokeTo(e.clientX,e.clientY,cultDelAt);return}
+  if(shoveling){strokeTo(e.clientX,e.clientY,shovelAt);return}
   if(recalling){strokeTo(e.clientX,e.clientY,recallAt);return}
   if(acceling){accelAt(e.clientX,e.clientY);return}
   if(buildPainting){strokeTo(e.clientX,e.clientY,buildAt);return}
@@ -4762,12 +4775,14 @@ const ptrEnd=e=>{
     if(decoDrag){const qi=decoDrag.i,qon=decoDrag.on;decoDrop();tapStart=null;if(quickMove!=null&&qi===quickMove&&qon){quickMove=null;exitDecor();toast('移好了')}return}
     if(tapStart&&!tapStart.moved&&e.type==='pointerup'&&selDecor!=null){selDecor=null;renderWorld();renderDecoBar()}
     tapStart=null;return}
-  if(dragPlot){const d=dragPlot;dragPlot=null;if(d.on){const [x,y]=snapPos(d.x,d.y),err=plotSpotErr(state,x,y,d.i);if(err){toast(err)}else{state.plotPos[d.i]=[x,y];save();toast('農地移好了')}renderWorld();tapStart=null;return}}
+  if(cultPend){const c=cultPend;clearTimeout(c.t);cultPend=null;if(e.type==='pointerup'){cultDel=[];cultDelAt(c.x,c.y)}}
+  if(cultDel){if(cultDel.length){cultHist.push({t:'del',items:cultDel});save()}cultDel=null;renderBuildBar();panStart=null;tapStart=null;return}
+  if(dragPlot){const d=dragPlot;dragPlot=null;if(d.on){const [x,y]=snapPos(d.x,d.y),err=plotSpotErr(state,x,y,d.i);if(err){toast(err+'，已放回原位')}else{state.plotPos[d.i]=[x,y];if(buildMode==='build')cultHist.push({t:'move',i:d.i,from:d.from});save();toast('農地移好了')}renderWorld();renderBuildBar();tapStart=null;return}if(buildMode==='build'){tapStart=null;return}}
   panStart=null;
   if(sowMode){if(sowing){sowing=false;save()}tapStart=null;return}
-  if(shovelMode){if(shoveling){shoveling=false;save()}tapStart=null;return}
+  if(shovelMode){if(shoveling){shoveling=false;const st=shovelStroke;shovelStroke=null;if(st&&st.length>=5){shovelAsk=st}else if(st&&st.length)shovelHist.push(st);save();renderShovelBar()}tapStart=null;return}
   if(accelMode){if(acceling){acceling=false;save()}tapStart=null;return}
-  if(buildPainting){buildPainting=false;save();tapStart=null;return}
+  if(buildPainting){buildPainting=false;if(cultPave&&cultPave.length)cultHist.push({t:'pave',idx:cultPave});cultPave=null;save();renderBuildBar();tapStart=null;return}
   if(pickMode){picking=false;if(pickStroke&&pickStroke.length){pickHist.push(pickStroke);playAct('pollinate');save();renderPickBar()}pickStroke=null;tapStart=null;return}
   if(tapStart&&!tapStart.moved&&e.type==='pointerup'){const ts=tapStart;tapStart=null;handleTap({target:ts.target},e.clientX,e.clientY);return}
   tapStart=null;
@@ -4778,7 +4793,7 @@ const ptrDrop=e=>{if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(p
 sceneEl.addEventListener('lostpointercapture',ptrDrop);
 window.addEventListener('pointerup',ptrDrop);window.addEventListener('pointercancel',ptrDrop);
 function resetPtrs(){ptrs.clear();pinch=null;tapStart=null;panStart=null;dragPlot=null}
-document.addEventListener('visibilitychange',()=>{if(document.hidden)resetPtrs()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){resetPtrs();try{cultEnd();if(shovelMode){shoveling=false;exitShovel()}if(buildMode)exitBuild()}catch(e){}}});/* 39：切到背景自動結束剷除、開墾 */
 window.addEventListener('blur',resetPtrs);window.addEventListener('pagehide',resetPtrs);
 // iPhone Safari 會忽略禁止縮放的設定：攔截網頁本身的縮放手勢，雙指只縮放遊戲畫面
 for(const t of ['gesturestart','gesturechange','gestureend'])document.addEventListener(t,e=>e.preventDefault(),{passive:false});
@@ -4803,13 +4818,14 @@ function autoSeedName(p){
   return shortApp(ph)+(gen?` ${gen}代`:'');
 }
 // ===== 36.8（15f）：綠色圓按鈕＋長按圓盤、點或拖的回饋、點裝飾操作、大門寫字 =====
-const RING=[['harvest','收成'],['self','自交'],['accel','加速'],['recall','收回'],['build','建設'],['decor','裝飾'],['tray','育苗']];
+const RING=[['harvest','收成'],['self','自交'],['accel','加速'],['shovel','剷除'],['build','開墾'],['tray','育苗']];/* 39.1（15j）：裝飾、收回、建設拿掉；裝飾在右側選單 */
 var ringOpen=false;let ringPress=null,ringHl=null;
 function ringState(k){const nd=sbtnNeed(state),acc=((state.items||{}).acc)||0;
   if(k==='harvest')return nd.waterAll?'':'目前沒有成熟的植株';
   if(k==='self')return nd.fertBtn?'':'目前沒有開花、等待授粉的植株';
   if(k==='accel')return !acc?'沒有生長加速劑了，到探索世界撿撿看':nd.accelBtn?'':'沒有可以加速的植株（幼苗、結果中）';
   if(k==='tray')return trayObj().cells.length?'':'育苗盤是空的，點綠色按鈕就能種植';
+  if(k==='shovel')return state.plots.some(p=>p)?'':'田裡沒有植株';
   return ''}
 function openRing(){if(ringOpen||!state)return;const b=document.getElementById('ringBtn').getBoundingClientRect(),cx=b.left+b.width/2,cy=b.top+b.height/2,R=Math.min(170,Math.max(140,cx-160));
   /* 從左邊（9 點鐘）順時針排到正上方（12 點鐘）：按鈕在右下角，右邊沒有空間 */
@@ -4826,6 +4842,7 @@ function ringRun(k){closeRing();const why=ringState(k);if(why){toast(why);return
   if(k==='harvest'||k==='self'){openPick(k);return}
   if(k==='accel'){openAccel();return}
   if(k==='build'){openBuild();return}
+  if(k==='shovel'){openShovel();return}
   if(k==='recall'){openBuild();buildMode='recall';startRecall();renderBuildBar();renderWorld();toast('收回模式：點或滑過裝飾、空田就收回；有植株的田會略過',3000);return}
   if(k==='decor'){openDecor();return}
   if(k==='tray'){openTray();return}}
@@ -5264,11 +5281,15 @@ document.getElementById('accelBar').addEventListener('click',e=>{const b=e.targe
 let shovelMode=false,shovelN=0,shoveling=false;
 const TRASH_MAX=50;
 function trashPlant(i){const p=state.plots[i];if(!p)return false;if(!state.trash)state.trash=[];state.trash.unshift({id:'T'+Date.now().toString(36)+i,plant:clone(p),from:i,at:Date.now()});if(state.trash.length>TRASH_MAX)state.trash.length=TRASH_MAX;state.plots[i]=null;return true}
-function openShovel(){if(scene!=='farm'||viewing)return;const m=curMe();buildCam={x:m.x,y:m.y};shovelMode=true;moveTo=null;renderShovelBar();renderHUD();applyCtrl();updateCam();toast('剷除模式：點或滑過植株就能剷除',3000)}
-function exitShovel(){shovelMode=false;shoveling=false;renderShovelBar();renderHUD();applyCtrl();updateCam();renderWorld();if(shovelN)save();shovelN=0}
+function openShovel(){if(scene!=='farm'||viewing)return;const m=curMe();buildCam={x:m.x,y:m.y};shovelMode=true;moveTo=null;shovelHist.length=0;shovelAsk=null;shovelStroke=null;renderShovelBar();renderHUD();applyCtrl();updateCam();toast('剷除模式：點或滑過植株就能剷除',3000)}
+function exitShovel(){if(shovelAsk){shovelHist.push(shovelAsk);shovelAsk=null}shovelMode=false;shoveling=false;renderShovelBar();renderHUD();applyCtrl();updateCam();renderWorld();if(shovelN)save();shovelN=0}
 function renderShovelBar(){const el=document.getElementById('shovelBar');if(!el)return;if(!shovelMode||buildMode){el.hidden=true;if(buildMode==='shovel')renderBuildBar();return}el.hidden=false;
-  el.innerHTML=`<div class="bbtip">點一下或用手指滑過植株就能剷除，土地會保留<br><small>拖曳空白處可以移動畫面・剷錯了可以到垃圾桶找回</small></div><div class="bbrow" style="grid-template-columns:1fr 1fr"><button data-sv="trash">垃圾桶（${(state.trash||[]).length}）</button><button data-sv="done" class="done">完成</button></div>`}
-function shovelAt(cx,cy){const el=document.elementFromPoint(cx,cy),g=el&&el.closest&&el.closest('[data-plot]');if(!g)return;const i=+g.dataset.plot;if(state.plots[i]&&trashPlant(i)){shovelN++;renderWorld();renderShovelBar()}}
+  if(shovelAsk){el.innerHTML=`<div class="bbtip"><b>要剷除這 ${shovelAsk.length} 株嗎？</b><br><small>取消會把這一筆全部種回去</small></div><div class="bbrow" style="grid-template-columns:1fr 1fr"><button data-sv="no">取消</button><button data-sv="yes" class="done">剷除</button></div>`;return}/* 39.3：一筆劃 5 株以上先確認 */
+  el.innerHTML=`<div class="bbtip">點一下或用手指滑過植株就能剷除，土地會保留<br><small>拖曳空白處可以移動畫面・剷錯了可以按「復原上一筆」或到垃圾桶找回</small></div><div class="bbtip"><b>已剷除 ${shovelN} 株</b></div><div class="bbrow" style="grid-template-columns:1fr 1fr 1fr"><button data-sv="trash">垃圾桶（${(state.trash||[]).length}）</button><button data-sv="undo"${shovelHist.length?'':' disabled'}>復原上一筆</button><button data-sv="done" class="done">完成</button></div>`}
+/* 39.3（15j）：每一筆劃記下剷掉的植株（垃圾桶裡的 id），復原時從垃圾桶放回原本的田 */
+let shovelStroke=null,shovelAsk=null;const shovelHist=[],shovelFx={};
+function shovelUndoStroke(st){let n=0,skip=0;for(const q of st.slice().reverse()){const k=(state.trash||[]).findIndex(t=>t.id===q.tid);if(k<0){skip++;continue}const t=state.trash[k];if(state.plots[q.i]||!state.plotPos[q.i]){skip++;continue}state.plots[q.i]=t.plant;state.trash.splice(k,1);delete shovelFx[q.i];n++;shovelN=Math.max(0,shovelN-1)}save();renderWorld();renderShovelBar();return [n,skip]}
+function shovelAt(cx,cy){const el=document.elementFromPoint(cx,cy),g=el&&el.closest&&el.closest('[data-plot]');if(!g)return;const i=+g.dataset.plot;const p=state.plots[i];if(p&&trashPlant(i)){shovelN++;if(shovelStroke)shovelStroke.push({i,tid:state.trash[0].id});if(!tfxRM()){shovelFx[i]={p,t:Date.now()};setTimeout(()=>{if(shovelFx[i]&&Date.now()-shovelFx[i].t>=400){delete shovelFx[i];renderWorld()}},420)}renderWorld();renderShovelBar()}}
 function trashHTML(){const tr=state.trash||[];let h=`<h2>垃圾桶</h2><p class="note">剷除或拔掉的植株會先放在這裡，最多保留 ${TRASH_MAX} 株。按「放回」會種回原本的土地；原本的土地已經有東西時，會種到第一塊空地。</p>`;
   if(!tr.length)return h+'<p class="note">垃圾桶是空的。</p><button class="btn" data-act="close">關閉</button>';
   h+=tr.map(t=>{const p=t.plant;let ic='';try{ic=fruitSVG(phen(p.g,p.crop),p.crop,44,p.stage==='seedling'?0.3:1)}catch(e){}return `<div class="pick" style="cursor:default">${ic}<span><b>${esc(pname(p))}</b><span class="meta">${CROPS[p.crop].n}・${stageLabel(p)}・原本在第 ${t.from+1} 塊土地</span><span class="meta">${fmtDate(t.at)}</span></span><button class="mini" data-act="trrestore" data-t="${t.id}">放回</button></div>`}).join('');
@@ -5282,19 +5303,33 @@ function trashAction(b){const a=b.dataset.act;
 // ===== 建設模式 =====
 let buildMode=null,buildCam={x:0,y:0};
 function openBuild(){
-  if(scene!=='farm'||viewing){toast('只能在自己的農場建設');return}
-  if(pickMode)exitPick();
+  if(scene!=='farm'||viewing){toast('回到自己的農場才能開墾');return}
+  if(pickMode)exitPick();if(shovelMode)exitShovel();if(accelMode)exitAccel();if(decoMode)exitDecor();cultHist.length=0;cultEnd();
   const m=curMe();buildCam={x:m.x,y:m.y};buildMode='build';buildN=0;buildMsg='';buildBad=null;closePanel();renderBuildBar();renderHUD();updateCam();renderWorld();applyCtrl();
 }
-function exitBuild(){if(recallMode)stopRecall();if(shovelMode){shovelMode=false;shoveling=false;if(shovelN)save();shovelN=0}buildMode=null;dragPlot=null;renderBuildBar();renderHUD();updateCam();renderWorld();applyCtrl()}
+function exitBuild(){cultEnd();if(recallMode)stopRecall();if(shovelMode){shovelMode=false;shoveling=false;if(shovelN)save();shovelN=0}buildMode=null;dragPlot=null;renderBuildBar();renderHUD();updateCam();renderWorld();applyCtrl()}
 function renderBuildBar(){
   const el=document.getElementById('buildBar');if(!el)return;
   if(!buildMode){el.hidden=true;return}
   el.hidden=false;
-  const tip={build:`點一下或用手指滑過空地，一格一格鋪成田（免費）<br><b>已鋪 ${buildN} 格，剩 ${Math.max(0,plotCap()-plotCount(state))} 格可鋪</b>${buildMsg?`<br><span style="color:var(--danger)">${buildMsg}</span>`:''}`,recall:'',move:'按住農地拖到新位置，植物會一起搬',shovel:'點一下或用手指滑過植株就能剷除，土地會保留'}[buildMode];
-  if(buildMode==='recall'){el.innerHTML=recallTip()+`<div class="bbrow" style="grid-template-columns:1fr;margin-bottom:6px"><button data-bm="rundo">復原</button></div><div class="bbrow" style="grid-template-columns:repeat(5,1fr)">${[['build','建設'],['recall','收回'],['move','移動'],['shovel','剷除']].map(([k,n])=>`<button data-bm="${k}" aria-pressed="${buildMode===k}">${n}</button>`).join('')}<button data-bm="done" class="done">完成</button></div>`;return}/* 36.7 */
-  el.innerHTML=`<div class="bbtip">${tip}<br><small>${buildMode==='build'?'從已經有的田開始拖曳可以移動畫面':'拖曳空白處可以移動畫面'}・${buildMode==='shovel'?'剷錯了可以到垃圾桶找回':`農地 ${plotCount(state)}／${plotCap()}`}</small></div>${buildMode==='shovel'?`<div class="bbrow" style="grid-template-columns:1fr;margin-bottom:6px"><button data-bm="trash">垃圾桶（${(state.trash||[]).length}）</button></div>`:''}<div class="bbrow" style="grid-template-columns:repeat(5,1fr)">${[['build','建設'],['recall','收回'],['move','移動'],['shovel','剷除']].map(([k,n])=>`<button data-bm="${k}" aria-pressed="${buildMode===k}">${n}</button>`).join('')}<button data-bm="done" class="done">完成</button></div>`;
+  if(buildMode==='build'){/* 39.2（15j）開墾 */
+    el.innerHTML=`<div class="bbtip">點或滑過空地：鋪田（免費）・點或滑過空田：刪掉這格<br><small>長按一格田可以拖著移動（植株一起搬）・有植株的田要先剷除才能刪</small>${buildMsg?`<br><span style="color:var(--danger)">${buildMsg}</span>`:''}</div><div class="bbtip"><b>已鋪 ${buildN} 格，剩 ${Math.max(0,plotCap()-plotCount(state))} 格可鋪</b><small>・農地 ${plotCount(state)}／${plotCap()}</small></div><div class="bbrow" style="grid-template-columns:1fr 1fr"><button data-bm="cundo"${cultHist.length?'':' disabled'}>復原</button><button data-bm="done" class="done">完成</button></div>`;return}
+  const tip={recall:'',move:'按住農地拖到新位置，植物會一起搬',shovel:'點一下或用手指滑過植株就能剷除，土地會保留'}[buildMode]||'';
+  if(buildMode==='recall'){el.innerHTML=recallTip()+`<div class="bbrow" style="grid-template-columns:1fr 1fr"><button data-bm="rundo">復原</button><button data-bm="done" class="done">完成</button></div>`;return}
+  el.innerHTML=`<div class="bbtip">${tip}</div><div class="bbrow" style="grid-template-columns:1fr"><button data-bm="done" class="done">完成</button></div>`;
 }
+/* 39.2 開墾：同一筆劃第一下決定是鋪還是刪；長按一格田＝拖著移動；「復原」還原上一筆劃或上一次移動 */
+let cultPend=null,cultDel=null,cultPave=null,cultWarn=0;const cultHist=[];
+function cultDelAt(cx,cy){const el=document.elementFromPoint(cx,cy),g=el&&el.closest&&el.closest('[data-plot]');if(!g||!cultDel)return;const i=+g.dataset.plot;if(buildHit.has('d'+i))return;buildHit.add('d'+i);
+  if(!state.plotPos[i])return;
+  if(state.plots[i]){plotFx(i,'skip');if(Date.now()-cultWarn>1500){cultWarn=Date.now();toast('有植株，要先剷除')}return}
+  cultDel.push({i,pos:state.plotPos[i].slice()});state.plotPos[i]=null;renderWorld();renderBuildBar()}
+function cultUndo(){const h=cultHist.pop();if(!h){toast('沒有可以復原的');return}
+  if(h.t==='pave'){for(const i of h.idx)if(state.plotPos[i]&&!state.plots[i]){state.plotPos[i]=null;buildN=Math.max(0,buildN-1)}}
+  else if(h.t==='del'){let skip=0;for(const q of h.items){if(!state.plotPos[q.i]&&!state.plots[q.i]&&!plotSpotErr(state,q.pos[0],q.pos[1],q.i))state.plotPos[q.i]=q.pos;else skip++}if(skip)toast(`有 ${skip} 格的位置已經被占用，沒有放回`)}
+  else if(h.t==='move'){if(state.plotPos[h.i]&&!plotSpotErr(state,h.from[0],h.from[1],h.i))state.plotPos[h.i]=h.from;else toast('原本的位置已經被占用')}
+  save();renderWorld();renderBuildBar()}
+function cultEnd(){if(cultPend){clearTimeout(cultPend.t);cultPend=null}cultDel=null;cultPave=null}
 /* 31.1：建設模式的點或滑過鋪設（照裝飾地面鋪設的寫法）；同一筆劃每格只處理一次，不合法的位置閃紅不鋪 */
 let buildPainting=false,buildN=0,buildMsg='',buildBad=null;const buildHit=new Set();
 /* 滑動時兩次觸控點之間每 10px 補一個點，手指滑快也不會跳格（鋪設、多選共用） */
@@ -5307,7 +5342,7 @@ function buildAt(cx,cy){
   if(!isInf())state.coins-=PLOT_COST;
   let i=state.plotPos.findIndex((q,j)=>!q&&!state.plots[j]);
   if(i<0){i=state.plotPos.length;state.plotPos.push(null);state.plots.push(null)}
-  state.plotPos[i]=[x,y];state.plots[i]=null;buildN++;buildMsg='';renderWorld();renderCoins();renderBuildBar();
+  state.plotPos[i]=[x,y];state.plots[i]=null;buildN++;buildMsg='';if(cultPave)cultPave.push(i);renderWorld();renderCoins();renderBuildBar();
 }
 function buildTap(w,t){
   if(buildMode==='build'){

@@ -443,6 +443,12 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 @keyframes trRay{0%{transform:rotate(var(--r)) scaleY(.2);opacity:1}100%{transform:rotate(var(--r)) translateY(-14px) scaleY(1.3);opacity:0}}
 @keyframes sinkfx{from{transform:none;opacity:1}to{transform:translateY(10px) scale(.35);opacity:0}}
 .sinkfx{transform-box:fill-box;transform-origin:50% 100%;animation:sinkfx .4s ease-in forwards}
+/* 45（15k）：選單圖示。圖片載入失敗時 onerror 拿掉圖片，線條圖示就會出現 */
+.iconbar button img.ibimg~svg{display:none}
+#mapBtn{display:flex;flex-direction:column;align-items:center;justify-content:center;height:52px !important;line-height:1;gap:1px}#mapBtn[hidden]{display:none}#mapBtn img.ibimg{width:24px;height:24px;object-fit:contain}#mapBtn span{font-size:11px}
+#ringMenu .ri{width:56px !important;height:56px !important;margin:-28px 0 0 -28px !important;flex-direction:column;gap:0;font-size:11px !important}
+#ringMenu .ri img{width:30px;height:30px;object-fit:contain;pointer-events:none}#ringMenu .ri span{pointer-events:none;line-height:1.1}
+#ringMenu .ri.off img{filter:grayscale(1);opacity:.55}
 body.joymode #sowBtn{right:22px !important;bottom:calc(254px + env(safe-area-inset-bottom,0px)) !important;width:60px;height:60px}
 #sowBar .sowinfo{display:flex;align-items:center;gap:8px;margin-bottom:4px;color:#5A3416}
 #sowBar .sowinfo svg{width:40px;height:40px;flex:none}
@@ -469,25 +475,25 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
 <div id="wx" aria-hidden="true" hidden></div>
 <div id="exHint" hidden></div>
 <div id="mapBanner" hidden></div>
-<button id="mapBtn" hidden aria-label="雪原地圖">地圖</button>
+<button id="mapBtn" hidden aria-label="雪原地圖"><img class="ibimg" src="assets/icons/s/map.png" alt="" aria-hidden="true" onerror="this.remove()"><span>地圖</span></button>
 <div id="mapPanel" hidden role="dialog" aria-label="雪原地圖"></div>
 <div id="fadeOv" aria-hidden="true"></div>
 <div class="hudTop"><div class="coins" aria-label="金幣"><span class="coin" aria-hidden="true"></span><span id="coins">0</span></div><div class="sceneName" id="sceneName">我的農場</div><div class="sync" id="sync" role="status"></div></div>
 <div id="marquee" hidden role="status" aria-live="polite"><b aria-hidden="true">📢</b><div class="mqwin"><span></span></div></div>
 <div id="iconbarL" class="iconbar">
   <button data-open="bag"><img class="ibimg" src="assets/icons/s/seed_bag.png" alt="" aria-hidden="true"><span>種子袋</span></button>
-  <button data-open="dex"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6M9 12h6"/></svg><span>圖鑑</span></button>
-  <button id="ordersBtn"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v18l-5-3-5 3z"/><path d="M10 8h4M10 12h4"/></svg><span>訂單</span><i id="ordersBadge" hidden></i></button>
-  <button data-open="genes"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3c0 6 10 6 10 12s-10 6-10 6"/><path d="M17 3c0 6-10 6-10 12s10 6 10 6"/><path d="M8.5 7h7M8.5 17h7M10 12h4"/></svg><span>遺傳</span></button>
-  <button data-open="social"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M15 15.5c2.8-.6 6 1.2 6 4.5"/></svg><span>朋友</span></button>
+  <button data-open="dex"><img class="ibimg" src="assets/icons/s/codex.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6M9 12h6"/></svg><span>圖鑑</span></button>
+  <button id="ordersBtn"><img class="ibimg" src="assets/icons/s/quest.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v18l-5-3-5 3z"/><path d="M10 8h4M10 12h4"/></svg><span>訂單</span><i id="ordersBadge" hidden></i></button>
+  <button data-open="genes"><img class="ibimg" src="assets/icons/s/genes.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3c0 6 10 6 10 12s-10 6-10 6"/><path d="M17 3c0 6-10 6-10 12s10 6 10 6"/><path d="M8.5 7h7M8.5 17h7M10 12h4"/></svg><span>遺傳</span></button>
+  <button data-open="social"><img class="ibimg" src="assets/icons/s/friends.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M15 15.5c2.8-.6 6 1.2 6 4.5"/></svg><span>朋友</span></button>
 </div>
 <div id="iconbar" class="iconbar">
-  <button id="ibMarket" data-do="market"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l2-6h14l2 6"/><path d="M3 10c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3"/><path d="M5 13v8h14v-8"/></svg><span>城鎮</span></button>
+  <button id="ibMarket" data-do="market"><img class="ibimg" src="assets/icons/s/town.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l2-6h14l2 6"/><path d="M3 10c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3"/><path d="M5 13v8h14v-8"/></svg><span>城鎮</span></button>
   <button id="ibHome" data-do="home" hidden><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>回家</span></button>
-  <button id="ibExplore" data-open="explore"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z" fill="currentColor" stroke-width="1.2"/></svg><span>探索</span></button>
-  <button id="ibDecor" data-do="decor"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-3 2-5 5-5 8a5 5 0 0 0 10 0c0-3-2-6-5-8z"/><path d="M12 16v5M9 21h6"/></svg><span>裝飾</span></button>
-  <button id="ibBuild" data-do="build"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15l9-5 9 5-9 5z"/><path d="M12 3v6M9 6h6"/></svg><span>開墾</span></button>
-  <button data-open="settings"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span>設定</span></button>
+  <button id="ibExplore" data-open="explore"><img class="ibimg" src="assets/icons/s/explore.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z" fill="currentColor" stroke-width="1.2"/></svg><span>探索</span></button>
+  <button id="ibDecor" data-do="decor"><img class="ibimg" src="assets/icons/s/decor.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-3 2-5 5-5 8a5 5 0 0 0 10 0c0-3-2-6-5-8z"/><path d="M12 16v5M9 21h6"/></svg><span>裝飾</span></button>
+  <button id="ibBuild" data-do="build"><img class="ibimg" src="assets/icons/s/hoe.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15l9-5 9 5-9 5z"/><path d="M12 3v6M9 6h6"/></svg><span>開墾</span></button>
+  <button data-open="settings"><img class="ibimg" src="assets/icons/s/settings.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span>設定</span></button>
 </div>
 <div id="joy" aria-label="移動搖桿" hidden><div id="joyKnob"></div></div>
 <button id="sowBtn" class="sbtn"><img class="sbi" src="assets/icons/s/seed_bag.png" alt="" aria-hidden="true"><span class="sbt">種植</span></button>
@@ -1050,7 +1056,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-15j';
+const BUILD='2026-11-15k';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2505,7 +2511,7 @@ for(const [k,n,cat,m,p,flat] of DECO_NEW){const d=dd(k,n,cat,decoImgF(k,m),flat)
 const DECOR_MAP=Object.fromEntries(DECOR.map(d=>[d.k,d]));
 const DECOR_CATS=['圍籬','地面','植栽','照明','家具','設施','標示','水景'];
 const YARD={x0:40,x1:420,y0:575,y1:820};
-function decorSVG(d,sel,bad){const it=DECOR_MAP[d.t];if(!it)return '';return `<g data-decor="${d.i}" stroke="#3A2416" stroke-width="1.3" stroke-linejoin="round"${bad?' opacity=".8"':''}>${it.f(d.x,d.y,d.txt||'')}${bad?`<ellipse cx="${d.x}" cy="${d.y-8}" rx="28" ry="18" fill="#E53935" fill-opacity=".38" stroke="#C0392B" stroke-width="2.5"/>`:''}${sel?`<ellipse cx="${d.x}" cy="${d.y}" rx="28" ry="9" fill="none" stroke="var(--mustard)" stroke-width="2.5" stroke-dasharray="4 3"/>`:''}</g>`}
+function decorSVG(d,sel,bad){const it=DECOR_MAP[d.t];if(!it)return '';const art=it.f(d.x,d.y,d.txt||'');return `<g data-decor="${d.i}" stroke="#3A2416" stroke-width="1.3" stroke-linejoin="round"${bad?' opacity=".8"':''}>${d.fl&&!isSign(d.t)?`<g transform="translate(${2*d.x} 0) scale(-1 1)">${art}</g>`:art}${bad?`<ellipse cx="${d.x}" cy="${d.y-8}" rx="28" ry="18" fill="#E53935" fill-opacity=".38" stroke="#C0392B" stroke-width="2.5"/>`:''}${sel?`<ellipse cx="${d.x}" cy="${d.y}" rx="28" ry="9" fill="none" stroke="var(--mustard)" stroke-width="2.5" stroke-dasharray="4 3"/>`:''}</g>`}
 
 // ===== 角色（14k 重畫：照 assets/ref 參考圖，分層紙娃娃）=====
 /* 大頭約 2.3 頭身、橢圓點點眼、小微笑、無腮紅、露耳朵、一塊塊的頭髮、深棕外框、兩階明暗（光從左上）。
@@ -3575,9 +3581,8 @@ document.getElementById('p-decor').addEventListener('click',e=>{
   if(state.decor.length>=400){toast('裝飾最多 400 個');return}
   const t=it.dataset.item,n=DECOR_MAP[t].n,pr=DECOR_MAP[t].p||0;
   if(recallMode)stopRecall();
-  if(!decoStoreN(t)&&pr&&state.coins<pr){toast(`「${n}」要 ${pr} 金幣，金幣不夠`);return}
-  /* 36.7：選好就進入連續放置，點或滑過空地一直放同一種 */
-  selDecor=null;decoPaint=t;closePanel();renderWorld();renderDecoBar();toast(`點或滑過空地放「${n}」，按「停止放置」結束`,3000);return;
+  /* 46.1（15j）：選好一種，之後點空地就放這一種 */
+  void pr;decoSel=t;decoPaint=null;selDecor=null;closePanel();renderWorld();renderDecoBar();toast(`點空地放「${n}」${decoGrid(t)?'，滑過可以連續鋪設':''}`,2500);return;
   state.decor.push({t,x:0,y:0});selDecor=state.decor.length-1;decoPaint=decoGrid(t)?t:null;
   save();closePanel();renderWorld();renderDecoBar();
   toast(decoPaint?`放好「${n}」了，用手指滑過去可以連續鋪設`:`放好「${n}」了，按住可以拖到想放的位置`,3500);
@@ -3632,45 +3637,47 @@ function decoFree(t,x,y,beside){
 function openDecor(){
   if(scene!=='farm'||viewing){toast('只能在自己的農場佈置');return}
   closeSheet();if(curPanel)closePanel();if(shovelMode)exitShovel();if(sowMode)exitSow();if(accelMode)exitAccel();if(buildMode)exitBuild();if(pickMode)exitPick();
-  const m=curMe();buildCam={x:m.x,y:m.y};decoMode=true;moveTo=null;selDecor=null;decoPaint=null;decoDrag=null;
+  const m=curMe();buildCam={x:m.x,y:m.y};decoMode=true;moveTo=null;selDecor=null;decoPaint=null;decoDrag=null;decoEnd();decoHist.length=0;
   renderDecoBar();renderHUD();applyCtrl();updateCam();renderWorld();
-  toast('裝飾模式：按「新增」放裝飾，按住裝飾可以拖曳',3000);
+  toast(decoSel?`點空地放「${DECOR_MAP[decoSel].n}」，點裝飾收回，長按拖著移動`:'按「選裝飾」挑一種，點空地就放',3000);
 }
 function decoCancel(){decoPainting=false;if(decoDrag){const d=state.decor[decoDrag.i];if(d&&decoDrag.on&&decoDrag.bad){d.x=decoDrag.fx;d.y=decoDrag.fy}decoDrag=null}}
-function exitDecor(){quickMove=null;if(!decoMode)return;decoCancel();if(recallMode)stopRecall();decoMode=false;decoPaint=null;selDecor=null;renderDecoBar();renderHUD();applyCtrl();updateCam();renderWorld();save()}
+function exitDecor(){quickMove=null;if(!decoMode)return;decoEnd();decoCancel();if(recallMode)stopRecall();decoMode=false;decoPaint=null;selDecor=null;renderDecoBar();renderHUD();applyCtrl();updateCam();renderWorld();save()}
 function renderDecoBar(){
   const el=document.getElementById('decoBar');if(!el)return;if(!decoMode){el.hidden=true;return}el.hidden=false;
-  const d=selDecor!=null?state.decor[selDecor]:null;let top;
-  if(recallMode){el.innerHTML=recallTip()+`<div class="bbrow" style="grid-template-columns:1fr 1fr"><button data-dk="rundo">復原</button><button data-dk="rdone" class="done">結束收回</button></div>`;return}/* 36.7 */
-  if(decoPaint){const it=DECOR_MAP[decoPaint],n=decoStoreN(decoPaint),pr=(it&&it.p)||0;top=`<div class="bbtip"><b>放置中：${it?it.n:''}</b>　<small>${n?`倉庫還有 ${n} 個（免費）`:pr?`每個 ${pr} 金幣`:'免費'}</small><br><small>點或用手指滑過空地就一直放${decoGrid(decoPaint)?'，會自動對齊':''}・要移動畫面或拖曳裝飾，先按「停止放置」</small></div><div class="bbrow" style="grid-template-columns:1fr"><button data-dk="stop">停止放置</button></div>`}
-  else if(d){const it=DECOR_MAP[d.t],sg=isSign(d.t);top=`<div class="bbtip"><b>${it?it.n:'裝飾'}</b>　<small>按住可以拖曳移動</small></div><div class="bbrow" style="grid-template-columns:repeat(${sg?4:3},1fr)">${sg?'<button data-dk="text">改文字</button>':''}<button data-dk="del">收起</button><button data-dk="dup">再放一個</button><button data-dk="unsel">取消選取</button></div>${decoGrid(d.t)?'<div class="bbrow" style="grid-template-columns:1fr;margin-top:6px"><button data-dk="paint">用手指滑動連續鋪設</button></div>':''}`}
-  else top=`<div class="bbtip">按「新增」選裝飾；按住已放的裝飾可以拖曳，點一下可以選取<br><small>拖曳空白處可以移動畫面・紅色表示不能放，放開會彈回原位</small></div>`;
-  el.innerHTML=top+`<div class="bbrow" style="grid-template-columns:1fr 1fr 1fr;margin-top:6px"><button data-dk="add">新增</button><button data-dk="recall">收回</button><button data-dk="done" class="done">完成</button></div>`;
+  const it=decoSel?DECOR_MAP[decoSel]:null,n=decoSel?decoStoreN(decoSel):0,pr=(it&&it.p)||0;
+  const top=it?`<div class="bbtip"><b>目前：${it.n}</b>　<small>${n?`倉庫還有 ${n} 個（免費）`:pr?`每個 ${pr} 金幣`:'免費'}${decoFlip&&!isSign(decoSel)?'・轉向':''}</small><br><small>點空地放${decoGrid(decoSel)?'（滑過連續鋪設）':''}・點裝飾收回倉庫・長按裝飾拖著移動</small></div>`
+    :`<div class="bbtip"><b>先選一種裝飾</b><br><small>按「選裝飾」挑一種，之後點空地就放・點已經放好的裝飾收回倉庫・長按拖著移動</small></div>`;
+  el.innerHTML=top+`<div class="bbrow" style="grid-template-columns:1fr 1fr 1fr 1fr"><button data-dk="add">選裝飾</button><button data-dk="flip" aria-pressed="${!!decoFlip}">轉向</button><button data-dk="undo"${decoHist.length?'':' disabled'}>復原</button><button data-dk="done" class="done">完成</button></div>`;
 }
+/* 46（15j）：裝飾模式和開墾一樣。點空地＝放目前選的；點裝飾＝收回倉庫；長按裝飾＝拖著移動。
+   同一筆劃第一下決定是放還是收；圍籬、地面類可以滑過連續鋪設，其他裝飾只放第一下那一個，之後拖曳＝移動畫面。 */
+var decoSel=null,decoFlip=false;let decoPend=null,decoRec=null,decoStroke=null;const decoHist=[];
+function decoEnd(){if(decoPend){clearTimeout(decoPend.t);decoPend=null}decoRec=null;decoStroke=null;decoPainting=false;decoPaint=null}
+function decoRecallAt(cx,cy){if(!decoRec)return;const el=document.elementFromPoint(cx,cy),g=el&&el.closest&&el.closest('[data-decor]');if(!g)return;const i=+g.dataset.decor,d=state.decor[i];if(!d)return;
+  decoStorePut(d.t);state.decor.splice(i,1);decoRec.push(d);renderWorld()}
+function decoUndo(){const h=decoHist.pop();if(!h){toast('沒有可以復原的');return}
+  if(h.t==='put'){for(const q of h.items){const k=state.decor.indexOf(q.d);if(k<0)continue;state.decor.splice(k,1);if(q.paid)state.coins+=q.paid;else decoStorePut(q.d.t)}renderCoins()}
+  else if(h.t==='rec'){let skip=0;for(const d of h.items){const st=state.decoStore||{};if(st[d.t]>0){st[d.t]--;if(!st[d.t])delete st[d.t];state.decor.push(d)}else skip++}if(skip)toast(`${skip} 個已經從倉庫拿去用了，沒有放回`)}
+  else if(h.t==='mv'){if(state.decor.includes(h.d)){h.d.x=h.fx;h.d.y=h.fy}}
+  save();renderWorld();renderDecoBar()}
 document.getElementById('decoBar').addEventListener('click',e=>{
   const b=e.target.closest('[data-dk]');if(!b||!decoMode)return;const a=b.dataset.dk;
   if(a==='done'){exitDecor();toast('結束裝飾');return}
   if(a==='add'){openPanel('decor');return}
-  if(a==='recall'){startRecall();renderWorld();renderDecoBar();toast('收回模式：點或滑過裝飾、空田就收回',2500);return}
-  if(a==='rundo'){recallUndo();return}
-  if(a==='rdone'){stopRecall();renderWorld();renderDecoBar();return}
-  if(a==='stop'){decoPaint=null;renderDecoBar();return}
-  const d=selDecor!=null?state.decor[selDecor]:null;if(!d)return;
-  if(a==='text')return openSign(selDecor);
-  if(a==='paint'){decoPaint=d.t;renderDecoBar();toast('用手指滑過想鋪的地方',2500);return}
-  if(a==='del'){decoStorePut(d.t);state.decor.splice(selDecor,1);selDecor=null;save();toast('已收起，放回裝飾倉庫')}
-  if(a==='unsel')selDecor=null;
-  if(a==='dup'){if(state.decor.length>=400){toast('裝飾最多 400 個');return}const p=decoFree(d.t,d.x,d.y,true);if(!p){toast('旁邊沒有空位了');return}if(!decoTake(d.t)){toast(`要 ${(DECOR_MAP[d.t]||{}).p} 金幣，金幣不夠`);return}const nd={t:d.t,x:p[0],y:p[1]};if(d.txt)nd.txt=d.txt;state.decor.push(nd);selDecor=state.decor.length-1;save()}
-  renderWorld();renderDecoBar();
+  if(a==='flip'){decoFlip=!decoFlip;renderDecoBar();toast(decoFlip?'接下來放的會左右反過來':'恢復原本的方向',1500);return}
+  if(a==='undo'){decoUndo();return}
 });
 function decoPaintAt(cx,cy){
   if(!decoPaint)return;const w=screenToWorld(cx,cy),[x,y]=decoSnap(decoPaint,w.x,w.y),k=x+','+y;
   if(decoPainted.has(k))return;decoPainted.add(k);
-  if(decoErr(x,y)||decoOcc(decoPaint,x,y,-1))return;
+  const first=!decoStroke||!decoStroke.length;
+  if(decoErr(x,y)||decoOcc(decoPaint,x,y,-1)){if(first&&decoPainted.size===1)fxAdd('sk',cx,cy-10,'✕',420);return}
   if(state.decor.length>=400){toast('裝飾最多 400 個');return}
   if(!decoGrid(decoPaint)){const it=DECOR_MAP[decoPaint],w=it&&it.img?it.img[1]*it.img[2]/it.img[3]:40,gap=Math.max(22,w*0.8);if(state.decor.some(o=>{const q=DECOR_MAP[o.t];return q&&!q.flat&&Math.hypot(o.x-x,(o.y-y)*1.4)<gap}))return}/* 36.7：非圍籬、地面類保持最小間距 */
-  if(!decoTake(decoPaint)){toast(`金幣不夠，停止放置（每個 ${(DECOR_MAP[decoPaint]||{}).p} 金幣）`);decoPaint=null;decoPainting=false;renderDecoBar();return}
-  state.decor.push({t:decoPaint,x,y});renderWorld();renderDecoBar();
+  const fromStore=decoStoreN(decoPaint)>0,pr=(DECOR_MAP[decoPaint]||{}).p||0;
+  if(!decoTake(decoPaint)){fxAdd('sk',cx,cy-10,'✕',420);toast(`金幣不夠（每個 ${pr} 金幣）`);decoPainting=false;renderDecoBar();return}
+  const o={t:decoPaint,x,y};if(decoFlip&&!isSign(decoPaint))o.fl=1;state.decor.push(o);if(decoStroke)decoStroke.push({d:o,paid:fromStore?0:pr});renderWorld();renderDecoBar();renderCoins();
 }
 function decoDragTo(cx,cy){
   const dd=decoDrag,d=state.decor[dd.i];if(!d)return;const w=screenToWorld(cx,cy),[x,y]=decoSnap(d.t,w.x+dd.ox,w.y+dd.oy);
@@ -3796,7 +3803,8 @@ function giveWild(bk,rare){
 /* ===== 道具與介面圖示（14x，第 26 節 26.1、26.7 第 3 步）=====
    原圖 assets/icons/<名稱>.png（300px 高）；遊戲用縮小版 assets/icons/s/（96px 高，約 12–25 KB）。
    SVG 裡（野外道具、市集攤位、道具列表）先確認圖片載好才用（iconReady），還沒載好照舊的向量畫法；HTML 的 <img>（按鈕、標題）直接用。 */
-const ICON_DIM={accel:[68,96],coin:[93,96],mutagen:[80,96],seed_bag:[80,96],specimen:[62,96],tray:[149,96]};
+const ICON_DIM={accel:[68,96],coin:[93,96],mutagen:[80,96],seed_bag:[80,96],specimen:[62,96],tray:[149,96],
+  town:[88,96],explore:[72,96],codex:[79,96],quest:[71,96],friends:[98,96],decor:[59,96],settings:[96,96],map:[104,96],harvest:[79,96],self:[61,96],cross:[84,96],shovel:[41,96],hoe:[56,96],dress:[75,96],genes:[76,96],trophy:[90,96]};/* 45（15k） */
 const ICON_OK={};
 const iconSrc=n=>'assets/icons/s/'+n+'.png?v='+BUILD;
 function iconReady(n){const v=ICON_OK[n];if(v!==undefined)return v===1;ICON_OK[n]=0;
@@ -4729,11 +4737,16 @@ sceneEl.addEventListener('pointerdown',e=>{
   if(sowMode){const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&!state.plots[+g.dataset.plot]){sowing=true;sowAt(e.clientX,e.clientY)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
   if(shovelMode){const g=e.target.closest&&e.target.closest('[data-plot]');if(!shovelAsk&&g&&state.plots[+g.dataset.plot]){shoveling=true;shovelStroke=[];strokeLast=null;strokeTo(e.clientX,e.clientY,shovelAt)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
   if(recallMode){const tg=e.target.closest&&(e.target.closest('[data-decor]')||e.target.closest('[data-plot]'));if(tg){recallHit.clear();recallStroke=[];recalling=true;strokeLast=null;strokeTo(e.clientX,e.clientY,recallAt)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}/* 36.7 */
-  if(decoMode){decoPainted.clear();
-    if(decoPaint){decoPainting=true;decoPaintAt(e.clientX,e.clientY);return}
+  if(decoMode){decoPainted.clear();decoEnd();
     const dg=e.target.closest&&e.target.closest('[data-decor]');
-    if(dg){const i=+dg.dataset.decor,d=state.decor[i];if(d){const w=screenToWorld(e.clientX,e.clientY);decoDrag={i,fx:d.x,fy:d.y,ox:d.x-w.x,oy:d.y-w.y,on:false,bad:false,msg:''};return}}
-    panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
+    if(dg){const i=+dg.dataset.decor,d=state.decor[i];if(d){const w=screenToWorld(e.clientX,e.clientY),dd={i,fx:d.x,fy:d.y,ox:d.x-w.x,oy:d.y-w.y,on:false,bad:false,msg:''};
+      if(quickMove===i){decoDrag=dd;return}/* 從小選單按「移動」：直接拖 */
+      decoPend={i,x:e.clientX,y:e.clientY,t:setTimeout(()=>{if(decoPend&&decoPend.i===i&&state.decor[i]===d){decoPend=null;decoDrag=dd;try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}toast('拖到新的位置再放開',1500)}},350)};return}}
+    const ps={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};
+    if(!decoSel){panStart=ps;return}
+    decoPaint=decoSel;decoStroke=[];decoPaintAt(e.clientX,e.clientY);
+    if(decoGrid(decoSel))decoPainting=true;else panStart=ps;
+    return}
   if(pickMode){pickHit.clear();const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&state.plots[+g.dataset.plot]){picking=true;pickDir=!pickSet.has(+g.dataset.plot);pickStroke=[];strokeLast=null;strokeTo(e.clientX,e.clientY,pickAt)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
   if(accelMode){accelHit.clear();const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&state.plots[+g.dataset.plot]){acceling=true;accelAt(e.clientX,e.clientY)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
   if(buildMode){
@@ -4760,6 +4773,8 @@ sceneEl.addEventListener('pointermove',e=>{
   if(acceling){accelAt(e.clientX,e.clientY);return}
   if(buildPainting){strokeTo(e.clientX,e.clientY,buildAt);return}
   if(picking){strokeTo(e.clientX,e.clientY,pickAt);return}
+  if(decoPend&&tapStart&&tapStart.moved){const c=decoPend;clearTimeout(c.t);decoPend=null;decoRec=[];strokeLast=null;strokeTo(c.x,c.y,decoRecallAt)}
+  if(decoRec){strokeTo(e.clientX,e.clientY,decoRecallAt);return}
   if(decoPainting){decoPaintAt(e.clientX,e.clientY);return}
   if(decoDrag){if(tapStart&&tapStart.moved)decoDragTo(e.clientX,e.clientY);return}
   if(sowing){sowAt(e.clientX,e.clientY);return}
@@ -4771,9 +4786,10 @@ const ptrEnd=e=>{
   if(pinch){if(ptrs.size<2)pinch=null;return}
   if(recallMode){if(recalling){recalling=false;if(recallStroke&&recallStroke.length)recallHist.push(recallStroke);recallStroke=null;save()}panStart=null;tapStart=null;return}
   if(decoMode){panStart=null;
-    if(decoPainting){decoPainting=false;save();tapStart=null;return}
-    if(decoDrag){const qi=decoDrag.i,qon=decoDrag.on;decoDrop();tapStart=null;if(quickMove!=null&&qi===quickMove&&qon){quickMove=null;exitDecor();toast('移好了')}return}
-    if(tapStart&&!tapStart.moved&&e.type==='pointerup'&&selDecor!=null){selDecor=null;renderWorld();renderDecoBar()}
+    if(decoPend){const c=decoPend;clearTimeout(c.t);decoPend=null;if(e.type==='pointerup'){decoRec=[];decoRecallAt(c.x,c.y)}}
+    if(decoRec){const st=decoRec;decoRec=null;if(st.length){decoHist.push({t:'rec',items:st});save();toast(`收回 ${st.length} 個到倉庫`,1500)}renderDecoBar();tapStart=null;return}
+    if(decoStroke){const st=decoStroke;decoStroke=null;decoPainting=false;decoPaint=null;if(st.length){decoHist.push({t:'put',items:st});save()}renderDecoBar()}
+    if(decoDrag){const dd=decoDrag,qi=dd.i,qon=dd.on,d=state.decor[qi];decoDrop();selDecor=null;if(d&&qon&&!dd.bad){decoHist.push({t:'mv',d,fx:dd.fx,fy:dd.fy})}renderWorld();renderDecoBar();tapStart=null;if(quickMove!=null&&qi===quickMove&&qon){quickMove=null;exitDecor();toast('移好了')}return}
     tapStart=null;return}
   if(cultPend){const c=cultPend;clearTimeout(c.t);cultPend=null;if(e.type==='pointerup'){cultDel=[];cultDelAt(c.x,c.y)}}
   if(cultDel){if(cultDel.length){cultHist.push({t:'del',items:cultDel});save()}cultDel=null;renderBuildBar();panStart=null;tapStart=null;return}
@@ -4793,7 +4809,7 @@ const ptrDrop=e=>{if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(p
 sceneEl.addEventListener('lostpointercapture',ptrDrop);
 window.addEventListener('pointerup',ptrDrop);window.addEventListener('pointercancel',ptrDrop);
 function resetPtrs(){ptrs.clear();pinch=null;tapStart=null;panStart=null;dragPlot=null}
-document.addEventListener('visibilitychange',()=>{if(document.hidden){resetPtrs();try{cultEnd();if(shovelMode){shoveling=false;exitShovel()}if(buildMode)exitBuild()}catch(e){}}});/* 39：切到背景自動結束剷除、開墾 */
+document.addEventListener('visibilitychange',()=>{if(document.hidden){resetPtrs();try{cultEnd();if(shovelMode){shoveling=false;exitShovel()}if(buildMode)exitBuild();if(decoMode)exitDecor()}catch(e){}}});/* 39：切到背景自動結束剷除、開墾 */
 window.addEventListener('blur',resetPtrs);window.addEventListener('pagehide',resetPtrs);
 // iPhone Safari 會忽略禁止縮放的設定：攔截網頁本身的縮放手勢，雙指只縮放遊戲畫面
 for(const t of ['gesturestart','gesturechange','gestureend'])document.addEventListener(t,e=>e.preventDefault(),{passive:false});
@@ -4818,7 +4834,8 @@ function autoSeedName(p){
   return shortApp(ph)+(gen?` ${gen}代`:'');
 }
 // ===== 36.8（15f）：綠色圓按鈕＋長按圓盤、點或拖的回饋、點裝飾操作、大門寫字 =====
-const RING=[['harvest','收成'],['self','自交'],['accel','加速'],['shovel','剷除'],['build','開墾'],['tray','育苗']];/* 39.1（15j）：裝飾、收回、建設拿掉；裝飾在右側選單 */
+const RING=[['harvest','收成'],['self','自交'],['accel','加速'],['shovel','剷除'],['build','開墾'],['tray','育苗']];
+const RING_ICON={harvest:'harvest',self:'self',accel:'accel',shovel:'shovel',build:'hoe',tray:'tray'};/* 45 *//* 39.1（15j）：裝飾、收回、建設拿掉；裝飾在右側選單 */
 var ringOpen=false;let ringPress=null,ringHl=null;
 function ringState(k){const nd=sbtnNeed(state),acc=((state.items||{}).acc)||0;
   if(k==='harvest')return nd.waterAll?'':'目前沒有成熟的植株';
@@ -4831,7 +4848,7 @@ function openRing(){if(ringOpen||!state)return;const b=document.getElementById('
   /* 從左邊（9 點鐘）順時針排到正上方（12 點鐘）：按鈕在右下角，右邊沒有空間 */
   const a0=185,a1=90,m=document.getElementById('ringMenu');
   m.innerHTML=RING.map(([k,n],j)=>{const a=(a0+(a1-a0)*j/(RING.length-1))*Math.PI/180,x=cx+R*Math.cos(a),y=cy-R*Math.sin(a),off=ringState(k);
-    return `<button class="ri${off?' off':''}" role="menuitem" data-ring="${k}" aria-disabled="${off?'true':'false'}" style="left:${x.toFixed(0)}px;top:${y.toFixed(0)}px;--dx:${(cx-x).toFixed(0)}px;--dy:${(cy-y).toFixed(0)}px;animation-delay:${j*28}ms">${n}</button>`}).join('');
+    return `<button class="ri${off?' off':''}" role="menuitem" data-ring="${k}" aria-disabled="${off?'true':'false'}" style="left:${x.toFixed(0)}px;top:${y.toFixed(0)}px;--dx:${(cx-x).toFixed(0)}px;--dy:${(cy-y).toFixed(0)}px;animation-delay:${j*28}ms"><img src="assets/icons/s/${RING_ICON[k]}.png" alt="" aria-hidden="true" onerror="this.remove()"><span>${n}</span></button>`}).join('');
   m.hidden=false;document.getElementById('ringOv').hidden=false;document.getElementById('ringBtn').classList.add('on');ringOpen=true;ringHl=null}
 function closeRing(){ringOpen=false;ringHl=null;{const b=document.getElementById('ringBtn');if(b)b.classList.remove('on')}const m=document.getElementById('ringMenu');if(m){m.hidden=true;m.innerHTML=''}const o=document.getElementById('ringOv');if(o)o.hidden=true}
 function ringAt(x,y){const el=document.elementFromPoint(x,y),b=el&&el.closest&&el.closest('[data-ring]');return b?b.dataset.ring:null}
@@ -4883,7 +4900,7 @@ function showPop(html,sx,sy,key){const el=document.getElementById('decoPop');el.
   el.style.left=Math.max(8,Math.min(W-w-8,sx-w/2))+'px';el.style.top=Math.max(60,Math.min(H-h-100,sy-h-12))+'px';popKeep()}
 function popKeep(){clearTimeout(decoPopT);decoPopT=setTimeout(closeDecoPop,3000)}
 function openDecoPop(i){const d=state.decor[i];if(!d)return;let r;try{r=sceneEl.querySelector(`[data-decor="${i}"]`).getBoundingClientRect()}catch(e){return}
-  showPop(`${isSign(d.t)?'<button data-dp="text">改文字</button>':''}<button data-dp="move">移動</button><button data-dp="recall">收回</button>`,r.left+r.width/2,r.top,'d'+i);
+  showPop(`${isSign(d.t)?'<button data-dp="text">改文字</button>':''}${isSign(d.t)?'':'<button data-dp="flip">轉向</button>'}<button data-dp="move">移動</button><button data-dp="recall">收回</button>`,r.left+r.width/2,r.top,'d'+i);
   document.getElementById('decoPop').dataset.i=i}
 function openGatePop(){const [gx,gy]=GATE.farm,s=worldToScreenPt(gx,gy-40);showPop(`<button data-dp="town">往城鎮</button><button data-dp="gtext">改文字</button>`,s.x,s.y,'gate')}
 function worldToScreenPt(x,y){try{const pt=sceneEl.createSVGPoint();pt.x=x;pt.y=y;const m=sceneEl.getScreenCTM();const q=pt.matrixTransform(m);return {x:q.x,y:q.y}}catch(e){return {x:innerWidth/2,y:innerHeight/2}}}
@@ -4894,6 +4911,7 @@ document.getElementById('decoPop').addEventListener('click',e=>{const b=e.target
   const d=state.decor[i];if(!d)return;
   if(a==='text'){openSign(i);return}
   if(a==='recall'){decoStorePut(d.t);state.decor.splice(i,1);save();renderWorld();toast(`「${(DECOR_MAP[d.t]||{}).n||'裝飾'}」已收回裝飾倉庫`);return}
+  if(a==='flip'){if(d.fl)delete d.fl;else d.fl=1;save();renderWorld();return}
   if(a==='move'){openDecor();selDecor=i;quickMove=i;renderWorld();renderDecoBar();toast('按住這件裝飾拖到想放的位置，放開就完成',3000);return}});
 sceneEl.addEventListener('pointerdown',()=>{if(!document.getElementById('decoPop').hidden)closeDecoPop()},true);
 function gateText(st){const t=st&&st.gateTxt;if(t)return t;const n=st===state?myName():(viewing&&viewing.name)||'朋友';return `${n} 的農場`}

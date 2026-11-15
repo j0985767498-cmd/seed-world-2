@@ -352,6 +352,8 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 @keyframes wxLeaf{0%{transform:translate3d(0,0,0) rotate(0)}50%{transform:translate3d(calc(var(--dx)*.5 + 3vw),56vh,0) rotate(200deg)}100%{transform:translate3d(var(--dx),112vh,0) rotate(400deg)}}
 @media (prefers-reduced-motion: reduce){#wx{display:none!important}}
 #exHint{position:fixed;left:50%;transform:translateX(-50%);top:calc(52px + env(safe-area-inset-top,0px));z-index:10;max-width:calc(100vw - 150px);text-align:center;background:rgba(255,246,222,.92);border:2px solid #5A3416;border-radius:10px;padding:3px 8px;font-size:12px;line-height:1.3;color:#5A3416;pointer-events:none}#exHint[hidden]{display:none}
+#testTag{position:fixed;left:10px;top:calc(112px + env(safe-area-inset-top,0px));z-index:11;background:#C0392B;color:#fff;font-weight:700;font-size:12px;padding:3px 9px;border-radius:9px;pointer-events:none}#testTag[hidden],#testNote[hidden]{display:none}
+#testNote{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(176px + env(safe-area-inset-bottom,0px));z-index:12;max-width:86vw;background:rgba(192,57,43,.92);color:#fff;font-size:13px;font-weight:700;padding:6px 12px;border-radius:10px;pointer-events:none;text-align:center}
 #mapBanner{position:fixed;left:10px;top:calc(76px + env(safe-area-inset-top,0px));z-index:11;background:rgba(36,50,64,.88);color:#fff;font-weight:700;font-size:15px;padding:6px 12px;border-radius:10px;pointer-events:none;animation:bannerIn 2.5s ease forwards}#mapBanner[hidden]{display:none}
 @keyframes bannerIn{0%{opacity:0;transform:translateY(-6px)}12%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0}}
 #mapBtn{position:fixed;right:8px;top:calc(252px + env(safe-area-inset-top,0px));z-index:10;width:54px;height:44px;border-radius:14px;border:2px solid #5A3416;background:#FFF6DE;color:#5A3416;font:inherit;font-weight:700;font-size:13px;box-shadow:0 3px 0 #5A3416}#mapBtn[hidden]{display:none}
@@ -486,6 +488,10 @@ input,textarea,select{font-size:16px !important}
 .sway.swayB{animation-name:swayB;animation-duration:3.6s}@keyframes swayB{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
 #scene.bgp *{animation-play-state:paused !important}
 @media (prefers-reduced-motion:reduce){.brth,.blink,.asmk,.bfx,.bfy,.bfw,.fishO,.ripA,.twX,.twB,.spkA,.sndr,.fdrop,.flick,.fire,.sprk,.growpop,.sway.swayB{animation:none}.asmk,.ripA,.spkA,.sndr,.fdrop,.sprk,.blink{display:none}}
+.dz2{opacity:0;animation:dz2 3s ease-in-out infinite}@keyframes dz2{0%,100%{opacity:0}50%{opacity:1}}
+.dz3b{opacity:0;animation:dz3b 6s linear infinite}@keyframes dz3b{0%{opacity:0}33.3%{opacity:1}66.6%{opacity:1}66.7%,100%{opacity:0}}
+.dz3c{opacity:0;animation:dz3c 6s linear infinite}@keyframes dz3c{0%,33.3%{opacity:0}66.6%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.dz2,.dz3b,.dz3c{display:none}}
 .wflow{animation:wflow 12s linear infinite}@keyframes wflow{from{transform:translateY(0)}to{transform:translateY(375px)}}
 .wdrift{animation:wdrift 40s linear infinite}@keyframes wdrift{0%{transform:translate(0,0);opacity:.75}50%{transform:translate(91px,187px);opacity:1}100%{transform:translate(183px,375px);opacity:.75}}
 #scene.bgp .wflow,#scene.bgp .wdrift{animation-play-state:paused}
@@ -530,7 +536,7 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
 <svg id="scene" viewBox="0 0 400 800" role="application" aria-label="遊戲畫面"><defs><radialGradient id="dglow"><stop offset="0" stop-color="#FFE6A8" stop-opacity=".75"/><stop offset="1" stop-color="#FFE6A8" stop-opacity="0"/></radialGradient></defs><g id="worldLayer"></g><g id="fxLayer" pointer-events="none"></g><g id="charLayer"></g><g id="fgLayer" pointer-events="none"></g></svg>
 <div id="wx" aria-hidden="true" hidden></div>
 <div id="exHint" hidden></div>
-<div id="mapBanner" hidden></div>
+<div id="mapBanner" hidden></div><div id="testTag" hidden>測試模式</div><div id="testNote" hidden></div>
 <button id="mapBtn" hidden aria-label="雪原地圖"><img class="ibimg" src="assets/icons/s/map.png" alt="" aria-hidden="true" onerror="this.remove()"><span>地圖</span></button>
 <div id="mapPanel" hidden role="dialog" aria-label="雪原地圖"></div>
 <div id="fadeOv" aria-hidden="true"></div>
@@ -1115,7 +1121,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-15u';
+const BUILD='2026-11-15w';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -1381,23 +1387,82 @@ function fruitPrep(w,h,d){
   return {w,h,d,body,stem,L,base,x0,x1:Math.max(x0,x1),y0,y1:Math.max(y0,y1),rl,rr};
 }
 /* 顏色規格：回傳 (u,v)→[r,g,b]，以及特殊效果清單 [{n:名稱, s:強度, side:-1 左半／1 右半／0 全部}] */
-function fruitColSpec(key){
-  const P=colParts(key),rgb=n=>RGBC[n]||RGBC.white;
-  const rainbow=(v,pale)=>{const t=clamp(v,0,1)*(RAINBOW.length-1),i=Math.min(RAINBOW.length-2,Math.floor(t)),c=mixRGB(hexRGB(RAINBOW[i]),hexRGB(RAINBOW[i+1]),t-i);return pale?mixRGB(c,[255,255,255],0.42):c};
+/* ===== 57（15w）：夢幻色八種的畫法。u、v＝果實本體範圍內的 0–1；r＝到中心的距離（邊緣約 1）；ang＝繞中心的角度；f＝影格。
+   每種顏色依材質疊三到五層（深處、反射、邊緣回光、亮點），所有色塊都是漸層；動態＝第 2、3 影格把光或內容移到別的位置（48.3 交叉淡入淡出）。
+   銀、金、珍珠白、彩虹 2 個影格；黑曜、水藍、水晶、星空 3 個影格。彩虹維持橫向彩虹（在 fruitColSpec 裡）。 */
+const DREAM_NF={silver:2,gold:2,pearl:2,rainbow:2,obsidian:3,blue:3,crystal:3,starry:3};
+const DREAM_PERIOD={silver:3,gold:3,pearl:6,rainbow:6,obsidian:6,blue:6,crystal:6,starry:6};
+const dzR=seed=>{let R=seed>>>0;return ()=>{R=(R*1664525+1013904223)>>>0;return R/4294967296}};
+const DZ_STARS=(()=>{const R=dzR(4242),o=[];for(let i=0;i<26;i++)o.push([0.1+R()*0.8,0.1+R()*0.8,0.012+R()*0.01,i%3]);return o})();
+const DZ_XSTAR=[[0.30,0.34,0],[0.66,0.28,1],[0.58,0.70,2],[0.26,0.66,1]];
+const DZ_FACET=[0,1,2].map(f=>{const R=dzR(900+f*77);return Array.from({length:21},()=>R())});
+const DZ_GSPK=[[[0.62,0.30],[0.30,0.56],[0.66,0.68]],[[0.52,0.24],[0.36,0.66],[0.72,0.52]]];
+const DZ_CSPK=[[[0.64,0.30],[0.30,0.60],[0.60,0.74]],[[0.36,0.30],[0.70,0.50],[0.44,0.76]],[[0.56,0.24],[0.26,0.46],[0.70,0.70]]];
+const DZ_OBS=[{e:[0.50,0.56],fa:-2.2,o:[128,88,204],i:[88,132,220]},{e:[0.54,0.52],fa:-1.2,o:[60,156,130],i:[156,178,150]},{e:[0.47,0.54],fa:-2.9,o:[84,124,186],i:[156,104,196]}];
+function dreamPx(n,f,u,v,sh,asp){
+  /* sh＝明暗（<1 暗、>1 亮）；asp＝高／寬（算圓點用） */
+  const mx=(c,d,a)=>{a=a<0?0:a>1?1:a;return [c[0]+(d[0]-c[0])*a,c[1]+(d[1]-c[1])*a,c[2]+(d[2]-c[2])*a]};
+  const cl=x=>x<0?0:x>1?1:x,bd=(x,c,w)=>Math.max(0,1-Math.abs(x-c)/w),el=(cx,cy,rx,ry)=>Math.max(0,1-Math.hypot((u-cx)/rx,(v-cy)/ry));
+  const dx=u-0.5,dy=v-0.5,r=Math.hypot(dx,dy)*2,ang=Math.atan2(dy,dx),rim=cl((r-0.3)/0.7),W=[255,255,255];
+  const shade=c=>sh<=1?[c[0]*sh,c[1]*sh,c[2]*sh]:mx(c,W,Math.min((sh-1)/0.25,1));
+  const dot=(cx,cy,rad)=>cl(1.6-1.6*Math.hypot(u-cx,(v-cy)*asp)/rad),cross=(cx,cy,len)=>{const a=Math.abs(u-cx),b=Math.abs(v-cy)*asp;return Math.max(cl(1-a/len)*cl(1-b/(len*0.16)),cl(1-b/len)*cl(1-a/(len*0.16)))};
+  const hard=(cx,cy)=>cl(el(cx,cy,0.085,0.062)*3);
+  let c;
+  if(n==='pearl'){const g1=f?[0.45,0.68]:[0.40,0.66],rot=f?0.5:0,sx=f?0.04:0,sy=f?0.03:0;
+    c=shade([236,240,246]);const g=el(g1[0],g1[1],0.57,0.41);c=mx(c,[128,140,164],Math.pow(g,0.75)*0.92);c=mx(c,[104,114,140],Math.pow(el(g1[0],g1[1],0.40,0.26),1.6)*0.45);
+    c=mx(c,[246,248,252],cl((r-0.8)/0.2)*Math.max(0,Math.cos(ang-2.0))*0.9);
+    c=mx(c,[240,196,216],0.7*rim*Math.max(0,Math.cos(ang-Math.PI-rot))*0.6);c=mx(c,[190,226,236],0.45*rim*Math.max(0,Math.cos(ang-rot))*0.7);
+    c=mx(c,W,Math.pow(el(0.40+sx,0.30+sy,0.30,0.24),1.2)*0.95);c=mx(c,W,el(0.58+sx,0.48+sy,0.15,0.11)*0.7)}
+  else if(n==='silver'||n==='gold'){const gd=n==='gold',o=f?0.07:0,hz=v-(0.56+o)+0.64*dx*dx-0.05*dx,q=u+0.6*v;
+    c=shade(gd?[246,200,62]:[214,220,230]);
+    c=mx(c,gd?[214,150,34]:[150,158,174],cl((hz-0.08)/0.1)*0.55);c=mx(c,gd?[168,96,18]:[92,100,118],bd(hz,0.07,0.15)*(gd?0.80:0.90));
+    c=mx(c,gd?[255,238,150]:[240,244,250],bd(hz,-0.025,0.05)*0.9);
+    c=mx(c,gd?[255,226,120]:[232,238,246],cl((r-0.72)/0.28)*Math.max(0,Math.cos(ang-2.3))*0.85);
+    if(gd){const h=f?[0.42,0.31]:[0.36,0.29];c=mx(c,[255,250,214],el(h[0],h[1],0.24,0.19)*0.85);c=mx(c,W,hard(h[0]-0.02,h[1]-0.02));for(const [sx,sy] of DZ_GSPK[f])c=mx(c,[255,252,230],cross(sx,sy,0.075))}
+    else{const p=f?0.66:0.50;c=mx(c,W,bd(q,p,0.05)*0.8*(1-rim*0.5));c=mx(c,W,bd(q,p+0.17,0.02)*0.7*(1-rim*0.5));c=mx(c,W,hard(0.33,0.26))}}
+  else if(n==='blue'){const p=[0,2.1,4.2][f];
+    c=shade([53,182,230]);c=mx(c,[18,112,198],cl((v-0.45)/0.55)*0.75);c=mx(c,[150,232,255],cl((0.42-v)/0.42)*0.55);
+    const a1=1-Math.abs(Math.sin(8.5*u+1.3*Math.sin(6*v+p)+0.7*p)),a2=1-Math.abs(Math.sin(9.5*v+1.3*Math.sin(6.5*u-p)+1.3*p)),net=Math.pow(Math.max(a1,a2),9)+0.6*Math.pow(a1*a2,3);
+    c=mx(c,[214,248,255],cl(net)*0.62*(1-rim*rim));c=mx(c,[120,226,250],cl((r-0.7)/0.3)*Math.max(0,Math.cos(ang-0.8))*0.7);c=mx(c,W,hard(0.33,0.27))}
+  else if(n==='crystal'){const ex=u-0.47,ey=v-0.47,rr=Math.hypot(ex,ey)*2,ring=rr<0.42?0:rr<0.78?1:2,t=((Math.atan2(ey,ex)/(2*Math.PI)+(ring%2)*0.5/7)%1+1)%1*7,id=Math.floor(t),fr=t-id,val=DZ_FACET[f][ring*7+id];
+    c=shade([178,226,242]);c=val<0.55?mx(c,[92,150,196],(0.55-val)/0.55*0.42):mx(c,W,(val-0.55)/0.45*0.5);
+    const edge=Math.max(bd(Math.min(fr,1-fr),0,0.035/Math.max(0.25,rr)),bd(rr,0.42,0.03),bd(rr,0.78,0.03));c=mx(c,[240,252,255],edge*0.40);
+    const hu=((Math.atan2(ey,ex)/(2*Math.PI)+f*0.12)%1+1)%1*6,hc=[[255,170,190],[255,220,160],[190,240,170],[160,230,250],[180,190,255],[230,180,250]],h0=hc[Math.floor(hu)%6],h1=hc[(Math.floor(hu)+1)%6];
+    c=mx(c,mx(h0,h1,hu%1),bd(rr,0.78,0.07)*0.35);c=mx(c,W,hard(0.33,0.27));for(const [sx,sy] of DZ_CSPK[f])c=mx(c,W,cross(sx,sy,0.07))}
+  else if(n==='starry'){const np=[[0.40,0.44],[0.46,0.48],[0.36,0.50]][f],nc=[[0.60,0.66],[0.56,0.62],[0.64,0.60]][f],br=[1,0.45,0.15];
+    c=shade([26,28,84]);c=mx(c,[120,70,190],el(np[0],np[1],0.34,0.27)*0.62);c=mx(c,[40,130,180],el(nc[0],nc[1],0.30,0.23)*0.55);
+    c=mx(c,[190,180,240],bd((v-0.52)-0.55*dx,0,0.10)*0.30);c=mx(c,[14,14,46],cl((r-0.7)/0.3)*0.8);
+    for(const [sx,sy,sr,g] of DZ_STARS){if(Math.abs(u-sx)>0.04)continue;c=mx(c,W,dot(sx,sy,sr)*br[(g+f)%3])}
+    for(const [sx,sy,g] of DZ_XSTAR)c=mx(c,W,cross(sx,sy,0.06)*br[(g+f)%3]);c=mx(c,[230,236,255],hard(0.32,0.26)*0.8)}
+  else if(n==='obsidian'){const O=DZ_OBS[f],ox=(u-O.e[0])/0.50,oy=(v-O.e[1])/0.44,d=Math.hypot(ox,oy),an=Math.atan2(oy,ox),side=0.30+0.70*Math.pow(Math.max(0,0.5+0.5*Math.cos(an-O.fa)),1.5);
+    c=shade([20,20,26]);c=mx(c,[96,108,110],Math.pow(Math.max(0,1-d/1.2),1.2)*0.50);c=mx(c,O.o,bd(d,0.66,0.36)*0.66*side);c=mx(c,O.i,bd(d,0.30,0.34)*0.50*side);
+    c=mx(c,[14,14,18],cl((r-0.74)/0.26)*0.85);c=mx(c,[235,240,255],el(0.33,0.27,0.17,0.13)*0.35);c=mx(c,W,cl(el(0.33,0.27,0.075,0.055)*3));
+    for(const [sx,sy] of [[0.66,0.38],[0.28,0.60],[0.62,0.76]])c=mx(c,W,dot(sx,sy,0.02)*0.9)}
+  else return null;
+  if(sh<1){const m=0.6+0.4*sh;c=[c[0]*m,c[1]*m,c[2]*m]}/* 疊完之後再留一點暗面，果實才有體積 */
+  return c}
+/* 這個外觀有幾個影格、多久一輪（沒有夢幻色＝1 個影格） */
+function dreamInfo(a){let nf=1,per=0,pale=true;const add=k=>{if(!k)return;const P=colParts(k);if(P.t!=='s'&&P.t!=='l'&&P.t!=='d')return;for(const n of [P.a,P.b])if(n&&DREAM_NF[n]){nf=Math.max(nf,DREAM_NF[n]);per=Math.max(per,DREAM_PERIOD[n]);if(P.t!=='l')pale=false}};
+  add(a.skin);if(a.pat)add(a.pat.c);return nf>1?{nf,per:per*(pale?1.5:1)}:null}
+function fruitColSpec(key,frame){
+  const P=colParts(key),rgb=n=>RGBC[n]||RGBC.white,fr=frame||0;
+  /* 57.1 彩虹：維持橫向彩虹；第 2 影格色帶位移 0.17（循環） */
+  const rainbow=(v,pale)=>{let c;if(fr%2){const t=(((v+0.17)%1)+1)%1*RAINBOW.length,i=Math.floor(t)%RAINBOW.length;c=mixRGB(hexRGB(RAINBOW[i]),hexRGB(RAINBOW[(i+1)%RAINBOW.length]),t-Math.floor(t))}
+    else{const t=clamp(v,0,1)*(RAINBOW.length-1),i=Math.min(RAINBOW.length-2,Math.floor(t));c=mixRGB(hexRGB(RAINBOW[i]),hexRGB(RAINBOW[i+1]),t-i)}return pale?mixRGB(c,[255,255,255],0.42):c};
   const one=(n,pale)=>n==='rainbow'?((u,v)=>rainbow(v,pale)):(()=>{const c=pale?mixRGB(rgb(n),[255,255,255],0.42):rgb(n);return ()=>c})();
   if(P.t==='d'){const A=one(P.a,false),B=one(P.b,false);return {at:(u,v)=>u<0.5?A(u,v):B(u,v),fx:[{n:P.a,s:1,side:-1},{n:P.b,s:1,side:1}]}}
   if(P.t==='l')return {at:one(P.a,true),fx:[{n:P.a,s:0.5,side:0}]};
   if(P.t==='s')return {at:one(P.a,false),fx:[{n:P.a,s:1,side:0}]};
   return {at:one(P.a,false),fx:[]};
 }
-/* 上色（純函式，方便測試）：B=fruitPrep 結果，a=外觀，ripe<1＝結果期 */
-function fruitPaint(B,a,ripe,seed){
-  const {w,h,d,body,stem,L,base,x0,x1,y0,y1,rl,rr}=B,out=new Uint8ClampedArray(d),W=Math.max(1,x1-x0),H=Math.max(1,y1-y0);
-  const ok=ripe>=1,sk=fruitColSpec(a.skin);
+/* 上色（純函式，方便測試）：B=fruitPrep 結果，a=外觀，ripe<1＝結果期，frame＝夢幻色的影格（48.3） */
+function fruitPaint(B,a,ripe,seed,frame){
+  const {w,h,d,body,stem,L,base,x0,x1,y0,y1,rl,rr}=B,out=new Uint8ClampedArray(d),W=Math.max(1,x1-x0),H=Math.max(1,y1-y0),asp=H/W,fr=frame||0;
+  const ok=ripe>=1,sk=fruitColSpec(a.skin,fr);
   let R=seed>>>0||7;const rnd=()=>{R=(R*1664525+1013904223)>>>0;return R/4294967296};
   /* 花紋 */
   const pat=ok&&a.pat?a.pat:null,forms=pat?(pat.f2!=null?[pat.f,pat.f2]:[pat.f]):[];
-  let pc=null;if(pat)pc=pat.c===a.skin?{at:(u,v)=>sk.at(u,v).map(x=>x*0.85)}:fruitColSpec(pat.c);
+  let pc=null;if(pat)pc=pat.c===a.skin?{at:sk.at,fx:sk.fx,dim:0.85}:fruitColSpec(pat.c,fr);
   const spots=[],stars=[];
   if(forms.includes(1))for(let k=0;k<12;k++)spots.push([x0+W*(0.12+rnd()*0.76),y0+H*(0.12+rnd()*0.76),W/18*(0.8+rnd()*0.4)]);
   if(forms.includes(2))for(let k=0;k<14;k++)stars.push([x0+W*(0.08+rnd()*0.84),y0+H*(0.08+rnd()*0.84),W/28*(0.8+rnd()*0.4)]);
@@ -1408,25 +1473,18 @@ function fruitPaint(B,a,ripe,seed){
       else if(f===2){for(const s of stars){const dx=Math.abs(x-s[0]),dy=Math.abs(y-s[1]);if(dx<=s[2]&&dy<=s[2]&&Math.sqrt(dx)+Math.sqrt(dy)<=Math.sqrt(s[2])){hit=true;break}}}
       else grad=v;}
     return [hit,grad]};
-  /* 特殊效果用的閃點 */
-  const fxs=ok?sk.fx:[],spark=[];
-  if(fxs.some(f=>['gold','crystal','starry'].includes(f.n)))for(let k=0;k<11;k++)spark.push([x0+W*rnd(),y0+H*rnd(),W*(0.009+rnd()*0.008),rnd()]);/* 半徑跟著果實寬；31.6 數量減半、縮小 */
+  /* 一個顏色在這個像素的樣子：基本色、混色＝底色套明暗；夢幻色＝57 的畫法（淡的和淡底色各半）。k＝明暗 */
+  const px=(S,u,v,k)=>{let c=S.at(u,v);c=k<=1?c.map(z=>z*k):mixRGB(c,[255,255,255],Math.min((k-1)/0.25,1));
+    if(ok)for(const f of S.fx){if(f.side<0&&u>=0.5||f.side>0&&u<0.5)continue;if(f.n==='rainbow')continue;const D=dreamPx(f.n,fr%DREAM_NF[f.n],u,v,k,asp);if(D)c=f.s>=1?D:mixRGB(c,D,0.5)}
+    if(S.dim)c=c.map(z=>z*S.dim);return c};
   for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x,o=i*4;
     if(body[i]){
-      const u=(x-x0)/W,v=(y-y0)/H;let c=sk.at(u,v);
-      if(pat){const [hit,grad]=inPat(x,y,u,v);if(grad>=0)c=mixRGB(c,pc.at(u,v),grad);if(hit)c=pc.at(u,v)}
+      const u=(x-x0)/W,v=(y-y0)/H;
       /* 明暗：k = 亮度 / 基準，暗部加強 1.7 倍；亮部往白色混合 */
       let k=L[i]/base;if(k<1)k=Math.max(0,1-(1-k)*1.7);
-      c=k<=1?c.map(z=>z*k):mixRGB(c,[255,255,255],Math.min((k-1)/0.25,1));
-      /* 特殊效果 */
-      for(const f of fxs){if(f.side<0&&u>=0.5||f.side>0&&u<0.5)continue;const s=f.s;
-        if(f.n==='silver'){const q=u+v*0.6,b1=Math.max(0,1-Math.abs(q-0.62)/0.07),b2=Math.max(0,1-Math.abs(q-0.85)/0.025);c=mixRGB(c,[255,255,255],(b1*0.6+b2*0.45)*s)}
-        else if(f.n==='pearl'){c=mixRGB(c,mixRGB([245,169,203],[169,216,245],u),0.25*s*(0.6+0.4*Math.sin(v*6.3+u*3)))}
-        else if(f.n==='gold'){const q=u+v*0.7,b1=Math.max(0,1-Math.abs(q-0.55)/0.09);c=mixRGB(c,[255,241,168],b1*0.55*s)}
-        else if(f.n==='obsidian'){const q=u-v,b1=Math.max(0,1-Math.abs(q+0.05)/0.04),b2=Math.max(0,1-Math.abs(q+0.18)/0.03);c=mixRGB(mixRGB(c,[169,121,232],b1*0.75*s),[95,211,166],b2*0.7*s)}
-        else if(f.n==='crystal'){c=mixRGB(c,[223,246,255],0.25*s);const q=u+v*0.5,b1=Math.max(0,1-Math.abs(q-0.5)/0.05);c=mixRGB(c,[255,255,255],b1*0.5*s)}
-      }
-      if(spark.length&&fxs.length){for(const p of spark){const dx=x-p[0],dy=y-p[1];if(dx*dx+dy*dy<=p[2]*p[2]){const f=fxs.find(z=>['gold','crystal','starry'].includes(z.n)&&!(z.side<0&&u>=0.5||z.side>0&&u<0.5));if(f&&(f.s>=1||p[3]<0.5))c=mixRGB(c,f.n==='gold'?[255,250,220]:[255,255,255],0.9)}}}
+      let c;
+      if(pat){const [hit,grad]=inPat(x,y,u,v);if(hit)c=px(pc,u,v,k);else{c=px(sk,u,v,k);if(grad>0)c=mixRGB(c,px(pc,u,v,k),grad)}}
+      else c=px(sk,u,v,k);
       if(!ok)c=mixRGB(c,FRUIT_UNRIPE,0.4);
       out[o]=c[0];out[o+1]=c[1];out[o+2]=c[2];
     }else if(stem[i]){
@@ -1446,16 +1504,18 @@ function fruitBase(name){
 }
 /* 素模載好後：讓植株快取失效並重畫（多張一起載入時合併成一次） */
 function fruitLoaded(){FRUIT_VER++;clearTimeout(fruitTm);fruitTm=setTimeout(()=>{try{if(state&&typeof renderWorld==='function')renderWorld()}catch(e){}},150)}
-function fruitURL(B,a,ripe,key){
+function fruitURL(B,a,ripe,key0,frame){
+  const key=frame?key0+'|f'+frame:key0;/* 48.3：夢幻色的第 2、3 影格另外快取；亂數種子用同一個，花紋位置才一樣 */
   let u=FRUIT_CACHE.get(key);if(u){FRUIT_CACHE.delete(key);FRUIT_CACHE.set(key,u);return u}
-  const px=fruitPaint(B,a,ripe,hashStr(key));
+  const px=fruitPaint(B,a,ripe,hashStr(key0),frame||0);
   const cv=document.createElement('canvas');cv.width=B.w;cv.height=B.h;const cx=cv.getContext('2d');const id=cx.createImageData(B.w,B.h);id.data.set(px);cx.putImageData(id,0,0);
   u=cv.toDataURL('image/png');
   try{if(typeof URL!=='undefined'&&URL.createObjectURL&&typeof Blob!=='undefined'){const bin=atob(u.split(',')[1]),arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);u=URL.createObjectURL(new Blob([arr],{type:'image/png'}))}}catch(e){}
   FRUIT_CACHE.set(key,u);
-  if(FRUIT_CACHE.size>300){const k0=FRUIT_CACHE.keys().next().value,u0=FRUIT_CACHE.get(k0);FRUIT_CACHE.delete(k0);try{if(String(u0).startsWith('blob:'))URL.revokeObjectURL(u0)}catch(e){}}
+  if(FRUIT_CACHE.size>400){const k0=FRUIT_CACHE.keys().next().value,u0=FRUIT_CACHE.get(k0);FRUIT_CACHE.delete(k0);try{if(String(u0).startsWith('blob:'))URL.revokeObjectURL(u0)}catch(e){}}
   return u;
 }
+let FRUIT_ANIM=false,DZ_N=0,DZ_FULL=null,DZ_OK=true;/* FRUIT_ANIM：呼叫 fruitInner 的人決定這一顆要不要播（48.4） */
 function fruitImgSVG(a,ripe,crop){
   if(!a||!CROPS[crop])return null;
   const name=fruitShapeKey(a,crop),B=fruitBase(name);if(!B)return null;
@@ -1464,7 +1524,13 @@ function fruitImgSVG(a,ripe,crop){
   const m=(FRUIT_SHAPE_MUL[name]||1)*0.82,s=Math.min(3/B.w,3.2/B.h)*m,w=B.w*s,h=B.h*s;/* 0.82：和舊畫法的果實大小差不多（舊的果實約佔框的 75–90%） */
   const pc=a.perfCls==null?2:a.perfCls;
   const glint=pc===3&&rp?`<path d="M1.05 -1.2 l0.06 0.16 0.16 0.06 -0.16 0.06 -0.06 0.16 -0.06 -0.16 -0.16 -0.06 0.16 -0.06z" fill="#FFF6C2" stroke="#B9840F" stroke-width="0.02"/>`:'';
-  return `<image href="${url}" x="${f3(-w/2)}" y="${f3(-h/2)}" width="${f3(w)}" height="${f3(h)}" preserveAspectRatio="none"/>${glint}`;
+  const img=(u,cls,st)=>`<image${cls?` class="${cls}"`:''}${st?` style="${st}"`:''} href="${u}" x="${f3(-w/2)}" y="${f3(-h/2)}" width="${f3(w)}" height="${f3(h)}" preserveAspectRatio="none"/>`;
+  let out=img(url);
+  /* 48：夢幻色的動態。第 2（、3）影格疊在上面，只用 CSS 改透明度交叉淡入淡出；小圖示、結果期、減少動態效果時不播 */
+  if(rp&&FRUIT_ANIM&&!(typeof RMQ!=='undefined'&&RMQ.matches)){const di=dreamInfo(a);if(di){try{const dl=-((hashStr(key)+(++DZ_N)*37)%60)/10;
+    if(di.nf===2)out+=img(fruitURL(B,a,rp,key,1),'dz2',`animation-duration:${di.per}s;animation-delay:${dl}s`);
+    else out+=img(fruitURL(B,a,rp,key,1),'dz3b',`animation-duration:${di.per}s;animation-delay:${dl}s`)+img(fruitURL(B,a,rp,key,2),'dz3c',`animation-duration:${di.per}s;animation-delay:${dl}s`)}catch(e){}}}
+  return out+glint;
 }
 // ===== 果實素模上色 end
 function fruitInner(a,ripe,crop){
@@ -1570,7 +1636,7 @@ function fruitInner(a,ripe,crop){
   return `<defs><clipPath id="c${id}"><path d="${d}"/></clipPath>${gdef}${spDef}${kdef}</defs><g stroke="#24461A" stroke-width="0.06" stroke-linejoin="round">${behind}</g><path d="${d}" fill="${fill}"/><g clip-path="url(#c${id})">${deco}<path d="M-2 -2H2V2H-2Z ${d2}" fill-rule="evenodd" fill="#2A0E00" opacity="${cd.deco==='kernels'?.12:pc<=1?.3:.22}"/>${hl}${spark}</g><path d="${d}" fill="none" stroke="${rgbS(c.map(v=>v*0.55))}" stroke-width="${pc===3?0.08:0.065}" stroke-linejoin="round"/><g stroke="#1E4A12" stroke-width="0.055" stroke-linejoin="round" transform="translate(${f3(capX)} 0)">${front}</g>${glint}`;
 }
 function fruitSVG(ph,crop,size=80,ripe=1,label=''){
-  const k=ripe>=1?tfxKind(ph):0,inner=fruitInner(ph,ripe,crop);/* 34.2、34.5 */
+  FRUIT_ANIM=size>=48;const k=ripe>=1?tfxKind(ph):0,inner=fruitInner(ph,ripe,crop);FRUIT_ANIM=false;/* 34.2、34.5；48.4：48px 以上才播夢幻色動態 */
   return `<svg viewBox="-1.5 -1.6 3 3.2" width="${size}" height="${Math.round(size*3.2/3)}"${k?' overflow="visible" style="overflow:visible"':''} ${label?`role="img" aria-label="${esc(label)}"`:'aria-hidden="true"'}>${k?tfxWrap(k,inner,size>=48,size>=80):inner}</svg>`;
 }
 
@@ -1622,15 +1688,15 @@ function plantImgSVG(crop,stage,x,y,prr){
 function plantFruitsSVG(crop,ph,x,y,w,h,ripe,mul){
   const cd=CROPS[crop],a=FRUIT_AT[crop];if(!a)return '';
   const k=ripe>=1?tfxKind(ph):0;if(k)mul*=1.15;/* 34.3 */
-  const sz=cd.fs*sizeScale(ph.ab.size)*mul*a.s,cx=x-w/2+a.x*w,cy=y-h+a.y*h,inner=fruitInner(ph,ripe,crop);
+  FRUIT_ANIM=ripe>=1&&DZ_OK;const sz=cd.fs*sizeScale(ph.ab.size)*mul*a.s,cx=x-w/2+a.x*w,cy=y-h+a.y*h,inner=fruitInner(ph,ripe,crop);FRUIT_ANIM=false;
   return `<svg x="${f1(cx-sz/2)}" y="${f1(cy-sz*0.53)}" width="${f1(sz)}" height="${f1(sz*3.2/3)}" viewBox="-1.5 -1.6 3 3.2" stroke="none"${k?' overflow="visible"':''}>${k?tfxWrap(k,inner,TFX_OK,false):inner}</svg>`;
 }
 const plantCache=new WeakMap();
 function plantSVG(p,x,y){
   const cd=CROPS[p.crop],ph=phen(p.g,p.crop);
   const prr=(p.stage==='seedling'||p.stage==='fruit')?clamp(p.prog/stageDur(p,ph),0,1):1;
-  const key=p.stage+'|'+Math.floor(prr*12)+'|'+p.watered+'|'+x+'|'+y+'|'+!!(p.pollen&&p.pollen.failed)+'|'+!!p.pollen+'|'+FRUIT_VER+'|'+(TFX_OK=!TFX_FULL||TFX_FULL.has(p));/* FRUIT_VER：素模、植株圖片載好後重畫 */
-  const hit=plantCache.get(p);if(hit&&hit.key===key){TFX_OK=true;return hit.svg}
+  const key=p.stage+'|'+Math.floor(prr*12)+'|'+p.watered+'|'+x+'|'+y+'|'+!!(p.pollen&&p.pollen.failed)+'|'+!!p.pollen+'|'+FRUIT_VER+'|'+(TFX_OK=!TFX_FULL||TFX_FULL.has(p))+'|'+(DZ_OK=!DZ_FULL||DZ_FULL.has(p));/* FRUIT_VER：素模、植株圖片載好後重畫 */
+  const hit=plantCache.get(p);if(hit&&hit.key===key){TFX_OK=true;DZ_OK=true;return hit.svg}
   let s='',mk=0;/* mk：狀態標示（小花、成熟星星）往上移多少，跟著植株高度 */
   const im=plantImgSVG(p.crop,p.stage,x,y,prr);
   if(im){s+=im.svg;mk=Math.max(im.h,40)+12-78;
@@ -1647,7 +1713,7 @@ function plantSVG(p,x,y){
   if(p.pollen&&p.pollen.failed&&p.stage!=='flower')s+=`<g stroke="#7A2A1A" stroke-width="1.4"><circle cx="${x+24}" cy="${ym-74}" r="7" fill="#FFE1D6"/><path d="M${x+21} ${ym-77} l6 6 M${x+27} ${ym-77} l-6 6" stroke-linecap="round"/></g>`;
   if(p.stage==='fruit'&&p.pollen&&!p.pollen.failed)s+=`<g aria-hidden="true"><circle cx="${x-24}" cy="${ym-72}" r="4.5" fill="#FFE36E" stroke="#B0882A" stroke-width="1.2"/><circle cx="${x-25.3}" cy="${ym-73.3}" r="1.3" fill="#FFF8D0"/></g>`;/* 36.8 C：已授粉 */
   if(p.stage==='flower'&&!p.pollen)s+=`<g aria-hidden="true"><circle cx="${x-26}" cy="${ym-76}" r="9" fill="#FFFDF6" stroke="#B07A44" stroke-width="1.5"/>${[0,1,2,3,4].map(k=>{const a=k*1.2566-1.5708;return `<circle cx="${(x-26+3.6*Math.cos(a)).toFixed(1)}" cy="${(ym-76+3.6*Math.sin(a)).toFixed(1)}" r="2.6" fill="#F28DB2"/>`}).join('')}<circle cx="${x-26}" cy="${ym-76}" r="2" fill="#FFD54A"/></g>`;}/* 等待授粉 */
-  plantCache.set(p,{key,svg:s});TFX_OK=true;
+  plantCache.set(p,{key,svg:s});TFX_OK=true;DZ_OK=true;
   return s;
 }
 const pname=p=>`${p.name} #${p.no||1}`;
@@ -2125,7 +2191,7 @@ function infoHTML(ph,lvl,g,crop,noSims,p,opt){
     if(pc)h+=simsHTML(g,pc.fatherG,crop,`收下的種子種下去會長出（與 ${esc(pc.fatherName||'另一株')} 雜交）`)+(pc.wide?'<p class="note">遠緣雜種，發芽率減半。</p>':'');
     else h+=simsHTML(g,g,crop,'這株自交的後代');
   }
-  if(TEST_MODE&&state.showG&&g)h+=`<details class="dist" open><summary>完整因子（測試）</summary><pre style="white-space:pre-wrap;font-size:12px;margin:6px 0 0">${esc(genoTxt(g))}</pre></details>`;
+  if(isTestMode()&&state.showG&&g)h+=`<details class="dist" open><summary>完整因子（測試）</summary><pre style="white-space:pre-wrap;font-size:12px;margin:6px 0 0">${esc(genoTxt(g))}</pre></details>`;
   return h;
 }
 let regDraft='',regErr='';
@@ -2175,7 +2241,7 @@ function progInfo(p){
   const ph=phen(p.g,p.crop);
   if(p.stage==='flower')return {pct:100,txt:'等待授粉：可以自交，或和另一株同時開花的作物雜交。沒處理會一直等著。'};
   const dur=stageDur(p,ph),pct=clamp(p.prog/dur*100,0,100);
-  return {pct,txt:`約 ${fmt((dur-p.prog)/((p.fert?1.25:1)*state.speed))}後進入下一階段`};
+  return {pct,txt:`約 ${fmt((dur-p.prog)/((p.fert?1.25:1)*tScale()))}後進入下一階段`};
 }
 // 遠緣雜交組合：櫛瓜 × 南瓜；番茄、茄子、辣椒互相
 const WIDE_G={zucchini:'cuc',pumpkin:'cuc',tomato:'sol',eggplant:'sol',chili:'sol'};
@@ -2405,7 +2471,7 @@ function tick(){
   if(scene==='explore')exHintUpd();
   testRefill();
   const now=Date.now();let dt=now-state.last;if(dt<0)dt=0;state.last=now;
-  const gdt=dt*state.speed;let changed=false,flowered=false;
+  const gdt=dt*tScale();let changed=false,flowered=false;
   state.plots.forEach((p,i)=>{
     if(!p||p.obs)return;
     if(p.stage==='seedling'||p.stage==='fruit'){
@@ -2424,8 +2490,12 @@ function renderSpeed(){
   renderCtrl();
   const el=document.getElementById('testBox');if(!el)return;
   if(!TEST_MODE){el.innerHTML='';return}
-  el.innerHTML=`<h3 style="margin-top:0">測試模式</h3><p class="note">金幣、道具照正式規則計算。發芽率、雜交成功率、突變與稀有度照正式規則。</p><p class="note" style="margin:6px 0 2px">時間加速</p><div class="row2" style="grid-template-columns:repeat(4,1fr)">${SPEEDS.map(v=>`<button class="btn${state.speed===v?' primary':''}" data-spd="${v}">×${v}</button>`).join('')}</div>
-  <button class="btn" data-tool="excap">探索每日上限：${exCapOn()?'開啟':'關閉'}（按一下切換）</button><button class="btn" data-tool="adv">所有植株進入下一階段</button><button class="btn" data-tool="geno">${state.showG?'隱藏':'顯示'}植株的完整因子</button><button class="btn" data-tool="ex">領取辣椒、茄子、南瓜野生種原</button>${isAdmin()?'<button class="btn warn" data-tool="wipe">管理員：清空伺服器的圖鑑、品種權與市集</button>':''}`;
+  const on=isTestMode();testTagUpd();
+  let h=`<h3 style="margin-top:0">遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'測試模式：探索地圖會標出機關與秘境的位置和進度，地圖面板可以直接傳送。只存在這台裝置，別人看不到。':'一般模式：和正式玩家看到的一樣。'}</p>`;
+  if(on)h+=`<h3>會影響存檔的測試工具</h3><p class="note">下面這些會加快進度或送東西，用了存檔就和一般玩家不一樣。切回一般模式時，時間加速當成 ×1、探索每日上限當成開啟。</p><p class="note" style="margin:6px 0 2px">時間加速</p><div class="row2" style="grid-template-columns:repeat(4,1fr)">${SPEEDS.map(v=>`<button class="btn${state.speed===v?' primary':''}" data-spd="${v}">×${v}</button>`).join('')}</div>
+  <button class="btn" data-tool="excap">探索每日上限：${exCapOn()?'開啟':'關閉'}（按一下切換）</button><button class="btn" data-tool="adv">所有植株進入下一階段</button><button class="btn" data-tool="ex">領取辣椒、茄子、南瓜野生種原</button><h3>只多顯示</h3><button class="btn" data-tool="geno">${state.showG?'隱藏':'顯示'}植株的完整因子</button>`;
+  if(isAdmin())h+='<button class="btn warn" data-tool="wipe">管理員：清空伺服器的圖鑑、品種權與市集</button>';
+  el.innerHTML=h;
 }
 function renderAll(){if(!state)return;renderCoins();renderWorld();if(curPanel==='bag')renderBag();renderSpeed();refreshAct();layoutSbtns()}
 /* 14h：右下角按鈕。下排固定：播種、育苗盤、剷除；上排只在用得到時出現：全部收成、全部自交、加速劑（由右往左排） */
@@ -3051,7 +3121,7 @@ function tfxWrap(kind,inner,full,big,rm){
   const o0=big?.5:.35,o1=big?.8:.6;
   let s=`<defs>${g}</defs><circle cx="0" cy="0.05" r="${big?1.65:1.6}" fill="url(#tg${n})" opacity="${rm?((o0+o1)/2).toFixed(2):o0}">${rm?'':`<animate attributeName="opacity" values="${o0};${o1};${o0}" dur="2.5s" repeatCount="indefinite"/>`}</circle>`+inner;
   if(full&&!rm){
-    s+=`<mask id="tm${n}" maskUnits="userSpaceOnUse" x="-1.5" y="-1.6" width="3" height="3.2" style="mask-type:alpha">${inner}</mask><g mask="url(#tm${n})"><g transform="rotate(25)"><rect x="-0.22" y="-2.2" width="${big?0.5:0.42}" height="4.4" fill="#FFFFFF" opacity="${big?.7:.55}"><animateTransform attributeName="transform" type="translate" values="-2.8 0;-2.8 0;2.8 0" keyTimes="0;0.83;1" dur="3.6s" repeatCount="indefinite"/></rect></g></g>`;
+    /* 48.1：掃過果實表面的流光拿掉；表面的動態一律屬於顏色（夢幻色），造型特效只用果實外面的光暈與光點 */
     const cs=my?['#FF9AD5','#9AE0FF','#FFE27A','#B6F59A']:['#FFF3B0','#FFFFFF','#FFE27A','#FFF3B0'];
     for(let k=0;k<4;k++){const x=(-0.75+k*0.5).toFixed(2),b=(-k*0.6).toFixed(1);s+=`<path d="${TFX_STAR}" fill="${cs[k]}" opacity="0"><animateTransform attributeName="transform" type="translate" values="${x} 0.7;${x} -1.5" dur="2.4s" begin="${b}s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.4s" begin="${b}s" repeatCount="indefinite"/></path>`}
   }
@@ -3063,6 +3133,8 @@ function tfxRingSVG(kind,x,y){const rm=tfxRM(),c=kind===2?'#F7B6EC':'#FFD86A';re
 function tfxPickFull(st){TFX_FULL=null;const ls=[];st.plots.forEach((p,i)=>{if(p&&!p.obs&&p.stage==='ripe'&&tfxKind(phen(p.g,p.crop)))ls.push(i)});
   if(ls.length<=12)return;const m=st===state?curMe():{x:550,y:1300},d=i=>{const q=posOf(st,i);return q?Math.hypot(q[0]-m.x,q[1]-m.y):1e9};
   ls.sort((a,b)=>d(a)-d(b));TFX_FULL=new Set(ls.slice(0,12).map(i=>st.plots[i]))}
+/* 48.4：農場上同時最多 16 顆播夢幻色動態（離角色最近的），其他顯示靜態第一影格 */
+function dzPickFull(st){DZ_FULL=null;const ls=[];st.plots.forEach((p,i)=>{if(p&&!p.obs&&p.stage==='ripe'){try{if(dreamInfo(phen(p.g,p.crop)))ls.push(i)}catch(e){}}});if(ls.length<=16)return;const m=curMe(),d=i=>{const q=posOf(st,i);return q?Math.hypot(q[0]-m.x,q[1]-m.y):1e9};ls.sort((a,b)=>d(a)-d(b));DZ_FULL=new Set(ls.slice(0,16).map(i=>st.plots[i]))}
 /* 34.4：收成專屬造型或神話的瞬間：果實放大彈出、光芒放射、星星散開（約 1.2 秒） */
 function tfxBurst(b){if(tfxRM()||!b||!b.c)return;const {c,p,kind}=b,my=kind===2,cs=my?['#FF9AD5','#9AE0FF','#FFE27A','#B6F59A']:['#FFE27A','#FFF3B0'];
   let svg='';try{svg=fruitSVG(phen(p.g,p.crop),p.crop,44)}catch(e){}
@@ -3094,7 +3166,7 @@ function farmWorld(st,hov,selD){
   const {W,H}=WORLD.farm,[gx,gy]=GATE.farm;
   let s=`<rect x="-600" y="-600" width="${W+1200}" height="${H+1200}" fill="#93AE66"/><rect x="10" y="60" width="${W-20}" height="${H-70}" rx="40" fill="#A8C478" stroke="#7E9A58" stroke-width="3"/>${GROUND}`;
   s+=`<path d="M${gx} ${gy-48} V${gy+4}" stroke="#C9A363" stroke-width="44" stroke-linecap="round"/><path d="M${gx} ${gy-48} V${gy+4}" stroke="#F0D49A" stroke-width="36" stroke-linecap="round"/>`+gateSVG(gx,gy+4,esc(gateText(st)));/* 36.8 F：大門招牌寫字 */
-  const all=[];tfxPickFull(st);/* 34.6 */
+  const all=[];tfxPickFull(st),dzPickFull(st);/* 34.6 */
   (st.decor||[]).forEach((d,i)=>{const it=DECOR_MAP[d.t];if(!it)return;all.push({z:it.flat?-1e5+d.y:d.y,h:()=>decorSVG({...d,i},selD===i,st===state&&!!decoDrag&&decoDrag.on&&decoDrag.i===i&&decoDrag.bad)})});
   for(let i=0;i<st.plots.length;i++){const pos=posOf(st,i);if(!pos)continue;if(st===state&&dragPlot&&dragPlot.on&&dragPlot.i===i){const [gx,gy]=snapPos(dragPlot.x,dragPlot.y),ok=!plotSpotErr(state,gx,gy,i);const fake={...state,plotPos:state.plotPos.slice()};fake.plotPos[i]=[gx,gy];all.push({z:1e6,h:()=>`<g opacity=".75">${plotSVG(fake,i,null)}</g><polygon points="${gx-41},${gy} ${gx},${gy-23} ${gx+41},${gy} ${gx},${gy+23}" fill="none" stroke="${ok?'#2F9E3A':'#C0392B'}" stroke-width="3" stroke-dasharray="6 4"/>`});continue}all.push({z:pos[1]+20,h:()=>plotSVG(st,i,hov)})}
   if(st===state&&buildMode==='build'&&buildBad&&Date.now()-buildBad.t<900){const {x,y}=buildBad;all.push({z:1e6+1,h:()=>`<polygon points="${x-41},${y} ${x},${y-23} ${x+41},${y} ${x},${y+23}" fill="rgba(192,57,43,.25)" stroke="#C0392B" stroke-width="3" pointer-events="none"/>`})}/* 31.1：不合法的位置閃紅 */
@@ -3330,7 +3402,15 @@ const TEST_MODE=true;                 // 測試期間開啟；正式版改成 fa
 const ADMIN_EMAILS=[];                // 管理員的 Google 帳號 email，例如 ['you@gmail.com']
 const SPEEDS=[1,5,10,20];
 const isAdmin=()=>!!(auth.currentUser&&ADMIN_EMAILS.includes(auth.currentUser.email));
-const tScale=()=>TEST_MODE?Math.max(1,state.speed||1):1;
+/* 58（15v）：遊玩模式 一般／測試。只存在這台裝置（localStorage），不寫進存檔、不同步。全程式統一用 isTestMode() 判斷。
+   一般模式：測試用的功能全部看不到，時間加速當成 ×1、探索每日上限當成開啟（存檔裡的值不改，切回測試模式就恢復）。 */
+let TEST_ON=false;try{TEST_ON=localStorage.getItem('sw_mode')==='test'}catch(e){}
+const isTestMode=()=>TEST_MODE&&TEST_ON;
+function setTestMode(on){try{tick()}catch(e){}TEST_ON=!!on;try{localStorage.setItem('sw_mode',on?'test':'normal')}catch(e){}testTagUpd();try{renderSpeed();renderAll();const mp=document.getElementById('mapPanel');if(mp&&!mp.hidden)renderRegMap();if(sheet)renderSheet()}catch(e){}toast(on?'已切到測試模式':'已切到一般模式')}
+function testTagUpd(){try{const el=document.getElementById('testTag');if(el)el.hidden=!isTestMode();const b=document.getElementById('allSeedsBtn');if(b)b.style.display=isTestMode()?'':'none'}catch(e){}}
+let testNoteT=null;
+function testNote(m){if(!isTestMode())return;try{const el=document.getElementById('testNote');el.textContent=m;el.hidden=false;clearTimeout(testNoteT);testNoteT=setTimeout(()=>{el.hidden=true},3600)}catch(e){}}
+const tScale=()=>isTestMode()?Math.max(1,state.speed||1):1;
 function testRefill(){return;/* 第四版起關閉無限資源 */if(!TEST_MODE||!state)return;if(state.coins<1e9)state.coins=1e9;if(!state.items)state.items={};for(const k of IKEYS)state.items[k]=99}
 function giveWildCrop(crop,bk){const g=makeWild(crop,bk,false),name=wildName(bk,crop,false),ph=phen(g,crop);state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop,name,source:`${BIOMES[bk].n}的野生種原（測試領取）`,gen:0,m:g,f:g,count:5,germ:GERM[ph.tier],ptier:ph.tier});registerOriginals([{crop,name,g}],'野生種原')}
 function advanceAll(){
@@ -3930,7 +4010,7 @@ function camRect(){const vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zoo
 function exRange(r){const cx0=Math.floor((r.x-90)/EXC),cx1=Math.floor((r.x+r.w+90)/EXC),cy0=Math.floor((r.y-130)/EXC),cy1=Math.floor((r.y+r.h+90)/EXC);return {cx0,cx1,cy0,cy1,key:[cx0,cx1,cy0,cy1].join(',')}}
 // ===== 野外植株（同一天、同一地區所有玩家看到的相同）=====
 const EX_PLANT_LIMIT=5,wpCache=new Map();let hoverWp=null;
-const exCapOn=()=>!TEST_MODE||state.exCap!==false;
+const exCapOn=()=>!isTestMode()||state.exCap!==false;
 function exPlants(bk,cx,cy){
   const key='w|'+bk+'|'+cx+'|'+cy+'|'+state.ex.day;let c=wpCache.get(key);if(c)return c;
   if(wpCache.size>400)wpCache.clear();
@@ -4992,7 +5072,7 @@ function regFxStep(slide){
   if(M.tg){let k=-1;M.tg.forEach(([x,y],i)=>{if(Math.hypot(m.x-x,(m.y-y)*1.3)<34)k=i});
     if(k!==tgIn){tgIn=k;if(k>=0){try{document.querySelectorAll('.tg'+k).forEach(e=>{e.classList.remove('shk');void e.getBBox;e.classList.add('shk')})}catch(e){}
       const w=regPlants(bk,regMap).find(w=>w.hid&&Math.hypot(w.x-M.tg[k][0],w.y-M.tg[k][1])<3);
-      if(w&&!regHid[w.key]&&!(state.ex.got||[]).includes(w.key)){regHid[w.key]=1;toast('高草叢裡藏著一株植物！');renderWorld()}}}}
+      if(w&&!regHid[w.key]&&!(state.ex.got||[]).includes(w.key)){regHid[w.key]=1;toast('高草叢裡藏著一株植物！');renderWorld()}else if(!w)testNote('這一叢今天沒有藏東西')}}}
   if(M.lightPuzzle){const key=bk+'|'+M.id,L=regLit[key]||(regLit[key]={}),GL=REGION_GLOW[bk]||{};let ch=false,all=true;
     M.objs.forEach((o,i)=>{if(!GL[o[0]])return;if(!L[i]){if(Math.hypot(m.x-o[1],m.y-o[2])<78){L[i]=1;ch=true}else all=false}});
     if(ch){if(all&&!L.done){L.done=1;const w=regPlants(bk,regMap).find(w=>w.hid);if(w&&!regHid[w.key]&&!(state.ex.got||[]).includes(w.key)){regHid[w.key]=1;toast('蘑菇都亮了，樹洞正中央長出了一株植物！',3600)}}renderWorld()}}
@@ -5001,18 +5081,21 @@ function regFxStep(slide){
       document.querySelectorAll('.stn').forEach(g=>{if(+g.dataset.k===k){g.classList.remove('sink');void g.getBBox;g.classList.add('sink')}})}catch(e){}}}}
   const T=M.secTrig;if(!T)return;
   if(T.frog&&!secOpen(bk)){const [cx,cy]=T.frog,dx=m.x-cx,dy=(m.y-cy)*1.4,d=Math.hypot(dx,dy),now=Date.now();
-    if(d<34||d>104)frogA=null;else{const a=Math.atan2(dy,dx);if(!frogA||now-frogA.t0>20000)frogA={a,acc:0,t0:now};else{let da=a-frogA.a;if(da>Math.PI)da-=2*Math.PI;if(da<-Math.PI)da+=2*Math.PI;frogA.acc+=da;frogA.a=a;
-      if(Math.abs(frogA.acc)>=2*Math.PI){frogA=null;regSecOpenS[bk]=1;secReprep(bk);toast('呱！',3200);renderWorld()}}}}
+    if(d<34||d>104){if(frogA&&Math.abs(frogA.acc)>0.6)testNote('未觸發：離開石像周圍那一圈了，要重新繞');frogA=null}else{const a=Math.atan2(dy,dx);if(!frogA||now-frogA.t0>20000){if(frogA)testNote('未觸發：超過 20 秒，重新計算');frogA={a,acc:0,t0:now}}else{let da=a-frogA.a;if(da>Math.PI)da-=2*Math.PI;if(da<-Math.PI)da+=2*Math.PI;frogA.acc+=da;frogA.a=a;
+      if(isTestMode()){try{const el=document.getElementById('tmFrog');if(el)el.textContent=`秘境：繞石像一圈（${Math.min(100,Math.round(Math.abs(frogA.acc)/(2*Math.PI)*100))}%）`}catch(e){}}
+      if(Math.abs(frogA.acc)>=2*Math.PI){frogA=null;regSecOpenS[bk]=1;secReprep(bk);toast('呱！',3200);testNote('觸發成功：繞了石像一整圈，小溪下游的睡蓮可以走了');renderWorld()}}}}
   if(T.thin){const [cx,cy,rx,ry]=T.thin,a=(m.x-cx)/rx,b=(m.y-cy)/ry,inn=a*a+b*b<1;
-    if(inn&&!thinIn&&slide){thinN++;if(thinN>=3){thinN=0;thinIn=false;toast('冰破了！',2600);secEnter(bk);return}toast(thinN===1?'腳下的冰發出喀啦一聲…':'裂紋變多了…');renderWorld()}
+    if(inn&&!thinIn&&!slide)testNote('未觸發：用走的不算，要放開搖桿滑過去');
+    if(inn&&!thinIn&&slide){thinN++;testNote('薄冰：滑過去第 '+thinN+' 次（要 3 次）');if(thinN>=3){thinN=0;thinIn=false;toast('冰破了！',2600);secEnter(bk);return}toast(thinN===1?'腳下的冰發出喀啦一聲…':'裂紋變多了…');renderWorld()}
     thinIn=inn}
 }
 /* 站著不動的觸發（草原蘑菇圈）：每 0.5 秒看一次 */
 function regStandTick(){
   try{if(!state||!regIn()||regBusy||curPanel)return;const M=regCur(),T=M.secTrig;if(!T||!T.ring)return;const m=curMe(),[cx,cy]=T.ring;
     const still=ringLast&&Math.hypot(m.x-ringLast[0],m.y-ringLast[1])<0.5,inn=Math.hypot(m.x-cx,(m.y-cy)*1.3)<20,old=Math.floor(ringT);
+    if(ringT>=1&&!(inn&&still))testNote(inn?'未觸發：移動了，重新計時':'未觸發：離開蘑菇圈中央了');
     ringLast=[m.x,m.y];ringT=inn&&still?ringT+0.5:0;
-    if(ringT>=6){ringT=0;secEnter(exBiome);return}
+    if(ringT>=6){ringT=0;testNote('觸發成功：在蘑菇圈中央站滿 6 秒');secEnter(exBiome);return}
     if(Math.floor(ringT)!==old)renderWorld()}catch(e){}
 }
 try{setInterval(regStandTick,500)}catch(e){}
@@ -5030,6 +5113,22 @@ function regDynHTML(M){
     s+=`<g pointer-events="none"><ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#7FB2D2" opacity=".5"/>`;
     for(let i=0;i<5+thinN*6;i++){const a=R()*6.28,r0=R()*0.3,r1=0.5+R()*0.5,x0=cx+Math.cos(a)*rx*r0,y0=cy+Math.sin(a)*ry*r0,x1=cx+Math.cos(a+R()*0.5)*rx*r1,y1=cy+Math.sin(a+R()*0.5)*ry*r1;s+=`<path d="M${v2f(x0)} ${v2f(y0)} L${v2f((x0+x1)/2+R()*6-3)} ${v2f((y0+y1)/2+R()*4-2)} L${v2f(x1)} ${v2f(y1)}" stroke="#FFFFFF" stroke-width="${thinN?1.6:1.2}" fill="none" opacity=".85"/>`}s+='</g>'}
   return s}
+/* 58.3：測試模式才畫的標記（機關、秘境觸發點、藏起來的植株）與進度。只多看得到，不改任何機率與獎勵 */
+function regTestHTML(M){
+  if(!isTestMode()||!M.v2)return '';const bk=M.bk,T=M.secTrig||{},L=[];
+  const tag=(x,y,t,id)=>L.push(`<g pointer-events="none"><path d="M${x} ${y} l-5 -9 h10 Z" fill="#C0392B"/><text ${id?`id="${id}"`:''} x="${x}" y="${y-13}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" stroke="#7A1E14" stroke-width="3" paint-order="stroke" font-family="Noto Sans TC,sans-serif">${esc(t)}</text></g>`);
+  if(T.ring)tag(T.ring[0],T.ring[1]-22,`秘境：蘑菇圈（站著不動 ${Math.floor(ringT)}／6 秒）`);
+  if(T.shrine)tag(T.shrine[0],T.shrine[1]-140,secOpen(bk)?'秘境：石祠（已打開，走左後方的小路）':'秘境：石祠（放黑色果皮的種子）');
+  if(T.frog)tag(T.frog[0],T.frog[1]-90,secOpen(bk)?'秘境：青蛙石像（已打開，走小溪下游的睡蓮）':`秘境：繞石像一圈（${frogA?Math.min(100,Math.round(Math.abs(frogA.acc)/(2*Math.PI)*100)):0}%）`,'tmFrog');
+  if(T.thin)tag(T.thin[0],T.thin[1]-26,`秘境：薄冰（滑過去 ${thinN}／3 次）`);
+  for(const e of M.exits)if(e.hid){const p=e.side==='w'?[M.B.x0+34,e.c]:e.side==='e'?[M.B.x1-34,e.c]:[e.c,e.side==='n'?M.B.y0+30:M.B.y1-30];tag(p[0],p[1]-30,e.need&&!secOpen(bk)?'秘境入口（還沒打開）':'秘境入口：從這裡走到地圖邊緣')}
+  if(M.tg){const w=regPlants(bk,M.id).find(w=>w.hid);M.tg.forEach(([x,y],i)=>{const here=w&&Math.hypot(w.x-x,w.y-y)<3;tag(x,y-40,here?'機關：高草叢（今天藏在這一叢）':'高草叢')})}
+  if(M.lightPuzzle){const Lt=regLit[bk+'|'+M.id]||{},GL=REGION_GLOW[bk]||{},ids=[];M.objs.forEach((o,i)=>{if(GL[o[0]])ids.push(i)});tag(M.rings[0],M.rings[1]-40,`機關：點亮蘑菇（${ids.filter(i=>Lt[i]).length}／${ids.length} 叢）`)}
+  if(M.quick)M.quick.forEach(([x,y])=>tag(x,y-30,'機關：流沙'));
+  if(M.slick){tag(M.slick[0],M.slick[1]-M.slick[2]-6,'機關：特別滑的冰（從南邊往北滑，停在冰岩下，再往西）');tag(M.island[0],M.island[1]-34,'小島（缺口在東邊）')}
+  if(M._stn&&M._stn.length)tag(M._stn[0][0],M._stn[0][1]-30,'機關：踏腳石漣漪');
+  if(M.ped)tag(M.ped[0],M.ped[1]-70,'種子台座');
+  return L.join('')}
 function regTap(k){
   if(k==='shrine'){const M=regCur(),T=M.secTrig;if(!T||!T.shrine)return;const m=curMe(),[x,y]=T.shrine,go=()=>{sheet={shr:1};renderSheet();openSheetUI()};
     if(Math.hypot(m.x-x,m.y-(y+30))<90)go();else walkTo(x,y+34,go)}
@@ -5045,7 +5144,7 @@ function shrineAction(b){
   const a=b.dataset.act;if(a==='close'){closeSheet();return}
   if(a==='shrput'){const l=state.lots.find(x=>x.id===b.dataset.lot||String(x.id)===b.dataset.lot);if(!l||!lc(l))return;let ok=false;try{ok=likely(l).app.skin==='black'}catch(e){}
     removeSeeds(l,1);save();closeSheet();
-    if(ok){regSecOpenS.forest=1;secReprep('forest');toast('盤子上的種子不見了。石祠亮了起來，後面出現一條小路…',4200);renderWorld()}else toast('什麼事也沒發生。')}
+    if(ok){regSecOpenS.forest=1;secReprep('forest');toast('盤子上的種子不見了。石祠亮了起來，後面出現一條小路…',4200);testNote('觸發成功：放了黑色果皮的種子');renderWorld()}else{toast('什麼事也沒發生。');testNote('未觸發：要放「最可能長成黑色果皮」的種子包')}}
 }
 
 const regCur=()=>regPrep(exBiome,regMap);
@@ -5055,7 +5154,7 @@ function regWorld(){
   const bg=[];let fg='';for(const o of M._objs){if(o.y<=me.y)bg.push(o);else fg+=o.h}
   for(const it of exVisibleItems())bg.push({y:it.y,h:itemSVG(it,it.key===hoverItem)});
   for(const w of exVisiblePlants())bg.push({y:w.y,h:wpSVG(w,w.key===hoverWp)});
-  bg.sort((a,b)=>a.y-b.y);regFg=fg+(M.cave&&M.v2?regTopV2(M):(M._top||''));return (M.v2?M._ground.replace('%%GI%%',()=>regGroundEl(M))+regDynHTML(M):M._ground)+bg.map(o=>o.h).join('');
+  bg.sort((a,b)=>a.y-b.y);regFg=fg+(M.cave&&M.v2?regTopV2(M):(M._top||''))+regTestHTML(M);return (M.v2?M._ground.replace('%%GI%%',()=>regGroundEl(M))+regDynHTML(M):M._ground)+bg.map(o=>o.h).join('');
 }
 function regBlocked(M,x,y){
   const B=M.B;if(x<B.x0||x>B.x1||y<B.y0||y>B.y1)return true;
@@ -5166,10 +5265,10 @@ function regMapSVG(bk){
     if(cur)s+=`<circle cx="${x+56}" cy="${y+2}" r="6" fill="#D9473A" stroke="#fff" stroke-width="2"/>`}
   return `<svg viewBox="0 0 310 ${230+oy*58}" width="100%" aria-label="${REGION_CFG[bk].name}地圖">${s}</svg>`;
 }
-function renderRegMap(){const el=document.getElementById('mapPanel');if(!el||!regHas(exBiome))return;el.innerHTML=`<b>${REGION_CFG[exBiome].name}地圖</b><span class="meta">　黃色是你現在的位置，虛線是洞口</span>${regMapSVG(exBiome)}<button class="btn" data-mp="close" style="margin:4px 0 0">關閉</button>`}
+function renderRegMap(){const el=document.getElementById('mapPanel');if(!el||!regHas(exBiome))return;el.innerHTML=`<b>${REGION_CFG[exBiome].name}地圖</b><span class="meta">　黃色是你現在的位置，虛線是洞口</span>${regMapSVG(exBiome)}${isTestMode()?`<div class="meta" style="margin:4px 0 2px">測試模式：直接傳送</div><div style="display:flex;flex-wrap:wrap;gap:4px">${Object.entries(REGION_MAPS[exBiome]).map(([id,M])=>`<button class="btn" data-tp="${id}" style="margin:0;padding:4px 8px;width:auto;font-size:12px">${M.secret?'秘境・':''}${M.n}</button>`).join('')}</div>`:''}<button class="btn" data-mp="close" style="margin:4px 0 0">關閉</button>`}
 const regLoaded={};
 function regPreload(bk){if(regLoaded[bk]||typeof Image==='undefined'||!REGION_IMG[bk])return;regLoaded[bk]=true;for(const f of Object.keys(REGION_IMG[bk])){try{const i=new Image();i.src='assets/'+regDir(bk)+'/'+f+'.png'}catch(e){}}}
-try{document.getElementById('mapBtn').addEventListener('click',()=>{const el=document.getElementById('mapPanel');el.hidden=!el.hidden;if(!el.hidden)renderRegMap()});document.getElementById('mapPanel').addEventListener('click',e=>{if(e.target.closest('[data-mp]'))document.getElementById('mapPanel').hidden=true})}catch(e){}
+try{document.getElementById('mapBtn').addEventListener('click',()=>{const el=document.getElementById('mapPanel');el.hidden=!el.hidden;if(!el.hidden)renderRegMap()});document.getElementById('mapPanel').addEventListener('click',e=>{const tp=e.target.closest('[data-tp]');if(tp&&isTestMode()&&regIn()&&!regBusy){const id=tp.dataset.tp,M=REGION_MAPS[exBiome][id],ex=M.exits.find(x=>!x.need&&!x.trig&&!x.hid)||M.exits[0];regEnter(id,ex.to);testNote('已傳送到 '+M.n);return}if(e.target.closest('[data-mp]'))document.getElementById('mapPanel').hidden=true})}catch(e){}
 
 function biomeThumb(k){
   const B=BIOMES[k],R=seededRnd(hashStr('thumb|'+k));
@@ -6180,6 +6279,7 @@ const avB=document.getElementById('avatarBtn2');if(avB)avB.onclick=()=>{closePan
 document.getElementById('allSeedsBtn').onclick=()=>{const n=giveAllOriginals();renderAll();toast(n?`領取了 ${n} 種原始品種`:'已經有全部 9 種了')};
 let wipeArm=false;
 document.getElementById('testBox').addEventListener('click',e=>{
+  const md=e.target.closest('[data-mode]');if(md){setTestMode(md.dataset.mode==='test');return}
   const sp=e.target.closest('[data-spd]');if(sp){tick();state.speed=+sp.dataset.spd;save();renderSpeed();toast(`時間加速 ×${state.speed}`);return}
   const t=e.target.closest('[data-tool]');if(!t)return;const k=t.dataset.tool;
   if(k==='adv'){advanceAll();toast('所有植株都往下一階段了')}

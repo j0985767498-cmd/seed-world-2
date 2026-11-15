@@ -4,12 +4,13 @@
 .ctl label{font-size:13px}select{font-size:13px}table{border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden}td,th{border:1px solid #E4DCCF;padding:3px;text-align:center;font-size:12px}
 th{background:#F6F1E8;font-weight:600}canvas{display:block;margin:auto}.wrap{overflow-x:auto}.note{color:#6B5A48;font-size:13px}.tiny{display:flex;flex-wrap:wrap;gap:3px;background:#fff;border-radius:10px;padding:8px}
 .tiny div{text-align:center;font-size:10px;color:#7A6A58}.grass{background:#A9CF7C}</style></head><body>
-<h1>果實對照頁（2026-11-15m）</h1>
+<h1>果實對照頁（2026-11-15w）</h1>
 <p class="note">不放進遊戲。用遊戲實際的上色函式（素模＋程式上色，第 26 節 26.2、26.3）畫出 9 種作物 × 10 個造型。上方可以選果皮色、花紋顏色、花紋形式、結果期／成熟期與顯示大小。</p>
 <div class="ctl">
 <label>果皮 <select id="skin"></select></label>
 <label>花紋 <select id="pf"><option value="">無</option><option value="0">條紋</option><option value="1">斑點</option><option value="2">星點</option><option value="3">漸層</option><option value="0,1">條紋＋斑點</option><option value="0,3">條紋＋漸層</option><option value="1,2">斑點＋星點</option></select></label>
 <label>花紋顏色 <select id="pc"></select></label>
+<label>夢幻色影格 <select id="fr" onchange="document.getElementById('rp').dispatchEvent(new Event('change'))"><option value="0">第 1 影格</option><option value="1">第 2 影格</option><option value="2">第 3 影格</option></select></label>
 <label>階段 <select id="rp"><option value="1">成熟期</option><option value="0">結果期（70% 大小、偏綠）</option></select></label>
 <label>大小 <select id="sz"><option value="64">64px</option><option value="44">44px</option><option value="30">30px</option><option value="22">22px（手機上植株的果實）</option></select></label>
 <label><input type="checkbox" id="gr"> 草地背景</label>
@@ -34,8 +35,16 @@ const MIX15={"green|white":"mint","white|yellow":"cream","red|white":"pink","pur
 const FRUIT_SHAPE_MUL={"chili_b2":0.7,"corn_b2":0.7};
 const FRUIT_UNRIPE=[126,176,84];
 const PFN=["條紋","斑點","星點","漸層"];
-const BUILD="2026-11-15m";
+const BUILD="2026-11-15w";
 const TFX_STAR="M0 -0.11 L0.03 -0.03 L0.11 0 L0.03 0.03 L0 0.11 L-0.03 0.03 L-0.11 0 L-0.03 -0.03Z";
+const DREAM_NF={"silver":2,"gold":2,"pearl":2,"rainbow":2,"obsidian":3,"blue":3,"crystal":3,"starry":3};
+const DREAM_PERIOD={"silver":3,"gold":3,"pearl":6,"rainbow":6,"obsidian":6,"blue":6,"crystal":6,"starry":6};
+const DZ_STARS=[[0.8040522949770094,0.13515098467469217,0.015520250252913684,0],[0.6530328702181578,0.5271542573347688,0.01611305667832494,1],[0.7422534836456179,0.8687196005135774,0.016773740509990604,2],[0.3226457469165325,0.5007406195625663,0.019107896986417475,0],[0.46735970173031094,0.4963770240545273,0.017685234253760427,1],[0.6525536242872476,0.4103211091831327,0.019913967901840808,2],[0.8825993036851287,0.3948208671063185,0.013158431537915022,0],[0.14930621832609178,0.5219136161729694,0.016385183625854553,1],[0.11084042210131884,0.4424525760114193,0.015286747324746101,2],[0.5361122187227011,0.7797237822785974,0.0197193957567215,0],[0.8666109262034297,0.14079314209520818,0.019421255058143287,1],[0.6549068547785282,0.621304607950151,0.021267532541416584,2],[0.2571344936266542,0.18185828477144242,0.01387891954323277,0],[0.173070340231061,0.49692748505622153,0.02088646981678903,1],[0.38259763922542334,0.724286076053977,0.021619976554531604,2],[0.4068089157342911,0.19931699912995102,0.019710389499552547,0],[0.7753937946632504,0.5449162252247334,0.021608082219492647,1],[0.5333664577454329,0.7919330948963762,0.013545459609478713,2],[0.7813717825338244,0.655176492407918,0.018748495849315077,0],[0.2931408725678921,0.8997654488310218,0.014157122935168446,1],[0.6931472787633538,0.7630379498004913,0.014903075513895601,2],[0.4304357443004847,0.44613614249974487,0.017643109576776624,0],[0.8463171070441604,0.5714570593088866,0.01513125628279522,1],[0.6379839554429054,0.8322879804298282,0.019993491725064816,2],[0.8339474590495229,0.5831287853419781,0.01362844667909667,0],[0.3055362489074469,0.5135670462623239,0.01295667716115713,1]];
+const DZ_XSTAR=[[0.3,0.34,0],[0.66,0.28,1],[0.58,0.7,2],[0.26,0.66,1]];
+const DZ_FACET=[[0.5848651572596282,0.9119555554352701,0.05697886575944722,0.9825962167233229,0.20370936184190214,0.561587864998728,0.27705498063005507,0.17770121525973082,0.3513981762807816,0.28544174088165164,0.14980900404043496,0.06851837784051895,0.7889429626520723,0.5209764135070145,0.5007607361767441,0.00045256782323122025,0.5465239367913455,0.9919555871747434,0.10981001262553036,0.7473334837704897,0.503141047200188],[0.6147066941484809,0.8961454730015248,0.7795158359222114,0.8328563917893916,0.5216112099587917,0.13532463065348566,0.46690646605566144,0.7214792727027088,0.5224634492769837,0.7089757442008704,0.08668392663821578,0.7990554489661008,0.007258271798491478,0.8109333568718284,0.08191505307331681,0.8897848355118185,0.33939828258007765,0.16237957659177482,0.10079439682886004,0.02944953111000359,0.7168388515710831],[0.6445482310373336,0.8803353905677795,0.5020528060849756,0.6831165668554604,0.8395130580756813,0.7090613963082433,0.6567579514812678,0.26525733014568686,0.6935287222731858,0.13250974752008915,0.023558849235996604,0.5295925200916827,0.22557358094491065,0.10089030023664236,0.6630693699698895,0.7791171032004058,0.13227262836880982,0.33280356600880623,0.09177878103218973,0.3115655784495175,0.9305366559419781]];
+const DZ_GSPK=[[[0.62,0.3],[0.3,0.56],[0.66,0.68]],[[0.52,0.24],[0.36,0.66],[0.72,0.52]]];
+const DZ_CSPK=[[[0.64,0.3],[0.3,0.6],[0.6,0.74]],[[0.36,0.3],[0.7,0.5],[0.44,0.76]],[[0.56,0.24],[0.26,0.46],[0.7,0.7]]];
+const DZ_OBS=[{"e":[0.5,0.56],"fa":-2.2,"o":[128,88,204],"i":[88,132,220]},{"e":[0.54,0.52],"fa":-1.2,"o":[60,156,130],"i":[156,178,150]},{"e":[0.47,0.54],"fa":-2.9,"o":[84,124,186],"i":[156,104,196]}];
 const MIXSET=new Set(Object.values(MIX15));
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const hexRGB=h=>{const n=parseInt(h.slice(1),16);return [n>>16,(n>>8)&255,n&255]};
@@ -61,22 +70,68 @@ function fruitPrep(w,h,d){
   ls.sort((p,q)=>p-q);const base=ls.length?ls[ls.length>>1]:211;
   return {w,h,d,body,stem,L,base,x0,x1:Math.max(x0,x1),y0,y1:Math.max(y0,y1),rl,rr};
 }
-function fruitColSpec(key){
-  const P=colParts(key),rgb=n=>RGBC[n]||RGBC.white;
-  const rainbow=(v,pale)=>{const t=clamp(v,0,1)*(RAINBOW.length-1),i=Math.min(RAINBOW.length-2,Math.floor(t)),c=mixRGB(hexRGB(RAINBOW[i]),hexRGB(RAINBOW[i+1]),t-i);return pale?mixRGB(c,[255,255,255],0.42):c};
+function dreamPx(n,f,u,v,sh,asp){
+  /* sh＝明暗（<1 暗、>1 亮）；asp＝高／寬（算圓點用） */
+  const mx=(c,d,a)=>{a=a<0?0:a>1?1:a;return [c[0]+(d[0]-c[0])*a,c[1]+(d[1]-c[1])*a,c[2]+(d[2]-c[2])*a]};
+  const cl=x=>x<0?0:x>1?1:x,bd=(x,c,w)=>Math.max(0,1-Math.abs(x-c)/w),el=(cx,cy,rx,ry)=>Math.max(0,1-Math.hypot((u-cx)/rx,(v-cy)/ry));
+  const dx=u-0.5,dy=v-0.5,r=Math.hypot(dx,dy)*2,ang=Math.atan2(dy,dx),rim=cl((r-0.3)/0.7),W=[255,255,255];
+  const shade=c=>sh<=1?[c[0]*sh,c[1]*sh,c[2]*sh]:mx(c,W,Math.min((sh-1)/0.25,1));
+  const dot=(cx,cy,rad)=>cl(1.6-1.6*Math.hypot(u-cx,(v-cy)*asp)/rad),cross=(cx,cy,len)=>{const a=Math.abs(u-cx),b=Math.abs(v-cy)*asp;return Math.max(cl(1-a/len)*cl(1-b/(len*0.16)),cl(1-b/len)*cl(1-a/(len*0.16)))};
+  const hard=(cx,cy)=>cl(el(cx,cy,0.085,0.062)*3);
+  let c;
+  if(n==='pearl'){const g1=f?[0.45,0.68]:[0.40,0.66],rot=f?0.5:0,sx=f?0.04:0,sy=f?0.03:0;
+    c=shade([236,240,246]);const g=el(g1[0],g1[1],0.57,0.41);c=mx(c,[128,140,164],Math.pow(g,0.75)*0.92);c=mx(c,[104,114,140],Math.pow(el(g1[0],g1[1],0.40,0.26),1.6)*0.45);
+    c=mx(c,[246,248,252],cl((r-0.8)/0.2)*Math.max(0,Math.cos(ang-2.0))*0.9);
+    c=mx(c,[240,196,216],0.7*rim*Math.max(0,Math.cos(ang-Math.PI-rot))*0.6);c=mx(c,[190,226,236],0.45*rim*Math.max(0,Math.cos(ang-rot))*0.7);
+    c=mx(c,W,Math.pow(el(0.40+sx,0.30+sy,0.30,0.24),1.2)*0.95);c=mx(c,W,el(0.58+sx,0.48+sy,0.15,0.11)*0.7)}
+  else if(n==='silver'||n==='gold'){const gd=n==='gold',o=f?0.07:0,hz=v-(0.56+o)+0.64*dx*dx-0.05*dx,q=u+0.6*v;
+    c=shade(gd?[246,200,62]:[214,220,230]);
+    c=mx(c,gd?[214,150,34]:[150,158,174],cl((hz-0.08)/0.1)*0.55);c=mx(c,gd?[168,96,18]:[92,100,118],bd(hz,0.07,0.15)*(gd?0.80:0.90));
+    c=mx(c,gd?[255,238,150]:[240,244,250],bd(hz,-0.025,0.05)*0.9);
+    c=mx(c,gd?[255,226,120]:[232,238,246],cl((r-0.72)/0.28)*Math.max(0,Math.cos(ang-2.3))*0.85);
+    if(gd){const h=f?[0.42,0.31]:[0.36,0.29];c=mx(c,[255,250,214],el(h[0],h[1],0.24,0.19)*0.85);c=mx(c,W,hard(h[0]-0.02,h[1]-0.02));for(const [sx,sy] of DZ_GSPK[f])c=mx(c,[255,252,230],cross(sx,sy,0.075))}
+    else{const p=f?0.66:0.50;c=mx(c,W,bd(q,p,0.05)*0.8*(1-rim*0.5));c=mx(c,W,bd(q,p+0.17,0.02)*0.7*(1-rim*0.5));c=mx(c,W,hard(0.33,0.26))}}
+  else if(n==='blue'){const p=[0,2.1,4.2][f];
+    c=shade([53,182,230]);c=mx(c,[18,112,198],cl((v-0.45)/0.55)*0.75);c=mx(c,[150,232,255],cl((0.42-v)/0.42)*0.55);
+    const a1=1-Math.abs(Math.sin(8.5*u+1.3*Math.sin(6*v+p)+0.7*p)),a2=1-Math.abs(Math.sin(9.5*v+1.3*Math.sin(6.5*u-p)+1.3*p)),net=Math.pow(Math.max(a1,a2),9)+0.6*Math.pow(a1*a2,3);
+    c=mx(c,[214,248,255],cl(net)*0.62*(1-rim*rim));c=mx(c,[120,226,250],cl((r-0.7)/0.3)*Math.max(0,Math.cos(ang-0.8))*0.7);c=mx(c,W,hard(0.33,0.27))}
+  else if(n==='crystal'){const ex=u-0.47,ey=v-0.47,rr=Math.hypot(ex,ey)*2,ring=rr<0.42?0:rr<0.78?1:2,t=((Math.atan2(ey,ex)/(2*Math.PI)+(ring%2)*0.5/7)%1+1)%1*7,id=Math.floor(t),fr=t-id,val=DZ_FACET[f][ring*7+id];
+    c=shade([178,226,242]);c=val<0.55?mx(c,[92,150,196],(0.55-val)/0.55*0.42):mx(c,W,(val-0.55)/0.45*0.5);
+    const edge=Math.max(bd(Math.min(fr,1-fr),0,0.035/Math.max(0.25,rr)),bd(rr,0.42,0.03),bd(rr,0.78,0.03));c=mx(c,[240,252,255],edge*0.40);
+    const hu=((Math.atan2(ey,ex)/(2*Math.PI)+f*0.12)%1+1)%1*6,hc=[[255,170,190],[255,220,160],[190,240,170],[160,230,250],[180,190,255],[230,180,250]],h0=hc[Math.floor(hu)%6],h1=hc[(Math.floor(hu)+1)%6];
+    c=mx(c,mx(h0,h1,hu%1),bd(rr,0.78,0.07)*0.35);c=mx(c,W,hard(0.33,0.27));for(const [sx,sy] of DZ_CSPK[f])c=mx(c,W,cross(sx,sy,0.07))}
+  else if(n==='starry'){const np=[[0.40,0.44],[0.46,0.48],[0.36,0.50]][f],nc=[[0.60,0.66],[0.56,0.62],[0.64,0.60]][f],br=[1,0.45,0.15];
+    c=shade([26,28,84]);c=mx(c,[120,70,190],el(np[0],np[1],0.34,0.27)*0.62);c=mx(c,[40,130,180],el(nc[0],nc[1],0.30,0.23)*0.55);
+    c=mx(c,[190,180,240],bd((v-0.52)-0.55*dx,0,0.10)*0.30);c=mx(c,[14,14,46],cl((r-0.7)/0.3)*0.8);
+    for(const [sx,sy,sr,g] of DZ_STARS){if(Math.abs(u-sx)>0.04)continue;c=mx(c,W,dot(sx,sy,sr)*br[(g+f)%3])}
+    for(const [sx,sy,g] of DZ_XSTAR)c=mx(c,W,cross(sx,sy,0.06)*br[(g+f)%3]);c=mx(c,[230,236,255],hard(0.32,0.26)*0.8)}
+  else if(n==='obsidian'){const O=DZ_OBS[f],ox=(u-O.e[0])/0.50,oy=(v-O.e[1])/0.44,d=Math.hypot(ox,oy),an=Math.atan2(oy,ox),side=0.30+0.70*Math.pow(Math.max(0,0.5+0.5*Math.cos(an-O.fa)),1.5);
+    c=shade([20,20,26]);c=mx(c,[96,108,110],Math.pow(Math.max(0,1-d/1.2),1.2)*0.50);c=mx(c,O.o,bd(d,0.66,0.36)*0.66*side);c=mx(c,O.i,bd(d,0.30,0.34)*0.50*side);
+    c=mx(c,[14,14,18],cl((r-0.74)/0.26)*0.85);c=mx(c,[235,240,255],el(0.33,0.27,0.17,0.13)*0.35);c=mx(c,W,cl(el(0.33,0.27,0.075,0.055)*3));
+    for(const [sx,sy] of [[0.66,0.38],[0.28,0.60],[0.62,0.76]])c=mx(c,W,dot(sx,sy,0.02)*0.9)}
+  else return null;
+  if(sh<1){const m=0.6+0.4*sh;c=[c[0]*m,c[1]*m,c[2]*m]}/* 疊完之後再留一點暗面，果實才有體積 */
+  return c}
+function dreamInfo(a){let nf=1,per=0,pale=true;const add=k=>{if(!k)return;const P=colParts(k);if(P.t!=='s'&&P.t!=='l'&&P.t!=='d')return;for(const n of [P.a,P.b])if(n&&DREAM_NF[n]){nf=Math.max(nf,DREAM_NF[n]);per=Math.max(per,DREAM_PERIOD[n]);if(P.t!=='l')pale=false}};
+  add(a.skin);if(a.pat)add(a.pat.c);return nf>1?{nf,per:per*(pale?1.5:1)}:null}
+function fruitColSpec(key,frame){
+  const P=colParts(key),rgb=n=>RGBC[n]||RGBC.white,fr=frame||0;
+  /* 57.1 彩虹：維持橫向彩虹；第 2 影格色帶位移 0.17（循環） */
+  const rainbow=(v,pale)=>{let c;if(fr%2){const t=(((v+0.17)%1)+1)%1*RAINBOW.length,i=Math.floor(t)%RAINBOW.length;c=mixRGB(hexRGB(RAINBOW[i]),hexRGB(RAINBOW[(i+1)%RAINBOW.length]),t-Math.floor(t))}
+    else{const t=clamp(v,0,1)*(RAINBOW.length-1),i=Math.min(RAINBOW.length-2,Math.floor(t));c=mixRGB(hexRGB(RAINBOW[i]),hexRGB(RAINBOW[i+1]),t-i)}return pale?mixRGB(c,[255,255,255],0.42):c};
   const one=(n,pale)=>n==='rainbow'?((u,v)=>rainbow(v,pale)):(()=>{const c=pale?mixRGB(rgb(n),[255,255,255],0.42):rgb(n);return ()=>c})();
   if(P.t==='d'){const A=one(P.a,false),B=one(P.b,false);return {at:(u,v)=>u<0.5?A(u,v):B(u,v),fx:[{n:P.a,s:1,side:-1},{n:P.b,s:1,side:1}]}}
   if(P.t==='l')return {at:one(P.a,true),fx:[{n:P.a,s:0.5,side:0}]};
   if(P.t==='s')return {at:one(P.a,false),fx:[{n:P.a,s:1,side:0}]};
   return {at:one(P.a,false),fx:[]};
 }
-function fruitPaint(B,a,ripe,seed){
-  const {w,h,d,body,stem,L,base,x0,x1,y0,y1,rl,rr}=B,out=new Uint8ClampedArray(d),W=Math.max(1,x1-x0),H=Math.max(1,y1-y0);
-  const ok=ripe>=1,sk=fruitColSpec(a.skin);
+function fruitPaint(B,a,ripe,seed,frame){
+  const {w,h,d,body,stem,L,base,x0,x1,y0,y1,rl,rr}=B,out=new Uint8ClampedArray(d),W=Math.max(1,x1-x0),H=Math.max(1,y1-y0),asp=H/W,fr=frame||0;
+  const ok=ripe>=1,sk=fruitColSpec(a.skin,fr);
   let R=seed>>>0||7;const rnd=()=>{R=(R*1664525+1013904223)>>>0;return R/4294967296};
   /* 花紋 */
   const pat=ok&&a.pat?a.pat:null,forms=pat?(pat.f2!=null?[pat.f,pat.f2]:[pat.f]):[];
-  let pc=null;if(pat)pc=pat.c===a.skin?{at:(u,v)=>sk.at(u,v).map(x=>x*0.85)}:fruitColSpec(pat.c);
+  let pc=null;if(pat)pc=pat.c===a.skin?{at:sk.at,fx:sk.fx,dim:0.85}:fruitColSpec(pat.c,fr);
   const spots=[],stars=[];
   if(forms.includes(1))for(let k=0;k<12;k++)spots.push([x0+W*(0.12+rnd()*0.76),y0+H*(0.12+rnd()*0.76),W/18*(0.8+rnd()*0.4)]);
   if(forms.includes(2))for(let k=0;k<14;k++)stars.push([x0+W*(0.08+rnd()*0.84),y0+H*(0.08+rnd()*0.84),W/28*(0.8+rnd()*0.4)]);
@@ -87,25 +142,18 @@ function fruitPaint(B,a,ripe,seed){
       else if(f===2){for(const s of stars){const dx=Math.abs(x-s[0]),dy=Math.abs(y-s[1]);if(dx<=s[2]&&dy<=s[2]&&Math.sqrt(dx)+Math.sqrt(dy)<=Math.sqrt(s[2])){hit=true;break}}}
       else grad=v;}
     return [hit,grad]};
-  /* 特殊效果用的閃點 */
-  const fxs=ok?sk.fx:[],spark=[];
-  if(fxs.some(f=>['gold','crystal','starry'].includes(f.n)))for(let k=0;k<11;k++)spark.push([x0+W*rnd(),y0+H*rnd(),W*(0.009+rnd()*0.008),rnd()]);/* 半徑跟著果實寬；31.6 數量減半、縮小 */
+  /* 一個顏色在這個像素的樣子：基本色、混色＝底色套明暗；夢幻色＝57 的畫法（淡的和淡底色各半）。k＝明暗 */
+  const px=(S,u,v,k)=>{let c=S.at(u,v);c=k<=1?c.map(z=>z*k):mixRGB(c,[255,255,255],Math.min((k-1)/0.25,1));
+    if(ok)for(const f of S.fx){if(f.side<0&&u>=0.5||f.side>0&&u<0.5)continue;if(f.n==='rainbow')continue;const D=dreamPx(f.n,fr%DREAM_NF[f.n],u,v,k,asp);if(D)c=f.s>=1?D:mixRGB(c,D,0.5)}
+    if(S.dim)c=c.map(z=>z*S.dim);return c};
   for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x,o=i*4;
     if(body[i]){
-      const u=(x-x0)/W,v=(y-y0)/H;let c=sk.at(u,v);
-      if(pat){const [hit,grad]=inPat(x,y,u,v);if(grad>=0)c=mixRGB(c,pc.at(u,v),grad);if(hit)c=pc.at(u,v)}
+      const u=(x-x0)/W,v=(y-y0)/H;
       /* 明暗：k = 亮度 / 基準，暗部加強 1.7 倍；亮部往白色混合 */
       let k=L[i]/base;if(k<1)k=Math.max(0,1-(1-k)*1.7);
-      c=k<=1?c.map(z=>z*k):mixRGB(c,[255,255,255],Math.min((k-1)/0.25,1));
-      /* 特殊效果 */
-      for(const f of fxs){if(f.side<0&&u>=0.5||f.side>0&&u<0.5)continue;const s=f.s;
-        if(f.n==='silver'){const q=u+v*0.6,b1=Math.max(0,1-Math.abs(q-0.62)/0.07),b2=Math.max(0,1-Math.abs(q-0.85)/0.025);c=mixRGB(c,[255,255,255],(b1*0.6+b2*0.45)*s)}
-        else if(f.n==='pearl'){c=mixRGB(c,mixRGB([245,169,203],[169,216,245],u),0.25*s*(0.6+0.4*Math.sin(v*6.3+u*3)))}
-        else if(f.n==='gold'){const q=u+v*0.7,b1=Math.max(0,1-Math.abs(q-0.55)/0.09);c=mixRGB(c,[255,241,168],b1*0.55*s)}
-        else if(f.n==='obsidian'){const q=u-v,b1=Math.max(0,1-Math.abs(q+0.05)/0.04),b2=Math.max(0,1-Math.abs(q+0.18)/0.03);c=mixRGB(mixRGB(c,[169,121,232],b1*0.75*s),[95,211,166],b2*0.7*s)}
-        else if(f.n==='crystal'){c=mixRGB(c,[223,246,255],0.25*s);const q=u+v*0.5,b1=Math.max(0,1-Math.abs(q-0.5)/0.05);c=mixRGB(c,[255,255,255],b1*0.5*s)}
-      }
-      if(spark.length&&fxs.length){for(const p of spark){const dx=x-p[0],dy=y-p[1];if(dx*dx+dy*dy<=p[2]*p[2]){const f=fxs.find(z=>['gold','crystal','starry'].includes(z.n)&&!(z.side<0&&u>=0.5||z.side>0&&u<0.5));if(f&&(f.s>=1||p[3]<0.5))c=mixRGB(c,f.n==='gold'?[255,250,220]:[255,255,255],0.9)}}}
+      let c;
+      if(pat){const [hit,grad]=inPat(x,y,u,v);if(hit)c=px(pc,u,v,k);else{c=px(sk,u,v,k);if(grad>0)c=mixRGB(c,px(pc,u,v,k),grad)}}
+      else c=px(sk,u,v,k);
       if(!ok)c=mixRGB(c,FRUIT_UNRIPE,0.4);
       out[o]=c[0];out[o+1]=c[1];out[o+2]=c[2];
     }else if(stem[i]){
@@ -123,7 +171,7 @@ function tfxWrap(kind,inner,full,big,rm){
   const o0=big?.5:.35,o1=big?.8:.6;
   let s=`<defs>${g}</defs><circle cx="0" cy="0.05" r="${big?1.65:1.6}" fill="url(#tg${n})" opacity="${rm?((o0+o1)/2).toFixed(2):o0}">${rm?'':`<animate attributeName="opacity" values="${o0};${o1};${o0}" dur="2.5s" repeatCount="indefinite"/>`}</circle>`+inner;
   if(full&&!rm){
-    s+=`<mask id="tm${n}" maskUnits="userSpaceOnUse" x="-1.5" y="-1.6" width="3" height="3.2" style="mask-type:alpha">${inner}</mask><g mask="url(#tm${n})"><g transform="rotate(25)"><rect x="-0.22" y="-2.2" width="${big?0.5:0.42}" height="4.4" fill="#FFFFFF" opacity="${big?.7:.55}"><animateTransform attributeName="transform" type="translate" values="-2.8 0;-2.8 0;2.8 0" keyTimes="0;0.83;1" dur="3.6s" repeatCount="indefinite"/></rect></g></g>`;
+    /* 48.1：掃過果實表面的流光拿掉；表面的動態一律屬於顏色（夢幻色），造型特效只用果實外面的光暈與光點 */
     const cs=my?['#FF9AD5','#9AE0FF','#FFE27A','#B6F59A']:['#FFF3B0','#FFFFFF','#FFE27A','#FFF3B0'];
     for(let k=0;k<4;k++){const x=(-0.75+k*0.5).toFixed(2),b=(-k*0.6).toFixed(1);s+=`<path d="${TFX_STAR}" fill="${cs[k]}" opacity="0"><animateTransform attributeName="transform" type="translate" values="${x} 0.7;${x} -1.5" dur="2.4s" begin="${b}s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.4s" begin="${b}s" repeatCount="indefinite"/></path>`}
   }
@@ -134,7 +182,7 @@ const PB={};
 function loadAll(){return Promise.all(Object.entries(IMG).map(([k,u])=>new Promise(res=>{const im=new Image();im.onload=()=>{const cv=document.createElement('canvas');cv.width=im.naturalWidth;cv.height=im.naturalHeight;const cx=cv.getContext('2d');cx.drawImage(im,0,0);const id=cx.getImageData(0,0,cv.width,cv.height);PB[k]=fruitPrep(id.width,id.height,id.data);res()};im.onerror=res;im.src=u})))}
 function draw(name,a,ripe,size){
   const B=PB[name];const cv=document.createElement('canvas');const H=Math.round(size*3.2/3);cv.width=size*2;cv.height=H*2;cv.style.width=size+'px';cv.style.height=H+'px';
-  if(!B)return cv;const px=fruitPaint(B,a,ripe,hashStr(name+'|'+a.skin+'|'+patKey(a.pat)+'|'+ripe));
+  if(!B)return cv;const px=fruitPaint(B,a,ripe,hashStr(name+'|'+a.skin+'|'+patKey(a.pat)+'|'+ripe),+(document.getElementById('fr')||{value:0}).value||0);
   const t=document.createElement('canvas');t.width=B.w;t.height=B.h;const tc=t.getContext('2d');const id=tc.createImageData(B.w,B.h);id.data.set(px);tc.putImageData(id,0,0);
   const m=(FRUIT_SHAPE_MUL[name]||1)*(ripe?1:0.7),s=Math.min(cv.width/B.w,cv.height/B.h)*m,w=B.w*s,h=B.h*s;const cx=cv.getContext('2d');cx.imageSmoothingQuality='high';cx.drawImage(t,(cv.width-w)/2,(cv.height-h)/2,w,h);return cv;
 }

@@ -8,8 +8,8 @@ const root=path.join(__dirname,'..');
 const h=fs.readFileSync(path.join(root,'index.html'),'utf8');
 let js=h.slice(h.indexOf('<script>',h.indexOf('</style>'))+8,h.lastIndexOf('</script>'));
 const P=new Proxy(function(){},{get:(t,k)=>k===Symbol.toPrimitive?()=>'':(k==='then'?undefined:P),apply:()=>P,construct:()=>P,set:()=>true});
-const DATA=['RGBC','SPGRAD','RAINBOW','EX_OF','ALL_SKINS','BASIC','SPECIAL','BASE_SHAPES','SPN','EXN','CN','CSTR','MIX15','FRUIT_SHAPE_MUL','FRUIT_UNRIPE','PFN','BUILD','TFX_STAR'];
-const FNS=['clamp','hexRGB','mixRGB','rgbS','isSpecC','colParts','cnOf','patKey','hashStr','f3','pfName','fruitShapeKey','fruitPrep','fruitColSpec','fruitPaint','tfxRM','tfxWrap'];
+const DATA=['RGBC','SPGRAD','RAINBOW','EX_OF','ALL_SKINS','BASIC','SPECIAL','BASE_SHAPES','SPN','EXN','CN','CSTR','MIX15','FRUIT_SHAPE_MUL','FRUIT_UNRIPE','PFN','BUILD','TFX_STAR','DREAM_NF','DREAM_PERIOD','DZ_STARS','DZ_XSTAR','DZ_FACET','DZ_GSPK','DZ_CSPK','DZ_OBS'];
+const FNS=['clamp','hexRGB','mixRGB','rgbS','isSpecC','colParts','cnOf','patKey','hashStr','f3','pfName','fruitShapeKey','fruitPrep','dreamPx','dreamInfo','fruitColSpec','fruitPaint','tfxRM','tfxWrap'];
 js+=';globalThis.T={'+[...DATA,...FNS].join(',')+'};';
 const ctx={document:P,window:P,firebase:P,navigator:P,location:{pathname:'/',search:'',hash:''},localStorage:P,console,setTimeout:()=>0,setInterval:()=>0,clearTimeout(){},clearInterval(){},requestAnimationFrame:()=>0,fetch:()=>new Promise(()=>{}),btoa:s=>Buffer.from(s,'binary').toString('base64'),atob:s=>Buffer.from(s,'base64').toString('binary'),TextEncoder,Math,Date,JSON,addEventListener(){},matchMedia:()=>({matches:false,addEventListener(){}}),performance:{now:()=>0},innerWidth:400,innerHeight:800,devicePixelRatio:1,screen:P,history:P,alert(){},confirm:()=>true,URLSearchParams};
 ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);const T=ctx.T;
@@ -31,6 +31,7 @@ th{background:#F6F1E8;font-weight:600}canvas{display:block;margin:auto}.wrap{ove
 <label>果皮 <select id="skin"></select></label>
 <label>花紋 <select id="pf"><option value="">無</option><option value="0">條紋</option><option value="1">斑點</option><option value="2">星點</option><option value="3">漸層</option><option value="0,1">條紋＋斑點</option><option value="0,3">條紋＋漸層</option><option value="1,2">斑點＋星點</option></select></label>
 <label>花紋顏色 <select id="pc"></select></label>
+<label>夢幻色影格 <select id="fr" onchange="document.getElementById('rp').dispatchEvent(new Event('change'))"><option value="0">第 1 影格</option><option value="1">第 2 影格</option><option value="2">第 3 影格</option></select></label>
 <label>階段 <select id="rp"><option value="1">成熟期</option><option value="0">結果期（70% 大小、偏綠）</option></select></label>
 <label>大小 <select id="sz"><option value="64">64px</option><option value="44">44px</option><option value="30">30px</option><option value="22">22px（手機上植株的果實）</option></select></label>
 <label><input type="checkbox" id="gr"> 草地背景</label>
@@ -45,7 +46,7 @@ const PB={};
 function loadAll(){return Promise.all(Object.entries(IMG).map(([k,u])=>new Promise(res=>{const im=new Image();im.onload=()=>{const cv=document.createElement('canvas');cv.width=im.naturalWidth;cv.height=im.naturalHeight;const cx=cv.getContext('2d');cx.drawImage(im,0,0);const id=cx.getImageData(0,0,cv.width,cv.height);PB[k]=fruitPrep(id.width,id.height,id.data);res()};im.onerror=res;im.src=u})))}
 function draw(name,a,ripe,size){
   const B=PB[name];const cv=document.createElement('canvas');const H=Math.round(size*3.2/3);cv.width=size*2;cv.height=H*2;cv.style.width=size+'px';cv.style.height=H+'px';
-  if(!B)return cv;const px=fruitPaint(B,a,ripe,hashStr(name+'|'+a.skin+'|'+patKey(a.pat)+'|'+ripe));
+  if(!B)return cv;const px=fruitPaint(B,a,ripe,hashStr(name+'|'+a.skin+'|'+patKey(a.pat)+'|'+ripe),+(document.getElementById('fr')||{value:0}).value||0);
   const t=document.createElement('canvas');t.width=B.w;t.height=B.h;const tc=t.getContext('2d');const id=tc.createImageData(B.w,B.h);id.data.set(px);tc.putImageData(id,0,0);
   const m=(FRUIT_SHAPE_MUL[name]||1)*(ripe?1:0.7),s=Math.min(cv.width/B.w,cv.height/B.h)*m,w=B.w*s,h=B.h*s;const cx=cv.getContext('2d');cx.imageSmoothingQuality='high';cx.drawImage(t,(cv.width-w)/2,(cv.height-h)/2,w,h);return cv;
 }

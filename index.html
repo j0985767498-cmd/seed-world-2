@@ -2675,10 +2675,17 @@ function decoImgF(k,m){const [src,h,iw,ih,gl]=m,w=h*iw/ih;
     return s}}
 for(const d of DECOR){const m=DECO_IMG[d.k];if(m){d.f=decoImgF(d.k,m);d.img=m}}
 for(const [k,n,cat,m,p,flat] of DECO_NEW){const d=dd(k,n,cat,decoImgF(k,m),flat);d.img=m;d.p=p;DECOR.push(d)}
+/* ===== 68（16g）：斜向圍籬（沿菱形格線，可以把田圍起來）=====
+   素材 assets/farm/iso/<名稱>_d.png（往右下斜）／_u.png（往右上斜），寬 88px（顯示 44px；格線一段寬 42px，兩端各多 1px 讓相鄰兩段重疊）。
+   ISO_META[名稱][方向]=[圖高, 地面線左端 y, 地面線右端 y]（原圖像素，來自 iso_meta.json）。
+   存檔只記「哪一條邊」：state.decor 裡是 {t:'fence_iso', e:[p,q,方向]}，沒有 x、y（方向 0＝往右下、1＝往右上）。格線見下面 isoPt。 */
+const ISO_META={"fence_wood":{"d":[85,36,81],"u":[88,86,36]},"fence_picket":{"d":[86,35,82],"u":[87,84,36]},"stone_wall":{"d":[77,28,72],"u":[80,77,27]},"hedge":{"d":[79,28,73],"u":[85,79,30]},"bamboo_fence":{"d":[99,48,95],"u":[99,96,48]},"garden_gate":{"d":[115,40,83],"u":[120,89,39]}};
+const ISO_KINDS=[['fence_iso','木柵欄','fence_wood','fence',0],['picket_iso','白色籬笆','fence_picket','picket',0],['stonewall_iso','石牆','stone_wall','stonewall',0],['hedge_iso','樹籬','hedge','hedge',0],['bamboo_iso','竹籬笆','bamboo_fence','bamboo_fence',25],['gate_iso','庭園門','garden_gate','garden_gate',75]];
+{const add=[];for(const [k,n,base,straight,pr] of ISO_KINDS){const hh=ISO_META[base].d[0]/2,d=dd(k,n+'（斜）','圍籬',(x,y)=>`<image href="assets/farm/iso/${base}_d.png" x="${x-22}" y="${(y-hh).toFixed(1)}" width="44" height="${hh}"/>`,false);d.iso=base;d.img=['',hh,88,ISO_META[base].d[0],0];if(pr)d.p=pr;add.push(d);const s=DECOR.find(q=>q.k===straight);if(s)s.n=s.n+'（直）'}DECOR.unshift(...add)}
 const DECOR_MAP=Object.fromEntries(DECOR.map(d=>[d.k,d]));
 const DECOR_CATS=['圍籬','地面','植栽','照明','家具','設施','標示','水景'];
 const YARD={x0:40,x1:420,y0:575,y1:820};
-function decorSVG(d,sel,bad){const it=DECOR_MAP[d.t];if(!it)return '';const art=it.f(d.x,d.y,d.txt||'');return `<g data-decor="${d.i}" stroke="#3A2416" stroke-width="1.3" stroke-linejoin="round"${bad?' opacity=".8"':''}>${d.fl&&!isSign(d.t)?`<g transform="translate(${2*d.x} 0) scale(-1 1)">${art}</g>`:art}${bad?`<ellipse cx="${d.x}" cy="${d.y-8}" rx="28" ry="18" fill="#E53935" fill-opacity=".38" stroke="#C0392B" stroke-width="2.5"/>`:''}${sel?`<ellipse cx="${d.x}" cy="${d.y}" rx="28" ry="9" fill="none" stroke="var(--mustard)" stroke-width="2.5" stroke-dasharray="4 3"/>`:''}</g>`}
+function decorSVG(d,sel,bad){const it=DECOR_MAP[d.t];if(!it)return '';if(d.e)return isoSVG(d,it,sel);const art=it.f(d.x,d.y,d.txt||'');return `<g data-decor="${d.i}" stroke="#3A2416" stroke-width="1.3" stroke-linejoin="round"${bad?' opacity=".8"':''}>${d.fl&&!isSign(d.t)?`<g transform="translate(${2*d.x} 0) scale(-1 1)">${art}</g>`:art}${bad?`<ellipse cx="${d.x}" cy="${d.y-8}" rx="28" ry="18" fill="#E53935" fill-opacity=".38" stroke="#C0392B" stroke-width="2.5"/>`:''}${sel?`<ellipse cx="${d.x}" cy="${d.y}" rx="28" ry="9" fill="none" stroke="var(--mustard)" stroke-width="2.5" stroke-dasharray="4 3"/>`:''}</g>`}
 
 // ===== 角色（14k 重畫：照 assets/ref 參考圖，分層紙娃娃）=====
 /* 大頭約 2.3 頭身、橢圓點點眼、小微笑、無腮紅、露耳朵、一塊塊的頭髮、深棕外框、兩階明暗（光從左上）。
@@ -3203,7 +3210,7 @@ function farmWorld(st,hov,selD){
   let s=`<rect x="-600" y="-600" width="${W+1200}" height="${H+1200}" fill="#93AE66"/><rect x="10" y="60" width="${W-20}" height="${H-70}" rx="40" fill="#A8C478" stroke="#7E9A58" stroke-width="3"/>${GROUND}`;
   s+=`<path d="M${gx} ${gy-48} V${gy+4}" stroke="#C9A363" stroke-width="44" stroke-linecap="round"/><path d="M${gx} ${gy-48} V${gy+4}" stroke="#F0D49A" stroke-width="36" stroke-linecap="round"/>`+gateSVG(gx,gy+4,esc(gateText(st)));/* 36.8 F：大門招牌寫字 */
   const all=[];tfxPickFull(st),dzPickFull(st);/* 34.6 */
-  (st.decor||[]).forEach((d,i)=>{const it=DECOR_MAP[d.t];if(!it)return;all.push({z:it.flat?-1e5+d.y:d.y,h:()=>decorSVG({...d,i},selD===i,st===state&&!!decoDrag&&decoDrag.on&&decoDrag.i===i&&decoDrag.bad)})});
+  (st.decor||[]).forEach((d,i)=>{const it=DECOR_MAP[d.t];if(!it)return;all.push({z:d.e?isoZ(d.e):it.flat?-1e5+d.y:d.y,h:()=>decorSVG({...d,i},selD===i,st===state&&!!decoDrag&&decoDrag.on&&decoDrag.i===i&&decoDrag.bad)})});
   for(let i=0;i<st.plots.length;i++){const pos=posOf(st,i);if(!pos)continue;if(st===state&&dragPlot&&dragPlot.on&&dragPlot.i===i){const [gx,gy]=snapPos(dragPlot.x,dragPlot.y),ok=!plotSpotErr(state,gx,gy,i);const fake={...state,plotPos:state.plotPos.slice()};fake.plotPos[i]=[gx,gy];all.push({z:1e6,h:()=>`<g opacity=".75">${plotSVG(fake,i,null)}</g><polygon points="${gx-41},${gy} ${gx},${gy-23} ${gx+41},${gy} ${gx},${gy+23}" fill="none" stroke="${ok?'#2F9E3A':'#C0392B'}" stroke-width="3" stroke-dasharray="6 4"/>`});continue}all.push({z:pos[1]+20,h:()=>plotSVG(st,i,hov)})}
   if(st===state&&buildMode==='build'&&buildBad&&Date.now()-buildBad.t<900){const {x,y}=buildBad;all.push({z:1e6+1,h:()=>`<polygon points="${x-41},${y} ${x},${y-23} ${x+41},${y} ${x},${y+23}" fill="rgba(192,57,43,.25)" stroke="#C0392B" stroke-width="3" pointer-events="none"/>`})}/* 31.1：不合法的位置閃紅 */
   all.sort((a,b)=>a.z-b.z);
@@ -3742,7 +3749,7 @@ document.getElementById('p-decor').addEventListener('click',e=>{
   const t=it.dataset.item,n=DECOR_MAP[t].n,pr=DECOR_MAP[t].p||0;
   if(recallMode)stopRecall();
   /* 46.1（15j）：選好一種，之後點空地就放這一種 */
-  void pr;decoSel=t;decoPaint=null;selDecor=null;closePanel();renderWorld();renderDecoBar();toast(`點空地放「${n}」${decoGrid(t)?'，滑過可以連續鋪設':''}`,2500);return;
+  void pr;decoSel=t;decoPaint=null;selDecor=null;closePanel();renderWorld();renderDecoBar();toast(isIso(t)?`「${n}」：點或沿著田邊滑過就放，方向會自動貼齊`:`點空地放「${n}」${decoGrid(t)?'，滑過可以連續鋪設':''}`,2800);return;
   state.decor.push({t,x:0,y:0});selDecor=state.decor.length-1;decoPaint=decoGrid(t)?t:null;
   save();closePanel();renderWorld();renderDecoBar();
   toast(decoPaint?`放好「${n}」了，用手指滑過去可以連續鋪設`:`放好「${n}」了，按住可以拖到想放的位置`,3500);
@@ -3806,14 +3813,15 @@ function exitDecor(){quickMove=null;if(!decoMode)return;decoEnd();decoCancel();i
 function renderDecoBar(){
   const el=document.getElementById('decoBar');if(!el)return;if(!decoMode){el.hidden=true;return}el.hidden=false;
   const it=decoSel?DECOR_MAP[decoSel]:null,n=decoSel?decoStoreN(decoSel):0,pr=(it&&it.p)||0;
-  const top=it?`<div class="bbtip"><b>目前：${it.n}</b>　<small>${n?`倉庫還有 ${n} 個（免費）`:pr?`每個 ${pr} 金幣`:'免費'}${decoFlip&&!isSign(decoSel)?'・轉向':''}</small><br><small>點空地放${decoGrid(decoSel)?'（滑過連續鋪設）':''}・點裝飾收回倉庫・長按裝飾拖著移動</small></div>`
+  const top=it?`<div class="bbtip"><b>目前：${it.n}</b>　<small>${n?`倉庫還有 ${n} 個（免費）`:pr?`每個 ${pr} 金幣`:'免費'}${decoFlip&&!isSign(decoSel)&&!isIso(decoSel)?'・轉向':''}</small><br><small>${isIso(decoSel)?'點或沿著田邊滑過就放，會自動貼齊格線、自動選方向・點已經放好的圍籬收回':`點空地放${decoGrid(decoSel)?'（滑過連續鋪設）':''}・點裝飾收回倉庫・長按裝飾拖著移動`}</small></div>`
     :`<div class="bbtip"><b>先選一種裝飾</b><br><small>按「選裝飾」挑一種，之後點空地就放・點已經放好的裝飾收回倉庫・長按拖著移動</small></div>`;
-  el.innerHTML=top+`<div class="bbrow" style="grid-template-columns:1fr 1fr 1fr 1fr"><button data-dk="add">選裝飾</button><button data-dk="flip" aria-pressed="${!!decoFlip}">轉向</button><button data-dk="undo"${decoHist.length?'':' disabled'}>復原</button><button data-dk="done" class="done">完成</button></div>`;
+  const iso=isIso(decoSel);
+  el.innerHTML=top+`<div class="bbrow" style="grid-template-columns:${iso?'1fr 1fr 1fr':'1fr 1fr 1fr 1fr'}"><button data-dk="add">選裝飾</button>${iso?'':`<button data-dk="flip" aria-pressed="${!!decoFlip}">轉向</button>`}<button data-dk="undo"${decoHist.length?'':' disabled'}>復原</button><button data-dk="done" class="done">完成</button></div>`;
 }
 /* 46（15j）：裝飾模式和開墾一樣。點空地＝放目前選的；點裝飾＝收回倉庫；長按裝飾＝拖著移動。
    同一筆劃第一下決定是放還是收；圍籬、地面類可以滑過連續鋪設，其他裝飾只放第一下那一個，之後拖曳＝移動畫面。 */
 var decoSel=null,decoFlip=false;let decoPend=null,decoRec=null,decoStroke=null;const decoHist=[];
-function decoEnd(){if(decoPend){clearTimeout(decoPend.t);decoPend=null}decoRec=null;decoStroke=null;decoPainting=false;decoPaint=null}
+function decoEnd(){if(decoPend){clearTimeout(decoPend.t);decoPend=null}decoRec=null;decoStroke=null;decoPainting=false;decoPaint=null;isoLock=null;isoPaintAt.last=null}
 function decoRecallAt(cx,cy){if(!decoRec)return;const el=document.elementFromPoint(cx,cy),g=el&&el.closest&&el.closest('[data-decor]');if(!g)return;const i=+g.dataset.decor,d=state.decor[i];if(!d)return;
   decoStorePut(d.t);state.decor.splice(i,1);decoRec.push(d);renderWorld()}
 function decoUndo(){const h=decoHist.pop();if(!h){toast('沒有可以復原的');return}
@@ -3829,7 +3837,7 @@ document.getElementById('decoBar').addEventListener('click',e=>{
   if(a==='undo'){decoUndo();return}
 });
 function decoPaintAt(cx,cy){
-  if(!decoPaint)return;const w=screenToWorld(cx,cy),[x,y]=decoSnap(decoPaint,w.x,w.y),k=x+','+y;
+  if(!decoPaint)return;if(isIso(decoPaint)){isoPaintAt(cx,cy);return}const w=screenToWorld(cx,cy),[x,y]=decoSnap(decoPaint,w.x,w.y),k=x+','+y;
   if(decoPainted.has(k))return;decoPainted.add(k);
   const first=!decoStroke||!decoStroke.length;
   if(decoErr(x,y)||decoOcc(decoPaint,x,y,-1)){if(first&&decoPainted.size===1)fxAdd('sk',cx,cy-10,'✕',420);return}
@@ -5533,7 +5541,8 @@ sceneEl.addEventListener('pointerdown',e=>{
   if(recallMode){const tg=e.target.closest&&(e.target.closest('[data-decor]')||e.target.closest('[data-plot]'));if(tg){recallHit.clear();recallStroke=[];recalling=true;strokeLast=null;strokeTo(e.clientX,e.clientY,recallAt)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}/* 36.7 */
   if(decoMode){decoPainted.clear();decoEnd();
     const dg=e.target.closest&&e.target.closest('[data-decor]');
-    if(dg){const i=+dg.dataset.decor,d=state.decor[i];if(d){const w=screenToWorld(e.clientX,e.clientY),dd={i,fx:d.x,fy:d.y,ox:d.x-w.x,oy:d.y-w.y,on:false,bad:false,msg:''};
+    let dg0=dg;if(dg0&&isIso(decoSel)){const d0=state.decor[+dg0.dataset.decor],w0=screenToWorld(e.clientX,e.clientY);if(d0&&d0.e&&!isoTaken(isoAt(w0.x,w0.y,null)))dg0=null}/* 68：選著斜向圍籬時，手指落在別段圍籬的點擊範圍上、但要放的那條邊是空的＝放，不是收回 */
+    if(dg0){const i=+dg0.dataset.decor,d=state.decor[i];if(d&&d.e){decoPend={i,x:e.clientX,y:e.clientY,t:0};return}/* 斜向圍籬不能拖著移動：點或滑過＝收回 */if(d){const w=screenToWorld(e.clientX,e.clientY),dd={i,fx:d.x,fy:d.y,ox:d.x-w.x,oy:d.y-w.y,on:false,bad:false,msg:''};
       if(quickMove===i){decoDrag=dd;return}/* 從小選單按「移動」：直接拖 */
       decoPend={i,x:e.clientX,y:e.clientY,t:setTimeout(()=>{if(decoPend&&decoPend.i===i&&state.decor[i]===d){decoPend=null;decoDrag=dd;try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}toast('拖到新的位置再放開',1500)}},350)};return}}
     const ps={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};
@@ -5711,7 +5720,7 @@ function showPop(html,sx,sy,key){const el=document.getElementById('decoPop');el.
   el.style.left=Math.max(8,Math.min(W-w-8,sx-w/2))+'px';el.style.top=Math.max(60,Math.min(H-h-100,sy-h-12))+'px';popKeep()}
 function popKeep(){clearTimeout(decoPopT);decoPopT=setTimeout(closeDecoPop,3000)}
 function openDecoPop(i){const d=state.decor[i];if(!d)return;let r;try{r=sceneEl.querySelector(`[data-decor="${i}"]`).getBoundingClientRect()}catch(e){return}
-  showPop(`${isSign(d.t)?'<button data-dp="text">改文字</button>':''}${isSign(d.t)?'':'<button data-dp="flip">轉向</button>'}<button data-dp="move">移動</button><button data-dp="recall">收回</button>`,r.left+r.width/2,r.top,'d'+i);
+  showPop(d.e?'<button data-dp="recall">收回</button>':`${isSign(d.t)?'<button data-dp="text">改文字</button>':''}${isSign(d.t)?'':'<button data-dp="flip">轉向</button>'}<button data-dp="move">移動</button><button data-dp="recall">收回</button>`,r.left+r.width/2,r.top,'d'+i);
   document.getElementById('decoPop').dataset.i=i}
 function openGatePop(){const [gx,gy]=GATE.farm,s=worldToScreenPt(gx,gy-40);showPop(`<button data-dp="town">往城鎮</button><button data-dp="gtext">改文字</button>`,s.x,s.y,'gate')}
 function worldToScreenPt(x,y){try{const pt=sceneEl.createSVGPoint();pt.x=x;pt.y=y;const m=sceneEl.getScreenCTM();const q=pt.matrixTransform(m);return {x:q.x,y:q.y}}catch(e){return {x:innerWidth/2,y:innerHeight/2}}}
@@ -6846,6 +6855,42 @@ function nsCardHTML(n){
   else{const ls=nsLots(n);h+=ls.length?ls.map(l=>`<button class="btn" data-act="nsgive" data-k="${n}" data-lot="${l.id}">${S.wild?`交出「${esc(l.name)}」（整包 ${lc(l)} 顆）`:`交出「${esc(l.name)}」的 ${NS_SEEDS} 顆（這包有 ${lc(l)} 顆）`}</button>`).join(''):`<p class="note">種子袋裡還沒有符合的種子包${S.lot?`（要是自己育成的${S.lot.cross?'「雜交成品」':'「成品」'}，至少 ${NS_SEEDS} 顆）`:''}。</p>`}
   return h+`<p class="note">完成後得到 ${NS_XP} 經驗和${NPCN[n]}的禮物。</p></div>`;
 }
+/* ===== 68（16g）斜向圍籬：格線、畫法、放置 =====
+   田格的角落是 (LX0+42a, LY0+24b)、a+b 為奇數的點。格線加密一倍（可以錯開半格）：W(p,q)＝ISO_O＋p×(21,12)＋q×(21,-12)，p、q 都是偶數時就是田格的角落。
+   往右下的一段（方向 0）從 W(p,q) 到 W(p+2,q)；往右上的一段（方向 1）從 W(p,q) 到 W(p,q+2)。同一條線上兩段不能重疊。 */
+const ISO_O=[LX0,LY0-24];
+const isIso=t=>!!(t&&DECOR_MAP[t]&&DECOR_MAP[t].iso);
+const isoPt=(p,q)=>[ISO_O[0]+21*(p+q),ISO_O[1]+12*(p-q)];
+const isoEnds=e=>[isoPt(e[0],e[1]),e[2]?isoPt(e[0],e[1]+2):isoPt(e[0]+2,e[1])];
+const isoMid=e=>{const [a,b]=isoEnds(e);return [(a[0]+b[0])/2,(a[1]+b[1])/2]};
+const isoZ=e=>isoMid(e)[1]+12;/* 前後遮擋：田後面兩條邊的圍籬排在那塊田之前（被植株擋住），前面兩條邊排在之後（擋住植株根部） */
+/* 世界座標 → 最近的一段。貼齊田格角落的位置（偶數）優先，離得夠遠（超過 0.7 格）才用錯開半格的位置。lock＝這一筆劃已經放的第一段：之後都排在同一條線上、首尾相接 */
+function isoAt(x,y,lock){
+  const dx=x-ISO_O[0],dy=y-ISO_O[1],fp=(dx/21+dy/12)/2,fq=(dx/21-dy/12)/2;
+  if(lock)return lock[2]===0?[lock[0]+2*Math.round((fp-1-lock[0])/2),lock[1],0]:[lock[0],lock[1]+2*Math.round((fq-1-lock[1])/2),1];
+  const near=v=>{const ev=2*Math.round(v/2);return Math.abs(v-ev)<=0.7?ev:(v>ev?ev+1:ev-1)};
+  return Math.abs(fq-Math.round(fq))<=Math.abs(fp-Math.round(fp))?[near(fp-1),near(fq),0]:[near(fp),near(fq-1),1];
+}
+const isoTaken=e=>state.decor.some(d=>d.e&&d.e[2]===e[2]&&(e[2]===0?d.e[1]===e[1]&&Math.abs(d.e[0]-e[0])<2:d.e[0]===e[0]&&Math.abs(d.e[1]-e[1])<2));
+function isoErr(e){const [a,b]=isoEnds(e),m=isoMid(e);if(!inYard({x:a[0],y:a[1]})||!inYard({x:b[0],y:b[1]}))return '這裡太靠近農場邊緣了';const [gx,gy]=GATE.farm;if(Math.hypot(m[0]-gx,(m[1]-gy)*1.4)<90)return '大門前面要留通道';return ''}
+function isoSVG(d,it,sel){
+  const dir=d.e[2]?'u':'d',M=ISO_META[it.iso][dir],[a,b]=isoEnds(d.e),mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2,top=my-(M[1]+M[2])/4;
+  return `<g data-decor="${d.i}"><image href="assets/farm/iso/${it.iso}_${dir}.png" x="${mx-22}" y="${top.toFixed(1)}" width="44" height="${M[0]/2}" pointer-events="none"/><polygon points="${a[0]},${a[1]+2} ${b[0]},${b[1]+2} ${b[0]},${b[1]-17} ${a[0]},${a[1]-17}" fill="transparent" stroke="none"/>${sel?`<path d="M${a[0]} ${a[1]} L${b[0]} ${b[1]}" stroke="var(--mustard)" stroke-width="3" stroke-dasharray="4 3" fill="none"/>`:''}</g>`}
+let isoLock=null;
+function isoPut(e,cx,cy){
+  const k='i'+e.join(',');if(decoPainted.has(k))return true;decoPainted.add(k);
+  const first=!decoStroke||!decoStroke.length,err=isoErr(e);
+  if(err||isoTaken(e)){if(first&&decoPainted.size===1){fxAdd('sk',cx,cy-10,'✕',420);if(err)toast(err,1800)}return true}
+  if(state.decor.length>=400){toast('裝飾最多 400 個');return false}
+  const fromStore=decoStoreN(decoPaint)>0,pr=(DECOR_MAP[decoPaint]||{}).p||0;
+  if(!decoTake(decoPaint)){fxAdd('sk',cx,cy-10,'✕',420);toast(`金幣不夠（每段 ${pr} 金幣）`);decoPainting=false;renderDecoBar();return false}
+  const o={t:decoPaint,e:e.slice()};state.decor.push(o);if(decoStroke)decoStroke.push({d:o,paid:fromStore?0:pr});if(!isoLock)isoLock=e.slice();return true}
+function isoPaintAt(cx,cy){
+  const w=screenToWorld(cx,cy),e=isoAt(w.x,w.y,isoLock),ax=e[2]?1:0;
+  /* 手指滑得快時補上中間跳過的幾段，圍籬才會連續 */
+  if(isoLock&&isoPaintAt.last!=null){const from=isoPaintAt.last,to=e[ax],st=to>from?2:-2;let n=0;for(let v=from+st;st>0?v<to:v>to;v+=st){if(++n>40)break;const m=e.slice();m[ax]=v;if(!isoPut(m,cx,cy))return}}
+  if(!isoPut(e,cx,cy))return;if(isoLock)isoPaintAt.last=e[ax];
+  renderWorld();renderDecoBar();renderCoins()}
 let loop=null;
 const loginEl=document.getElementById('login');
 if(/Line\/|FBAN|FBAV|Instagram|MicroMessenger/i.test(navigator.userAgent))document.getElementById('inapp').hidden=false;

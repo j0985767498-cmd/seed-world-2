@@ -362,6 +362,7 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 #meChip svg{border-radius:50%;background:#EAD9B0;flex:none}#meChip .mcn{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}#meChip b{font-size:13px;max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#meChip .mcn>i{font-style:normal;font-size:11px;font-weight:700}
 .xpbar{display:block;width:64px;height:4px;border-radius:3px;background:#E2D2A8;overflow:hidden}.xpbar i{display:block;height:100%;background:#6FAE4A}.xpbar.big{width:100%;height:8px;margin:6px 0 2px}
 .mecard{display:flex;gap:12px;align-items:flex-start}.meav{display:flex;flex-direction:column;align-items:center;gap:4px}.meinf{flex:1;min-width:0}.starz{color:#D9912B;letter-spacing:1px}.favrow{display:flex;align-items:center;gap:8px;margin:6px 0}.favrow b{min-width:56px}.favrow .xpbar{flex:1;height:8px}
+.stline{display:flex;align-items:center;gap:5px;font-size:12px;color:#6B5A48}.stline small{color:#8A7A66}.stdot{width:9px;height:9px;border-radius:50%;background:#B8B0A4;flex:none}.stdot.on{background:#4CAF50;box-shadow:0 0 0 2px rgba(76,175,80,.25)}.friend .fnm{flex:1;min-width:0;display:flex;flex-direction:column}
 #testTag{position:fixed;left:10px;top:calc(116px + env(safe-area-inset-top,0px));z-index:11;background:#C0392B;color:#fff;font-weight:700;font-size:12px;padding:3px 9px;border-radius:9px;pointer-events:none}#testTag[hidden],#testNote[hidden]{display:none}
 #testNote{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(176px + env(safe-area-inset-bottom,0px));z-index:12;max-width:86vw;background:rgba(192,57,43,.92);color:#fff;font-size:13px;font-weight:700;padding:6px 12px;border-radius:10px;pointer-events:none;text-align:center}
 #mapBanner{position:fixed;left:10px;top:calc(76px + env(safe-area-inset-top,0px));z-index:11;background:rgba(36,50,64,.88);color:#fff;font-weight:700;font-size:15px;padding:6px 12px;border-radius:10px;pointer-events:none;animation:bannerIn 2.5s ease forwards}#mapBanner[hidden]{display:none}
@@ -722,7 +723,10 @@ const clrO=(g,k,j)=>{if(g.o&&g.o[k])g.o[k][j]=null};
 /* 50（15m）：機率常數。遺傳說明頁、誘變劑說明都從這裡算 */
 const MUT_P={spec:0.002,spsh:0.0005,gen:0.001,ex:0.0002};/* 每顆種子：夢幻色、特殊造型、其他小變化；取種時冒出那種作物的專屬造型 */
 const MUTX={mult:25,spec:7.5,germ:0.7};/* 誘變劑：特殊造型與其他 ×25、夢幻色 ×7.5、發芽率 ×0.7 */
-const WILD_EX={on:0.003,carry:0.03};/* 43.3：只有各地區最深處的野生植株：直接是專屬造型、帶一份 */
+/* 60（16b）：專屬造型只在各地區最深處的野生植株（deep）與秘境的種子台座（ped），而且每個人各自抽（exRoll，種子＝uid＋植株鍵，鍵裡有日期、地區、地圖、植株點）。
+   carry＝帶一份、on＝直接是專屬造型。一般地圖、秘境的其他植株點都不會有。 */
+const EX_P={deep:{carry:0.001,on:0.0001},ped:{carry:0.003,on:0.0003}};
+function exRoll(u,w){const P=w.ped?EX_P.ped:w.deep?EX_P.deep:null;if(!P||!EX_OF[w.crop])return 0;const r=seededRnd(hashStr('ex|'+u+'|'+w.key))();return r<P.on?2:r<P.on+P.carry?1:0}
 const WILD_HET=0.3;/* 43.3：野生植株的果皮顏色、花紋顏色、基本造型各有這個機率是兩份不同的 */
 function mutRound(g,mult,keepEx,specMult){
   let mu=null;const j=rnd()<.5?0:1;
@@ -1134,7 +1138,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-16a';
+const BUILD='2026-11-16b';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -1504,17 +1508,19 @@ function fruitPaint(B,a,ripe,seed,frame,half){/* half：-1／1＝只留左半／
       out[o]=c[0];out[o+1]=c[1];out[o+2]=c[2];
     }else if(stem[i]){
       /* 蒂頭調成灰綠：原色 × 0.6 ＋ 亮度 × 0.4，再乘 (1.0, 0.9, 1.15) */
-      const l=L[i];out[o]=d[o]*0.6+l*0.4;out[o+1]=(d[o+1]*0.6+l*0.4)*0.9;out[o+2]=(d[o+2]*0.6+l*0.4)*1.15;
+      const l=L[i],sm=B.sm||STEM_MUL;out[o]=(d[o]*0.6+l*0.4)*sm[0];out[o+1]=(d[o+1]*0.6+l*0.4)*sm[1];out[o+2]=(d[o+2]*0.6+l*0.4)*sm[2];
     }
     if(half&&(!body[i]||(half<0?(x-x0)/W>=0.5:(x-x0)/W<0.5)))out[o+3]=0;
   }
   return out;
 }
+/* 59.1（16b）：蒂頭調色的乘數。茄子的素模（eggplant_*）蒂頭調成深橄欖綠，其他作物照 26.2 */
+const STEM_MUL=[1.0,0.9,1.15],STEM_MUL_EGG=[0.55,0.62,0.5];const stemMulOf=name=>String(name).startsWith("eggplant")?STEM_MUL_EGG:STEM_MUL;
 const FB={};const FRUIT_CACHE=new Map();let fruitTm=null;
 function fruitBase(name){
   const b=FB[name];if(b)return b.st===1?b:null;
   const nb=FB[name]={st:0};
-  try{const im=new Image();im.onload=()=>{try{const cv=document.createElement('canvas');cv.width=im.naturalWidth;cv.height=im.naturalHeight;const cx=cv.getContext('2d');cx.drawImage(im,0,0);const id=cx.getImageData(0,0,cv.width,cv.height);Object.assign(nb,fruitPrep(id.width,id.height,id.data));nb.st=1;fruitLoaded()}catch(e){nb.st=2}};
+  try{const im=new Image();im.onload=()=>{try{const cv=document.createElement('canvas');cv.width=im.naturalWidth;cv.height=im.naturalHeight;const cx=cv.getContext('2d');cx.drawImage(im,0,0);const id=cx.getImageData(0,0,cv.width,cv.height);Object.assign(nb,fruitPrep(id.width,id.height,id.data));nb.sm=stemMulOf(name);nb.st=1;fruitLoaded()}catch(e){nb.st=2}};
     im.onerror=()=>{nb.st=2};im.src='assets/fruits/'+name+'.png?v='+BUILD}catch(e){nb.st=2}
   return null;
 }
@@ -2253,7 +2259,7 @@ const sb=document.getElementById('sheetBody'),sheetEl=document.getElementById('s
 var srcHL=null;/* 31.4：植株資訊打開時，同一包種子（同 lotId）的其他植株加淡色外框 */
 const srcSame=(p,i)=>p&&p.lotId!=null?state.plots.reduce((n,q,j)=>n+(q&&j!==i&&q.lotId===p.lotId?1:0),0):0;
 function openPlot(i){const p=state.plots[i];if(!p)uiCrop='all';srcHL=p&&p.lotId!=null&&srcSame(p,i)?p.lotId:null;if(srcHL!=null)try{renderWorld()}catch(e){}sheet={i,stage:p?p.stage:'empty',confirm:false,crossFrom:null};regDraft='';regErr='';renderSheet();sheetEl.classList.add('open');bd.style.display='block'}
-function closeSheet(){const wasNote=sheet&&sheet.note;sheet=null;if(wasNote)setTimeout(noteFlush,250);sheetEl.classList.remove('open');bd.style.display='none';if(srcHL!=null){srcHL=null;try{renderWorld()}catch(e){}}}
+function closeSheet(){if(sheet&&sheet.me&&sheet.me!==uid&&curPanel!=='social')statusUnwatch();const wasNote=sheet&&sheet.note;sheet=null;if(wasNote)setTimeout(noteFlush,250);sheetEl.classList.remove('open');bd.style.display='none';if(srcHL!=null){srcHL=null;try{renderWorld()}catch(e){}}}
 bd.addEventListener('click',closeSheet);
 function fmt(ms){ms=Math.max(0,ms);const s=Math.ceil(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;return h?`${h} 小時 ${m} 分`:m?`${m} 分 ${r} 秒`:`${r} 秒`}
 function progInfo(p){
@@ -2313,7 +2319,7 @@ function renderSheet(){
     h+=`<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・已絕版</p><p class="note">這株的外觀在新版本中已經不存在，已停止生長，只能拔掉。</p><button class="btn warn" data-act="uproot">${sheet.confirm?'再按一次確定拔掉':'拔掉這株'}</button>`;
   }else{
     const ph=phen(p.g,p.crop),lvl=p.stage==='seedling'?1:p.stage==='ripe'?3:2;
-    h+=`<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・第 ${i+1} 塊土地・${stageLabel(p)}${p.pollen?`・${p.pollen.type==='cross'?`與 ${esc(p.pollen.fatherName)} 雜交`:'自交'}`:''}${p.wide?'・遠緣雜種':''}${genTxt(p.gen)}</p>${p.rsv?(()=>{const j=rsvFather(p);return j<0?`<p class="note" style="color:var(--danger)">預約的父本不見了，請重新選。<button class="mini" data-act="rsvx">取消預約</button></p>`:`<p class="note">預約和「${esc(pname(state.plots[j]))}」雜交（開花時自動進行）。<button class="mini" data-act="rsvx">取消預約</button></p>`})():''}${p.mu?`<p class="note"><b>${p.mu.lv>=2?'突變：'+p.mu.t:'這株和預期的不一樣（'+p.mu.t+'）'}</b></p>`:''}${srcSame(p,i)?`<p class="note">同一包種子還有 ${srcSame(p,i)} 株（田裡有淡色外框的那些）</p>`:''}${p.pollen&&p.pollen.failed?'<p class="note" style="color:var(--danger)">雜交沒有成功，這次改為自交。</p>':''}<button class="mini warn uptop" data-act="uproot">${sheet.confirm?'再按一次確定拔掉':'拔掉這株'}</button>`;
+    h+=`<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・第 ${i+1} 塊土地・${stageLabel(p)}${p.pollen?`・${p.pollen.type==='cross'?`與 ${esc(p.pollen.fatherName)} 雜交`:'自交'}`:''}${p.wide?'・遠緣雜種':''}${genTxt(p.gen)}</p>${p.rsv?(()=>{const j=rsvFather(p);return j<0?`<p class="note" style="color:var(--danger)">預約的父本不見了，請重新選。<button class="mini" data-act="rsvx">取消預約</button></p>`:`<p class="note">預約和「${esc(pname(state.plots[j]))}」雜交（開花時自動進行）。<button class="mini" data-act="rsvx">取消預約</button></p>`})():''}${p.old?'<p class="note">古老的種子：種子庫裡最古老的一包。</p>':''}${p.mu?`<p class="note"><b>${p.mu.lv>=2?'突變：'+p.mu.t:'這株和預期的不一樣（'+p.mu.t+'）'}</b></p>`:''}${srcSame(p,i)?`<p class="note">同一包種子還有 ${srcSame(p,i)} 株（田裡有淡色外框的那些）</p>`:''}${p.pollen&&p.pollen.failed?'<p class="note" style="color:var(--danger)">雜交沒有成功，這次改為自交。</p>':''}<button class="mini warn uptop" data-act="uproot">${sheet.confirm?'再按一次確定拔掉':'拔掉這株'}</button>`;
     if(p.stage!=='ripe'){
       const own=p.stage==='fruit'||p.stage==='flower',fl=p.stage==='flower',pm=p.m||(state.lots.find(l=>l.lid===p.lid)||{}).m,ref=own?ph:(pm?phen(pm,p.crop):null);
       if(ref)h+=`<div class="hero${tfxKind(ref)&&(fl||!own||p.stage==='ripe')?' tcard':''}">${fruitSVG(ref,p.crop,Math.round(110*(own&&ref===ph?sizeScale(ph.ab.size):1)),fl?1:own?Math.max(0.15,clamp(p.prog/stageDur(p,ph),0,1)*0.4):1,fl?'這株將結出的果實':own?'這株正在長的果實':'親本的樣子')}</div><p class="note" style="text-align:center">${fl?`開花了！這株會結出：${ph.shapeName}・${colorLabel(ph)}・${SIZE_N[ph.sizeCls]}`:own?'這株正在長大，顏色會在成熟時揭曉。':'這是親本的樣子。這株自己的樣子會在開花時出現，可能和親本不同。'}</p>`;
@@ -2404,7 +2410,7 @@ sb.addEventListener('click',e=>{
   save();sheet.stage=state.plots[i]?state.plots[i].stage:'empty';sheet.confirm=false;sheet.crossFrom=null;renderAll();renderSheet();
 });
 function lotUniFor(lot,g){try{const k=phen(g,lot.crop).key,x=lotDist({m:lot.m,f:lot.f||lot.m,crop:lot.crop}).find(e=>e.key===k);return !!x&&x.p>=0.9995}catch(e){return false}}
-function plantFromLot(lot,g){return {q:lot.q?1:undefined,bt:lot.bt?1:undefined,uni:lotUniFor(lot,g),par:lot.par||[],gpar:lot.gpar||[],wide:!!lot.wide,rel:!!lot.rel,gen:lot.gen,hv:0,g,m:clone(lot.m),crop:lot.crop,name:lot.name,lid:lot.lid,lotId:lot.id,no:(state.counts[lot.lid]=(state.counts[lot.lid]||0)+1),stage:'seedling',prog:0,watered:false,fert:false,flowerT:0,pollen:null}}
+function plantFromLot(lot,g){return {old:lot.old?1:undefined,q:lot.q?1:undefined,bt:lot.bt?1:undefined,uni:lotUniFor(lot,g),par:lot.par||[],gpar:lot.gpar||[],wide:!!lot.wide,rel:!!lot.rel,gen:lot.gen,hv:0,g,m:clone(lot.m),crop:lot.crop,name:lot.name,lid:lot.lid,lotId:lot.id,no:(state.counts[lot.lid]=(state.counts[lot.lid]||0)+1),stage:'seedling',prog:0,watered:false,fert:false,flowerT:0,pollen:null}}
 function pollinate(i,j){
   const p=state.plots[i];
   if(j==null)p.pollen={type:'self'};
@@ -2550,8 +2556,9 @@ let profiles=[],msgPub=[],msgTo=[],msgFrom=[];const dmUnread=new Set();let msgRe
 const mtime=m=>m.at&&m.at.toMillis?m.at.toMillis():Date.now();
 function renderSocial(scroll){
   if(!state)return;
-  const fr=profiles.filter(p=>p.id!==uid);
-  document.getElementById('friends').innerHTML=fr.length?fr.map(p=>`<div class="friend"><b>${esc(p.name||'玩家')}</b><button class="mini" data-card="${p.id}">名片</button><button class="mini" data-visit="${p.id}">參觀農場</button><button class="mini" data-dm="${p.id}">私訊${dmUnread.has(p.id)?'（新訊息）':''}</button></div>`).join(''):'<p class="note">朋友登入遊戲後，就會出現在這裡。</p>';
+  const fr=profiles.filter(p=>p.id!==uid);if(curPanel==='social')statusWatch(fr.map(p=>p.id));
+  fr.sort((a,b)=>(stIsOn(b.id)-stIsOn(a.id))||(((stData[b.id]||{}).at||0)-((stData[a.id]||{}).at||0)));/* 62.1：上線中在前，其餘照最後上線時間 */
+  document.getElementById('friends').innerHTML=fr.length?fr.map(p=>`<div class="friend"><span class="fnm"><b>${esc(p.name||'玩家')}</b>${statusHTML(p.id)}</span>${stIsOn(p.id)&&(stData[p.id].place||'farm')==='farm'?`<button class="mini" data-visit="${p.id}">去找他</button>`:''}<button class="mini" data-card="${p.id}">名片</button><button class="mini" data-visit="${p.id}">參觀農場</button><button class="mini" data-dm="${p.id}">私訊${dmUnread.has(p.id)?'（新訊息）':''}</button></div>`).join(''):'<p class="note">朋友登入遊戲後，就會出現在這裡。</p>';
   const ch=document.getElementById('chat'),atBottom=ch.scrollTop+ch.clientHeight>=ch.scrollHeight-20;
   const list=msgPub.slice().sort((a,b)=>mtime(a)-mtime(b)).slice(-80);
   ch.innerHTML=list.length?list.map(m=>`<div class="msg${m.from===uid?' me':''}"><span class="who">${m.from===uid?'你':esc(m.fromName)}</span>${esc(m.text)}</div>`).join(''):'<p class="note">還沒有人說話，打個招呼吧。</p>';
@@ -3376,7 +3383,7 @@ function openPanel(name){exitAllModes(name==='decor');if(name==='bag')uiCrop='al
   if(name==='bag')renderBag();if(name==='dex')renderDex();if(name==='social')renderSocial(true);if(name==='decor')renderDecorPanel();if(name==='settings')renderSpeed();if(name==='genes')renderGenes();if(name==='explore')renderExplore();
   const pb=document.querySelector('#p-'+name+' .pb');if(pb)pb.scrollTop=0;
 }
-function closePanel(){curPanel=null;for(const p of document.querySelectorAll('.panel'))p.hidden=true;document.getElementById('pdim').hidden=true}
+function closePanel(){if(curPanel==='social')statusUnwatch(sheet&&sheet.me?[sheet.me]:null);curPanel=null;for(const p of document.querySelectorAll('.panel'))p.hidden=true;document.getElementById('pdim').hidden=true}
 function showTab(w){if(w==='farm')closePanel();else openPanel(w)}
 document.getElementById('pdim').onclick=closePanel;
 for(const b of document.querySelectorAll('.panel [data-close]'))b.onclick=closePanel;
@@ -3556,14 +3563,14 @@ async function claimSpec(i){
   const e=specBlock(p,ph);if(e){toast(e);return false}
   const id=specId(p.crop,ph.key),me=myName(),now=Date.now(),reg=findVariety(p.crop,ph.key);
   const c={uid,me,now,crop:p.crop,key:ph.key,tier:ph.tier,g:JSON.stringify(p.g),auto:shortApp(ph),reg};
-  if(!specCapped(ph.tier)){addOwnSpec({id,crop:p.crop,key:ph.key,tier:ph.tier,at:now,auto:c.auto,from:pname(p)});save();if(sheet)renderSheet();toast('採收了果實標本！放進「圖鑑 → 收藏櫃」了',4000);return true}/* 28.3：沒有名額的等級只寫進自己的存檔，不用全服文件 */
+  if(!specCapped(ph.tier)){addOwnSpec({id,crop:p.crop,key:ph.key,tier:ph.tier,at:now,auto:c.auto,from:pname(p),bt:p.bt?1:undefined});save();if(sheet)renderSheet();toast('採收了果實標本！放進「圖鑑 → 收藏櫃」了',4000);return true}/* 28.3：沒有名額的等級只寫進自己的存檔，不用全服文件 */
   let out=null;
   try{const ref=db.collection('rights').doc(id);await db.runTransaction(async tx=>{const d=await tx.get(ref);out=specClaimStep(specNorm(d.exists?d.data():null,now),c);tx.set(ref,out,{merge:true})})}
   catch(err){const m=err&&err.message;specCache.delete(id);
-    if(m==='mine')addOwnSpec({id,crop:p.crop,key:ph.key,tier:ph.tier,at:now,auto:c.auto,from:pname(p)});
+    if(m==='mine')addOwnSpec({id,crop:p.crop,key:ph.key,tier:ph.tier,at:now,auto:c.auto,from:pname(p),bt:p.bt?1:undefined});
     toast(m==='full'?'這個品種的全服名額剛好滿了':m==='mine'?'你已經有這個品種的標本了':`採收失敗（${(err&&(err.code||m))||'unknown'}），沒有變動。請確認網路後再試一次`,5000);save();if(sheet)renderSheet();return false}
   specCache.set(id,{s:out,at:Date.now()});
-  addOwnSpec({id,crop:p.crop,key:ph.key,tier:ph.tier,at:now,auto:c.auto,from:pname(p)});
+  addOwnSpec({id,crop:p.crop,key:ph.key,tier:ph.tier,at:now,auto:c.auto,from:pname(p),bt:p.bt?1:undefined});
   save();if(sheet)renderSheet();
   toast(`採收了果實標本！放進「圖鑑 → 收藏櫃」了${out.namerUid===uid&&!out.name?'。你是第一個，可以在收藏櫃替品種命名':''}`,6000);
   postNews('spec',`🏅 ${me} 採收了${TIERS[ph.tier]}級${CROPS[p.crop].n}「${out.name||c.auto}」的果實標本（全服 ${out.n}／${SPEC_CAP[ph.tier]}）`,ph.tier);
@@ -3928,7 +3935,6 @@ function makeWild(crop,bk,rare,deep){
   {const ps=bk==='marsh'?0.03:0.01;if(rnd()<ps){const v=wpk(SPSH_W);g.sp=[v,v]}}
   {const bs=['red','yellow','green','white','purple'].concat(bk==='forest'?['black']:[]),other=(v,ls)=>pk(ls.filter(x=>x!==v));
     if(rnd()<WILD_HET)g.c=[g.c[0],other(g.c[0],bs)];if(rnd()<WILD_HET)g.pc=[g.pc[0],other(g.pc[0],bs)];if(rnd()<WILD_HET)g.b=[g.b[0],other(g.b[0],[0,1,2])]}
-  if(deep&&EX_OF[crop]){const r=rnd(),e=EX_OF[crop];if(r<WILD_EX.on)g.sp=[e,e];else if(r<WILD_EX.on+WILD_EX.carry&&!(g.sp[0]&&g.sp[1]))g.sp=[0,e]}
   if(bk==='marsh'&&rnd()<0.5)g.n.size=numLoci(0.88,0.06);
   if((bk==='desert'||bk==='snow')&&rnd()<0.4)g.n.size=numLoci(0.1,0.06);
   if(rare){const hi=rnd()<.5;g.n.perf=numLoci(hi?0.85+rnd()*0.1:0.05+rnd()*0.05,0.06)}
@@ -4027,7 +4033,7 @@ function exPlants(bk,cx,cy){
   for(let k=0;k<n;k++){const x=x0+40+R()*(EXC-80),y=y0+60+R()*(EXC-100),crop=wpickR(BIOMES[bk].crops,R)[0],rel=R()<0.08,seed=Math.floor(R()*1e9);if(Math.hypot(x-EXGATE[0],y-EXGATE[1])<90)continue;out.push({key:key+'|'+k,x,y,crop,rel,seed,bk})}
   wpCache.set(key,out);return out;
 }
-function wpGeno(w){if(!w.g){w.g=withSeed(w.seed,()=>w.rel?makeRel(w.crop,w.bk,w.deep):makeWild(w.crop,w.bk,false,w.deep));if(w.ped&&EX_OF[w.crop]){const r=seededRnd((w.seed^0x5EED)>>>0)(),e=EX_OF[w.crop];if(r<0.05)w.g.sp=[e,e];else if(r<0.35&&!(w.g.sp[0]&&w.g.sp[1]))w.g.sp=[0,e]}}return w.g}
+function wpGeno(w){if(!w.g){w.g=withSeed(w.seed,()=>w.rel?makeRel(w.crop,w.bk,w.deep):makeWild(w.crop,w.bk,false,w.deep));{const k=exRoll(uid,w),e=EX_OF[w.crop];if(k===2)w.g.sp=[e,e];else if(k===1)w.g.sp=[w.g.sp[0]>6?0:w.g.sp[0],e]}/* 60.2：只有專屬因子是個人抽的，其他特徵全服一致 */}return w.g}
 function exVisiblePlants(){if(regHas(exBiome)&&state&&state.ex)return regPlants(exBiome,regMap).filter(w=>!state.ex.got.includes(w.key)&&(!w.hid||regHid[w.key])).map(wpView);if(!exRg||!state.ex)return [];const out=[];for(let cy=exRg.cy0;cy<=exRg.cy1;cy++)for(let cx=exRg.cx0;cx<=exRg.cx1;cx++)for(const w of exPlants(exBiome,cx,cy))if(!state.ex.got.includes(w.key))out.push(w);return out}
 function wpSVG(w,hl){
   const cd=CROPS[w.crop],ph=phen(wpGeno(w),w.crop),x=Math.round(w.x),y=Math.round(w.y),sz=cd.fs*sizeScale(ph.ab.size),im=plantImgSVG(w.crop,'ripe',x,y,1);/* 14w：植株圖片＋掛點果實；圖片還沒載好照舊畫法 */
@@ -4053,7 +4059,7 @@ function wpAction(b){
   if(state.ex.got.includes(w.key))return;
   if(exCapOn()&&(state.ex.plants||0)>=EX_PLANT_LIMIT){toast('今天的採集次數用完了');return}
   const g=wpGeno(w),ph=phen(g,w.crop);state.ex.got.push(w.key);state.ex.plants=(state.ex.plants||0)+1;
-  if(act==='wpseed'){const r=addWildLot(w.crop,w.bk,clone(g),w.rel,`${BIOMES[w.bk].n}採到的${w.rel?'珍稀種原':'野生種原'}`);playAct('harvest');addXp(3,true);mqEv('wild',{bk:w.bk,g});const hid=(g.sp[0]||g.sp[1])&&!spExpr(g.sp);toast(`採到${w.rel?'珍稀種原':'野生種原'}「${r.name}」，放進種子袋了`+(hid?'。這包種子好像藏著特別的東西！打開種子包看看吧':''),6000)}
+  if(act==='wpseed'){const r=addWildLot(w.crop,w.bk,clone(g),w.rel,`${BIOMES[w.bk].n}採到的${w.rel?'珍稀種原':'野生種原'}`);playAct('harvest');addXp(3,true);mqEv('wild',{bk:w.bk,g});exAnnounce(w.crop,g);const hid=(g.sp[0]||g.sp[1])&&!spExpr(g.sp);toast(`採到${w.rel?'珍稀種原':'野生種原'}「${r.name}」，放進種子袋了`+(hid?'。這包種子好像藏著特別的東西！打開種子包看看吧':''),6000)}
   else{const pr=wpPrice(w,ph);state.coins+=pr;renderCoins();playAct('harvest');toast(`賣出野生${CROPS[w.crop].n}的果實，得到 ${pr} 金幣`)}
   save();closeSheet();hoverWp=null;renderWorld();refreshAct();
 }
@@ -5359,7 +5365,7 @@ let rtdbRef=null,rtdbOff=null,others={},lastPush=0,hb=null;
 function joinFarm(key){
   if(!rtdb||!uid||!state)return;leavePresence();
   try{
-    rtdbRef=rtdb.ref(`presence/${key}/${uid}`);rtdbRef.onDisconnect().remove();pushPos(true);
+    rtdbRef=rtdb.ref(`presence/${key}/${uid}`);rtdbRef.onDisconnect().remove();pushPos(true);statusOn(stPlaceOf(key));/* 62：換場景只改 place */
     const ref=rtdb.ref(`presence/${key}`);
     const cb=s=>{const v=s.val()||{};delete v[uid];others=v;renderChars()};
     ref.on('value',cb,()=>{});rtdbOff=()=>ref.off('value',cb);
@@ -5854,7 +5860,7 @@ function traySow(lotId,mx){
   const free=trayFree();if(free<=0){toast('育苗盤滿了，先移植或丟掉一些幼苗');return}
   const n=Math.min(free,lc(l));if(!n){toast('這包沒有種子了');return}
   let si=t.srcs.findIndex(s=>s.id===l.id);
-  if(si<0){t.srcs.push({id:l.id,lid:l.lid,crop:l.crop,name:l.name,source:l.source,germ:l.germ,m:clone(l.m),f:clone(l.f||l.m),cross:!!l.cross,par:l.par||[],gpar:l.gpar||[],wide:!!l.wide,rel:!!l.rel,gen:l.gen,q:l.q,bt:l.bt});si=t.srcs.length-1}
+  if(si<0){t.srcs.push({id:l.id,lid:l.lid,crop:l.crop,name:l.name,source:l.source,germ:l.germ,m:clone(l.m),f:clone(l.f||l.m),cross:!!l.cross,par:l.par||[],gpar:l.gpar||[],wide:!!l.wide,rel:!!l.rel,gen:l.gen,q:l.q,bt:l.bt,old:l.old});si=t.srcs.length-1}
   const it=state.items||(state.items={});if(mx&&!(it.mut>0))mx=false;if(mx){it.mut--;mqEv('mut')}
   const gk=g=>JSON.stringify(g.sp);/* 14l：顏色突變當代就看得到，只標看不出來的特殊造型突變 */
   let ok=0;const muLs=[];
@@ -6033,7 +6039,7 @@ document.getElementById('genesBtn').onclick=()=>openPanel('genes');
 function renderGenes(){
   const el=document.getElementById('genes');if(!el)return;
   /* 50（15m）：遺傳說明頁重寫。不用術語（因子、顯性、隱性、母本、父本、原生作物、分離、比例符號）；
-     所有機率都從常數算（MUT_P、MUTX、WILD_EX），之後調數值這頁自動跟著變。第一張卡片永遠展開，其他可以收合。 */
+     所有機率都從常數算（MUT_P、MUTX），之後調數值這頁自動跟著變。第一張卡片永遠展開，其他可以收合。 */
   const swc=c=>{const p=colParts(c);if(p.t==='s')return c==='rainbow'?`linear-gradient(135deg,${RAINBOW.join(',')})`:`linear-gradient(135deg,${SPGRAD[c][0]},${SPGRAD[c][1]})`;return rgbS(RGBC[c]||RGBC.white)};
   const sw=c=>`<span class="sw" style="background:${swc(c)}"></span>`;
   const step=(inner,name)=>`<span class="lstep">${inner}<small>${name}</small></span>`;
@@ -6081,7 +6087,7 @@ function renderGenes(){
   /* 卡片 7：專屬造型（取得方式照現行程式：野外植株、取種時的小機率；誘變劑不會產生） */
   h+=card('專屬造型','每種作物獨有，全遊戲最難得',`<p>每種作物只有一種，規則和特殊造型一樣：要湊成一對才出現。</p>
     <div class="ladder">${ACTIVE_CROPS.filter(c=>EX_OF[c]).map(c=>step(icon({sp:EX_OF[c],skin:WILD[c]||'red'},c,44),`${EXN[EX_OF[c]]}<br><span class="meta">${CROPS[c].n}</span>`)).join('')}</div>
-    <p class="note">只在各地區最深的地方，才有機會遇到帶著它的野生植株：大約每 ${Math.round(1/WILD_EX.on)} 株才有一株直接長成專屬造型，更多的是偷偷帶著一份（約 ${pc(WILD_EX.carry)}）。自己取種時，每顆種子也有 ${pc(MUT_P.ex)} 的機會冒出一份那種作物的專屬造型；誘變劑不會產生專屬造型。</p>
+    <p class="note">只有在各地區最深的地方，或是隱藏的地方，才有很小的機會遇到。每個人遇到的都不一樣。自己取種時，每顆種子也有 ${pc(MUT_P.ex)} 的機會冒出一份那種作物的專屬造型；誘變劑不會產生專屬造型。</p>
     <p>想讓別的作物也長出這個造型，要靠<b>遠緣雜交</b>：番茄、茄子、辣椒可以互配；櫛瓜和南瓜可以互配。遠緣雜交的種子比較難發芽。</p>`);
   /* 卡片 8：大小和完美度 */
   h+=card('大小和完美度','像身高，爸媽高、孩子通常也高',`<p>這兩項不是一對決定的，而是很多份小小的影響加起來。親本的數值高，後代通常也高，但每顆種子都會有點不一樣。</p>
@@ -6435,6 +6441,7 @@ function mqAccept(silent){
 }
 function mqEv(type,d){
   try{const m=mqCur();if(!m||state.mq.st!==1)return;const ch=state.mq.ch,f=state.mq.f||(state.mq.f={});let ok=false;
+    if(d&&d.bt&&type!=='wild')return;/* 61.1：市集買來的種子和它自交的後代不算主線 */
     if(ch===1)ok=type==='seed'&&d.crop==='tomato';
     else if(ch===2)ok=type==='ripe'&&d.crop==='tomato'&&d.gen===1;
     else if(ch===3){if(type==='ripe'&&d.crop==='tomato'&&d.gen>=2)f.a=1;if(type==='town')f.b=1;ok=f.a&&f.b}
@@ -6446,7 +6453,7 @@ function mqEv(type,d){
     if(ok)mqDone();else if(type!=='ripe')save();
   }catch(e){logErr(e,'mq')}
 }
-function mqPoll(){try{const m=mqCur();if(!m||state.mq.st!==1)return;if(state.mq.ch===4&&(state.specs||[]).some(s=>s.crop==='tomato'&&String(s.key).startsWith('p3|')))mqDone()}catch(e){}}
+function mqPoll(){try{const m=mqCur();if(!m||state.mq.st!==1)return;if(state.mq.ch===4&&(state.specs||[]).some(s=>s.crop==='tomato'&&!s.bt&&String(s.key).startsWith('p3|')))mqDone()}catch(e){}}
 function mqDone(){
   const ch=state.mq.ch,m=MQ[ch],r=m.rw,got=[];
   state.coins+=r.c;got.push(`${r.c} 金幣`);
@@ -6457,13 +6464,19 @@ function mqDone(){
   if(r.fav)favAdd(r.fav[0],r.fav[1]);
   state.mq={ch:ch+1,st:0,f:{},old:r.old?1:undefined};got.push('100 經驗');
   const nx=MQ[ch+1];
-  noteOpen(`<h2>完成任務：${m.t}</h2>`+npcTalk(ch===9?'kai':m.npc,m.done)+`<p class="note">得到：${got.join('、')}</p>`+(r.old?'<p class="note">還有一份「古老的種子」：到「任務」選一種作物領取。</p>':'')+(nx?`<p class="note">下一個任務「${nx.t}」${myLv()>=nx.lv?'可以到「任務」接下。':`要等 Lv ${nx.lv}。`}</p>`:'<p class="note">主線任務全部完成了！</p>'));
+  noteOpen(`<h2>完成任務：${m.t}</h2>`+npcTalk(ch===9?'kai':m.npc,m.done)+`<p class="note">得到：${got.join('、')}</p>`+(r.old?'<p class="note">還有一份「古老的種子」：到「任務」選一種作物和一種夢幻色領取。</p>':'')+(nx?`<p class="note">下一個任務「${nx.t}」${myLv()>=nx.lv?'可以到「任務」接下。':`要等 Lv ${nx.lv}。`}</p>`:'<p class="note">主線任務全部完成了！</p>'));
   addXp(100,true);save();try{renderAll();renderOrdersBtn();pushProfile()}catch(e){}
 }
-function mqOldSeed(crop){if(!state.mq||!state.mq.old||!EX_OF[crop])return;const g=makeOriginal({bt:0,color:WILD[crop]||'red'});g.sp=[0,EX_OF[crop]];qLot(crop,'古老的'+CROPS[crop].short,g,5,0);delete state.mq.old;save();renderAll();toast(`收下「古老的${CROPS[crop].short}」5 顆，放進種子袋了。它藏著一份專屬造型，自交後才會出現`,6000)}
+/* 61.2：古老的種子＝自選作物（已解鎖）＋自選一種夢幻色；帶一份那個夢幻色。另外 5% 彩券（種子只看 uid，和選什麼無關）多帶一份專屬造型，抽中照 60.4 公告 */
+const OLD_EX_P=0.05;let oldPick={crop:null,col:null,sure:false};
+const oldLucky=u=>seededRnd(hashStr('old|'+u))()<OLD_EX_P;
+function oldGeno(crop,col,u){const g=makeWild(crop,'grass',false);g.c=[g.c[0],col];if(isSpecC(g.c[0]))g.c[0]=WILD[crop]||'red';g.sp=[0,0];if(EX_OF[crop]&&oldLucky(u))g.sp=[0,EX_OF[crop]];return g}
+function mqOldSeed(crop,col){if(!state.mq||!state.mq.old||!CROPS[crop]||!cropOpen(crop)||!SPECIAL.includes(col))return;const g=oldGeno(crop,col,uid);qLot(crop,'古老的'+CROPS[crop].short,g,5,0);state.lots[0].old=1;state.lots[0].source='古老的種子';delete state.mq.old;oldPick={crop:null,col:null,sure:false};exAnnounce(crop,g);save();renderAll();renderOrdersBtn();toast(`收下「古老的${CROPS[crop].short}」5 顆，放進種子袋了。它帶著一份${cnOf(col)}色，自交後大約四分之一會是完整的`,6000)}
+function exAnnounce(crop,g){try{const e=g.sp.find(v=>v>6);if(e)postNews('ex',`${myName()} 得到了一包神秘的${EXN[e]||''}${CROPS[crop].n}種子！`,4)}catch(e){}}
 function mqCardHTML(){
   const m=mqCur(),s=state.mq||{};let h='';
-  if(s.old)h+=`<div class="lot"><div class="lot-name">古老的種子</div><p class="note">選一種作物，收下 5 顆帶著一份專屬造型的種子（只能選一次）。</p><div class="filters">${BASE_CROPS.map(c=>`<button class="fchip" data-act="mqold" data-k="${c}">${CROPS[c].n}</button>`).join('')}</div></div>`;
+  if(s.old){const oc=oldPick.crop,ok=oc&&oldPick.col;
+    h+=`<div class="lot"><div class="lot-name">古老的種子</div><p class="note">種子庫裡最古老的一包。先選一種作物，再選一種夢幻色：你會收下 5 顆帶著一份那個顏色的種子（外表是淡的，自交後大約四分之一是完整的）。只能選一次。</p><div class="filters">${openCrops().map(c=>`<button class="fchip" data-act="oldc" data-k="${c}" aria-pressed="${oc===c}">${CROPS[c].n}</button>`).join('')}</div>${oc?`<div class="tcells" style="grid-template-columns:repeat(4,1fr);margin-top:6px">${SPECIAL.map(k=>`<button class="tcell${oldPick.col===k?' on':''}" data-act="oldk" data-k="${k}" aria-pressed="${oldPick.col===k}" style="aspect-ratio:auto;flex-direction:column;padding:4px 0">${fruitSVG({level:0,sp:0,skin:k,pat:null,perfCls:2},oc,40)}<i style="position:static;font-style:normal;font-size:11px">${cnOf(k)}</i></button>`).join('')}</div>`:''}${ok?`<button class="btn primary" data-act="oldok">${oldPick.sure?'確定（之後不能改）':`收下${cnOf(oldPick.col)}色的${CROPS[oc].n}種子`}</button>`:''}</div>`}
   if(!m)return h+'<div class="lot"><div class="lot-name">主線任務全部完成了</div><p class="note">之後的目標：把想要的樣子育成成品、收集標本、完成 NPC 的委託。</p></div>';
   const ch=s.ch;
   if(s.st===0){if(myLv()<m.lv)return h+`<div class="lot"><div class="lot-name">第 ${ch} 章　${m.t}</div><p class="note">Lv ${m.lv} 開放（你現在 Lv ${myLv()}）。收成、雜交、發現新的樣子、育出成品、探索都能得到經驗。</p></div>`;
@@ -6540,7 +6553,9 @@ function orderAction(b){
   const a=b.dataset.act;
   if(a==='claim'){const x=ORDERS.find(o=>o.k===b.dataset.k);if(!x||state.orders[x.k]!==1)return;state.orders[x.k]=2;state.coins+=x.r;save();renderCoins();renderOrdersBtn();renderSheet();toast(`領取了 ${x.r} 金幣`);return true}
   if(a==='mqacc'){mqAccept();if(sheet)renderSheet();return true}
-  if(a==='mqold'){mqOldSeed(b.dataset.k);if(sheet)renderSheet();return true}
+  if(a==='oldc'){oldPick={crop:b.dataset.k,col:oldPick.col,sure:false};renderSheet();return true}
+  if(a==='oldk'){oldPick.col=b.dataset.k;oldPick.sure=false;renderSheet();return true}
+  if(a==='oldok'){if(!oldPick.sure){oldPick.sure=true;renderSheet();return true}mqOldSeed(oldPick.crop,oldPick.col);if(sheet)renderSheet();return true}
   if(a==='cmgive'){cmGiveLot(b.dataset.id,+b.dataset.lot);if(sheet)renderSheet();return true}
   if(a==='cmdrop'){if(sheet.drop!==b.dataset.id){sheet.drop=b.dataset.id;renderSheet();return true}const o=state.cm&&state.cm.list.find(x=>x.id===b.dataset.id);if(o&&!o.done){o.gone=true;save()}sheet.drop=null;renderSheet();return true}
   if(a==='favget'){favClaim(b.dataset.k);if(sheet)renderSheet();return true}
@@ -6557,7 +6572,7 @@ function deliverables(p,ph){
 }
 function deliver(i,oid){
   const p=state.plots[i];if(!p||p.stage!=='ripe')return;const ph=phen(p.g,p.crop);ensureComm();
-  if(oid==='mq'){const m=mqCur();if(!m||!m.cond||state.mq.st!==1||!condOk(m.cond,p,ph))return;harvested(ph);afterHarvest(i);mqDone();return}
+  if(oid==='mq'){const m=mqCur();if(!m||!m.cond||state.mq.st!==1||!condOk(m.cond,p,ph))return;if(p.bt){toast('要用自己種出來的喔！市集買的種子，先和自己的植株配一次。',4500);return}harvested(ph);afterHarvest(i);mqDone();return}
   if(oid==='w'){const w=state.weekly;if(!w||w.done||!condOk(w.c,p,ph))return;if(w.prize==='rare'){w.done=true;state.coins+=w.r;const r=giveWild(BIOME_KEYS.filter(k=>myLv()>=LV_REG[k])[0]||'grass',true);toast(`完成每週挑戰！得到 ${w.r} 金幣和珍稀種原「${r.name}」`)}else cmReward(w,'每週大委託')}
   else{const o=state.cm&&state.cm.list.find(x=>x.id===oid);if(!o||o.done||o.gone||!condOk(o.c,p,ph))return;cmReward(o,`${NPCN[o.n]}的委託`)}
   harvested(ph);afterHarvest(i);
@@ -6570,13 +6585,13 @@ function meStats(){const seen=state.seen||{};let ns=0;for(const c in seen)ns+=(s
   return {seen:ns,fin:Object.keys(state.fin||{}).length,specs:(state.specs||[]).length,sp,named:regList.filter(r=>r.inventorUid===uid).length,hv:(state.st&&state.st.hv)||0,cr:(state.st&&state.st.cr)||0,since:(state.st&&state.st.since)||0}}
 let profT=0;
 function pushProfile(){try{if(!uid||!state)return;const s=meStats();db.collection('profiles').doc(uid).set({name:myName(),lv:myLv(),title:lvTitle(myLv()),titles:state.titles||[],st:{seen:s.seen,fin:s.fin,specs:s.specs,named:s.named,hv:s.hv,cr:s.cr,since:s.since}},{merge:true}).catch(()=>{})}catch(e){}}
-function openMe(pid){sheet={me:pid||uid,dir:2};renderSheet();openSheetUI()}
+function openMe(pid){if(pid&&pid!==uid)statusWatch([pid]);sheet={me:pid||uid,dir:2};renderSheet();openSheetUI()}
 function meSheetHTML(){
   const own=sheet.me===uid,P=own?null:profiles.find(p=>p.id===sheet.me);if(!own&&!P)return '<p class="note">找不到這位玩家。</p><button class="btn" data-act="close">關閉</button>';
   const av=own?state.avatar:avNorm(P.avatar),nm=own?myName():(P.name||'玩家'),lv=own?myLv():(P.lv||1),S=own?meStats():(P.st||{}),tl=own?(state.titles||[]):(P.titles||[]);
   if(own&&sheet.ren){const first=!state.pname,wait=state.pnameAt?7*DAY-(Date.now()-state.pnameAt):0;
     return `<h2>${sheet.first?'先幫自己取個名字':'改名字'}</h2><p class="note">2–8 個字，不能和別人一樣。${first?'第一次設定之後還可以再改；':''}之後每改一次要等 7 天。已經登錄的品種、紀錄榜上的舊名字不會跟著改。</p>${wait>0?`<p class="err">還要 ${Math.ceil(wait/DAY)} 天才能再改名字。</p>`:`<input id="meName" maxlength="8" value="${esc(sheet.d!=null?sheet.d:myName().slice(0,8))}" aria-label="名字"><div class="err">${sheet.err||''}</div><button class="btn primary" data-act="merenok">確定</button>`}${sheet.first?'':'<button class="btn" data-act="merenx">取消</button>'}`}
-  let h=`<h2>${own?'我的名片':esc(nm)+' 的名片'}</h2><div class="mecard"><div class="meav"><svg viewBox="-30 -66 60 70" width="120" height="140" role="img" aria-label="角色">${avatarSVG(av,false,{view:VIEWS[sheet.dir||0]})}</svg><button class="mini" data-act="meturn">轉一下</button></div><div class="meinf"><div class="lot-name">${esc(nm)}</div><div class="meta">Lv ${lv}　${lvTitle(lv)}</div>${own?`<span class="xpbar big"><i style="width:${Math.round((state.xp||0)/xpNeed(lv)*100)}%"></i></span><div class="meta">離下一級還差 ${xpNeed(lv)-(state.xp||0)} 經驗</div><div class="row2" style="margin-top:6px"><button class="btn" data-act="meren">改名字</button><button class="btn" data-act="medress">${uiIcon('dress',18)}打扮</button></div>`:`<button class="btn" data-act="mevisit">參觀農場</button>`}</div></div>`;
+  let h=`<h2>${own?'我的名片':esc(nm)+' 的名片'}</h2><div class="mecard"><div class="meav"><svg viewBox="-30 -66 60 70" width="120" height="140" role="img" aria-label="角色">${avatarSVG(av,false,{view:VIEWS[sheet.dir||0]})}</svg><button class="mini" data-act="meturn">轉一下</button></div><div class="meinf"><div class="lot-name">${esc(nm)}</div><div class="meta">Lv ${lv}　${lvTitle(lv)}</div>${own?`<span class="xpbar big"><i style="width:${Math.round((state.xp||0)/xpNeed(lv)*100)}%"></i></span><div class="meta">離下一級還差 ${xpNeed(lv)-(state.xp||0)} 經驗</div><div class="row2" style="margin-top:6px"><button class="btn" data-act="meren">改名字</button><button class="btn" data-act="medress">${uiIcon('dress',18)}打扮</button></div>`:`${statusHTML(sheet.me)}<button class="btn" data-act="mevisit">參觀農場</button>`}</div></div>`;
   if(own){const m=mqCur(),done=state.cm?state.cm.list.filter(o=>o.done).length:0;
     h+=`<h3>目前的任務</h3><div class="lot"><div class="meta">${m?(state.mq.st?`主線第 ${state.mq.ch} 章：${m.hint}`:myLv()>=m.lv?`主線第 ${state.mq.ch} 章「${m.t}」可以接了`:`主線第 ${state.mq.ch} 章 Lv ${m.lv} 開放`):'主線任務全部完成'}</div>${state.cm?`<div class="meta">今天的委託完成 ${done}／${state.cm.list.length} 張</div>`:''}<button class="btn" data-act="quests">${uiIcon('quest',18)}看任務</button></div>`}
   if(tl.length)h+=`<h3>徽章</h3><div class="badges" style="justify-content:flex-start">${tl.map(t=>`<span class="badge r3">${esc(t)}</span>`).join('')}</div>`;
@@ -6691,6 +6706,32 @@ function rsvMarkSVG(p,x,y,mk){if(!p.rsv)return '';const cx=x-14,cy=y-56-mk;
   if(p.rsv.bad)return `<g pointer-events="none"><circle cx="${cx}" cy="${cy}" r="8" fill="#C0392B" stroke="#fff" stroke-width="1.5"/><text x="${cx}" y="${cy+4.5}" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">!</text></g>`;
   let ic='';try{const q=state.plots[p.rsv.i];if(q)ic=`<svg x="${cx-18}" y="${cy-9}" width="15" height="16" viewBox="-1.5 -1.6 3 3.2">${fruitInner(phen(q.g,q.crop),1,q.crop)}</svg>`}catch(e){}
   return `<g pointer-events="none">${ic}<circle cx="${cx}" cy="${cy}" r="7.5" fill="#FFF6DE" stroke="#5A3416" stroke-width="1.5"/><path d="M${cx} ${cy-4.5} V${cy} L${cx+3.2} ${cy+2}" stroke="#5A3416" stroke-width="1.6" fill="none" stroke-linecap="round"/></g>`}
+/* ===== 63（16b）：循環的 CSS 動畫跟著全域時間走 =====
+   畫面重畫（innerHTML 整段換掉）時元素會重新建立，CSS 動畫從 0% 重來，看起來像倒帶。重畫之後把每個無限循環的動畫對到「現在時間 % 週期」，
+   元素就算被重建也接在原本的進度；每個元素自己的 animation-delay 照舊當成固定的偏移，所以同一排不會整齊同步。只播一次的動畫（彈出、特效）不動。 */
+function animSync(root){try{if(!root||!root.getAnimations||(typeof RMQ!=='undefined'&&RMQ.matches))return;const tl=document.timeline&&document.timeline.currentTime,now=typeof tl==="number"?tl:performance.now();/* 用動畫自己的時鐘，切到背景時鐘停了也對得上 */
+  for(const a of root.getAnimations({subtree:true})){const ef=a.effect,t=ef&&ef.getComputedTiming&&ef.getComputedTiming();if(!t||t.iterations!==Infinity)continue;const d=+t.duration;if(!(d>0))continue;let off=0;
+    if(!t.delay&&/^sway/.test(a.animationName||'')){const el=ef.target,im=el&&(el.tagName==='image'?el:el.querySelector&&el.querySelector('image'));if(im)off=(Math.abs(parseFloat(im.getAttribute('x'))*37+parseFloat(im.getAttribute('y'))*17)||0)%1}/* 沒有自己偏移的晃動物件：用座標算一個固定的偏移，同一排不會整齊同步 */
+    a.currentTime=d*4+(now+off*d)%d}}catch(e){}}
+{const rw=renderWorld,rc=renderChars;renderWorld=function(){rw.apply(this,arguments);animSync(sceneEl)};renderChars=function(){rc.apply(this,arguments);animSync(document.getElementById('charLayer')||sceneEl)}}
+/* ===== 62（16b）：好友上線狀態 =====
+   Realtime Database 的 status/<uid>={on,at,place}（place：farm／town／地區鍵）。登入時寫入並設 onDisconnect 改成離線；換場景只改 place；
+   切到背景超過 2 分鐘算離線。朋友面板打開、或看別人的名片時才監聽那些人的 status/<uid>，關掉就取消；不監聽整個 status。
+   和位置同步的 presence/<場景鍵>/<uid> 是不同路徑，互不影響。規則要另外加：status/<uid> 本人可寫、登入者可讀。 */
+let stPlace='farm',stHideT=null,stOn=false;const stData={},stSubs={};
+const stTS=()=>{try{return firebase.database.ServerValue.TIMESTAMP}catch(e){return Date.now()}};
+const stPlaceOf=key=>key==='town'?'town':String(key).startsWith('ex_')?String(key).split('_')[1]:'farm';
+function statusOn(place){if(!rtdb||!uid)return;if(place)stPlace=place;try{const r=rtdb.ref('status/'+uid);r.onDisconnect().set({on:false,at:stTS()});r.set({on:true,at:stTS(),place:stPlace});stOn=true}catch(e){}}
+function statusOff(){if(!rtdb||!uid||!stOn)return;try{rtdb.ref('status/'+uid).set({on:false,at:stTS()});stOn=false}catch(e){}}
+function statusWatch(ids){if(!rtdb)return;for(const id of ids){if(stSubs[id]||id===uid)continue;try{const ref=rtdb.ref('status/'+id),cb=s=>{stData[id]=s.val()||null;statusChanged(id)};ref.on('value',cb,()=>{});stSubs[id]=()=>ref.off('value',cb)}catch(e){}}}
+function statusUnwatch(keep){for(const id of Object.keys(stSubs)){if(keep&&keep.includes(id))continue;try{stSubs[id]()}catch(e){}delete stSubs[id]}}
+let stRT=null;function statusChanged(id){clearTimeout(stRT);stRT=setTimeout(()=>{try{if(curPanel==='social')renderSocial();if(sheet&&sheet.me===id)renderSheet()}catch(e){}},120)}
+const stIsOn=id=>!!(stData[id]&&stData[id].on);
+function statusTxt(id){const s=stData[id];if(!s)return '';
+  if(s.on){const pl=s.place;return '在'+(pl==='town'?'城鎮':BIOMES[pl]?'探索：'+BIOMES[pl].n:'農場')}
+  const d=Date.now()-(s.at||0);return d<60e3?'剛剛':d<3600e3?`${Math.floor(d/60e3)} 分鐘前`:d<DAY?`${Math.floor(d/3600e3)} 小時前`:d<30*DAY?`${Math.floor(d/DAY)} 天前`:'很久沒來了'}
+function statusHTML(id){const s=stData[id];if(!s)return '';return `<span class="stline"><i class="stdot${s.on?' on':''}"></i>${s.on?'上線中':'離線'}<small>${statusTxt(id)}</small></span>`}
+document.addEventListener('visibilitychange',()=>{if(!uid||!state)return;if(document.hidden){clearTimeout(stHideT);stHideT=setTimeout(statusOff,120e3)}else{clearTimeout(stHideT);if(!stOn)statusOn()}});
 let loop=null;
 const loginEl=document.getElementById('login');
 if(/Line\/|FBAN|FBAV|Instagram|MicroMessenger/i.test(navigator.userAgent))document.getElementById('inapp').hidden=false;

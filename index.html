@@ -401,10 +401,36 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-100%)}}
 @media (prefers-reduced-motion:reduce){#marquee span{padding-left:0;animation:none !important}}
 
-#shovelBar,#sowBar,#accelBar,#decoBar{position:fixed;left:8px;right:8px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:12;background:#FFF6DE;border:3px solid #5A3416;border-radius:16px;box-shadow:0 4px 0 #5A3416;padding:8px}
-#shovelBar .bbtip,#sowBar .bbtip,#accelBar .bbtip,#decoBar .bbtip{font-size:14px;color:#5A3416;text-align:center;margin-bottom:6px;line-height:1.35}#shovelBar small,#sowBar small,#accelBar small,#decoBar small{color:#8A6A4A}
-#shovelBar .bbrow,#sowBar .bbrow,#accelBar .bbrow,#decoBar .bbrow{display:grid;gap:6px}#shovelBar button,#sowBar button,#accelBar button,#decoBar button{min-height:46px;border-radius:12px;border:2px solid #5A3416;background:#fff;color:#5A3416;font:inherit;font-weight:700;font-size:15px}#shovelBar button.done,#sowBar button.done,#accelBar button.done,#decoBar button.done{background:#E8A33C;color:#fff;border-color:#8A5A12}
+#shovelBar,#sowBar,#accelBar,#decoBar,#pickBar{position:fixed;left:8px;right:8px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:12;background:#FFF6DE;border:3px solid #5A3416;border-radius:16px;box-shadow:0 4px 0 #5A3416;padding:8px}
+#shovelBar .bbtip,#sowBar .bbtip,#accelBar .bbtip,#decoBar .bbtip,#pickBar .bbtip{font-size:14px;color:#5A3416;text-align:center;margin-bottom:6px;line-height:1.35}#shovelBar small,#sowBar small,#accelBar small,#decoBar small,#pickBar small{color:#8A6A4A}
+#shovelBar .bbrow,#sowBar .bbrow,#accelBar .bbrow,#decoBar .bbrow,#pickBar .bbrow{display:grid;gap:6px}#shovelBar button,#sowBar button,#accelBar button,#decoBar button,#pickBar button{min-height:46px;border-radius:12px;border:2px solid #5A3416;background:#fff;color:#5A3416;font:inherit;font-weight:700;font-size:15px}#shovelBar button.done,#sowBar button.done,#accelBar button.done,#decoBar button.done,#pickBar button.done{background:#E8A33C;color:#fff;border-color:#8A5A12}
 #sowBtn{right:236px !important;bottom:calc(18px + env(safe-area-inset-bottom,0px)) !important;width:66px;height:66px}
+#ringBtn{position:fixed;right:14px;bottom:calc(18px + env(safe-area-inset-bottom,0px));width:66px;height:66px;border-radius:50%;border:2.5px solid #2F5A22;background:radial-gradient(circle at 35% 30%,#8FD06E,#4E9A3A);color:#fff;box-shadow:0 4px 0 #2F5A22;z-index:62;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;font:inherit;font-weight:700;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#ringBtn[hidden]{display:none}#ringBtn .sbi{height:24px;width:auto;margin-bottom:1px;pointer-events:none}#ringBtn .sbt{font-size:12px;line-height:1.1;text-shadow:0 1px 0 #2F5A22;pointer-events:none}#ringBtn.held{transform:scale(.94)}
+#ringBtn .sbn{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:#D9473A;color:#fff;font-size:12px;line-height:20px;text-align:center;padding:0 4px;border:2px solid #fff}
+#ringOv{position:fixed;inset:0;z-index:60;background:rgba(40,30,15,.18)}#ringOv[hidden],#ringMenu[hidden],#decoPop[hidden]{display:none}
+#ringMenu{position:fixed;inset:0;z-index:61;pointer-events:none}
+#ringMenu .ri{position:absolute;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;border:2px solid #5A3416;background:#FFF6DE;color:#5A3416;font:inherit;font-size:12.5px;font-weight:700;box-shadow:0 3px 0 #5A3416;pointer-events:auto;display:flex;align-items:center;justify-content:center;padding:0;line-height:1.05;touch-action:none;-webkit-touch-callout:none}
+#ringMenu .ri.off{background:#E4DED0;color:#9A8F80;border-color:#9A8F80;box-shadow:0 3px 0 #9A8F80}
+#ringMenu .ri.hl{background:#FFD54A;transform:scale(1.15)}
+@media (prefers-reduced-motion:no-preference){#ringMenu .ri{animation:riIn .22s ease-out backwards}}
+@keyframes riIn{from{transform:translate(var(--dx),var(--dy)) scale(.3);opacity:0}to{transform:none;opacity:1}}
+#decoPop{position:fixed;z-index:58;display:flex;gap:6px;background:#FFF6DE;border:2px solid #5A3416;border-radius:12px;padding:6px;box-shadow:0 3px 0 #5A3416}
+#decoPop button{font:inherit;font-size:13px;font-weight:700;border:1.5px solid #5A3416;background:#fff;color:#5A3416;border-radius:9px;padding:7px 10px;min-height:36px}
+#fxH{position:fixed;inset:0;pointer-events:none;z-index:57;overflow:hidden}
+#fxH .pf{position:absolute;transform:translate(-50%,-50%);pointer-events:none;font-weight:700}
+#fxH .pf.ck{width:22px;height:22px;border-radius:50%;background:#FFD54A;border:2px solid #7A5A10;color:#5A3416;font-size:14px;line-height:19px;text-align:center;animation:pfPop .6s ease-out forwards}
+#fxH .pf.sk{color:#8A8A8A;font-size:22px;text-shadow:0 0 3px #fff;animation:pfFade .4s ease-out forwards}
+#fxH .pf.ht{color:#F06292;font-size:16px;animation:pfUp .6s ease-out forwards}
+#fxH .pf.pd{width:6px;height:6px;border-radius:50%;background:#FFE36E;box-shadow:0 0 4px #FFF3A0;animation:pfDot .6s ease-out forwards}
+#fxH .pf.ar{color:#3E9A3A;font-size:22px;text-shadow:0 0 4px #E6FFD8;animation:pfUp .7s ease-out forwards}
+#fxH .pf.gd{width:5px;height:5px;border-radius:50%;background:#9BE07A;box-shadow:0 0 4px #DFFFCF;animation:pfDot .7s ease-out forwards}
+#fxH .pf.fly{transition:left .7s cubic-bezier(.5,0,.8,.6),top .7s cubic-bezier(.2,.6,.4,1),opacity .7s;width:24px;height:24px}
+#fxH .pf.gain{background:#FFF6DE;border:2px solid #5A3416;border-radius:10px;padding:3px 8px;color:#5A3416;font-size:13px;white-space:nowrap;animation:pfUp 1.4s ease-out forwards;transform:translate(0,-50%)}
+@keyframes pfPop{0%{transform:translate(-50%,-50%) scale(.3)}40%{transform:translate(-50%,-90%) scale(1.15)}100%{transform:translate(-50%,-110%) scale(1);opacity:0}}
+@keyframes pfFade{0%{opacity:1}100%{opacity:0}}
+@keyframes pfUp{0%{opacity:0;margin-top:0}20%{opacity:1}100%{opacity:0;margin-top:-30px}}
+@keyframes pfDot{0%{opacity:1;margin:0}100%{opacity:0;margin:var(--dy) 0 0 var(--dx)}}
 body.joymode #sowBtn{right:22px !important;bottom:calc(254px + env(safe-area-inset-bottom,0px)) !important;width:60px;height:60px}
 #sowBar .sowinfo{display:flex;align-items:center;gap:8px;margin-bottom:4px;color:#5A3416}
 #sowBar .sowinfo svg{width:40px;height:40px;flex:none}
@@ -458,6 +484,7 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
 <button id="waterAll" class="sbtn">全部<br>收成</button>
 <button id="trayBtn" class="sbtn"><img class="sbi" src="assets/icons/s/tray.png" alt="" aria-hidden="true"><span class="sbt">育苗盤</span></button>
 <button id="accelBtn" class="sbtn" hidden><img class="sbi" src="assets/icons/s/accel.png" alt="" aria-hidden="true"><span class="sbt">加速劑</span></button>
+<div id="ringOv" hidden></div><div id="ringMenu" hidden role="menu" aria-label="功能"></div><button id="ringBtn" hidden aria-label="種植（長按打開更多功能）"></button><div id="decoPop" hidden></div><div id="fxH" aria-hidden="true"></div>
 <div id="buildBar" hidden></div>
 <div id="shovelBar" class="toolbar2" hidden></div>
 <div id="accelBar" class="toolbar2" hidden></div>
@@ -1011,7 +1038,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-15e';
+const BUILD='2026-11-15f';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -1523,7 +1550,7 @@ const plantCache=new WeakMap();
 function plantSVG(p,x,y){
   const cd=CROPS[p.crop],ph=phen(p.g,p.crop);
   const prr=(p.stage==='seedling'||p.stage==='fruit')?clamp(p.prog/stageDur(p,ph),0,1):1;
-  const key=p.stage+'|'+Math.floor(prr*12)+'|'+p.watered+'|'+x+'|'+y+'|'+!!(p.pollen&&p.pollen.failed)+'|'+FRUIT_VER;/* FRUIT_VER：素模、植株圖片載好後重畫 */
+  const key=p.stage+'|'+Math.floor(prr*12)+'|'+p.watered+'|'+x+'|'+y+'|'+!!(p.pollen&&p.pollen.failed)+'|'+!!p.pollen+'|'+FRUIT_VER;/* FRUIT_VER：素模、植株圖片載好後重畫 */
   const hit=plantCache.get(p);if(hit&&hit.key===key)return hit.svg;
   let s='',mk=0;/* mk：狀態標示（小花、成熟星星）往上移多少，跟著植株高度 */
   const im=plantImgSVG(p.crop,p.stage,x,y,prr);
@@ -1539,6 +1566,7 @@ function plantSVG(p,x,y){
   }
   {const ym=y-mk;
   if(p.pollen&&p.pollen.failed&&p.stage!=='flower')s+=`<g stroke="#7A2A1A" stroke-width="1.4"><circle cx="${x+24}" cy="${ym-74}" r="7" fill="#FFE1D6"/><path d="M${x+21} ${ym-77} l6 6 M${x+27} ${ym-77} l-6 6" stroke-linecap="round"/></g>`;
+  if(p.stage==='fruit'&&p.pollen&&!p.pollen.failed)s+=`<g aria-hidden="true"><circle cx="${x-24}" cy="${ym-72}" r="4.5" fill="#FFE36E" stroke="#B0882A" stroke-width="1.2"/><circle cx="${x-25.3}" cy="${ym-73.3}" r="1.3" fill="#FFF8D0"/></g>`;/* 36.8 C：已授粉 */
   if(p.stage==='flower'&&!p.pollen)s+=`<g aria-hidden="true"><circle cx="${x-26}" cy="${ym-76}" r="9" fill="#FFFDF6" stroke="#B07A44" stroke-width="1.5"/>${[0,1,2,3,4].map(k=>{const a=k*1.2566-1.5708;return `<circle cx="${(x-26+3.6*Math.cos(a)).toFixed(1)}" cy="${(ym-76+3.6*Math.sin(a)).toFixed(1)}" r="2.6" fill="#F28DB2"/>`}).join('')}<circle cx="${x-26}" cy="${ym-76}" r="2" fill="#FFD54A"/></g>`;}/* 等待授粉 */
   plantCache.set(p,{key,svg:s});
   return s;
@@ -2092,6 +2120,7 @@ function renderSheet(){
   if(sheet.build){sb.innerHTML=buildHTML();return}
   if(sheet.trash){sb.innerHTML=trashHTML();return}
   if(sheet.sign!=null){sb.innerHTML=signHTML();bindSign();return}
+  if(sheet.gateSign){sb.innerHTML=gateSignHTML();bindSign();return}
   if(sheet.vlot!=null){const f=findLotAny(sheet.vlot);if(!f||!f.cab){closeSheet();return}sb.innerHTML=vaultLotHTML(f.l,f.cab);return}
   if(sheet.lot!=null){const l=state.lots.find(x=>x.id===sheet.lot);if(!l){closeSheet();return}sb.innerHTML=lotSheetHTML(l)+'<button class="btn" data-act="close">關閉</button>';bindLotForm(l);return}
   if(sheet.visit){sb.innerHTML=visitHTML();return}
@@ -2160,6 +2189,7 @@ sb.addEventListener('click',e=>{
   if(sheet.avatar)return avatarAction(b);
   if(sheet.orders)return orderAction(b);
   if(sheet.sign!=null)return signAction(b);
+  if(sheet.gateSign)return gateSignAction(b);
   if(sheet.build)return buildAction(b);
   if(sheet.trash)return trashAction(b);
   if(sheet.plantPick)return plantPickAction(b);
@@ -2326,7 +2356,8 @@ function layoutSbtns(){
   if(!state)return;
   const ok=scene==='farm'&&!viewing&&!buildMode&&!shovelMode&&!sowMode&&!accelMode&&!decoMode&&!pickMode,nd=sbtnNeed(state);
   for(const id of ['trayBtn','shovelBtn']){const el=document.getElementById(id);if(el)el.hidden=true}/* 育苗盤併入「種植」、剷除移到建設工具列 */
-  const ids=['sowBtn','waterAll','fertBtn','accelBtn'].filter(id=>ok&&(id==='sowBtn'||nd[id]));
+  const ids=[];/* 36.8：底部按鈕拿掉，改成綠色圓按鈕＋長按圓盤 */
+  {const rb=document.getElementById('ringBtn');if(rb){rb.hidden=!ok;const h=sbtnInner('seed_bag','種植',trayObj().cells.length);if(rb.innerHTML!==h)rb.innerHTML=h}if(!ok&&ringOpen)closeRing();void nd}
   for(const id of ['sowBtn','waterAll','fertBtn','accelBtn']){const el=document.getElementById(id);if(el)el.hidden=!ids.includes(id)}
   const L=sbtnLayout(window.innerWidth||390,ids.length);
   ids.forEach((id,k)=>{const el=document.getElementById(id);if(!el)return;const st=el.style;st.setProperty('right',L.right[k]+'px','important');st.setProperty('bottom','calc(18px + env(safe-area-inset-bottom,0px))','important');st.setProperty('width',L.size+'px','important');st.setProperty('height',L.size+'px','important');st.setProperty('font-size',(L.size<56?12:13)+'px','important')});
@@ -2839,7 +2870,7 @@ const STALLS=[[150,690],[270,690],[530,690],[650,690],[150,815],[270,815],[530,8
 const AWN=['#D9473A','#3F86C4','#E0A82E','#3F7B38','#8E5CC8','#E0823D','#E26F9A','#3E9E92'];
 let scene='farm',viewing=null,visitMe={x:550,y:2100},marketMe={x:400,y:1182},hoverPlot=null,hoverStall=null,selDecor=null,curPanel=null;
 const curMe=()=>scene==='market'?marketMe:scene==='explore'?exMe:viewing?visitMe:(state.me||(state.me={...ME0}));
-function gateSVG(x,y,label){return `<g stroke="#4A2A12" stroke-width="1.6" stroke-linejoin="round"><rect x="${x-38}" y="${y-50}" width="8" height="50" rx="2" fill="#B5763C"/><rect x="${x+30}" y="${y-50}" width="8" height="50" rx="2" fill="#B5763C"/><path d="M${x-50} ${y-58} Q${x} ${y-78} ${x+50} ${y-58} L${x+46} ${y-46} Q${x} ${y-64} ${x-46} ${y-46}Z" fill="#D9473A"/><rect x="${x-34}" y="${y-62}" width="68" height="20" rx="6" fill="#FFF3D6"/><text x="${x}" y="${y-47}" text-anchor="middle" font-size="12" font-weight="700" fill="#4A2A12" stroke="none" font-family="Noto Sans TC,sans-serif">${label}</text></g>`}
+function gateSVG(x,y,label){const sw=Math.max(68,[...String(label).replace(/&[a-z#0-9]+;/g,'x')].length*12.5+14);return `<g stroke="#4A2A12" stroke-width="1.6" stroke-linejoin="round"><rect x="${x-38}" y="${y-50}" width="8" height="50" rx="2" fill="#B5763C"/><rect x="${x+30}" y="${y-50}" width="8" height="50" rx="2" fill="#B5763C"/><path d="M${x-50} ${y-58} Q${x} ${y-78} ${x+50} ${y-58} L${x+46} ${y-46} Q${x} ${y-64} ${x-46} ${y-46}Z" fill="#D9473A"/><rect x="${x-sw/2}" y="${y-62}" width="${sw}" height="20" rx="6" fill="#FFF3D6"/><text x="${x}" y="${y-47}" text-anchor="middle" font-size="12" font-weight="700" fill="#4A2A12" stroke="none" font-family="Noto Sans TC,sans-serif">${label}</text></g>`}
 const GROUND=(()=>{const R=srand(4242);let t='';for(let k=0;k<420;k++){const x=30+R()*1040,y=80+R()*2080,r=R();if(r<0.45)t+=`<path d="M${x.toFixed(0)} ${y.toFixed(0)} l2.5 -6 l2.5 6 M${(x+4).toFixed(0)} ${y.toFixed(0)} l2 -4.5 l2 4.5" stroke="#8FAA62" stroke-width="1.4" fill="none" stroke-linecap="round"/>`}return t})();/* 31.6：低彩度草叢、拿掉彩色小點 */
 function plotSVG(st,i,hov){
   const pos=posOf(st,i);if(!pos)return '';
@@ -2857,7 +2888,7 @@ function plotSVG(st,i,hov){
 function farmWorld(st,hov,selD){
   const {W,H}=WORLD.farm,[gx,gy]=GATE.farm;
   let s=`<rect x="-600" y="-600" width="${W+1200}" height="${H+1200}" fill="#93AE66"/><rect x="10" y="60" width="${W-20}" height="${H-70}" rx="40" fill="#A8C478" stroke="#7E9A58" stroke-width="3"/>${GROUND}`;
-  s+=`<path d="M${gx} ${gy-48} V${gy+4}" stroke="#C9A363" stroke-width="44" stroke-linecap="round"/><path d="M${gx} ${gy-48} V${gy+4}" stroke="#F0D49A" stroke-width="36" stroke-linecap="round"/>`+gateSVG(gx,gy+4,'往城鎮');
+  s+=`<path d="M${gx} ${gy-48} V${gy+4}" stroke="#C9A363" stroke-width="44" stroke-linecap="round"/><path d="M${gx} ${gy-48} V${gy+4}" stroke="#F0D49A" stroke-width="36" stroke-linecap="round"/>`+gateSVG(gx,gy+4,esc(gateText(st)));/* 36.8 F：大門招牌寫字 */
   const all=[];
   (st.decor||[]).forEach((d,i)=>{const it=DECOR_MAP[d.t];if(!it)return;all.push({z:it.flat?-1e5+d.y:d.y,h:()=>decorSVG({...d,i},selD===i,st===state&&!!decoDrag&&decoDrag.on&&decoDrag.i===i&&decoDrag.bad)})});
   for(let i=0;i<st.plots.length;i++){const pos=posOf(st,i);if(!pos)continue;if(st===state&&dragPlot&&dragPlot.on&&dragPlot.i===i){const [gx,gy]=snapPos(dragPlot.x,dragPlot.y),ok=!plotSpotErr(state,gx,gy,i);const fake={...state,plotPos:state.plotPos.slice()};fake.plotPos[i]=[gx,gy];all.push({z:1e6,h:()=>`<g opacity=".75">${plotSVG(fake,i,null)}</g><polygon points="${gx-41},${gy} ${gx},${gy-23} ${gx+41},${gy} ${gx},${gy+23}" fill="none" stroke="${ok?'#2F9E3A':'#C0392B'}" stroke-width="3" stroke-dasharray="6 4"/>`});continue}all.push({z:pos[1]+20,h:()=>plotSVG(st,i,hov)})}
@@ -3471,7 +3502,7 @@ function openDecor(){
   toast('裝飾模式：按「新增」放裝飾，按住裝飾可以拖曳',3000);
 }
 function decoCancel(){decoPainting=false;if(decoDrag){const d=state.decor[decoDrag.i];if(d&&decoDrag.on&&decoDrag.bad){d.x=decoDrag.fx;d.y=decoDrag.fy}decoDrag=null}}
-function exitDecor(){if(!decoMode)return;decoCancel();if(recallMode)stopRecall();decoMode=false;decoPaint=null;selDecor=null;renderDecoBar();renderHUD();applyCtrl();updateCam();renderWorld();save()}
+function exitDecor(){quickMove=null;if(!decoMode)return;decoCancel();if(recallMode)stopRecall();decoMode=false;decoPaint=null;selDecor=null;renderDecoBar();renderHUD();applyCtrl();updateCam();renderWorld();save()}
 function renderDecoBar(){
   const el=document.getElementById('decoBar');if(!el)return;if(!decoMode){el.hidden=true;return}el.hidden=false;
   const d=selDecor!=null?state.decor[selDecor]:null;let top;
@@ -4527,6 +4558,8 @@ function handleTap(e,cx,cy){
   if(ctrlMode==='joy'){
     const g2=t&&t.closest&&t.closest('[data-plot]'),st2=t&&t.closest&&t.closest('[data-stall]'),dg2=t&&t.closest&&t.closest('[data-decor]'),ie2=t&&t.closest&&t.closest('[data-item]');
     const we2=t&&t.closest&&t.closest('[data-wp]');
+    if(scene==='farm'&&!viewing&&dg2&&!g2){openDecoPop(+dg2.dataset.decor);return}/* 36.8 D */
+    if(scene==='farm'&&!viewing&&!g2){const [gx,gy]=gatePos();if(Math.hypot(w.x-gx,w.y-gy)<60){openGatePop();return}}/* 36.8 F */
     if(!g2&&!st2&&!ie2&&!we2){const [gx,gy]=gatePos();if(Math.hypot(w.x-gx,w.y-gy)<60){const go=()=>{scene==='farm'?goMarket():goFarm()},m=curMe();if(Math.hypot(m.x-gx,m.y-gy)<56)go();else walkTo(gx,gy-10,go);return}}/* 14h：大門直接點 */
     if(scene==='explore'){if(we2){const w=exVisiblePlants().find(x=>x.key===we2.dataset.wp);if(w){const m=curMe();if(Math.hypot(w.x-m.x,w.y-m.y)<90)openWp(w);else walkTo(w.x,w.y+10,()=>openWp(w))}return}if(ie2){const it=exVisibleItems().find(x=>x.key===ie2.dataset.item);if(it){const m=curMe();if(Math.hypot(it.x-m.x,it.y-m.y)<80)pickItem(it);else walkTo(it.x,it.y+6,()=>pickItem(it))}}return}
     if(scene==='market'){if(st2){openStall(+st2.dataset.stall);return}const bd2=t&&t.closest&&t.closest('[data-bld]'),np2=t&&t.closest&&t.closest('[data-npc]');if(np2){townGo('npc',np2.dataset.npc);return}if(bd2){townGo('bld',bd2.dataset.bld);return}return}
@@ -4563,7 +4596,7 @@ sceneEl.addEventListener('pointerdown',e=>{
     const dg=e.target.closest&&e.target.closest('[data-decor]');
     if(dg){const i=+dg.dataset.decor,d=state.decor[i];if(d){const w=screenToWorld(e.clientX,e.clientY);decoDrag={i,fx:d.x,fy:d.y,ox:d.x-w.x,oy:d.y-w.y,on:false,bad:false,msg:''};return}}
     panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
-  if(pickMode){pickHit.clear();const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&state.plots[+g.dataset.plot]){picking=true;pickDir=!pickSet.has(+g.dataset.plot);strokeLast=null;strokeTo(e.clientX,e.clientY,pickAt)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
+  if(pickMode){pickHit.clear();const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&state.plots[+g.dataset.plot]){picking=true;pickDir=!pickSet.has(+g.dataset.plot);pickStroke=[];strokeLast=null;strokeTo(e.clientX,e.clientY,pickAt)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
   if(accelMode){accelHit.clear();const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&state.plots[+g.dataset.plot]){acceling=true;accelAt(e.clientX,e.clientY)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
   if(buildMode){
     const g=e.target.closest&&e.target.closest('[data-plot]');
@@ -4594,7 +4627,7 @@ const ptrEnd=e=>{
   if(recallMode){if(recalling){recalling=false;if(recallStroke&&recallStroke.length)recallHist.push(recallStroke);recallStroke=null;save()}panStart=null;tapStart=null;return}
   if(decoMode){panStart=null;
     if(decoPainting){decoPainting=false;save();tapStart=null;return}
-    if(decoDrag){decoDrop();tapStart=null;return}
+    if(decoDrag){const qi=decoDrag.i,qon=decoDrag.on;decoDrop();tapStart=null;if(quickMove!=null&&qi===quickMove&&qon){quickMove=null;exitDecor();toast('移好了')}return}
     if(tapStart&&!tapStart.moved&&e.type==='pointerup'&&selDecor!=null){selDecor=null;renderWorld();renderDecoBar()}
     tapStart=null;return}
   if(dragPlot){const d=dragPlot;dragPlot=null;if(d.on){const [x,y]=snapPos(d.x,d.y),err=plotSpotErr(state,x,y,d.i);if(err){toast(err)}else{state.plotPos[d.i]=[x,y];save();toast('農地移好了')}renderWorld();tapStart=null;return}}
@@ -4603,7 +4636,7 @@ const ptrEnd=e=>{
   if(shovelMode){if(shoveling){shoveling=false;save()}tapStart=null;return}
   if(accelMode){if(acceling){acceling=false;save()}tapStart=null;return}
   if(buildPainting){buildPainting=false;save();tapStart=null;return}
-  if(pickMode){picking=false;tapStart=null;return}
+  if(pickMode){picking=false;if(pickStroke&&pickStroke.length){pickHist.push(pickStroke);playAct('pollinate');save();renderPickBar()}pickStroke=null;tapStart=null;return}
   if(tapStart&&!tapStart.moved&&e.type==='pointerup'){const ts=tapStart;tapStart=null;handleTap({target:ts.target},e.clientX,e.clientY);return}
   tapStart=null;
 };
@@ -4637,6 +4670,87 @@ function autoSeedName(p){
   const gen=p.gen==null?undefined:(p.gen===0?0:p.gen+1);
   return shortApp(ph)+(gen?` ${gen}代`:'');
 }
+// ===== 36.8（15f）：綠色圓按鈕＋長按圓盤、點或拖的回饋、點裝飾操作、大門寫字 =====
+const RING=[['harvest','收成'],['self','自交'],['accel','加速'],['recall','收回'],['build','建設'],['decor','裝飾'],['tray','育苗']];
+var ringOpen=false;let ringPress=null,ringHl=null;
+function ringState(k){const nd=sbtnNeed(state),acc=((state.items||{}).acc)||0;
+  if(k==='harvest')return nd.waterAll?'':'目前沒有成熟的植株';
+  if(k==='self')return nd.fertBtn?'':'目前沒有開花、等待授粉的植株';
+  if(k==='accel')return !acc?'沒有生長加速劑了，到探索世界撿撿看':nd.accelBtn?'':'沒有可以加速的植株（幼苗、結果中）';
+  if(k==='tray')return trayObj().cells.length?'':'育苗盤是空的，點綠色按鈕就能種植';
+  return ''}
+function openRing(){if(ringOpen||!state)return;const b=document.getElementById('ringBtn').getBoundingClientRect(),cx=b.left+b.width/2,cy=b.top+b.height/2,R=Math.min(170,Math.max(140,cx-160));
+  /* 從左邊（9 點鐘）順時針排到正上方（12 點鐘）：按鈕在右下角，右邊沒有空間 */
+  const a0=185,a1=90,m=document.getElementById('ringMenu');
+  m.innerHTML=RING.map(([k,n],j)=>{const a=(a0+(a1-a0)*j/(RING.length-1))*Math.PI/180,x=cx+R*Math.cos(a),y=cy-R*Math.sin(a),off=ringState(k);
+    return `<button class="ri${off?' off':''}" role="menuitem" data-ring="${k}" aria-disabled="${off?'true':'false'}" style="left:${x.toFixed(0)}px;top:${y.toFixed(0)}px;--dx:${(cx-x).toFixed(0)}px;--dy:${(cy-y).toFixed(0)}px;animation-delay:${j*28}ms">${n}</button>`}).join('');
+  m.hidden=false;document.getElementById('ringOv').hidden=false;ringOpen=true;ringHl=null}
+function closeRing(){ringOpen=false;ringHl=null;const m=document.getElementById('ringMenu');if(m){m.hidden=true;m.innerHTML=''}const o=document.getElementById('ringOv');if(o)o.hidden=true}
+function ringAt(x,y){const el=document.elementFromPoint(x,y),b=el&&el.closest&&el.closest('[data-ring]');return b?b.dataset.ring:null}
+function ringHlSet(k){if(k===ringHl)return;ringHl=k;document.querySelectorAll('#ringMenu .ri').forEach(b=>b.classList.toggle('hl',b.dataset.ring===k))}
+function ringRun(k){closeRing();const why=ringState(k);if(why){toast(why);return}
+  if(scene!=='farm'||viewing){toast('回到自己的農場才能使用');return}
+  if(sowMode)exitSow();if(shovelMode)exitShovel();if(accelMode)exitAccel();if(pickMode)exitPick();if(decoMode)exitDecor();if(buildMode)exitBuild();closeSheet();if(curPanel)closePanel();closeDecoPop();
+  if(k==='harvest'||k==='self'){openPick(k);return}
+  if(k==='accel'){openAccel();return}
+  if(k==='build'){openBuild();return}
+  if(k==='recall'){openBuild();buildMode='recall';startRecall();renderBuildBar();renderWorld();toast('收回模式：點或滑過裝飾、空田就收回；有植株的田會略過',3000);return}
+  if(k==='decor'){openDecor();return}
+  if(k==='tray'){openTray();return}}
+{const rb=document.getElementById('ringBtn');
+  rb.addEventListener('pointerdown',e=>{if(!state)return;e.preventDefault();const was=ringOpen;try{rb.setPointerCapture(e.pointerId)}catch(_){}rb.classList.add('held');
+    ringPress={id:e.pointerId,was,opened:false,t:setTimeout(()=>{if(ringPress&&!ringOpen){openRing();ringPress.opened=true;try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}}},350)}});
+  rb.addEventListener('pointermove',e=>{if(!ringPress||!ringOpen)return;ringHlSet(ringAt(e.clientX,e.clientY))});
+  const up=e=>{const P=ringPress;ringPress=null;rb.classList.remove('held');if(!P)return;clearTimeout(P.t);if(e.type==='pointercancel')return;
+    if(P.opened){const k=ringAt(e.clientX,e.clientY);if(k)ringRun(k);else ringHlSet(null);return}/* 放開時不在圖示上：圓盤留著，可以再點 */
+    if(P.was){closeRing();return}
+    openPlant()};
+  rb.addEventListener('pointerup',up);rb.addEventListener('pointercancel',up);
+  rb.addEventListener('contextmenu',e=>e.preventDefault());
+  rb.addEventListener('click',e=>{if(e.detail===0)openPlant()});/* 鍵盤 */
+  document.getElementById('ringMenu').addEventListener('click',e=>{const b=e.target.closest('[data-ring]');if(b)ringRun(b.dataset.ring)});
+  document.getElementById('ringOv').addEventListener('pointerdown',e=>{e.preventDefault();closeRing()})}
+/* 回饋特效（36.8 C）：畫在場景外的 HTML 層，重畫農場不會打斷；減少動態效果時不播 */
+const RMQ=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)')}catch(e){return {matches:false}}})();
+function plotScreen(i){try{const g=sceneEl.querySelector(`[data-plot="${i}"]`);if(!g)return null;const r=g.getBoundingClientRect();if(!r.width)return null;return {x:r.left+r.width/2,y:r.top+r.height*0.3}}catch(e){return null}}
+function fxAdd(cls,x,y,html,ms,css){const L=document.getElementById('fxH');if(!L)return null;const d=document.createElement('div');d.className='pf '+cls;d.style.left=x+'px';d.style.top=y+'px';if(css)d.style.cssText+=css;if(html)d.innerHTML=html;L.appendChild(d);setTimeout(()=>d.remove(),ms);return d}
+function plotFx(i,kind){if(RMQ.matches)return;const c=plotScreen(i);if(!c)return;const top=c.y-18;
+  if(kind==='skip'){fxAdd('sk',c.x,top,'✕',420);return}
+  if(kind==='check'){fxAdd('ck',c.x,top-14,'✓',640);return}
+  if(kind==='self'){for(let k=0;k<7;k++){const a=k/7*Math.PI*2;fxAdd('pd',c.x,top,'',640,`--dx:${(Math.cos(a)*22).toFixed(0)}px;--dy:${(Math.sin(a)*16-6).toFixed(0)}px`)}fxAdd('ht',c.x+10,top-10,'♥',640);return}
+  if(kind==='accel'){fxAdd('ar',c.x,top,'↑',740);for(let k=0;k<4;k++){const a=-Math.PI/2+(k-1.5)*0.6;fxAdd('gd',c.x+(k-1.5)*8,top+8,'',740,`--dx:${(Math.cos(a)*14).toFixed(0)}px;--dy:${(Math.sin(a)*26).toFixed(0)}px`)}return}}
+function seedTotal(){let n=0;try{for(const l of state.lots||[])if(l)n+=lc(l);for(const l of (Array.isArray(state.vault)?state.vault:[]))if(l&&l.crop)n+=lc(l)}catch(e){}return n}
+function harvestFly(from,seeds,coins){
+  const bag=document.querySelector('[data-open="bag"]'),cn=document.querySelector('.coin');
+  const tgt=(el,fx,fy)=>{const r=el&&el.getBoundingClientRect();return r&&r.width?{x:r.left+r.width/2,y:r.top+r.height/2}:{x:fx,y:fy}};
+  const tb=tgt(bag,40,200),tc=tgt(cn,60,30);
+  if(!RMQ.matches)from.forEach(({c,p},k)=>{let svg='';try{svg=fruitSVG({...phen(p.g,p.crop),perfCls:2,seed:7},p.crop,24)}catch(e){}const d=fxAdd('fly',c.x,c.y-10,svg,900);if(!d)return;setTimeout(()=>{d.style.left=tb.x+'px';d.style.top=tb.y+'px';d.style.opacity='.2'},40+k*45)});
+  if(seeds)setTimeout(()=>fxAdd('gain',tb.x+28,tb.y,`+${seeds} 顆種子`,1500),RMQ.matches?0:650);
+  if(coins)setTimeout(()=>fxAdd('gain',tc.x+30,tc.y+18,`+${coins} 金幣`,1500),RMQ.matches?0:650)}
+/* 點裝飾就能操作（36.8 D）、點大門（36.8 F） */
+var quickMove=null;let decoPopT=null;
+function closeDecoPop(){clearTimeout(decoPopT);const el=document.getElementById('decoPop');if(el){el.hidden=true;el.innerHTML='';el.dataset.k=''}}
+function showPop(html,sx,sy,key){const el=document.getElementById('decoPop');el.innerHTML=html;el.dataset.k=key;el.hidden=false;const w=el.offsetWidth,h=el.offsetHeight,W=window.innerWidth,H=window.innerHeight;
+  el.style.left=Math.max(8,Math.min(W-w-8,sx-w/2))+'px';el.style.top=Math.max(60,Math.min(H-h-100,sy-h-12))+'px';popKeep()}
+function popKeep(){clearTimeout(decoPopT);decoPopT=setTimeout(closeDecoPop,3000)}
+function openDecoPop(i){const d=state.decor[i];if(!d)return;let r;try{r=sceneEl.querySelector(`[data-decor="${i}"]`).getBoundingClientRect()}catch(e){return}
+  showPop(`${isSign(d.t)?'<button data-dp="text">改文字</button>':''}<button data-dp="move">移動</button><button data-dp="recall">收回</button>`,r.left+r.width/2,r.top,'d'+i);
+  document.getElementById('decoPop').dataset.i=i}
+function openGatePop(){const [gx,gy]=GATE.farm,s=worldToScreenPt(gx,gy-40);showPop(`<button data-dp="town">往城鎮</button><button data-dp="gtext">改文字</button>`,s.x,s.y,'gate')}
+function worldToScreenPt(x,y){try{const pt=sceneEl.createSVGPoint();pt.x=x;pt.y=y;const m=sceneEl.getScreenCTM();const q=pt.matrixTransform(m);return {x:q.x,y:q.y}}catch(e){return {x:innerWidth/2,y:innerHeight/2}}}
+document.getElementById('decoPop').addEventListener('pointerdown',e=>{e.stopPropagation();popKeep()});
+document.getElementById('decoPop').addEventListener('click',e=>{const b=e.target.closest('[data-dp]');if(!b)return;const a=b.dataset.dp,el=document.getElementById('decoPop'),i=+el.dataset.i;closeDecoPop();
+  if(a==='town'){const [gx,gy]=GATE.farm,m=curMe();if(Math.hypot(m.x-gx,m.y-gy)<56)goMarket();else walkTo(gx,gy-10,goMarket);return}
+  if(a==='gtext'){sheet={gateSign:true,draft:state.gateTxt||'',err:''};renderSheet();openSheetUI();return}
+  const d=state.decor[i];if(!d)return;
+  if(a==='text'){openSign(i);return}
+  if(a==='recall'){decoStorePut(d.t);state.decor.splice(i,1);save();renderWorld();toast(`「${(DECOR_MAP[d.t]||{}).n||'裝飾'}」已收回裝飾倉庫`);return}
+  if(a==='move'){openDecor();selDecor=i;quickMove=i;renderWorld();renderDecoBar();toast('按住這件裝飾拖到想放的位置，放開就完成',3000);return}});
+sceneEl.addEventListener('pointerdown',()=>{if(!document.getElementById('decoPop').hidden)closeDecoPop()},true);
+function gateText(st){const t=st&&st.gateTxt;if(t)return t;const n=st===state?myName():(viewing&&viewing.name)||'朋友';return `${n} 的農場`}
+function gateSignHTML(){return `<h2>農場大門的招牌</h2><p class="note">最多 8 個字，來拜訪的朋友也看得到。空白就顯示「${esc(myName())} 的農場」。</p><div class="regbox"><input id="signIn" maxlength="8" value="${esc(sheet.draft)}" aria-label="大門招牌文字" aria-describedby="signErr"><div class="err" id="signErr">${sheet.err}</div></div><button class="btn primary" data-act="gatesave">儲存</button><button class="btn" data-act="close">取消</button>`}
+function gateSignAction(b){const a=b.dataset.act;if(a==='close'){closeSheet();return}if(a!=='gatesave')return;const v=(sheet.draft||'').trim();if([...v].length>8){sheet.err='最多 8 個字';renderSheet();return}
+  if(v)state.gateTxt=v;else delete state.gateTxt;save();closeSheet();renderWorld();toast(v?'大門招牌改好了':'已改回預設的招牌')}
 // ===== 全部自交 =====
 /* 31.4 多選模式：點或滑過多株一次選起來（同一筆劃每株一次，第一株決定這一筆是選取還是取消），再按「執行」。不符合條件的略過並顯示略過幾株。 */
 var pickMode=null,picking=false,pickDir=true;const pickSet=new Set(),pickHit=new Set();
@@ -4644,12 +4758,26 @@ const PICK={self:{n:'自交',ok:p=>p&&!p.obs&&p.stage==='flower',why:'開花中'
 function openPick(kind){
   if(scene!=='farm'||viewing){toast('回到自己的農場才能使用');return}
   closeSheet();closePanel();if(shovelMode)exitShovel();if(sowMode)exitSow();if(buildMode)exitBuild();if(accelMode)exitAccel();
-  const m=curMe();buildCam={x:m.x,y:m.y};pickMode=kind;pickSet.clear();moveTo=null;renderPickBar();renderHUD();applyCtrl();updateCam();renderWorld();
-  toast(`多選模式：點或滑過想${PICK[kind].n}的植株，再按「${PICK[kind].n}」`,3000);
+  const m=curMe();buildCam={x:m.x,y:m.y};pickMode=kind;pickSet.clear();pickSkip.clear();pickHist.length=0;pickN=0;pickStroke=null;moveTo=null;renderPickBar();renderHUD();applyCtrl();updateCam();renderWorld();
+  toast(kind==='self'?'自交模式：點或滑過開花的植株就會自交':kind==='harvest'?'收成模式：點或滑過成熟的植株選起來，再按「完成」':`多選模式：點或滑過想${PICK[kind].n}的植株，再按「${PICK[kind].n}」`,3000);
 }
 function exitPick(){if(!pickMode)return;pickMode=null;picking=false;pickSet.clear();renderPickBar();renderHUD();applyCtrl();updateCam();renderWorld()}
-function pickAt(cx,cy){const el=document.elementFromPoint(cx,cy),g=el&&el.closest&&el.closest('[data-plot]');if(!g)return;const i=+g.dataset.plot;if(pickHit.has(i)||!state.plots[i])return;pickHit.add(i);if(pickDir)pickSet.add(i);else pickSet.delete(i);renderWorld();renderPickBar()}
+function pickAt(cx,cy){const el=document.elementFromPoint(cx,cy),g=el&&el.closest&&el.closest('[data-plot]');if(!g)return;const i=+g.dataset.plot;if(pickHit.has(i)||!state.plots[i])return;pickHit.add(i);
+  if(pickMode==='self'||pickMode==='harvest'){const p=state.plots[i];/* 36.8 B */
+    if(!PICK[pickMode].ok(p)){pickSkip.add(i);plotFx(i,'skip');return}
+    pickSkip.delete(i);
+    if(pickMode==='self'){const snap={i,pollen:p.pollen,stage:p.stage,prog:p.prog,watered:p.watered,fert:p.fert};pollinate(i,null);if(pickStroke)pickStroke.push(snap);else pickHist.push([snap]);pickN++;plotFx(i,'self');renderWorld();renderPickBar();return}
+    if(pickDir){if(!pickSet.has(i)){pickSet.add(i);plotFx(i,'check')}}else pickSet.delete(i);renderWorld();renderPickBar();return}
+  if(pickDir)pickSet.add(i);else pickSet.delete(i);renderWorld();renderPickBar()}
+let pickStroke=null,pickN=0;const pickHist=[],pickSkip=new Set();
+function pickSelfUndo(){const st=pickHist.pop();if(!st){toast('沒有可以復原的');return}for(const q of st.slice().reverse()){const p=state.plots[q.i];if(!p)continue;p.pollen=q.pollen;p.stage=q.stage;p.prog=q.prog;p.watered=q.watered;p.fert=q.fert;pickN--}save();renderWorld();renderPickBar();toast(`復原了 ${st.length} 株`)}
+function pickSelfAll(){const st=[];state.plots.forEach((p,i)=>{if(PICK.self.ok(p)){st.push({i,pollen:p.pollen,stage:p.stage,prog:p.prog,watered:p.watered,fert:p.fert});pollinate(i,null);pickN++;plotFx(i,'self')}});if(!st.length){toast('目前沒有開花、等待授粉的植株');return}pickHist.push(st);playAct('pollinate');save();renderWorld();renderPickBar();toast(`${st.length} 株已經自交`)}
+function pickFinish(){const kind=pickMode,sk=pickSkip.size,sel=[...pickSet].filter(i=>PICK.harvest.ok(state.plots[i])),n=pickN;
+  if(kind==='self'){exitPick();save();renderAll();toast(`${n?`自交了 ${n} 株`:'結束自交'}${sk?`，略過 ${sk} 株（不是開花中的）`:''}`);return}
+  if(kind==='harvest'){if(!sel.length){exitPick();toast(`沒有選到成熟的植株${sk?`（略過 ${sk} 株）`:''}`);return}exitPick();openHarvest(sel);if(sk)toast(`略過 ${sk} 株（不是成熟的）`);return}}
 function renderPickBar(){const el=document.getElementById('pickBar');if(!el)return;if(!pickMode){el.hidden=true;return}el.hidden=false;
+  if(pickMode==='self'){const nf=state.plots.filter(p=>PICK.self.ok(p)).length;el.innerHTML=`<div class="bbtip">點一下或用手指滑過開花的植株，就會馬上自交<br><small>拖曳空白處可以移動畫面・不是開花中的會略過</small></div><div class="bbtip"><b>已自交 ${pickN} 株</b><small>・還有 ${nf} 株開花中</small></div><div class="bbrow" style="grid-template-columns:1fr 1fr 1fr"><button data-pk="sall"${nf?'':' disabled'}>全部</button><button data-pk="sundo"${pickHist.length?'':' disabled'}>復原上一筆</button><button data-pk="fin" class="done">完成</button></div>`;return}/* 36.8 B */
+  if(pickMode==='harvest'){const sel=[...pickSet].filter(i=>PICK.harvest.ok(state.plots[i])).length;el.innerHTML=`<div class="bbtip">點一下或用手指滑過成熟的植株把它們選起來，再點一次可以取消<br><small>拖曳空白處可以移動畫面・按「完成」打開收成總表，在那裡決定取種或賣</small></div><div class="bbtip"><b>已選 ${sel} 株</b></div><div class="bbrow" style="grid-template-columns:1fr 1fr 1fr"><button data-pk="all">全部</button><button data-pk="cancel">取消</button><button data-pk="fin" class="done"${sel?'':' disabled'}>完成</button></div>`;return}
   const P=PICK[pickMode],sel=[...pickSet],ok=sel.filter(i=>P.ok(state.plots[i])).length,acc=(state.items||{}).acc||0;
   el.innerHTML=`<div class="bbtip">點一下或用手指滑過植株來選取，再點一次可以取消<br><small>拖曳空白處可以移動畫面・只有${P.why}的植株會${P.n}</small></div><div class="bbtip"><b>已選 ${sel.length} 株${sel.length&&ok<sel.length?`（${ok} 株可以${P.n}）`:''}</b>${pickMode==='accel'?`<small>・加速劑剩 ${acc} 次</small>`:''}</div><div class="bbrow" style="grid-template-columns:1fr 1fr 1fr 1fr"><button data-pk="all">全選可${P.n}的</button><button data-pk="clear"${sel.length?'':' disabled'}>清除</button><button data-pk="cancel">取消</button><button data-pk="go" class="done"${ok?'':' disabled'}>${P.n}</button></div>`}
 function pickGo(){
@@ -4662,8 +4790,8 @@ function pickGo(){
   if(kind==='harvest'){openHarvest(ok);if(skip)toast(`略過 ${skip} 株（不是成熟的）`);return}
 }
 document.getElementById('pickBar').addEventListener('click',e=>{const b=e.target.closest('[data-pk]');if(!b||!pickMode)return;const a=b.dataset.pk;
-  if(a==='cancel'){exitPick();return}if(a==='clear'){pickSet.clear();renderWorld();renderPickBar();return}
-  if(a==='all'){state.plots.forEach((q,i)=>{if(PICK[pickMode].ok(q))pickSet.add(i)});renderWorld();renderPickBar();return}
+  if(a==='cancel'){exitPick();return}if(a==='fin'){pickFinish();return}if(a==='sall'){pickSelfAll();return}if(a==='sundo'){pickSelfUndo();return}if(a==='clear'){pickSet.clear();renderWorld();renderPickBar();return}
+  if(a==='all'){state.plots.forEach((q,i)=>{if(PICK[pickMode].ok(q)){if(pickMode==='harvest'&&!pickSet.has(i))plotFx(i,'check');pickSet.add(i)}});renderWorld();renderPickBar();return}
   if(a==='go')pickGo()});
 /* 右下角「全部自交」「加速劑」先問要全部還是多選 */
 function sbChoiceHTML(){const k=sheet.sbc,nf=state.plots.filter(p=>PICK.self.ok(p)).length,na=state.plots.filter(p=>accelOk(p)).length,acc=(state.items||{}).acc||0;
@@ -4726,7 +4854,8 @@ function harvestAction(b){
   if(act==='hvdl'){const i=+b.dataset.i;playAct('harvest');deliver(i,b.dataset.o);delete hv.acts[i];save();renderAll();renderSheet();return}
   if(act!=='hvgo')return;
   {const nreg=harvestRows().filter(r=>hv.acts[r.i]&&r.reg&&!hv.reged[r.i]&&specCapped(r.ph.tier)).length;if(nreg&&!hv.warn){hv.warn=true;renderSheet();return}}
-  let ns=0,nl=0,coins=0;
+  let ns=0,nl=0,coins=0;const seeds0=seedTotal(),flyFrom=[];
+  for(const k of Object.keys(hv.acts)){const p=state.plots[+k];if(p&&!p.obs&&p.stage==='ripe'&&flyFrom.length<12){const c=plotScreen(+k);if(c)flyFrom.push({c,p})}}
   for(const [k,v] of Object.entries(hv.acts)){
     const i=+k,p=state.plots[i];if(!p||p.obs||p.stage!=='ripe')continue;
     try{
@@ -4735,6 +4864,7 @@ function harvestAction(b){
     }catch(e){logErr(e,'harvestAll')}
   }
   playAct('harvest');closeSheet();save();renderAll();
+  harvestFly(flyFrom,Math.max(0,seedTotal()-seeds0),coins);/* 36.8 C */
   toast(`收成完成：取種 ${ns} 株、賣果實 ${nl} 株${nl?`，得到 ${coins} 金幣`:''}`,3500);
 }
 
@@ -4994,7 +5124,7 @@ function openAccel(){
 function exitAccel(){if(!accelMode)return;accelMode=false;acceling=false;renderAccelBar();renderHUD();applyCtrl();updateCam();renderWorld();save();toast(accelN?`用了 ${accelN} 次加速劑`:'結束加速');accelN=0}
 function renderAccelBar(){const el=document.getElementById('accelBar');if(!el)return;if(!accelMode){el.hidden=true;return}el.hidden=false;const left=(state.items||{}).acc||0;
   el.innerHTML=`<div class="bbtip">點一下或用手指滑過幼苗、結果中的作物，每株用一次<br><small>開花等授粉的植株會略過・想對同一株再用，就再點一次・拖曳空白處可以移動畫面</small></div><div class="bbtip"><b>已用 ${accelN} 次，剩 ${left} 次</b></div><div class="bbrow" style="grid-template-columns:1fr"><button data-ac="done" class="done">完成</button></div>`}
-function accelAt(cx,cy){const el=document.elementFromPoint(cx,cy),g=el&&el.closest&&el.closest('[data-plot]');if(!g)return;const i=+g.dataset.plot;if(accelHit.has(i))return;accelHit.add(i);if(!accelOk(state.plots[i]))return;if(!((state.items||{}).acc>0)){toast('生長加速劑用完了');return}if(useAccel(i,true)){accelN++;renderWorld();renderAccelBar()}}
+function accelAt(cx,cy){const el=document.elementFromPoint(cx,cy),g=el&&el.closest&&el.closest('[data-plot]');if(!g)return;const i=+g.dataset.plot;if(accelHit.has(i))return;accelHit.add(i);if(!accelOk(state.plots[i]))return;if(!((state.items||{}).acc>0)){toast('生長加速劑用完了');return}if(useAccel(i,true)){accelN++;plotFx(i,'accel');renderWorld();renderAccelBar()}}
 document.getElementById('accelBar').addEventListener('click',e=>{const b=e.target.closest('[data-ac]');if(b&&b.dataset.ac==='done')exitAccel()});
 
 // ===== 剷除模式與垃圾桶 =====

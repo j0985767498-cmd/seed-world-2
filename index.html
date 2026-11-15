@@ -475,10 +475,12 @@ input,textarea,select{font-size:16px !important}
 .rip1{fill:none;stroke:#fff;stroke-width:2;transform-box:fill-box;transform-origin:center;animation:rip1 .75s ease-out forwards}@keyframes rip1{from{transform:scale(.35);opacity:.8}to{transform:scale(1.25);opacity:0}}
 .stn.sink{animation:stnsink .4s ease-out}@keyframes stnsink{0%{transform:translateY(0)}40%{transform:translateY(2.5px)}100%{transform:translateY(0)}}
 .qsw{animation:qsw 16s linear infinite}@keyframes qsw{to{transform:rotate(360deg)}}
+.qsr{transform-box:fill-box;transform-origin:50% 50%;animation:qsr 20s linear infinite}.qsr2{animation-duration:31s;animation-direction:reverse}@keyframes qsr{to{transform:rotate(360deg)}}
+.qsp{fill:#B8935A;animation:qsp .75s ease-in forwards}@keyframes qsp{0%{opacity:.9;transform:translate(0,0)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.4)}}
 .rspk{opacity:0;animation:rspk 7s ease-in-out infinite}@keyframes rspk{0%,82%,100%{opacity:0;transform:translateY(0)}88%{opacity:.9}96%{opacity:0;transform:translateY(-16px)}}
 .twroll{transform-box:fill-box;transform-origin:center;opacity:0;animation:twroll 20s linear infinite}@keyframes twroll{0%,80%{transform:translateX(300px) rotate(0);opacity:0}82%{opacity:1}96%{transform:translateX(0) rotate(-720deg);opacity:1}100%{transform:translateX(0) rotate(-720deg);opacity:0}}
 .fp.fpq{rx:3.4px;ry:5px;fill:#8E6C3A;opacity:.6}
-@media (prefers-reduced-motion:reduce){.qsw,.rspk,.twroll,.tgc.shk{animation:none}}
+@media (prefers-reduced-motion:reduce){.qsw,.qsr,.rspk,.twroll,.tgc.shk{animation:none}.qsp{display:none}}
 /* 56：環境小動畫（只動 transform、opacity；切到背景全部暫停；減少動態效果時不播） */
 .brth{transform-box:fill-box;transform-origin:50% 100%;animation:brth 2.6s ease-in-out infinite}@keyframes brth{50%{transform:scaleY(1.02)}}
 .blink{opacity:0;animation:blink 5s linear infinite}@keyframes blink{0%,95.5%{opacity:0}96%,98.5%{opacity:1}99%,100%{opacity:0}}
@@ -4309,12 +4311,14 @@ const FOREST_MAPS={/* 53（15o）：照 53.2 重擺；樹洞內（洞內）最�
     spawns:[[240,470],[570,480],[290,910],[560,770]],items:[[140,650],[670,670]]}
 };
 // ===== 沙漠地圖（14s，第 27 節 27.4）：6 張相連小地圖＋神殿 2 張（洞內）；素材 assets/desert/ =====
-const DESERT_IMG={barrel_cactus:[248,261],oasis:[288,300],palm:[261,300],prickly_pear:[255,300],rope_bridge:[319,265],ruins:[299,297],saguaro:[187,300],sand_arch:[311,258],sand_cliff:[312,300],sand_dune:[288,123],sand_stairs:[292,266],sandstone_rock:[300,300],signpost:[229,298],succulents:[289,238],temple:[348,300],tent:[323,240],tumbleweed:[273,251],wagon:[327,203],'../secret/seed_altar':[308,327],'../secret/seed_pedestal':[263,239]};
+const DESERT_IMG={barrel_cactus:[248,261],oasis:[288,300],palm:[261,300],prickly_pear:[255,300],rope_bridge:[319,265],ruins:[299,297],saguaro:[187,300],sand_arch:[311,258],sand_cliff:[312,300],sand_dune:[288,123],sand_stairs:[292,266],sandstone_rock:[300,300],signpost:[229,298],succulents:[289,238],temple:[348,300],tent:[323,240],tumbleweed:[273,251],wagon:[327,203],'../secret/seed_altar':[308,327],'../secret/seed_pedestal':[263,239],
+  sarcophagus:[189,220],stone_dais:[238,140],anubis:[139,200],torch:[66,180],obelisk:[146,280],canopic_jars:[83,90],hiero_wall:[210,200],treasure:[117,90]};/* 64.6（16h）：神殿的埃及擺設 */
 /* [檔名, 顯示高度, 碰撞寬, 碰撞高]：多肉不擋路；神殿、砂岩拱門的碰撞用 blocks（門口、拱門中間要留空）；吊橋、石階畫在地面層；峽谷的深溝用 chasms（程式畫，擋路） */
 const DESERT_ART={saguaro:['saguaro',120,20,12],bigsaguaro:['saguaro',150,24,14],tumbleweed:['tumbleweed',52,44,14],tent:['tent',110,120,36],
   barrel:['barrel_cactus',54,46,16],pear:['prickly_pear',70,48,16],succ:['succulents',44,0,0],wagon:['wagon',70,90,24],oasis:['oasis',130,110,36],palm:['palm',150,20,12],
   bridge:['rope_bridge',130,0,0],cliff:['sand_cliff',96,0,0],sidecliff:['sand_cliff',110,92,30],dune:['sand_dune',46,100,18],stairs:['sand_stairs',92,0,0],
-  rock:['sandstone_rock',60,56,18],ruins:['ruins',110,90,26],arch:['sand_arch',120,0,0],temple:['temple',160,0,0],sign:['signpost',78,16,8],altar:['../secret/seed_altar',160,120,40],ped:['../secret/seed_pedestal',52,34,12]};
+  rock:['sandstone_rock',60,56,18],ruins:['ruins',110,90,26],arch:['sand_arch',120,0,0],temple:['temple',160,0,0],sign:['signpost',78,16,8],altar:['../secret/seed_altar',160,120,40],ped:['../secret/seed_pedestal',52,34,12],
+  dais:['stone_dais',95,150,46],sarco:['sarcophagus',92,0,0],anubis:['anubis',100,44,14],torch:['torch',90,14,8],obelisk:['obelisk',140,48,16],jars:['canopic_jars',45,40,10],hiero:['hiero_wall',100,92,14],treasure:['treasure',45,50,12]};/* 64.6：棺材放在石台上（碰撞只算石台底部） */
 const DESERT_FLAT={bridge:1,stairs:1},DESERT_SWAY={palm:1,tumbleweed:1};
 const DESERT_MAPS={/* 53、54.4（15r）：照 53.2 重擺；峽谷改成彎曲的裂谷＋階地；神殿兩張（洞內）最後和其他洞一起改 */
   entry:{n:'沙漠入口',gx:1,gy:2,v2:1,
@@ -4379,19 +4383,24 @@ const DESERT_MAPS={/* 53、54.4（15r）：照 53.2 重擺；峽谷改成彎曲�
     meadows:[[560,880,4,50,22,0],[250,600,4,50,20,0]],
     suns:[[400,520,220,140]],
     spawns:[[220,540],[620,560],[200,1000],[580,850]],items:[[130,230]]},
-  temple1:{n:'神殿',gx:2,gy:-1,cave:1,rare:0.1,v2:1,tiles:'#B8955E',darkA:0.5,/* 51.2：石板地、柱子沿兩側牆排成兩列 */
+  temple1:{n:'神殿',gx:2,gy:-1,cave:1,rare:0.1,v2:1,tiles:'#B8955E',darkA:0.5,/* 64.6（16h）：兩側牆邊是刻著象形文字的石牆，中間夾火炬；斷柱只留一半、位置打散；走道盡頭一座方尖碑，路從旁邊繞過去 */
     exits:[{side:'s',c:400,w:120,to:'ruins'},{side:'n',c:400,w:120,to:'temple2'}],
     floor:[{rect:[120,40,680,1130],j:3}],
-    paths:[{p:[[400,1130],[400,800],[400,400],[400,30]],w:60}],
-    objs:[['ruins',196,260],['ruins',604,260,null,{fl:1}],['ruins',196,470],['ruins',604,470,null,{fl:1}],['ruins',196,680],['ruins',604,680,null,{fl:1}],['ruins',196,890],['ruins',604,890,null,{fl:1}],
-      ['rock',300,360,null,{s:0.6}],['rock',520,760,null,{s:0.7,fl:1}],['rock',290,980,null,{s:0.5}]],
-    spawns:[[600,990],[300,620],[520,560],[300,200]],items:[[180,780]]},
-  temple2:{n:'神殿深處',gx:3,gy:-1,cave:1,rare:0.15,v2:1,tiles:'#B8955E',darkA:0.5,plat:[400,340],/* 51.2：正中央三層石台，最深的植株點在台上 */
+    paths:[{p:[[400,1130],[400,820],[404,520],[372,380],[318,300],[318,196],[384,112],[400,30]],w:60}],
+    objs:[['hiero',178,262],['hiero',622,262,null,{fl:1}],['hiero',178,574],['hiero',622,574,null,{fl:1}],['hiero',178,886],['hiero',622,886,null,{fl:1}],
+      ['torch',152,420],['torch',648,420,null,{fl:1}],['torch',152,732],['torch',648,732,null,{fl:1}],['torch',152,1036],['torch',648,1036,null,{fl:1}],
+      ['obelisk',410,250],
+      ['ruins',262,470,null,{s:0.9}],['ruins',548,360,null,{fl:1}],['ruins',548,770,null,{s:0.85,fl:1}],['ruins',262,930,null,{s:0.95}],
+      ['rock',486,640,null,{s:0.5}],['rock',320,1040,null,{s:0.5,fl:1}],['jars',560,1060,null,{s:0.9}]],
+    spawns:[[590,990],[300,640],[500,560],[540,170]],items:[[230,780]]},
+  temple2:{n:'神殿深處',gx:3,gy:-1,cave:1,rare:0.15,v2:1,tiles:'#B8955E',darkA:0.5,/* 64.6（16h）：正中央是石台和黃金棺，左右各一座阿努比斯像，前面兩支火炬，角落放陶罐和寶箱 */
     exits:[{side:'s',c:400,w:120,to:'temple1'}],
     floor:[{rect:[120,150,680,1130],j:3}],
-    paths:[{p:[[400,1130],[400,800],[400,440]],w:60}],
-    objs:[['ruins',200,520],['ruins',600,520,null,{fl:1}],['ruins',200,800],['ruins',600,800,null,{fl:1}],['rock',170,250,null,{s:0.6}],['rock',630,260,null,{s:0.55,fl:1}]],
-    spawns:[[400,312],[250,650],[550,650],[300,940],[520,960]],items:[[400,212],[620,1010]]},
+    paths:[{p:[[400,1130],[400,800],[400,470]],w:60,end:'dirt'}],
+    objs:[['dais',400,430],['sarco',408,431,null,{dy:-60,ns:1,nocol:1}],['anubis',262,446],['anubis',538,446,null,{fl:1}],['torch',312,512],['torch',488,512,null,{fl:1}],
+      ['jars',176,236],['treasure',622,240],['treasure',174,1050,null,{s:0.9,fl:1}],['jars',630,1056,null,{fl:1}],['jars',214,262,null,{s:0.7,fl:1}],
+      ['ruins',200,640],['ruins',600,640,null,{fl:1}],['ruins',200,880,null,{s:0.9}],['ruins',600,880,null,{s:0.9,fl:1}]],
+    spawns:[[400,520],[250,760],[550,760],[300,990],[520,1000]],items:[[400,214],[620,960]]},
   secret:{n:'沙中遺跡',gx:2,gy:0,cave:1,v2:1,secret:1,rare:0.25,tiles:'#B8955E',darkA:0.42,ped:[400,700],/* 33：秘境。中央的砂岩祭壇 */
     exits:[{side:'s',c:400,w:120,to:'dunes'}],
     floor:[{round:[400,540,300,372]},{rib:{p:[[400,1130],[400,860]],w:180,v:0.04}}],
@@ -4632,7 +4641,7 @@ function npcExtraHTML(n){const m=mqCur(),got=(state.favGot&&state.favGot[n])||0;
    REGION_CFG[地區]：名稱、地面與洞內顏色、邊界自動排的樹與灌木、天氣、腳印。
    雪原的亂數種子、刷新點鍵值、多人頻道名稱和 14j 完全相同（vm 比對過）；還沒有地圖的地區（REGION_MAPS 沒有）照舊用無限方塊。 */
 const REGION_MAPS={snow:SNOW_MAPS,grass:GRASS_MAPS,forest:FOREST_MAPS,desert:DESERT_MAPS,marsh:MARSH_MAPS,town:TOWN_MAPS};/* town 沒有 entry，所以 regHas('town') 是 false，探索流程不會用到 */
-const REGION_ART={snow:SNOW_ART,grass:GRASS_ART,forest:FOREST_ART,desert:DESERT_ART,marsh:MARSH_ART,town:TOWN_ART},REGION_IMG={snow:SNOW_IMG,grass:GRASS_IMG,forest:FOREST_IMG,desert:DESERT_IMG,marsh:MARSH_IMG,town:TOWN_IMG},REGION_FLAT={snow:SNOW_FLAT,grass:GRASS_FLAT,forest:FOREST_FLAT,desert:DESERT_FLAT,marsh:MARSH_FLAT,town:TOWN_FLAT},REGION_SWAY={snow:SNOW_SWAY,grass:GRASS_SWAY,forest:FOREST_SWAY,desert:DESERT_SWAY,marsh:MARSH_SWAY,town:TOWN_SWAY},REGION_GLOW={snow:{glow:1,ped:0.8},grass:{glowflower:0.6,ped:0.8},forest:{glowmush:1,spirit:0.62,ped:0.8},desert:{altar:0.8,ped:0.8},marsh:{lantern:1,glowmush:1,glotus:0.5,ped:0.8},town:TOWN_GLOW};
+const REGION_ART={snow:SNOW_ART,grass:GRASS_ART,forest:FOREST_ART,desert:DESERT_ART,marsh:MARSH_ART,town:TOWN_ART},REGION_IMG={snow:SNOW_IMG,grass:GRASS_IMG,forest:FOREST_IMG,desert:DESERT_IMG,marsh:MARSH_IMG,town:TOWN_IMG},REGION_FLAT={snow:SNOW_FLAT,grass:GRASS_FLAT,forest:FOREST_FLAT,desert:DESERT_FLAT,marsh:MARSH_FLAT,town:TOWN_FLAT},REGION_SWAY={snow:SNOW_SWAY,grass:GRASS_SWAY,forest:FOREST_SWAY,desert:DESERT_SWAY,marsh:MARSH_SWAY,town:TOWN_SWAY},REGION_GLOW={snow:{glow:1,ped:0.8},grass:{glowflower:0.6,ped:0.8},forest:{glowmush:1,spirit:0.62,ped:0.8},desert:{altar:0.8,ped:0.8,torch:0.86},marsh:{lantern:1,glowmush:1,glotus:0.5,ped:0.8},town:TOWN_GLOW};
 const REGION_CFG={
   snow:{name:'雪原',ground:'#E9EFF4',outer:'#E3EAF0',spots:['#DDE6ED','#F3F7F9'],path:['#D3DDE6','#DEE7EE'],water:['#9DBCCD','#C7E0EC'],cliff:['#8D9299','#767B83','#FFFFFF'],
     edgeTree:'pine',edgeBush:'bush',weather:'snow',shadow:'rgba(70,95,120,.2)',glow:'#C8F4FF',footprints:true,
@@ -4643,7 +4652,7 @@ const REGION_CFG={
   forest:{name:'森林',ground:'#8CAA69',outer:'#809E5F',spots:['#839F61','#97B474'],path:['#A99A72','#B6A780'],water:['#6F9A92','#8FB8B0'],cliff:['#857A64','#6F6552','#8CAA69'],
     edgeTree:'pine',edgeBush:'mossy_bush',weather:'forest',shadow:'rgba(30,45,20,.25)',glow:'#BFE8FF',footprints:false,
     caveGround:'#6B5236',caveOuter:'#2E2316',caveSpots:['#614A30','#76603F'],cavePath:['#7A6142','#856C4C'],caveWall:'#4A3622',caveEdge:'#9C7E56'},
-  desert:{name:'沙漠',ground:'#DEC896',outer:'#D3BC88',spots:['#D6BF8B','#E7D4A6'],path:['#CDB37E','#D8C08E'],water:['#6F9A92','#8FB8B0'],cliff:['#C49A62','#A97F4C','#DEC896'],
+  desert:{name:'沙漠',ground:'#F0DCA4',outer:'#E6CF94',spots:['#EBD292','#F6E6B8'],path:['#CDB37E','#D8C08E'],water:['#6F9A92','#8FB8B0'],cliff:['#C49A62','#A97F4C','#F0DCA4'],/* 64.4（16h）：地面改成溫暖的金黃沙色，比沙丘本體（#FED784）淡、彩度低 */
     edgeTree:'saguaro',edgeBush:'tumbleweed',weather:'desert',shadow:'rgba(110,80,40,.22)',glow:'#FFE6A0',footprints:true,
     caveGround:'#C9A76E',caveOuter:'#5E4527',caveSpots:['#BF9C63','#D3B37C'],cavePath:['#B8955E','#C2A06A'],caveWall:'#8E6E44',caveEdge:'#E2C796'},
   marsh:{name:'濕地',dir:'wetland',ground:'#96AF78',outer:'#8AA36D',spots:['#8DA770','#A1B985'],path:['#A39A74','#B0A782'],water:['#6F9A92','#8FB8B0'],cliff:['#7E7A5E','#68654D','#96AF78'],
@@ -4725,7 +4734,7 @@ function regAmbHTML(M){if(ambOff()||M.cave)return '';const bk=M.bk,R=seededRnd(h
     (M.groves||[]).slice(0,2).forEach(([cx,cy],i)=>{s+=`<ellipse class="sndr" cx="${cx+(i?-14:12)}" cy="${cy-96}" rx="7" ry="4.5" fill="#FFFFFF" style="--h:84px;animation-delay:-${i*7.5}s"/>`})}
   return s+'</g>'}
 function regObjHTML(o,M,R){
-  const bk=M.bk,cave=M.cave,a=REGION_ART[bk][o[0]];if(!a)return '';const im=REGION_IMG[bk][a[0]];if(!im)return '';const op=o[4]&&typeof o[4]==='object'?o[4]:{},sk=op.s||1;const [iw,ih]=im,dh=a[1]*sk,w=dh*iw/ih,x=o[1],y=o[2];
+  const bk=M.bk,cave=M.cave,a=REGION_ART[bk][o[0]];if(!a)return '';const im=REGION_IMG[bk][a[0]];if(!im)return '';const op=o[4]&&typeof o[4]==='object'?o[4]:{},sk=op.s||1;const [iw,ih]=im,dh=a[1]*sk,w=dh*iw/ih,x=o[1],y=o[2]+(op.dy||0);/* dy：畫的位置上下移，前後排序仍用 o[2]（64.6：棺材疊在石台上） */
   let s=op.ns?'':`<ellipse cx="${f1(x)}" cy="${f1(y-1)}" rx="${f1(w*0.34)}" ry="${f1(Math.max(4,w*0.08))}" fill="${cave?'rgba(0,0,0,.3)':REGION_CFG[bk].shadow}"/>`;
   {const gv=(REGION_GLOW[bk]||{})[o[0]];if(gv&&!M.lightPuzzle)s+=`<circle class="glw" cx="${f1(x)}" cy="${f1(y-dh*(gv<1?gv:0.45))}" r="58" fill="url(#sglow)"/>`}
   let img=`<image href="assets/${regDir(bk)}/${a[0]}.png" x="${f1(x-w/2)}" y="${f1(y-dh)}" width="${f1(w)}" height="${sk===1?dh:f1(dh)}"/>`;
@@ -4794,8 +4803,8 @@ const REG_V2={
     shade:'#2C4626',vig:'#14301E',hi:'#A6BE88',lip:'#9EB781',lipLine:'#5E7A4A',
     terr:null,water:{edge:'#4A6656',sh:'#9EC2B8',deep:'#76A49A',glint:'#E2F2EC'},pal:[['#FFFFFF','#F6D9E6','#FBEFA8'],['#FFFFFF','#E9D7F4']]},
   desert:{tree:'saguaro',big:'bigsaguaro',hero:'palm',bush:'tumbleweed',tuft:'succ',flower:'succ',fs:0.8,rock:'rock',log:'barrel',
-    path:['#B4935C','#CBB07C','#D6BE8C','#BFA26E','#A08352'],tufts:['#B9A06A','#C4AA72','#A89062'],spots:['#D6BF8B','#E7D4A6','#D9C390'],
-    shade:'#8A6A3A',vig:'#5A3A1A',hi:'#ECD9AA',lip:'#E7D3A2',lipLine:'#B08A50',
+    path:['#B4935C','#CDB078','#D8BE86','#C2A46C','#A08352'],tufts:['#C9AE70','#D3B978','#BFA266'],spots:['#EBD292','#F6E6B8','#EFD89C'],wind:['#FBF0CC','#D9BB78'],
+    shade:'#8A6A3A',vig:'#5A3A1A',hi:'#F8EBC2',lip:'#F4E4B4',lipLine:'#C9A562',
     terr:{art:'cliff',stairs:'stairs',sa:[0.30,0.60],rock:'#F09A50',rockD:'#B36A30',shade:'#8A6030',drip:['#C4AA72','#D6BF8B']},
     water:{edge:'#4E7A70',sh:'#9ED0C6',deep:'#6AAAA0',glint:'#EAF8F2'},pal:[['#F2B8C6','#F7E68A','#FFFFFF']]},
   snow:{tree:'pine',big:'bigpine',hero:'bare',bush:'bush',tuft:null,flower:'crystals',rock:'boulder',log:'log',
@@ -4937,6 +4946,9 @@ function regGroundSVG(M){
   let s=`<defs><radialGradient id="gsh"><stop offset="0" stop-color="${V.shade}" stop-opacity=".34"/><stop offset="1" stop-color="${V.shade}" stop-opacity="0"/></radialGradient><radialGradient id="sun"><stop offset="0" stop-color="#FFF6C8" stop-opacity=".42"/><stop offset="1" stop-color="#FFF6C8" stop-opacity="0"/></radialGradient><radialGradient id="dirt"><stop offset="0" stop-color="${V.path[1]}" stop-opacity=".95"/><stop offset=".7" stop-color="${V.path[1]}" stop-opacity=".85"/><stop offset="1" stop-color="${V.path[1]}" stop-opacity="0"/></radialGradient><linearGradient id="chd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A1A10"/><stop offset=".5" stop-color="#1A100A"/><stop offset="1" stop-color="#3A2616"/></linearGradient></defs>`;
   s+=`<rect x="0" y="0" width="${W}" height="${H}" fill="${grd}"/>`;
   const sp=cave?C.caveSpots:V.spots;for(let i=0;i<16;i++){const x=40+R()*(W-80),y=60+R()*(H-80);s+=`<ellipse cx="${x|0}" cy="${y|0}" rx="${60+R()*90|0}" ry="${40+R()*50|0}" fill="${sp[Math.floor(R()*sp.length)]}" opacity=".55" transform="rotate(${(R()*50-25)|0} ${x|0} ${y|0})"/>`}
+  if(V.wind&&!cave){/* 64.4：沙漠的風紋：幾條長弧線，一亮一暗，低對比 */
+    for(let i=0;i<9;i++){const y=110+i*(H-190)/8+(R()-.5)*50,x=-60+R()*(W*0.45),len=380+R()*300,amp=(i%2?1:-1)*(14+R()*20);
+      s+=`<path d="M${x|0} ${y|0} q${len/2|0} ${amp|0} ${len|0} ${(amp*0.2)|0}" stroke="${V.wind[0]}" stroke-width="${(4+R()*3).toFixed(1)}" stroke-linecap="round" fill="none" opacity=".5"/><path d="M${(x+14)|0} ${(y+6)|0} q${len/2|0} ${amp|0} ${(len-30)|0} ${(amp*0.2)|0}" stroke="${V.wind[1]}" stroke-width="2" stroke-linecap="round" fill="none" opacity=".2"/>`}}
   if(M.tiles)s+=`<defs><pattern id="ttile" patternUnits="userSpaceOnUse" width="48" height="32"><path d="M0 0H48M0 16H48M0 0V16M24 16V32" stroke="${M.tiles}" stroke-width="1.3" fill="none"/></pattern></defs><rect x="${B.x0-20}" y="${B.y0-20}" width="${B.x1-B.x0+40}" height="${B.y1-B.y0+40}" fill="url(#ttile)" opacity=".8"/>`;
   if(M.rings){const [cx,cy,n]=M.rings;for(let i=1;i<=n;i++)s+=`<ellipse cx="${cx}" cy="${cy}" rx="${i*44}" ry="${i*36}" fill="none" stroke="${C.caveSpots[1]}" stroke-width="3" opacity=".45"/>`}
   if(M.plat){const [cx,cy]=M.plat,cs=C.caveSpots;/* 神殿深處：正中央三層石台 */
@@ -5152,7 +5164,11 @@ try{setInterval(regStandTick,500)}catch(e){}
 /* 每次重畫都要重新算的東西（畫在地面之上、物件之下） */
 function regDynHTML(M){
   let s='';const bk=M.bk,T=M.secTrig;
-  if(M.quick){for(const [k,[cx,cy,rx,ry]] of M.quick.entries()){s+=`<g pointer-events="none"><ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#C9A86C" opacity=".55"/><ellipse cx="${cx}" cy="${cy}" rx="${rx*0.92}" ry="${ry*0.9}" fill="none" stroke="#B08A50" stroke-width="2" stroke-dasharray="14 10" opacity=".7"/><g class="qsw" style="transform-origin:${cx}px ${cy}px;animation-delay:-${k*3}s"><ellipse cx="${cx}" cy="${cy}" rx="${rx*0.66}" ry="${ry*0.62}" fill="none" stroke="#A8824A" stroke-width="2" stroke-dasharray="22 16" opacity=".75"/><ellipse cx="${cx}" cy="${cy}" rx="${rx*0.36}" ry="${ry*0.34}" fill="none" stroke="#A8824A" stroke-width="2" stroke-dasharray="10 9" opacity=".8"/></g><ellipse cx="${cx}" cy="${cy}" rx="${rx*0.12}" ry="${ry*0.12}" fill="#8E6C3A" opacity=".7"/></g>`}}
+  if(M.quick){/* 64.5（16h）：流沙用 assets/common/quicksand_tile.png（中央是漩渦）。先轉、再壓扁成橢圓；橢圓遮罩邊緣約 15px 羽化融進地面；第二層放大 1.15、透明度 .4、反方向慢慢轉 */
+    s+=`<defs><radialGradient id="qsg"><stop offset="0" stop-color="#fff"/><stop offset=".72" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>`;
+    for(const [k,[cx,cy,rx,ry]] of M.quick.entries()){const r=rx*1.1,r2=r*1.15;
+      s+=`<g pointer-events="none"><mask id="qsm${k}" maskUnits="userSpaceOnUse" x="${cx-rx-2}" y="${cy-ry-2}" width="${2*rx+4}" height="${2*ry+4}"><ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#qsg)"/></mask><g mask="url(#qsm${k})"><g transform="translate(${cx} ${cy}) scale(1 ${(ry/rx).toFixed(3)})"><image class="qsr" href="assets/common/quicksand_tile.png" x="${v2f(-r)}" y="${v2f(-r)}" width="${v2f(2*r)}" height="${v2f(2*r)}" style="animation-delay:-${k*6}s"/><image class="qsr qsr2" href="assets/common/quicksand_tile.png" x="${v2f(-r2)}" y="${v2f(-r2)}" width="${v2f(2*r2)}" height="${v2f(2*r2)}" opacity=".4" style="animation-delay:-${k*4}s"/></g></g></g>`}}
+
   if(!T)return s;
   if(T.ring){const [cx,cy]=T.ring,n=Math.floor(ringT);/* 蘑菇圈：偶爾飄起一兩點微光；站著不動時蘑菇一朵一朵亮 */
     s+=`<g pointer-events="none"><circle class="rspk" cx="${cx-10}" cy="${cy-8}" r="2.2" fill="#FFF6C8"/><circle class="rspk" style="animation-delay:-3.3s" cx="${cx+12}" cy="${cy+2}" r="1.8" fill="#FFF6C8"/>`;
@@ -5300,7 +5316,12 @@ function regStep(){
   const ang=Math.atan2(dy,dx),px=-Math.sin(ang)*3.5*fpSide,py=Math.cos(ang)*3.5*fpSide;fpSide=-fpSide;fpLast={x:m.x,y:m.y};
   try{const L=document.getElementById('fxLayer');const e=document.createElementNS('http://www.w3.org/2000/svg','ellipse'),cx=(m.x+px).toFixed(1),cy=(m.y-1+py).toFixed(1);
     e.setAttribute('cx',cx);e.setAttribute('cy',cy);e.setAttribute('rx','2.4');e.setAttribute('ry','3.8');e.setAttribute('transform',`rotate(${(ang*180/Math.PI+90).toFixed(0)} ${cx} ${cy})`);e.setAttribute('class',exBiome==='desert'?(quickAt(m.x,m.y)?'fp fps fpq':'fp fps'):'fp');
-    L.appendChild(e);const fps=L.querySelectorAll('.fp');if(fps.length>36)fps[0].remove()}catch(err){}
+    L.appendChild(e);const fps=L.querySelectorAll('.fp');if(fps.length>36)fps[0].remove();
+    if(M.quick&&quickAt(m.x,m.y)&&!(typeof RMQ!=='undefined'&&RMQ.matches)){/* 64.5：腳邊的沙粒往漩渦中心流 */
+      const q=M.quick.find(([qx,qy,rx,ry])=>{const a=(m.x-qx)/rx,b=(m.y-qy)/ry;return a*a+b*b<1});
+      if(q)for(let k=0;k<3;k++){const g=document.createElementNS('http://www.w3.org/2000/svg','circle'),gx=m.x+(Math.random()-.5)*18,gy=m.y+(Math.random()-.5)*8,dd=Math.hypot(q[0]-gx,q[1]-gy)||1,st=Math.min(18,dd);
+        g.setAttribute('cx',gx.toFixed(1));g.setAttribute('cy',gy.toFixed(1));g.setAttribute('r',(1.2+Math.random()*1.2).toFixed(1));g.setAttribute('class','qsp');g.style.setProperty('--dx',((q[0]-gx)/dd*st).toFixed(1)+'px');g.style.setProperty('--dy',((q[1]-gy)/dd*st).toFixed(1)+'px');L.appendChild(g);setTimeout(()=>{try{g.remove()}catch(e){}},800)}}
+  }catch(err){}
 }
 function regFxClear(){fpLast=null;iceV=null;try{const L=document.getElementById('fxLayer');if(L)L.innerHTML=''}catch(e){}}
 let bannerT=null;

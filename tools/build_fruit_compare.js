@@ -24,7 +24,12 @@ const page=`<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><met
 .ctl{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;background:#fff;border-radius:10px;padding:8px;position:sticky;top:0;z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.08)}
 .ctl label{font-size:13px}select{font-size:13px}table{border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden}td,th{border:1px solid #E4DCCF;padding:3px;text-align:center;font-size:12px}
 th{background:#F6F1E8;font-weight:600}canvas{display:block;margin:auto}.wrap{overflow-x:auto}.note{color:#6B5A48;font-size:13px}.tiny{display:flex;flex-wrap:wrap;gap:3px;background:#fff;border-radius:10px;padding:8px}
-.tiny div{text-align:center;font-size:10px;color:#7A6A58}.grass{background:#A9CF7C}</style></head><body>
+.tiny div{text-align:center;font-size:10px;color:#7A6A58}.grass{background:#A9CF7C}
+.dyn{display:flex;flex-wrap:wrap;gap:8px;background:#fff;border-radius:10px;padding:8px}.dyn>div{text-align:center;font-size:12px;color:#5A4A38;width:104px}.stk{position:relative;margin:auto}.stk canvas,.stk svg{position:absolute;left:0;top:0}
+.dz2{opacity:0;animation:dz2 3s ease-in-out infinite}@keyframes dz2{0%,100%{opacity:0}50%{opacity:1}}
+.dz3b{opacity:0;animation:dz3b 6s linear infinite}@keyframes dz3b{0%{opacity:0}33.3%{opacity:1}66.6%{opacity:1}66.7%,100%{opacity:0}}
+.dz3c{opacity:0;animation:dz3c 6s linear infinite}@keyframes dz3c{0%,33.3%{opacity:0}66.6%{opacity:1}100%{opacity:0}}
+.still .dz2,.still .dz3b,.still .dz3c{display:none}</style></head><body>
 <h1>果實對照頁（${T.BUILD}）</h1>
 <p class="note">不放進遊戲。用遊戲實際的上色函式（素模＋程式上色，第 26 節 26.2、26.3）畫出 9 種作物 × 10 個造型。上方可以選果皮色、花紋顏色、花紋形式、結果期／成熟期與顯示大小。</p>
 <div class="ctl">
@@ -38,17 +43,39 @@ th{background:#F6F1E8;font-weight:600}canvas{display:block;margin:auto}.wrap{ove
 <label><input type="checkbox" id="fx"> 專屬特效（第 34 節：只在專屬造型那一欄，成熟期）</label>
 </div>
 <h2>9 種作物 × 10 個造型</h2><div class="wrap"><table id="tb"></table></div>
+<h2>夢幻色動態（第 48 節；番茄・圓形）</h2>
+<p class="note">和遊戲同一套疊影格的做法。完整、淡的（週期 ×1.5）、雙夢幻色（左右各跑各的）；最後兩格是「金色＋專屬造型」（表面的閃爍是顏色的、外面的光暈是造型的）和農場上的強度（70%）。</p>
+<div class="ctl" style="position:static;margin-bottom:6px"><label><input type="checkbox" id="dy" checked> 動態（取消就停在第 1 影格）</label></div>
+<div class="dyn" id="dyn"></div>
 <h2>所有果皮顏色（番茄・圓形，22px）</h2><div class="tiny" id="all"></div>
 <script>
 ${src}
 const CROPS9=${JSON.stringify(CROPS9)},CNAME=${JSON.stringify(CNAME)},SHAPES=${JSON.stringify(SHAPES)},IMG=${JSON.stringify(IMG)};
 const PB={};
 function loadAll(){return Promise.all(Object.entries(IMG).map(([k,u])=>new Promise(res=>{const im=new Image();im.onload=()=>{const cv=document.createElement('canvas');cv.width=im.naturalWidth;cv.height=im.naturalHeight;const cx=cv.getContext('2d');cx.drawImage(im,0,0);const id=cx.getImageData(0,0,cv.width,cv.height);PB[k]=fruitPrep(id.width,id.height,id.data);res()};im.onerror=res;im.src=u})))}
-function draw(name,a,ripe,size){
+function draw(name,a,ripe,size,frame,half){
   const B=PB[name];const cv=document.createElement('canvas');const H=Math.round(size*3.2/3);cv.width=size*2;cv.height=H*2;cv.style.width=size+'px';cv.style.height=H+'px';
-  if(!B)return cv;const px=fruitPaint(B,a,ripe,hashStr(name+'|'+a.skin+'|'+patKey(a.pat)+'|'+ripe),+(document.getElementById('fr')||{value:0}).value||0);
+  if(!B)return cv;const px=fruitPaint(B,a,ripe,hashStr(name+'|'+a.skin+'|'+patKey(a.pat)+'|'+ripe),frame!=null?frame:(+(document.getElementById('fr')||{value:0}).value||0),half||0);
   const t=document.createElement('canvas');t.width=B.w;t.height=B.h;const tc=t.getContext('2d');const id=tc.createImageData(B.w,B.h);id.data.set(px);tc.putImageData(id,0,0);
   const m=(FRUIT_SHAPE_MUL[name]||1)*(ripe?1:0.7),s=Math.min(cv.width/B.w,cv.height/B.h)*m,w=B.w*s,h=B.h*s;const cx=cv.getContext('2d');cx.imageSmoothingQuality='high';cx.drawImage(t,(cv.width-w)/2,(cv.height-h)/2,w,h);return cv;
+}
+/* 48：和遊戲的 fruitImgSVG 一樣把影格疊起來，用 CSS 交叉淡入淡出 */
+function anim(name,a,size,it){
+  const H=Math.round(size*3.2/3),d=document.createElement('div');d.className='stk';d.style.width=size+'px';d.style.height=H+'px';d.appendChild(draw(name,a,1,size,0));
+  const di=dreamInfo(a);if(!di)return d;const g=document.createElement('div');g.style.cssText='position:absolute;inset:0;opacity:'+(it||1);
+  const lay=(nf,per,hf,dl)=>{for(let f=1;f<nf;f++){const c=draw(name,a,1,size,f,hf);c.className=nf===2?'dz2':f===1?'dz3b':'dz3c';c.style.animationDuration=per+'s';c.style.animationDelay=dl+'s';g.appendChild(c)}};
+  if(di.dual)di.dual.forEach((s,k)=>lay(DREAM_NF[s.n],DREAM_PERIOD[s.n],s.h,-k*1.3));else lay(di.nf,di.per,0,0);
+  d.appendChild(g);return d}
+function renderDyn(){
+  const el=document.getElementById('dyn');el.innerHTML='';el.className='dyn'+(document.getElementById('dy').checked?'':' still');
+  const add=(node,t)=>{const b=document.createElement('div');b.appendChild(node);b.appendChild(document.createTextNode(t));el.appendChild(b)};
+  for(const n of SPECIAL)add(anim('tomato_b0',{level:0,sp:0,skin:n,pat:null},96),cnOf(n));
+  for(const k of ALL_SKINS.filter(k=>colParts(k).t==='l'))add(anim('tomato_b0',{level:0,sp:0,skin:k,pat:null},96),cnOf(k));
+  for(const k of ALL_SKINS.filter(k=>colParts(k).t==='d').slice(0,8))add(anim('tomato_b0',{level:0,sp:0,skin:k,pat:null},96),cnOf(k));
+  add(anim('tomato_b0',{level:0,sp:0,skin:'red',pat:{c:'gold',f:0}},96),'紅底金條紋');
+  {const a={level:0,sp:7,skin:'gold',pat:null},s=anim('tomato_ex',a,96),H=Math.round(96*3.2/3),w=document.createElement('div');w.className='stk';w.style.cssText='width:96px;height:'+H+'px;overflow:visible';
+    w.insertAdjacentHTML('beforeend','<svg viewBox="-1.5 -1.6 3 3.2" width="96" height="'+H+'" style="overflow:visible">'+tfxWrap(1,'<g></g>',true,true)+'</svg>');s.style.position='absolute';s.style.left='0';s.style.top='0';w.appendChild(s);add(w,'金色＋專屬造型')}
+  add(anim('tomato_b0',{level:0,sp:0,skin:'starry',pat:null},44,0.7),'星空（農場大小、70%）');
 }
 const shapeLabel=(c,s)=>s[0]==='b'?BASE_SHAPES[c][+s[1]]:s==='ex'?EXN[EX_OF[c]]||'專屬':SPN[+s.slice(2)];
 function opts(id,def){const e=document.getElementById(id);e.innerHTML=ALL_SKINS.map(k=>'<option value="'+k+'"'+(k===def?' selected':'')+'>'+cnOf(k)+'</option>').join('');e.onchange=render}
@@ -62,7 +89,8 @@ function render(){
     tb.appendChild(tr)}
   const all=document.getElementById('all');all.innerHTML='';for(const k of ALL_SKINS){const d=document.createElement('div');d.appendChild(draw('tomato_b0',{level:0,sp:0,skin:k,pat:null},1,22));d.appendChild(document.createTextNode(cnOf(k)));all.appendChild(d)}
 }
-loadAll().then(render);
+document.getElementById('dy').onchange=renderDyn;
+loadAll().then(()=>{render();renderDyn()});
 </script></body></html>`;
 fs.writeFileSync(path.join(__dirname,'fruit_compare.html'),page);
 console.log('ok',(page.length/1024).toFixed(0)+' KB');

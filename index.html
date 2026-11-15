@@ -449,6 +449,19 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 #ringMenu .ri{width:56px !important;height:56px !important;margin:-28px 0 0 -28px !important;flex-direction:column;gap:0;font-size:11px !important}
 #ringMenu .ri img{width:30px;height:30px;object-fit:contain;pointer-events:none}#ringMenu .ri span{pointer-events:none;line-height:1.1}
 #ringMenu .ri.off img{filter:grayscale(1);opacity:.55}
+/* 37.2（15l）：整頁擋掉雙擊放大（遊戲畫面 #scene 自己是 touch-action:none）；輸入框至少 16px，iPhone 點輸入框時才不會自動放大整頁 */
+html,body{touch-action:manipulation}
+input,textarea,select{font-size:16px !important}
+/* 37.5 冰刀刮痕、37.6 瀑布 */
+.skate{stroke:#FFFFFF;stroke-width:1.4;stroke-linecap:round;opacity:.9;animation:skateFade 20s linear forwards}
+@keyframes skateFade{to{opacity:0}}
+.wfs{animation:wfs 1s linear infinite;opacity:0}
+@keyframes wfs{0%{transform:translateY(0);opacity:0}15%{opacity:.6}80%{opacity:.5}100%{transform:translateY(78px);opacity:0}}
+.wfsp{transform-box:fill-box;transform-origin:center;animation:wfsp 1.2s ease-in-out infinite}
+@keyframes wfsp{0%,100%{transform:scale(.7);opacity:.35}50%{transform:scale(1.15);opacity:.85}}
+.wfr{transform-box:fill-box;transform-origin:center;animation:wfr 2s ease-out infinite}
+@keyframes wfr{from{transform:scale(.3);opacity:.7}to{transform:scale(1.6);opacity:0}}
+@media (prefers-reduced-motion:reduce){.wfs,.wfsp,.wfr{display:none}}
 body.joymode #sowBtn{right:22px !important;bottom:calc(254px + env(safe-area-inset-bottom,0px)) !important;width:60px;height:60px}
 #sowBar .sowinfo{display:flex;align-items:center;gap:8px;margin-bottom:4px;color:#5A3416}
 #sowBar .sowinfo svg{width:40px;height:40px;flex:none}
@@ -489,10 +502,9 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
 </div>
 <div id="iconbar" class="iconbar">
   <button id="ibMarket" data-do="market"><img class="ibimg" src="assets/icons/s/town.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l2-6h14l2 6"/><path d="M3 10c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3"/><path d="M5 13v8h14v-8"/></svg><span>城鎮</span></button>
-  <button id="ibHome" data-do="home" hidden><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>回家</span></button>
+  <button id="ibHome" data-do="home" hidden><img class="ibimg" src="assets/icons/s/home.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>回家</span></button>
   <button id="ibExplore" data-open="explore"><img class="ibimg" src="assets/icons/s/explore.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z" fill="currentColor" stroke-width="1.2"/></svg><span>探索</span></button>
   <button id="ibDecor" data-do="decor"><img class="ibimg" src="assets/icons/s/decor.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-3 2-5 5-5 8a5 5 0 0 0 10 0c0-3-2-6-5-8z"/><path d="M12 16v5M9 21h6"/></svg><span>裝飾</span></button>
-  <button id="ibBuild" data-do="build"><img class="ibimg" src="assets/icons/s/hoe.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15l9-5 9 5-9 5z"/><path d="M12 3v6M9 6h6"/></svg><span>開墾</span></button>
   <button data-open="settings"><img class="ibimg" src="assets/icons/s/settings.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span>設定</span></button>
 </div>
 <div id="joy" aria-label="移動搖桿" hidden><div id="joyKnob"></div></div>
@@ -1056,7 +1068,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-15k';
+const BUILD='2026-11-15l';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -3202,7 +3214,9 @@ async function stallAction(b){
 
 // ===== 面板與 HUD =====
 function openSheetUI(){sheetEl.classList.add('open');bd.style.display='block'}
-function openPanel(name){if(name==='bag')uiCrop='all';
+/* 37.1（15l）：打開其他頁面、切到背景時結束目前的模式（裝飾模式裡打開裝飾面板除外） */
+function exitAllModes(keepDeco){try{if(typeof closeRing==='function'&&ringOpen)closeRing();if(sowMode)exitSow();if(shovelMode){shoveling=false;exitShovel()}if(accelMode)exitAccel();if(pickMode)exitPick();if(buildMode)exitBuild();if(decoMode&&!keepDeco)exitDecor();if(typeof closeDecoPop==='function')closeDecoPop()}catch(e){}}
+function openPanel(name){exitAllModes(name==='decor');if(name==='bag')uiCrop='all';
   closeSheet();curPanel=name;
   for(const p of document.querySelectorAll('.panel'))p.hidden=p.id!=='p-'+name;
   document.getElementById('pdim').hidden=false;
@@ -3230,13 +3244,13 @@ document.querySelectorAll('.iconbar').forEach(el=>el.addEventListener('click',ic
 function renderHUD(){
   if(!state)return;
   document.getElementById('sceneName').textContent=scene==='market'?'城鎮':scene==='explore'?(regHas(exBiome)?`${REGION_CFG[exBiome].name}・${REGION_MAPS[exBiome][regMap].n}`:`探索：${BIOMES[exBiome].n}`):viewing?`${viewing.name} 的農場`:'我的農場';
-  const mb=document.getElementById('ibMarket');mb.querySelector('span').textContent=scene==='market'?'回農場':'城鎮';
+  const mb=document.getElementById('ibMarket');mb.querySelector('span').textContent=scene==='market'?'回農場':'城鎮';{const mi=mb.querySelector('img.ibimg'),f='assets/icons/s/'+(scene==='market'?'home':'town')+'.png';if(mi&&mi.getAttribute('src')!==f)mi.setAttribute('src',f)}/* 45：回農場用小屋圖示 */
   document.getElementById('ibHome').hidden=!(viewing||scene==='explore');
   const own=scene==='farm'&&!viewing;
   {const tb=document.getElementById('trayBtn');const tn=state.tray&&state.tray.cells?state.tray.cells.length:0;const th=sbtnInner('tray','育苗盤',tn);if(tb.innerHTML!==th)tb.innerHTML=th}layoutSbtns();
   setWeather(scene==='explore'?(regHas(exBiome)&&REGION_MAPS[exBiome][regMap].cave?'cave':exBiome):null);exHintUpd();
   {const sn=regIn(),mb=document.getElementById('mapBtn');if(mb&&mb.hidden===sn)mb.hidden=!sn;if(!sn){const mp=document.getElementById('mapPanel');if(mp&&!mp.hidden)mp.hidden=true;regFxClear()}}
-  document.getElementById('ibDecor').hidden=!own;document.getElementById('ibBuild').hidden=!own;
+  document.getElementById('ibDecor').hidden=!own;/* 39.1：開墾只在圓盤 */
 }
 
 
@@ -3804,7 +3818,7 @@ function giveWild(bk,rare){
    原圖 assets/icons/<名稱>.png（300px 高）；遊戲用縮小版 assets/icons/s/（96px 高，約 12–25 KB）。
    SVG 裡（野外道具、市集攤位、道具列表）先確認圖片載好才用（iconReady），還沒載好照舊的向量畫法；HTML 的 <img>（按鈕、標題）直接用。 */
 const ICON_DIM={accel:[68,96],coin:[93,96],mutagen:[80,96],seed_bag:[80,96],specimen:[62,96],tray:[149,96],
-  town:[88,96],explore:[72,96],codex:[79,96],quest:[71,96],friends:[98,96],decor:[59,96],settings:[96,96],map:[104,96],harvest:[79,96],self:[61,96],cross:[84,96],shovel:[41,96],hoe:[56,96],dress:[75,96],genes:[76,96],trophy:[90,96]};/* 45（15k） */
+  town:[84,96],home:[88,96],explore:[72,96],codex:[79,96],quest:[71,96],friends:[98,96],decor:[59,96],settings:[96,96],map:[104,96],harvest:[79,96],self:[61,96],cross:[84,96],shovel:[41,96],hoe:[56,96],dress:[75,96],genes:[76,96],trophy:[90,96]};/* 45（15k） */
 const ICON_OK={};
 const iconSrc=n=>'assets/icons/s/'+n+'.png?v='+BUILD;
 function iconReady(n){const v=ICON_OK[n];if(v!==undefined)return v===1;ICON_OK[n]=0;
@@ -3944,9 +3958,9 @@ const SNOW_MAPS={
     spawns:[[300,820],[520,760],[690,250],[200,450]],items:[[720,560]]},
   lake:{n:'結冰湖',gx:2,gy:2,
     exits:[{side:'w',c:820,w:120,to:'entry'},{side:'n',c:600,w:120,to:'cabin'},{side:'e',c:300,w:120,to:'cave_front'}],
-    lakes:[[330,560,150,110],[610,560,150,110],[470,560,80,60]],walks:[[440,470,500,650]],
+    lakes:[[330,560,150,110],[610,560,150,110],[470,560,80,60]],ice:1,/* 37.5（15l）：結冰湖可以走，木橋拿掉 */
     paths:[[[-10,820],[470,780],[470,460],[600,300],[600,-10]],[[600,300],[810,300]],[[110,820],[110,350],[600,300]]],
-    objs:[['bridge',470,655],['pine',250,900],['pine',700,960],['pine',120,1000],['bush',330,250],['bush',160,190],['crystals',720,790],['boulder',560,890]],
+    objs:[['pine',250,900],['pine',700,960],['pine',120,1000],['bush',330,250],['bush',160,190],['crystals',720,790],['boulder',560,890]],
     spawns:[[300,800],[640,760],[260,320],[560,240],[110,560]],items:[[700,410],[170,1030]]},
   cave_front:{n:'冰洞前',gx:3,gy:2,
     exits:[{side:'w',c:820,w:120,to:'lake'},{door:[380,282,420,332],arrive:[400,368],to:'cave1'}],
@@ -4186,7 +4200,7 @@ const MARSH_MAPS={
     exits:[{side:'s',c:400,w:120,to:'frog'},{door:[392,392,438,416],arrive:[415,470],to:'tunnel'}],
     lakes:[[620,720,100,55]],
     blocks:[[355,390,390,442],[440,390,505,442],[355,330,505,390]],
-    paths:[[[400,1110],[410,700],[415,470]]],
+    paths:[],/* 37.4（15l）：使用者要求拿掉這張的小路 */
     objs:[['tunnel',430,440],['swamp',150,350],['swamp',650,330],['swamp',180,800],['swamp',690,890],['mossylog',600,560],['boulder',250,600],['stump',520,960],
       ['cattails',540,740],['cattails',710,700],['lily',600,720],['elephant',300,960],['elephant',560,420]],
     spawns:[[200,500],[660,460],[250,950],[600,880]],items:[[120,1000]]},
@@ -4358,17 +4372,30 @@ function regPrep(bk,id){
       objs.push(['sign',p[0],p[1],nm]);blk.push([p[0]-8,p[1]-8,p[0]+8,p[1]+2])}
   }
   for(const r of M.chasms||[])blk.push(r.slice());/* 深溝（14s，峽谷）：整塊擋路，吊橋放 walks */
-  M.blk=blk;M.wlk=M.walks||[];M.lk=M.lakes||[];M.rv=M.rivers||[];
+  M.blk=blk;M.wlk=M.walks||[];M.lk=M.ice?[]:(M.lakes||[]);M.iceLk=M.ice?(M.lakes||[]):[];M.rv=M.rivers||[];/* 37.5：冰湖不擋路 */
   const SR=seededRnd(hashStr('sway|'+regPfx(bk)+id));
   M._objs=objs.filter(o=>!FLAT[o[0]]).map(o=>({y:o[2],h:regObjHTML(o,M,SR)})).sort((a,b)=>a.y-b.y);
   M._ys=M._objs.map(o=>o.y);M._ground=regGroundHTML(M,objs.filter(o=>FLAT[o[0]]));M._p=1;return M;
 }
+/* 37.6（15l）：瀑布動畫。圖不換，只在水流範圍（assets/forest/waterfall_mask.png）裡疊往下流的白色細條；
+   落點 3–4 團水花放大縮小；下方池塘 2 圈漣漪。只用 transform、opacity；設了減少動態效果就不畫。 */
+let WF_N=0;
+function wfFxHTML(x0,y0,w,h){
+  try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return ''}catch(e){}
+  const id='wfm'+(++WF_N),X=f=>f1(x0+w*f),Y=f=>f1(y0+h*f);let s=`<mask id="${id}" maskUnits="userSpaceOnUse" x="${f1(x0)}" y="${f1(y0)}" width="${f1(w)}" height="${f1(h)}"><image href="assets/forest/waterfall_mask.png" x="${f1(x0)}" y="${f1(y0)}" width="${f1(w)}" height="${f1(h)}"/></mask><g mask="url(#${id})" pointer-events="none">`;
+  const cols=[0.40,0.45,0.50,0.55,0.60,0.64,0.47,0.58];
+  cols.forEach((c,k)=>{const d=(0.8+((k*37)%7)/10).toFixed(2),dl=(-(k*0.29)%1.4).toFixed(2);s+=`<rect class="wfs" x="${X(c)}" y="${Y(0.18)}" width="${(w*0.012+(k%3)*0.6).toFixed(1)}" height="${f1(h*0.16)}" rx="1.5" fill="#FFFFFF" style="animation-duration:${d}s;animation-delay:${dl}s"/>`});
+  s+=`</g><g pointer-events="none">`;
+  [[0.47,0.75,6],[0.56,0.77,7],[0.64,0.74,5],[0.52,0.8,5]].forEach(([fx,fy,r],k)=>{s+=`<circle class="wfsp" cx="${X(fx)}" cy="${Y(fy)}" r="${r}" fill="#FFFFFF" style="animation-delay:${(-k*0.3).toFixed(1)}s"/>`});
+  for(let k=0;k<2;k++)s+=`<ellipse class="wfr" cx="${X(0.55)}" cy="${f1(y0+h+22)}" rx="34" ry="10" fill="none" stroke="#FFFFFF" stroke-width="2" style="animation-delay:${-k}s"/>`;
+  return s+'</g>'}
 function regObjHTML(o,M,R){
   const bk=M.bk,cave=M.cave,a=REGION_ART[bk][o[0]];if(!a)return '';const im=REGION_IMG[bk][a[0]];if(!im)return '';const [iw,ih]=im,dh=a[1],w=dh*iw/ih,x=o[1],y=o[2];
   let s=`<ellipse cx="${f1(x)}" cy="${f1(y-1)}" rx="${f1(w*0.34)}" ry="${f1(Math.max(4,w*0.08))}" fill="${cave?'rgba(0,0,0,.3)':REGION_CFG[bk].shadow}"/>`;
   {const gv=(REGION_GLOW[bk]||{})[o[0]];if(gv)s+=`<circle class="glw" cx="${f1(x)}" cy="${f1(y-dh*(gv<1?gv:0.45))}" r="58" fill="url(#sglow)"/>`}
   const img=`<image href="assets/${regDir(bk)}/${a[0]}.png" x="${f1(x-w/2)}" y="${f1(y-dh)}" width="${f1(w)}" height="${dh}"/>`;
   s+=(REGION_SWAY[bk]||{})[o[0]]&&R()<0.4?`<g class="sway" style="animation-delay:-${(R()*5).toFixed(1)}s">${img}</g>`:img;
+  if(o[0]==='waterfall'&&bk==='forest')s+=wfFxHTML(x-w/2,y-dh,w,dh);/* 37.6 */
   if(o[0]==='sign'&&o[3])s+=`<text x="${f1(x)}" y="${f1(y-dh*0.64)}" text-anchor="middle" font-size="${o[3].length>4?8.5:11}" font-weight="700" fill="#4A3020" font-family="Noto Sans TC,sans-serif">${esc(o[3])}</text>`;
   return s;
 }
@@ -4382,6 +4409,13 @@ function regGroundHTML(M,flat){
   for(const [cx,cy,rx,ry] of M.lk)s+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx+9}" ry="${ry+8}" fill="${C.water[0]}"/>`;
   for(const [cx,cy,rx,ry] of M.lk)s+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${C.water[1]}"/>`;
   for(const [cx,cy,rx,ry] of M.lk)s+=`<path d="M${cx-rx*0.5} ${cy-ry*0.35} q${rx*0.25} ${-ry*0.12} ${rx*0.5} 0 M${cx-rx*0.2} ${cy+ry*0.3} l${rx*0.3} ${-ry*0.1}" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".7" fill="none"/>`;
+  if(M.iceLk&&M.iceLk.length){/* 37.5：冰面（程式畫：外圈積雪、淡藍白冰面、亮面、白色裂紋；之後有 ice_tile 素材再換） */
+    for(const [cx,cy,rx,ry] of M.iceLk)s+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx+11}" ry="${ry+10}" fill="#FFFFFF" stroke="#C9DCE6" stroke-width="2"/>`;
+    for(const [cx,cy,rx,ry] of M.iceLk)s+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#D3EAF4"/>`;
+    for(const [cx,cy,rx,ry] of M.iceLk)s+=`<ellipse cx="${cx-rx*0.15}" cy="${cy-ry*0.2}" rx="${rx*0.62}" ry="${ry*0.45}" fill="#E9F6FB" opacity=".8"/>`;
+    for(const [cx,cy,rx,ry] of M.iceLk){const R=seededRnd(hashStr('ice|'+cx+','+cy));for(let k=0;k<2;k++){let x=cx+(R()-0.5)*rx,y=cy+(R()-0.5)*ry,d=`M${x.toFixed(0)} ${y.toFixed(0)}`;const a=R()*Math.PI*2;for(let j=0;j<4;j++){x+=Math.cos(a+(R()-0.5)*1.2)*rx*0.16;y+=Math.sin(a+(R()-0.5)*1.2)*ry*0.16;d+=` L${x.toFixed(0)} ${y.toFixed(0)}`}
+      s+=`<path d="${d}" fill="none" stroke="#A9C8D8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/><path d="${d}" fill="none" stroke="#FFFFFF" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>`}}
+  }
   for(const [pts,wd] of M.rv){const pp=pts.map(q=>q.join(',')).join(' ');s+=`<polyline points="${pp}" fill="none" stroke="${C.water[0]}" stroke-width="${wd+16}" stroke-linecap="round" stroke-linejoin="round"/><polyline points="${pp}" fill="none" stroke="${C.water[1]}" stroke-width="${wd}" stroke-linecap="round" stroke-linejoin="round"/>`}
   if(M.cliff){const [y0,y1,g0,g1]=M.cliff;for(const [a,b] of [[-20,g0],[g1,W+20]])s+=`<rect x="${a}" y="${y0}" width="${b-a}" height="${y1-y0}" fill="${C.cliff[0]}" stroke="#4A3020" stroke-width="2"/><rect x="${a}" y="${y0+(y1-y0)*0.55}" width="${b-a}" height="${(y1-y0)*0.45}" fill="${C.cliff[1]}"/><rect x="${a}" y="${y0-8}" width="${b-a}" height="14" rx="7" fill="${C.cliff[2]}" stroke="#4A3020" stroke-width="1.5"/>`}
   for(const [x0,y0,x1,y1] of M.chasms||[]){const h=y1-y0;/* 深溝（14s）：遠側岩壁＋暗色溝底＋兩側溝緣 */
@@ -4474,15 +4508,22 @@ function regCam(){
 }
 const regGatePos=()=>{const M=regCur(),e=M.exits.find(x=>x.to==='farm');return e?[e.c,M.B.y1-10]:[-1e5,-1e5]};
 let fpLast=null,fpSide=1;
+/* 37.5：在冰面上 */
+let iceV=null;
+function iceAt(x,y){if(!regIn())return false;const M=regCur();if(!M||!M.iceLk)return false;for(const [cx,cy,rx,ry] of M.iceLk){const a=(x-cx)/(rx-4),b=(y-cy)/(ry-4);if(a*a+b*b<1)return true}return false}
 function regStep(){
   const M=regCur();if(M.cave||!REGION_CFG[exBiome].footprints)return;const m=curMe();if(!fpLast){fpLast={x:m.x,y:m.y};return}
   const dx=m.x-fpLast.x,dy=m.y-fpLast.y,d=Math.hypot(dx,dy);if(d<16)return;
+  if(iceAt(m.x,m.y)){const x0=fpLast.x,y0=fpLast.y;fpLast={x:m.x,y:m.y};/* 37.5：冰面上留冰刀刮痕（最多 60 條，20 秒淡去） */
+    try{const L=document.getElementById('fxLayer'),e=document.createElementNS('http://www.w3.org/2000/svg','line'),j=(Math.random()-0.5)*3;
+      e.setAttribute('x1',x0.toFixed(1));e.setAttribute('y1',(y0-1+j).toFixed(1));e.setAttribute('x2',m.x.toFixed(1));e.setAttribute('y2',(m.y-1+j).toFixed(1));e.setAttribute('class','skate');L.appendChild(e);
+      const all=L.querySelectorAll('.skate');if(all.length>60)all[0].remove()}catch(err){}return}
   const ang=Math.atan2(dy,dx),px=-Math.sin(ang)*3.5*fpSide,py=Math.cos(ang)*3.5*fpSide;fpSide=-fpSide;fpLast={x:m.x,y:m.y};
   try{const L=document.getElementById('fxLayer');const e=document.createElementNS('http://www.w3.org/2000/svg','ellipse'),cx=(m.x+px).toFixed(1),cy=(m.y-1+py).toFixed(1);
     e.setAttribute('cx',cx);e.setAttribute('cy',cy);e.setAttribute('rx','2.4');e.setAttribute('ry','3.8');e.setAttribute('transform',`rotate(${(ang*180/Math.PI+90).toFixed(0)} ${cx} ${cy})`);e.setAttribute('class',exBiome==='desert'?'fp fps':'fp');
-    L.appendChild(e);while(L.childNodes.length>36)L.removeChild(L.firstChild)}catch(err){}
+    L.appendChild(e);const fps=L.querySelectorAll('.fp');if(fps.length>36)fps[0].remove()}catch(err){}
 }
-function regFxClear(){fpLast=null;try{const L=document.getElementById('fxLayer');if(L)L.innerHTML=''}catch(e){}}
+function regFxClear(){fpLast=null;iceV=null;try{const L=document.getElementById('fxLayer');if(L)L.innerHTML=''}catch(e){}}
 let bannerT=null;
 function regBanner(t){try{const el=document.getElementById('mapBanner');el.textContent=t;el.hidden=true;void el.offsetWidth;el.hidden=false;clearTimeout(bannerT);bannerT=setTimeout(()=>{el.hidden=true},2500)}catch(e){}}
 function regMapSVG(bk){
@@ -4800,7 +4841,9 @@ const ptrEnd=e=>{
   if(accelMode){if(acceling){acceling=false;save()}tapStart=null;return}
   if(buildPainting){buildPainting=false;if(cultPave&&cultPave.length)cultHist.push({t:'pave',idx:cultPave});cultPave=null;save();renderBuildBar();tapStart=null;return}
   if(pickMode){picking=false;if(pickStroke&&pickStroke.length){pickHist.push(pickStroke);playAct('pollinate');save();renderPickBar()}pickStroke=null;tapStart=null;return}
-  if(tapStart&&!tapStart.moved&&e.type==='pointerup'){const ts=tapStart;tapStart=null;handleTap({target:ts.target},e.clientX,e.clientY);return}
+  if(tapStart&&!tapStart.moved&&e.type==='pointerup'){const ts=tapStart;tapStart=null;
+    if(emptyTapTarget(ts.target)){const now=Date.now();if(lastEmptyTap&&now-lastEmptyTap.t<350&&Math.hypot(e.clientX-lastEmptyTap.x,e.clientY-lastEmptyTap.y)<40){lastEmptyTap=null;viewReset();return}lastEmptyTap={t:now,x:e.clientX,y:e.clientY}}else lastEmptyTap=null;/* 37.2 */
+    handleTap({target:ts.target},e.clientX,e.clientY);return}
   tapStart=null;
 };
 sceneEl.addEventListener('pointerup',ptrEnd);sceneEl.addEventListener('pointercancel',ptrEnd);
@@ -4809,8 +4852,19 @@ const ptrDrop=e=>{if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(p
 sceneEl.addEventListener('lostpointercapture',ptrDrop);
 window.addEventListener('pointerup',ptrDrop);window.addEventListener('pointercancel',ptrDrop);
 function resetPtrs(){ptrs.clear();pinch=null;tapStart=null;panStart=null;dragPlot=null}
-document.addEventListener('visibilitychange',()=>{if(document.hidden){resetPtrs();try{cultEnd();if(shovelMode){shoveling=false;exitShovel()}if(buildMode)exitBuild();if(decoMode)exitDecor()}catch(e){}}});/* 39：切到背景自動結束剷除、開墾 */
+document.addEventListener('visibilitychange',()=>{if(document.hidden){resetPtrs();try{cultEnd()}catch(e){}exitAllModes(false)}});/* 37.1、39：切到背景自動結束所有模式 */
 window.addEventListener('blur',resetPtrs);window.addEventListener('pagehide',resetPtrs);
+/* 37.2（15l）：手指數量以 touch 事件為準。全部放開就清掉手指紀錄（有時收不到某一根手指的 pointerup）；只剩一根就結束縮放；
+   新的觸控只有一根手指、紀錄卻有兩根以上 → 只留最新那根 */
+sceneEl.addEventListener('touchstart',e=>{if(e.touches.length===1&&ptrs.size>1){const last=[...ptrs.entries()].pop();ptrs.clear();ptrs.set(last[0],last[1]);pinch=null}},{passive:true});
+for(const t of ['touchend','touchcancel'])sceneEl.addEventListener(t,e=>{if(e.touches.length<2)pinch=null;if(!e.touches.length&&ptrs.size){ptrs.clear();tapStart=null}},{passive:true});
+/* 網頁本身被放大（雙擊、輸入框）時，重新設定 viewport 讓它回到 1 */
+function resetPageZoom(){try{const m=document.querySelector('meta[name=viewport]');if(!m)return;const c=m.getAttribute('content');m.setAttribute('content',c.replace('maximum-scale=1','maximum-scale=1.0001'));setTimeout(()=>m.setAttribute('content',c),60)}catch(e){}}
+try{if(window.visualViewport)visualViewport.addEventListener('resize',()=>{if(visualViewport.scale>1.02&&!document.activeElement.matches('input,textarea,select'))resetPageZoom()})}catch(e){}
+/* 雙擊空白處：回到預設視角 */
+let lastEmptyTap=null;
+function emptyTapTarget(t){return !(t&&t.closest&&t.closest('[data-plot],[data-decor],[data-stall],[data-bld],[data-npc],[data-wp],[data-item]'))}
+function viewReset(){setZoom(1);resetPageZoom();if(typeof buildCam!=='undefined'&&(buildMode||shovelMode||sowMode||accelMode||decoMode||pickMode)){const m=curMe();buildCam={x:m.x,y:m.y}}updateCam();toast('回到預設視角',1500)}
 // iPhone Safari 會忽略禁止縮放的設定：攔截網頁本身的縮放手勢，雙指只縮放遊戲畫面
 for(const t of ['gesturestart','gesturechange','gestureend'])document.addEventListener(t,e=>e.preventDefault(),{passive:false});
 document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false});
@@ -5047,7 +5101,7 @@ function traySow(lotId,mx){
   const free=trayFree();if(free<=0){toast('育苗盤滿了，先移植或丟掉一些幼苗');return}
   const n=Math.min(free,lc(l));if(!n){toast('這包沒有種子了');return}
   let si=t.srcs.findIndex(s=>s.id===l.id);
-  if(si<0){t.srcs.push({id:l.id,lid:l.lid,crop:l.crop,name:l.name,m:clone(l.m),f:clone(l.f||l.m),cross:!!l.cross,par:l.par||[],gpar:l.gpar||[],wide:!!l.wide,rel:!!l.rel,gen:l.gen});si=t.srcs.length-1}
+  if(si<0){t.srcs.push({id:l.id,lid:l.lid,crop:l.crop,name:l.name,source:l.source,germ:l.germ,m:clone(l.m),f:clone(l.f||l.m),cross:!!l.cross,par:l.par||[],gpar:l.gpar||[],wide:!!l.wide,rel:!!l.rel,gen:l.gen});si=t.srcs.length-1}
   const it=state.items||(state.items={});if(mx&&!(it.mut>0))mx=false;if(mx)it.mut--;
   const gk=g=>JSON.stringify(g.sp);/* 14l：顏色突變當代就看得到，只標看不出來的特殊造型突變 */
   let ok=0;
@@ -5059,6 +5113,18 @@ function traySow(lotId,mx){
   toast(`撒了 ${n} 顆，${ok} 顆發芽${n-ok?`，${n-ok} 顆沒有發芽`:''}${mx?`（用了 1 瓶誘變劑，剩 ${it.mut} 瓶）`:''}`);
 }
 function mutChk(nm,act){return `<label class="mutchk"><input type="checkbox" data-act="${act}"${sheet.trayMut?' checked':''}><span><b>使用誘變劑（剩 ${nm} 瓶）</b><span class="meta">只用在這次撒下的種子：更容易突變，發芽率 ×0.7</span></span></label>`}
+/* 37.3（15l）：育苗盤裡的幼苗退回原本那包種子（同一個 id，數量加回去）；那包已經用完就用同一個 id 恢復成一包。
+   育苗盤裡只有已經發芽的幼苗（撒種時就判定過），所以退回的都是發芽的，不能退回重撒來重抽發芽率。 */
+function trayFindLot(id){const l=state.lots.find(x=>x.id===id);if(l)return l;for(const c of vaultCabs())for(const x of c.lots||[])if(x.id===id)return x;return null}
+function trayReturn(){
+  const t=trayObj(),sel=t.cells.filter(c=>c.sel);if(!sel.length){toast('先點選想退回的幼苗');return}
+  let n=0,made=0;const by=new Map();for(const c of sel){if(!by.has(c.s))by.set(c.s,[]);by.get(c.s).push(c)}
+  for(const [si,cs] of by){const src=t.srcs[si];if(!src)continue;let l=trayFindLot(src.id);
+    if(!l){const ph=phen(src.m,src.crop);l={id:src.id,lid:src.lid,crop:src.crop,name:src.name,source:src.source||'育苗盤退回',m:clone(src.m),f:clone(src.f||src.m),seeds:[],germ:src.germ!=null?src.germ:GERM[ph.tier]*(src.wide?0.5:1),gen:src.gen,par:src.par||[],gpar:src.gpar||[],wide:!!src.wide,rel:!!src.rel};if(src.cross)l.cross=true;state.lots.push(l);made++}
+    if(l.zs)unzipLot(l);if(!l.seeds){l.seeds=Array.from({length:l.count||0},()=>child(l.m,l.f).g);delete l.count}
+    for(const c of cs){l.seeds.push(c.g);n++}}
+  t.cells=t.cells.filter(c=>!c.sel);trayPrune();ensureSlots();save();renderAll();renderSheet();
+  toast(`${n} 株退回種子袋${made?`（${made} 包已經用完，恢復成原本那包）`:''}`,3000)}
 function trayPrune(){const t=trayObj(),used=[...new Set(t.cells.map(c=>c.s))].sort((a,b)=>a-b),map={};t.srcs=used.map((s,k)=>{map[s]=k;return t.srcs[s]});t.cells.forEach(c=>c.s=map[c.s])}
 /* 31.3：移植選位置。按「移植選取的 N 株」後進入連續播種模式（sowTray），點或滑過空田一株一株種下；
    幼苗已經發芽，不再判定發芽率；沒種完的留在育苗盤（離開時才整理 srcs，復原才對得上）。 */
@@ -5096,6 +5162,7 @@ function trayHTML(){
     h+=`</div></div>`;
   }
   h+=`<button class="btn primary" data-act="trayplant"${nSel?'':' disabled'}>移植選取的 ${nSel} 株（點空地種下，空地 ${nEmpty} 塊）</button>`;
+  h+=`<button class="btn" data-act="trayret"${nSel?'':' disabled'}>選取的 ${nSel} 株退回種子袋</button>`;/* 37.3 */
   h+=`<div class="row2"><button class="btn" data-act="traydrop"${t.cells.length-nSel?'':' disabled'}>丟掉沒選的</button><button class="btn" data-act="traynew">選新的種子</button></div>`;
   h+=`<button class="btn warn" data-act="trayclear">${sheet.confirm?'再按一次，清空育苗盤':'清空育苗盤'}</button><button class="btn" data-act="close">關閉</button>`;
   return h;
@@ -5111,6 +5178,7 @@ function trayAction(b){
   if(a==='traycell'){const c=t.cells[+b.dataset.k];if(c){c.sel=!c.sel;renderSheet()}return}
   if(a==='traygrp'){const ks=b.dataset.k.split(',').map(Number),all=ks.every(k=>t.cells[k]&&t.cells[k].sel);ks.forEach(k=>{if(t.cells[k])t.cells[k].sel=!all});renderSheet();return}
   if(a==='trayplant'){trayPlant();return}
+  if(a==='trayret'){trayReturn();return}
   if(a==='traydrop'){trayDiscard('unsel');return}
   if(a==='trayclear'){if(!sheet.confirm){sheet.confirm=true;renderSheet();return}sheet.confirm=false;trayDiscard('all');return}
 }
@@ -5389,13 +5457,17 @@ function walkLoop(t){
   const mv=Math.hypot(vx,vy)>0.12&&state&&!curPanel;
   if(mv){
     const m=curMe(),{W,H}=scene==='market'?WORLD.market:WORLD.farm,len=Math.max(1,Math.hypot(vx,vy));
-    if(scene==='explore'){const ddx=vx/len*Math.min(1,len)*160*dt,ddy=vy/len*Math.min(1,len)*130*dt;if(regHas(exBiome))regMove(m,ddx,ddy);else{m.x+=ddx;m.y+=ddy}}
+    if(scene==='explore'){const ik=iceAt(m.x,m.y)?1.6:1,ddx=vx/len*Math.min(1,len)*160*dt*ik,ddy=vy/len*Math.min(1,len)*130*dt*ik;if(regHas(exBiome)){regMove(m,ddx,ddy);iceV=ik>1&&dt>0?{x:ddx/dt,y:ddy/dt,s:0.25}:null}else{m.x+=ddx;m.y+=ddy}}/* 37.5：冰面上 ×1.6 */
     else if(scene==='market')townMove(m,vx/len*Math.min(1,len)*160*dt,vy/len*Math.min(1,len)*130*dt);
     else{m.x=clamp(m.x+vx/len*Math.min(1,len)*160*dt,24,W-24);m.y=clamp(m.y+vy/len*Math.min(1,len)*130*dt,74,H-26)}
     if(moveTo){const mm=curMe();if(mm._lx!=null&&Math.hypot(mm.x-mm._lx,mm.y-mm._ly)<0.01){const fn=moveTo.then,mt=moveTo;moveTo=null;if(fn){if((regIn()||scene==='market')&&Math.hypot(mm.x-mt.x,mm.y-mt.y)>60)toast('前面被擋住了，換條路走過去吧');else setTimeout(fn,0)}}mm._lx=mm.x;mm._ly=mm.y}
     if(Math.hypot(vx,vy)>0.15){meFace=dirIdx(vx,vy);meDir=faceFlip(meFace)?-1:1}walkPh+=dt*12;updateMe();updateCam();pushPos(false);refreshAct();if(regIn())regStep();
     raf=requestAnimationFrame(walkLoop);
-  }else{raf=null;walkPh=0;if(state){updateMe();pushPos(true);if(scene==='farm'&&!viewing)save()}}
+  }else if(iceV&&scene==='explore'&&state&&!curPanel&&regIn()){/* 37.5：放開手指後在冰上再滑 0.25 秒、慢慢停下；撞到東西就停 */
+    const m=curMe(),f=Math.max(0,iceV.s/0.25),ox=m.x,oy=m.y;regMove(m,iceV.x*f*dt,iceV.y*f*dt);iceV.s-=dt;
+    if(iceV.s<=0||(Math.abs(m.x-ox)<0.01&&Math.abs(m.y-oy)<0.01)||!iceAt(m.x,m.y))iceV=null;
+    walkPh+=dt*6;updateMe();updateCam();pushPos(false);regStep();raf=requestAnimationFrame(walkLoop);
+  }else{raf=null;walkPh=0;iceV=null;if(state){updateMe();pushPos(true);if(scene==='farm'&&!viewing)save()}}
   if(arrive&&moveTo){const fn=moveTo.then;moveTo=null;if(fn)fn()}
 }
 

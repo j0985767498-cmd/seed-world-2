@@ -34,7 +34,7 @@ for(const [id,M0] of Object.entries(MS)){const M=T.regPrep(bk,id);maxX=Math.max(
   for(const [x,y] of M.items)ov+=`<path d="M${x} ${y-18} L${x+14} ${y} L${x} ${y+18} L${x-14} ${y}Z" fill="#F2C230" stroke="#7A5A00" stroke-width="3"/>`;
   const objs=M._objs.map(o=>o.h).join('');
   cards+=`<div class="card" style="grid-column:${M0.gx};grid-row:${M0.gy+oy+1}"><b>${M0.n}</b>${M0.cave?'（洞內）':''}<small> ${id}・植株 ${M.spawns.length}・道具 ${M.items.length}</small>
-  <svg viewBox="-20 -20 ${M.W+40} ${M.H+40}" width="260">${fix(M._ground)}${objs.replace(/href="assets\//g,'href="../assets/')}<g class="ov">${un}${ov}</g></svg></div>`;
+  <svg viewBox="-20 -20 ${M.W+40} ${M.H+40}" width="260">${fix(M._ground)}${objs.replace(/href="assets\//g,'href="../assets/')}${M.cave?'':fix(M._top||'')}<g class="ov">${un}${ov}</g></svg></div>`;
 }
 /* 實際比例：入口那張圖的一角＋角色＋野生植株 */
 const E=T.regPrep(bk,'entry'),pl=T.regPlants(bk,'entry',day);let scale='';

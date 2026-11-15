@@ -1011,7 +1011,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-15c';
+const BUILD='2026-11-15d';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -3400,7 +3400,7 @@ function plotMove(i){
 let decorCat='標示';
 function renderDecorPanel(){
   document.getElementById('decorCats').innerHTML=DECOR_CATS.map(c=>`<button class="fchip" data-dc2="${c}" aria-pressed="${c===decorCat}">${c}</button>`).join('');
-  document.getElementById('decorItems').innerHTML=DECOR.filter(d=>d.cat===decorCat).map(d=>{let vb='-30 -50 60 60';if(d.img){const [,h,iw,ih]=d.img,w=h*iw/ih,z=Math.max(w,h)*1.08;vb=`${(-z/2).toFixed(1)} ${(-z*0.97).toFixed(1)} ${z.toFixed(1)} ${z.toFixed(1)}`}return `<button class="ditem" data-item="${d.k}"><svg viewBox="${vb}" width="52" height="52" aria-hidden="true">${d.f(0,0,'')}</svg><span>${d.n}${d.p?`<br><small>${d.p} 金幣</small>`:''}</span></button>`}).join('');/* 15c：圖片縮圖、價格 */
+  document.getElementById('decorItems').innerHTML=DECOR.filter(d=>d.cat===decorCat).map(d=>{let vb='-30 -50 60 60';if(d.img){const [,h,iw,ih]=d.img,w=h*iw/ih,z=Math.max(w,h)*1.08;vb=`${(-z/2).toFixed(1)} ${(-z*0.97).toFixed(1)} ${z.toFixed(1)} ${z.toFixed(1)}`}return `<button class="ditem" data-item="${d.k}"><svg viewBox="${vb}" width="52" height="52" aria-hidden="true">${d.f(0,0,'')}</svg><span>${d.n}${decoStoreN(d.k)?`<br><small>倉庫 ${decoStoreN(d.k)}</small>`:d.p?`<br><small>${d.p} 金幣</small>`:''}</span></button>`}).join('');/* 15c：圖片縮圖、價格；36.7 倉庫數量 */
 }
 document.getElementById('p-decor').addEventListener('click',e=>{
   const c=e.target.closest('[data-dc2]');if(c){decorCat=c.dataset.dc2;renderDecorPanel();return}
@@ -3408,11 +3408,12 @@ document.getElementById('p-decor').addEventListener('click',e=>{
   if(scene!=='farm'||viewing){toast('只能在自己的農場佈置');return}
   if(!decoMode)openDecor();if(!decoMode)return;
   if(state.decor.length>=400){toast('裝飾最多 400 個');return}
-  const t=it.dataset.item,n=DECOR_MAP[t].n,p=decoFree(t,buildCam.x,buildCam.y-20,false),pr=DECOR_MAP[t].p||0;
-  if(!p){toast('畫面中央附近沒有空位，移動一下畫面再放');return}
-  if(pr&&state.coins<pr){toast(`「${n}」要 ${pr} 金幣，金幣不夠`);return}
-  if(pr){state.coins-=pr;renderCoins()}/* 15c：新裝飾收費 */
-  state.decor.push({t,x:p[0],y:p[1]});selDecor=state.decor.length-1;decoPaint=decoGrid(t)?t:null;
+  const t=it.dataset.item,n=DECOR_MAP[t].n,pr=DECOR_MAP[t].p||0;
+  if(recallMode)stopRecall();
+  if(!decoStoreN(t)&&pr&&state.coins<pr){toast(`「${n}」要 ${pr} 金幣，金幣不夠`);return}
+  /* 36.7：選好就進入連續放置，點或滑過空地一直放同一種 */
+  selDecor=null;decoPaint=t;closePanel();renderWorld();renderDecoBar();toast(`點或滑過空地放「${n}」，按「停止放置」結束`,3000);return;
+  state.decor.push({t,x:0,y:0});selDecor=state.decor.length-1;decoPaint=decoGrid(t)?t:null;
   save();closePanel();renderWorld();renderDecoBar();
   toast(decoPaint?`放好「${n}」了，用手指滑過去可以連續鋪設`:`放好「${n}」了，按住可以拖到想放的位置`,3500);
   if(isSign(t))openSign(selDecor);
@@ -3421,6 +3422,29 @@ const inYard=p=>p.x>=40&&p.x<=WORLD.farm.W-40&&p.y>=110&&p.y<=WORLD.farm.H-60;
 const isSign=t=>t==='sign'||t==='signS';
 function renderDecorEdit(){const el=document.getElementById('decorEdit');if(el)el.hidden=true;renderDecoBar()}
 // ===== 裝飾模式（14h）：拖曳擺放；圍籬、地面對齊格線並可滑動連續鋪設 =====
+/* ===== 36.7（15d）：「收回」工具（拆田地＋收裝飾）與裝飾倉庫 =====
+   點或滑過就收回（同一筆劃每個東西一次，滑快不跳格）：空田拆掉（免費、不退費，36.1）；有植株的田略過；裝飾放回倉庫 state.decoStore（之後免費再放，收費裝飾不退錢也不重複收）。
+   最上面的東西先收（地面類裝飾在下面，所以同一格先收上面的物件）。「復原」還原上一筆劃。 */
+let recallMode=false,recalling=false,recallN=0,recallSkip=0,recallStroke=null;const recallHit=new Set(),recallHist=[];
+function decoStoreN(t){return ((state&&state.decoStore)||{})[t]||0}
+/* 拿一個裝飾來放：倉庫有就從倉庫拿（免費），沒有就照價格扣錢；金幣不夠回傳 false */
+function decoTake(t){const st=state.decoStore||(state.decoStore={});if(st[t]>0){st[t]--;if(!st[t])delete st[t];return true}const pr=(DECOR_MAP[t]||{}).p||0;if(pr){if(state.coins<pr)return false;state.coins-=pr;renderCoins()}return true}
+function decoStorePut(t){const st=state.decoStore||(state.decoStore={});st[t]=(st[t]||0)+1}
+function startRecall(){recallMode=true;recalling=false;recallN=0;recallSkip=0;recallHist.length=0;selDecor=null;decoPaint=null}
+function stopRecall(){if(!recallMode)return;recallMode=false;recalling=false;if(recallN||recallSkip)save();const m=recallSkip?`；略過 ${recallSkip} 格有植株`:'';if(recallN||recallSkip)toast(`已收回 ${recallN} 個${m}`,3500);recallN=0;recallSkip=0;recallHist.length=0}
+function recallAt(cx,cy){
+  const el=document.elementFromPoint(cx,cy);if(!el||!el.closest)return;
+  const dg=el.closest('[data-decor]');
+  if(dg){const d=state.decor[+dg.dataset.decor];if(!d||recallHit.has(d))return;recallHit.add(d);const i=state.decor.indexOf(d);if(i<0)return;state.decor.splice(i,1);decoStorePut(d.t);recallStroke.push({k:'d',d,i});recallN++;renderWorld();renderRecallBars();return}
+  const g=el.closest('[data-plot]');if(!g)return;const i=+g.dataset.plot,key='p'+i;if(recallHit.has(key))return;recallHit.add(key);
+  if(state.plots[i]){recallSkip++;renderRecallBars();return}
+  const pos=state.plotPos[i];if(!pos)return;state.plotPos[i]=null;recallStroke.push({k:'p',i,pos});recallN++;renderWorld();renderRecallBars();
+}
+function recallUndo(){const st=recallHist.pop();if(!st){toast('沒有可以復原的');return}
+  for(let k=st.length-1;k>=0;k--){const a=st[k];if(a.k==='d'){state.decor.splice(Math.min(a.i,state.decor.length),0,a.d);const s2=state.decoStore||{};if(s2[a.d.t]>0){s2[a.d.t]--;if(!s2[a.d.t])delete s2[a.d.t]}}else if(!state.plotPos[a.i])state.plotPos[a.i]=a.pos;recallN--}
+  save();renderWorld();renderRecallBars();toast('已復原上一筆')}
+const recallTip=()=>`<div class="bbtip">點一下或用手指滑過就收回：空的田地拆掉（不退費）、裝飾放回倉庫（之後可以免費再放）；有作物的田會略過<br><b>已收回 ${recallN} 個</b>${recallSkip?`　<small>略過 ${recallSkip} 格有植株</small>`:''}<br><small>拖曳空白處可以移動畫面</small></div>`;
+function renderRecallBars(){if(buildMode==='recall')renderBuildBar();if(decoMode)renderDecoBar()}
 var decoMode=false;let decoDrag=null,decoPaint=null,decoPainting=false;const decoPainted=new Set();
 /* 格線 [x 間距, y 間距, 菱形交錯]：圍籬寬 44 → 一排 44 一格；地面菱形 44×24 → 22×12 交錯排列剛好拼滿 */
 const DECO_GRID={'圍籬':[44,12,0],'地面':[22,12,1]};
@@ -3448,26 +3472,30 @@ function openDecor(){
   toast('裝飾模式：按「新增」放裝飾，按住裝飾可以拖曳',3000);
 }
 function decoCancel(){decoPainting=false;if(decoDrag){const d=state.decor[decoDrag.i];if(d&&decoDrag.on&&decoDrag.bad){d.x=decoDrag.fx;d.y=decoDrag.fy}decoDrag=null}}
-function exitDecor(){if(!decoMode)return;decoCancel();decoMode=false;decoPaint=null;selDecor=null;renderDecoBar();renderHUD();applyCtrl();updateCam();renderWorld();save()}
+function exitDecor(){if(!decoMode)return;decoCancel();if(recallMode)stopRecall();decoMode=false;decoPaint=null;selDecor=null;renderDecoBar();renderHUD();applyCtrl();updateCam();renderWorld();save()}
 function renderDecoBar(){
   const el=document.getElementById('decoBar');if(!el)return;if(!decoMode){el.hidden=true;return}el.hidden=false;
   const d=selDecor!=null?state.decor[selDecor]:null;let top;
-  if(decoPaint){const it=DECOR_MAP[decoPaint];top=`<div class="bbtip"><b>鋪設中：${it?it.n:''}</b><br><small>用手指滑過想鋪的地方，會自動對齊・要移動畫面或拖曳裝飾，先按「停止鋪設」</small></div><div class="bbrow" style="grid-template-columns:1fr"><button data-dk="stop">停止鋪設</button></div>`}
+  if(recallMode){el.innerHTML=recallTip()+`<div class="bbrow" style="grid-template-columns:1fr 1fr"><button data-dk="rundo">復原</button><button data-dk="rdone" class="done">結束收回</button></div>`;return}/* 36.7 */
+  if(decoPaint){const it=DECOR_MAP[decoPaint],n=decoStoreN(decoPaint),pr=(it&&it.p)||0;top=`<div class="bbtip"><b>放置中：${it?it.n:''}</b>　<small>${n?`倉庫還有 ${n} 個（免費）`:pr?`每個 ${pr} 金幣`:'免費'}</small><br><small>點或用手指滑過空地就一直放${decoGrid(decoPaint)?'，會自動對齊':''}・要移動畫面或拖曳裝飾，先按「停止放置」</small></div><div class="bbrow" style="grid-template-columns:1fr"><button data-dk="stop">停止放置</button></div>`}
   else if(d){const it=DECOR_MAP[d.t],sg=isSign(d.t);top=`<div class="bbtip"><b>${it?it.n:'裝飾'}</b>　<small>按住可以拖曳移動</small></div><div class="bbrow" style="grid-template-columns:repeat(${sg?4:3},1fr)">${sg?'<button data-dk="text">改文字</button>':''}<button data-dk="del">收起</button><button data-dk="dup">再放一個</button><button data-dk="unsel">取消選取</button></div>${decoGrid(d.t)?'<div class="bbrow" style="grid-template-columns:1fr;margin-top:6px"><button data-dk="paint">用手指滑動連續鋪設</button></div>':''}`}
   else top=`<div class="bbtip">按「新增」選裝飾；按住已放的裝飾可以拖曳，點一下可以選取<br><small>拖曳空白處可以移動畫面・紅色表示不能放，放開會彈回原位</small></div>`;
-  el.innerHTML=top+`<div class="bbrow" style="grid-template-columns:1fr 1fr;margin-top:6px"><button data-dk="add">新增</button><button data-dk="done" class="done">完成</button></div>`;
+  el.innerHTML=top+`<div class="bbrow" style="grid-template-columns:1fr 1fr 1fr;margin-top:6px"><button data-dk="add">新增</button><button data-dk="recall">收回</button><button data-dk="done" class="done">完成</button></div>`;
 }
 document.getElementById('decoBar').addEventListener('click',e=>{
   const b=e.target.closest('[data-dk]');if(!b||!decoMode)return;const a=b.dataset.dk;
   if(a==='done'){exitDecor();toast('結束裝飾');return}
   if(a==='add'){openPanel('decor');return}
+  if(a==='recall'){startRecall();renderWorld();renderDecoBar();toast('收回模式：點或滑過裝飾、空田就收回',2500);return}
+  if(a==='rundo'){recallUndo();return}
+  if(a==='rdone'){stopRecall();renderWorld();renderDecoBar();return}
   if(a==='stop'){decoPaint=null;renderDecoBar();return}
   const d=selDecor!=null?state.decor[selDecor]:null;if(!d)return;
   if(a==='text')return openSign(selDecor);
   if(a==='paint'){decoPaint=d.t;renderDecoBar();toast('用手指滑過想鋪的地方',2500);return}
-  if(a==='del'){state.decor.splice(selDecor,1);selDecor=null;save();toast('已收起')}
+  if(a==='del'){decoStorePut(d.t);state.decor.splice(selDecor,1);selDecor=null;save();toast('已收起，放回裝飾倉庫')}
   if(a==='unsel')selDecor=null;
-  if(a==='dup'){if(state.decor.length>=400){toast('裝飾最多 400 個');return}const p=decoFree(d.t,d.x,d.y,true);if(!p){toast('旁邊沒有空位了');return}const pr=(DECOR_MAP[d.t]||{}).p||0;if(pr&&state.coins<pr){toast(`要 ${pr} 金幣，金幣不夠`);return}if(pr){state.coins-=pr;renderCoins()}const nd={t:d.t,x:p[0],y:p[1]};if(d.txt)nd.txt=d.txt;state.decor.push(nd);selDecor=state.decor.length-1;save()}
+  if(a==='dup'){if(state.decor.length>=400){toast('裝飾最多 400 個');return}const p=decoFree(d.t,d.x,d.y,true);if(!p){toast('旁邊沒有空位了');return}if(!decoTake(d.t)){toast(`要 ${(DECOR_MAP[d.t]||{}).p} 金幣，金幣不夠`);return}const nd={t:d.t,x:p[0],y:p[1]};if(d.txt)nd.txt=d.txt;state.decor.push(nd);selDecor=state.decor.length-1;save()}
   renderWorld();renderDecoBar();
 });
 function decoPaintAt(cx,cy){
@@ -3475,8 +3503,9 @@ function decoPaintAt(cx,cy){
   if(decoPainted.has(k))return;decoPainted.add(k);
   if(decoErr(x,y)||decoOcc(decoPaint,x,y,-1))return;
   if(state.decor.length>=400){toast('裝飾最多 400 個');return}
-  {const pr=(DECOR_MAP[decoPaint]||{}).p||0;if(pr){if(state.coins<pr){toast(`每格 ${pr} 金幣，金幣不夠`);return}state.coins-=pr;renderCoins()}}
-  state.decor.push({t:decoPaint,x,y});renderWorld();
+  if(!decoGrid(decoPaint)){const it=DECOR_MAP[decoPaint],w=it&&it.img?it.img[1]*it.img[2]/it.img[3]:40,gap=Math.max(22,w*0.8);if(state.decor.some(o=>{const q=DECOR_MAP[o.t];return q&&!q.flat&&Math.hypot(o.x-x,(o.y-y)*1.4)<gap}))return}/* 36.7：非圍籬、地面類保持最小間距 */
+  if(!decoTake(decoPaint)){toast(`金幣不夠，停止放置（每個 ${(DECOR_MAP[decoPaint]||{}).p} 金幣）`);decoPaint=null;decoPainting=false;renderDecoBar();return}
+  state.decor.push({t:decoPaint,x,y});renderWorld();renderDecoBar();
 }
 function decoDragTo(cx,cy){
   const dd=decoDrag,d=state.decor[dd.i];if(!d)return;const w=screenToWorld(cx,cy),[x,y]=decoSnap(d.t,w.x+dd.ox,w.y+dd.oy);
@@ -4442,7 +4471,7 @@ document.getElementById('fertBtn').onclick=()=>{if(!state||viewing||scene!=='far
 document.getElementById('accelBtn').onclick=()=>{if(!state||viewing||scene!=='farm')return;closeSheet();if(curPanel)closePanel();sheet={sbc:'accel'};renderSheet();openSheetUI()};
 document.getElementById('shovelBtn').onclick=openShovel;
 document.getElementById('shovelBar').addEventListener('click',e=>{const b=e.target.closest('[data-sv]');if(!b)return;if(b.dataset.sv==='done'){exitShovel();toast(shovelN?'剷除完成':'結束剷除');return}if(b.dataset.sv==='trash'){sheet={trash:true,confirm:false};renderSheet();openSheetUI()}});
-document.getElementById('buildBar').addEventListener('click',e=>{const b=e.target.closest('[data-bm]');if(!b)return;if(b.dataset.bm==='done'){exitBuild();toast('結束建設');return}if(b.dataset.bm==='trash'){sheet={trash:true,confirm:false};renderSheet();openSheetUI();return}buildMode=b.dataset.bm;shovelMode=buildMode==='shovel';shoveling=false;renderBuildBar()});
+document.getElementById('buildBar').addEventListener('click',e=>{const b=e.target.closest('[data-bm]');if(!b)return;if(b.dataset.bm==='done'){exitBuild();toast('結束建設');return}if(b.dataset.bm==='trash'){sheet={trash:true,confirm:false};renderSheet();openSheetUI();return}if(b.dataset.bm==='rundo'){recallUndo();return}if(recallMode&&b.dataset.bm!=='recall')stopRecall();buildMode=b.dataset.bm;shovelMode=buildMode==='shovel';shoveling=false;if(buildMode==='recall'&&!recallMode)startRecall();renderBuildBar()});
 
 // ===== 移動 =====
 let raf=null,lastF=0;
@@ -4510,13 +4539,14 @@ function handleTap(e,cx,cy){
 const ptrs=new Map();let pinch=null,tapStart=null,dragPlot=null,panStart=null;
 sceneEl.addEventListener('pointerdown',e=>{
   if(!state)return;
-  if(e.isPrimary){ptrs.clear();pinch=null;panStart=null;dragPlot=null;sowing=false;shoveling=false;acceling=false;buildPainting=false;picking=false;if(decoMode)decoCancel()}/* 新的觸控開始：清掉殘留的手指紀錄 */
+  if(e.isPrimary){ptrs.clear();pinch=null;panStart=null;dragPlot=null;sowing=false;shoveling=false;acceling=false;buildPainting=false;picking=false;recalling=false;if(decoMode)decoCancel()}/* 新的觸控開始：清掉殘留的手指紀錄 */
   ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
   try{sceneEl.setPointerCapture(e.pointerId)}catch(_){}
   if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:zoom};tapStart=null;dragPlot=null;panStart=null;if(decoMode)decoCancel();return}
   tapStart={x:e.clientX,y:e.clientY,t:Date.now(),target:e.target,moved:false};
   if(sowMode){const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&!state.plots[+g.dataset.plot]){sowing=true;sowAt(e.clientX,e.clientY)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
   if(shovelMode){const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&state.plots[+g.dataset.plot]){shoveling=true;shovelAt(e.clientX,e.clientY)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
+  if(recallMode){const tg=e.target.closest&&(e.target.closest('[data-decor]')||e.target.closest('[data-plot]'));if(tg){recallHit.clear();recallStroke=[];recalling=true;strokeLast=null;strokeTo(e.clientX,e.clientY,recallAt)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}/* 36.7 */
   if(decoMode){decoPainted.clear();
     if(decoPaint){decoPainting=true;decoPaintAt(e.clientX,e.clientY);return}
     const dg=e.target.closest&&e.target.closest('[data-decor]');
@@ -4537,6 +4567,7 @@ sceneEl.addEventListener('pointermove',e=>{
   if(pinch&&ptrs.size>=2){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);if(pinch.d>0)setZoom(pinch.z*d/pinch.d);return}
   if(tapStart&&Math.hypot(e.clientX-tapStart.x,e.clientY-tapStart.y)>10)tapStart.moved=true;
   if(shoveling){shovelAt(e.clientX,e.clientY);return}
+  if(recalling){strokeTo(e.clientX,e.clientY,recallAt);return}
   if(acceling){accelAt(e.clientX,e.clientY);return}
   if(buildPainting){strokeTo(e.clientX,e.clientY,buildAt);return}
   if(picking){strokeTo(e.clientX,e.clientY,pickAt);return}
@@ -4549,6 +4580,7 @@ sceneEl.addEventListener('pointermove',e=>{
 const ptrEnd=e=>{
   if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);
   if(pinch){if(ptrs.size<2)pinch=null;return}
+  if(recallMode){if(recalling){recalling=false;if(recallStroke&&recallStroke.length)recallHist.push(recallStroke);recallStroke=null;save()}panStart=null;tapStart=null;return}
   if(decoMode){panStart=null;
     if(decoPainting){decoPainting=false;save();tapStart=null;return}
     if(decoDrag){decoDrop();tapStart=null;return}
@@ -4980,13 +5012,14 @@ function openBuild(){
   if(pickMode)exitPick();
   const m=curMe();buildCam={x:m.x,y:m.y};buildMode='build';buildN=0;buildMsg='';buildBad=null;closePanel();renderBuildBar();renderHUD();updateCam();renderWorld();applyCtrl();
 }
-function exitBuild(){if(shovelMode){shovelMode=false;shoveling=false;if(shovelN)save();shovelN=0}buildMode=null;dragPlot=null;renderBuildBar();renderHUD();updateCam();renderWorld();applyCtrl()}
+function exitBuild(){if(recallMode)stopRecall();if(shovelMode){shovelMode=false;shoveling=false;if(shovelN)save();shovelN=0}buildMode=null;dragPlot=null;renderBuildBar();renderHUD();updateCam();renderWorld();applyCtrl()}
 function renderBuildBar(){
   const el=document.getElementById('buildBar');if(!el)return;
   if(!buildMode){el.hidden=true;return}
   el.hidden=false;
-  const tip={build:`點一下或用手指滑過空地，一格一格鋪成田（每格 ${PLOT_COST} 金幣）<br><b>已鋪 ${buildN} 格，剩 ${Math.max(0,PLOT_MAX-plotCount(state))} 格可鋪</b>${buildMsg?`<br><span style="color:var(--danger)">${buildMsg}</span>`:''}`,del:`點空的農地拆除（退回 ${PLOT_REFUND} 金幣）`,move:'按住農地拖到新位置，植物會一起搬',shovel:'點一下或用手指滑過植株就能剷除，土地會保留'}[buildMode];
-  el.innerHTML=`<div class="bbtip">${tip}<br><small>${buildMode==='build'?'從已經有的田開始拖曳可以移動畫面':'拖曳空白處可以移動畫面'}・${buildMode==='shovel'?'剷錯了可以到垃圾桶找回':`農地 ${plotCount(state)}／${PLOT_MAX}`}</small></div>${buildMode==='shovel'?`<div class="bbrow" style="grid-template-columns:1fr;margin-bottom:6px"><button data-bm="trash">垃圾桶（${(state.trash||[]).length}）</button></div>`:''}<div class="bbrow" style="grid-template-columns:repeat(5,1fr)">${[['build','建設'],['del','拆除'],['move','移動'],['shovel','剷除']].map(([k,n])=>`<button data-bm="${k}" aria-pressed="${buildMode===k}">${n}</button>`).join('')}<button data-bm="done" class="done">完成</button></div>`;
+  const tip={build:`點一下或用手指滑過空地，一格一格鋪成田（每格 ${PLOT_COST} 金幣）<br><b>已鋪 ${buildN} 格，剩 ${Math.max(0,PLOT_MAX-plotCount(state))} 格可鋪</b>${buildMsg?`<br><span style="color:var(--danger)">${buildMsg}</span>`:''}`,recall:'',move:'按住農地拖到新位置，植物會一起搬',shovel:'點一下或用手指滑過植株就能剷除，土地會保留'}[buildMode];
+  if(buildMode==='recall'){el.innerHTML=recallTip()+`<div class="bbrow" style="grid-template-columns:1fr;margin-bottom:6px"><button data-bm="rundo">復原</button></div><div class="bbrow" style="grid-template-columns:repeat(5,1fr)">${[['build','建設'],['recall','收回'],['move','移動'],['shovel','剷除']].map(([k,n])=>`<button data-bm="${k}" aria-pressed="${buildMode===k}">${n}</button>`).join('')}<button data-bm="done" class="done">完成</button></div>`;return}/* 36.7 */
+  el.innerHTML=`<div class="bbtip">${tip}<br><small>${buildMode==='build'?'從已經有的田開始拖曳可以移動畫面':'拖曳空白處可以移動畫面'}・${buildMode==='shovel'?'剷錯了可以到垃圾桶找回':`農地 ${plotCount(state)}／${PLOT_MAX}`}</small></div>${buildMode==='shovel'?`<div class="bbrow" style="grid-template-columns:1fr;margin-bottom:6px"><button data-bm="trash">垃圾桶（${(state.trash||[]).length}）</button></div>`:''}<div class="bbrow" style="grid-template-columns:repeat(5,1fr)">${[['build','建設'],['recall','收回'],['move','移動'],['shovel','剷除']].map(([k,n])=>`<button data-bm="${k}" aria-pressed="${buildMode===k}">${n}</button>`).join('')}<button data-bm="done" class="done">完成</button></div>`;
 }
 /* 31.1：建設模式的點或滑過鋪設（照裝飾地面鋪設的寫法）；同一筆劃每格只處理一次，不合法的位置閃紅不鋪 */
 let buildPainting=false,buildN=0,buildMsg='',buildBad=null;const buildHit=new Set();

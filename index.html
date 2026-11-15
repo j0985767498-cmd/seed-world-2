@@ -405,8 +405,8 @@ body.joymode #fertBtn{right:110px !important;bottom:calc(22px + env(safe-area-in
 #shovelBar .bbtip,#sowBar .bbtip,#accelBar .bbtip,#decoBar .bbtip,#pickBar .bbtip{font-size:14px;color:#5A3416;text-align:center;margin-bottom:6px;line-height:1.35}#shovelBar small,#sowBar small,#accelBar small,#decoBar small,#pickBar small{color:#8A6A4A}
 #shovelBar .bbrow,#sowBar .bbrow,#accelBar .bbrow,#decoBar .bbrow,#pickBar .bbrow{display:grid;gap:6px}#shovelBar button,#sowBar button,#accelBar button,#decoBar button,#pickBar button{min-height:46px;border-radius:12px;border:2px solid #5A3416;background:#fff;color:#5A3416;font:inherit;font-weight:700;font-size:15px}#shovelBar button.done,#sowBar button.done,#accelBar button.done,#decoBar button.done,#pickBar button.done{background:#E8A33C;color:#fff;border-color:#8A5A12}
 #sowBtn{right:236px !important;bottom:calc(18px + env(safe-area-inset-bottom,0px)) !important;width:66px;height:66px}
-#ringBtn{position:fixed;right:14px;bottom:calc(18px + env(safe-area-inset-bottom,0px));width:66px;height:66px;border-radius:50%;border:2.5px solid #2F5A22;background:radial-gradient(circle at 35% 30%,#8FD06E,#4E9A3A);color:#fff;box-shadow:0 4px 0 #2F5A22;z-index:62;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;font:inherit;font-weight:700;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-#ringBtn[hidden]{display:none}#ringBtn .sbi{height:24px;width:auto;margin-bottom:1px;pointer-events:none}#ringBtn .sbt{font-size:12px;line-height:1.1;text-shadow:0 1px 0 #2F5A22;pointer-events:none}#ringBtn.held{transform:scale(.94)}
+#ringBtn{position:fixed;right:14px;bottom:calc(18px + env(safe-area-inset-bottom,0px));width:66px;height:66px;border-radius:50%;border:2.5px solid #2F5A22;background:radial-gradient(circle at 35% 30%,#8FD06E,#4E9A3A);color:#fff;box-shadow:0 4px 0 #2F5A22;z-index:11;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;font:inherit;font-weight:700;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#ringBtn[hidden]{display:none}#ringBtn.on{z-index:62}#ringBtn .sbi{height:24px;width:auto;margin-bottom:1px;pointer-events:none}#ringBtn .sbt{font-size:12px;line-height:1.1;text-shadow:0 1px 0 #2F5A22;pointer-events:none}#ringBtn.held{transform:scale(.94)}
 #ringBtn .sbn{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:#D9473A;color:#fff;font-size:12px;line-height:20px;text-align:center;padding:0 4px;border:2px solid #fff}
 #ringOv{position:fixed;inset:0;z-index:60;background:rgba(40,30,15,.18)}#ringOv[hidden],#ringMenu[hidden],#decoPop[hidden]{display:none}
 #ringMenu{position:fixed;inset:0;z-index:61;pointer-events:none}
@@ -1048,7 +1048,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-15h';
+const BUILD='2026-11-15i';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2596,7 +2596,7 @@ function avHairBack(H){
 }
 function avatarSVG(av,flip,pose){
   av=avNorm(av);
-  if(avUseV3(av))return av3SVG(av,flip,pose);/* 14n 新畫法 */
+  if(avUseV3(av))return avV3SVG(av,flip,pose);/* 14n 新畫法；35 起含頭與帽子 */
   if(typeof pose!=='object'||pose===null)pose={bob:pose||0};
   const view=pose.view||'front',isSide=view==='side',isBack=view==='back'||view==='bq',fq=view==='fq',bq=view==='bq',fxo=fq?2.2:bq?-1.6:0;
   const sk=SKINS[av.skin]||SKINS[0],hc=HAIRC[av.hairC]||HAIRC[0],hcd=shade(hc,-0.32),hcl=shade(hc,0.28);
@@ -2822,8 +2822,89 @@ function avatarSVG(av,flip,pose){
    照參考圖 assets/ref/v3/ 描出來的預設造型（短髮＋條紋T＋吊帶褲＋靴子），5 個方向＋走路，顏色照色票換。
    資料與畫法在 assets/char/av3.js（tools/build_char_v3.py 產生），進遊戲時另外載入；載入前或失敗時用舊畫法。
    其他造型（還沒有參考圖的髮型、衣服等）照舊畫法。 */
-function avUseV3(av){return typeof av3SVG==='function'&&typeof AV3!=='undefined'&&av.hair===0&&av.hat===0&&av.top===2&&av.shoe===0&&av.acc===0&&av.face===0&&!av.blush&&!(av.fab&&av.fab.top)}
-(function(){try{const s=document.createElement('script');s.src='assets/char/av3.js?v='+BUILD;s.async=true;s.onload=()=>{try{if(typeof renderChars==='function')renderChars()}catch(e){}};document.head.appendChild(s)}catch(e){}})();
+function avUseV3(av){return typeof av3Parts==='function'&&typeof AV3!=='undefined'}/* 35.1（15i）：所有造型都用新畫法 */
+(function(){try{for(const f of ['av3','av3_heads']){const s=document.createElement('script');s.src='assets/char/'+f+'.js?v='+BUILD;s.async=true;s.onload=()=>{try{if(typeof renderChars==='function')renderChars();if(sheet&&sheet.avatar)renderSheet()}catch(e){}};document.head.appendChild(s)}}catch(e){}})();
+/* ===== 35（15i）：所有造型都用新畫法。頭（16 種髮型）與帽子（草帽、毛帽、鴨舌帽、耳罩）是點陣圖：
+   tools/build_char_heads.py 從 assets/char/v3_hair_*、v3_hat_* 切出來，位置資料在 assets/char/av3_heads.js（AV3H）。
+   畫的順序：頭（領口以上）→ 腿、手、身體（身體在領口以上的部分剪掉）→ 領口以下的頭髮（長髮、馬尾）→ 帽子。
+   髮色、帽子顏色在 canvas 上換（26.2 的明暗公式），結果存成 blob 網址快取。圖還沒載好時先用原本的亂翹短髮。 */
+/* 舊髮型編號 → 16 種新畫法（沒有素材的對到最接近的） */
+const AVH_MAP={0:0,1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:19,11:1,12:2,13:13,14:14,15:15,16:8,17:3,18:2,19:19,20:20,21:21,22:19};
+const AVH_LIST=[0,1,2,3,4,5,6,7,8,9,13,14,15,19,20,21];/* 打扮頁顯示的 16 種 */
+const AVH_HATS=[0,1,2,3,10];/* 有新畫法的帽子；其他「新款製作中」，暫時不畫 */
+const avHid=h=>AVH_MAP[h]!=null?AVH_MAP[h]:0;
+const AVH_IMG={},AVH_URL=new Map();let AVH_N=0,avhT=null;
+function avhLoaded(){clearTimeout(avhT);avhT=setTimeout(()=>{try{if(typeof renderChars==='function')renderChars();if(sheet&&sheet.avatar)renderSheet()}catch(e){}},60)}
+function avhImg(f){let o=AVH_IMG[f];if(o)return o;o=AVH_IMG[f]={st:0};try{const im=new Image();im.onload=()=>{o.st=1;o.im=im;avhLoaded()};im.onerror=()=>{o.st=2};im.src='assets/char/h/'+f+'.png?v='+BUILD}catch(e){o.st=2}return o}
+function avhLum(r,g,b){return .299*r+.587*g+.114*b}
+/* 換色：k＝亮度／基準亮度；暗的照比例變暗，亮的往白色混（深色頭髮的反光減弱） */
+function avhTint(d,i,t,base,lt){const k=avhLum(d[i],d[i+1],d[i+2])/base;
+  if(k<=1){const q=1-(1-k)*1.1;d[i]=t[0]*q;d[i+1]=t[1]*q;d[i+2]=t[2]*q}
+  else{const f=Math.min((k-1)/0.45,1)*clamp(lt/150,0.22,1)*0.7;d[i]=t[0]+(255-t[0])*f;d[i+1]=t[1]+(255-t[1])*f;d[i+2]=t[2]+(255-t[2])*f}}
+/* 合成：key 已經有網址就回傳；沒有就開始做（非同步），先回傳 null */
+function avhCompose(key,files,paint){
+  const u=AVH_URL.get(key);if(u)return u==='p'||u==='x'?null:u;
+  const ims=files.map(avhImg);if(ims.some(o=>o.st===2)){AVH_URL.set(key,'x');return null}if(ims.some(o=>o.st!==1))return null;
+  AVH_URL.set(key,'p');
+  try{const W=ims[0].im.naturalWidth,H=ims[0].im.naturalHeight,cv=document.createElement('canvas');cv.width=W;cv.height=H;const cx=cv.getContext('2d');
+    paint(cx,ims.map(o=>o.im),W,H);
+    cv.toBlob(b=>{if(!b){AVH_URL.set(key,'x');return}AVH_URL.set(key,URL.createObjectURL(b));if(AVH_URL.size>160){const k0=AVH_URL.keys().next().value;const u0=AVH_URL.get(k0);if(u0&&u0.startsWith('blob:'))try{URL.revokeObjectURL(u0)}catch(e){}AVH_URL.delete(k0)}avhLoaded()},'image/png');
+  }catch(e){AVH_URL.set(key,'x')}
+  return null}
+function avhHead(hid,img,hex,hl){
+  return avhCompose(`h|${hid}|${img}|${hex}`,[`${hid}_${img}`,`${hid}_${img}_h`],(cx,[a,h],W,H)=>{
+    cx.drawImage(h,0,0);const id=cx.getImageData(0,0,W,H),d=id.data,t=hexRGB(hex),lt=avhLum(t[0],t[1],t[2]);
+    for(let i=0;i<d.length;i+=4)if(d[i+3])avhTint(d,i,t,hl,lt);
+    cx.putImageData(id,0,0);cx.drawImage(a,0,0)})}
+function avhHat(ht,img,hex,bl){
+  return avhCompose(`t|${ht}|${img}|${hex}`,[`hat${ht}_${img}`],(cx,[a],W,H)=>{
+    cx.drawImage(a,0,0);const id=cx.getImageData(0,0,W,H),d=id.data,t=hexRGB(hex),lt=avhLum(t[0],t[1],t[2]);
+    for(let i=0;i<d.length;i+=4)if(d[i+3]&&d[i+2]>d[i]+15&&d[i+2]>=d[i+1])avhTint(d,i,t,bl,lt);/* 藍色的部分（帽身、帽帶、耳罩頭帶）換成帽子顏色 */
+    cx.putImageData(id,0,0)})}
+const avHex=c=>{const v=avCol(c);if(/^#[0-9a-f]{6}$/i.test(v))return v;const m=String(v).match(/\d+/g);return m?'#'+m.slice(0,3).map(x=>(+x).toString(16).padStart(2,'0')).join(''):'#4A6FA5'};
+function avImg(u,b){return `<image href="${u}" x="${b[0]}" y="${b[1]}" width="${b[2]}" height="${b[3]}" preserveAspectRatio="none"/>`}
+/* 照 av3SVG（av3.js）的動作與擺動，多了頭和帽子 */
+function avV3SVG(av,flip,pose){
+  av=avNorm(av);if(typeof pose!=='object'||pose===null)pose={bob:pose||0};
+  const view=pose.view||'front',P=av3Parts(av,view);
+  const walk=pose.ph!=null,ph=pose.ph||0,t=pose.t||0,sn=Math.sin(ph);
+  const act=pose.act||null,ap=Math.min(1,Math.max(0,pose.actP||0)),e=Math.sin(ap*Math.PI);
+  const crouch=(act==='plant'||act==='harvest')?e*3.2:0;
+  let aF=null,aB=null;
+  if(act==='water'){aF=-70*e}else if(act==='plant'){aF=-50*e;aB=-35*e}else if(act==='harvest'){aF=-135*e;aB=-135*e}else if(act==='pollinate'){aF=-60*e+Math.sin(t*14)*10*e}
+  const bob=(walk?-Math.abs(sn)*1.1:Math.sin(t*2.2)*0.25)+(pose.bob||0)+crouch;
+  const rot=(a,p)=>`rotate(${a.toFixed(1)} ${p[0]} ${p[1]})`,g=(s,tr)=>`<g transform="${tr}">${s}</g>`,idle=Math.sin(t*1.6)*1.5;
+  let legs='',armsB='',armsF='';
+  if(view==='side'){const L=P.legs[0],A=P.arms[0],ang=walk?sn*26:0;
+    legs=g(L.s+`<path d="${L.ol}" fill="rgba(40,25,15,.22)"/>`,rot(-ang,L.p))+g(L.s,rot(ang,L.p));
+    armsF=g(A.s,rot(aF!=null?aF:(walk?-sn*28:idle),A.p));
+  }else if(view==='front'||view==='back'){const up=[walk?-Math.max(0,sn)*1.7:0,walk?-Math.max(0,-sn)*1.7:0];
+    legs=P.legs.map((L,i)=>g(L.s,`translate(0 ${up[i].toFixed(2)})`)).join('');
+    const ang=walk?sn*9:idle,s0=aF!=null?-aF*0.45:ang,s1=aB!=null?aB*0.45:(aF!=null?-ang*0.3:-ang);
+    armsF=P.arms.map((A,i)=>g(A.s,rot(i?s1:s0,A.p))).join('');
+  }else{const ang=walk?sn*15:0,up=[walk?-Math.max(0,sn):0,walk?-Math.max(0,-sn):0];
+    legs=P.legs.map((L,i)=>g(L.s,`translate(0 ${up[i].toFixed(2)}) `+rot(i?-ang:ang,L.p))).join('');
+    const aa=walk?sn*16:idle;
+    if(P.arms[1])armsB=g(P.arms[1].s,rot(aB!=null?aB:aa,P.arms[1].p));
+    armsF=g(P.arms[0].s,rot(aF!=null?aF:-aa,P.arms[0].p));}
+  /* 頭與帽子 */
+  const H=window.AV3H;let hid=avHid(av.hair),ht=AVH_HATS.includes(av.hat)?av.hat:0,headA='',headB='',hat='',bodyTop=null;
+  if(H){const n=++AVH_N,co=H.collar[view];
+    let hu=null,hd=null;if(hid&&H.heads[hid]){hd=H.heads[hid][view];hu=avhHead(hid,hd.img,HAIRC[av.hairC]||HAIRC[1],hd.hl)}
+    let tu=null,td=null;if(ht&&H.hats[ht]){td=H.hats[ht][view];tu=avhHat(ht,td.img,avHex(av.hatC),td.bl)}
+    const brim=tu&&td.brim!=null?td.brim:null;
+    if(hu){const top=brim!=null?brim:-80;
+      headA=`<clipPath id="avA${n}"><rect x="-40" y="${top}" width="80" height="${(co-top).toFixed(2)}"/></clipPath><g clip-path="url(#avA${n})">${avImg(hu,hd.box)}</g>`;
+      headB=`<clipPath id="avB${n}"><rect x="-40" y="${co}" width="80" height="60"/></clipPath><g clip-path="url(#avB${n})">${avImg(hu,hd.box)}</g>`;
+      bodyTop=co}
+    else if(brim!=null)bodyTop=brim;/* 原本的亂翹短髮戴帽子：帽簷以上的頭髮剪掉 */
+    if(tu)hat=avImg(tu,td.box);
+    if(bodyTop!=null)bodyTop=[bodyTop,n];}
+  const body=bodyTop!=null?`<clipPath id="avC${bodyTop[1]}"><rect x="-40" y="${bodyTop[0]}" width="80" height="80"/></clipPath><g clip-path="url(#avC${bodyTop[1]})">${P.body}</g>`:P.body;
+  const inner=`<g transform="translate(0 ${bob.toFixed(2)})">${headA}${legs}${armsB}${body}${armsF}${headB}${hat}</g>`;
+  return `<ellipse cx="0" cy=".3" rx="${walk?9.4-Math.abs(sn)*0.6:10}" ry="2.6" fill="rgba(60,40,20,.18)"/>`+(flip?`<g transform="scale(-1 1)">${inner}</g>`:inner);
+}
+
 // ===== 角色動畫 =====
 let meAct=null;const ACT_DUR={water:900,plant:800,harvest:900,pollinate:1100};
 function playAct(type){meAct={type,at:Date.now()};pushPos(true)}
@@ -4735,8 +4816,8 @@ function openRing(){if(ringOpen||!state)return;const b=document.getElementById('
   const a0=185,a1=90,m=document.getElementById('ringMenu');
   m.innerHTML=RING.map(([k,n],j)=>{const a=(a0+(a1-a0)*j/(RING.length-1))*Math.PI/180,x=cx+R*Math.cos(a),y=cy-R*Math.sin(a),off=ringState(k);
     return `<button class="ri${off?' off':''}" role="menuitem" data-ring="${k}" aria-disabled="${off?'true':'false'}" style="left:${x.toFixed(0)}px;top:${y.toFixed(0)}px;--dx:${(cx-x).toFixed(0)}px;--dy:${(cy-y).toFixed(0)}px;animation-delay:${j*28}ms">${n}</button>`}).join('');
-  m.hidden=false;document.getElementById('ringOv').hidden=false;ringOpen=true;ringHl=null}
-function closeRing(){ringOpen=false;ringHl=null;const m=document.getElementById('ringMenu');if(m){m.hidden=true;m.innerHTML=''}const o=document.getElementById('ringOv');if(o)o.hidden=true}
+  m.hidden=false;document.getElementById('ringOv').hidden=false;document.getElementById('ringBtn').classList.add('on');ringOpen=true;ringHl=null}
+function closeRing(){ringOpen=false;ringHl=null;{const b=document.getElementById('ringBtn');if(b)b.classList.remove('on')}const m=document.getElementById('ringMenu');if(m){m.hidden=true;m.innerHTML=''}const o=document.getElementById('ringOv');if(o)o.hidden=true}
 function ringAt(x,y){const el=document.elementFromPoint(x,y),b=el&&el.closest&&el.closest('[data-ring]');return b?b.dataset.ring:null}
 function ringHlSet(k){if(k===ringHl)return;ringHl=k;document.querySelectorAll('#ringMenu .ri').forEach(b=>b.classList.toggle('hl',b.dataset.ring===k))}
 function ringRun(k){closeRing();const why=ringState(k);if(why){toast(why);return}
@@ -5268,8 +5349,8 @@ function walkLoop(t){
 // ===== 角色編輯 =====
 /* 14k 打扮頁：依類別分頁、上方即時預覽並可切換方向 */
 const AV_DIRS=[[2,'正面'],[1,'斜前'],[0,'側面'],[7,'斜後'],[6,'背面']];
-const AV_TABS=[['face','臉'],['hair','頭髮'],['hat','帽子'],['cloth','衣服'],['acc','配件']];
-const AV_TAB_ITEMS={face:[['skin',SKINS],['face'],['blush']],hair:[['hair'],['hairC',HAIRC]],hat:[['hat'],['hatC',CLOTHC]],cloth:[['top'],['topC',CLOTHC],['bottom'],['bottomC',CLOTHC],['shoe'],['shoeC',CLOTHC]],acc:[['acc'],['accC',CLOTHC]]};
+const AV_TABS=[['face','膚色'],['hair','頭髮'],['hat','帽子'],['cloth','衣服'],['acc','配件']];
+const AV_TAB_ITEMS={face:[['skin',SKINS]],hair:[['hair'],['hairC',HAIRC]],hat:[['hat'],['hatC',CLOTHC]],cloth:[['topC',CLOTHC],['bottomC',CLOTHC],['shoeC',CLOTHC]],acc:[]};/* 35（15i）：表情固定；衣服、配件的新款製作中 */
 function openAvatar(){sheet={avatar:true,draft:avNorm(state.avatar),avTab:'face',avDir:0};renderSheet();openSheetUI()}
 function avatarEditorHTML(){
   const d=sheet.draft,dir=AV_DIRS[sheet.avDir||0][0],tab=sheet.avTab||'face';
@@ -5277,12 +5358,17 @@ function avatarEditorHTML(){
   let h=`<h2>打扮我的角色</h2><div class="avprev"><svg viewBox="-30 -66 60 70" width="150" height="175" role="img" aria-label="角色預覽">${avatarSVG(d,false,{t:performance.now()/1000,view:VIEWS[dir]})}</svg></div>`;
   h+=`<div class="avdirbtns" role="group" aria-label="方向">${AV_DIRS.map(([f,n],i)=>`<button class="fchip" data-avdir="${i}" aria-pressed="${(sheet.avDir||0)===i}">${n}</button>`).join('')}</div>`;
   h+=`<div class="filters avtabs" role="tablist">${AV_TABS.map(([k,n])=>`<button class="fchip" role="tab" data-avtab="${k}" aria-pressed="${tab===k}">${n}</button>`).join('')}</div>`;
+  if(tab==='cloth')h+='<p class="note">上衣、下身、鞋子的新款還在製作中，現在先換顏色（條紋上衣、吊帶褲、靴子）。</p>';
+  if(tab==='acc')h+='<p class="note">配件的新款還在製作中。</p>';
+  if(tab==='face')h+='<p class="note">表情固定是微笑。</p>';
   for(const [k,cols] of AV_TAB_ITEMS[tab]){
     if(cols){h+=`<div class="avrow"><span>${AV_LBL[k]}</span><div class="avsw">${cols.map((c,i)=>`<button class="swatch" style="background:${c}" data-avc="${k}" data-v="${i}" aria-label="${AV_LBL[k]} ${i+1}" aria-pressed="${d[k]===i}"></button>`).join('')}</div></div>`;continue}
     h+=`<h3 class="avh3">${AV_LBL[k]}</h3>`;
     if(k==='bottom'&&d.top===2)h+='<p class="note">吊帶褲已經包含褲子，換成其他上衣才看得到下身。</p>';
     if(k==='bottom'&&d.top===12)h+='<p class="note">洋裝已經包含裙子，換成其他上衣才看得到下身。</p>';
-    h+=`<div class="avopts">${AV_OPT[k].map((n,i)=>{const pv={...d,[k]:i};if(k==='hair')pv.hat=0;if(k==='bottom'&&(d.top===2||d.top===12))pv.top=0;return `<button class="avopt" data-avk="${k}" data-v="${i}" aria-pressed="${d[k]===i}"><svg viewBox="${vb}" width="56" height="${head?56:68}" aria-hidden="true">${avatarSVG(pv,false,{view:VIEWS[dir]})}</svg><span>${n}</span></button>`}).join('')}</div>`;
+    const idxs=k==='hair'?AVH_LIST:AV_OPT[k].map((_,i)=>i);
+    h+=`<div class="avopts">${idxs.map(i=>{const n=AV_OPT[k][i],pv={...d,[k]:i},off=k==='hat'&&!AVH_HATS.includes(i),on=k==='hair'?avHid(d.hair)===i:d[k]===i;if(k==='hair')pv.hat=0;
+      return `<button class="avopt" data-avk="${k}" data-v="${i}" aria-pressed="${on}"${off?' disabled style="opacity:.45"':''}><svg viewBox="${vb}" width="56" height="${head?56:68}" aria-hidden="true">${off?'':avatarSVG(pv,false,{view:VIEWS[dir]})}</svg><span>${n}${off?'<br><small>新款製作中</small>':''}</span></button>`}).join('')}</div>`;
   }
   return h+`<button class="btn primary" data-act="avsave">儲存角色</button>`;
 }

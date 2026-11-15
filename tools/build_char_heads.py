@@ -121,13 +121,16 @@ def collar(a, keep, x, y_from, y_to, rb=40):
     def row(y):
         xs = range(max(0, int(x) - 2), min(a.shape[1], int(x) + 3))
         return [('n' if not keep[y, xx] else 'o' if ol[y, xx] else 'h' if hair[y, xx] else 's' if skin[y, xx] else 'c') for xx in xs]
-    seen_cloth, first = False, None
+    seen_cloth, first, last = False, None, None
     for y in range(y_from, y_to, -1):
         c = row(y)
         if c.count('c') >= 3: seen_cloth = True
         if not seen_cloth: continue
         if first is None and (c.count('s') >= 3 or c.count('h') >= 3): first = y + 1
-        if c.count('o') >= 3:
+        if c.count('o') < 3:
+            last = 'c' if c.count('c') >= 3 else 'x'
+            continue
+        if last == 'c':
             for yy in range(y - 1, max(y_to, y - 7), -1):
                 u = row(yy)
                 if u.count('o') >= 3: continue

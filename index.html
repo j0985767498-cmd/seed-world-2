@@ -1038,7 +1038,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-15f';
+const BUILD='2026-11-15g';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2229,7 +2229,7 @@ sb.addEventListener('click',e=>{
   if(act==='seedmerge'&&p){playAct('harvest');takeSeeds(i,'',{merge:true})}
   if(act==='seedok'&&p){const v=(sheet.seedName||'').trim();if(!glen(v)||glen(v)>8){sheet.seedErr='名稱需要 1 到 8 個字';renderSheet();return}sheet.seedName=null;sheet.seedErr='';takeSeeds(i,v)}
   if(act==='pmove'&&!p){if(plotMove(i)){save();closeSheet();renderAll()}return}
-  if(act==='pdel'&&!p){if(!sheet.confirm){sheet.confirm=true;renderSheet();return}state.plotPos[i]=null;state.coins+=PLOT_REFUND;save();closeSheet();renderAll();renderCoins();toast(`已拆除，退回 ${PLOT_REFUND} 金幣`);return}
+  if(act==='pdel'&&!p){if(!sheet.confirm){sheet.confirm=true;renderSheet();return}state.plotPos[i]=null;state.coins+=PLOT_REFUND;save();closeSheet();renderAll();renderCoins();toast('已拆除');return}
   save();sheet.stage=state.plots[i]?state.plots[i].stage:'empty';sheet.confirm=false;sheet.crossFrom=null;renderAll();renderSheet();
 });
 function lotUniFor(lot,g){try{const k=phen(g,lot.crop).key,x=lotDist({m:lot.m,f:lot.f||lot.m,crop:lot.crop}).find(e=>e.key===k);return !!x&&x.p>=0.9995}catch(e){return false}}
@@ -2844,7 +2844,8 @@ setInterval(()=>{
 // ===== 世界與場景 =====
 const COLS=4,ROWS=16,NPLOTS=64;
 // 家園 v2：面積約為舊版的 5.7 倍，舊版內容整體平移到新地圖下方中央
-const MAPV=2,MOX=320,MOY=1270,PLOT_COST=50,PLOT_MAX=160,PLOT_REFUND=25;
+const MAPV=2,MOX=320,MOY=1270,PLOT_COST=0,PLOT_MAX=160,PLOT_REFUND=0,PLOT_START=64;/* 36.1（15g）：鋪設免費、拆除不退費 */
+function plotCap(){return Math.min(PLOT_MAX,PLOT_START)}/* 36.1：起始 64 格；28.4 等級做好後每 3 級 +8，最多 PLOT_MAX（160）。已經超過的田保留，只是不能再鋪 */
 const LX0=76+MOX,LY0=130+MOY;
 function center(i){const c=i%COLS,r=Math.floor(i/COLS);return [LX0+84*c+(r%2)*42,LY0+24*r]}
 function defaultPos(){return Array.from({length:NPLOTS},(_,i)=>center(i))}
@@ -2872,13 +2873,17 @@ let scene='farm',viewing=null,visitMe={x:550,y:2100},marketMe={x:400,y:1182},hov
 const curMe=()=>scene==='market'?marketMe:scene==='explore'?exMe:viewing?visitMe:(state.me||(state.me={...ME0}));
 function gateSVG(x,y,label){const sw=Math.max(68,[...String(label).replace(/&[a-z#0-9]+;/g,'x')].length*12.5+14);return `<g stroke="#4A2A12" stroke-width="1.6" stroke-linejoin="round"><rect x="${x-38}" y="${y-50}" width="8" height="50" rx="2" fill="#B5763C"/><rect x="${x+30}" y="${y-50}" width="8" height="50" rx="2" fill="#B5763C"/><path d="M${x-50} ${y-58} Q${x} ${y-78} ${x+50} ${y-58} L${x+46} ${y-46} Q${x} ${y-64} ${x-46} ${y-46}Z" fill="#D9473A"/><rect x="${x-sw/2}" y="${y-62}" width="${sw}" height="20" rx="6" fill="#FFF3D6"/><text x="${x}" y="${y-47}" text-anchor="middle" font-size="12" font-weight="700" fill="#4A2A12" stroke="none" font-family="Noto Sans TC,sans-serif">${label}</text></g>`}
 const GROUND=(()=>{const R=srand(4242);let t='';for(let k=0;k<420;k++){const x=30+R()*1040,y=80+R()*2080,r=R();if(r<0.45)t+=`<path d="M${x.toFixed(0)} ${y.toFixed(0)} l2.5 -6 l2.5 6 M${(x+4).toFixed(0)} ${y.toFixed(0)} l2 -4.5 l2 4.5" stroke="#8FAA62" stroke-width="1.4" fill="none" stroke-linecap="round"/>`}return t})();/* 31.6：低彩度草叢、拿掉彩色小點 */
+/* 36.1（15g）：田地圖片。載好之前、載入失敗時照舊程式畫法 */
+let SOIL_OK=0;function soilReady(){if(SOIL_OK)return SOIL_OK===1;SOIL_OK=3;try{const im=new Image();im.onload=()=>{SOIL_OK=1;fruitLoaded()};im.onerror=()=>{SOIL_OK=2};im.src='assets/farm/s/soil_patch.png?v='+BUILD}catch(e){SOIL_OK=2}return false}
+const SOIL_W=86,SOIL_H=48.5,SOIL_CY=0.505;/* 圖上菱形左右角在高度約 0.5 的地方 */
+function plotEdit(){return !!(buildMode||pickMode||recallMode||shovelMode||sowMode||accelMode)}
 function plotSVG(st,i,hov){
   const pos=posOf(st,i);if(!pos)return '';
   const [x,y]=pos,p=st.plots[i];
   const lbl=p?`第 ${i+1} 塊土地，${CROPS[p.crop].n}「${pname(p)}」，${stageLabel(p)}`:`第 ${i+1} 塊土地，空地`;
-  let s=`<g data-plot="${i}" role="button" aria-label="${esc(lbl)}" stroke="#4A2A12" stroke-width="1.5" stroke-linejoin="round"><polygon points="${x-41},${y} ${x},${y+23} ${x},${y+32} ${x-41},${y+9}" fill="#9C6635"/><polygon points="${x},${y+23} ${x+41},${y} ${x+41},${y+9} ${x},${y+32}" fill="#80502A"/><polygon points="${x},${y-23} ${x+41},${y} ${x},${y+23} ${x-41},${y}" fill="#D9A15F"${hov===i?' stroke="#FFD54A" stroke-width="3.5"':''}/><polygon points="${x},${y-17} ${x+32},${y} ${x},${y+17} ${x-32},${y}" fill="#8C5A32" stroke-width="1"/>`;
+  let s;if(soilReady())s=`<g data-plot="${i}" role="button" aria-label="${esc(lbl)}"><image href="assets/farm/s/soil_patch.png?v=${BUILD}" x="${x-SOIL_W/2}" y="${(y-SOIL_H*SOIL_CY).toFixed(1)}" width="${SOIL_W}" height="${SOIL_H}"/><polygon points="${x},${y-23} ${x+41},${y} ${x},${y+23} ${x-41},${y}" fill="transparent"${hov===i?' stroke="#FFD54A" stroke-width="3.5"':st===state&&plotEdit()?' stroke="rgba(255,248,220,.55)" stroke-width="1.2"':' stroke="none"'}/></g>`;/* 31.5：建設、選取等模式才畫淡色細框 */  else{s=`<g data-plot="${i}" role="button" aria-label="${esc(lbl)}" stroke="#4A2A12" stroke-width="1.5" stroke-linejoin="round"><polygon points="${x-41},${y} ${x},${y+23} ${x},${y+32} ${x-41},${y+9}" fill="#9C6635"/><polygon points="${x},${y+23} ${x+41},${y} ${x+41},${y+9} ${x},${y+32}" fill="#80502A"/><polygon points="${x},${y-23} ${x+41},${y} ${x},${y+23} ${x-41},${y}" fill="#D9A15F"${hov===i?' stroke="#FFD54A" stroke-width="3.5"':''}/><polygon points="${x},${y-17} ${x+32},${y} ${x},${y+17} ${x-32},${y}" fill="#8C5A32" stroke-width="1"/>`;
   for(const a of [.3,.5,.7])s+=`<line x1="${x-32+32*a+3}" y1="${y-17*a+1.6}" x2="${x+32*a-3}" y2="${y+17-17*a-1.6}" stroke="#6A4022" stroke-width="2" stroke-linecap="round"/>`;
-  s+=`</g>`;
+  s+=`</g>`}
   if(st===state&&p&&(pickMode&&pickSet.has(i)||srcHL!=null&&p.lotId===srcHL&&!(sheet&&sheet.i===i))){const on=pickMode&&pickSet.has(i);/* 31.4 */
     s+=`<polygon points="${x-41},${y} ${x},${y-23} ${x+41},${y} ${x},${y+23}" fill="${on?'rgba(255,213,74,.28)':'none'}" stroke="${on?'#FFD54A':'#FFF6C2'}" stroke-width="${on?3:2}"${on?'':' stroke-dasharray="6 4"'} pointer-events="none"/>`}
   if(p)s+=`<g pointer-events="none" transform="translate(${x} ${y+3}) scale(0.72) translate(${-x} ${-y-3})">${plantSVG(p,x,y+3)}</g>`;
@@ -3102,13 +3107,13 @@ function renderHUD(){
 // ===== 建設農地 =====
 function openBuild(){if(scene!=='farm'||viewing){toast('只能在自己的農場建設');return}sheet={build:true};renderSheet();openSheetUI()}
 function buildHTML(){
-  const n=plotCount(state),m=curMe(),[x,y]=snapPos(m.x,m.y),err=n>=PLOT_MAX?`農地最多 ${PLOT_MAX} 塊`:plotSpotErr(state,x,y,-1);
-  return `<h2>建設新農地</h2><p class="note">新農地會建在角色腳邊，對齊旁邊的格子。先走到想要的位置再按建設；空的農地之後可以移動或拆除。</p><div class="lot"><div class="lot-name">一塊農地</div><div class="meta">花費 ${PLOT_COST} 金幣・目前 ${n} 塊／上限 ${PLOT_MAX} 塊</div>${err?`<p class="err">${err}</p>`:''}</div><button class="btn primary" data-act="build" ${err?'disabled':''}>花 ${PLOT_COST} 金幣在腳邊建設</button><button class="btn" data-act="close">取消</button>`;
+  const n=plotCount(state),m=curMe(),[x,y]=snapPos(m.x,m.y),err=n>=plotCap()?`農地目前最多 ${plotCap()} 塊`:plotSpotErr(state,x,y,-1);
+  return `<h2>建設新農地</h2><p class="note">新農地會建在角色腳邊，對齊旁邊的格子。先走到想要的位置再按建設；空的農地之後可以移動或拆除。</p><div class="lot"><div class="lot-name">一塊農地</div><div class="meta">免費・目前 ${n} 塊／上限 ${plotCap()} 塊</div>${err?`<p class="err">${err}</p>`:''}</div><button class="btn primary" data-act="build" ${err?'disabled':''}>在腳邊建設</button><button class="btn" data-act="close">取消</button>`;
 }
 function buildAction(b){
   const a=b.dataset.act;if(a==='close')return closeSheet();if(a!=='build')return;
   const m=curMe(),[x,y]=snapPos(m.x,m.y);
-  if(plotCount(state)>=PLOT_MAX){toast(`農地最多 ${PLOT_MAX} 塊`);return}
+  if(plotCount(state)>=plotCap()){toast(`農地目前最多 ${plotCap()} 塊`);return}
   const e=plotSpotErr(state,x,y,-1);if(e){toast(e);renderSheet();return}
   if(!isInf()&&state.coins<PLOT_COST){toast('金幣不夠');return}
   if(!isInf())state.coins-=PLOT_COST;
@@ -5158,15 +5163,15 @@ function renderBuildBar(){
   const el=document.getElementById('buildBar');if(!el)return;
   if(!buildMode){el.hidden=true;return}
   el.hidden=false;
-  const tip={build:`點一下或用手指滑過空地，一格一格鋪成田（每格 ${PLOT_COST} 金幣）<br><b>已鋪 ${buildN} 格，剩 ${Math.max(0,PLOT_MAX-plotCount(state))} 格可鋪</b>${buildMsg?`<br><span style="color:var(--danger)">${buildMsg}</span>`:''}`,recall:'',move:'按住農地拖到新位置，植物會一起搬',shovel:'點一下或用手指滑過植株就能剷除，土地會保留'}[buildMode];
+  const tip={build:`點一下或用手指滑過空地，一格一格鋪成田（免費）<br><b>已鋪 ${buildN} 格，剩 ${Math.max(0,plotCap()-plotCount(state))} 格可鋪</b>${buildMsg?`<br><span style="color:var(--danger)">${buildMsg}</span>`:''}`,recall:'',move:'按住農地拖到新位置，植物會一起搬',shovel:'點一下或用手指滑過植株就能剷除，土地會保留'}[buildMode];
   if(buildMode==='recall'){el.innerHTML=recallTip()+`<div class="bbrow" style="grid-template-columns:1fr;margin-bottom:6px"><button data-bm="rundo">復原</button></div><div class="bbrow" style="grid-template-columns:repeat(5,1fr)">${[['build','建設'],['recall','收回'],['move','移動'],['shovel','剷除']].map(([k,n])=>`<button data-bm="${k}" aria-pressed="${buildMode===k}">${n}</button>`).join('')}<button data-bm="done" class="done">完成</button></div>`;return}/* 36.7 */
-  el.innerHTML=`<div class="bbtip">${tip}<br><small>${buildMode==='build'?'從已經有的田開始拖曳可以移動畫面':'拖曳空白處可以移動畫面'}・${buildMode==='shovel'?'剷錯了可以到垃圾桶找回':`農地 ${plotCount(state)}／${PLOT_MAX}`}</small></div>${buildMode==='shovel'?`<div class="bbrow" style="grid-template-columns:1fr;margin-bottom:6px"><button data-bm="trash">垃圾桶（${(state.trash||[]).length}）</button></div>`:''}<div class="bbrow" style="grid-template-columns:repeat(5,1fr)">${[['build','建設'],['recall','收回'],['move','移動'],['shovel','剷除']].map(([k,n])=>`<button data-bm="${k}" aria-pressed="${buildMode===k}">${n}</button>`).join('')}<button data-bm="done" class="done">完成</button></div>`;
+  el.innerHTML=`<div class="bbtip">${tip}<br><small>${buildMode==='build'?'從已經有的田開始拖曳可以移動畫面':'拖曳空白處可以移動畫面'}・${buildMode==='shovel'?'剷錯了可以到垃圾桶找回':`農地 ${plotCount(state)}／${plotCap()}`}</small></div>${buildMode==='shovel'?`<div class="bbrow" style="grid-template-columns:1fr;margin-bottom:6px"><button data-bm="trash">垃圾桶（${(state.trash||[]).length}）</button></div>`:''}<div class="bbrow" style="grid-template-columns:repeat(5,1fr)">${[['build','建設'],['recall','收回'],['move','移動'],['shovel','剷除']].map(([k,n])=>`<button data-bm="${k}" aria-pressed="${buildMode===k}">${n}</button>`).join('')}<button data-bm="done" class="done">完成</button></div>`;
 }
 /* 31.1：建設模式的點或滑過鋪設（照裝飾地面鋪設的寫法）；同一筆劃每格只處理一次，不合法的位置閃紅不鋪 */
 let buildPainting=false,buildN=0,buildMsg='',buildBad=null;const buildHit=new Set();
 /* 滑動時兩次觸控點之間每 10px 補一個點，手指滑快也不會跳格（鋪設、多選共用） */
 let strokeLast=null;function strokeTo(cx,cy,fn){if(strokeLast){const dx=cx-strokeLast[0],dy=cy-strokeLast[1],n=Math.min(60,Math.ceil(Math.hypot(dx,dy)/10));for(let k=1;k<n;k++)fn(strokeLast[0]+dx*k/n,strokeLast[1]+dy*k/n)}fn(cx,cy);strokeLast=[cx,cy]}
-function buildPlotErr(x,y){if(plotCount(state)>=PLOT_MAX)return `農地最多 ${PLOT_MAX} 塊`;const e=plotSpotErr(state,x,y,-1);if(e)return e;if(!isInf()&&state.coins<PLOT_COST)return '金幣不夠';return ''}
+function buildPlotErr(x,y){if(plotCount(state)>=plotCap())return `農地目前最多 ${plotCap()} 塊`;const e=plotSpotErr(state,x,y,-1);if(e)return e;if(!isInf()&&state.coins<PLOT_COST)return '金幣不夠';return ''}
 function buildAt(cx,cy){
   const w=screenToWorld(cx,cy),[x,y]=snapPos(w.x,w.y),k=x+','+y;if(buildHit.has(k))return;buildHit.add(k);
   const err=buildPlotErr(x,y);
@@ -5179,7 +5184,7 @@ function buildAt(cx,cy){
 function buildTap(w,t){
   if(buildMode==='build'){
     const [x,y]=snapPos(w.x,w.y);
-    if(plotCount(state)>=PLOT_MAX){toast(`農地最多 ${PLOT_MAX} 塊`);return}
+    if(plotCount(state)>=plotCap()){toast(`農地目前最多 ${plotCap()} 塊`);return}
     const err=plotSpotErr(state,x,y,-1);if(err){toast(err);return}
     if(!isInf()&&state.coins<PLOT_COST){toast('金幣不夠');return}
     if(!isInf())state.coins-=PLOT_COST;

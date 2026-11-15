@@ -74,7 +74,7 @@ def hsv(a):
     s = np.where(mx > 0, (mx - mn) / (mx + 1e-9), 0)
     return h, s, mx
 
-def classes(a, keep, rb=40):
+def classes(a, keep, rb=40, gr=0.76):
     h, s, v = hsv(a)
     lum = a @ np.array([.299, .587, .114])
     hair = keep & (lum >= 56) & (h >= 13) & (h <= 38) & (s >= 0.28) & (v <= 0.89)
@@ -84,7 +84,7 @@ def classes(a, keep, rb=40):
         for i, z in enumerate(sz, 1):
             if z < 300: hair &= hl != i
     ol = keep & (lum < 72) & ~hair
-    skin = keep & ~ol & ~hair & (a[..., 0] > 205) & (a[..., 0] - a[..., 2] > rb) & (a[..., 1] > 150) & (a[..., 1] > 0.76 * a[..., 0]) & (a[..., 1] < 0.895 * a[..., 0])
+    skin = keep & ~ol & ~hair & (a[..., 0] > 205) & (a[..., 0] - a[..., 2] > rb) & (a[..., 1] > 150) & (a[..., 1] > gr * a[..., 0]) & (a[..., 1] < 0.895 * a[..., 0])
     return ol, hair, skin
 
 def eyes(a, keep, region=None):
@@ -114,10 +114,10 @@ def eyes(a, keep, region=None):
     _, a1, a2 = best
     return ((a1[1] + a2[1]) / 2, (a1[0] + a2[0]) / 2, abs(a1[1] - a2[1]))
 
-def collar(a, keep, x, y_from, y_to, rb=40):
+def collar(a, keep, x, y_from, y_to, rb=40, gr=0.76):
     """沿著 x 這一欄從 y_from 往上找：經過衣服之後，第一條「上面緊接著皮膚或頭髮」的深色外框＝領口。
     淡色條紋（米色、粉色）有時會被當成皮膚，所以一定要先碰到領口的外框；找不到外框才退回「第一個皮膚或頭髮」"""
-    ol, hair, skin = classes(a, keep, rb)
+    ol, hair, skin = classes(a, keep, rb, gr)
     def row(y):
         xs = range(max(0, int(x) - 2), min(a.shape[1], int(x) + 3))
         return [('n' if not keep[y, xx] else 'o' if ol[y, xx] else 'h' if hair[y, xx] else 's' if skin[y, xx] else 'c') for xx in xs]
@@ -131,11 +131,9 @@ def collar(a, keep, x, y_from, y_to, rb=40):
             last = 'c' if c.count('c') >= 3 else 'x'
             continue
         if last == 'c':
-            for yy in range(y - 1, max(y_to, y - 7), -1):
+            for yy in range(y - 1, max(y_to, y - 5), -1):
                 u = row(yy)
-                if u.count('o') >= 3: continue
-                if u.count('s') >= 3 or u.count('h') >= 3: return yy + 1
-                break
+                if u.count('s') >= 3 or u.count('h') >= 3: return y + 1
     return first
 
 # ---------- 身體圖：每個方向的領口、眼距、座標換算 ----------
@@ -171,7 +169,7 @@ for v in VIEWS:
     xm = (xs.min() + xs.max()) / 2
     if v == 'side':   # 側面：身體窄，脖子在上半身中間偏右一點，用胸口那列的皮膚以外中點
         xm = (xs.min() + xs.max()) / 2
-    cy = collar(c, k, xm, yc, top, 65)
+    cy = collar(c, k, xm, yc, top, 65, 0.66)
     BASE[v] = dict(ox=ox, oy=oy, cx=xm, cy=cy, top=top, bot=bot)
 # 斜前、斜後的中間那一欄會碰到吊帶，改用正面、背面「領口離腳底的距離」
 for v, ref in (('fq', 'front'), ('bq', 'back')):
@@ -293,7 +291,8 @@ for sheet, ids in HATS:
         e = eyes(fc, fk, region=(0.3 * fc.shape[0], 0.85 * fc.shape[0]))
         if not e: raise SystemExit(f'{sheet} 第 {r+1} 列找不到眼睛')
         sc = BASE_EYE / e[2]
-        fcy = head_parts(fc, fk)[0]
+        # 帽子圖裡的人和身體圖是同一張臉：用眼睛對位（領口被吊帶、外套擋住，不準）
+        fcy = int(round(e[1] + (BASE['front']['cy'] - ef[1]) / sc))
         rec = {}
         for col, hv in enumerate(['f', 's', 'b']):
             crop, keep, cy0 = objs[(r, col)]

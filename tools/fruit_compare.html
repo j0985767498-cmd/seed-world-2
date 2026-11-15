@@ -4,7 +4,7 @@
 .ctl label{font-size:13px}select{font-size:13px}table{border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden}td,th{border:1px solid #E4DCCF;padding:3px;text-align:center;font-size:12px}
 th{background:#F6F1E8;font-weight:600}canvas{display:block;margin:auto}.wrap{overflow-x:auto}.note{color:#6B5A48;font-size:13px}.tiny{display:flex;flex-wrap:wrap;gap:3px;background:#fff;border-radius:10px;padding:8px}
 .tiny div{text-align:center;font-size:10px;color:#7A6A58}.grass{background:#A9CF7C}</style></head><body>
-<h1>果實對照頁（2026-11-15h）</h1>
+<h1>果實對照頁（2026-11-15m）</h1>
 <p class="note">不放進遊戲。用遊戲實際的上色函式（素模＋程式上色，第 26 節 26.2、26.3）畫出 9 種作物 × 10 個造型。上方可以選果皮色、花紋顏色、花紋形式、結果期／成熟期與顯示大小。</p>
 <div class="ctl">
 <label>果皮 <select id="skin"></select></label>
@@ -18,8 +18,8 @@ th{background:#F6F1E8;font-weight:600}canvas{display:block;margin:auto}.wrap{ove
 <h2>9 種作物 × 10 個造型</h2><div class="wrap"><table id="tb"></table></div>
 <h2>所有果皮顏色（番茄・圓形，22px）</h2><div class="tiny" id="all"></div>
 <script>
-let TFX_N=0,TFX_RM=null;const RGBC={"white":[246,240,226],"green":[88,164,64],"yellow":[246,202,44],"red":[220,46,42],"purple":[118,54,152],"black":[58,44,52],"orange":[242,132,32],"pink":[246,144,172],"lavender":[192,154,222],"yellowgreen":[172,206,62],"mint":[150,214,172],"cream":[246,228,158],"gray":[150,148,146],"brown":[140,86,46],"slate":[92,116,140],"darkgreen":[40,96,52],"amber":[200,140,30],"olive":[128,124,36],"wine":[136,26,74],"crimson":[152,20,30],"plum":[86,32,112],"silver":[186,192,202],"pearl":[244,238,246],"blue":[70,120,220],"gold":[226,176,44],"obsidian":[40,30,52],"crystal":[176,230,244],"starry":[44,40,104],"rainbow":[200,120,190]};
-const SPGRAD={"silver":["#F4F6F9","#9AA3AE"],"pearl":["#FFFFFF","#E3D4EA"],"blue":["#9CC6FF","#2346A8"],"gold":["#FFF1A8","#B9840F"],"obsidian":["#6A5A80","#0E0A14"],"crystal":["#F2FDFF","#7FCBE2"],"starry":["#3A3F8A","#140F38"]};
+let TFX_N=0,TFX_RM=null;const RGBC={"white":[246,240,226],"green":[88,164,64],"yellow":[246,202,44],"red":[220,46,42],"purple":[118,54,152],"black":[58,44,52],"orange":[242,132,32],"pink":[246,144,172],"lavender":[192,154,222],"yellowgreen":[172,206,62],"mint":[150,214,172],"cream":[246,228,158],"gray":[150,148,146],"brown":[140,86,46],"slate":[92,116,140],"darkgreen":[40,96,52],"amber":[200,140,30],"olive":[128,124,36],"wine":[136,26,74],"crimson":[152,20,30],"plum":[86,32,112],"silver":[186,192,202],"pearl":[244,238,246],"blue":[53,182,230],"gold":[226,176,44],"obsidian":[40,30,52],"crystal":[196,236,249],"starry":[44,40,104],"rainbow":[200,120,190]};
+const SPGRAD={"silver":["#F4F6F9","#9AA3AE"],"pearl":["#FFFFFF","#E3D4EA"],"blue":["#9FE3FA","#1E8FC4"],"gold":["#FFF1A8","#B9840F"],"obsidian":["#6A5A80","#0E0A14"],"crystal":["#FAFEFF","#9CD5E8"],"starry":["#3A3F8A","#140F38"]};
 const RAINBOW=["#E24B4A","#F09A2C","#F2D23C","#5DBB63","#4A86D8","#8E5CC8"];
 const EX_OF={"tomato":7,"eggplant":8,"chili":9,"zucchini":10,"pumpkin":10,"melon":10,"strawberry":11,"corn":12,"broccoli":13};
 const ALL_SKINS=["white","green","yellow","red","purple","black","mint","cream","pink","lavender","gray","yellowgreen","brown","slate","darkgreen","orange","amber","olive","wine","crimson","plum","silver","pearl","blue","gold","obsidian","crystal","starry","rainbow","l-silver","l-pearl","l-blue","l-gold","l-obsidian","l-crystal","l-starry","l-rainbow","d-pearl-silver","d-blue-silver","d-gold-silver","d-obsidian-silver","d-crystal-silver","d-silver-starry","d-rainbow-silver","d-blue-pearl","d-gold-pearl","d-obsidian-pearl","d-crystal-pearl","d-pearl-starry","d-pearl-rainbow","d-blue-gold","d-blue-obsidian","d-blue-crystal","d-blue-starry","d-blue-rainbow","d-gold-obsidian","d-crystal-gold","d-gold-starry","d-gold-rainbow","d-crystal-obsidian","d-obsidian-starry","d-obsidian-rainbow","d-crystal-starry","d-crystal-rainbow","d-rainbow-starry"];
@@ -28,13 +28,13 @@ const SPECIAL=["silver","pearl","blue","gold","obsidian","crystal","starry","rai
 const BASE_SHAPES={"tomato":["圓形","扁圓","長橢圓"],"chili":["長角椒","燈籠椒","小尖椒"],"strawberry":["圓錐","楔形","圓球"],"eggplant":["長茄","圓茄","蛋形"],"corn":["長穗","短胖穗","小爆裂玉米"],"pumpkin":["圓南瓜","扁南瓜","飛碟瓜"],"melon":["圓形網紋","橢圓","長形"],"broccoli":["花椰菜","青花菜","甘藍球"],"zucchini":["長棒","圓櫛瓜","彎頸瓜"]};
 const SPN=["","正方形","三角形","愛心","星形","月牙形","甜甜圈"];
 const EXN={"7":"皇冠","8":"鈴鐺","9":"火焰","10":"葫蘆","11":"鑽石","12":"火箭","13":"大樹","14":"元寶"};
-const CN={"white":"白","green":"綠","yellow":"黃","red":"紅","purple":"紫","black":"黑","orange":"橙","pink":"粉","lavender":"淡紫","yellowgreen":"黃綠","mint":"薄荷綠","cream":"奶油黃","gray":"灰","brown":"棕","slate":"青灰","darkgreen":"深綠","amber":"琥珀","olive":"橄欖","wine":"酒紅","crimson":"深紅","plum":"深紫","silver":"銀","pearl":"珍珠白","blue":"藍","gold":"金","obsidian":"黑曜","crystal":"水晶","starry":"星空","rainbow":"彩虹"};
+const CN={"white":"白","green":"綠","yellow":"黃","red":"紅","purple":"紫","black":"黑","orange":"橙","pink":"粉","lavender":"淡紫","yellowgreen":"黃綠","mint":"薄荷綠","cream":"奶油黃","gray":"灰","brown":"棕","slate":"青灰","darkgreen":"深綠","amber":"琥珀","olive":"橄欖","wine":"酒紅","crimson":"深紅","plum":"深紫","silver":"銀","pearl":"珍珠白","blue":"水藍","gold":"金","obsidian":"黑曜","crystal":"水晶","starry":"星空","rainbow":"彩虹"};
 const CSTR={"white":1,"green":2,"yellow":3,"red":4,"purple":5,"black":6,"silver":10,"pearl":11,"blue":12,"gold":13,"obsidian":14,"crystal":15,"starry":16,"rainbow":17};
 const MIX15={"green|white":"mint","white|yellow":"cream","red|white":"pink","purple|white":"lavender","black|white":"gray","green|yellow":"yellowgreen","green|red":"brown","green|purple":"slate","black|green":"darkgreen","red|yellow":"orange","purple|yellow":"amber","black|yellow":"olive","purple|red":"wine","black|red":"crimson","black|purple":"plum"};
 const FRUIT_SHAPE_MUL={"chili_b2":0.7,"corn_b2":0.7};
 const FRUIT_UNRIPE=[126,176,84];
 const PFN=["條紋","斑點","星點","漸層"];
-const BUILD="2026-11-15h";
+const BUILD="2026-11-15m";
 const TFX_STAR="M0 -0.11 L0.03 -0.03 L0.11 0 L0.03 0.03 L0 0.11 L-0.03 0.03 L-0.11 0 L-0.03 -0.03Z";
 const MIXSET=new Set(Object.values(MIX15));
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));

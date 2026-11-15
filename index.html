@@ -466,6 +466,7 @@ input,textarea,select{font-size:16px !important}
 .fp.fpq{rx:3.4px;ry:5px;fill:#8E6C3A;opacity:.6}
 @media (prefers-reduced-motion:reduce){.qsw,.qsr,.rspk,.twroll,.tgc.shk{animation:none}.qsp{display:none}}
 /* 56：環境小動畫（只動 transform、opacity；切到背景全部暫停；減少動態效果時不播） */
+.npcb{animation:npcb 2.4s ease-in-out infinite}@keyframes npcb{50%{transform:translateY(-2px)}}@media (prefers-reduced-motion:reduce){.npcb{animation:none}}
 .brth{transform-box:fill-box;transform-origin:50% 100%;animation:brth 2.6s ease-in-out infinite}@keyframes brth{50%{transform:scaleY(1.02)}}
 .blink{opacity:0;animation:blink 5s linear infinite}@keyframes blink{0%,95.5%{opacity:0}96%,98.5%{opacity:1}99%,100%{opacity:0}}
 .asmk{transform-box:fill-box;transform-origin:center;opacity:0;animation:asmk 4s ease-out infinite}@keyframes asmk{0%{transform:translate(0,0) scale(.5);opacity:0}15%{opacity:.55}100%{transform:translate(var(--dx,6px),-44px) scale(1.7);opacity:0}}
@@ -689,9 +690,10 @@ const EX_OF={tomato:7,eggplant:8,chili:9,zucchini:15,pumpkin:10,melon:16,strawbe
 /* 73.3：櫛瓜、甜瓜的專屬造型編號換了（10 → 15／16）。自己的存檔一次轉完（exMigrate，旗標 exV）；全服文件不大量改寫，讀的時候對照：
    exAppKey 外觀鍵值、ridOld 新文件 id → 舊文件 id、exFixG 基因型、exName 自動名稱裡的舊造型名 */
 const EX_MOVE={zucchini:15,melon:16},EX_REN={zucchini:['葫蘆','球棒'],melon:['葫蘆','炸彈'],pumpkin:['葫蘆','萬聖節南瓜'],broccoli:['大樹','火山']};
-const exAppKey=(crop,k)=>EX_MOVE[crop]&&typeof k==='string'&&k.startsWith('p10|')?'p'+EX_MOVE[crop]+k.slice(3):k;
+const exAppKey=(crop,k)=>{const to=EX_OF[crop];if(!to||typeof k!=='string'||k[0]!=='p')return k;const i=k.indexOf('|'),v=+k.slice(1,i);return v>=7&&v!==to?'p'+to+k.slice(i):k};/* 任何專屬造型的鍵值 → 這個作物自己的 */
 const ridOld=id=>{if(typeof id!=='string')return null;for(const c in EX_MOVE){const a=c+'_p'+EX_MOVE[c]+'_';if(id.startsWith(a))return c+'_p10_'+id.slice(a.length)}return null};
-function exFixG(g,crop){const to=EX_MOVE[crop];if(!to||!g||!Array.isArray(g.sp)||(g.sp[0]!==10&&g.sp[1]!==10))return false;g.sp=g.sp.map(v=>v===10?to:v);return true}/* 照植株自己的作物換；g.o（來源作物）不動 */
+function exFixG(g,crop){const to=EX_OF[crop];if(!to||!g||!Array.isArray(g.sp)||!g.sp.some(v=>v>=7&&v!==to))return false;g.sp=g.sp.map(v=>v>=7?to:v);return true}/* 通用規則：專屬造型因子在哪個作物上，就是那個作物的專屬造型；g.o（來源作物）不動 */
+const exHost=(g,crop)=>{exFixG(g,crop);return g};
 const exName=(crop,t)=>{const r=EX_REN[crop];return r&&typeof t==='string'&&t.includes(r[0])?t.split(r[0]).join(r[1]):t};
 const LEGACY_SPN=['','彎曲','雙頭','分節','扁盤','多稜'];
 const spExpr=sp=>sp[0]&&sp[0]===sp[1]?sp[0]:0;/* 兩個一樣才會出現，沒有強弱 */
@@ -809,7 +811,7 @@ function rarityHint(a,crop){
   return `再${ok[0][1]}，就會變成${TIERS[tierOfScore(sc+ok[0][0])]}`;
 }
 
-function shapeNameOf(a,crop){const cd=CROPS[crop]||CROPS.tomato;if(a.legacy)return a.sp?(LEGACY_SPN[a.sp]||spLabel(a.sp)||'舊造型'):'舊造型';return a.sp?spLabel(a.sp):cd.shapes[a.level]}
+function shapeNameOf(a,crop){const cd=CROPS[crop]||CROPS.tomato;if(a.legacy)return a.sp?(LEGACY_SPN[a.sp]||spLabel(a.sp)||'舊造型'):'舊造型';return a.sp?spLabel(a.sp>=7&&EX_OF[crop]?EX_OF[crop]:a.sp):cd.shapes[a.level]}
 function colorLabelA(a){return a.pat?`${cnOf(a.skin)}皮・${cnOf(a.pat.c)}色${pfName(a.pat.f,a.pat.f2)}`:`${cnOf(a.skin)}色`}
 function locusDist(a,b){const o=new Map();for(const x of a)for(const y of b){const k=JSON.stringify([x,y]);o.set(k,(o.get(k)||0)+0.25)}return [...o].map(([k,p])=>[JSON.parse(k),p])}
 function offspringDist(m,f){
@@ -936,7 +938,7 @@ function packKeys(l){
   return lotDist(l).map(x=>({key:x.key,p:x.p}));
 }
 function drawSeed(l){if(l.zs)unzipLot(l);if(l.seeds&&l.seeds.length)return l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0];l.count--;return child(l.m,l.f).g}
-function newGame(){state={vault:[],v:4,mapV:MAPV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:1,lvV:1,lv:1,xp:0,mq:{ch:1,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
+function newGame(){state={vault:[],v:4,mapV:MAPV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,lv:1,xp:0,mq:{ch:1,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
 const WILD={tomato:'red',strawberry:'red',zucchini:'green',corn:'yellow',broccoli:'white',melon:'yellow',chili:'red',pumpkin:'yellow',eggplant:'purple'};
 function originalFor(crop){
   const wild=rnd()<0.7,col=wild?WILD[crop]:pk(['red','yellow','green','white','purple'].filter(c=>c!==WILD[crop]));
@@ -1034,20 +1036,21 @@ function geneMigrate(o){
 /* 73.3：專屬造型換新的一次性轉換（旗標 exV=1）。櫛瓜、甜瓜基因型裡的 10 → 15／16（南瓜的 10、甘藍家族的 13 編號不變，只換圖和名稱）；
    標本、圖鑑、育成紀錄的鍵值一起換；自動產生的名稱裡的「葫蘆」「大樹」換成新名字。來源作物（g.o）不動。 */
 function exMigrate(o){
-  if(o.exV===1)return;
+  if(o.exV===2)return;/* 1＝16h 只轉了櫛瓜、甜瓜的 10；2＝16i 通用規則（專屬造型因子跟著所在的作物） */
   const nm=(x,cr,k)=>{if(x&&typeof x[k]==='string')x[k]=exName(cr,x[k])};
-  const cvLot=l=>{if(!l||!l.crop)return;const cr=l.crop;nm(l,cr,'name');if(!EX_MOVE[cr])return;exFixG(l.m,cr);exFixG(l.f,cr);if(Array.isArray(l.seeds))l.seeds.forEach(g=>exFixG(g,cr));
-    if(l.zs){try{const sd=unzipSeeds(l.zs);if(sd.some(g=>g&&g.sp&&(g.sp[0]===10||g.sp[1]===10))){sd.forEach(g=>exFixG(g,cr));l.seeds=sd;delete l.zs;delete l.zi;delete l.znz}}catch(e){}}};
-  const cvPlant=p=>{if(!p||!p.crop)return;nm(p,p.crop,'name');exFixG(p.g,p.crop);exFixG(p.m,p.crop);if(p.pollen&&p.pollen.fatherG){const fc=p.pollen.fatherCrop||p.crop;exFixG(p.pollen.fatherG,fc);nm(p.pollen,fc,'fatherName')}};
+  const cvLot=l=>{if(!l||!l.crop)return;const cr=l.crop;nm(l,cr,'name');if(!EX_OF[cr])return;exFixG(l.m,cr);exFixG(l.f,cr);if(Array.isArray(l.seeds))l.seeds.forEach(g=>exFixG(g,cr));
+    if(l.zs){try{const sd=unzipSeeds(l.zs);if(sd.some(g=>g&&g.sp&&g.sp.some(v=>v>=7&&v!==EX_OF[cr]))){sd.forEach(g=>exFixG(g,cr));l.seeds=sd;delete l.zs;delete l.zi;delete l.znz}}catch(e){}}};
+  const cvPlant=p=>{if(!p||!p.crop)return;nm(p,p.crop,'name');exFixG(p.g,p.crop);exFixG(p.m,p.crop);if(p.pollen&&p.pollen.fatherG){exFixG(p.pollen.fatherG,p.crop);/* 花粉要結在這株上，照母本的作物 */nm(p.pollen,p.pollen.fatherCrop||p.crop,'fatherName')}};
   try{
     (o.lots||[]).forEach(cvLot);for(const c of (Array.isArray(o.vault)?o.vault:[]))(c&&Array.isArray(c.lots)?c.lots:[]).forEach(cvLot);
     (o.plots||[]).forEach(cvPlant);(Array.isArray(o.trash)?o.trash:[]).forEach(t=>t&&cvPlant(t.plant));
     if(o.tray&&Array.isArray(o.tray.cells)){const S=o.tray.srcs||[];S.forEach(x=>{if(!x||!x.crop)return;nm(x,x.crop,'name');exFixG(x.m,x.crop);exFixG(x.f,x.crop)});o.tray.cells.forEach(c=>{const x=c&&S[c.s];if(x&&x.crop)exFixG(c.g,x.crop)})}
     (Array.isArray(o.specs)?o.specs:[]).forEach(e=>{if(!e||!e.crop)return;const k=exAppKey(e.crop,e.key);if(k!==e.key){e.key=k;e.id=`${e.crop}_${k.replace(/[\/|]/g,'_')}`}nm(e,e.crop,'auto');nm(e,e.crop,'from')});
-    if(o.seen)for(const c in EX_MOVE)if(Array.isArray(o.seen[c]))o.seen[c]=[...new Set(o.seen[c].map(k=>exAppKey(c,k)))];
+    if(Array.isArray(o.specs)){const got=new Set();o.specs=o.specs.filter(e=>!e||!e.id||(got.has(e.id)?false:(got.add(e.id),true)))}
+    if(o.seen)for(const c in EX_OF)if(Array.isArray(o.seen[c]))o.seen[c]=[...new Set(o.seen[c].map(k=>exAppKey(c,k)))];
     if(o.fin&&typeof o.fin==='object'){for(const k of Object.keys(o.fin)){const i=k.indexOf('|'),c=k.slice(0,i),nk=c+'|'+exAppKey(c,k.slice(i+1));if(nk!==k){o.fin[nk]=o.fin[k];delete o.fin[k]}}}
   }catch(e){}
-  o.exV=1;
+  o.exV=2;
 }
 function migrate(o){
   if(!o.nextLid)o.nextLid=1;if(!o.counts)o.counts={};
@@ -1160,7 +1163,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-16h';
+const BUILD='2026-11-16i';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -1410,7 +1413,7 @@ const FRUIT_SHAPE_MUL={chili_b2:0.7,corn_b2:0.7,zucchini_ex:1.1}/* 73：球棒�
 const FRUIT_UNRIPE=[126,176,84];
 let FRUIT_VER=0;
 function fruitShapeKey(a,crop){
-  if(a.sp){if(a.sp<=6)return crop+'_sp'+a.sp;const c=EX_OF[crop]===a.sp?crop:(Object.keys(EX_OF).find(k=>EX_OF[k]===a.sp)||crop);return c+'_ex'}
+  if(a.sp){if(a.sp<=6)return crop+'_sp'+a.sp;const c=EX_OF[crop]?crop:(Object.keys(EX_OF).find(k=>EX_OF[k]===a.sp)||crop);return c+'_ex'}/* 73：專屬造型一律畫這個作物自己的 */
   return crop+'_b'+(a.level||0);
 }
 /* 素模前處理：本體遮罩（不透明、RGB 最大最小差 < 18、亮度 > 140）、蒂頭遮罩（G 比 R、B 都大 20 以上）、基準亮度（本體中位數）、每列左右範圍 */
@@ -2414,7 +2417,7 @@ function plantFromLot(lot,g){return {old:lot.old?1:undefined,q:lot.q?1:undefined
 function pollinate(i,j){
   const p=state.plots[i];
   if(j==null)p.pollen={type:'self'};
-  else{const q=state.plots[j];if(q&&!q.obs&&(q.crop===p.crop||isWide(p,q))&&rnd()<crossRate(p,q)){p.pollen={type:'cross',fatherG:clone(q.g),fatherName:pname(q),fatherLid:q.lid,fatherPar:q.par||[],fatherCrop:q.crop,wide:isWide(p,q)&&!p.wide};toast(isWide(p,q)?'遠緣雜交成功！':'雜交成功');stInc('cr');addXpCap('c',2)}else{p.pollen={type:'self',failed:j!=null};toast('這次雜交沒有成功，植株改為自交')}}
+  else{const q=state.plots[j];if(q&&!q.obs&&(q.crop===p.crop||isWide(p,q))&&rnd()<crossRate(p,q)){p.pollen={type:'cross',fatherG:exHost(clone(q.g),p.crop),fatherName:pname(q),fatherLid:q.lid,fatherPar:q.par||[],fatherCrop:q.crop,wide:isWide(p,q)&&!p.wide};toast(isWide(p,q)?'遠緣雜交成功！':'雜交成功');stInc('cr');addXpCap('c',2)}else{p.pollen={type:'self',failed:j!=null};toast('這次雜交沒有成功，植株改為自交')}}
   p.stage='fruit';p.prog=0;p.watered=false;p.fert=false;tutEv('pollinate');
 }
 
@@ -4508,7 +4511,7 @@ const TOWN_NPC=[
   {id:'tu',n:'阿土伯',x:470,y:410,at:'hall',av:{...AV_DEF,skin:2,face:1,hair:6,hairC:6,hat:1,hatC:12,top:2,topC:13,bottom:0,bottomC:10,shoe:0,shoeC:12},/* 40.1：老農夫：平頭、草帽、條紋 T＋深藍吊帶褲、靴子、灰白頭髮 */line:'年輕人，來啦！田裡的事有不懂的就來問我。'},
   {id:'mo',n:'墨先生',x:212,y:410,at:'appraisal',glasses:1,av:{...AV_DEF,face:4,hair:10,hairC:0,hat:0,top:7,topC:2,bottom:0,bottomC:7,shoe:1,shoeC:7,acc:2,accC:7},/* 40.1：學者：旁分、眼鏡、墨綠針織背心＋襯衫、深灰長褲、布鞋、黑髮、不戴帽子 */line:'我在收集稀有的果實。鑑定所裡可以看全服的圖鑑和紀錄榜。'},
   {id:'mei',n:'小莓姊',x:738,y:1184,at:'dessert',av:{...AV_DEF,face:5,blush:1,hair:13,hairC:3,top:13,topC:6,bottom:4,bottomC:5,shoe:1,shoeC:5},/* 40.1：甜點師：半紮蝴蝶結、粉色園藝圍裙、百褶裙、布鞋、腮紅 */line:'哈囉～今天也有想請你幫忙種的顏色喔！'},
-  {id:'kai',n:'阿凱',x:598,y:1136,at:'notice',av:{...AV_DEF,face:5,hair:15,hairC:2,hat:5,hatC:11,top:3,topC:11,bottom:3,bottomC:13,shoe:0,shoeC:12,acc:3,accC:12},/* 40.1：探險家：蓬鬆亂髮、卡其漁夫帽、卡其外套、橄欖工裝褲、靴子、背包 */line:'我在找一座傳說中的種子庫。各地採到的種子，記得帶回來給我看看！'}];
+  {id:'kai',n:'阿凱',x:488,y:1142,at:'notice',av:{...AV_DEF,face:5,hair:15,hairC:2,hat:5,hatC:11,top:3,topC:11,bottom:3,bottomC:13,shoe:0,shoeC:12,acc:3,accC:12},/* 40.1：探險家：蓬鬆亂髮、卡其漁夫帽、卡其外套、橄欖工裝褲、靴子、背包 */line:'我在找一座傳說中的種子庫。各地採到的種子，記得帶回來給我看看！'}];
 /* 68.5（16g）：城鎮邊界。北邊（建築後面）是一排大小不一的樹，中間夾灌木；左右兩側盆栽、樹籬、花台、路燈、長椅交錯；南邊花台、盆栽、樹籬混排。
    間距、大小、位置都抖動（固定亂數種子），同一種不連續出現三次。邊界的東西不擋路（可走範圍本來就由 M.B 限制）。 */
 function townEdge(M,R,inExit,objs){
@@ -4541,7 +4544,14 @@ let townFg='',townSplit=-1,townFgOn=false,hoverTown=null;
 const townSplitN=()=>{const M=regPrep('town','plaza'),y=marketMe.y;let n=0;for(const v of M._ys){if(v<=y)n++;else break}for(const [,sy] of STALLS)if(sy<=y)n+=100;for(const p of TOWN_NPC)if(p.y<=y)n+=1e4;return n};
 function townSignSVG(b){const a=TOWN_ART[b.k],dh=a[1],w=dh*TOWN_IMG[a[0]][0]/TOWN_IMG[a[0]][1],[fx]=townFront(b),tw=b.n.length*11+14,y=b.y-dh*b.sg;
   return `<g pointer-events="none"><rect x="${f1(fx-tw/2)}" y="${f1(y-9)}" width="${tw}" height="18" rx="4" fill="#F7F0DC" stroke="#4A3020" stroke-width="1.5"/><text x="${fx}" y="${f1(y+4.5)}" text-anchor="middle" font-size="11" font-weight="700" fill="#4A3020" font-family="Noto Sans TC,sans-serif">${b.n}</text>${b.id==='dessert'&&state&&state.ns&&state.ns.mei&&state.ns.mei.d>=5?(()=>{const t='特約農場：'+myName(),w2=[...t].length*8.5+12;return `<rect x="${f1(fx-w2/2)}" y="${f1(y+12)}" width="${f1(w2)}" height="14" rx="3" fill="#FFE9F0" stroke="#4A3020" stroke-width="1.2"/><text x="${fx}" y="${f1(y+22.5)}" text-anchor="middle" font-size="8.5" font-weight="700" fill="#4A3020" font-family="Noto Sans TC,sans-serif">${esc(t)}</text>`})():''}</g>`}/* 43.1：小莓姊的故事完成後，店門口多一塊牌子（只有自己看得到） */
-function townNpcSVG(p){return `<g transform="translate(${p.x} ${p.y}) scale(1.15)" pointer-events="none"><g class="brth">${avatarSVG(p.av,false,{view:'front'})}${p.glasses&&avUseV3(avNorm(p.av))?NPC_GLASSES:''}</g>${nameTag(p.n)}${nsBang(p.id)?'<g><circle cx="0" cy="-80" r="8" fill="#FFF6DE" stroke="#C0392B" stroke-width="1.6"/><text x="0" y="-75.5" text-anchor="middle" font-size="12" font-weight="700" fill="#C0392B">!</text></g>':''}</g>`}/* 43.1：有故事可以接時頭上有「！」 */
+/* 74.2（16h）：城鎮 4 位 NPC 改用圖片 assets/char/npc/npc_<id>.png（260px 高的全身正面圖）。顯示高度 NPC_H（玩家在畫面上約 62，NPC 高一點）；
+   底部中央對齊站位、影子由程式畫、待機輕微上下彈跳（.npcb，相位由 animSync 對到全域時間）。圖還沒載好或載不到時照舊用換裝系統畫（av 資料留著）。 */
+const NPC_IMG={tu:[148,260],mei:[150,260],mo:[128,260],kai:[134,260]},NPC_H=67,npcSt={};
+const npcSrc=id=>`assets/char/npc/npc_${id}.png?v=${BUILD}`;
+function npcReady(id){if(!NPC_IMG[id])return false;const st=npcSt[id];if(st===1)return true;if(st==null){npcSt[id]=0;try{const im=new Image();im.onload=()=>{npcSt[id]=1;try{if(scene==='market')renderWorld()}catch(e){}};im.onerror=()=>{npcSt[id]=-1};im.src=npcSrc(id)}catch(e){npcSt[id]=-1}}return false}
+function npcBodySVG(p){if(!npcReady(p.id))return `<g class="brth">${avatarSVG(p.av,false,{view:'front'})}${p.glasses&&avUseV3(avNorm(p.av))?NPC_GLASSES:''}</g>`;
+  const [w,h]=NPC_IMG[p.id],H=NPC_H/1.15,W=H*w/h;return `<ellipse cx="0" cy="0" rx="${f1(W*0.36)}" ry="3.4" fill="rgba(60,40,20,.22)"/><g class="npcb"><image href="${npcSrc(p.id)}" x="${f1(-W/2)}" y="${f1(-H)}" width="${f1(W)}" height="${f1(H)}"/></g>`}
+function townNpcSVG(p){return `<g transform="translate(${p.x} ${p.y}) scale(1.15)" pointer-events="none">${npcBodySVG(p)}${nameTag(p.n)}${nsBang(p.id)?'<g><circle cx="0" cy="-80" r="8" fill="#FFF6DE" stroke="#C0392B" stroke-width="1.6"/><text x="0" y="-75.5" text-anchor="middle" font-size="12" font-weight="700" fill="#C0392B">!</text></g>':''}</g>`}/* 43.1：有故事可以接時頭上有「！」 */
 /* 40.1：墨先生的眼鏡（正面，眼睛約在 (-3.6,-37.7)、(4,-37.7)） */
 const NPC_GLASSES='<g fill="rgba(255,255,255,.18)" stroke="#4A3020" stroke-width=".75"><circle cx="-3.6" cy="-37.6" r="2.7"/><circle cx="4" cy="-37.6" r="2.7"/><path d="M-0.9 -37.9 Q0.2 -38.6 1.3 -37.9" fill="none"/></g>';
 const townRing=(x,y)=>`<ellipse cx="${x}" cy="${y}" rx="30" ry="9" fill="none" stroke="var(--mustard)" stroke-width="3" stroke-dasharray="6 4" pointer-events="none"/>`;
@@ -4602,7 +4612,7 @@ function townSheetHTML(){
   if(id==='dessert')return `<h2>甜點店</h2>`+(myLv()>=LV_COMM?favHTML('mei'):'')+`<h3>小莓姊的委託</h3>`+cmListHTML('mei');
   if(id==='notice'){const ls=newsRecent.slice(0,12);return `<h2>公布欄</h2><p class="note">全服最近的消息（新品種、稀有發現…）。</p>`+(ls.length?ls.map(d=>`<div class="regbox" style="margin:6px 0;padding:8px 10px"><div>${esc(d.text||'')}</div><div class="meta">${agoTxt(d.at)}</div></div>`).join(''):'<p class="note">目前還沒有消息。</p>')}
   if(String(id).startsWith('npc:')){const p=TOWN_NPC.find(q=>'npc:'+q.id===id);if(!p)return '';const b=TOWN_BLD.find(q=>q.id===p.at);
-    return `<h2>${p.n}</h2><div style="display:flex;gap:12px;align-items:center"><svg width="64" height="88" viewBox="-20 -60 40 66" aria-hidden="true">${avatarSVG(p.av,false,{view:'front'})}</svg><p style="flex:1;margin:0">「${esc(p.line)}」</p></div>`+npcExtraHTML(p.id)+(b?`<button class="btn" data-act="twgo" data-k="${b.id}">看看${b.n}</button>`:'')}
+    return `<h2>${p.n}</h2><div style="display:flex;gap:12px;align-items:center">${npcFaceHTML(p)||`<svg width="64" height="88" viewBox="-20 -60 40 66" aria-hidden="true">${avatarSVG(p.av,false,{view:'front'})}</svg>`}<p style="flex:1;margin:0">「${esc(p.line)}」</p></div>`+npcExtraHTML(p.id)+(b?`<button class="btn" data-act="twgo" data-k="${b.id}">看看${b.n}</button>`:'')}
   return '';
 }
 /* 32.3（15e）：品種登記。列出自己是第一個取得者、還沒命名的史詩以上標本；兩次點按確認，沿用 nameSpec */
@@ -6140,7 +6150,7 @@ function renderGenes(){
     <p class="gk"><b>一般造型先別丟，看後代預覽</b></p>`);
   /* 卡片 7：專屬造型（取得方式照第 60 節） */
   h+=card('專屬造型','每種作物獨有的造型',`<div class="ladder">${ACTIVE_CROPS.filter(c=>EX_OF[c]).map(c=>step(icon({sp:EX_OF[c],skin:WILD[c]||'red'},c,44),`${EXN[EX_OF[c]]}<br><span class="meta">${CROPS[c].n}</span>`)).join('')}</div>
-    <p class="gk"><b>全遊戲最難得</b></p><p class="note">只在最深處或隱藏的地方，有極小機會遇到</p>`);
+    <p class="gk"><b>全遊戲最難得</b></p><p class="note">只在最深處或隱藏的地方，有極小機會遇到</p><p class="note">遠緣雜交帶過去，會變成那種作物自己的專屬造型</p>`);
   /* 卡片 8：大小和完美度 */
   h+=card('大小和完美度','爸媽高，孩子通常也高',`<p class="gk"><b>很多基因加起來，像身高</b></p>
     <div class="grow gbase">${SIZE_N.map((n,i)=>st2(icon({skin:'red'},'tomato',[20,27,34,42,52][i]),n)).join('')}</div>
@@ -6471,7 +6481,8 @@ const noteQ=[];
 const uiBusy=()=>!!sheet||sowMode||shovelMode||accelMode||pickMode||!!buildMode||decoMode;
 function noteOpen(h){noteQ.push(h);noteFlush()}
 function noteFlush(){try{if(!noteQ.length||uiBusy())return;const n=noteQ.shift();sheet=typeof n==='string'?{note:n}:{note:n.h,brag:n.brag};renderSheet();openSheetUI()}catch(e){}}
-function npcTalk(id,text){const p=TOWN_NPC.find(q=>q.id===id);return `<div style="display:flex;gap:12px;align-items:center;margin:6px 0"><svg width="64" height="88" viewBox="-20 -60 40 66" aria-hidden="true" style="flex:none">${avatarSVG(p.av,false,{view:'front'})}${p.glasses&&avUseV3(avNorm(p.av))?NPC_GLASSES:''}</svg><p style="flex:1;margin:0"><b>${p.n}</b><br>「${text}」</p></div>`}
+function npcFaceHTML(p){const d=NPC_IMG[p.id];if(!d||npcSt[p.id]===-1)return '';npcReady(p.id);const hh=84,k=hh/(d[1]*0.55),w=Math.round(d[0]*k);return `<span style="flex:none;width:${w}px;height:${hh}px;overflow:hidden;display:block"><img src="${npcSrc(p.id)}" alt="" aria-hidden="true" style="display:block;width:${w}px;height:${Math.round(d[1]*k)}px"></span>`}
+function npcTalk(id,text){const p=TOWN_NPC.find(q=>q.id===id),face=npcFaceHTML(p);return `<div style="display:flex;gap:12px;align-items:center;margin:6px 0">${face?face:`<svg width="64" height="88" viewBox="-20 -60 40 66" aria-hidden="true" style="flex:none">${avatarSVG(p.av,false,{view:'front'})}${p.glasses&&avUseV3(avNorm(p.av))?NPC_GLASSES:''}</svg>`}<p style="flex:1;margin:0"><b>${p.n}</b><br>「${text}」</p></div>`}
 /* --- 29 主線任務 --- */
 const MQ=[null,
  {npc:'tu',lv:1,t:'第一株番茄',open:'年輕人，來啦！這塊地交給你。先種一株番茄看看，等它結果，記得留種子喔。',hint:'種下番茄 → 收成 → 取種',done:'不錯嘛！種子留好，明年才有得種。這就是當農夫的第一課。',rw:{c:100,acc:10,deco:'hay_bales'}},

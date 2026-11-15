@@ -4370,7 +4370,7 @@ function regSeen(bk){if(!state)return {};if(bk==='snow'){if(!state.snowSeen)stat
 var regMap='entry',regBusy=false,regFg='',regSplitLast=-1;
 const REG_DEF={W:800,H:1100,B:{x0:44,x1:756,y0:104,y1:1060}};
 function regPrep(bk,id){
-  const MS=REGION_MAPS[bk],M=MS[id];if(M._p)return M;M.id=id;M.bk=bk;M.W=M.W||REG_DEF.W;M.H=M.H||REG_DEF.H;M.B=M.B||{...REG_DEF.B};
+  const MS=REGION_MAPS[bk],M=MS[id];if(M._p)return M;if(M.v2)return regPrepV2(bk,id,M);M.id=id;M.bk=bk;M.W=M.W||REG_DEF.W;M.H=M.H||REG_DEF.H;M.B=M.B||{...REG_DEF.B};
   const C=REGION_CFG[bk],ART=REGION_ART[bk],FLAT=REGION_FLAT[bk]||{};
   const R=seededRnd(hashStr(bk+'|'+id)),blk=(M.blocks||[]).map(r=>r.slice()),objs=[];
   const inExit=(side,v,pad)=>M.exits.some(e=>e.side===side&&Math.abs(v-e.c)<e.w/2+pad);
@@ -4405,10 +4405,11 @@ function wfFxHTML(x0,y0,w,h){
   for(let k=0;k<2;k++)s+=`<ellipse class="wfr" cx="${X(0.55)}" cy="${f1(y0+h+22)}" rx="34" ry="10" fill="none" stroke="#FFFFFF" stroke-width="2" style="animation-delay:${-k}s"/>`;
   return s+'</g>'}
 function regObjHTML(o,M,R){
-  const bk=M.bk,cave=M.cave,a=REGION_ART[bk][o[0]];if(!a)return '';const im=REGION_IMG[bk][a[0]];if(!im)return '';const [iw,ih]=im,dh=a[1],w=dh*iw/ih,x=o[1],y=o[2];
+  const bk=M.bk,cave=M.cave,a=REGION_ART[bk][o[0]];if(!a)return '';const im=REGION_IMG[bk][a[0]];if(!im)return '';const op=o[4]&&typeof o[4]==='object'?o[4]:{},sk=op.s||1;const [iw,ih]=im,dh=a[1]*sk,w=dh*iw/ih,x=o[1],y=o[2];
   let s=`<ellipse cx="${f1(x)}" cy="${f1(y-1)}" rx="${f1(w*0.34)}" ry="${f1(Math.max(4,w*0.08))}" fill="${cave?'rgba(0,0,0,.3)':REGION_CFG[bk].shadow}"/>`;
   {const gv=(REGION_GLOW[bk]||{})[o[0]];if(gv)s+=`<circle class="glw" cx="${f1(x)}" cy="${f1(y-dh*(gv<1?gv:0.45))}" r="58" fill="url(#sglow)"/>`}
-  const img=`<image href="assets/${regDir(bk)}/${a[0]}.png" x="${f1(x-w/2)}" y="${f1(y-dh)}" width="${f1(w)}" height="${dh}"/>`;
+  let img=`<image href="assets/${regDir(bk)}/${a[0]}.png" x="${f1(x-w/2)}" y="${f1(y-dh)}" width="${f1(w)}" height="${sk===1?dh:f1(dh)}"/>`;
+  if(op.fl&&o[0]!=='sign')img=`<g transform="translate(${f1(2*x)} 0) scale(-1 1)">${img}</g>`;
   s+=(REGION_SWAY[bk]||{})[o[0]]&&R()<0.4?`<g class="sway" style="animation-delay:-${(R()*5).toFixed(1)}s">${img}</g>`:img;
   if(o[0]==='waterfall'&&bk==='forest')s+=wfFxHTML(x-w/2,y-dh,w,dh);/* 37.6 */
   if(o[0]==='sign'&&o[3])s+=`<text x="${f1(x)}" y="${f1(y-dh*0.64)}" text-anchor="middle" font-size="${o[3].length>4?8.5:11}" font-weight="700" fill="#4A3020" font-family="Noto Sans TC,sans-serif">${esc(o[3])}</text>`;
@@ -4447,6 +4448,255 @@ function regGroundHTML(M,flat){
   if(!C.noGate&&M.exits.some(e=>e.to==='farm')){const e=M.exits.find(x=>x.to==='farm');s+=gateSVG(e.c,M.H-22,'回農場')}
   return s;
 }
+/* ===== 53、54（15o）：探索地圖畫法 v2。地圖資料寫 v2:1 就走這裡（城鎮照舊）。
+   小路：平滑曲線、寬度沿途變化、外圈較深、路面斑塊與小石子、結尾漸窄或泥地（53.2-3）。
+   地面：底色＋色斑＋約 230 撮小草＋花點＋光＋樹蔭，全部畫成一張圖（53.2-4、11）；暗角另外一層。
+   邊界：上左右兩排交錯的樹，外排較大較暗；下緣是畫面外往上露出的樹冠（53.2-5）。
+   成群：groves／meadows／outcrops／belts（彎曲的帶狀樹叢、沙丘、荊棘牆…，碰撞是連續的）（53.2-2、7）。
+   階地：波浪邊緣、岩壁連續、高地的草蓋過邊緣、腳下陰影、石階嵌進岩壁、高地上不鋪路（52、53.3、54.1、54.2）。
+   水：多個橢圓畫成一個外輪廓、外框、淺水帶（38.1、51.1F）；河：平滑曲線、寬窄變化。裂谷（54.4）。洞：厚洞壁＋昏暗（51.1E）。
+   產生出來的裝飾物件如果壓到小路、出口、橋、石階、植株點、水面，就自動拿掉（路上不能有擋路物件）。 */
+const REG_V2={
+  grass:{tree:'round_tree',hero:'oak',bush:'flower_bush',tuft:'tallgrass',flower:'flowers',rock:'boulder',log:'log',
+    path:['#B5A678','#D2C598','#DCD0A6','#C6B88A','#A8997A'],tufts:['#86A85A','#8FB060','#7FA054'],spots:['#9FBB6F','#B3CC86','#A2BF72'],
+    shade:'#4E6E2A',vig:'#22401A',hi:'#C6DC96',lip:'#BED58E',lipLine:'#7C9A52',
+    terr:{art:'cliff',stairs:'stairs',rock:'#9F8A7C',rockD:'#8C796C',shade:'#3F5A22',drip:['#86A85A','#9CBE6A']},
+    water:{edge:'#55704C',sh:'#A9CFC6',deep:'#86B5AD',glint:'#E6F4F0'},pal:[['#FFFFFF','#F7E68A','#F2D24E'],['#FFFFFF','#F6C9DA','#EBA9C6','#F7E68A']]},
+  forest:{tree:'pine',big:'bigpine',hero:'old',bush:'mossy_bush',tuft:'fern',flower:'redmush',rock:'rocks',log:'mossylog',
+    path:['#8E7F5C','#B0A07A','#BCAE88','#A59670','#857656'],tufts:['#6A8A4A','#76964F','#628245'],spots:['#839F61','#97B474','#7E9A5C'],
+    shade:'#28401A',vig:'#12281A',hi:'#A4BF7F',lip:'#9CB877',lipLine:'#5A763E',
+    terr:{art:'rocks',stairs:null,rock:'#7E7766',rockD:'#5F5A4C',shade:'#22381A',drip:['#6A8A4A','#86A85A']},
+    water:{edge:'#3F5E52',sh:'#9CC6C0',deep:'#6E9E98',glint:'#E0F2EE'},pal:[['#FFFFFF','#E3EEFF','#C8DCFF'],['#F4E2FF','#E2C8F2','#FFFFFF']]},
+  marsh:{tree:'willow',big:'bigwillow',hero:'swamp',bush:'elephant',tuft:'cattails',flower:null,rock:'boulder',log:'mossylog',
+    path:['#8C8462','#ACA37E','#B8AF8A','#A1987A','#857C5E'],tufts:['#7A9660','#86A26A','#6E8A58'],spots:['#8DA770','#A1B985','#92AC76'],
+    shade:'#2C4626',vig:'#14301E',hi:'#A6BE88',lip:'#9EB781',lipLine:'#5E7A4A',
+    terr:null,water:{edge:'#4A6656',sh:'#9EC2B8',deep:'#76A49A',glint:'#E2F2EC'},pal:[['#FFFFFF','#F6D9E6','#FBEFA8'],['#FFFFFF','#E9D7F4']]},
+  desert:{tree:'saguaro',big:'bigsaguaro',hero:'palm',bush:'tumbleweed',tuft:'succ',flower:'pear',rock:'rock',log:'barrel',
+    path:['#BFA16C','#D9C291','#E3CFA2','#CDB27E','#B0925E'],tufts:['#B9A06A','#C4AA72','#A89062'],spots:['#D6BF8B','#E7D4A6','#D9C390'],
+    shade:'#8A6A3A',vig:'#5A3A1A',hi:'#ECD9AA',lip:'#E7D3A2',lipLine:'#B08A50',
+    terr:{art:'cliff',stairs:'stairs',rock:'#E6A060',rockD:'#B36A30',shade:'#8A6030',drip:['#C4AA72','#D6BF8B']},
+    water:{edge:'#4E7A70',sh:'#9ED0C6',deep:'#6AAAA0',glint:'#EAF8F2'},pal:[['#F2B8C6','#F7E68A','#FFFFFF']]},
+  snow:{tree:'pine',big:'bigpine',hero:'bare',bush:'bush',tuft:null,flower:'crystals',rock:'boulder',log:'log',
+    path:['#C6D2DC','#DCE5EC','#E6EDF2','#CDD8E1','#B8C4CE'],tufts:['#C3D2DD','#CCD9E3','#B9C8D4'],spots:['#DDE6ED','#F3F7F9','#E4ECF2'],
+    shade:'#6E86A0',vig:'#3A5068',hi:'#FFFFFF',lip:'#F7FAFD',lipLine:'#A9BCCC',
+    terr:{art:'rockwall',stairs:'stairs',rock:'#8F8690',rockD:'#5E5862',shade:'#7C8CA8',drip:['#FFFFFF','#E8F0F6']},
+    water:{edge:'#7FA0B4',sh:'#CBE3EE',deep:'#A9CCDD',glint:'#FFFFFF'},pal:[['#FFFFFF','#E6F4FF','#D2ECFF']]}
+};
+const v2f=v=>Math.round(v*10)/10;
+/* Catmull-Rom 平滑曲線 */
+function v2spline(P,step){step=step||6;const out=[];const Q=[P[0],...P,P[P.length-1]];
+  for(let i=1;i<Q.length-2;i++){const p0=Q[i-1],p1=Q[i],p2=Q[i+1],p3=Q[i+2],d=Math.max(2,Math.floor(Math.hypot(p2[0]-p1[0],p2[1]-p1[1])/step));
+    for(let j=0;j<d;j++){const t=j/d,t2=t*t,t3=t2*t;out.push([0,1].map(k=>0.5*(2*p1[k]+(-p0[k]+p2[k])*t+(2*p0[k]-5*p1[k]+4*p2[k]-p3[k])*t2+(-p0[k]+3*p1[k]-3*p2[k]+p3[k])*t3)))}}
+  out.push(Q[Q.length-2]);return out}
+/* 帶狀（小路、河、裂谷）：回傳中心點、每點半寬、外框多邊形 */
+function v2ribbon(P,w,seed,o){o=o||{};const R=seededRnd(seed),pts=v2spline(P),n=pts.length,ph=R()*6,L=[],Rr=[],hw=[];
+  for(let i=0;i<n;i++){const [x,y]=pts[i],a=pts[Math.min(i+1,n-1)],b=pts[Math.max(i-1,0)];let dx=a[0]-b[0],dy=a[1]-b[1];const d=Math.hypot(dx,dy)||1,nx=-dy/d,ny=dx/d;
+    let h=w/2*(1+(o.var||0.16)*Math.sin(i*0.11+ph)+0.07*Math.sin(i*0.37+ph*2));
+    if(o.taper)h*=Math.min(1,(n-1-i)/14+0.15);if(o.taper0)h*=Math.min(1,i/14+0.15);
+    if(o.widen){const t=i/(n-1);h*=1+o.widen*Math.max(0,(t-0.75)/0.25)**2}
+    if(o.pinch){for(const [px,py,k] of o.pinch){const dd=Math.hypot(x-px,y-py);if(dd<90)h*=1-(1-k)*(1-dd/90)}}
+    hw.push(h);L.push([x+nx*(h+(R()-.5)*4),y+ny*(h+(R()-.5)*4)]);Rr.push([x-nx*(h+(R()-.5)*4),y-ny*(h+(R()-.5)*4)])}
+  return {pts,hw,L,R:Rr,poly:L.concat(Rr.slice().reverse())}}
+const v2d=poly=>'M'+poly.map(p=>v2f(p[0])+' '+v2f(p[1])).join(' L')+'Z';
+/* 點到帶狀的距離－半寬（<0 在帶子裡） */
+function v2ribIn(rb,x,y,pad){const P=rb.pts;for(let i=0;i<P.length;i+=2){const dx=x-P[i][0],dy=y-P[i][1],h=rb.hw[i]+(pad||0);if(dx*dx+dy*dy<h*h)return true}return false}
+function v2wob(cx,cy,rx,ry,R,k){const pts=[],n=36,ph=R()*6;for(let i=0;i<n;i++){const a=i/n*Math.PI*2,m=1+(k||0.035)*Math.sin(a*3+ph)+(k||0.035)*0.6*Math.sin(a*5+ph*1.7);pts.push([cx+Math.cos(a)*rx*m,cy+Math.sin(a)*ry*m])}return pts}
+/* 階地的邊緣 E(x) */
+function v2E(t,W){return x=>t.e+(t.amp==null?14:t.amp)*Math.sin(x/W*Math.PI*1.25+(t.ph||0.4))}
+function v2artDim(bk,k){const a=REGION_ART[bk][k];if(!a)return null;const im=REGION_IMG[bk][a[0]];if(!im)return null;return {f:a[0],dh:a[1],w:a[1]*im[0]/im[1],cw:a[2],ch:a[3],iw:im[0],ih:im[1]}}
+
+function regPrepV2(bk,id,M){
+  M.id=id;M.bk=bk;M.W=M.W||800;M.H=M.H||1100;M.B=M.B||{x0:44,x1:756,y0:104,y1:1060};const W=M.W,H=M.H,B=M.B;
+  const C=REGION_CFG[bk],V=REG_V2[bk],ART=REGION_ART[bk],FLAT=REGION_FLAT[bk]||{},MS=REGION_MAPS[bk];
+  const R=seededRnd(hashStr('v2|'+bk+'|'+id)),objs=[],gen=[],blk=(M.blocks||[]).map(r=>r.slice()),wlk=(M.walks||[]).map(r=>r.slice()),shades=[],drift=[];
+  const sc=()=>0.8+R()*0.45;
+  /* 階地與石階的上下端點（54.2：路沿著石階的方向接到最下面一階） */
+  M._T=(M.terraces||[]).map(t=>{const T={...t,E:v2E(t,W)},st=V.terr&&V.terr.stairs&&v2artDim(bk,V.terr.stairs),sx=(t.gap[0]+t.gap[1])/2;
+    if(st){const SH=t.H+28,SW=SH*st.iw/st.ih,x0=sx-SW/2,y0=T.E(sx)+t.H+14-SH,fl=!!t.flip;T.top=[x0+SW*(fl?0.27:0.73),y0+SH*0.12];T.bot=[x0+SW*(fl?0.76:0.24),y0+SH*0.86]}
+    else{T.top=[sx,T.E(sx)-4];T.bot=[sx,T.E(sx)+t.H+12]}
+    const dx=T.top[0]-T.bot[0],dy=T.top[1]-T.bot[1],dl=Math.hypot(dx,dy)||1;T.u=[dx/dl,dy/dl];return T});
+  /* 小路 */
+  for(const p of M.paths||[])if(p.toStairs!=null&&!p._st){const T=M._T[p.toStairs],[bx,by]=T.bot,[ux,uy]=T.u;p.p=p.p.concat([[bx-ux*110,by-uy*110],[bx-ux*40,by-uy*40],[bx+ux*6,by+uy*6]]);p._st=1}
+  M._P=(M.paths||[]).map((p,k)=>({...p,rb:v2ribbon(p.p,p.w||52,hashStr(bk+id+'p'+k),{taper:p.end==='taper',taper0:p.start==='taper'})}));
+  const onPath=(x,y,pad)=>M._P.some(p=>v2ribIn(p.rb,x,y,pad));
+  /* 河（v2）、裂谷 */
+  M._RV=(M.rivers2||[]).map((r,k)=>({...r,rb:v2ribbon(r.p,r.w,hashStr(bk+id+'r'+k),{var:0.2,widen:r.widen||0,pinch:r.pinch})}));
+  M._CH=M.chasm2?{...M.chasm2,rb:v2ribbon(M.chasm2.p,M.chasm2.w,hashStr(bk+id+'ch'),{var:0.22,pinch:M.chasm2.pinch})}:null;
+  for(const t of M._T){for(let x=-20;x<W+20;x+=20){const xm=x+10;if(xm>t.gap[0]+6&&xm<t.gap[1]-6)continue;const e=Math.min(t.E(x),t.E(x+20));blk.push([x,e-2,x+20,Math.max(t.E(x),t.E(x+20))+t.H-6])}
+    const ey=t.E((t.gap[0]+t.gap[1])/2);wlk.push([t.gap[0]+10,ey-16,t.gap[1]-10,ey+t.H+16]);}
+  const inTerr=(x,y,pad)=>M._T.some(t=>{const e=t.E(x);return y>e-(pad||0)-4&&y<e+t.H+(pad||0)+16});
+  const inWater=(x,y,pad)=>{pad=pad||0;for(const [cx,cy,rx,ry] of (M.lakes||[])){const a=(x-cx)/(rx+pad),b=(y-cy)/(ry+pad);if(a*a+b*b<1)return true}
+    if(M._RV.some(r=>v2ribIn(r.rb,x,y,pad)))return true;if(M._CH&&v2ribIn(M._CH.rb,x,y,pad+6))return true;return false};
+  /* 明確擺的物件（地標等）照舊；opt：{s,fl,br,ns} */
+  for(const o of M.objs||[])objs.push(o);
+  const put=(k,x,y,o)=>{gen.push([k,x,y,null,Object.assign({s:sc(),fl:R()<.5},o||{})])};
+  /* 成群 */
+  for(const [cx,cy,n,sp,hero] of M.groves||[]){shades.push([cx,cy+18,sp*1.9,sp*0.95]);if(hero)put(V.hero,cx,cy,{s:1.05,hero:1});
+    for(let i=0;i<n;i++){const a=R()*6.28,r=(0.35+R()*0.65)*sp;put(i===0&&V.big&&n>3?V.big:V.tree,cx+Math.cos(a)*r*1.3,cy+Math.sin(a)*r*0.6+(hero?30:0),{s:0.8+R()*0.35})}
+    for(let i=0;i<2;i++)put(V.bush,cx+(R()*2-1)*sp,cy+20+R()*26,{s:0.8+R()*0.25});
+    if(V.tuft)for(let i=0;i<3;i++)put(V.tuft,cx+(R()*2-1)*sp*1.2,cy+24+R()*36,{s:0.8+R()*0.3,ns:1})}
+  for(const [cx,cy,n,rx,ry,pi] of M.meadows||[]){const pal=V.pal[pi||0]||V.pal[0],k=Math.max(3,Math.floor(n/3));
+    if(V.flower)for(let i=0;i<k;i++){const a=R()*6.28,r=R()*0.55;put(V.flower,cx+Math.cos(a)*r*rx,cy+Math.sin(a)*r*ry,{s:i===0?1.15:0.6+R()*0.35,ns:1})}
+    for(let i=0;i<n*10;i++){const x=cx+(R()+R()+R()-1.5)*rx*0.66,y=cy+(R()+R()+R()-1.5)*ry*0.66;drift.push([x,y,2+R()*1.4,pal[Math.floor(R()*pal.length)]])}}
+  for(const [cx,cy] of M.outcrops||[]){put(V.rock,cx,cy,{s:1.15});put(V.rock,cx+44,cy+12,{s:0.6});put(V.rock,cx-38,cy+16,{s:0.48});if(V.tuft)put(V.tuft,cx+16,cy+26,{s:0.9,ns:1});if(V.flower)put(V.flower,cx-52,cy+30,{s:0.8,ns:1})}
+  /* 帶狀樹叢、沙丘、荊棘、蘆葦…：沿曲線排，每 4 個混 1 個第二種，兩端各多一個縮小的；碰撞是一整條（51.1B、53.2-7） */
+  for(const b of M.belts||[]){const pts=v2spline(b.p,4),st=b.step||44;let acc=0,cnt=0;const sel=[];
+    for(let i=0;i<pts.length;i++){if(i>0)acc+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);if(i===0||acc>=st*(0.88+R()*0.24)){acc=0;sel.push(pts[i])}}
+    sel.forEach(([x,y],i)=>{const k=b.k2&&(cnt++%4===3)?b.k2:b.k;const end=i===0||i===sel.length-1;objs.push([k,x+(R()-.5)*8,y+(R()-.5)*12,null,{s:(end?0.7:0.86+R()*0.28)*(b.s||1),fl:R()<.5,belt:1}])});
+    const hw=b.w||18;for(let i=0;i<pts.length;i+=3){const [x,y]=pts[i];blk.push([x-hw,y-12,x+hw,y+4])}}
+  /* 邊界 */
+  if(!M.cave){const T=V.tree,ex=M.exits.filter(e=>e.side);
+    const gap=(side,v)=>ex.some(e=>e.side===side&&Math.abs(v-e.c)<e.w/2+34);
+    for(let x=-10;x<W+30;x+=58)if(!gap('n',x))objs.push([T,x+(R()-.5)*20,58+(R()-.5)*16,null,{s:1+R()*0.2,br:0.9,fl:R()<.5,edge:1}]);
+    for(let x=20;x<W+30;x+=64)if(!gap('n',x)&&R()<.6)objs.push([T,x+(R()-.5)*28,98+(R()-.5)*16+R()*12,null,{s:0.8+R()*0.2,fl:R()<.5,edge:1}]);
+    for(const [side,x0] of [['w',2],['e',W-2]])for(let y=150;y<H-10;y+=66){if(gap(side,y))continue;objs.push([T,x0+(R()-.5)*16,y+(R()-.5)*20,null,{s:1+R()*0.2,br:0.92,fl:R()<.5,edge:1}]);
+      if(R()<.33&&!gap(side,y+34))objs.push([T,x0+(side==='w'?40:-40)+(R()-.5)*20,y+34+(R()-.5)*20,null,{s:0.8+R()*0.2,fl:R()<.5,edge:1}])}
+    for(let x=-10;x<W+30;x+=62){if(gap('s',x))continue;objs.push([T,x+(R()-.5)*20,H+78+R()*22,null,{s:1+R()*0.2,br:0.92,ns:1,fl:R()<.5,edge:1,nocol:1}]);if(R()<.5)objs.push([V.bush,x+(R()-.5)*40,H-12+(R()-.5)*12,null,{s:0.8+R()*0.3,fl:R()<.5,edge:1}])}
+    /* 告示牌：每個出口一支，貼在路邊（53.2-9） */
+    for(const e of ex){if(e.to==='farm')continue;const h=e.w/2,ed=e.side==='n'?[e.c,B.y0+30]:e.side==='s'?[e.c,B.y1-24]:e.side==='w'?[B.x0+40,e.c]:[B.x1-40,e.c];
+      let best=null,bd=1e9;for(const p of M._P)for(let i=0;i<p.rb.pts.length;i++){const q=p.rb.pts[i],d=Math.hypot(q[0]-ed[0],q[1]-ed[1]);if(d<bd){bd=d;best={q,h:p.rb.hw[i],i,rb:p.rb}}}
+      let sx=ed[0]+(e.side==='n'||e.side==='s'?h+12:0),sy=ed[1]+(e.side==='w'||e.side==='e'?-h-6:0);
+      if(best&&bd<120){const P=best.rb.pts,a=P[Math.min(best.i+3,P.length-1)],b=P[Math.max(best.i-3,0)],dx=a[0]-b[0],dy=a[1]-b[1],d=Math.hypot(dx,dy)||1;sx=best.q[0]+(-dy/d)*(best.h+20);sy=best.q[1]+(dx/d)*(best.h+20);if(sx<B.x0+10||sx>B.x1-10){sx=best.q[0]-(-dy/d)*(best.h+20);sy=best.q[1]-(dx/d)*(best.h+20)}}
+      objs.push(['sign',clamp(sx,B.x0+12,B.x1-12),clamp(sy,B.y0+30,B.y1-4),'↑↓←→'['nswe'.indexOf(e.side)]+' '+MS[e.to].n,{s:1,fl:false}])}
+  }
+  /* 路邊偶爾一撮草（53.2-3） */
+  if(V.tuft)for(const p of M._P){const P=v2spline(p.p,40);for(let i=1;i<P.length-1;i++)for(const sg of [-1,1])if(R()<.22){const [x,y]=P[i];put(V.tuft,x+sg*((p.w||52)/2+6+R()*10),y+(R()-.5)*16,{s:0.55+R()*0.25,ns:1,soft:1})}}
+  /* 階地上緣壓幾叢小灌木、腳下靠著幾顆小石頭（53.2-10、54.1-3） */
+  for(const t of M._T){for(const fx of t.lipBush||[0.2,0.8]){const x=W*fx;put(V.bush,x,t.E(x)+4,{s:0.7+R()*0.2,ns:1,keep:1})}
+    for(const fx of t.foot||[0.12,0.36,0.68,0.88]){const x=W*fx;if(x>t.gap[0]-40&&x<t.gap[1]+40)continue;put(R()<.5?V.rock:V.bush,x,t.E(x)+t.H+16+R()*12,{s:0.45+R()*0.3,keep:1})}}
+  /* 產生的物件：壓到路、出口、橋、石階、植株點、道具點、水面、階地就拿掉 */
+  const pts2=[...(M.spawns||[]),...(M.items||[])];
+  const exitZone=(x,y)=>M.exits.some(e=>{if(e.door){const [a,b,c,d]=e.door;return x>a-30&&x<c+30&&y>b-30&&y<d+60}if(!e.side)return false;const h=e.w/2+18;return e.side==='n'?(Math.abs(x-e.c)<h&&y<B.y0+90):e.side==='s'?(Math.abs(x-e.c)<h&&y>B.y1-90):e.side==='w'?(Math.abs(y-e.c)<h&&x<B.x0+90):(Math.abs(y-e.c)<h&&x>B.x1-90)});
+  const inWalk=(x,y,p)=>wlk.some(r=>x>r[0]-p&&x<r[2]+p&&y>r[1]-p&&y<r[3]+p);
+  for(const g of gen){const [k,x,y,,o]=g,a=v2artDim(bk,k);if(!a)continue;const cw=(a.cw||16)*(o.s||1)/2;
+    if(x<B.x0-30||x>B.x1+30||y<B.y0-40||y>H)continue;
+    if(onPath(x,y,cw+(o.soft?2:8))||exitZone(x,y)||inWalk(x,y,14)||inWater(x,y,cw+4)||(!o.keep&&inTerr(x,y,10))||pts2.some(([px,py])=>Math.hypot(px-x,py-y)<(a.cw?44:26)))continue;
+    objs.push(g)}
+  /* 碰撞 */
+  for(const o of objs){const a=ART[o[0]],op=o[4]&&typeof o[4]==='object'?o[4]:{};if(!a||!a[2]||op.nocol||op.belt)continue;const s=op.s||1;blk.push([o[1]-a[2]*s/2,o[2]-a[3]*s,o[1]+a[2]*s/2,o[2]+2])}
+  M.blk=blk;M.wlk=wlk;M.lk=M.ice?[]:(M.lakes||[]);M.iceLk=M.ice?(M.lakes||[]):[];M.rv=[];
+  /* 植株點、道具點：萬一落在擋路處就移到最近的空地（不在路上） */
+  const free=(x,y)=>!regBlocked(M,x,y)&&!onPath(x,y,4)&&!inWater(x,y,8);
+  const fix=a=>a.map(([x,y])=>{if(free(x,y))return [x,y];for(let r=10;r<=120;r+=10)for(let k=0;k<16;k++){const nx=Math.round(x+Math.cos(k/16*6.283)*r),ny=Math.round(y+Math.sin(k/16*6.283)*r);if(free(nx,ny))return [nx,ny]}return [x,y]});
+  M.spawns=fix(M.spawns||[]);M.items=fix(M.items||[]);
+  M._shades=shades;M._drift=drift;
+  const SR=seededRnd(hashStr('sway|'+regPfx(bk)+id));
+  M._objs=objs.filter(o=>!FLAT[o[0]]).map(o=>({y:o[2],h:regObjHTML(o,M,SR)})).sort((a,b)=>a.y-b.y);M._ys=M._objs.map(o=>o.y);
+  M._ground=regGroundV2(M,objs.filter(o=>FLAT[o[0]]));M._top=regTopV2(M);M._p=1;return M;
+}
+/* 地面（向量部分）：畫成一張圖 */
+function regGroundSVG(M){
+  const bk=M.bk,C=REGION_CFG[bk],V=REG_V2[bk],W=M.W,H=M.H,B=M.B,R=seededRnd(hashStr('g2|'+bk+'|'+M.id)),cave=M.cave;
+  const grd=cave?C.caveGround:(M.ground||C.ground);
+  let s=`<defs><radialGradient id="gsh"><stop offset="0" stop-color="${V.shade}" stop-opacity=".34"/><stop offset="1" stop-color="${V.shade}" stop-opacity="0"/></radialGradient><radialGradient id="sun"><stop offset="0" stop-color="#FFF6C8" stop-opacity=".42"/><stop offset="1" stop-color="#FFF6C8" stop-opacity="0"/></radialGradient><radialGradient id="dirt"><stop offset="0" stop-color="${V.path[1]}" stop-opacity=".95"/><stop offset=".7" stop-color="${V.path[1]}" stop-opacity=".85"/><stop offset="1" stop-color="${V.path[1]}" stop-opacity="0"/></radialGradient><linearGradient id="chd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A1A10"/><stop offset=".5" stop-color="#1A100A"/><stop offset="1" stop-color="#3A2616"/></linearGradient></defs>`;
+  s+=`<rect x="0" y="0" width="${W}" height="${H}" fill="${grd}"/>`;
+  const sp=cave?C.caveSpots:V.spots;for(let i=0;i<16;i++){const x=40+R()*(W-80),y=60+R()*(H-80);s+=`<ellipse cx="${x|0}" cy="${y|0}" rx="${60+R()*90|0}" ry="${40+R()*50|0}" fill="${sp[Math.floor(R()*sp.length)]}" opacity=".55" transform="rotate(${(R()*50-25)|0} ${x|0} ${y|0})"/>`}
+  if(M.tiles)s+=`<defs><pattern id="ttile" patternUnits="userSpaceOnUse" width="48" height="32"><path d="M0 0H48M0 16H48M0 0V16M24 16V32" stroke="${M.tiles}" stroke-width="1.3" fill="none"/></pattern></defs><rect x="${B.x0-20}" y="${B.y0-20}" width="${B.x1-B.x0+40}" height="${B.y1-B.y0+40}" fill="url(#ttile)" opacity=".8"/>`;
+  if(M.rings){const [cx,cy,n]=M.rings;for(let i=1;i<=n;i++)s+=`<ellipse cx="${cx}" cy="${cy}" rx="${i*44}" ry="${i*36}" fill="none" stroke="${C.caveSpots[1]}" stroke-width="3" opacity=".45"/>`}
+  if(M.grain){for(let y=B.y0;y<B.y1;y+=26)s+=`<path d="M${B.x0} ${y} Q${W/2} ${y+(R()-.5)*14} ${B.x1} ${y+(R()-.5)*8}" stroke="${C.caveSpots[1]}" stroke-width="2.2" fill="none" opacity=".5"/>`}
+  /* 高地：整片較亮 */
+  for(const t of M._T){s+=`<path d="M-40 -40 L${W+40} -40 `+Array.from({length:Math.ceil((W+80)/20)+1},(_,i)=>{const x=W+40-i*20;return `L${x} ${v2f(t.E(x)+26)}`}).join(' ')+`Z" fill="${V.hi}" opacity=".72"/>`}
+  /* 水：外框（深色）→ 淺水帶 → 深水（多個橢圓合成一個輪廓） */
+  const lakes=(M.lakes||[]).map(([cx,cy,rx,ry])=>[cx,cy,rx,ry,v2wob(cx,cy,rx,ry,R)]);
+  const ice=M.ice;const WC=V.water;
+  if(lakes.length){for(const l of lakes)s+=`<path d="${v2d(v2wob(l[0],l[1],l[2]+12,l[3]+11,seededRnd(l[0]*7+l[1]),0.03))}" fill="${ice?'#FFFFFF':WC.edge}"/>`;
+    for(const l of lakes)s+=`<path d="${v2d(l[4])}" fill="${ice?'#DCEFF7':WC.sh}"/>`;
+    for(const l of lakes)s+=`<path d="${v2d(v2wob(l[0],l[1],Math.max(8,l[2]-12),Math.max(6,l[3]-11),seededRnd(l[0]*3+l[1]*5),0.04))}" fill="${ice?'#CBE5F1':WC.deep}"/>`;
+    if(!ice)for(const l of lakes)s+=`<path d="M${l[0]-l[2]*0.45} ${l[1]-l[3]*0.3} q${l[2]*0.2} ${-l[3]*0.1} ${l[2]*0.42} 0" stroke="${WC.glint}" stroke-width="3" stroke-linecap="round" fill="none" opacity=".7"/>`;
+    if(ice){for(const l of lakes)s+=`<ellipse cx="${l[0]-l[2]*0.15}" cy="${l[1]-l[3]*0.2}" rx="${l[2]*0.6}" ry="${l[3]*0.42}" fill="#EAF6FB" opacity=".7"/>`;
+      for(const l of lakes){const r=seededRnd(hashStr('ice|'+l[0]+','+l[1]));for(let k=0;k<2;k++){let x=l[0]+(r()-0.5)*l[2],y=l[1]+(r()-0.5)*l[3],d=`M${x|0} ${y|0}`;const a=r()*6.28;for(let j=0;j<4;j++){x+=Math.cos(a+(r()-0.5)*1.2)*l[2]*0.16;y+=Math.sin(a+(r()-0.5)*1.2)*l[3]*0.16;d+=` L${x|0} ${y|0}`}s+=`<path d="${d}" fill="none" stroke="#A9C8D8" stroke-width="2.2" stroke-linecap="round" opacity=".7"/><path d="${d}" fill="none" stroke="#FFFFFF" stroke-width="1.1" stroke-linecap="round"/>`}}}}
+  for(const r of M._RV){const rb=r.rb,inner=v2ribbon(r.p,r.w-22,hashStr('ri'+M.id),{var:0.2,widen:r.widen||0,pinch:r.pinch});
+    s+=`<path d="${v2d(v2ribbon(r.p,r.w+18,hashStr('ro'+M.id),{var:0.2,widen:r.widen||0,pinch:r.pinch}).poly)}" fill="${WC.edge}"/><path d="${v2d(rb.poly)}" fill="${WC.sh}"/><path d="${v2d(inner.poly)}" fill="${WC.deep}"/>`;
+    for(let i=8;i<rb.pts.length-8;i+=22){const [x,y]=rb.pts[i];s+=`<path d="M${v2f(x-8)} ${v2f(y)} q6 -3 14 0" stroke="${WC.glint}" stroke-width="2" fill="none" opacity=".6"/>`}}
+  if(M._CH){const rb=M._CH.rb,inner=v2ribbon(M._CH.p,M._CH.w*0.55,hashStr('chi'+M.id),{var:0.22,pinch:M._CH.pinch});
+    s+=`<path d="${v2d(rb.poly)}" fill="#4A3020"/><path d="${v2d(rb.poly)}" fill="url(#chd)" opacity=".85"/><path d="${v2d(inner.poly)}" fill="#1A100A" opacity=".55"/>`;
+    s+=`<path d="M${rb.R.map(p=>v2f(p[0])+' '+v2f(p[1]+2)).join(' L')}" stroke="#FFF0C8" stroke-width="3" fill="none" opacity=".8"/><path d="M${rb.R.map(p=>v2f(p[0])+' '+v2f(p[1]+7)).join(' L')}" stroke="#8A6030" stroke-width="7" fill="none" opacity=".25"/>`}
+  /* 小路 */
+  const P=M._P,pc=cave?[C.cavePath[0],C.cavePath[1],C.caveSpots[1],C.caveSpots[0],C.caveEdge]:V.path;
+  for(const p of P)s+=`<path d="${v2d(v2ribbon(p.p,(p.w||52)+10,hashStr(M.id+'pe'+p.p[0]),{taper:p.end==='taper',taper0:p.start==='taper'}).poly)}" fill="${pc[0]}" opacity=".8"/>`;
+  for(const p of P)s+=`<path d="${v2d(p.rb.poly)}" fill="${pc[1]}"/>`;
+  for(const p of P){if(p.end==='dirt'){const q=p.p[p.p.length-1];s+=`<ellipse cx="${q[0]}" cy="${q[1]}" rx="${(p.w||52)*1.3}" ry="${(p.w||52)*0.85}" fill="${pc[0]}" opacity=".55"/><ellipse cx="${q[0]}" cy="${q[1]}" rx="${(p.w||52)*1.2}" ry="${(p.w||52)*0.75}" fill="url(#dirt)"/>`}
+    const w=p.w||52;for(let i=0;i<p.rb.pts.length;i+=7){const [x,y]=p.rb.pts[i];s+=`<ellipse cx="${(x+(R()-.5)*w*0.6)|0}" cy="${(y+(R()-.5)*12)|0}" rx="${5+R()*8|0}" ry="${3+R()*3|0}" fill="${pc[2+Math.floor(R()*2)]}" opacity=".7"/>`}
+    for(let i=0;i<p.rb.pts.length;i+=5)if(R()<.45){const [x,y]=p.rb.pts[i];s+=`<circle cx="${(x+(R()-.5)*w*0.84)|0}" cy="${(y+(R()-.5)*10)|0}" r="${(1.5+R()*1.5).toFixed(1)}" fill="${pc[4]}"/>`}}
+  /* 地上小草 230 撮（路、水、岩壁、樹叢下不撒） */
+  if(!cave)for(let i=0;i<230;i++){const x=30+R()*(W-60),y=70+R()*(H-80);if(P.some(p=>v2ribIn(p.rb,x,y,4))||lakes.some(l=>{const a=(x-l[0])/(l[2]+16),b=(y-l[1])/(l[3]+16);return a*a+b*b<1})||M._RV.some(r=>v2ribIn(r.rb,x,y,12))||(M._CH&&v2ribIn(M._CH.rb,x,y,14))||M._T.some(t=>{const e=t.E(x);return y>e+6&&y<e+t.H+14}))continue;
+    const c=V.tufts[Math.floor(R()*3)],k=0.8+R()*0.7;s+=`<path d="M${x|0} ${y|0} l${v2f(-3*k)} ${v2f(-7*k)} M${x|0} ${y|0} l0 ${v2f(-9*k)} M${x|0} ${y|0} l${v2f(3*k)} ${v2f(-7*k)}" stroke="${c}" stroke-width="1.6" stroke-linecap="round" fill="none" opacity=".5"/>`}
+  /* 光、樹蔭、花點 */
+  for(const [cx,cy,rx,ry] of M.suns||[])s+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#sun)"/>`;
+  for(const [cx,cy,rx,ry] of M._shades)s+=`<ellipse cx="${v2f(cx)}" cy="${v2f(cy)}" rx="${v2f(rx)}" ry="${v2f(ry)}" fill="url(#gsh)"/>`;
+  for(const [x,y,r,c] of M._drift){if(x<B.x0||x>B.x1||y<B.y0||y>B.y1||P.some(p=>v2ribIn(p.rb,x,y,0))||M._T.some(t=>{const e=t.E(x);return y>e+2&&y<e+t.H+16}))continue;s+=`<circle cx="${x|0}" cy="${y|0}" r="${r.toFixed(1)}" fill="${c}"/><circle cx="${x|0}" cy="${y|0}" r="${(r*.38).toFixed(1)}" fill="#E8B93C" opacity=".8"/>`}
+  /* 洞壁：沿可走範圍外圍一圈不規則的厚岩壁，出口是壁上的開口（51.1E） */
+  if(cave){const in_=[],n=72;const pad=M.wallPad||8;const cx=(B.x0+B.x1)/2,cy=(B.y0+B.y1)/2;
+    const shape=M.room||'rect';
+    for(let i=0;i<n;i++){const a=i/n*Math.PI*2;let x,y;
+      if(shape==='round'){x=cx+Math.cos(a)*((B.x1-B.x0)/2+pad);y=cy+Math.sin(a)*((B.y1-B.y0)/2+pad)}
+      else{const ca=Math.cos(a),sa=Math.sin(a),kx=((B.x1-B.x0)/2+pad)/Math.max(Math.abs(ca),1e-6),ky=((B.y1-B.y0)/2+pad)/Math.max(Math.abs(sa),1e-6),k=Math.min(kx,ky);x=cx+ca*k;y=cy+sa*k}
+      const j=1+0.025*Math.sin(i*1.7)+0.02*Math.sin(i*4.1);in_.push([cx+(x-cx)*j,cy+(y-cy)*j])}
+    s+=`<path d="M-60 -60 H${W+60} V${H+60} H-60 Z ${v2d(in_.slice().reverse())}" fill="${C.caveWall}" fill-rule="evenodd"/>`;
+    s+=`<path d="${v2d(in_)}" fill="none" stroke="${C.caveEdge}" stroke-width="3" opacity=".7"/><path d="${v2d(in_)}" fill="none" stroke="#000" stroke-width="14" opacity=".18" transform="translate(0 8)"/>`;
+    for(const e of M.exits){if(!e.side)continue;const h=e.w/2;if(e.side==='s')s+=`<path d="M${e.c-h} ${B.y1-6} Q${e.c} ${B.y1+20} ${e.c+h} ${B.y1-6} L${e.c+h} ${H+60} L${e.c-h} ${H+60}Z" fill="${C.caveGround}"/><rect x="${e.c-h}" y="${B.y1+30}" width="${e.w}" height="${H}" fill="#000" opacity=".45"/>`;
+      if(e.side==='n')s+=`<path d="M${e.c-h} ${B.y0+6} Q${e.c} ${B.y0-20} ${e.c+h} ${B.y0+6} L${e.c+h} -60 L${e.c-h} -60Z" fill="${C.caveGround}"/><rect x="${e.c-h}" y="-60" width="${e.w}" height="${B.y0-30+60}" fill="#000" opacity=".55"/>`;
+      if(e.side==='w')s+=`<rect x="-60" y="${e.c-h}" width="${B.x0+70}" height="${e.w}" fill="${C.caveGround}"/><rect x="-60" y="${e.c-h}" width="${B.x0+30}" height="${e.w}" fill="#000" opacity=".5"/>`;
+      if(e.side==='e')s+=`<rect x="${B.x1-10}" y="${e.c-h}" width="${W-B.x1+70}" height="${e.w}" fill="${C.caveGround}"/><rect x="${B.x1+30}" y="${e.c-h}" width="${W}" height="${e.w}" fill="#000" opacity=".5"/>`}}
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${s}</svg>`;
+}
+/* 地面圖：瀏覽器裡轉成一張圖（先用 SVG 圖、再畫進 canvas 轉成 PNG）；node（vm、總覽頁）裡直接放 SVG */
+const REG_GIMG={};
+function regGroundImg(M){
+  const key=M.bk+'|'+M.id,W=M.W,H=M.H;
+  if(typeof Blob==='undefined'||typeof URL==='undefined'||!URL.createObjectURL||typeof Image==='undefined')return regGroundSVG(M).replace('<svg xmlns="http://www.w3.org/2000/svg" ','<svg x="0" y="0" ');
+  if(!REG_GIMG[key]){try{const u=URL.createObjectURL(new Blob([regGroundSVG(M)],{type:'image/svg+xml'}));REG_GIMG[key]=u;
+    const im=new Image();im.onload=()=>{try{const k=1.5,cv=document.createElement('canvas');cv.width=W*k;cv.height=H*k;cv.getContext('2d').drawImage(im,0,0,W*k,H*k);
+      cv.toBlob(b=>{if(!b)return;const pu=URL.createObjectURL(b);REG_GIMG[key]=pu;try{const el=document.getElementById('rgimg');if(el&&el.dataset.k===key)el.setAttribute('href',pu)}catch(e){}},'image/png')}catch(e){}};im.src=u}
+    catch(e){return regGroundSVG(M).replace('<svg xmlns="http://www.w3.org/2000/svg" ','<svg x="0" y="0" ')}}
+  return `<image id="rgimg" data-k="${key}" href="%%G%%" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>`;
+}
+/* 階地（DOM：岩壁圖、石階、蓋過邊緣的草帶） */
+function regTerraceHTML(M){
+  const bk=M.bk,V=REG_V2[bk],W=M.W;let s='';if(!M._T.length||!V.terr)return s;const TC=V.terr;
+  for(const [ti,t] of M._T.entries()){const R=seededRnd(hashStr('ter|'+M.id+ti)),E=t.E,TH=t.H;
+    s+=`<defs><linearGradient id="shg${ti}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${TC.shade}" stop-opacity=".55"/><stop offset="1" stop-color="${TC.shade}" stop-opacity="0"/></linearGradient><radialGradient id="worn${ti}"><stop offset="0" stop-color="${V.path[1]}" stop-opacity=".85"/><stop offset="1" stop-color="${V.path[1]}" stop-opacity="0"/></radialGradient></defs>`;
+    const xs=[];for(let x=-40;x<=W+40;x+=20)xs.push(x);
+    s+=`<path d="M${xs.map(x=>x+' '+v2f(E(x)+TH-10)).join(' L')} L${xs.slice().reverse().map(x=>x+' '+v2f(E(x)+TH+70)).join(' L')}Z" fill="url(#shg${ti})"/>`;
+    for(const [a,b] of [[-40,t.gap[0]],[t.gap[1],W+40]]){const q=[];for(let x=a;x<=b;x+=10)q.push(x);s+=`<path d="M${q.map(x=>x+' '+v2f(E(x)+10)).join(' L')} L${q.slice().reverse().map(x=>x+' '+v2f(E(x)+TH-8)).join(' L')}Z" fill="${TC.rock}"/>`}
+    s+=`<path d="M${t.gap[0]-6} ${v2f(E(t.gap[0])+14)} L${t.gap[1]+6} ${v2f(E(t.gap[1])+14)} L${t.gap[1]+6} ${v2f(E(t.gap[1])+TH-6)} L${t.gap[0]-6} ${v2f(E(t.gap[0])+TH-6)}Z" fill="${TC.rockD}"/>`;
+    const a=v2artDim(bk,TC.art);if(a){const th=(TH+26)/a.dh,tiles=[];const aw=a.w*th;
+      for(const [p,q] of [[-40,t.gap[0]+10],[t.gap[1]-10,W+40]]){const n=Math.max(1,Math.round((q-p)/(aw*0.6)));for(let i=0;i<n;i++){const k=0.9+R()*0.24,cx=p+(i+.5)*(q-p)/n+(R()-.5)*12;tiles.push([E(cx)+TH+(R()-.5)*8,cx,k,R()<.5])}}
+      tiles.sort((p,q)=>p[0]-q[0]);for(const [by,cx,k,fl] of tiles){const hh=a.dh*th*k,ww=a.w*th*k;s+=`<g transform="translate(${v2f(cx)} ${v2f(by)}) scale(${fl?-1:1} 1)"><image href="assets/${regDir(bk)}/${a.f}.png" x="${v2f(-ww/2)}" y="${v2f(-hh)}" width="${v2f(ww)}" height="${v2f(hh)}"/></g>`}}
+    /* 高地的草蓋過邊緣（54.1） */
+    const ph=R()*6,bot=xs.map(x=>[x,E(x)+7+5*Math.abs(Math.sin(x*0.085+ph))+3*Math.sin(x*0.23+ph)]);
+    s+=`<path d="M${bot.map(p=>p[0]+' '+v2f(p[1]+7)).join(' L')}" fill="none" stroke="#3A2A1C" stroke-width="9" opacity=".22" stroke-linecap="round"/>`;
+    s+=`<path d="M${xs.map(x=>x+' '+v2f(E(x)-40)).join(' L')} L${bot.slice().reverse().map(p=>p[0]+' '+v2f(p[1])).join(' L')}Z" fill="${V.lip}"/>`;
+    s+=`<path d="M${bot.map(p=>p[0]+' '+v2f(p[1])).join(' L')}" fill="none" stroke="${V.lipLine}" stroke-width="2.2" stroke-linecap="round"/>`;
+    for(let i=2;i<xs.length-2;i+=1)if(R()<.5&&(xs[i]<t.gap[0]-10||xs[i]>t.gap[1]+10)){const x=xs[i],y=E(x)+9,c=TC.drip[Math.floor(R()*2)];s+=`<path d="M${x} ${v2f(y)} l-2 7 M${x+3} ${v2f(y)} l1 9 M${x+6} ${v2f(y)} l3 6" stroke="${c}" stroke-width="2" stroke-linecap="round" fill="none"/>`}
+    /* 石階：嵌在凹槽裡；高地上只畫一塊踩踏痕跡（54.2） */
+    const sx=(t.gap[0]+t.gap[1])/2,ey=E(sx);if(TC.stairs){const st=v2artDim(bk,TC.stairs);if(st){const sh=TH+28,sw=sh*st.iw/st.ih,x0=sx-sw/2,y0=ey+TH+14-sh;
+      s+=`<ellipse cx="${v2f(t.top[0]+t.u[0]*26)}" cy="${v2f(t.top[1]+t.u[1]*26)}" rx="46" ry="26" fill="url(#worn${ti})"/>`;
+      s+=`<g transform="translate(${v2f(sx)} 0) scale(${t.flip?-1:1} 1) translate(${v2f(-sx)} 0)"><image href="assets/${regDir(bk)}/${st.f}.png" x="${v2f(x0)}" y="${v2f(y0)}" width="${v2f(sw)}" height="${v2f(sh)}"/></g>`}}
+    else{s+=`<ellipse cx="${v2f(sx)}" cy="${v2f(ey-6)}" rx="40" ry="20" fill="url(#worn${ti})"/>`}
+    if(t.fall){const wf=v2artDim(bk,'waterfall');if(wf){const fh=TH+70,fw=fh*wf.iw/wf.ih,fx=t.fall,fy=E(fx)+TH+26;s+=`<image href="assets/${regDir(bk)}/${wf.f}.png" x="${v2f(fx-fw/2)}" y="${v2f(fy-fh)}" width="${v2f(fw)}" height="${v2f(fh)}"/>`+wfFxHTML(fx-fw/2,fy-fh,fw,fh)}}
+  }
+  return s;
+}
+/* 裂谷遠側岸壁（54.4）：沿上岸連續排砂岩 */
+function regChasmHTML(M){if(!M._CH)return '';const a=v2artDim(M.bk,'cliff');if(!a)return '';const L=M._CH.rb.L,R=seededRnd(hashStr('chw'+M.id));let s='';const th=0.62;
+  for(let i=0;i<L.length;i+=7){const [x,y]=L[i],k=0.85+R()*0.25,hh=a.dh*th*k,ww=a.w*th*k;s+=`<g transform="translate(${v2f(x)} ${v2f(y+hh*0.82)}) scale(${R()<.5?-1:1} 1)"><image href="assets/${regDir(M.bk)}/${a.f}.png" x="${v2f(-ww/2)}" y="${v2f(-hh)}" width="${v2f(ww)}" height="${v2f(hh)}" opacity=".95"/></g>`}
+  const V=REG_V2[M.bk];s+=`<path d="M${L.map(p=>v2f(p[0])+' '+v2f(p[1]-34)).join(' L')} L${L.slice().reverse().map(p=>v2f(p[0])+' '+v2f(p[1]+4)).join(' L')}Z" fill="${V.lip}"/><path d="M${L.map(p=>v2f(p[0])+' '+v2f(p[1]+4)).join(' L')}" stroke="${V.lipLine}" stroke-width="2.2" fill="none"/>`;
+  return s}
+function regGroundV2(M,flat){const C=REGION_CFG[M.bk],R=seededRnd(hashStr('fl|'+M.id));
+  let s=`<defs><radialGradient id="sglow"><stop offset="0" stop-color="${C.glow}" stop-opacity=".7"/><stop offset="1" stop-color="${C.glow}" stop-opacity="0"/></radialGradient></defs>`;
+  s+=`<rect x="-600" y="-600" width="${M.W+1200}" height="${M.H+1200}" fill="${M.cave?C.caveWall:C.outer}"/>`+regGroundImg(M);
+  for(const o of flat)s+=regObjHTML(o,M,R);
+  s+=regChasmHTML(M)+regTerraceHTML(M);
+  if(!C.noGate&&M.exits.some(e=>e.to==='farm')){const e=M.exits.find(x=>x.to==='farm');s+=gateSVG(e.c,M.H-22,'回農場')}
+  return s}
+/* 最上層：室外暗角；洞內昏暗（角色周圍與發光物件各亮一圈） */
+function regTopV2(M){const V=REG_V2[M.bk],W=M.W,H=M.H;
+  if(!M.cave)return `<defs><radialGradient id="vig" cx=".5" cy=".48" r=".72"><stop offset=".55" stop-color="${V.vig}" stop-opacity="0"/><stop offset="1" stop-color="${V.vig}" stop-opacity=".30"/></radialGradient></defs><rect x="0" y="0" width="${W}" height="${H}" fill="url(#vig)" pointer-events="none"/>`;
+  const glows=(M._objs||[]).length?[]:[];const GL=REGION_GLOW[M.bk]||{};
+  for(const o of (M.objs||[]).concat(M._glowExtra||[]))if(GL[o[0]])glows.push([o[1],o[2]-30]);
+  return `<defs><radialGradient id="cvh"><stop offset="0" stop-color="#000"/><stop offset=".6" stop-color="#000" stop-opacity=".9"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient><mask id="cvm" maskUnits="userSpaceOnUse" x="-100" y="-100" width="${W+200}" height="${H+200}"><rect x="-100" y="-100" width="${W+200}" height="${H+200}" fill="#fff"/><circle id="cvme" cx="${W/2}" cy="${H/2}" r="150" fill="url(#cvh)"/>${glows.map(([x,y])=>`<circle class="cvgl" cx="${x}" cy="${y}" r="78" fill="url(#cvh)"/>`).join('')}</mask></defs><rect x="-100" y="-100" width="${W+200}" height="${H+200}" fill="#0A0A14" opacity=".62" mask="url(#cvm)" pointer-events="none"/>`}
+
 const regCur=()=>regPrep(exBiome,regMap);
 const regSplitN=()=>{const M=regCur(),y=curMe().y;let n=0;for(const v of M._ys){if(v<=y)n++;else break}return n};
 function regWorld(){
@@ -4454,7 +4704,7 @@ function regWorld(){
   const bg=[];let fg='';for(const o of M._objs){if(o.y<=me.y)bg.push(o);else fg+=o.h}
   for(const it of exVisibleItems())bg.push({y:it.y,h:itemSVG(it,it.key===hoverItem)});
   for(const w of exVisiblePlants())bg.push({y:w.y,h:wpSVG(w,w.key===hoverWp)});
-  bg.sort((a,b)=>a.y-b.y);regFg=fg;return M._ground+bg.map(o=>o.h).join('');
+  bg.sort((a,b)=>a.y-b.y);regFg=fg+(M._top||'');return (M.v2?M._ground.replace('%%G%%',REG_GIMG[M.bk+'|'+M.id]||''):M._ground)+bg.map(o=>o.h).join('');
 }
 function regBlocked(M,x,y){
   const B=M.B;if(x<B.x0||x>B.x1||y<B.y0||y>B.y1)return true;
@@ -4462,6 +4712,8 @@ function regBlocked(M,x,y){
   const fx0=x-7,fx1=x+7,fy0=y-3,fy1=y+3;
   for(const r of M.blk)if(fx1>r[0]&&fx0<r[2]&&fy1>r[1]&&fy0<r[3])return true;
   for(const [cx,cy,rx,ry] of M.lk){const a=(x-cx)/(rx-6),b=(y-cy)/(ry-6);if(a*a+b*b<1)return true}
+  if(M._RV)for(const r of M._RV)if(v2ribIn(r.rb,x,y,-6))return true;
+  if(M._CH&&v2ribIn(M._CH.rb,x,y,-2))return true;
   for(const [pts,wd] of M.rv||[])for(let i=0;i+1<pts.length;i++){/* 河：到折線的距離小於半寬（留 6px）就擋路 */
     const [ax,ay]=pts[i],[bx,by]=pts[i+1],vx=bx-ax,vy=by-ay,L=vx*vx+vy*vy||1,t=clamp(((x-ax)*vx+(y-ay)*vy)/L,0,1),dx=x-ax-vx*t,dy=y-ay-vy*t;
     if(dx*dx+dy*dy<(wd/2-6)*(wd/2-6))return true}
@@ -4519,6 +4771,7 @@ function regCam(){
   const M=regCur(),vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zoom,w=vw/k,h=vh/k,m=curMe();
   let x=m.x-w/2,y=m.y-h*0.55;x=M.W<=w?(M.W-w)/2:clamp(x,0,M.W-w);y=M.H<=h?(M.H-h)/2:clamp(y,0,M.H-h);
   sceneEl.setAttribute('viewBox',`${x.toFixed(1)} ${y.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
+  if(M.cave&&M.v2){try{const c=document.getElementById('cvme');if(c){c.setAttribute('cx',m.x.toFixed(0));c.setAttribute('cy',(m.y-24).toFixed(0))}}catch(e){}}
   if(regSplitN()!==regSplitLast)renderWorld();/* 角色走過物件的 y：重新分前景、背景（被樹冠遮住） */
 }
 const regGatePos=()=>{const M=regCur(),e=M.exits.find(x=>x.to==='farm');return e?[e.c,M.B.y1-10]:[-1e5,-1e5]};

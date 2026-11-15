@@ -15,8 +15,11 @@ def put(k,x,y,s=1.0,flip=None,br=1.0,shadow=True,flat=False):
     objs.append((-1e9 if flat else y,g))
 W,H=800,1100
 # ---------- terrace edge (wavy) ----------
-def E(x): return 438+26*math.sin(x/800*math.pi*1.7+0.6)+10*math.sin(x/800*math.pi*4.3)
-TH=108; GAP=(430,526)
+def E(x): return 452+14*math.sin(x/800*math.pi*1.25+0.4)
+TH=112; GAP=(418,538)
+SX=(GAP[0]+GAP[1])/2; SH=140; SW=SH*324/267
+STX0=SX-SW/2; STY0=E(SX)+TH+14-SH
+S_TOP=(STX0+SW*0.27,STY0+SH*0.12); S_BOT=(STX0+SW*0.76,STY0+SH*0.86)   # stairs are mirrored: they climb up-left
 # ---------- ground ----------
 g=[f'<rect x="-40" y="-40" width="{W+80}" height="{H+80}" fill="#A8C478"/>']
 for i in range(16):
@@ -44,9 +47,10 @@ def ribbon(P,w,seed,taper=False):
         if taper: hw*=min(1,(n-1-i)/14+0.15)
         L.append((x+nx*(hw+rr.uniform(-2,2)),y+ny*(hw+rr.uniform(-2,2)))); Rr.append((x-nx*(hw+rr.uniform(-2,2)),y-ny*(hw+rr.uniform(-2,2))))
     poly=L+Rr[::-1]; return 'M'+' L'.join(f'{x:.1f} {y:.1f}' for x,y in poly)+'Z', pts
-paths=[ ([(400,1140),(392,1000),(430,880),(470,760),(455,640),(478,560)],58,1,False),      # south exit -> stairs
-        ([(-40,835),(90,820),(220,850),(340,840),(446,800)],50,2,False),                  # west exit joins
-        ([(478,450),(470,380),(420,310),(330,265),(250,250)],46,3,True) ]                 # top: stairs -> lookout clearing
+dx,dy=S_TOP[0]-S_BOT[0],S_TOP[1]-S_BOT[1]; dl=math.hypot(dx,dy); ux,uy=dx/dl,dy/dl
+paths=[ ([(400,1140),(410,1010),(470,900),(540,790),(S_BOT[0]-ux*110,S_BOT[1]-uy*110),(S_BOT[0]-ux*40,S_BOT[1]-uy*40),(S_BOT[0]+ux*6,S_BOT[1]+uy*6)],56,1,False),   # south exit -> foot of stairs, arriving along the stairs' axis
+        ([(-40,835),(90,822),(230,850),(360,862),(462,905)],48,2,False),                                                # west exit joins the main path
+      ]
 pe=[];pf=[];pp=[]
 for P,w,sd,tp in paths:
     d,pts=ribbon(P,w+10,sd,tp); pe.append(f'<path d="{d}" fill="#B5A678" opacity=".8"/>')
@@ -58,14 +62,14 @@ for P,w,sd,tp in paths:
         if rr.random()<.45: pp.append(f'<circle cx="{x+rr.uniform(-w*.42,w*.42):.0f}" cy="{y+rr.uniform(-5,5):.0f}" r="{rr.uniform(1.5,3):.1f}" fill="#A8997A"/>')
 # lookout clearing (dirt patch) at end of top path
 clear=f'<ellipse cx="225" cy="255" rx="92" ry="54" fill="#B5A678" opacity=".8"/><ellipse cx="225" cy="255" rx="84" ry="47" fill="#D2C598"/>'
-clear=f'<ellipse cx="225" cy="255" rx="88" ry="50" fill="#D2C598"/>'
-g+= pe+[f'<ellipse cx="225" cy="255" rx="94" ry="56" fill="#B5A678" opacity=".8"/>']+pf+[clear]+pp
+clear=''
+g+= pe+pf+pp
 # grass tufts & tiny flowers on ground (decals)
 def inpath(x,y):
     for P,w,sd,tp in paths:
         for (px,py) in spline(P,20):
             if abs(px-x)<w*0.55 and abs(py-y)<w*0.55: return True
-    return math.hypot((x-225)/90,(y-255)/52)<1
+    return False
 for i in range(230):
     x,y=R.uniform(30,770),R.uniform(70,1070)
     if inpath(x,y) or (E(x)+8<y<E(x)+TH+14): continue
@@ -82,7 +86,7 @@ t.append(f'<path d="{sh}" fill="url(#shg)"/>')
 for a,b in ((-40,GAP[0]),(GAP[1],840)):
     d='M'+' L'.join(f'{x} {E(x)+10:.1f}' for x in range(a,b+1,10))+' '+' '.join(f'L{x} {E(x)+TH-8:.1f}' for x in range(b,a-1,-10))+'Z'
     t.append(f'<path d="{d}" fill="#9F8A7C"/>')
-t.append(f'<path d="M{GAP[0]-6} {E(GAP[0])+14:.0f} L{GAP[1]+6} {E(GAP[1])+14:.0f} L{GAP[1]+6} {E(GAP[1])+TH-6:.0f} L{GAP[0]-6} {E(GAP[0])+TH-6:.0f}Z" fill="#6E5C50"/>')
+t.append(f'<path d="M{GAP[0]-6} {E(GAP[0])+14:.0f} L{GAP[1]+6} {E(GAP[1])+14:.0f} L{GAP[1]+6} {E(GAP[1])+TH-6:.0f} L{GAP[0]-6} {E(GAP[0])+TH-6:.0f}Z" fill="#8C796C"/>')
 tiles=[]
 aw=128*1.0
 for a,b in ((-40,GAP[0]+10),(GAP[1]-10,840)):
@@ -94,8 +98,22 @@ w0,h0=DIM['cliff']
 for by,cx,k,fl in tiles:
     hh=137*k; ww=hh*w0/h0
     t.append(f'<g transform="translate({cx:.1f} {by:.1f}) scale({-1 if fl else 1} 1)"><image href="{A}cliff.png" x="{-ww/2:.1f}" y="{-hh:.1f}" width="{ww:.1f}" height="{hh:.1f}"/></g>')
-sx=(GAP[0]+GAP[1])/2; w0,h0=DIM['stairs']; shh=132; sww=shh*w0/h0
-t.append(f'<image href="{A}stairs.png" x="{sx-sww/2:.1f}" y="{E(sx)+TH+12-shh:.1f}" width="{sww:.1f}" height="{shh:.1f}"/>')
+# grass lip: the high ground itself flows over the edge and hides the sprites' own tops (a wall has a top; a cliff's top IS the ground)
+HI="#BED58E"
+for a_,b_ in ((-40,840),):
+    xs=list(range(a_,b_+1,6)); top=[(x,E(x)-40) for x in xs]; bot=[]
+    ph=R.uniform(0,6)
+    for x in xs: bot.append((x,E(x)+7+5*abs(math.sin(x*0.085+ph))+3*math.sin(x*0.23+ph)))
+    d='M'+' L'.join(f'{x} {y:.1f}' for x,y in top)+' '+' '.join(f'L{x} {y:.1f}' for x,y in bot[::-1])+'Z'
+    t.append(f'<path d="M'+' L'.join(f'{x} {y+7:.1f}' for x,y in bot)+f'" fill="none" stroke="#3A2A1C" stroke-width="9" opacity=".22" stroke-linecap="round"/>')
+    t.append(f'<path d="{d}" fill="{HI}"/>')
+    t.append(f'<path d="M'+' L'.join(f'{x} {y:.1f}' for x,y in bot)+f'" fill="none" stroke="#7C9A52" stroke-width="2.2" stroke-linecap="round"/>')
+    for x in xs[2:-2:3]:
+        if R.random()<.5:
+            y=E(x)+9; c=R.choice(['#86A85A','#9CBE6A'])
+            t.append(f'<path d="M{x} {y:.0f} l-2 7 M{x+3} {y:.0f} l1 9 M{x+6} {y:.0f} l3 6" stroke="{c}" stroke-width="2" stroke-linecap="round" fill="none"/>')
+t.append(f'<ellipse cx="{S_TOP[0]+ux*26:.0f}" cy="{S_TOP[1]+uy*26:.0f}" rx="46" ry="26" fill="url(#worn)"/>')   # no path on the high ground: only a worn patch at the head of the stairs
+t.append(f'<g transform="translate({SX:.1f} 0) scale(-1 1) translate({-SX:.1f} 0)"><image href="{A}stairs.png" x="{STX0:.1f}" y="{STY0:.1f}" width="{SW:.1f}" height="{SH:.1f}"/></g>')
 # ---------- border: staggered, varied, wavy inner edge ----------
 def exit_gap(side,v):
     if side=='s' and abs(v-400)<70: return True
@@ -140,13 +158,13 @@ def outcrop(cx,cy):
 # high ground: lookout with hero oak beside the clearing, flower meadow, outcrop
 put('oak',150,238,1.05,flip=False)
 meadow(318,318,9,74,30,pal=('#FFFFFF','#F6C9DA','#EBA9C6','#F7E68A')); meadow(585,255,12,105,48)
-outcrop(640,372); put('log',292,208,1.0)
+outcrop(655,300); put('log',292,208,1.0)
 grove(690,205,2,46)
 put('mush',235,262,1.1,shadow=False,flat=False)
 # edge dressing on the lip (sells that the top continues to the edge)
-for x in (110,330,640): put('bush' if R.random()<.5 else 'tg',x,E(x)+18,R.uniform(.7,.95),shadow=False)
+for x in (150,640): put('bush',x,E(x)+4,R.uniform(.7,.9),shadow=False)
 # low ground
-grove(215,650,3,56); grove(650,700,3,70,oak=False)
+grove(215,650,3,56); grove(700,690,3,52,oak=False)
 meadow(615,905,11,110,46)
 outcrop(120,720)
 for x in (90,300,600,730):   # things leaning against the cliff base
@@ -166,6 +184,6 @@ objs.append((1015,f'<g transform="translate(410 1015) scale(1.15)">{ava}</g>'))
 objs.append((300,f'<g transform="translate(270 300) scale(1.15)">{ava}</g>'))
 objs.sort(key=lambda o:o[0])
 css=open('out/game.css',encoding='utf8').read()
-defs='<defs><radialGradient id="gsh"><stop offset="0" stop-color="#4E6E2A" stop-opacity=".34"/><stop offset="1" stop-color="#4E6E2A" stop-opacity="0"/></radialGradient><radialGradient id="sun"><stop offset="0" stop-color="#FFF6C8" stop-opacity=".42"/><stop offset="1" stop-color="#FFF6C8" stop-opacity="0"/></radialGradient><radialGradient id="vig" cx=".5" cy=".48" r=".72"><stop offset=".55" stop-color="#22401A" stop-opacity="0"/><stop offset="1" stop-color="#22401A" stop-opacity=".30"/></radialGradient><linearGradient id="shg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3F5A22" stop-opacity=".55"/><stop offset="1" stop-color="#3F5A22" stop-opacity="0"/></linearGradient></defs>'
+defs='<defs><radialGradient id="worn"><stop offset="0" stop-color="#D2C598" stop-opacity=".85"/><stop offset="1" stop-color="#D2C598" stop-opacity="0"/></radialGradient><radialGradient id="gsh"><stop offset="0" stop-color="#4E6E2A" stop-opacity=".34"/><stop offset="1" stop-color="#4E6E2A" stop-opacity="0"/></radialGradient><radialGradient id="sun"><stop offset="0" stop-color="#FFF6C8" stop-opacity=".42"/><stop offset="1" stop-color="#FFF6C8" stop-opacity="0"/></radialGradient><radialGradient id="vig" cx=".5" cy=".48" r=".72"><stop offset=".55" stop-color="#22401A" stop-opacity="0"/><stop offset="1" stop-color="#22401A" stop-opacity=".30"/></radialGradient><linearGradient id="shg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3F5A22" stop-opacity=".55"/><stop offset="1" stop-color="#3F5A22" stop-opacity="0"/></linearGradient></defs>'
 html=f'<!doctype html><html><head><meta charset="utf-8"><style>{css}</style><style>html,body{{margin:0;background:#222}}*{{animation:none!important}}</style></head><body><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">{defs}{"".join(g)}<ellipse cx="250" cy="270" rx="230" ry="130" fill="url(#sun)"/><ellipse cx="470" cy="830" rx="250" ry="170" fill="url(#sun)"/><ellipse cx="150" cy="262" rx="150" ry="52" fill="url(#gsh)"/>{"".join(SHADE)}{"".join(DRIFT)}{"".join(t)}{"".join(o[1] for o in objs)}<rect x="0" y="0" width="800" height="1100" fill="url(#vig)" pointer-events="none"/></svg></body></html>'
-open('mock_hill2.html','w',encoding='utf8').write(html); print(len(objs),'objects')
+open('mock_hill4.html','w',encoding='utf8').write(html); print(len(objs),'objects')

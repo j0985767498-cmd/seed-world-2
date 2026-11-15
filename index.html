@@ -1011,7 +1011,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-15a';
+const BUILD='2026-11-15b';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2079,6 +2079,7 @@ const isBack=(p,q)=>!!q.lid&&((p.par||[]).includes(q.lid)||(p.gpar||[]).includes
 function renderSheet(){
   if(!sheet)return;
   if(sheet.stall!=null){sb.innerHTML=stallHTML();bindStall();return}
+  if(sheet.town){sb.innerHTML=townSheetHTML();return}
   if(sheet.fplot){sb.innerHTML=fplotHTML();return}
   if(sheet.wp){sb.innerHTML=wpHTML(sheet.wpObj);return}
   if(sheet.sowPick){sb.innerHTML=sowPickHTML();return}
@@ -2155,6 +2156,7 @@ sb.addEventListener('click',e=>{
   if(sheet.sbc)return sbChoiceAction(b);
   if(sheet.tray)return trayAction(b);
   if(sheet.stall!=null)return stallAction(b);
+  if(sheet.town)return townAction(b);
   if(sheet.avatar)return avatarAction(b);
   if(sheet.orders)return orderAction(b);
   if(sheet.sign!=null)return signAction(b);
@@ -2801,8 +2803,8 @@ const LX0=76+MOX,LY0=130+MOY;
 function center(i){const c=i%COLS,r=Math.floor(i/COLS);return [LX0+84*c+(r%2)*42,LY0+24*r]}
 function defaultPos(){return Array.from({length:NPLOTS},(_,i)=>center(i))}
 const posOf=(st,i)=>(st&&st.plotPos&&st.plotPos[i])||null;
-const WORLD={farm:{W:1100,H:2200},market:{W:460,H:780}};
-const GATE={farm:[550,2150],market:[230,735]};
+const WORLD={farm:{W:1100,H:2200},market:{W:800,H:1100}};/* 15b：市集改成城鎮廣場（第 32 節） */
+const GATE={farm:[550,2150],market:[400,1052]};
 const ME0={x:550,y:1815};
 function snapPos(x,y){
   let fa=(x-LX0)/42,fb=(y-LY0)/24,a=Math.round(fa),b=Math.round(fb);
@@ -2818,9 +2820,9 @@ function plotSpotErr(st,x,y,skip){
   return '';
 }
 const plotCount=st=>(st.plotPos||[]).filter(Boolean).length;
-const STALLS=[[120,200],[340,200],[120,350],[340,350],[120,500],[340,500],[120,650],[340,650]];
+const STALLS=[[150,720],[270,720],[530,720],[650,720],[150,850],[270,850],[530,850],[650,850]];/* 15b：城鎮廣場中南兩排，中間留走道；仍是 8 個（上架資料用攤位編號 0–7） */
 const AWN=['#D9473A','#3F86C4','#E0A82E','#3F7B38','#8E5CC8','#E0823D','#E26F9A','#3E9E92'];
-let scene='farm',viewing=null,visitMe={x:550,y:2100},marketMe={x:230,y:690},hoverPlot=null,hoverStall=null,selDecor=null,curPanel=null;
+let scene='farm',viewing=null,visitMe={x:550,y:2100},marketMe={x:400,y:1042},hoverPlot=null,hoverStall=null,selDecor=null,curPanel=null;
 const curMe=()=>scene==='market'?marketMe:scene==='explore'?exMe:viewing?visitMe:(state.me||(state.me={...ME0}));
 function gateSVG(x,y,label){return `<g stroke="#4A2A12" stroke-width="1.6" stroke-linejoin="round"><rect x="${x-38}" y="${y-50}" width="8" height="50" rx="2" fill="#B5763C"/><rect x="${x+30}" y="${y-50}" width="8" height="50" rx="2" fill="#B5763C"/><path d="M${x-50} ${y-58} Q${x} ${y-78} ${x+50} ${y-58} L${x+46} ${y-46} Q${x} ${y-64} ${x-46} ${y-46}Z" fill="#D9473A"/><rect x="${x-34}" y="${y-62}" width="68" height="20" rx="6" fill="#FFF3D6"/><text x="${x}" y="${y-47}" text-anchor="middle" font-size="12" font-weight="700" fill="#4A2A12" stroke="none" font-family="Noto Sans TC,sans-serif">${label}</text></g>`}
 const GROUND=(()=>{const R=srand(4242);let t='';for(let k=0;k<420;k++){const x=30+R()*1040,y=80+R()*2080,r=R();if(r<0.45)t+=`<path d="M${x.toFixed(0)} ${y.toFixed(0)} l2.5 -6 l2.5 6 M${(x+4).toFixed(0)} ${y.toFixed(0)} l2 -4.5 l2 4.5" stroke="#8FAA62" stroke-width="1.4" fill="none" stroke-linecap="round"/>`}return t})();/* 31.6：低彩度草叢、拿掉彩色小點 */
@@ -2850,32 +2852,19 @@ function farmWorld(st,hov,selD){
   return s;
 }
 function stallInfo(i){const ls=listings.filter(l=>!l.sold&&l.stall===i).sort((a,b)=>tms(a.createdAt)-tms(b.createdAt));return {ls,owner:ls.length?ls[0].sellerUid:null,ownerName:ls.length?ls[0].sellerName:''}}
-function stallSVG(i,hl){
-  const [x,y]=STALLS[i],inf=stallInfo(i),c=AWN[i];
-  let s=`<g data-stall="${i}" role="button" aria-label="攤位 ${i+1}" stroke="#3A2416" stroke-width="1.4" stroke-linejoin="round">${hl?`<ellipse cx="${x}" cy="${y+8}" rx="58" ry="12" fill="none" stroke="var(--mustard)" stroke-width="3" stroke-dasharray="6 4"/>`:''}<rect x="${x-46}" y="${y-88}" width="5" height="60" fill="#7E5530"/><rect x="${x+41}" y="${y-88}" width="5" height="60" fill="#7E5530"/>`;
-  for(let k=0;k<5;k++)s+=`<path d="M${(x-52+k*20.8).toFixed(1)} ${y-98} h20.8 v14 q-10.4 8 -20.8 0z" fill="${k%2?'#F7F4EC':c}"/>`;
-  s+=`<rect x="${x-50}" y="${y-30}" width="100" height="30" fill="#B98A57" stroke="#7E5530"/><rect x="${x-54}" y="${y-36}" width="108" height="8" fill="#8A6238"/>`;
-  inf.ls.slice(0,3).forEach((l,k)=>{if(l.kind==='item'){s+=`<svg x="${x-44+k*30}" y="${y-66}" width="30" height="32" viewBox="-16 -32 32 36">${itemArt(0,0,l.item)}</svg>`;return}const lot=lotOf(l),ph=phen(lot.m,l.crop);s+=`<svg x="${x-44+k*30}" y="${y-66}" width="30" height="32" viewBox="-1.5 -1.6 3 3.2" stroke="none">${fruitInner(ph,1,l.crop)}</svg>`});
+function stallSVG(i,hl){/* 15b：攤位用 assets/town/ 的圖，紅綠交錯；櫃台上放前 3 件商品，頂上掛攤主名牌（點擊範圍在 marketWorld 另外畫） */
+  const [x,y]=STALLS[i],inf=stallInfo(i),im=i%2?'stall_green':'stall_red',[iw,ih]=TOWN_IMG[im],dh=105,w=dh*iw/ih,cy=y-dh*0.40;
+  let s=`<g>${hl?`<ellipse cx="${x}" cy="${y+18}" rx="48" ry="11" fill="none" stroke="var(--mustard)" stroke-width="3" stroke-dasharray="6 4"/>`:''}<ellipse cx="${x}" cy="${y-1}" rx="${f1(w*0.4)}" ry="7" fill="rgba(90,70,40,.22)"/><image href="assets/town/${im}.png" x="${f1(x-w/2)}" y="${y-dh}" width="${f1(w)}" height="${dh}"/>`;
+  inf.ls.slice(0,3).forEach((l,k)=>{const gx=x-36+k*24;if(l.kind==='item'){s+=`<svg x="${gx}" y="${f1(cy-26)}" width="24" height="26" viewBox="-16 -32 32 36">${itemArt(0,0,l.item)}</svg>`;return}const lot=lotOf(l),ph=phen(lot.m,l.crop);s+=`<svg x="${gx}" y="${f1(cy-26)}" width="24" height="26" viewBox="-1.5 -1.6 3 3.2" stroke="none">${fruitInner(ph,1,l.crop)}</svg>`});
   const t=inf.owner?(inf.owner===uid?'你的攤位':`${inf.ownerName} 的攤位`):'空攤位';
-  s+=`<rect x="${x-44}" y="${y-122}" width="88" height="20" rx="4" fill="#F7F4EC" stroke="#7E5530"/><text x="${x}" y="${y-108}" text-anchor="middle" font-size="10" font-weight="700" fill="#2A1A0C" stroke="none" font-family="Noto Sans TC,sans-serif">${esc(t.length>9?t.slice(0,8)+'…':t)}</text>`;
-  if(inf.ls.length)s+=`<text x="${x}" y="${y-10}" text-anchor="middle" font-size="10" fill="#3A2614" stroke="none" font-family="Noto Sans TC,sans-serif">${inf.ls.length} 件商品</text>`;
+  s+=`<rect x="${x-42}" y="${y-dh-20}" width="84" height="18" rx="4" fill="#F7F4EC" stroke="#4A3020" stroke-width="1.3"/><text x="${x}" y="${y-dh-7}" text-anchor="middle" font-size="10" font-weight="700" fill="#2A1A0C" font-family="Noto Sans TC,sans-serif">${esc(t.length>9?t.slice(0,8)+'…':t)}</text>`;
+  if(inf.ls.length)s+=`<text x="${x}" y="${y+14}" text-anchor="middle" font-size="10" fill="#3A2614" stroke="#F3EAD6" stroke-width="2.5" paint-order="stroke" font-family="Noto Sans TC,sans-serif">${inf.ls.length} 件商品</text>`;
   return s+'</g>';
-}
-function marketWorld(hl){
-  const {W,H}=WORLD.market;
-  let s=`<rect x="-600" y="-600" width="${W+1200}" height="${H+1200}" fill="#5E9E38"/><rect x="10" y="50" width="${W-20}" height="${H-60}" rx="34" fill="#E8D7B0" stroke="#8A6A3A" stroke-width="3"/>`;
-  for(let r=0;r*22+70<=H-30;r++)for(let c=0;c*44<W;c++){const x=30+c*44+(r%2)*22,y=70+r*22;if(x>W-30)continue;s+=`<polygon points="${x},${y-11} ${x+22},${y} ${x},${y+11} ${x-22},${y}" fill="${(r+c)%3===0?'#F3E6C6':'#EADBB6'}" stroke="#D2BD8E" stroke-width=".8"/>`}
-  s+=`<g stroke="#3A2416" stroke-width="1.3" stroke-linejoin="round">`+DECOR_MAP.fountain.f(230,435,'');
-  for(const [x,y] of [[34,100],[426,100],[34,720],[426,720],[34,420],[426,420]])s+=DECOR_MAP.tree.f(x,y,'');
-  s+=`</g>`;
-  STALLS.forEach((_,i)=>{s+=stallSVG(i,hl===i)});
-  s+=`<path d="M230 700 V738" stroke="#BFAE88" stroke-width="40"/>`+gateSVG(230,738,'回農場');
-  return s;
 }
 function renderWorld(){
   if(!state)return;const L=document.getElementById('worldLayer');
   if(scene==='market'){L.innerHTML=marketWorld(hoverStall);return}
-  {const F=document.getElementById('fgLayer');if(F&&regFg&&!regIn()){F.innerHTML='';regFg=''}}
+  {const F=document.getElementById('fgLayer');if(F&&(regFg||townFgOn)&&!regIn()&&scene!=='market'){F.innerHTML='';regFg='';townFgOn=false}}
   if(scene==='explore'){L.innerHTML=exploreWorld();if(regHas(exBiome)){const F=document.getElementById('fgLayer');if(F)F.innerHTML=regFg}return}
   if(viewing){L.innerHTML=viewing.st?farmWorld(viewing.st,hoverPlot,null):`<text x="230" y="300" text-anchor="middle" font-size="16" fill="var(--muted)">讀取朋友的農場中…</text>`;return}
   L.innerHTML=farmWorld(state,hoverPlot,selDecor);
@@ -2891,6 +2880,7 @@ function updateCam(){
   let x=m.x-w/2,y=m.y-h*0.55;
   x=W<=w?(W-w)/2:clamp(x,0,W-w);y=H+80<=h?(H-h)/2:clamp(y,-70,H-h+80);
   sceneEl.setAttribute('viewBox',`${x.toFixed(1)} ${y.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
+  if(scene==='market'&&townSplitN()!==townSplit)renderWorld();/* 15b：被建築、攤位遮住 */
 }
 window.addEventListener('resize',updateCam);
 
@@ -2908,7 +2898,7 @@ function listingCard_(l){
 function openStall(i){sheet={stall:i,step:'view',lot:null,d1:'1',d2:'',err:''};renderSheet();openSheetUI()}
 function stallHTML(){
   const i=sheet.stall,inf=stallInfo(i);
-  const title=inf.owner?(inf.owner===uid?'你的攤位':`${esc(inf.ownerName)} 的攤位`):'空攤位';
+  const title=i<0?'道具行':inf.owner?(inf.owner===uid?'你的攤位':`${esc(inf.ownerName)} 的攤位`):'空攤位';
   let h=`<h2>${title}</h2>`;
   if(sheet.step==='pick'){
     h+=`<p class="note">選一包要上架的種子。</p><div class="filters">${filtersHTML(uiCrop,'data-sc')}</div>`;
@@ -2935,6 +2925,7 @@ function stallHTML(){
     const ph=phen(l.m,l.crop),n=lc(l);
     return h+`<div class="lot-top">${fruitSVG(ph,l.crop,56)}<div><div class="lot-name">${esc(l.name)}</div><div class="meta">${CROPS[l.crop].n}・剩 ${n} 顆</div></div></div><div class="regbox sellbox"><label>數量（最多 ${n} 顆）<input id="f1" type="number" inputmode="numeric" min="1" max="${n}" value="${esc(sheet.d1)}"></label><label>價格（金幣）<input id="f2" type="number" inputmode="numeric" min="1" value="${esc(sheet.d2)}"></label><div class="err" id="ferr">${sheet.err}</div><div class="row2"><button class="btn primary" data-act="ssave">確定上架</button><button class="btn" data-act="sback">返回</button></div></div>`;
   }
+  if(i<0)return h+`<p class="note">道具行隨時收購道具：生長加速劑每次 ${NPC_BUY.acc} 金幣、誘變劑每瓶 ${NPC_BUY.mut} 金幣。</p><button class="btn primary" data-act="nstart">賣道具給道具行</button>`;/* 15b：城鎮的道具行 */
   if(!inf.owner)h+=`<p class="note">這個攤位目前沒人使用。在這裡上架種子或道具就能占用它，全部賣完後攤位會自動空出來，讓別人使用。</p><div class="row2"><button class="btn primary" data-act="sstart">上架種子</button><button class="btn primary" data-act="istart">上架道具</button></div>`;
   else if(inf.owner===uid)h+=`<p class="note">你有 ${inf.ls.length} 件商品在這裡販售。朋友買走後，金幣會自動入帳。</p><div class="row2"><button class="btn primary" data-act="sstart">再上架種子</button><button class="btn primary" data-act="istart">再上架道具</button></div>`+inf.ls.map(listingCard).join('');
   else h+=`<p class="note">${esc(inf.ownerName)} 正在販售 ${inf.ls.length} 件商品。</p>`+inf.ls.map(listingCard).join('');
@@ -3116,6 +3107,7 @@ function onNews(docs){
   const fresh=docs.filter(d=>d.v===4&&!newsSeen.has(d.id)&&(d.at||0)>NEWS_T0-5*60e3).sort((a,b)=>(a.at||0)-(b.at||0));
   for(const d of docs)newsSeen.add(d.id);
   for(const d of fresh)newsQ.push(d);
+  newsRecent=docs.filter(d=>d.v===4).sort((a,b)=>(b.at||0)-(a.at||0)).slice(0,20);/* 15b：城鎮公布欄 */
   if(newsQ.length>8)newsQ=newsQ.slice(-8);
   runNews();
 }
@@ -3985,13 +3977,109 @@ const MARSH_MAPS={
     objs:[['glowmush',620,900],['glowmush',180,300],['glowmush',700,250],['glowmush',150,880],['stump',300,330],['stump',560,860],['mossylog',600,380],['boulder',250,850]],
     spawns:[[690,990],[300,940],[700,560],[420,220],[200,450]],items:[[120,760]]}
 };
+// ===== 城鎮（市集廣場，15b，第 32 節）：一張可以走動的廣場；建築走到門口點一下打開功能面板（不做室內）；素材 assets/town/ =====
+const TOWN_IMG={appraisal:[302,372],barrel:[173,220],bench:[224,220],bunting:[299,220],crates:[183,220],dessert_shop:[330,375],farm_hall:[310,380],fountain:[202,220],gate:[348,360],item_shop:[302,380],lamp_post:[70,220],lounge:[346,343],notice_board:[188,220],planter:[280,220],potted_shrub:[166,220],stall_green:[187,220],stall_red:[192,220],veg_basket:[187,220]};
+/* [檔名, 顯示高度, 碰撞寬, 碰撞高]：建築的碰撞蓋住整個房子（只能從正面靠近門口）；拱門、旗串不擋路 */
+const TOWN_ART={hall:['farm_hall',190,140,110],appraisal:['appraisal',175,128,100],lounge:['lounge',160,150,92],itemshop:['item_shop',160,112,92],dessert:['dessert_shop',160,128,92],
+  gate:['gate',140,0,0],fountain:['fountain',110,92,30],lamp:['lamp_post',100,12,8],bench:['bench',52,62,12],planter:['planter',50,74,16],shrub:['potted_shrub',60,30,12],
+  bunting:['bunting',72,0,0],notice:['notice_board',74,56,12],crates:['crates',54,56,14],barrel:['barrel',50,38,14],basket:['veg_basket',42,34,10]};
+const TOWN_FLAT={},TOWN_SWAY={shrub:1,bunting:1},TOWN_GLOW={lamp:0.86};/* 路燈的光暈在燈頭（顯示高度的 86%） */
+/* 建築與公布欄：k＝TOWN_ART 鍵、door＝門在圖上的左右位置（0–1）、sg＝招牌高度（顯示高度的比例，0＝不放招牌） */
+const TOWN_BLD=[{id:'appraisal',k:'appraisal',x:160,y:330,n:'品種鑑定所',door:0.46,sg:0.37},{id:'hall',k:'hall',x:400,y:330,n:'農會',door:0.5,sg:0.36},{id:'lounge',k:'lounge',x:640,y:330,n:'交誼廳',door:0.32,sg:0.36},
+  {id:'item',k:'itemshop',x:140,y:1010,n:'道具行',door:0.33,sg:0.42},{id:'dessert',k:'dessert',x:660,y:1010,n:'甜點店',door:0.47,sg:0.40},{id:'notice',k:'notice',x:540,y:980,n:'公布欄',door:0.5,sg:0}];
+/* NPC：外觀用現有換裝系統組；第 29、30 節做好前只打招呼 */
+const TOWN_NPC=[
+  {id:'tu',n:'阿土伯',x:458,y:372,at:'hall',av:{...AV_DEF,skin:2,face:1,hair:6,hairC:6,hat:1,top:2,topC:13,bottomC:12,shoeC:12},line:'年輕人，來逛市集啊？農會的事情還在準備，過陣子再來找我喔。'},
+  {id:'mo',n:'墨先生',x:212,y:372,at:'appraisal',av:{...AV_DEF,face:4,hair:10,hairC:0,top:3,topC:7,bottom:0,bottomC:7,shoe:1,shoeC:7,acc:2,accC:7},line:'我在收集稀有的果實。鑑定所裡可以看全服的圖鑑和紀錄榜。'},
+  {id:'mei',n:'小莓姊',x:730,y:1042,at:'dessert',av:{...AV_DEF,face:5,blush:1,hair:13,hairC:3,top:13,topC:5,bottom:4,bottomC:6,shoe:1,shoeC:5},line:'哈囉～甜點店還在裝潢中，之後有想要的顏色我會來拜託你喔！'},
+  {id:'kai',n:'阿凱',x:596,y:1004,at:'notice',av:{...AV_DEF,face:5,hair:15,hairC:2,hat:5,hatC:11,top:3,topC:11,bottom:3,bottomC:12,shoe:0,shoeC:12,acc:3,accC:12},line:'我正在準備一趟大探險……公布欄上偶爾會貼出有趣的消息，記得來看看。'}];
+const TOWN_MAPS={plaza:{n:'市集廣場',gx:1,gy:1,
+  exits:[{side:'s',c:400,w:110,to:'farm'}],
+  paths:[[[400,1110],[400,560]],[[400,560],[400,380]],[[150,380],[650,380]],[[118,1036],[400,1000],[656,1036]]],
+  blocks:[[44,104,756,236]].concat(STALLS.map(([x,y])=>[x-40,y-24,x+40,y+2])),
+  objs:[...TOWN_BLD.map(b=>[b.k,b.x,b.y]),['fountain',400,540],['bench',262,575],['bench',538,575],['planter',120,470],['planter',680,470],
+    ['lamp',330,620],['lamp',470,620],['lamp',330,960],['lamp',470,960],['bunting',210,640],['bunting',590,640],
+    ['crates',80,770],['barrel',720,770],['basket',80,900],['crates',720,900],['gate',400,1088]],
+  spawns:[],items:[]}};
+const townFront=b=>{const a=TOWN_ART[b.k],w=a[1]*TOWN_IMG[a[0]][0]/TOWN_IMG[a[0]][1];return [Math.round(b.x+(b.door-0.5)*w),b.y+26]};
+let townFg='',townSplit=-1,townFgOn=false,hoverTown=null;
+const townSplitN=()=>{const M=regPrep('town','plaza'),y=marketMe.y;let n=0;for(const v of M._ys){if(v<=y)n++;else break}for(const [,sy] of STALLS)if(sy<=y)n+=100;for(const p of TOWN_NPC)if(p.y<=y)n+=1e4;return n};
+function townSignSVG(b){const a=TOWN_ART[b.k],dh=a[1],w=dh*TOWN_IMG[a[0]][0]/TOWN_IMG[a[0]][1],[fx]=townFront(b),tw=b.n.length*11+14,y=b.y-dh*b.sg;
+  return `<g pointer-events="none"><rect x="${f1(fx-tw/2)}" y="${f1(y-9)}" width="${tw}" height="18" rx="4" fill="#F7F0DC" stroke="#4A3020" stroke-width="1.5"/><text x="${fx}" y="${f1(y+4.5)}" text-anchor="middle" font-size="11" font-weight="700" fill="#4A3020" font-family="Noto Sans TC,sans-serif">${b.n}</text></g>`}
+function townNpcSVG(p){return `<g transform="translate(${p.x} ${p.y}) scale(1.15)" pointer-events="none">${avatarSVG(p.av,false,{view:'front'})}${nameTag(p.n)}</g>`}
+const townRing=(x,y)=>`<ellipse cx="${x}" cy="${y}" rx="30" ry="9" fill="none" stroke="var(--mustard)" stroke-width="3" stroke-dasharray="6 4" pointer-events="none"/>`;
+/* 市集場景的畫面：物件、攤位、NPC 依 y 排序，比角色前面的放前景層；點擊範圍另外畫在最上面（透明），前景層不擋點擊 */
+function marketWorld(hl){
+  const M=regPrep('town','plaza'),me=marketMe;townSplit=townSplitN();
+  const bg=[],fg=[],add=(y,h)=>(y<=me.y?bg:fg).push({y,h});
+  for(const o of M._objs)add(o.y,o.h);
+  STALLS.forEach(([,y],i)=>add(y,stallSVG(i,hl===i)));
+  for(const b of TOWN_BLD)if(b.sg)add(b.y+0.5,townSignSVG(b));
+  for(const p of TOWN_NPC)add(p.y,townNpcSVG(p));
+  bg.sort((a,b)=>a.y-b.y);fg.sort((a,b)=>a.y-b.y);
+  townFg=fg.map(o=>o.h).join('');townFgOn=true;
+  try{const F=document.getElementById('fgLayer');if(F)F.innerHTML=townFg}catch(e){}
+  let ring='';
+  if(hoverTown){const b=TOWN_BLD.find(x=>x.id===hoverTown);if(b){const [fx,fy]=townFront(b);ring=townRing(fx,fy)}const p=TOWN_NPC.find(x=>x.id===hoverTown);if(p)ring=townRing(p.x,p.y+2)}
+  let hit='';const T='fill="rgba(0,0,0,0)"';
+  STALLS.forEach(([x,y],i)=>{hit+=`<rect data-stall="${i}" role="button" aria-label="攤位 ${i+1}" x="${x-46}" y="${y-110}" width="92" height="124" ${T}/>`});
+  for(const b of TOWN_BLD){const a=TOWN_ART[b.k],dh=a[1],w=dh*TOWN_IMG[a[0]][0]/TOWN_IMG[a[0]][1];hit+=`<rect data-bld="${b.id}" role="button" aria-label="${b.n}" x="${f1(b.x-w/2)}" y="${f1(b.y-dh)}" width="${f1(w)}" height="${dh+20}" ${T}/>`}
+  for(const p of TOWN_NPC)hit+=`<rect data-npc="${p.id}" role="button" aria-label="${p.n}" x="${p.x-16}" y="${p.y-70}" width="32" height="74" ${T}/>`;
+  return M._ground+bg.map(o=>o.h).join('')+ring+hit;
+}
+/* 走路：碰撞照地區地圖（regBlocked），撞到沿邊緣滑開；從南邊拱門走出去回農場 */
+function townMove(m,dx,dy){
+  const M=regPrep('town','plaza'),nx=m.x+dx,ny=m.y+dy;
+  if(regExitAt(M,nx,ny)){goFarm();return}
+  if(regBlocked(M,m.x,m.y)){if(!(nx<M.B.x0||nx>M.B.x1||ny<M.B.y0||ny>M.B.y1)){m.x=nx;m.y=ny}return}
+  if(!regBlocked(M,nx,ny)){m.x=nx;m.y=ny}else if(!regBlocked(M,nx,m.y))m.x=nx;else if(!regBlocked(M,m.x,ny))m.y=ny;
+}
+function townNearest(m){
+  let best=null,bd=1e9;
+  STALLS.forEach(([x,y],i)=>{const d=Math.hypot(x-m.x,(y+22-m.y)*1.3);if(d<bd){bd=d;best={t:'stall',i}}});
+  for(const b of TOWN_BLD){const [fx,fy]=townFront(b),d=Math.hypot(fx-m.x,(fy-m.y)*1.3);if(d<bd){bd=d;best={t:'bld',id:b.id}}}
+  for(const p of TOWN_NPC){const d=Math.hypot(p.x-m.x,(p.y-m.y)*1.3);if(d<bd){bd=d;best={t:'npc',id:p.id}}}
+  if(bd<58)return best;
+  const [gx,gy]=GATE.market;if(Math.hypot(gx-m.x,gy-m.y)<56)return {t:'gate'};
+  return null;
+}
+/* 點建築或 NPC：太遠就先走過去 */
+function townGo(kind,id){
+  const m=marketMe;let x,y,fn;
+  if(kind==='npc'){const p=TOWN_NPC.find(q=>q.id===id);if(!p)return;x=p.x;y=p.y+24;fn=()=>openTown('npc:'+id)}
+  else{const b=TOWN_BLD.find(q=>q.id===id);if(!b)return;[x,y]=townFront(b);fn=()=>openTown(id)}
+  if(Math.hypot(m.x-x,m.y-y)<60)fn();else walkTo(x,y,fn);
+}
+function openTown(id){
+  if(id==='item'){sheet={stall:-1,step:'view',lot:null,d1:'1',d2:'',err:''};renderSheet();openSheetUI();return}
+  sheet={town:id};renderSheet();openSheetUI();
+}
+let newsRecent=[];
+const agoTxt=t=>{const d=(Date.now()-(t||0))/60e3;return d<1?'剛剛':d<60?`${Math.floor(d)} 分鐘前`:d<1440?`${Math.floor(d/60)} 小時前`:`${Math.floor(d/1440)} 天前`};
+function townSheetHTML(){
+  const id=sheet.town;
+  if(id==='appraisal')return `<h2>品種鑑定所</h2><p class="note">全服的品種圖鑑、紀錄榜，還有你的收藏櫃都在這裡。</p><div class="row2"><button class="btn primary" data-act="twdex" data-k="dex">品種圖鑑</button><button class="btn" data-act="twdex" data-k="cab">收藏櫃</button></div><button class="btn" data-act="twdex" data-k="boards">紀錄榜</button>`;
+  if(id==='lounge')return `<h2>交誼廳</h2><p class="note">看看誰在線上、在留言板聊天，或去朋友的農場參觀。</p><button class="btn primary" data-act="twsoc">朋友與留言板</button>`;
+  if(id==='hall')return `<h2>農會</h2><p class="note">主線任務、NPC 委託和育種家等級正在準備中，即將開放。</p>`;
+  if(id==='dessert')return `<h2>甜點店</h2><p class="note">小莓姊的委託和好感度即將開放。</p>`;
+  if(id==='notice'){const ls=newsRecent.slice(0,12);return `<h2>公布欄</h2><p class="note">全服最近的消息（新品種、稀有發現…）。</p>`+(ls.length?ls.map(d=>`<div class="regbox" style="margin:6px 0;padding:8px 10px"><div>${esc(d.text||'')}</div><div class="meta">${agoTxt(d.at)}</div></div>`).join(''):'<p class="note">目前還沒有消息。</p>')}
+  if(String(id).startsWith('npc:')){const p=TOWN_NPC.find(q=>'npc:'+q.id===id);if(!p)return '';const b=TOWN_BLD.find(q=>q.id===p.at);
+    return `<h2>${p.n}</h2><div style="display:flex;gap:12px;align-items:center"><svg width="64" height="88" viewBox="-20 -60 40 66" aria-hidden="true">${avatarSVG(p.av,false,{view:'front'})}</svg><p style="flex:1;margin:0">「${esc(p.line)}」</p></div>`+(b?`<button class="btn" data-act="twgo" data-k="${b.id}">看看${b.n}</button>`:'')}
+  return '';
+}
+function townAction(b){
+  const a=b.dataset.act;
+  if(a==='twdex'){dexTab=b.dataset.k;closeSheet();openPanel('dex');return}
+  if(a==='twsoc'){closeSheet();openPanel('social');return}
+  if(a==='twgo'){openTown(b.dataset.k);return}
+}
 /* ===== 地區地圖通用化（14p，第 27 節 27.1）=====
    REGION_MAPS[地區][id]（格式同上面雪原的說明，另可加 rivers:[[[x,y],…],寬] 折線帶狀水面，擋路；橋、木棧道、踏腳石放 walks）。
    REGION_ART／REGION_IMG／REGION_FLAT／REGION_SWAY／REGION_GLOW 依地區分表；素材在 assets/<REGION_CFG.dir 或地區鍵>/。
    REGION_CFG[地區]：名稱、地面與洞內顏色、邊界自動排的樹與灌木、天氣、腳印。
    雪原的亂數種子、刷新點鍵值、多人頻道名稱和 14j 完全相同（vm 比對過）；還沒有地圖的地區（REGION_MAPS 沒有）照舊用無限方塊。 */
-const REGION_MAPS={snow:SNOW_MAPS,grass:GRASS_MAPS,forest:FOREST_MAPS,desert:DESERT_MAPS,marsh:MARSH_MAPS};
-const REGION_ART={snow:SNOW_ART,grass:GRASS_ART,forest:FOREST_ART,desert:DESERT_ART,marsh:MARSH_ART},REGION_IMG={snow:SNOW_IMG,grass:GRASS_IMG,forest:FOREST_IMG,desert:DESERT_IMG,marsh:MARSH_IMG},REGION_FLAT={snow:SNOW_FLAT,grass:GRASS_FLAT,forest:FOREST_FLAT,desert:DESERT_FLAT,marsh:MARSH_FLAT},REGION_SWAY={snow:SNOW_SWAY,grass:GRASS_SWAY,forest:FOREST_SWAY,desert:DESERT_SWAY,marsh:MARSH_SWAY},REGION_GLOW={snow:{glow:1},grass:{},forest:{glowmush:1},desert:{},marsh:{lantern:1,glowmush:1}};
+const REGION_MAPS={snow:SNOW_MAPS,grass:GRASS_MAPS,forest:FOREST_MAPS,desert:DESERT_MAPS,marsh:MARSH_MAPS,town:TOWN_MAPS};/* town 沒有 entry，所以 regHas('town') 是 false，探索流程不會用到 */
+const REGION_ART={snow:SNOW_ART,grass:GRASS_ART,forest:FOREST_ART,desert:DESERT_ART,marsh:MARSH_ART,town:TOWN_ART},REGION_IMG={snow:SNOW_IMG,grass:GRASS_IMG,forest:FOREST_IMG,desert:DESERT_IMG,marsh:MARSH_IMG,town:TOWN_IMG},REGION_FLAT={snow:SNOW_FLAT,grass:GRASS_FLAT,forest:FOREST_FLAT,desert:DESERT_FLAT,marsh:MARSH_FLAT,town:TOWN_FLAT},REGION_SWAY={snow:SNOW_SWAY,grass:GRASS_SWAY,forest:FOREST_SWAY,desert:DESERT_SWAY,marsh:MARSH_SWAY,town:TOWN_SWAY},REGION_GLOW={snow:{glow:1},grass:{},forest:{glowmush:1},desert:{},marsh:{lantern:1,glowmush:1},town:TOWN_GLOW};
 const REGION_CFG={
   snow:{name:'雪原',ground:'#E9EFF4',outer:'#E3EAF0',spots:['#DDE6ED','#F3F7F9'],path:['#D3DDE6','#DEE7EE'],water:['#9DBCCD','#C7E0EC'],cliff:['#8D9299','#767B83','#FFFFFF'],
     edgeTree:'pine',edgeBush:'bush',weather:'snow',shadow:'rgba(70,95,120,.2)',glow:'#C8F4FF',footprints:true,
@@ -4007,7 +4095,11 @@ const REGION_CFG={
     caveGround:'#C9A76E',caveOuter:'#5E4527',caveSpots:['#BF9C63','#D3B37C'],cavePath:['#B8955E','#C2A06A'],caveWall:'#8E6E44',caveEdge:'#E2C796'},
   marsh:{name:'濕地',dir:'wetland',ground:'#96AF78',outer:'#8AA36D',spots:['#8DA770','#A1B985'],path:['#A39A74','#B0A782'],water:['#6F9A92','#8FB8B0'],cliff:['#7E7A5E','#68654D','#96AF78'],
     edgeTree:'willow',edgeBush:'cattails',weather:'marsh',shadow:'rgba(30,50,30,.25)',glow:'#FFE6A8',footprints:false,
-    caveGround:'#5E4A34',caveOuter:'#291F14',caveSpots:['#55432E','#6A553C'],cavePath:['#6E5940','#79644A'],caveWall:'#4A3A26',caveEdge:'#927858'}
+    caveGround:'#5E4A34',caveOuter:'#291F14',caveSpots:['#55432E','#6A553C'],cavePath:['#6E5940','#79644A'],caveWall:'#4A3A26',caveEdge:'#927858'},
+  /* 15b 城鎮：暖灰米色石板（tiles＝石板細格線），外圍草地；不畫程式大門（noGate，用 gate 素材當入口拱門） */
+  town:{name:'市集',ground:'#E6DCC6',outer:'#A8C478',spots:['#DED3BC','#ECE3CF'],path:['#D6C6A4','#DED0B2'],water:['#9DBCCD','#C7E0EC'],cliff:['#9C8A6A','#857458','#E6DCC6'],tiles:'#D3C6AA',noGate:true,
+    edgeTree:'shrub',edgeBush:'planter',weather:null,shadow:'rgba(90,70,40,.22)',glow:'#FFE6A8',footprints:false,
+    caveGround:'#5A4A38',caveOuter:'#2C241B',caveSpots:['#52432F','#665440'],cavePath:['#6A5844','#74624C'],caveWall:'#3A2E22',caveEdge:'#A08A6A'}
 };
 const regHas=bk=>!!(REGION_MAPS[bk]&&REGION_MAPS[bk].entry);
 const regIn=()=>scene==='explore'&&regHas(exBiome);
@@ -4042,7 +4134,7 @@ function regPrep(bk,id){
 function regObjHTML(o,M,R){
   const bk=M.bk,cave=M.cave,a=REGION_ART[bk][o[0]];if(!a)return '';const im=REGION_IMG[bk][a[0]];if(!im)return '';const [iw,ih]=im,dh=a[1],w=dh*iw/ih,x=o[1],y=o[2];
   let s=`<ellipse cx="${f1(x)}" cy="${f1(y-1)}" rx="${f1(w*0.34)}" ry="${f1(Math.max(4,w*0.08))}" fill="${cave?'rgba(0,0,0,.3)':REGION_CFG[bk].shadow}"/>`;
-  if((REGION_GLOW[bk]||{})[o[0]])s+=`<circle class="glw" cx="${f1(x)}" cy="${f1(y-dh*0.45)}" r="58" fill="url(#sglow)"/>`;
+  {const gv=(REGION_GLOW[bk]||{})[o[0]];if(gv)s+=`<circle class="glw" cx="${f1(x)}" cy="${f1(y-dh*(gv<1?gv:0.45))}" r="58" fill="url(#sglow)"/>`}
   const img=`<image href="assets/${regDir(bk)}/${a[0]}.png" x="${f1(x-w/2)}" y="${f1(y-dh)}" width="${f1(w)}" height="${dh}"/>`;
   s+=(REGION_SWAY[bk]||{})[o[0]]&&R()<0.4?`<g class="sway" style="animation-delay:-${(R()*5).toFixed(1)}s">${img}</g>`:img;
   if(o[0]==='sign'&&o[3])s+=`<text x="${f1(x)}" y="${f1(y-dh*0.64)}" text-anchor="middle" font-size="${o[3].length>4?8.5:11}" font-weight="700" fill="#4A3020" font-family="Noto Sans TC,sans-serif">${esc(o[3])}</text>`;
@@ -4053,6 +4145,7 @@ function regGroundHTML(M,flat){
   let s=`<defs><radialGradient id="sglow"><stop offset="0" stop-color="${C.glow}" stop-opacity=".7"/><stop offset="1" stop-color="${C.glow}" stop-opacity="0"/></radialGradient></defs>`;
   s+=`<rect x="-600" y="-600" width="${W+1200}" height="${H+1200}" fill="${cave?C.caveOuter:C.outer}"/><rect x="0" y="0" width="${W}" height="${H}" fill="${cave?C.caveGround:C.ground}"/>`;
   for(let k=0;k<10;k++)s+=`<path d="${blob(R()*W,R()*H,60+R()*90,30+R()*50,R,10,0.3)}" fill="${cave?(R()<.5?C.caveSpots[0]:C.caveSpots[1]):(R()<.5?C.spots[0]:C.spots[1])}" opacity=".85"/>`;
+  if(C.tiles&&!cave){s+=`<defs><pattern id="rtile" patternUnits="userSpaceOnUse" width="44" height="30"><path d="M0 0H44M0 15H44M0 0V15M22 15V30" stroke="${C.tiles}" stroke-width="1.2" fill="none"/></pattern></defs><rect x="0" y="0" width="${W}" height="${H}" fill="url(#rtile)" opacity=".75"/>`}
   for(const p of M.paths||[]){const pts=p.map(q=>q.join(',')).join(' ');s+=`<polyline points="${pts}" fill="none" stroke="${cave?C.cavePath[0]:C.path[0]}" stroke-width="54" stroke-linecap="round" stroke-linejoin="round"/><polyline points="${pts}" fill="none" stroke="${cave?C.cavePath[1]:C.path[1]}" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/>`}
   for(const [cx,cy,rx,ry] of M.lk)s+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx+9}" ry="${ry+8}" fill="${C.water[0]}"/>`;
   for(const [cx,cy,rx,ry] of M.lk)s+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${C.water[1]}"/>`;
@@ -4070,7 +4163,7 @@ function regGroundHTML(M,flat){
     s+=`<rect x="-600" y="-600" width="${600+B.x0-14}" height="${H+1200}" fill="${C.caveWall}" stroke="${C.caveEdge}" stroke-width="3"/><rect x="${B.x1+14}" y="-600" width="600" height="${H+1200}" fill="${C.caveWall}" stroke="${C.caveEdge}" stroke-width="3"/>`;
   }
   for(const o of flat)s+=regObjHTML(o,M,R);
-  if(M.exits.some(e=>e.to==='farm')){const e=M.exits.find(x=>x.to==='farm');s+=gateSVG(e.c,M.H-22,'回農場')}
+  if(!C.noGate&&M.exits.some(e=>e.to==='farm')){const e=M.exits.find(x=>x.to==='farm');s+=gateSVG(e.c,M.H-22,'回農場')}
   return s;
 }
 const regCur=()=>regPrep(exBiome,regMap);
@@ -4219,9 +4312,9 @@ document.getElementById('exploreBody').addEventListener('click',e=>{const b=e.ta
 // ===== 場景切換 =====
 function goMarket(){
   if(viewing){if(viewing.unsub)viewing.unsub();viewing=null}
-  selDecor=null;renderDecorEdit();scene='market';marketMe={x:230,y:690};hoverPlot=null;hoverStall=null;
-  joinFarm('market');renderHUD();renderWorld();renderChars();updateCam();refreshAct();
-  toast('來到市集了！點攤位就能上架種子、道具或購買');
+  selDecor=null;renderDecorEdit();scene='market';{const a=regArrival('town','plaza','farm');marketMe={x:a[0],y:a[1]}}hoverPlot=null;hoverStall=null;hoverTown=null;regPreload('town');
+  joinFarm('town');/* 15b：多人頻道改成 town（32.1） */renderHUD();renderWorld();renderChars();updateCam();refreshAct();
+  toast('來到市集廣場了！點攤位可以買賣；建築和 NPC 走過去點一下就能互動');
 }
 function goFarm(){
   if(viewing){if(viewing.unsub)viewing.unsub();viewing=null}
@@ -4286,11 +4379,7 @@ function nearest(){
     for(const w of exVisiblePlants()){const d=Math.hypot(w.x-m.x,(w.y-m.y)*1.3)-8;if(d<bdist){bdist=d;best={t:'wp',w}}}
     return best;
   }
-  if(scene==='market'){
-    let bi=-1,bdist=1e9;STALLS.forEach(([x,y],i)=>{const d=Math.hypot(x-m.x,(y-m.y)*1.3);if(d<bdist){bdist=d;bi=i}});
-    if(bdist<72)return {t:'stall',i:bi};
-    const [gx,gy]=GATE.market;if(Math.hypot(gx-m.x,gy-m.y)<56)return {t:'gate'};return null;
-  }
+  if(scene==='market')return townNearest(m);/* 15b */
   const [gx,gy]=GATE.farm;if(Math.hypot(gx-m.x,gy-m.y)<56)return {t:'gate'};
   const fst=viewing?viewing.st:state;if(!fst)return null;
   let best=-1,b2=1e9;for(let i=0;i<fst.plots.length;i++){const pos=posOf(fst,i);if(!pos)continue;const [x,y]=pos,dx=x-m.x,dy=(y-m.y)*1.7,d2=dx*dx+dy*dy;if(d2<b2){b2=d2;best=i}}
@@ -4302,6 +4391,8 @@ function actInfo(n){
   if(n.t==='item')return {label:'撿起',on:true};
   if(n.t==='wp')return {label:'查看',on:true};
   if(n.t==='stall')return {label:'攤位',on:true};
+  if(n.t==='bld')return {label:(TOWN_BLD.find(b=>b.id===n.id)||{}).n||'進去',on:true};
+  if(n.t==='npc')return {label:'說話',on:true};
   if(viewing){const p=viewing.st&&viewing.st.plots[n.i];return {label:p?'查看':'空地',on:!!p}}
   const p=state.plots[n.i];
   if(!p)return {label:'播種',on:true};
@@ -4313,7 +4404,8 @@ function refreshAct(){
   if(!state)return;
   const n=nearest();
   const hp=n&&n.t==='plot'?n.i:null,hs=n&&n.t==='stall'?n.i:null,hi=n&&n.t==='item'?n.it.key:null,hw=n&&n.t==='wp'?n.w.key:null;
-  if(hp!==hoverPlot||hs!==hoverStall||hi!==hoverItem||hw!==hoverWp){hoverPlot=hp;hoverStall=hs;hoverItem=hi;hoverWp=hw;renderWorld()}
+  const ht=n&&(n.t==='bld'||n.t==='npc')?n.id:null;
+  if(hp!==hoverPlot||hs!==hoverStall||hi!==hoverItem||hw!==hoverWp||ht!==hoverTown){hoverPlot=hp;hoverStall=hs;hoverItem=hi;hoverWp=hw;hoverTown=ht;renderWorld()}
 }
 function interact(){
   const n=nearest();
@@ -4322,6 +4414,8 @@ function interact(){
   if(n.t==='item'){pickItem(n.it);return}
   if(n.t==='wp'){openWp(n.w);return}
   if(n.t==='stall'){openStall(n.i);return}
+  if(n.t==='bld'){openTown(n.id);return}
+  if(n.t==='npc'){openTown('npc:'+n.id);return}
   if(viewing){const p=viewing.st&&viewing.st.plots[n.i];if(p)openFriendPlot(p);return}
   const p=state.plots[n.i];
   openPlot(n.i);
@@ -4377,7 +4471,7 @@ function handleTap(e,cx,cy){
     const we2=t&&t.closest&&t.closest('[data-wp]');
     if(!g2&&!st2&&!ie2&&!we2){const [gx,gy]=gatePos();if(Math.hypot(w.x-gx,w.y-gy)<60){const go=()=>{scene==='farm'?goMarket():goFarm()},m=curMe();if(Math.hypot(m.x-gx,m.y-gy)<56)go();else walkTo(gx,gy-10,go);return}}/* 14h：大門直接點 */
     if(scene==='explore'){if(we2){const w=exVisiblePlants().find(x=>x.key===we2.dataset.wp);if(w){const m=curMe();if(Math.hypot(w.x-m.x,w.y-m.y)<90)openWp(w);else walkTo(w.x,w.y+10,()=>openWp(w))}return}if(ie2){const it=exVisibleItems().find(x=>x.key===ie2.dataset.item);if(it){const m=curMe();if(Math.hypot(it.x-m.x,it.y-m.y)<80)pickItem(it);else walkTo(it.x,it.y+6,()=>pickItem(it))}}return}
-    if(scene==='market'){if(st2)openStall(+st2.dataset.stall);return}
+    if(scene==='market'){if(st2){openStall(+st2.dataset.stall);return}const bd2=t&&t.closest&&t.closest('[data-bld]'),np2=t&&t.closest&&t.closest('[data-npc]');if(np2){townGo('npc',np2.dataset.npc);return}if(bd2){townGo('bld',bd2.dataset.bld);return}return}
     if(viewing){if(g2){const p=viewing.st&&viewing.st.plots[+g2.dataset.plot];if(p)openFriendPlot(p)}return}
     if(g2)openPlot(+g2.dataset.plot);
     return;
@@ -4918,8 +5012,9 @@ function walkLoop(t){
   if(mv){
     const m=curMe(),{W,H}=scene==='market'?WORLD.market:WORLD.farm,len=Math.max(1,Math.hypot(vx,vy));
     if(scene==='explore'){const ddx=vx/len*Math.min(1,len)*160*dt,ddy=vy/len*Math.min(1,len)*130*dt;if(regHas(exBiome))regMove(m,ddx,ddy);else{m.x+=ddx;m.y+=ddy}}
+    else if(scene==='market')townMove(m,vx/len*Math.min(1,len)*160*dt,vy/len*Math.min(1,len)*130*dt);
     else{m.x=clamp(m.x+vx/len*Math.min(1,len)*160*dt,24,W-24);m.y=clamp(m.y+vy/len*Math.min(1,len)*130*dt,74,H-26)}
-    if(moveTo){const mm=curMe();if(mm._lx!=null&&Math.hypot(mm.x-mm._lx,mm.y-mm._ly)<0.01){const fn=moveTo.then,mt=moveTo;moveTo=null;if(fn){if(regIn()&&Math.hypot(mm.x-mt.x,mm.y-mt.y)>60)toast('前面被擋住了，換條路走過去吧');else setTimeout(fn,0)}}mm._lx=mm.x;mm._ly=mm.y}
+    if(moveTo){const mm=curMe();if(mm._lx!=null&&Math.hypot(mm.x-mm._lx,mm.y-mm._ly)<0.01){const fn=moveTo.then,mt=moveTo;moveTo=null;if(fn){if((regIn()||scene==='market')&&Math.hypot(mm.x-mt.x,mm.y-mt.y)>60)toast('前面被擋住了，換條路走過去吧');else setTimeout(fn,0)}}mm._lx=mm.x;mm._ly=mm.y}
     if(Math.hypot(vx,vy)>0.15){meFace=dirIdx(vx,vy);meDir=faceFlip(meFace)?-1:1}walkPh+=dt*12;updateMe();updateCam();pushPos(false);refreshAct();if(regIn())regStep();
     raf=requestAnimationFrame(walkLoop);
   }else{raf=null;walkPh=0;if(state){updateMe();pushPos(true);if(scene==='farm'&&!viewing)save()}}

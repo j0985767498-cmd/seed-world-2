@@ -427,7 +427,7 @@ body.joymode #shovelBtn{right:22px !important;bottom:calc(186px + env(safe-area-
   <p class="note" id="inapp" hidden style="max-width:320px;margin-top:16px">你現在是在 LINE 或其他 App 裡開啟網頁，Google 不允許在這裡登入。請點右上角選單，選擇「用預設瀏覽器開啟」，改用 Chrome 或 Safari 開啟這個網址。</p>
   <p class="err" id="loginErr" style="max-width:320px;margin-top:12px"></p>
 </div>
-<svg id="scene" viewBox="0 0 400 800" role="application" aria-label="遊戲畫面"><g id="worldLayer"></g><g id="fxLayer" pointer-events="none"></g><g id="charLayer"></g><g id="fgLayer" pointer-events="none"></g></svg>
+<svg id="scene" viewBox="0 0 400 800" role="application" aria-label="遊戲畫面"><defs><radialGradient id="dglow"><stop offset="0" stop-color="#FFE6A8" stop-opacity=".75"/><stop offset="1" stop-color="#FFE6A8" stop-opacity="0"/></radialGradient></defs><g id="worldLayer"></g><g id="fxLayer" pointer-events="none"></g><g id="charLayer"></g><g id="fgLayer" pointer-events="none"></g></svg>
 <div id="wx" aria-hidden="true" hidden></div>
 <div id="exHint" hidden></div>
 <div id="mapBanner" hidden></div>
@@ -1011,7 +1011,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-15b';
+const BUILD='2026-11-15c';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2411,11 +2411,11 @@ const DECOR=[
   dd('picket','白色籬笆','圍籬',(x,y)=>`<rect x="${x-22}" y="${y-13}" width="44" height="3" fill="#E9E4D8"/>${[-20,-12,-4,4,12,20].map(d=>`<polygon points="${x+d-2.5},${y} ${x+d-2.5},${y-18} ${x+d},${y-22} ${x+d+2.5},${y-18} ${x+d+2.5},${y}" fill="#F7F4EC" stroke="#CFC8B8" stroke-width=".6"/>`).join('')}`),
   dd('stonewall','石牆','圍籬',(x,y)=>[[-14,-5],[0,-5],[14,-5],[-7,-13],[7,-13]].map(([a,b])=>`<ellipse cx="${x+a}" cy="${y+b}" rx="8" ry="5" fill="#9C9A92" stroke="#6F6D66" stroke-width=".8"/>`).join('')),
   dd('hedge','樹籬','圍籬',(x,y)=>`<rect x="${x-22}" y="${y-18}" width="44" height="18" rx="8" fill="#3F7A30"/><circle cx="${x-10}" cy="${y-12}" r="3" fill="#5C9A45"/><circle cx="${x+8}" cy="${y-9}" r="3" fill="#5C9A45"/>`),
-  dd('stone','石板路','地面',(x,y)=>DIA(x,y,'#B9B6AC')+`<path d="M${x-10} ${y-5} L${x+4} ${y+3} M${x} ${y-8} L${x+10} ${y-2}" stroke="#8E8B82" stroke-width="1"/>`,1),
-  dd('gravel','碎石路','地面',(x,y)=>DIA(x,y,'#D8CBA8')+[[-8,0],[4,-4],[6,4],[-2,6],[12,0]].map(([a,b])=>`<circle cx="${x+a}" cy="${y+b}" r="1.5" fill="#A89870"/>`).join(''),1),
-  dd('deck','木棧道','地面',(x,y)=>DIA(x,y,'#B98A57')+`<path d="M${x-11} ${y-6} L${x+11} ${y+6} M${x-16} ${y-3} L${x+6} ${y+9} M${x-6} ${y-9} L${x+16} ${y+3}" stroke="#8A6238" stroke-width="1"/>`,1),
-  dd('lawn','草皮','地面',(x,y)=>DIA(x,y,'#7DBB5A'),1),
-  dd('tile','花磚','地面',(x,y)=>DIA(x,y,'#C9744A')+`<polygon points="${x},${y-6} ${x+11},${y} ${x},${y+6} ${x-11},${y}" fill="#E8B07A"/>`,1),
+  dd('stone','石板路','地面',(x,y)=>DIA(x,y,'#B5B1A4')+`<path d="M${x-10} ${y-5} L${x+4} ${y+3} M${x} ${y-8} L${x+10} ${y-2}" stroke="#8E8B82" stroke-width="1"/>`,1),
+  dd('gravel','碎石路','地面',(x,y)=>DIA(x,y,'#CBC3AA')+[[-8,0],[4,-4],[6,4],[-2,6],[12,0]].map(([a,b])=>`<circle cx="${x+a}" cy="${y+b}" r="1.5" fill="#A89870"/>`).join(''),1),
+  dd('deck','木棧道','地面',(x,y)=>DIA(x,y,'#AE916F')+`<path d="M${x-11} ${y-6} L${x+11} ${y+6} M${x-16} ${y-3} L${x+6} ${y+9} M${x-6} ${y-9} L${x+16} ${y+3}" stroke="#8A6238" stroke-width="1"/>`,1),
+  dd('lawn','草皮','地面',(x,y)=>DIA(x,y,'#93AE66'),1),
+  dd('tile','花磚','地面',(x,y)=>DIA(x,y,'#B58A6E')+`<polygon points="${x},${y-6} ${x+11},${y} ${x},${y+6} ${x-11},${y}" fill="#D3B595"/>`,1),
   dd('bed','花圃','植栽',(x,y)=>`<rect x="${x-18}" y="${y-8}" width="36" height="8" fill="#8A5A34"/>${[-12,-4,4,12].map((d,i)=>`<circle cx="${x+d}" cy="${y-12}" r="4" fill="${['#E25B6A','#F2C94C','#B07CD8','#F28DB2'][i]}"/>`).join('')}`),
   dd('tree','小樹','植栽',(x,y)=>`<rect x="${x-3}" y="${y-18}" width="6" height="18" fill="#7E5530"/><circle cx="${x}" cy="${y-28}" r="15" fill="#3E7B34"/><circle cx="${x-6}" cy="${y-32}" r="6" fill="#58994A"/>`),
   dd('bush','灌木','植栽',(x,y)=>`<circle cx="${x-7}" cy="${y-8}" r="9" fill="#467F36"/><circle cx="${x+7}" cy="${y-9}" r="10" fill="#3A7030"/>`),
@@ -2442,6 +2442,21 @@ const DECOR=[
   dd('fountain','噴泉','水景',(x,y)=>`<ellipse cx="${x}" cy="${y-6}" rx="22" ry="8" fill="#9C9A92"/><ellipse cx="${x}" cy="${y-7}" rx="18" ry="5" fill="#5B9FD1"/><rect x="${x-3}" y="${y-24}" width="6" height="17" fill="#9C9A92"/><path d="M${x} ${y-24} q-10 -8 -14 10 M${x} ${y-24} q10 -8 14 10 M${x} ${y-24} v-10" stroke="#7FC4E8" stroke-width="2" fill="none"/>`),
   dd('bridge','石橋','水景',(x,y)=>`<path d="M${x-26} ${y} Q${x} ${y-24} ${x+26} ${y} L${x+26} ${y-6} Q${x} ${y-30} ${x-26} ${y-6}Z" fill="#A9A69C" stroke="#7A776F"/>`)
 ];
+/* ===== 31.7＋36.5（15c）：裝飾改用新畫風素材（照 tools/deco_map.md）=====
+   圖片 assets/farm/s/（顯示高度約 2 倍的縮小版，原圖在 assets/farm/ 不動；水井借 assets/grass/well.png），底部中央對齊，影子由程式畫，燈類加柔和光暈（#dglow）。
+   舊的 34 種鍵名不變、免費，地面類 5 種仍由程式畫（顏色改低彩度）；新增 39 種開始收費，價格＝建議值 ×5（DECO_NEW 的第 5 欄）。 */
+const DECO_IMG={fence:['assets/farm/s/fence_wood.png',25,92,50,0],picket:['assets/farm/s/fence_picket.png',25,93,50,0],stonewall:['assets/farm/s/stone_wall.png',20,109,48,0],hedge:['assets/farm/s/hedge.png',21,104,48,0],bed:['assets/farm/s/flower_bed.png',45,108,90,0],tree:['assets/farm/s/tree.png',110,195,220,0],bush:['assets/farm/s/bush.png',50,118,100,0],pot:['assets/farm/s/potted_flower.png',42,66,84,0],arch:['assets/farm/s/rose_arch.png',110,193,220,0],lamp:['assets/farm/s/lamp_post.png',95,60,190,0.86],lantern:['assets/farm/s/hanging_lantern.png',60,72,120,0.6],lights:['assets/farm/s/string_lights.png',70,161,140,0.75],fire:['assets/farm/s/campfire.png',42,76,84,0.4],bench:['assets/farm/s/bench.png',45,93,90,0],picnic:['assets/farm/s/picnic_table.png',55,152,110,0],parasol:['assets/farm/s/parasol_table.png',80,127,160,0],swing:['assets/farm/s/swing.png',85,166,170,0],scarecrow:['assets/farm/s/scarecrow.png',85,128,170,0],well:['assets/grass/well.png',110,241,300,0],cart:['assets/farm/s/hand_cart.png',60,131,120,0],rack:['assets/farm/s/tool_rack.png',75,132,150,0],greenhouse:['assets/farm/s/greenhouse.png',140,256,280,0],sign:['assets/farm/s/sign_large.png',75,146,150,0],signS:['assets/farm/s/sign_small.png',55,75,110,0],flag:['assets/farm/s/flag.png',90,119,180,0],mailbox:['assets/farm/s/mailbox.png',55,65,110,0],pond:['assets/farm/s/pond.png',70,185,140,0],fountain:['assets/farm/s/fountain.png',90,183,180,0],bridge:['assets/farm/s/stone_bridge.png',70,186,140,0]};
+const DECO_NEW=[['bamboo_fence','竹籬笆','圍籬',['assets/farm/s/bamboo_fence.png',29,92,58,0],25,0],['garden_gate','庭園門','圍籬',['assets/farm/s/garden_gate.png',40,92,80,0],75,0],['apple_tree','蘋果樹','植栽',['assets/farm/s/apple_tree.png',130,244,260,0],200,0],['cherry_tree','櫻花樹','植栽',['assets/farm/s/cherry_tree.png',130,236,260,0],200,0],['maple_tree','楓樹','植栽',['assets/farm/s/maple_tree.png',130,232,260,0],200,0],['lavender','薰衣草','植栽',['assets/farm/s/lavender.png',40,91,80,0],50,0],['sunflowers','向日葵','植栽',['assets/farm/s/sunflowers.png',60,96,120,0],50,0],['pampas_grass','芒草','植栽',['assets/farm/s/pampas_grass.png',55,112,110,0],50,0],['mushrooms','蘑菇','植栽',['assets/farm/s/mushrooms.png',35,68,70,0],40,0],['flower_shelf','花架','植栽',['assets/farm/s/flower_shelf.png',70,106,140,0],125,0],['flower_pots','盆花組','植栽',['assets/farm/s/flower_pots.png',50,87,100,0],75,0],['stone_lantern','石燈籠','照明',['assets/farm/s/stone_lantern.png',60,83,120,0.62],125,0],['firefly_jar','螢火蟲罐','照明',['assets/farm/s/firefly_jar.png',38,47,76,0.5],100,0],['hammock','吊床','家具',['assets/farm/s/hammock.png',70,168,140,0],200,0],['rocking_chair','搖椅','家具',['assets/farm/s/rocking_chair.png',55,95,110,0],150,0],['table_chairs','桌椅組','家具',['assets/farm/s/table_chairs.png',60,152,120,0],175,0],['barn','穀倉','設施',['assets/farm/s/barn.png',160,307,300,0],2000,0],['farmhouse','農舍','設施',['assets/farm/s/farmhouse.png',160,300,300,0],2000,0],['chicken_coop','雞舍','設施',['assets/farm/s/chicken_coop.png',120,211,240,0],1250,0],['tool_shed','工具棚','設施',['assets/farm/s/tool_shed.png',120,227,240,0],1000,0],['water_tower','水塔','設施',['assets/farm/s/water_tower.png',150,190,300,0],1250,0],['windmill','風車','設施',['assets/farm/s/windmill.png',160,219,300,0],1750,0],['beehives','蜂箱','設施',['assets/farm/s/beehives.png',65,128,130,0],300,0],['birdhouse','鳥屋','設施',['assets/farm/s/birdhouse.png',75,76,150,0],150,0],['compost','堆肥箱','設施',['assets/farm/s/compost.png',60,120,120,0],150,0],['seed_chest','種子箱','設施',['assets/farm/s/seed_chest.png',55,93,110,0],150,0],['seed_stall','種子攤','設施',['assets/farm/s/seed_stall.png',100,199,200,0],600,0],['crates','木箱','設施',['assets/farm/s/crates.png',50,100,100,0],75,0],['barrel','木桶','設施',['assets/farm/s/barrel.png',50,76,100,0],75,0],['rain_barrel','雨水桶','設施',['assets/farm/s/rain_barrel.png',60,75,120,0],125,0],['water_trough','水槽','設施',['assets/farm/s/water_trough.png',45,104,90,0],125,0],['hay_bales','乾草堆','設施',['assets/farm/s/hay_bales.png',55,125,110,0],100,0],['wheelbarrow','手推車','設施',['assets/farm/s/wheelbarrow.png',50,104,100,0],125,0],['entrance_gate','農場大門','標示',['assets/farm/s/entrance_gate.png',130,301,260,0],750,0],['signpost_arrows','指路牌','標示',['assets/farm/s/signpost_arrows.png',80,93,160,0],100,0],['notice_board','公布欄','標示',['assets/farm/s/notice_board.png',80,155,160,0],150,0],['koi_pond','錦鯉池','水景',['assets/farm/s/koi_pond.png',75,183,150,0],750,1],['dock','碼頭','水景',['assets/farm/s/dock.png',60,147,120,0],400,0],['stepping_stones','踏腳石','地面',['assets/farm/s/stepping_stones.png',30,71,60,0],25,1]];
+const DECO_SWAY=new Set(["apple_tree", "bush", "cherry_tree", "maple_tree", "pampas_grass", "tree"]);
+function decoImgF(k,m){const [src,h,iw,ih,gl]=m,w=h*iw/ih;
+  return (x,y,t)=>{let s=`<ellipse cx="${x}" cy="${y-1}" rx="${(w*0.34).toFixed(1)}" ry="${Math.max(3,w*0.08).toFixed(1)}" fill="rgba(60,80,30,.22)" stroke="none"/>`;
+    if(gl)s+=`<circle class="glw" cx="${x}" cy="${(y-h*gl).toFixed(1)}" r="${Math.max(24,h*0.5).toFixed(1)}" fill="url(#dglow)" stroke="none"/>`;
+    const im=`<image href="${src}" x="${(x-w/2).toFixed(1)}" y="${(y-h).toFixed(1)}" width="${w.toFixed(1)}" height="${h}"/>`;
+    s+=DECO_SWAY.has(k)?`<g class="sway">${im}</g>`:im;
+    if(k==='sign'||k==='signS'){const v=t||(k==='sign'?'大告示牌':'標示'),fs=k==='sign'?(v.length>5?8:10):(v.length>3?6.5:8);s+=`<text x="${x}" y="${(y-h*(k==='sign'?0.66:0.7)).toFixed(1)}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="#4A3020" stroke="none" font-family="Noto Sans TC,sans-serif">${esc(v)}</text>`}
+    return s}}
+for(const d of DECOR){const m=DECO_IMG[d.k];if(m){d.f=decoImgF(d.k,m);d.img=m}}
+for(const [k,n,cat,m,p,flat] of DECO_NEW){const d=dd(k,n,cat,decoImgF(k,m),flat);d.img=m;d.p=p;DECOR.push(d)}
 const DECOR_MAP=Object.fromEntries(DECOR.map(d=>[d.k,d]));
 const DECOR_CATS=['圍籬','地面','植栽','照明','家具','設施','標示','水景'];
 const YARD={x0:40,x1:420,y0:575,y1:820};
@@ -3385,7 +3400,7 @@ function plotMove(i){
 let decorCat='標示';
 function renderDecorPanel(){
   document.getElementById('decorCats').innerHTML=DECOR_CATS.map(c=>`<button class="fchip" data-dc2="${c}" aria-pressed="${c===decorCat}">${c}</button>`).join('');
-  document.getElementById('decorItems').innerHTML=DECOR.filter(d=>d.cat===decorCat).map(d=>`<button class="ditem" data-item="${d.k}"><svg viewBox="-30 -50 60 60" width="52" height="52" aria-hidden="true">${d.f(0,0,'')}</svg><span>${d.n}</span></button>`).join('');
+  document.getElementById('decorItems').innerHTML=DECOR.filter(d=>d.cat===decorCat).map(d=>{let vb='-30 -50 60 60';if(d.img){const [,h,iw,ih]=d.img,w=h*iw/ih,z=Math.max(w,h)*1.08;vb=`${(-z/2).toFixed(1)} ${(-z*0.97).toFixed(1)} ${z.toFixed(1)} ${z.toFixed(1)}`}return `<button class="ditem" data-item="${d.k}"><svg viewBox="${vb}" width="52" height="52" aria-hidden="true">${d.f(0,0,'')}</svg><span>${d.n}${d.p?`<br><small>${d.p} 金幣</small>`:''}</span></button>`}).join('');/* 15c：圖片縮圖、價格 */
 }
 document.getElementById('p-decor').addEventListener('click',e=>{
   const c=e.target.closest('[data-dc2]');if(c){decorCat=c.dataset.dc2;renderDecorPanel();return}
@@ -3393,8 +3408,10 @@ document.getElementById('p-decor').addEventListener('click',e=>{
   if(scene!=='farm'||viewing){toast('只能在自己的農場佈置');return}
   if(!decoMode)openDecor();if(!decoMode)return;
   if(state.decor.length>=400){toast('裝飾最多 400 個');return}
-  const t=it.dataset.item,n=DECOR_MAP[t].n,p=decoFree(t,buildCam.x,buildCam.y-20,false);
+  const t=it.dataset.item,n=DECOR_MAP[t].n,p=decoFree(t,buildCam.x,buildCam.y-20,false),pr=DECOR_MAP[t].p||0;
   if(!p){toast('畫面中央附近沒有空位，移動一下畫面再放');return}
+  if(pr&&state.coins<pr){toast(`「${n}」要 ${pr} 金幣，金幣不夠`);return}
+  if(pr){state.coins-=pr;renderCoins()}/* 15c：新裝飾收費 */
   state.decor.push({t,x:p[0],y:p[1]});selDecor=state.decor.length-1;decoPaint=decoGrid(t)?t:null;
   save();closePanel();renderWorld();renderDecoBar();
   toast(decoPaint?`放好「${n}」了，用手指滑過去可以連續鋪設`:`放好「${n}」了，按住可以拖到想放的位置`,3500);
@@ -3450,7 +3467,7 @@ document.getElementById('decoBar').addEventListener('click',e=>{
   if(a==='paint'){decoPaint=d.t;renderDecoBar();toast('用手指滑過想鋪的地方',2500);return}
   if(a==='del'){state.decor.splice(selDecor,1);selDecor=null;save();toast('已收起')}
   if(a==='unsel')selDecor=null;
-  if(a==='dup'){if(state.decor.length>=400){toast('裝飾最多 400 個');return}const p=decoFree(d.t,d.x,d.y,true);if(!p){toast('旁邊沒有空位了');return}const nd={t:d.t,x:p[0],y:p[1]};if(d.txt)nd.txt=d.txt;state.decor.push(nd);selDecor=state.decor.length-1;save()}
+  if(a==='dup'){if(state.decor.length>=400){toast('裝飾最多 400 個');return}const p=decoFree(d.t,d.x,d.y,true);if(!p){toast('旁邊沒有空位了');return}const pr=(DECOR_MAP[d.t]||{}).p||0;if(pr&&state.coins<pr){toast(`要 ${pr} 金幣，金幣不夠`);return}if(pr){state.coins-=pr;renderCoins()}const nd={t:d.t,x:p[0],y:p[1]};if(d.txt)nd.txt=d.txt;state.decor.push(nd);selDecor=state.decor.length-1;save()}
   renderWorld();renderDecoBar();
 });
 function decoPaintAt(cx,cy){
@@ -3458,6 +3475,7 @@ function decoPaintAt(cx,cy){
   if(decoPainted.has(k))return;decoPainted.add(k);
   if(decoErr(x,y)||decoOcc(decoPaint,x,y,-1))return;
   if(state.decor.length>=400){toast('裝飾最多 400 個');return}
+  {const pr=(DECOR_MAP[decoPaint]||{}).p||0;if(pr){if(state.coins<pr){toast(`每格 ${pr} 金幣，金幣不夠`);return}state.coins-=pr;renderCoins()}}
   state.decor.push({t:decoPaint,x,y});renderWorld();
 }
 function decoDragTo(cx,cy){

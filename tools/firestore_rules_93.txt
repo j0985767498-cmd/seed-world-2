@@ -1,18 +1,18 @@
-// 第 93 節「花仙子」要新增的 Firestore 安全規則。
+// 第 93 節「花精靈」要新增的 Firestore 安全規則。
 // 貼到 Firebase 主控台 → Firestore Database → 規則，放在 match /databases/{database}/documents { … } 裡面，
 // 和現有的 match /players/…、match /roamers/… 等並排（原本的規則不用動）。檔案開頭要是 rules_version = '2';。
 //
-// 資料：fairy/<仙子鍵>（tomato、eggplant、chili、strawberry、corn、pumpkin、broccoli、zucchini、melon）
+// 資料：fairy/<精靈鍵>（tomato、eggplant、chili、strawberry、corn、pumpkin、broccoli、zucchini、melon）
 //   { base:[{u, no, at}], evo:[{u, no, at}], tx:(交易時才有：那筆攤位上架的 id) }
 // 名額上限寫在下面（測試期 基本型 10、進化型 3）；遊戲裡的 FAIRY_CAP 改了，這裡也要一起改。
 //
 // 允許的三種寫入：
 //   1. 喚醒：base 多一筆、最後一筆是自己；evo 不變。
 //   2. 進化：evo 多一筆、最後一筆是自己；base 不變。
-//   3. 交易：base、evo 筆數不變，而且同一個交易裡那筆上架（listings/<tx>）是仙子、鍵相同、被自己買下。
+//   3. 交易：base、evo 筆數不變，而且同一個交易裡那筆上架（listings/<tx>）是精靈、鍵相同、被自己買下。
 // 沒有刪除、沒有釋放名額。
 
-    // ---- 93：花仙子名額 ----
+    // ---- 93：花精靈名額 ----
     function fairyCapOk(d) {
       return d.keys().hasOnly(['base', 'evo', 'tx'])
         && d.base is list && d.evo is list

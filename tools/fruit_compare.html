@@ -119,10 +119,14 @@ function dreamPx(n,f,u,v,sh,asp){
     c=shade([20,20,26]);c=mx(c,[96,108,110],Math.pow(Math.max(0,1-d/1.2),1.2)*0.50);c=mx(c,O.o,bd(d,0.66,0.36)*0.66*side);c=mx(c,O.i,bd(d,0.30,0.34)*0.50*side);
     c=mx(c,[14,14,18],cl((r-0.74)/0.26)*0.85);c=mx(c,[235,240,255],el(0.33,0.27,0.17,0.13)*0.35);c=mx(c,W,cl(el(0.33,0.27,0.075,0.055)*3));
     for(const [sx,sy] of [[0.66,0.38],[0.28,0.60],[0.62,0.76]])c=mx(c,W,dot(sx,sy,0.02)*0.9)}
-  else if(n==='sakura'){/* 82.5B 櫻雪：柔和淡粉底、上方偏亮；散落幾朵固定的粉白小花 */
-    c=shade([250,204,220]);c=mx(c,[255,236,242],cl((0.5-v)/0.5)*0.55);c=mx(c,[236,160,190],cl((r-0.6)/0.4)*0.45);
-    for(const [fx,fy,fr] of [[0.34,0.36,0.085],[0.66,0.52,0.075],[0.42,0.72,0.07],[0.70,0.26,0.06]]){const ex=(u-fx)/fr,ey=(v-fy)*asp/fr,rr=Math.hypot(ex,ey),th=Math.atan2(ey,ex),pet=0.55+0.45*Math.abs(Math.cos(2.5*th));if(rr<pet)c=mx(c,rr<0.28?[246,170,196]:[255,248,250],0.9)}
-    c=mx(c,W,hard(0.32,0.26)*0.8)}
+  else if(n==='sakura'){/* 82.5B 櫻雪（16m，照 tools/sakura_snow_ref.py 的 shade()）：深玫瑰粉邊緣 → 鮮櫻粉 → 粉白中心、邊緣加深、中心珍珠光暈、果皮裡幾片很淡的白色花瓣、右下回光、左上銳利高光 */
+    const U=(u-0.5)*2,V=(v-0.5)*2,rr=Math.min(1,Math.hypot(U,V)),lt=cl(0.5-0.45*(U*0.7+V*0.7)),t=cl(lt*0.8+(1-rr)*0.5);
+    c=t<0.5?mx([186,40,108],[246,118,170],t/0.5):mx([246,118,170],[255,222,234],(t-0.5)/0.5);const dk=1-0.38*Math.pow(rr,2.2);c=[c[0]*dk,c[1]*dk,c[2]*dk];
+    let lay=0;for(const [pu,pv,ps,pa] of DZ_SKP){const ca=Math.cos(pa),sa=Math.sin(pa),x=((U-pu)*ca+(V-pv)*sa)/ps,y=(-(U-pu)*sa+(V-pv)*ca)/ps,e=Math.hypot(x/0.55,(y+0.15*(1-x*x))/1);lay=Math.max(lay,cl((1-e)/0.35))}c=mx(c,[255,246,250],lay*0.27);
+    c=mx(c,[255,240,246],Math.pow(cl(1-Math.hypot(U+0.1,V+0.05)/0.6),2)*0.35);
+    c=mx(c,[255,214,230],cl((rr-0.78)/0.22)*cl(U*0.7+V*0.7)*0.6);
+    const s1=Math.pow(cl(1-Math.hypot((U+0.40)/0.26,(V+0.22)/0.13)),0.35),s2=Math.pow(cl(1-Math.hypot((U+0.10)/0.09,(V+0.38)/0.07)),0.5),s3=cl(1-Math.abs(Math.hypot(U-0.05,V-0.05)-0.80)/0.035)*cl(U*0.7+V*0.7-0.2)*0.8;
+    c=mx(c,W,Math.max(s1,s2,s3))}
   else return null;
   if(sh<1){const m=0.6+0.4*sh;c=[c[0]*m,c[1]*m,c[2]*m]}/* 疊完之後再留一點暗面，果實才有體積 */
   return c}
@@ -214,7 +218,7 @@ function dreamLightSVG(n,per,dl,u){const st=(c,extra)=>`class="${c}" style="anim
   if(n==='obsidian')return `<defs><linearGradient id="dg${u}" x1="0" x2="1"><stop offset="0" stop-color="#9A6CE0"/><stop offset=".5" stop-color="#5A9CE0"/><stop offset="1" stop-color="#48C49C"/></linearGradient></defs>`
     +`<g ${st('dlrot')}><circle r="1.9" fill="none"/><path d="M-0.85 0.25 A0.95 0.75 0 0 1 0.75 -0.35" stroke="url(#dg${u})" stroke-width="0.32" fill="none" stroke-linecap="round" opacity=".75"/></g>`;
   if(n==='starry')return [[-0.4,-0.45,0.1],[0.42,-0.2,0.08],[-0.1,0.25,0.12],[0.5,0.55,0.07],[-0.55,0.6,0.08]].map(([x,y,r],k)=>`<g transform="translate(${x} ${y})" ${st('dltw',-per*k/5)}>${DL_STAR(r*1.6)}<circle r="${r*0.45}" fill="#fff"/></g>`).join('');
-  if(n==='sakura')return [[-0.6,0],[0.35,-0.5],[-0.1,-1.0],[0.6,-1.5],[-0.45,-2.0],[0.15,-2.5]].map(([x,o],k)=>`<g transform="translate(${x} -1.45)"><g ${st('dlfall',-per*k/6)}><path d="M0 -0.18 C0.15 -0.16 0.18 0.03 0 0.2 C-0.18 0.03 -0.15 -0.16 0 -0.18Z" fill="${k%2?'#FFFFFF':'#FFD9E6'}" stroke="#E79AB6" stroke-width="0.012"/></g></g>`).join('');/* 82.5B：5–7 片粉白小花瓣由上往下飄、邊飄邊輕擺和旋轉 */
+  if(n==='sakura')return `<defs><radialGradient id="dg${u}"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".75"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient></defs>`+[-0.75,0.4,-0.15,0.7,-0.5,0.15,0.55].map((x,k)=>`<g transform="translate(${x} -1.45)"><g ${st('dlfall',-per*k/7)}><circle r="0.3" fill="url(#dg${u})"/><path d="M0 -0.18 C0.15 -0.16 0.18 0.03 0 0.2 C-0.18 0.03 -0.15 -0.16 0 -0.18Z" fill="${k%2?'#FFFFFF':'#FFD9E6'}" stroke="#E79AB6" stroke-width="0.012"/></g></g>`).join('')+sparks([[0.4,-0.5],[-0.45,0.1],[0.3,0.55],[-0.2,-0.6]],0.17);/* 82.5B：7 片粉白小花瓣由上往下飄（帶白色光暈）、十字閃光輪流亮 */
   if(n==='rainbow'){const Lb=3.2,C=RAINBOW.concat([RAINBOW[0]]),stops=[0,1].map(h=>C.map((c,i)=>`<stop offset="${f3((h+i/(C.length-1))/2)}" stop-color="${c}"/>`).join('')).join('');
     return `<defs><linearGradient id="dg${u}" gradientUnits="userSpaceOnUse" x1="0" x2="0" y1="-1.6" y2="${f3(-1.6+2*Lb)}">${stops}</linearGradient></defs><g ${st('dlrb')}><rect x="-1.7" y="-1.6" width="3.4" height="${2*Lb}" fill="url(#dg${u})" opacity=".85"/></g>`}
   return ''}

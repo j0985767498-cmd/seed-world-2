@@ -3853,7 +3853,7 @@ function stallHTML(){
   if(!inf.owner)h+=`<p class="note">空攤位，上架就能使用。${qh('全部賣完後會自動空出來。')}</p><div class="row2"><button class="btn primary" data-act="sstart">上架種子</button><button class="btn primary" data-act="istart">上架道具</button></div>`+((state.specs||[]).some(specTradable)?`<button class="btn" data-act="tstart">上架標本</button>`:'');
   else if(inf.owner===uid)h+=`<p class="note">你有 ${inf.ls.length} 件商品在這裡販售。朋友買走後，金幣會自動入帳。</p><div class="row2"><button class="btn primary" data-act="sstart">再上架種子</button><button class="btn primary" data-act="istart">再上架道具</button></div>`+((state.specs||[]).some(specTradable)?`<button class="btn" data-act="tstart">再上架標本</button>`:'')+inf.ls.map(listingCard).join('');
   else h+=`<p class="note">${esc(inf.ownerName)} 正在販售 ${inf.ls.length} 件商品。</p>`+inf.ls.map(listingCard).join('');
-  h+=`<div class="regbox" style="margin-top:12px"><b>道具行</b><p class="note">隨時收購道具：生長加速劑每次 ${NPC_BUY.acc} 金幣、誘變劑每瓶 ${NPC_BUY.mut} 金幣。</p><button class="btn" data-act="nstart">賣道具給道具行</button></div>`;
+  h+=`<div class="regbox" style="margin-top:12px"><b>道具行</b><p class="note">加速劑 ${NPC_BUY.acc}／次・誘變劑 ${NPC_BUY.mut}／瓶</p><button class="btn" data-act="nstart">賣道具給道具行</button></div>`;
   return h;
 }
 function bindStall(){

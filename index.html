@@ -346,7 +346,7 @@ body.game{background:#5E9E38}
 #meChip svg{border-radius:50%;background:#EAD9B0;flex:none}#meChip .mcn{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}#meChip b{font-size:13px;max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#meChip .mcn>i{font-style:normal;font-size:11px;font-weight:700}
 .xpbar{display:block;width:64px;height:4px;border-radius:3px;background:#E2D2A8;overflow:hidden}.xpbar i{display:block;height:100%;background:#6FAE4A}.xpbar.big{width:100%;height:8px;margin:6px 0 2px}
 .mecard{display:flex;gap:12px;align-items:flex-start}.meav{display:flex;flex-direction:column;align-items:center;gap:4px}.meinf{flex:1;min-width:0}.starz{color:#D9912B;letter-spacing:1px}.favrow{display:flex;align-items:center;gap:8px;margin:6px 0}.favrow b{min-width:56px}.favrow .xpbar{flex:1;height:8px}
-.galh{opacity:.42;outline:1px dashed #8A5A2B;outline-offset:-1px}.gor{font-style:normal;font-size:12px;color:#8A5A2B;margin:0 4px;align-self:center}.gsub{margin-top:8px}.gsub>summary{cursor:pointer;color:#8A5A2B;font-weight:700;font-size:13px}
+.gfam .gfc{display:flex!important;align-items:flex-start;justify-content:center;gap:2px}.galh{opacity:.42;outline:1px dashed #8A5A2B;outline-offset:-1px}.gor{font-style:normal;font-size:12px;color:#8A5A2B;margin:0 4px;align-self:center}.gsub{margin-top:8px}.gsub>summary{cursor:pointer;color:#8A5A2B;font-weight:700;font-size:13px}
 .gpair{display:inline-flex;gap:3px;padding:3px 5px;border:2px solid #5A3416;border-radius:999px;background:#FFF6DE}.gpair .sw{width:20px;height:20px}
 .stline{display:flex;align-items:center;gap:5px;font-size:12px;color:#6B5A48}.stline small{color:#8A7A66}.stdot{width:9px;height:9px;border-radius:50%;background:#B8B0A4;flex:none}.stdot.on{background:#4CAF50;box-shadow:0 0 0 2px rgba(76,175,80,.25)}.friend .fnm{flex:1;min-width:0;display:flex;flex-direction:column}
 #testTag{position:fixed;left:10px;top:calc(116px + env(safe-area-inset-top,0px));z-index:11;background:#C0392B;color:#fff;font-weight:700;font-size:12px;padding:3px 9px;border-radius:9px;pointer-events:none}#testTag[hidden],#testNote[hidden]{display:none}
@@ -1194,7 +1194,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-16n';
+const BUILD='2026-11-16o';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -3117,9 +3117,109 @@ function avhHat(ht,img,hex,bl){
 const avHex=c=>{const v=avCol(c);if(/^#[0-9a-f]{6}$/i.test(v))return v;const m=String(v).match(/\d+/g);return m?'#'+m.slice(0,3).map(x=>(+x).toString(16).padStart(2,'0')).join(''):'#4A6FA5'};
 function avImg(u,b){return `<image href="${u}" x="${b[0]}" y="${b[1]}" width="${b[2]}" height="${b[3]}" preserveAspectRatio="none"/>`}
 /* 照 av3SVG（av3.js）的動作與擺動，多了頭和帽子 */
+/* 86（16o）：新畫法人物的衣服圖層。版型＝v3 零件的外形：上身用身體外框（領口以下）、腿用腿的外框、手用手的外框；
+   在版型上畫底色（可套布料 av.fab.top）＋右側加深＋外框（把版型外框描粗、只露出裡面一半）＋粗的細節線。吊帶褲（上衣 2）維持 v3 原圖。
+   AVO_TOP／AVO_BOT／AVO_SHOE：AV_OPT 的編號 → 款式；avOutfitOf(av) 回傳 null 表示就是 v3 原圖（吊帶褲＋靴子）。 */
+let AVO_N=0;
+const AVO_V={front:{t0:-31.6,open:[-2.3,2.3],cx:0.4,nk:1,fw:6},fq:{t0:-31.2,open:[0.6,3.6],cx:0,nk:1,fw:5.8},side:{t0:-31.4,open:[1.8,5.2],cx:-0.6,nk:1,fw:4.6,side:1},bq:{t0:-32,open:null,cx:0,nk:0,fw:5.8},back:{t0:-32,open:null,cx:0,nk:0,fw:6}};
+const AVO_TOP=['tee','stripe',null,'jacket','sweater','hoodie','plaid','vest','puffer','rain','sailor','cardigan','slip','apron'];
+const AVO_BOT=['pants','shorts','skirt','cargo','pleat','crop','pinafore'];
+const AVO_SHOE=['boot','sneaker','rainboot','sandal','hightop'];
+const AVO_LONG={jacket:1,sweater:1,hoodie:1,plaid:1,puffer:1,rain:1,cardigan:1};/* 長袖 */
+function avOutfitOf(av){const top=AVO_TOP[av.top],bottom=AVO_BOT[av.bottom]||'pants',shoe=AVO_SHOE[av.shoe]||'boot';if(top===null&&shoe==='boot'&&!(av.fab&&av.fab.top))return null;return {top:top===undefined?'tee':top,bottom,shoe}}
+const avoBox=d=>{const a=d.match(/-?\d*\.?\d+/g).map(Number);let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(let i=0;i+1<a.length;i+=2){x0=Math.min(x0,a[i]);x1=Math.max(x1,a[i]);y0=Math.min(y0,a[i+1]);y1=Math.max(y1,a[i+1])}return [x0,y0,x1,y1]};
+function avOutfitParts(P,av,view,o){
+  const D=AV3[view]||AV3.front,V=AVO_V[view]||AVO_V.front,n='o'+(++AVO_N);
+  const hex=c=>c.startsWith('#')?c:'#'+c.match(/\d+/g).slice(0,3).map(v=>(+v).toString(16).padStart(2,'0')).join('');
+  const tc=hex(avCol(o.jacketC!=null&&o.top==='jacket'?o.jacketC:av.topC)),bc=hex(avCol(av.bottomC)),sc=hex(avCol(av.shoeC)),skin=hex(SKINS[av.skin]||SKINS[0]),CR='#F4EBD8',NV='#33476E',OL=AV_OL,dk=c=>shade(c,-0.24),lt=c=>shade(c,0.45);
+  const top=o.top,bot=o.bottom,back=view==='back'||view==='bq',side=!!V.side,T0=V.t0,cx=V.cx,waist=-18.2;
+  const dress=top==='dress'||top==='slip',skirtB=!dress&&top!==null&&(bot==='skirt'||bot==='pleat'||bot==='pinafore');
+  const line=(d,w)=>`<path d="${d}" fill="none" stroke="${OL}" stroke-width="${w||0.7}" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const rect=(x,y,w,h,f,op)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${f}"${op?` opacity="${op}"`:''}/>`;
+  const shd=(x,y,h)=>rect(x,y,30,h,'#2A1A10',0.16);/* 右側陰影（布料也一起變暗） */
+  let defs='';const fab=(spec,tag)=>{const F=avFab(spec,tag+n);defs+=F.defs;return F.fill};
+  const topFill=av.fab&&av.fab.top?fab(av.fab.top,'t'):top==='plaid'?fab({c:av.topC,p:4,pc:'#F4EBD8'},'t'):tc;
+  const bodyOl=D.body[0].d;
+  const legOnly=top===null;/* 吊帶褲：上身用 v3 原圖，只換鞋子 */
+  /* ===== 上身 ===== */
+  let body=P.body;
+  if(!legOnly){let tor='';
+    const fillAll=f=>rect(-20,T0,40,30,f),sleeveMask=w=>rect(-20,T0,20-w,30,'')+rect(w,T0,20,30,'');
+    const waistBand=c=>rect(-20,waist,40,8,c)+shd(cx+2.6,waist,8)+line(`M-12 ${waist}H12`,0.6);
+    const hasBottomBand=!dress&&!['rain','puffer'].includes(top);
+    if(top==='vest'||top==='apron'){tor+=fillAll(CR)+shd(cx+2.6,T0,30)}else if(top==='slip'){tor+=fillAll(skin)}else tor+=fillAll(topFill)+shd(cx+2.6,T0,30);
+    if(top==='stripe')for(let y=T0+2.2;y<waist;y+=2.4)tor+=rect(-20,y,40,1.1,lt(tc),0.95);
+    if(top==='vest'){const w=side?3.6:5;tor+=rect(-w,T0,2*w,30,topFill)+shd(cx+2.4,T0,30)+line(`M${-w} ${T0}V${waist}M${w} ${T0}V${waist}`,0.6);
+      if(!back)tor+=`<path d="M-2.4 ${T0}L${cx} ${T0+5.4}L2.4 ${T0}Z" fill="${CR}"/>`+line(`M-2.4 ${T0}L${cx} ${T0+5.4}L2.4 ${T0}`,0.55)+line(`M-1.9 ${T0+7}q.6 1.6 0 3.2q-.6 1.6 0 3.2M2.3 ${T0+7}q.6 1.6 0 3.2q-.6 1.6 0 3.2`,0.4)}
+    if(top==='slip'){const w=side?3.4:4.8;tor+=rect(-w,T0+3.6,2*w,30,tc)+shd(cx+2.2,T0+3.6,30)+line(`M${-w} ${T0+3.6}Q${cx} ${T0+4.6} ${w} ${T0+3.6}`,0.6)+line(`M${-w+0.8} ${T0+3.7}L${-w+1.2} ${T0}M${w-0.8} ${T0+3.7}L${w-1.2} ${T0}`,0.55)}
+    if(top==='apron'){if(!back){const w=side?2.6:3.8,x0=side?0.6:-w;tor+=rect(x0,T0+3.2,2*w,30,topFill)+shd(cx+2.2,T0+3.2,30)+line(`M${x0} ${T0+3.2}H${x0+2*w}M${x0} ${T0+3.2}V-12M${x0+2*w} ${T0+3.2}V-12`,0.6)+line(`M${x0+0.4} ${T0+3.2}L${side?-1.2:-5.2} ${T0}M${x0+2*w-0.4} ${T0+3.2}L${side?3:5.2} ${T0}`,0.5)}
+      else tor+=line(`M-5 ${waist-2}H5`,0.6)+`<path d="M-0.2 ${waist-2}l-2.6 -1.6v3.2zM0.2 ${waist-2}l2.6 -1.6v3.2z" fill="${tc}" stroke="${OL}" stroke-width=".45"/>`}
+    if(hasBottomBand)tor+=waistBand(bc);
+    if(top==='dress')tor+=line(`M-12 ${waist-2.4}H12`,0.55)+rect(-12,waist-2.4,24,1.2,'#2A1A10',0.18);
+    if(top==='jacket'||top==='cardigan'){const jc=topFill;if(V.open){const [a,b]=V.open,a2=top==='cardigan'?a+0.8:a,b2=top==='cardigan'?b-0.8:b,inner=top==='cardigan'?CR:hex(avCol(6));
+        tor=fillAll(inner)+shd(cx+2.6,T0,30)+(hasBottomBand?waistBand(bc):'')+rect(-20,T0,20+a2,30,jc)+rect(b2,T0,20,30,jc)+shd(Math.max(b2,cx+2.6),T0,30)+line(`M${a2} ${T0+1.4}V-12M${b2} ${T0+1.4}V-12`,0.65);
+        if(top==='jacket')tor+=`<path d="M${a2} ${T0+1.2}l-1.6 3.4M${b2} ${T0+1.2}l1.6 3.4" stroke="${OL}" stroke-width=".55" fill="none"/>`;
+        else for(let y=T0+5;y<waist;y+=3.2)tor+=`<circle cx="${b2+0.7}" cy="${y}" r=".45" fill="${OL}"/>`}
+      else tor+=line(`M-4 ${T0+1.6}Q0 ${T0+3} 4 ${T0+1.6}`,0.5)}
+    if(top==='sweater'||top==='cardigan')tor+=rect(-20,-16.4,40,2.6,'#2A1A10',0.14)+line('M-12 -16.4H12',0.5)+[-4,-2,0,2,4].map(x=>line(`M${x} -16.2V-14.2`,0.3)).join('');
+    if(top==='hoodie'){if(back)tor+=`<path d="M-4.6 ${T0}Q-4.8 ${T0+7} 0 ${T0+7.6}Q4.8 ${T0+7} 4.6 ${T0}Z" fill="${dk(tc)}"/>`+line(`M-4.6 ${T0}Q-4.8 ${T0+7} 0 ${T0+7.6}Q4.8 ${T0+7} 4.6 ${T0}`,0.55);
+      else tor+=line(`M-4 ${T0+0.6}Q${cx} ${T0+3.4} 4 ${T0+0.6}`,1.1)+(side?'':line(`M-1 ${T0+2.4}V${T0+6.4}M1.6 ${T0+2.4}V${T0+6.4}`,0.4)+`<path d="M-3.2 -21.4H3.6L4.4 -17.2H-4Z" fill="${dk(tc)}"/>`+line('M-3.2 -21.4H3.6L4.4 -17.2H-4Z',0.5));
+      tor+=rect(-20,-15.6,40,1.8,'#2A1A10',0.14)+line('M-12 -15.6H12',0.45)}
+    if(top==='puffer'){for(let y=T0+3.4;y<-13;y+=3.3)tor+=line(`M-12 ${y}H12`,0.45);tor+=rect(side?-1.6:-3.6,T0-1.2,side?4.4:7.2,2.8,topFill)+line(`M${side?-1.6:-3.6} ${T0-1.2}h${side?4.4:7.2}v2.8h${side?-4.4:-7.2}z`,0.55);if(!back)tor+=line(`M${side?2.6:cx} ${T0+1.6}V-13`,0.5)}
+    if(top==='rain'){tor+=line(`M-4 ${T0+0.6}Q${cx} ${T0+3.6} 4 ${T0+0.6}`,1.1);if(!back)for(let y=T0+5;y<-14;y+=3.4)tor+=rect((side?2.6:cx)-0.7,y,1.4,0.7,'#F3EEE4')+line(`M${(side?2.6:cx)-0.7} ${y}h1.4v.7h-1.4z`,0.3);if(back)tor+=`<path d="M-4.6 ${T0}Q-4.8 ${T0+7} 0 ${T0+7.6}Q4.8 ${T0+7} 4.6 ${T0}Z" fill="${dk(tc)}"/>`+line(`M-4.6 ${T0}Q-4.8 ${T0+7} 0 ${T0+7.6}Q4.8 ${T0+7} 4.6 ${T0}`,0.55)}
+    if(top==='plaid'&&!back)tor+=`<path d="M-2.6 ${T0}L${cx} ${T0+3}L2.6 ${T0}L1.4 ${T0+2.6}L${cx} ${T0+3}L-1.4 ${T0+2.6}Z" fill="#F3EEE4"/>`+line(`M${side?2.8:cx} ${T0+3}V${waist}`,0.45)+[0,1,2].map(k=>`<circle cx="${side?2.8:cx}" cy="${T0+5+k*3.4}" r=".45" fill="${OL}"/>`).join('');
+    if(top==='sailor'){if(!back){tor+=`<path d="M-6.4 ${T0+1}L${cx} ${T0+7.4}L6.4 ${T0+1}L6.4 ${T0+4}L${cx} ${T0+10}L-6.4 ${T0+4}Z" fill="${NV}"/>`+line(`M-6.4 ${T0+1}L${cx} ${T0+7.4}L6.4 ${T0+1}M-6.4 ${T0+4}L${cx} ${T0+10}L6.4 ${T0+4}`,0.55)+line(`M-5.6 ${T0+3}L${cx} ${T0+8.8}L5.6 ${T0+3}`,0.35).replace(OL,'#F3EEE4')+`<path d="M${cx-1.4} ${T0+9.4}L${cx+1.4} ${T0+9.4}L${cx} ${T0+12.6}Z" fill="#D2584C" stroke="${OL}" stroke-width=".45"/>`}
+      else tor+=rect(-5.2,T0,10.4,7.4,NV)+line(`M-5.2 ${T0+7.4}H5.2M-5.2 ${T0}V${T0+7.4}M5.2 ${T0}V${T0+7.4}`,0.55)+line(`M-4.4 ${T0+6.4}H4.4`,0.35).replace(OL,'#F3EEE4')}
+    if(bot==='pinafore'&&!dress){const w=side?2.6:3.6;tor+=rect(side?0.4:-w,-27,2*w,10,bc)+shd(cx+2,-27,10)+line(`M${side?0.4:-w} -17V-27H${(side?0.4:-w)+2*w}V-17`,0.55)+(back?line(`M-4 ${T0+2}L3.4 -21M4 ${T0+2}L-3.4 -21`,0.9).replace(OL,bc)+line(`M-4 ${T0+2}L3.4 -21M4 ${T0+2}L-3.4 -21`,0.25):line(`M${side?0.8:-w+0.6} -27L${side?-1.4:-5} ${T0+0.6}M${side?0.4+2*w-0.4:w-0.6} -27L${side?3.4:5} ${T0+0.6}`,0.9).replace(OL,bc))}
+    if(V.nk&&!['jacket','hoodie','rain','puffer','sailor'].includes(top)&&top!=='slip')tor+=`<path d="M-3.2 ${T0}Q${cx} ${T0+3.2} 3.2 ${T0}Z" fill="${skin}"/>`+line(`M-3.2 ${T0}Q${cx} ${T0+3.2} 3.2 ${T0}`,0.6);
+    tor+=`<path d="${bodyOl}" fill="none" stroke="${OL}" stroke-width="1.5"/>`;
+    body+=`<clipPath id="${n}b"><path d="${bodyOl}"/></clipPath><clipPath id="${n}t"><rect x="-30" y="${T0}" width="60" height="30"/></clipPath><g clip-path="url(#${n}t)"><g clip-path="url(#${n}b)">${tor}</g></g>`;
+    /* 外套、毛衣類的衣襬（畫在身體外框以外） */
+    const hem={jacket:-12.6,cardigan:-13.2,rain:-9,puffer:-13.4,hoodie:-14,sweater:-14}[top];
+    if(hem&&hem>-14.01&&top!=='hoodie'&&top!=='sweater'){const hw=side?5.4:6.6,fl=top==='rain'?2.2:0.4,cl=top==='rain'?topFill:topFill;
+      body+=`<path d="M${-hw} -14.6L${-hw-fl} ${hem}Q0 ${hem+0.6} ${hw+fl} ${hem}L${hw} -14.6Z" fill="${cl}" stroke="${OL}" stroke-width=".7" stroke-linejoin="round"/>`+`<path d="M${cx+2.4} -14.6L${cx+2.8+fl*0.6} ${hem+0.3}Q${hw*0.6} ${hem+0.5} ${hw+fl} ${hem}L${hw} -14.6Z" fill="#2A1A10" opacity=".16"/>`+
+        ((top==='jacket'||top==='cardigan')&&V.open&&!side?`<path d="M${V.open[0]} -14.6V${hem+0.3}M${V.open[1]} -14.6V${hem+0.3}" stroke="${OL}" stroke-width=".6"/>`+rect(V.open[0]+0.35,-14.6,V.open[1]-V.open[0]-0.7,hem+14.3,top==='cardigan'?CR:hex(avCol(6))):'')+
+        (top==='rain'&&!back?line(`M${side?2.6:cx} -14.6V${hem+0.4}`,0.5):'')}
+    /* 裙子：洋裝、細肩帶洋裝、裙子、百褶裙、吊帶裙 */
+    if(dress||skirtB){const fc=dress?tc:bc,long=dress?-6.2:-8.6,w0=side?4.6:V.fw-0.2,w1=(side?7:8.6)+(bot==='pleat'&&!dress?0.6:0),y0=waist-(top==='dress'?1.2:0.2),y1=long;
+      body+=`<path d="M${-w0} ${y0}L${-w1} ${y1}Q${-w1*0.5} ${y1+1.1} 0 ${y1}Q${w1*0.5} ${y1+1.1} ${w1} ${y1}L${w0} ${y0}Z" fill="${fc}"/><path d="M${cx+2} ${y0}L${cx+3.2} ${y1+0.6}Q${w1*0.6} ${y1+1} ${w1} ${y1}L${w0} ${y0}Z" fill="#2A1A10" opacity=".18"/>`+
+        `<path d="M${-w0} ${y0}L${-w1} ${y1}Q${-w1*0.5} ${y1+1.1} 0 ${y1}Q${w1*0.5} ${y1+1.1} ${w1} ${y1}L${w0} ${y0}" fill="none" stroke="${OL}" stroke-width=".75" stroke-linejoin="round"/>`+
+        (bot==='pleat'&&!dress?[-0.66,-0.33,0,0.33,0.66].map(k=>line(`M${(k*w0).toFixed(2)} ${y0+0.6}L${(k*w1).toFixed(2)} ${y1+0.6}`,0.4)).join(''):line(`M${-w1*0.35} ${y0+3}L${-w1*0.5} ${y1+0.6}M${w1*0.3} ${y0+3}L${w1*0.42} ${y1+0.6}`,0.45))}
+    /* 圍裙下半（正面、斜前、側面） */
+    if(top==='apron'&&!back){const w=side?2.6:3.8,x0=side?0.6:-w-0.4,ww=2*w+0.8;body+=rect(x0,-14.6,ww,6.2,topFill)+rect(cx+2.2,-14.6,Math.max(0,x0+ww-cx-2.2),6.2,'#2A1A10',0.16)+line(`M${x0} -14.6V-8.4H${x0+ww}V-14.6`,0.6)+line(`M${x0+ww*0.25} -12.6h${ww*0.5}v2.6h${-ww*0.5}z`,0.45)}
+  }
+  /* ===== 手：長袖蓋到手腕 ===== */
+  const arms=P.arms.map((A,i)=>{if(legOnly||!AVO_LONG[top])return A;const ol=D.arms[i].L[0].d,bx=avoBox(ol),cut=bx[3]-2.6,id=n+'a'+i,mid=(bx[0]+bx[2])/2;
+    const cuff=top==='sweater'||top==='cardigan'||top==='hoodie'?rect(-30,cut-1.4,60,1.4,'#2A1A10',0.14)+line(`M-30 ${cut-1.4}H30`,0.4):'';
+    const quilt=top==='puffer'?[3.3,6.6].map(k=>line(`M-30 ${bx[1]+k}H30`,0.4)).join(''):'';
+    return {p:A.p,s:A.s+`<clipPath id="${id}"><path d="${ol}"/></clipPath><g clip-path="url(#${id})">${rect(-30,-40,60,cut+40,topFill)}${shd(mid+0.6,-40,cut+40)}${cuff}${quilt}${line(`M-30 ${cut}H30`,0.6)}<path d="${ol}" fill="none" stroke="${OL}" stroke-width="1.4"/></g>`}});
+  /* ===== 腿與鞋 ===== */
+  const shoeTop={boot:-6.35,sneaker:-4.6,rainboot:-7.6,sandal:-2.2,hightop:-6}[o.shoe]||-6.35;
+  const legs=P.legs.map((L,i)=>{const ol=L.ol,bx=avoBox(ol),id=n+'l'+i,mid=(bx[0]+bx[2])/2,lw=bx[2]-bx[0];let k=0;
+    const clip=(y0,y1,s)=>{const cid=id+'r'+(k++);return `<clipPath id="${cid}"><rect x="-30" y="${y0}" width="60" height="${y1-y0}"/></clipPath><g clip-path="url(#${cid})">${s}</g>`};
+    const inLeg=s=>`<clipPath id="${id}"><path d="${ol}"/></clipPath><g clip-path="url(#${id})">${s}<path d="${ol}" fill="none" stroke="${OL}" stroke-width="1.4"/></g>`;
+    const inLeg2=s=>`<g clip-path="url(#${id})">${s}<path d="${ol}" fill="none" stroke="${OL}" stroke-width="1.4"/></g>`;
+    const skinLeg=(y0,y1)=>{if(y1<=y0)return '';const w=Math.max(2.4,lw*0.5),x=mid-w/2+(side?0:(mid<0?0.3:-0.3));return `<rect x="${x.toFixed(2)}" y="${y0}" width="${w.toFixed(2)}" height="${(y1-y0).toFixed(2)}" rx="${(w/2).toFixed(2)}" fill="${skin}" stroke="${OL}" stroke-width=".7"/><rect x="${(x+w*0.6).toFixed(2)}" y="${y0+0.5}" width="${(w*0.3).toFixed(2)}" height="${Math.max(0,y1-y0-1).toFixed(2)}" rx="${(w*0.15).toFixed(2)}" fill="${dk(skin)}" opacity=".3"/>`};
+    const shoe=()=>{const s=o.shoe;if(s==='boot')return clip(-6.35,2,L.s)+inLeg(line('M-30 -6.35H30',0.6));
+      if(s==='sneaker')return inLeg(rect(-30,-4.6,60,5,sc)+shd(mid+0.8,-4.6,5)+rect(-30,-1.5,60,2,'#F3EEE4')+line('M-30 -4.6H30',0.6)+line('M-30 -1.5H30',0.45));
+      if(s==='hightop')return inLeg(rect(-30,-6,60,6.5,sc)+shd(mid+0.8,-6,6.5)+rect(-30,-1.6,60,2,'#F3EEE4')+(side?rect(1.4,-3.4,6,1.8,'#F3EEE4'):'')+line('M-30 -6H30',0.6)+line('M-30 -1.6H30',0.45)+line(`M${mid-1} -5.2h2M${mid-1} -4h2M${mid-1} -2.8h2`,0.35));
+      if(s==='rainboot')return inLeg(rect(-30,-7.6,60,8,sc)+shd(mid+0.8,-7.6,8)+rect(mid-1.6,-7,0.8,4.6,'#FFFFFF',0.55)+rect(-30,-1.2,60,1.6,dk(sc))+line('M-30 -7.6H30',0.6));
+      return skinLeg(Math.min(-2.2,shoeTop),-1.2)+inLeg(rect(-30,-1.4,60,2,shade(sc,-0.1))+rect(-30,-2.4,60,0.7,sc)+rect(mid-0.4,-3.4,0.8,2.2,sc)+line('M-30 -1.4H30',0.45))};/* 涼鞋：腳＋帶子 */
+    let s;
+    if(legOnly){/* 吊帶褲：褲管照原圖，換鞋子時把褲子補到鞋口 */
+      if(o.shoe==='boot')return L;
+      s=clip(-30,-6.3,L.s)+inLeg(clip(-8.6,shoeTop,rect(-30,-8.6,60,10,bc)+shd(mid+0.8,-8.6,10)+line(`M-30 ${shoeTop}H30`,0.6)))+shoe();return {p:L.p,s,ol}}
+    if(dress||skirtB)s=skinLeg(-14.4,shoeTop+0.4)+shoe();
+    else if(bot==='shorts')s=skinLeg(-10,shoeTop+0.4)+clip(-30,-9.6,L.s+inLeg(rect(-30,-30,60,30,bc)+shd(mid+0.8,-30,30)+line('M-30 -9.6H30',0.6)))+shoe();
+    else if(bot==='crop')s=skinLeg(-8.2,shoeTop+0.4)+clip(-30,-7.8,L.s+inLeg(rect(-30,-30,60,30,bc)+shd(mid+0.8,-30,30)+rect(-30,-9.2,60,1.4,lt(bc))+line('M-30 -9.2H30',0.45)+line('M-30 -7.8H30',0.6)))+shoe();
+    else{const hemY=o.shoe==='sandal'?-3.2:shoeTop;s=(o.shoe==='sandal'?skinLeg(-4,-1.2):'')+clip(-30,hemY,L.s+inLeg(rect(-30,-30,60,30,bc)+shd(mid+0.8,-30,30)+line(`M-30 ${hemY}H30`,0.6)+(bot==='cargo'?line(`M${mid<0||side?bx[0]+0.6:bx[2]-3} -14.2h2.4v3h-2.4z`,0.45):'')))+shoe()}
+    return {p:L.p,s,ol}});
+  if(defs)body=`<defs>${defs}</defs>`+body;
+  return {body,arms,legs};
+}
 function avV3SVG(av,flip,pose){
   av=avNorm(av);if(typeof pose!=='object'||pose===null)pose={bob:pose||0};
-  const view=pose.view||'front',P=av3Parts(av,view);
+  const view=pose.view||'front',oo=pose.outfit!==undefined?pose.outfit:avOutfitOf(av),P=oo?avOutfitParts(av3Parts(av,view),av,view,oo):av3Parts(av,view);/* 86（16o）：上衣、下身、鞋子照選的款式畫（吊帶褲＋靴子就是 v3 原圖） */
   const walk=pose.ph!=null,ph=pose.ph||0,t=pose.t||0,sn=Math.sin(ph);
   const act=pose.act||null,ap=Math.min(1,Math.max(0,pose.actP||0)),e=Math.sin(ap*Math.PI);
   const crouch=(act==='plant'||act==='harvest')?e*3.2:0;
@@ -6597,7 +6697,7 @@ function walkLoop(t){
 /* 14k 打扮頁：依類別分頁、上方即時預覽並可切換方向 */
 const AV_DIRS=[[2,'正面'],[1,'斜前'],[0,'側面'],[7,'斜後'],[6,'背面']];
 const AV_TABS=[['face','膚色'],['hair','頭髮'],['hat','帽子'],['cloth','衣服'],['acc','配件']];
-const AV_TAB_ITEMS={face:[['skin',SKINS]],hair:[['hair'],['hairC',HAIRC]],hat:[['hat'],['hatC',CLOTHC]],cloth:[['topC',CLOTHC],['bottomC',CLOTHC],['shoeC',CLOTHC]],acc:[]};/* 35（15i）：表情固定；衣服、配件的新款製作中 */
+const AV_TAB_ITEMS={face:[['skin',SKINS]],hair:[['hair'],['hairC',HAIRC]],hat:[['hat'],['hatC',CLOTHC]],cloth:[['top'],['topC',CLOTHC],['bottom'],['bottomC',CLOTHC],['shoe'],['shoeC',CLOTHC]],acc:[]};/* 86.4（16o）：上衣、下身、鞋子的款式都能選 *//* 35（15i）：表情固定；衣服、配件的新款製作中 */
 function openAvatar(){sheet={avatar:true,draft:avNorm(state.avatar),avTab:'face',avDir:0};renderSheet();openSheetUI()}
 function avatarEditorHTML(){
   const d=sheet.draft,dir=AV_DIRS[sheet.avDir||0][0],tab=sheet.avTab||'face';
@@ -6605,7 +6705,6 @@ function avatarEditorHTML(){
   let h=`<h2>打扮我的角色</h2><div class="avprev"><svg viewBox="-30 -66 60 70" width="150" height="175" role="img" aria-label="角色預覽">${avatarSVG(d,false,{t:performance.now()/1000,view:VIEWS[dir]})}</svg></div>`;
   h+=`<div class="avdirbtns" role="group" aria-label="方向">${AV_DIRS.map(([f,n],i)=>`<button class="fchip" data-avdir="${i}" aria-pressed="${(sheet.avDir||0)===i}">${n}</button>`).join('')}</div>`;
   h+=`<div class="filters avtabs" role="tablist">${AV_TABS.map(([k,n])=>`<button class="fchip" role="tab" data-avtab="${k}" aria-pressed="${tab===k}">${n}</button>`).join('')}</div>`;
-  if(tab==='cloth')h+='<p class="note">上衣、下身、鞋子的新款還在製作中，現在先換顏色（條紋上衣、吊帶褲、靴子）。</p>';
   if(tab==='acc')h+='<p class="note">配件的新款還在製作中。</p>';
   if(tab==='face')h+='<p class="note">表情固定是微笑。</p>';
   for(const [k,cols] of AV_TAB_ITEMS[tab]){

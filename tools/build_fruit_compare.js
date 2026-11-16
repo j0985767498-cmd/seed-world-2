@@ -9,11 +9,11 @@ const h=fs.readFileSync(path.join(root,'index.html'),'utf8');
 let js=h.slice(h.indexOf('<script>',h.indexOf('</style>'))+8,h.lastIndexOf('</script>'));
 const P=new Proxy(function(){},{get:(t,k)=>k===Symbol.toPrimitive?()=>'':(k==='then'?undefined:P),apply:()=>P,construct:()=>P,set:()=>true});
 const DATA=['RGBC','SPGRAD','RAINBOW','EX_OF','ALL_SKINS','BASIC','SPECIAL','BASE_SHAPES','SPN','EXN','CN','CSTR','MIX15','FRUIT_SHAPE_MUL','FRUIT_UNRIPE','PFN','BUILD','TFX_STAR','DREAM_NF','DREAM_PERIOD','DZ_STARS','DZ_XSTAR','DZ_FACET','DZ_GSPK','DZ_CSPK','DZ_OBS','STEM_MUL','STEM_MUL_EGG'];
-const FNS=['clamp','hexRGB','mixRGB','rgbS','isSpecC','colParts','cnOf','patKey','hashStr','f3','pfName','fruitShapeKey','stemMulOf','fruitPrep','dreamPx','dreamInfo','fruitColSpec','fruitPaint','tfxRM','tfxWrap'];
+const FNS=['clamp','hexRGB','mixRGB','rgbS','isSpecC','colParts','cnOf','patKey','hashStr','f3','pfName','fruitShapeKey','stemMulOf','fruitPrep','dreamPx','dreamInfo','fruitColSpec','fruitPaint','tfxRM','tfxWrap','dreamLayers','DL_STAR','dreamLightSVG'];
 js+=';globalThis.T={'+[...DATA,...FNS].join(',')+'};';
 const ctx={document:P,window:P,firebase:P,navigator:P,location:{pathname:'/',search:'',hash:''},localStorage:P,console,setTimeout:()=>0,setInterval:()=>0,clearTimeout(){},clearInterval(){},requestAnimationFrame:()=>0,fetch:()=>new Promise(()=>{}),btoa:s=>Buffer.from(s,'binary').toString('base64'),atob:s=>Buffer.from(s,'base64').toString('binary'),TextEncoder,Math,Date,JSON,addEventListener(){},matchMedia:()=>({matches:false,addEventListener(){}}),performance:{now:()=>0},innerWidth:400,innerHeight:800,devicePixelRatio:1,screen:P,history:P,alert(){},confirm:()=>true,URLSearchParams};
 ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);const T=ctx.T;
-const src='let TFX_N=0,TFX_RM=null;'+DATA.map(k=>`const ${k}=${JSON.stringify(T[k])};`).join('\n')+'\nconst MIXSET=new Set(Object.values(MIX15));\n'+
+const src='let TFX_N=0,TFX_RM=null,DL_N=0;'+DATA.map(k=>`const ${k}=${JSON.stringify(T[k])};`).join('\n')+'\nconst MIXSET=new Set(Object.values(MIX15));\n'+
   FNS.map(k=>{const s=T[k].toString();return s.startsWith('function')?s:`const ${k}=${s};`}).join('\n');
 const CROPS9=['tomato','chili','strawberry','eggplant','corn','pumpkin','zucchini','melon','broccoli'];
 const CNAME={tomato:'番茄',chili:'辣椒',strawberry:'草莓',eggplant:'茄子',corn:'玉米',pumpkin:'南瓜',zucchini:'櫛瓜',melon:'甜瓜',broccoli:'甘藍家族'};
@@ -26,10 +26,8 @@ const page=`<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><met
 th{background:#F6F1E8;font-weight:600}canvas{display:block;margin:auto}.wrap{overflow-x:auto}.note{color:#6B5A48;font-size:13px}.tiny{display:flex;flex-wrap:wrap;gap:3px;background:#fff;border-radius:10px;padding:8px}
 .tiny div{text-align:center;font-size:10px;color:#7A6A58}.grass{background:#A9CF7C}
 .dyn{display:flex;flex-wrap:wrap;gap:8px;background:#fff;border-radius:10px;padding:8px}.dyn>div{text-align:center;font-size:12px;color:#5A4A38;width:104px}.stk{position:relative;margin:auto}.stk canvas,.stk svg{position:absolute;left:0;top:0}
-.dz2{opacity:0;animation:dz2 3s ease-in-out infinite}@keyframes dz2{0%,100%{opacity:0}50%{opacity:1}}
-.dz3b{opacity:0;animation:dz3b 6s linear infinite}@keyframes dz3b{0%{opacity:0}33.3%{opacity:1}66.6%{opacity:1}66.7%,100%{opacity:0}}
-.dz3c{opacity:0;animation:dz3c 6s linear infinite}@keyframes dz3c{0%,33.3%{opacity:0}66.6%{opacity:1}100%{opacity:0}}
-.still .dz2,.still .dz3b,.still .dz3c{display:none}</style></head><body>
+/* 81（16l）：夢幻色的光層，連續移動、沒有停頓（取代 48.3 的兩影格與 80.2 的停頓節奏）。單位是果實框（-1.5～1.5） */.dlay *{will-change:transform}.dlsw{animation:dlsw 2.6s linear infinite}@keyframes dlsw{from{transform:translate(-2.4px,-1.5px)}to{transform:translate(2.4px,1.5px)}}.dlsp{transform-box:fill-box;transform-origin:50% 50%;animation:dlsp 1.4s ease-in-out infinite}@keyframes dlsp{0%,100%{transform:scale(0)}50%{transform:scale(1)}}.dlci{animation:dlci 2.6s linear infinite}@keyframes dlci{0%{transform:translate(.2px,0)}12.5%{transform:translate(.14px,.1px)}25%{transform:translate(0,.14px)}37.5%{transform:translate(-.14px,.1px)}50%{transform:translate(-.2px,0)}62.5%{transform:translate(-.14px,-.1px)}75%{transform:translate(0,-.14px)}87.5%{transform:translate(.14px,-.1px)}100%{transform:translate(.2px,0)}}.dlrot{transform-box:fill-box;transform-origin:50% 50%;animation:dlrot 3.2s linear infinite}@keyframes dlrot{to{transform:rotate(360deg)}}.dltw{animation:dltw 1.8s ease-in-out infinite}@keyframes dltw{0%,100%{opacity:.2}50%{opacity:1}}.dlrb{animation:dlrb 4s linear infinite}@keyframes dlrb{from{transform:translateY(0)}to{transform:translateY(-3.2px)}}
+.still .dlay{display:none}</style></head><body>
 <h1>果實對照頁（${T.BUILD}）</h1>
 <p class="note">不放進遊戲。用遊戲實際的上色函式（素模＋程式上色，第 26 節 26.2、26.3）畫出 9 種作物 × 10 個造型。上方可以選果皮色、花紋顏色、花紋形式、結果期／成熟期與顯示大小。</p>
 <div class="ctl">
@@ -44,7 +42,7 @@ th{background:#F6F1E8;font-weight:600}canvas{display:block;margin:auto}.wrap{ove
 </div>
 <h2>9 種作物 × 10 個造型</h2><div class="wrap"><table id="tb"></table></div>
 <h2>夢幻色動態（第 48 節；番茄・圓形）</h2>
-<p class="note">和遊戲同一套疊影格的做法。完整、淡的（週期 ×1.5）、雙夢幻色（左右各跑各的）；最後兩格是「金色＋專屬造型」（表面的閃爍是顏色的、外面的光暈是造型的）和農場上的強度（70%）。</p>
+<p class="note">和遊戲同一套疊影格的做法。完整、淡的（光層透明度一半，第 81 節）、雙夢幻色（左右各跑各的）；最後兩格是「金色＋專屬造型」（表面的閃爍是顏色的、外面的光暈是造型的）和農場上的強度（70%）。</p>
 <div class="ctl" style="position:static;margin-bottom:6px"><label><input type="checkbox" id="dy" checked> 動態（取消就停在第 1 影格）</label></div>
 <div class="dyn" id="dyn"></div>
 <h2>所有果皮顏色（番茄・圓形，22px）</h2><div class="tiny" id="all"></div>
@@ -59,13 +57,14 @@ function draw(name,a,ripe,size,frame,half){
   const t=document.createElement('canvas');t.width=B.w;t.height=B.h;const tc=t.getContext('2d');const id=tc.createImageData(B.w,B.h);id.data.set(px);tc.putImageData(id,0,0);
   const m=(FRUIT_SHAPE_MUL[name]||1)*(ripe?1:0.7),s=Math.min(cv.width/B.w,cv.height/B.h)*m,w=B.w*s,h=B.h*s;const cx=cv.getContext('2d');cx.imageSmoothingQuality='high';cx.drawImage(t,(cv.width-w)/2,(cv.height-h)/2,w,h);return cv;
 }
-/* 48：和遊戲的 fruitImgSVG 一樣把影格疊起來，用 CSS 交叉淡入淡出 */
+/* 81：和遊戲的 fruitImgSVG 一樣：靜態底圖＋用果實範圍當遮罩、連續移動的光層 */
 function anim(name,a,size,it){
-  const H=Math.round(size*3.2/3),d=document.createElement('div');d.className='stk';d.style.width=size+'px';d.style.height=H+'px';d.appendChild(draw(name,a,1,size,0));
-  const di=dreamInfo(a);if(!di)return d;const g=document.createElement('div');g.style.cssText='position:absolute;inset:0;opacity:'+(it||1);
-  const lay=(nf,per,hf,dl)=>{for(let f=1;f<nf;f++){const c=draw(name,a,1,size,f,hf);c.className=nf===2?'dz2':f===1?'dz3b':'dz3c';c.style.animationDuration=per+'s';c.style.animationDelay=dl+'s';g.appendChild(c)}};
-  if(di.dual)di.dual.forEach((s,k)=>lay(DREAM_NF[s.n],DREAM_PERIOD[s.n],s.h,-k*1.3));else lay(di.nf,di.per,0,0);
-  d.appendChild(g);return d}
+  const H=Math.round(size*3.2/3),d=document.createElement('div');d.className='stk';d.style.width=size+'px';d.style.height=H+'px';const cv=draw(name,a,1,size,0);d.appendChild(cv);
+  const B=PB[name],ls=dreamLayers(a);if(!B||!ls.length)return d;
+  const m=FRUIT_SHAPE_MUL[name]||1,sc=Math.min(cv.width/B.w,cv.height/B.h)*m,w=B.w*sc,h=B.h*sc,u=3/cv.width,rx=-1.5+(cv.width-w)/2*u,ry=-1.6+(cv.height-h)/2*u,rw=w*u,rh=h*u;
+  let o='';for(const L of ls){const k=++DL_N,px=fruitPaint(B,a,1,hashStr(name+'|'+a.skin+'|'+patKey(a.pat)+'|1'),0,0,{reg:L.reg,side:L.side});const t=document.createElement('canvas');t.width=B.w;t.height=B.h;const tc=t.getContext('2d');const id=tc.createImageData(B.w,B.h);id.data.set(px);tc.putImageData(id,0,0);
+    o+='<mask id="cm'+k+'" maskUnits="userSpaceOnUse" x="'+rx+'" y="'+ry+'" width="'+rw+'" height="'+rh+'"><image href="'+t.toDataURL()+'" x="'+rx+'" y="'+ry+'" width="'+rw+'" height="'+rh+'" preserveAspectRatio="none"/></mask><g class="dlay" mask="url(#cm'+k+')" opacity="'+(L.s>=1?1:0.5)+'">'+dreamLightSVG(L.n,DREAM_PERIOD[L.n]||3,-(k%7)*0.37,k)+'</g>'}
+  d.insertAdjacentHTML('beforeend','<svg viewBox="-1.5 -1.6 3 3.2" width="'+size+'" height="'+H+'" style="position:absolute;inset:0;opacity:'+(it||1)+'">'+o+'</svg>');return d}
 function renderDyn(){
   const el=document.getElementById('dyn');el.innerHTML='';el.className='dyn'+(document.getElementById('dy').checked?'':' still');
   const add=(node,t)=>{const b=document.createElement('div');b.appendChild(node);b.appendChild(document.createTextNode(t));el.appendChild(b)};

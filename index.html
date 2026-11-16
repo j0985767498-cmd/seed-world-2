@@ -1530,7 +1530,7 @@ function fruitPaint(B,a,ripe,seed,frame,half,msel){/* msel（81）：{reg:'body'
   let pc=null;if(pat)pc=pat.c===a.skin?{at:sk.at,fx:sk.fx,dim:0.85}:fruitColSpec(pat.c,fr);
   const spots=[],stars=[];
   if(forms.includes(1))for(let k=0;k<12;k++)spots.push([x0+W*(0.12+rnd()*0.76),y0+H*(0.12+rnd()*0.76),W/18*(0.8+rnd()*0.4)]);
-  const blos=[];if(forms.includes(4))for(let k=0;k<7;k++)blos.push([x0+W*(0.14+rnd()*0.72),y0+H*(0.14+rnd()*0.72),W/11*(0.8+rnd()*0.4),rnd()*6.283]);/* 82.5A 櫻花瓣：5–8 朵小五瓣花 */
+  const blos=[];if(forms.includes(4))for(let k=0;k<6;k++)blos.push([x0+W*(0.16+rnd()*0.68),y0+H*(0.16+rnd()*0.68),W/7.5*(0.8+rnd()*0.4),rnd()*6.283]);/* 82.5A 櫻花瓣：5–8 朵小五瓣花 */
   if(forms.includes(2))for(let k=0;k<14;k++)stars.push([x0+W*(0.08+rnd()*0.84),y0+H*(0.08+rnd()*0.84),W/28*(0.8+rnd()*0.4)]);
   const inPat=(x,y,u,v)=>{let hit=false,grad=-1;
     for(const f of forms){
@@ -1616,7 +1616,7 @@ function dreamLightSVG(n,per,dl,u){const st=(c,extra)=>`class="${c}" style="anim
   if(n==='obsidian')return `<defs><linearGradient id="dg${u}" x1="0" x2="1"><stop offset="0" stop-color="#9A6CE0"/><stop offset=".5" stop-color="#5A9CE0"/><stop offset="1" stop-color="#48C49C"/></linearGradient></defs>`
     +`<g ${st('dlrot')}><circle r="1.9" fill="none"/><path d="M-0.85 0.25 A0.95 0.75 0 0 1 0.75 -0.35" stroke="url(#dg${u})" stroke-width="0.32" fill="none" stroke-linecap="round" opacity=".75"/></g>`;
   if(n==='starry')return [[-0.4,-0.45,0.1],[0.42,-0.2,0.08],[-0.1,0.25,0.12],[0.5,0.55,0.07],[-0.55,0.6,0.08]].map(([x,y,r],k)=>`<g transform="translate(${x} ${y})" ${st('dltw',-per*k/5)}>${DL_STAR(r*1.6)}<circle r="${r*0.45}" fill="#fff"/></g>`).join('');
-  if(n==='sakura')return [[-0.6,0],[0.35,-0.5],[-0.1,-1.0],[0.6,-1.5],[-0.45,-2.0],[0.15,-2.5]].map(([x,o],k)=>`<g transform="translate(${x} -1.45)"><g ${st('dlfall',-per*k/6)}><path d="M0 -0.11 C0.09 -0.1 0.11 0.02 0 0.12 C-0.11 0.02 -0.09 -0.1 0 -0.11Z" fill="${k%2?'#FFFFFF':'#FFD9E6'}" stroke="#E79AB6" stroke-width="0.012"/></g></g>`).join('');/* 82.5B：5–7 片粉白小花瓣由上往下飄、邊飄邊輕擺和旋轉 */
+  if(n==='sakura')return [[-0.6,0],[0.35,-0.5],[-0.1,-1.0],[0.6,-1.5],[-0.45,-2.0],[0.15,-2.5]].map(([x,o],k)=>`<g transform="translate(${x} -1.45)"><g ${st('dlfall',-per*k/6)}><path d="M0 -0.18 C0.15 -0.16 0.18 0.03 0 0.2 C-0.18 0.03 -0.15 -0.16 0 -0.18Z" fill="${k%2?'#FFFFFF':'#FFD9E6'}" stroke="#E79AB6" stroke-width="0.012"/></g></g>`).join('');/* 82.5B：5–7 片粉白小花瓣由上往下飄、邊飄邊輕擺和旋轉 */
   if(n==='rainbow'){const Lb=3.2,C=RAINBOW.concat([RAINBOW[0]]),stops=[0,1].map(h=>C.map((c,i)=>`<stop offset="${f3((h+i/(C.length-1))/2)}" stop-color="${c}"/>`).join('')).join('');
     return `<defs><linearGradient id="dg${u}" gradientUnits="userSpaceOnUse" x1="0" x2="0" y1="-1.6" y2="${f3(-1.6+2*Lb)}">${stops}</linearGradient></defs><g ${st('dlrb')}><rect x="-1.7" y="-1.6" width="3.4" height="${2*Lb}" fill="url(#dg${u})" opacity=".85"/></g>`}
   return ''}
@@ -4745,7 +4745,7 @@ const SAKURA_MAPS={
   koi_pond:{n:'錦鯉池',gx:2,gy:2,v2:1,koi:1,
     exits:[{side:'w',c:620,w:120,to:'entry'},{side:'n',c:560,w:120,to:'teahouse'}],
     lakes:[[290,460,150,100],[480,830,170,100]],
-    rivers2:[{p:[[330,520],[352,580],[372,630],[392,682],[412,734],[436,790]],w:60,pinch:[[382,656,0.85]]}],bridges:[{at:[382,656]}],
+    rivers2:[{p:[[342,548],[356,590],[372,630],[392,682],[410,728],[418,746]],w:60,pinch:[[382,656,0.85]]}],bridges:[{at:[382,656]}],
     paths:[{p:[[-40,620],[100,620],[200,640],[262,660]],w:48,br:[0,0]},{p:[[510,630],[560,560],[566,400],[560,220],[560,-40]],w:48,br0:[0,1]}],
     objs:[['sakura_weep',110,560],['sakura_weep',700,760,null,{fl:1}],['sakura_weep',640,470],['lantern',600,640],['boulder',190,930,null,{s:0.6}],['bench',220,1010]],
     groves:[[140,250,2,45],[700,1000,2,40]],
@@ -6365,7 +6365,8 @@ function renderGenes(){
   /* 卡片 3：夢幻色（會動） */
   h+=card('夢幻色','幾乎只能靠突變',`<div class="ladder gl4">${SPECIAL.map(c=>step(icon({skin:c},'tomato',52),CN[c])).join('')}</div>
     ${row(st2(icon({skin:'gold'},'tomato',42),'完整'),st2(icon({skin:'l-gold'},'tomato',42),'淡'),st2(icon({skin:'d-gold-starry'},'tomato',42),'雙'))}
-    ${row(icon({skin:'l-gold'},'tomato',34),selfB,arrow,four([{skin:'gold'},{skin:'l-gold'},{skin:'l-gold'},{skin:'yellow'}]),cap('<b>淡的千萬別丟</b>'))}`);
+    ${row(icon({skin:'l-gold'},'tomato',34),selfB,arrow,four([{skin:'gold'},{skin:'l-gold'},{skin:'l-gold'},{skin:'yellow'}]),cap('<b>淡的千萬別丟</b>'))}
+    <p class="note" style="margin:4px 0 0">櫻雪：只在花季（3/15～4/15）櫻花之丘的千年櫻樹下才有。</p>`);
   /* 卡片 4：花紋 */
   h+=card('花紋','三件事分開決定',`<p class="gk"><b>有沒有花紋：湊成一對才出現</b></p>
     ${row(st2(icon({skin:'red'},'tomato',38),pair(alP(1),alP(0))),st2(icon({skin:'red',pat:{c:'white',f:0}},'tomato',38),pair(alP(1),alP(1))))}

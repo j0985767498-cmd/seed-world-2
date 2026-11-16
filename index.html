@@ -1299,7 +1299,7 @@ function packKeys(l){
 }
 let DRAW_MU=null;/* 96：剛抽到的那顆是不是新突變（{k,v}），發芽判定時用 */
 function drawSeed(l){if(l.zs)unzipLot(l);DRAW_MU=null;{const m=lcMu(l);if(m&&rnd()*lc(l)<m){const k=Math.floor(rnd()*m),g=l.mseeds.splice(k,1)[0],md=(l.mmd||[]).splice(k,1)[0];DRAW_MU=md||{k:'?'};if(!l.mseeds.length){delete l.mseeds;delete l.mmd}return g}}if(l.seeds&&l.seeds.length)return l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0];l.count--;return child(l.m,l.f).g}
-function newGame(){state={fairy:{},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,lv:1,xp:0,mq:{ch:1,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
+function newGame(){state={fairy:{},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,lv:1,xp:0,mq:{ch:1,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
 const WILD={tomato:'red',strawberry:'red',zucchini:'green',corn:'yellow',broccoli:'white',melon:'yellow',chili:'red',pumpkin:'yellow',eggplant:'purple'};
 function originalFor(crop){
   const wild=rnd()<0.7,col=wild?WILD[crop]:pk(['red','yellow','green','white','purple'].filter(c=>c!==WILD[crop]));
@@ -1433,6 +1433,12 @@ function migrate(o){if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fair
     o.decor=o.decor.map(d=>({...d,x:d.x+MOX,y:d.y+MOY}));
     o.me={x:o.me.x+MOX,y:o.me.y+MOY};
     o.mapV=MAPV;
+  }
+  if(!o.farmV){/* 40.3（17f）：農場寬度 1100 → 2200，田、直的裝飾、角色往右平移 550；斜向圍籬記的是格線座標，跟著格線原點一起移，不用改 */
+    if(Array.isArray(o.plotPos))o.plotPos=o.plotPos.map(q=>Array.isArray(q)?[q[0]+FARM_DX,q[1]]:q);
+    if(Array.isArray(o.decor))o.decor=o.decor.map(d=>d&&!d.e&&typeof d.x==='number'?{...d,x:d.x+FARM_DX}:d);
+    if(o.me&&typeof o.me.x==='number')o.me={...o.me,x:o.me.x+FARM_DX};
+    o.farmV=FARMV;
   }
   if(Array.isArray(o.specs))for(const e of o.specs){try{e.tier=rarityOf(appFromKey(e.key)).tier}catch(err){}}/* 28.1：標本等級依新規則重算，標本與名字全部保留（每次載入都算，不用旗標） */
   if(!o.plotPos)o.plotPos=defaultPos();
@@ -3727,13 +3733,14 @@ const COLS=4,ROWS=16,NPLOTS=64;
 // 家園 v2：面積約為舊版的 5.7 倍，舊版內容整體平移到新地圖下方中央
 const MAPV=2,MOX=320,MOY=1270,PLOT_COST=0,PLOT_MAX=160,PLOT_REFUND=0,PLOT_START=64;/* 36.1（15g）：鋪設免費、拆除不退費 */
 function plotCap(){return Math.min(PLOT_MAX,PLOT_START+8*Math.floor(myLv()/3))}/* 36.1：起始 64 格；28.4 等級做好後每 3 級 +8，最多 PLOT_MAX（160）。已經超過的田保留，只是不能再鋪 */
-const LX0=76+MOX,LY0=130+MOY;
+const FARMV=1,FARM_DX=550;/* 40.3（17f）：農場改成正方形 2200×2200，舊內容整體往右平移 550（旗標 farmV） */
+const LX0=76+MOX+FARM_DX,LY0=130+MOY;
 function center(i){const c=i%COLS,r=Math.floor(i/COLS);return [LX0+84*c+(r%2)*42,LY0+24*r]}
 function defaultPos(){return Array.from({length:NPLOTS},(_,i)=>center(i))}
 const posOf=(st,i)=>(st&&st.plotPos&&st.plotPos[i])||null;
-const WORLD={farm:{W:1100,H:2200},market:{W:800,H:1240}};/* 15b 市集改成城鎮廣場；15e 加高到 1240（32.2：攤位和道具行、甜點店之間留約 125） */
-const GATE={farm:[550,2150],market:[400,1192]};
-const ME0={x:550,y:1815};
+const WORLD={farm:{W:2200,H:2200},market:{W:800,H:1240}};/* 15b 市集改成城鎮廣場；15e 加高到 1240（32.2：攤位和道具行、甜點店之間留約 125） */
+const GATE={farm:[1100,2150],market:[400,1192]};
+const ME0={x:1100,y:1815};
 function snapPos(x,y){
   let fa=(x-LX0)/42,fb=(y-LY0)/24,a=Math.round(fa),b=Math.round(fb);
   if((a+b)&1){const da=fa-a,db=fb-b;if(ab(da)>ab(db))a+=da>0?1:-1;else b+=db>0?1:-1}
@@ -3750,10 +3757,10 @@ function plotSpotErr(st,x,y,skip){
 const plotCount=st=>(st.plotPos||[]).filter(Boolean).length;
 const STALLS=[[150,690],[270,690],[530,690],[650,690],[150,815],[270,815],[530,815],[650,815]];/* 15b：城鎮廣場中南兩排，中間留走道；仍是 8 個（上架資料用攤位編號 0–7） */
 const AWN=['#D9473A','#3F86C4','#E0A82E','#3F7B38','#8E5CC8','#E0823D','#E26F9A','#3E9E92'];
-let scene='farm',viewing=null,visitMe={x:550,y:2100},marketMe={x:400,y:1182},hoverPlot=null,hoverStall=null,selDecor=null,curPanel=null;
+let scene='farm',viewing=null,visitMe={x:1100,y:2100},marketMe={x:400,y:1182},hoverPlot=null,hoverStall=null,selDecor=null,curPanel=null;
 const curMe=()=>scene==='market'?marketMe:scene==='explore'?exMe:viewing?visitMe:(state.me||(state.me={...ME0}));
 function gateSVG(x,y,label){const sw=Math.max(68,[...String(label).replace(/&[a-z#0-9]+;/g,'x')].length*12.5+14);return `<g stroke="#4A2A12" stroke-width="1.6" stroke-linejoin="round"><rect x="${x-38}" y="${y-50}" width="8" height="50" rx="2" fill="#B5763C"/><rect x="${x+30}" y="${y-50}" width="8" height="50" rx="2" fill="#B5763C"/><path d="M${x-50} ${y-58} Q${x} ${y-78} ${x+50} ${y-58} L${x+46} ${y-46} Q${x} ${y-64} ${x-46} ${y-46}Z" fill="#D9473A"/><rect x="${x-sw/2}" y="${y-62}" width="${sw}" height="20" rx="6" fill="#FFF3D6"/><text x="${x}" y="${y-47}" text-anchor="middle" font-size="12" font-weight="700" fill="#4A2A12" stroke="none" font-family="Noto Sans TC,sans-serif">${label}</text></g>`}
-const GROUND=(()=>{const R=srand(4242);let t='';for(let k=0;k<420;k++){const x=30+R()*1040,y=80+R()*2080,r=R();if(r<0.45)t+=`<path d="M${x.toFixed(0)} ${y.toFixed(0)} l2.5 -6 l2.5 6 M${(x+4).toFixed(0)} ${y.toFixed(0)} l2 -4.5 l2 4.5" stroke="#8FAA62" stroke-width="1.4" fill="none" stroke-linecap="round"/>`}return t})();/* 31.6：低彩度草叢、拿掉彩色小點 */
+const GROUND=(()=>{const R=srand(4242);let t='';for(let k=0;k<840;k++){const x=30+R()*2140,y=80+R()*2080,r=R();if(r<0.45)t+=`<path d="M${x.toFixed(0)} ${y.toFixed(0)} l2.5 -6 l2.5 6 M${(x+4).toFixed(0)} ${y.toFixed(0)} l2 -4.5 l2 4.5" stroke="#8FAA62" stroke-width="1.4" fill="none" stroke-linecap="round"/>`}return t})();/* 31.6：低彩度草叢、拿掉彩色小點 */
 /* 34（15h）：專屬造型與神話的稀有感特效。只給專屬造型（sp 7–13）與神話（分數 13 以上）；兩者都是時用神話那套，不疊加。
    用 SVG 的 SMIL 動畫：時間軸跟著整張 SVG 走，重畫農場時動畫不會從頭開始。減少動態效果時只留靜態光暈。 */
 let TFX_N=0,TFX_RM=null,TFX_FULL=null,TFX_OK=true;
@@ -3778,7 +3785,7 @@ function tfxWrap(kind,inner,full,big,rm){
 function tfxRingSVG(kind,x,y){const rm=tfxRM(),c=kind===2?'#F7B6EC':'#FFD86A';return `<ellipse cx="${x}" cy="${y+1}" rx="33" ry="17" fill="${kind===2?'rgba(255,214,245,.18)':'rgba(255,232,150,.18)'}" stroke="${c}" stroke-width="2.4" opacity="${rm?.6:.4}" pointer-events="none">${rm?'':'<animate attributeName="opacity" values=".35;.75;.35" dur="2.5s" repeatCount="indefinite"/>'}</ellipse>`}
 /* 34.6：農場同時最多 12 株完整特效（離角色最近的），其他只留光暈 */
 function tfxPickFull(st){TFX_FULL=null;const ls=[];st.plots.forEach((p,i)=>{if(p&&!p.obs&&p.stage==='ripe'&&tfxKind(phen(p.g,p.crop)))ls.push(i)});
-  if(ls.length<=12)return;const m=st===state?curMe():{x:550,y:1300},d=i=>{const q=posOf(st,i);return q?Math.hypot(q[0]-m.x,q[1]-m.y):1e9};
+  if(ls.length<=12)return;const m=st===state?curMe():{x:1100,y:1300},d=i=>{const q=posOf(st,i);return q?Math.hypot(q[0]-m.x,q[1]-m.y):1e9};
   ls.sort((a,b)=>d(a)-d(b));TFX_FULL=new Set(ls.slice(0,12).map(i=>st.plots[i]))}
 /* 48.4：農場上同時最多 16 顆播夢幻色動態（離角色最近的），其他顯示靜態第一影格 */
 function dzPickFull(st){DZ_FULL=null;const ls=[];st.plots.forEach((p,i)=>{if(p&&!p.obs&&p.stage==='ripe'){try{if(dreamInfo(phen(p.g,p.crop)))ls.push(i)}catch(e){}}});if(ls.length<=16)return;const m=curMe(),d=i=>{const q=posOf(st,i);return q?Math.hypot(q[0]-m.x,q[1]-m.y):1e9};ls.sort((a,b)=>d(a)-d(b));DZ_FULL=new Set(ls.slice(0,16).map(i=>st.plots[i]))}
@@ -3855,7 +3862,7 @@ function updateCam(){
   if(!state)return;
   if(regIn()){regCam();return}
   if(scene==='explore'){const r=camRect();sceneEl.setAttribute('viewBox',`${r.x.toFixed(1)} ${r.y.toFixed(1)} ${r.w.toFixed(1)} ${r.h.toFixed(1)}`);if(exRange(r).key!==exKey)renderWorld();return}
-  const vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zoom,w=vw/k,h=vh/k,{W,H}=scene==='market'?WORLD.market:WORLD.farm,m=peekCam||((buildMode||shovelMode||sowMode||accelMode||decoMode||pickMode)?buildCam:curMe());
+  const vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zk(),w=vw/k,h=vh/k,{W,H}=scene==='market'?WORLD.market:WORLD.farm,m=peekCam||((buildMode||shovelMode||sowMode||accelMode||decoMode||pickMode)?buildCam:curMe());
   let x=m.x-w/2,y=m.y-h*0.55;
   x=W<=w?(W-w)/2:clamp(x,0,W-w);y=H+80<=h?(H-h)/2:clamp(y,-70,H-h+80);
   sceneEl.setAttribute('viewBox',`${x.toFixed(1)} ${y.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
@@ -4666,7 +4673,9 @@ function exItems(bk,cx,cy){
   for(let k=0;k<n;k++){const t=wpickR(IW,R)[0],x=x0+30+R()*(EXC-60),y=y0+30+R()*(EXC-60);if(Math.hypot(x-EXGATE[0],y-EXGATE[1])<70)continue;out.push({key:key+'|'+k,x,y,t})}
   exItemCache.set(key,out);return out;
 }
-function camRect(){const vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zoom,w=vw/k,h=vh/k,m=curMe();return {x:m.x-w/2,y:m.y-h*0.55,w,h}}
+/* 40.3：農場（含拜訪朋友）可以縮到 0.4（看得到約 1000 寬），其他場景最小照舊 0.6 */
+const zMin=()=>scene==='farm'?0.4:0.6,zk=()=>Math.max(zMin(),zoom);
+function camRect(){const vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zk(),w=vw/k,h=vh/k,m=curMe();return {x:m.x-w/2,y:m.y-h*0.55,w,h}}
 function exRange(r){const cx0=Math.floor((r.x-90)/EXC),cx1=Math.floor((r.x+r.w+90)/EXC),cy0=Math.floor((r.y-130)/EXC),cy1=Math.floor((r.y+r.h+90)/EXC);return {cx0,cx1,cy0,cy1,key:[cx0,cx1,cy0,cy1].join(',')}}
 // ===== 野外植株（同一天、同一地區所有玩家看到的相同）=====
 const EX_PLANT_LIMIT=5,wpCache=new Map();let hoverWp=null;
@@ -6219,7 +6228,7 @@ function regItems(bk,id,day){
   exItemCache.set(key,out);return out;
 }
 function regCam(){
-  const M=regCur(),vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zoom,w=vw/k,h=vh/k,m=curMe();
+  const M=regCur(),vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zk(),w=vw/k,h=vh/k,m=curMe();
   let x=m.x-w/2,y=m.y-h*0.55;x=M.W<=w?(M.W-w)/2:clamp(x,0,M.W-w);y=M.H<=h?(M.H-h)/2:clamp(y,0,M.H-h);
   sceneEl.setAttribute('viewBox',`${x.toFixed(1)} ${y.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
   if(M.cave&&M.v2){try{const c=document.getElementById('cvme');if(c){c.setAttribute('cx',m.x.toFixed(0));c.setAttribute('cy',(m.y-24).toFixed(0))}}catch(e){}}
@@ -6329,7 +6338,7 @@ function enterVisit(fu){
   scene='farm';selDecor=null;renderDecoBar();
   viewing={uid:fu,name:(p&&p.name)||'朋友',st:null};
   viewing.unsub=db.collection('players').doc(fu).onSnapshot(s=>{if(!viewing||viewing.uid!==fu)return;try{if(s.exists&&s.data().save){const o=unpack(s.data().save);viewing.st=o&&o.v===4?migrate(o):{v:4,plots:[],plotPos:[],decor:[],lots:[]};repairState(viewing.st)}}catch(e){}renderWorld()},()=>{});
-  visitMe={x:550,y:2100};
+  visitMe={x:1100,y:2100};
   joinFarm(fu);renderHUD();renderWorld();renderChars();updateCam();refreshAct();
   toast(`來到 ${viewing.name} 的農場，四處走走吧。到「圖鑑 → 收藏櫃」可以看朋友的標本`,4000);
 }
@@ -6658,7 +6667,7 @@ function renderChars(){
   const t=performance.now()/1000,list=[];
   for(const [id,o] of Object.entries(others)){if(!o||typeof o.x!=='number')continue;const A=animO[id]||{x:o.x,y:o.y,ph:0};
     const ps=poseFor(false,{a:o.a,_aStart:A.aStart,_seed:A.seed},t);if(A.moving)ps.ph=A.ph;const of=o.f!=null?o.f:(o.d<0?3:1);ps.view=VIEWS[of];const ofy=fyUnpack(o.fy);list.push({y:A.y,h:charG('',A.x,A.y,o.av,faceFlip(of),ps,o.name||'朋友',o.lv,ofy,id)+`<circle cx="${Math.round(A.x)}" cy="${Math.round(A.y-30)}" r="17" fill="transparent" style="pointer-events:auto" data-ply="${esc(id)}"/>`});if(ofy)fyRegister(id,ofy,()=>{const B=animO[id]||o;return {x:B.x,y:B.y,flip:faceFlip(o.f!=null?o.f:(o.d<0?3:1))}})}
-  const m=curMe(),mp=poseFor(true,null,t);if(raf)mp.ph=walkPh;mp.view=VIEWS[meFace];const mfy=scene==='farm'&&viewing?null:fyMe();list.push({y:m.y,h:charG('meG',m.x,m.y,state.avatar,faceFlip(meFace),mp,'你',myLv(),mfy,'me')});if(mfy)fyRegister('me',mfy,()=>{const q=curMe();return {x:q.x,y:q.y,flip:faceFlip(meFace)}});fyStart();
+  const m=curMe(),mp=poseFor(true,null,t);if(raf)mp.ph=walkPh;mp.view=VIEWS[meFace];const mfy=fyMe();/* 97：拜訪朋友、城鎮、各地區都帶著自己的精靈 */list.push({y:m.y,h:charG('meG',m.x,m.y,state.avatar,faceFlip(meFace),mp,'你',myLv(),mfy,'me')});if(mfy)fyRegister('me',mfy,()=>{const q=curMe();return {x:q.x,y:q.y,flip:faceFlip(meFace)}});fyStart();
   list.sort((a,b)=>a.y-b.y);s=list.map(x=>x.h).join('');
   L.innerHTML=s;
 }
@@ -6744,8 +6753,8 @@ const keys={};
 window.addEventListener('keydown',e=>{if(!state||e.target.closest('input,textarea,select')||curPanel||sheet)return;const k=['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','a','d','w','s'].includes(e.key);if(k){keys[e.key]=1;moveTo=null;e.preventDefault();startLoop()}if(e.key==='e'||e.key===' '){e.preventDefault();interact()}});
 window.addEventListener('keyup',e=>{delete keys[e.key]});
 // ===== 畫面縮放（雙指捏合／滑鼠滾輪）=====
-let zoom=(()=>{try{return clamp(+localStorage.getItem('sw_zoom')||1,0.6,1.8)}catch(e){return 1}})();
-function setZoom(z){zoom=clamp(z,0.6,1.8);try{localStorage.setItem('sw_zoom',String(zoom))}catch(e){}updateCam()}
+let zoom=(()=>{try{return clamp(+localStorage.getItem('sw_zoom')||1,0.4,1.8)}catch(e){return 1}})();
+function setZoom(z){zoom=clamp(z,zMin(),1.8);try{localStorage.setItem('sw_zoom',String(zoom))}catch(e){}updateCam()}
 // ===== 點哪走哪 =====
 let moveTo=null;   // {x,y,then}
 function walkTo(x,y,then){moveTo={x,y,then:then||null};startLoop()}
@@ -6791,7 +6800,7 @@ sceneEl.addEventListener('pointerdown',e=>{
   if(e.isPrimary){ptrs.clear();pinch=null;panStart=null;dragPlot=null;sowing=false;shoveling=false;acceling=false;buildPainting=false;picking=false;recalling=false;if(decoMode)decoCancel()}/* 新的觸控開始：清掉殘留的手指紀錄 */
   ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
   try{sceneEl.setPointerCapture(e.pointerId)}catch(_){}
-  if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:zoom};tapStart=null;dragPlot=null;panStart=null;if(decoMode)decoCancel();return}
+  if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:zk()};tapStart=null;dragPlot=null;panStart=null;if(decoMode)decoCancel();return}
   tapStart={x:e.clientX,y:e.clientY,t:Date.now(),target:e.target,moved:false};
   if(sowMode){const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&!state.plots[+g.dataset.plot]){sowing=true;sowAt(e.clientX,e.clientY)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
   if(shovelMode){const g=e.target.closest&&e.target.closest('[data-plot]');if(!shovelAsk&&g&&state.plots[+g.dataset.plot]){shoveling=true;shovelStroke=[];strokeLast=null;strokeTo(e.clientX,e.clientY,shovelAt)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}

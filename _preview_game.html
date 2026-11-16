@@ -6665,7 +6665,7 @@ function renderChars(){
   const t=performance.now()/1000,list=[];
   for(const [id,o] of Object.entries(others)){if(!o||typeof o.x!=='number')continue;const A=animO[id]||{x:o.x,y:o.y,ph:0};
     const ps=poseFor(false,{a:o.a,_aStart:A.aStart,_seed:A.seed},t);if(A.moving)ps.ph=A.ph;const of=o.f!=null?o.f:(o.d<0?3:1);ps.view=VIEWS[of];const ofy=fyUnpack(o.fy);list.push({y:A.y,h:charG('',A.x,A.y,o.av,faceFlip(of),ps,o.name||'朋友',o.lv,ofy,id)+`<circle cx="${Math.round(A.x)}" cy="${Math.round(A.y-30)}" r="17" fill="transparent" style="pointer-events:auto" data-ply="${esc(id)}"/>`});if(ofy)fyRegister(id,ofy,()=>{const B=animO[id]||o;return {x:B.x,y:B.y,flip:faceFlip(o.f!=null?o.f:(o.d<0?3:1))}})}
-  const m=curMe(),mp=poseFor(true,null,t);if(raf)mp.ph=walkPh;mp.view=VIEWS[meFace];const mfy=scene==='farm'&&viewing?null:fyMe();list.push({y:m.y,h:charG('meG',m.x,m.y,state.avatar,faceFlip(meFace),mp,'你',myLv(),mfy,'me')});if(mfy)fyRegister('me',mfy,()=>{const q=curMe();return {x:q.x,y:q.y,flip:faceFlip(meFace)}});fyStart();
+  const m=curMe(),mp=poseFor(true,null,t);if(raf)mp.ph=walkPh;mp.view=VIEWS[meFace];const mfy=fyMe();/* 97：拜訪朋友、城鎮、各地區都帶著自己的精靈 */list.push({y:m.y,h:charG('meG',m.x,m.y,state.avatar,faceFlip(meFace),mp,'你',myLv(),mfy,'me')});if(mfy)fyRegister('me',mfy,()=>{const q=curMe();return {x:q.x,y:q.y,flip:faceFlip(meFace)}});fyStart();
   list.sort((a,b)=>a.y-b.y);s=list.map(x=>x.h).join('');
   L.innerHTML=s;
 }

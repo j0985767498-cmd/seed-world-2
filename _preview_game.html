@@ -344,20 +344,20 @@ body.game{background:#5E9E38}
 .mecard{display:flex;gap:12px;align-items:flex-start}.meav{display:flex;flex-direction:column;align-items:center;gap:4px}.meinf{flex:1;min-width:0}.starz{color:#D9912B;letter-spacing:1px}.favrow{display:flex;align-items:center;gap:8px;margin:6px 0}.favrow b{min-width:56px}.favrow .xpbar{flex:1;height:8px}
 .gfam .gfc{display:flex!important;align-items:flex-start;justify-content:center;gap:2px}/* 16s 慶祝卡 */
 .cel{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:16px}
-.cel-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,var(--glow) 0,rgba(40,24,10,.55) 46%,rgba(20,12,6,.86) 100%);animation:celfade .35s ease both}
+.cel-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 44%,var(--glow) 0,rgba(30,18,8,.72) 42%,rgba(14,8,4,.9) 100%);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:celfade .35s ease both}
 .th-gold{--glow:rgba(255,214,110,.55);--rib1:#F2B23E;--rib2:#C7702A;--ring:#E9B24A;--t1:#9A5A00;--t2:#E59B12;--chip:#FFF1C4;--chipb:#E2B24A}
 .th-rainbow{--glow:rgba(255,190,230,.5);--rib1:#FF8FB1;--rib2:#8E7BFF;--ring:#C9A2FF;--t1:#C2397A;--t2:#4C7BE0;--chip:#F6EEFF;--chipb:#C9A2FF}
 .th-dream{--glow:rgba(170,190,255,.5);--rib1:#9C8CFF;--rib2:#4FA6E8;--ring:#9FB8FF;--t1:#5B4ACB;--t2:#2C8CC9;--chip:#EEF0FF;--chipb:#A9B4FF}
-.cel-card{position:relative;width:min(340px,100%);background:linear-gradient(180deg,#FFFDF5,#FBF1DA);border-radius:26px;padding:34px 18px 18px;text-align:center;box-shadow:0 0 0 3px var(--ring),0 0 0 7px rgba(255,255,255,.55),0 18px 50px rgba(0,0,0,.45);animation:celin .55s cubic-bezier(.2,1.5,.4,1) both}
+.cel-card{position:relative;width:min(340px,100%);background:linear-gradient(180deg,#FFFDF5,#FBF1DA);border-radius:26px;padding:34px 18px 18px;text-align:center;box-shadow:0 0 0 3px var(--ring),0 0 0 7px rgba(255,255,255,.55),0 0 60px 10px var(--glow),0 18px 50px rgba(0,0,0,.45);animation:celin .55s cubic-bezier(.2,1.5,.4,1) both}
 .th-rainbow .cel-card{box-shadow:0 0 0 3px transparent,0 18px 50px rgba(0,0,0,.45);background:linear-gradient(180deg,#FFFDF8,#F8F0FF) padding-box,conic-gradient(from 0deg,#FF8FB1,#FFD966,#8FE3A1,#7CC8FF,#C9A2FF,#FF8FB1) border-box;border:4px solid transparent}
 .cel-ribbon{position:absolute;left:50%;top:-18px;transform:translateX(-50%);min-width:190px;padding:9px 26px 10px;background:linear-gradient(180deg,var(--rib1),var(--rib2));color:#fff;font:700 17px "Noto Serif TC","Songti TC",serif;letter-spacing:.12em;border-radius:12px;box-shadow:0 4px 0 rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.5);text-shadow:0 1px 2px rgba(0,0,0,.3);white-space:nowrap;animation:celrib .5s .15s cubic-bezier(.2,1.6,.4,1) both}
 .cel-ribbon::before,.cel-ribbon::after{content:"";position:absolute;top:10px;width:22px;height:30px;background:var(--rib2);z-index:-1;filter:brightness(.8)}
 .cel-ribbon::before{left:-14px;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,40% 50%)}.cel-ribbon::after{right:-14px;clip-path:polygon(0 0,100% 0,60% 50%,100% 100%,0 100%)}
-.cel-stage{position:relative;height:190px;margin:2px -18px 4px;overflow:hidden}
+.cel-stage{position:relative;height:210px;margin:2px -18px 4px;overflow:hidden}
 .cel-rays{position:absolute;left:50%;top:50%;width:420px;height:420px;margin:-210px 0 0 -210px;background:repeating-conic-gradient(from 0deg,var(--glow) 0 7deg,transparent 7deg 22deg);-webkit-mask:radial-gradient(circle,#000 18%,transparent 62%);mask:radial-gradient(circle,#000 18%,transparent 62%);animation:muspin 22s linear infinite;opacity:.9}
 .th-rainbow .cel-rays{background:repeating-conic-gradient(from 0deg,rgba(255,143,177,.45) 0 7deg,transparent 7deg 15deg,rgba(124,200,255,.45) 15deg 22deg,transparent 22deg 30deg)}
-.cel-halo{position:absolute;left:50%;top:50%;width:170px;height:170px;margin:-92px 0 0 -85px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95) 0,var(--glow) 45%,transparent 70%);animation:celpulse 2.4s ease-in-out infinite}
-.cel-ped{position:absolute;left:50%;bottom:14px;width:150px;height:30px;margin-left:-75px;border-radius:50%;background:radial-gradient(ellipse,rgba(255,255,255,.9),var(--glow) 55%,transparent 75%)}
+.cel-halo{position:absolute;left:50%;top:50%;width:200px;height:200px;margin:-108px 0 0 -100px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95) 0,var(--glow) 45%,transparent 70%);animation:celpulse 2.4s ease-in-out infinite}
+.cel-ped{position:absolute;left:50%;bottom:12px;width:170px;height:34px;margin-left:-85px;border-radius:50%;background:radial-gradient(ellipse,rgba(255,255,255,.9),var(--glow) 55%,transparent 75%)}
 .cel-fruit{position:absolute;left:50%;top:50%;transform:translate(-50%,-54%);animation:celpop .7s .25s cubic-bezier(.2,1.7,.4,1) both}
 .cel-fruit>svg{display:block;filter:drop-shadow(0 6px 10px rgba(80,50,10,.28));animation:celbob 3.2s 1s ease-in-out infinite}
 .cel-tw{position:absolute;filter:drop-shadow(0 0 4px var(--ring));animation:celtw 2.2s ease-in-out infinite;opacity:0}
@@ -4048,7 +4048,7 @@ function mhNote(crop,m,quiet){if(!state.meihin)state.meihin={};if(state.meihin[m
   try{wardCheck()}catch(e){}return true}
 async function noteSeen(p){
   const ph=phen(p.g,p.crop);
-  {const m=mhOf(ph);if(m&&mhNote(p.crop,m)){save();noteOpen({cel:{th:'gold',kicker:'名品誕生',title:`${m[1]}${CROPS[p.crop].n}`,sub:`第一次育出名品「${m[1]}」！（${mhCount()}／${MEIHIN.length}）`,fruit:fruitSVG(ph,p.crop,150,1,'',true),chips:[CROPS[p.crop].n,'名品',TIERS[ph.tier]],go:{label:'去圖鑑看看',fn:()=>{dexTab='mh';openPanel('dex')}}}})}}/* 90.3 */if(!state.seen)state.seen={};const a=state.seen[p.crop]||(state.seen[p.crop]=[]);
+  {const m=mhOf(ph);if(m&&mhNote(p.crop,m)){save();noteOpen({cel:{th:'gold',kicker:'名品誕生',title:`${m[1]}${CROPS[p.crop].n}`,sub:`第一次育出名品「${m[1]}」！（${mhCount()}／${MEIHIN.length}）`,fruit:fruitSVG(ph,p.crop,172,1,'',true),chips:[CROPS[p.crop].n,'名品',TIERS[ph.tier]],go:{label:'去圖鑑看看',fn:()=>{dexTab='mh';openPanel('dex')}}}})}}/* 90.3 */if(!state.seen)state.seen={};const a=state.seen[p.crop]||(state.seen[p.crop]=[]);
   if(a.includes(ph.key))return;a.push(ph.key);addXp(5*XP_MUL[ph.tier||0]*(p.bt?0.25:1),true);save();
   try{let mine=false;const ref=db.collection('discoveries').doc(rid(p.crop,ph.key));
     const od=ridOld(ref.id);await db.runTransaction(async tx=>{const d=await tx.get(ref);if(d.exists)return;if(od){const d2=await tx.get(db.collection('discoveries').doc(od));if(d2.exists)return}tx.set(ref,{v:4,uid,at:Date.now()});mine=true});
@@ -5827,7 +5827,7 @@ function roamReward(bk,d){const cr=roamCrops(bk).filter(c=>typeof cropOpen!=='fu
   state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop,name:'發光的'+CROPS[crop].short,source:'發光的植株',m:gm,f:gf,seeds,gen:0,germ:1,cross:1,rmr:1,ptier:phen(seeds[0],crop).tier});lotNew(state.lots[0],'w:'+bk);
   if(typeof ensureSlots==='function')ensureSlots();save();try{renderAll()}catch(e){}
   const ph=phen(seeds[0],crop);
-  noteOpen({cel:{th:'gold',kicker:'採到了發光的植株',title:`發光的${CROPS[crop].short}`,sub:`收下一包 5 顆種子。每顆都帶著<b>${CN[dream]}</b>和<b>${SPN[sp]}</b>的影子，要自己育出來。`,fruit:fruitSVG(ph,crop,150,1,'',true),chips:[BIOMES[bk].n,'5 顆種子','全服唯一'],go:{label:'看看種子袋',fn:()=>openPanel('bag')}}});
+  noteOpen({cel:{th:'gold',kicker:'採到了發光的植株',title:`發光的${CROPS[crop].short}`,sub:`收下一包 5 顆種子。每顆都帶著<b>${CN[dream]}</b>和<b>${SPN[sp]}</b>的影子，要自己育出來。`,fruit:fruitSVG(ph,crop,172,1,'',true),chips:[BIOMES[bk].n,'5 顆種子','全服唯一'],go:{label:'看看種子袋',fn:()=>openPanel('bag')}}});
   postNews('roam',`✨ ${myName()} 在${BIOMES[bk].n}採到了發光的植株！`,3);try{renderWorld()}catch(e){}}
 /* 91.6 阿凱的線索：讀 6 份文件一次（快取 10 分鐘），從還沒被拿走的地區裡挑一個，每小時換一次 */
 let roamHintAt=0,roamHintTxt='',roamHintBusy=false;
@@ -7409,11 +7409,11 @@ function muOf(src,g,crop){
 /* 一次發芽很多株時，依等級由高到低最多跳 3 張揭曉卡，其餘只留「！」 */
 /* 83.1：跨界第一次成熟的揭曉（比神話更華麗）：彩虹光芒、果實彈出、星星散開、「奇蹟！」 */
 function xcReveal(p,ph){const src=Object.keys(EX_OF).find(k=>EX_OF[k]===ph.sp),nm=`${EXN[ph.sp]}${CROPS[p.crop].n}`;
-  noteOpen({cel:{th:'rainbow',kicker:'奇蹟！跨界',title:nm,sub:`${src?CROPS[src].n:''}的${EXN[ph.sp]}，長到了${CROPS[p.crop].n}上。`,fruit:fruitSVG(ph,p.crop,150,1,'',true),chips:[CROPS[p.crop].n,'跨界',TIERS[ph.tier]],brag:`${myName()} 的農場出現了「${nm}」！`}})}
+  noteOpen({cel:{th:'rainbow',kicker:'奇蹟！跨界',title:nm,sub:`${src?CROPS[src].n:''}的${EXN[ph.sp]}，長到了${CROPS[p.crop].n}上。`,fruit:fruitSVG(ph,p.crop,172,1,'',true),chips:[CROPS[p.crop].n,'跨界',TIERS[ph.tier]],brag:`${myName()} 的農場出現了「${nm}」！`}})}
 function muReveal(ls){
   ls=ls.filter(x=>x.mu&&x.mu.lv>=2).sort((a,b)=>b.mu.lv-a.mu.lv).slice(0,3);
   for(const x of ls){const ph=phen(x.g,x.crop);
-    noteOpen({cel:{th:x.mu.lv>=3?'rainbow':'dream',kicker:x.mu.lv>=3?'不得了的突變':'咦？這株不一樣！',title:`${x.mu.t}的${CROPS[x.crop].n}`,sub:'這株長出了預覽裡沒有的樣子。',fruit:fruitSVG(ph,x.crop,150,1,'',true),chips:[CROPS[x.crop].n,'突變',TIERS[ph.tier]],brag:`${myName()} 的農場出現了${x.mu.t}的${CROPS[x.crop].n}！`}})}
+    noteOpen({cel:{th:x.mu.lv>=3?'rainbow':'dream',kicker:x.mu.lv>=3?'不得了的突變':'咦？這株不一樣！',title:`${x.mu.t}的${CROPS[x.crop].n}`,sub:'這株長出了預覽裡沒有的樣子。',fruit:fruitSVG(ph,x.crop,172,1,'',true),chips:[CROPS[x.crop].n,'突變',TIERS[ph.tier]],brag:`${myName()} 的農場出現了${x.mu.t}的${CROPS[x.crop].n}！`}})}
 }
 function muMarkSVG(p,x,y,mk){let xb='';try{if(p.xr)xb=`<g pointer-events="none" transform="translate(${x+15} ${y-9})"><rect x="-11" y="-6" width="22" height="12" rx="6" fill="#9A5CC8" stroke="#FFF" stroke-width="1"/><text y="3.2" text-anchor="middle" font-size="7.5" font-weight="700" fill="#FFF">跨界</text></g>`}catch(e){}if(!p.mu)return xb;const yy=y-58-mk;
   return xb+`<path transform="translate(${x-15} ${y-9})" d="M0 -6 L1.6 -1.9 6 -1.9 2.5 0.8 3.8 5 0 2.5 -3.8 5 -2.5 0.8 -6 -1.9 -1.6 -1.9z" fill="#FFD54A" stroke="#8A5A10" stroke-width="1" pointer-events="none"/>`+(p.mu.n?`<g pointer-events="none"><circle cx="${x+13}" cy="${yy}" r="8" fill="#FFF6DE" stroke="#C0392B" stroke-width="1.6"/><text x="${x+13}" y="${yy+4.5}" text-anchor="middle" font-size="12" font-weight="700" fill="#C0392B">!</text></g>`:'')}

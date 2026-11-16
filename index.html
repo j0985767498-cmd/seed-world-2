@@ -495,8 +495,13 @@ input,textarea,select{font-size:16px !important}
 .dlci{animation:dlci 2.6s linear infinite}@keyframes dlci{0%{transform:translate(.2px,0)}12.5%{transform:translate(.14px,.1px)}25%{transform:translate(0,.14px)}37.5%{transform:translate(-.14px,.1px)}50%{transform:translate(-.2px,0)}62.5%{transform:translate(-.14px,-.1px)}75%{transform:translate(0,-.14px)}87.5%{transform:translate(.14px,-.1px)}100%{transform:translate(.2px,0)}}
 .dlrot{transform-box:fill-box;transform-origin:50% 50%;animation:dlrot 3.2s linear infinite}@keyframes dlrot{to{transform:rotate(360deg)}}
 .dltw{animation:dltw 1.8s ease-in-out infinite}@keyframes dltw{0%,100%{opacity:.2}50%{opacity:1}}
-.dlrb{animation:dlrb 4s linear infinite}@keyframes dlrb{from{transform:translateY(0)}to{transform:translateY(-3.2px)}}
+.dlrb{animation:dlrb 4s linear infinite}
+.dlfall{animation:dlfall 3s linear infinite}@keyframes dlfall{0%{transform:translate(0,0) rotate(0deg);opacity:0}10%{opacity:1}30%{transform:translate(.16px,.9px) rotate(70deg)}55%{transform:translate(-.14px,1.6px) rotate(150deg)}80%{transform:translate(.12px,2.3px) rotate(230deg);opacity:1}100%{transform:translate(-.05px,2.95px) rotate(300deg);opacity:0}}@keyframes dlrb{from{transform:translateY(0)}to{transform:translateY(-3.2px)}}
 @media (prefers-reduced-motion:reduce){.dlay{display:none}}
+.skin{animation:skin 3.8s ease-in infinite}@keyframes skin{0%{transform:translate(var(--sx),var(--sy)) rotate(0deg);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translate(0,0) rotate(260deg);opacity:0}}
+.skorb{transform-box:fill-box;transform-origin:50% 50%;animation:skorb 3.6s linear infinite}@keyframes skorb{to{transform:rotate(360deg)}}
+#wx.wx-sakura i,#wx.wx-sakuraoff i{width:var(--s);height:calc(var(--s)*.62);border-radius:60% 0 60% 0;background:var(--c);opacity:.92}
+@media (prefers-reduced-motion:reduce){.skin,.skorb{animation:none;display:none}}
 .dz2{opacity:0;animation:dz2 3s ease-in-out infinite}@keyframes dz2{0%,35%{opacity:0}50%,85%{opacity:1}100%{opacity:0}}
 .dz3b{opacity:0;animation:dz3b 6s ease-in-out infinite}@keyframes dz3b{0%,23%{opacity:0}33.3%,66.6%{opacity:1}66.7%,100%{opacity:0}}
 .dz3c{opacity:0;animation:dz3c 6s ease-in-out infinite}@keyframes dz3c{0%,56%{opacity:0}66.6%,90%{opacity:1}100%{opacity:0}}
@@ -674,7 +679,8 @@ function esc(v){return String(v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','
 const NUMN=10,ABIL=['size','perf'];
 const SHN=6;/* 舊版尖因子組數：只用來轉換舊資料 */
 const BASIC=['white','green','yellow','red','purple','black'];
-const SPECIAL=['silver','pearl','blue','gold','obsidian','crystal','starry','rainbow'];
+const SPECIAL=['silver','pearl','blue','gold','obsidian','crystal','starry','rainbow','sakura'];/* 82（16m）：第 9 種「櫻雪」只從花季的千年櫻來，接在最後（GCOLS 編號不變） */
+const DREAM8=SPECIAL.slice(0,8);/* 突變、古老的種子、委託只用原本 8 種（櫻雪不會從這些地方出現） */
 const CSTR={};BASIC.forEach((c,i)=>CSTR[c]=i+1);SPECIAL.forEach((c,i)=>CSTR[c]=10+i);
 const isSpecC=c=>CSTR[c]>=10;
 /* 15 種混色（兩個不同的基本色）。鍵值依字母排序 */
@@ -682,16 +688,16 @@ const MIX15={'green|white':'mint','white|yellow':'cream','red|white':'pink','pur
 const mixOf=(a,b)=>MIX15[[a,b].sort().join('|')];
 const MIXSET=new Set(Object.values(MIX15));
 const MIX_OF={};for(const [k,v] of Object.entries(MIX15))MIX_OF[v]=k.split('|');
-const CN={white:'白',green:'綠',yellow:'黃',red:'紅',purple:'紫',black:'黑',orange:'橙',pink:'粉',lavender:'淡紫',yellowgreen:'黃綠',mint:'薄荷綠',cream:'奶油黃',gray:'灰',brown:'棕',slate:'青灰',darkgreen:'深綠',amber:'琥珀',olive:'橄欖',wine:'酒紅',crimson:'深紅',plum:'深紫',silver:'銀',pearl:'珍珠白',blue:'水藍',gold:'金',obsidian:'黑曜',crystal:'水晶',starry:'星空',rainbow:'彩虹'};
+const CN={white:'白',green:'綠',yellow:'黃',red:'紅',purple:'紫',black:'黑',orange:'橙',pink:'粉',lavender:'淡紫',yellowgreen:'黃綠',mint:'薄荷綠',cream:'奶油黃',gray:'灰',brown:'棕',slate:'青灰',darkgreen:'深綠',amber:'琥珀',olive:'橄欖',wine:'酒紅',crimson:'深紅',plum:'深紫',silver:'銀',pearl:'珍珠白',blue:'水藍',gold:'金',obsidian:'黑曜',crystal:'水晶',starry:'星空',rainbow:'彩虹',sakura:'櫻雪'};
 /* 一對顏色因子 → 看到的顏色鍵值：純色 'red'、混色 'orange'、夢幻色 'starry'、淡夢幻色 'l-starry'、雙色 'd-gold-starry' */
 function colKey(p){const a=p[0],b=p[1];if(a===b)return a;const sa=isSpecC(a),sb=isSpecC(b);if(sa&&sb)return 'd-'+[a,b].sort().join('-');if(sa)return 'l-'+a;if(sb)return 'l-'+b;return mixOf(a,b)||a}
 function colParts(k){k=k||'';if(k.startsWith('l-'))return {t:'l',a:k.slice(2)};if(k.startsWith('d-')){const q=k.split('-');return {t:'d',a:q[1],b:q[2]}}return {t:isSpecC(k)?'s':MIXSET.has(k)?'m':'p',a:k}}
 function cnOf(k){if(!k)return '';const p=colParts(k);return p.t==='l'?'淡'+CN[p.a]:p.t==='d'?CN[p.a]+CN[p.b]+'雙色':(CN[k]||k)}
 const isSpecK=k=>{const p=colParts(k);return p.t==='s'||p.t==='l'||p.t==='d'};
-const COLOR_ORDER=['rainbow','starry','crystal','obsidian','gold','blue','pearl','silver','black','plum','crimson','wine','purple','darkgreen','slate','brown','olive','amber','red','orange','pink','lavender','gray','yellow','cream','yellowgreen','green','mint','white'];
+const COLOR_ORDER=['sakura','rainbow','starry','crystal','obsidian','gold','blue','pearl','silver','black','plum','crimson','wine','purple','darkgreen','slate','brown','olive','amber','red','orange','pink','lavender','gray','yellow','cream','yellowgreen','green','mint','white'];
 const colOrd=k=>{const p=colParts(k),i=COLOR_ORDER.indexOf(p.a);return (i<0?99:i)+(p.t==='l'?0.3:p.t==='d'?-0.3:0)};
 const ALL_SKINS=(()=>{const out=[...BASIC,...Object.values(MIX15),...SPECIAL,...SPECIAL.map(s=>'l-'+s)];for(let i=0;i<SPECIAL.length;i++)for(let j=i+1;j<SPECIAL.length;j++)out.push('d-'+[SPECIAL[i],SPECIAL[j]].sort().join('-'));return out})();
-const PFN=['條紋','斑點','星點','漸層'];
+const PFN=['條紋','斑點','星點','漸層','櫻花瓣'];/* 82.5A：第 5 種「櫻花瓣」 */
 const pfName=(f,f2)=>f2==null?PFN[f]:PFN[f]+'＋'+PFN[f2];
 const PF_OLD=[0,1,1,2,3,3];/* 舊花紋形式 條紋、斑點、雲紋、星點、漸層、雙色 → 新編號 */
 // 特殊造型（所有作物）1–6；專屬造型 7–14（各作物一個；14 元寶隨甘藷停用）
@@ -1176,7 +1182,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-16l';
+const BUILD='2026-11-16m';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -1327,8 +1333,8 @@ const TEX_KERN='iVBORw0KGgoAAAANSUhEUgAAAGAAAACACAAAAADRtzNmAAAZTklEQVR42mV6Sbck
 const f3=v=>v.toFixed(3);
 const RGBC={white:[246,240,226],green:[88,164,64],yellow:[246,202,44],red:[220,46,42],purple:[118,54,152],black:[58,44,52],orange:[242,132,32],pink:[246,144,172],lavender:[192,154,222],yellowgreen:[172,206,62],
   mint:[150,214,172],cream:[246,228,158],gray:[150,148,146],brown:[140,86,46],slate:[92,116,140],darkgreen:[40,96,52],amber:[200,140,30],olive:[128,124,36],wine:[136,26,74],crimson:[152,20,30],plum:[86,32,112],
-  silver:[186,192,202],pearl:[244,238,246],blue:[53,182,230],gold:[226,176,44],obsidian:[40,30,52],crystal:[196,236,249],starry:[44,40,104],rainbow:[200,120,190]};
-const SPGRAD={silver:['#F4F6F9','#9AA3AE'],pearl:['#FFFFFF','#E3D4EA'],blue:['#9FE3FA','#1E8FC4'],gold:['#FFF1A8','#B9840F'],obsidian:['#6A5A80','#0E0A14'],crystal:['#FAFEFF','#9CD5E8'],starry:['#3A3F8A','#140F38']};
+  silver:[186,192,202],pearl:[244,238,246],blue:[53,182,230],gold:[226,176,44],obsidian:[40,30,52],crystal:[196,236,249],starry:[44,40,104],rainbow:[200,120,190],sakura:[250,204,220]};
+const SPGRAD={silver:['#F4F6F9','#9AA3AE'],pearl:['#FFFFFF','#E3D4EA'],blue:['#9FE3FA','#1E8FC4'],gold:['#FFF1A8','#B9840F'],obsidian:['#6A5A80','#0E0A14'],crystal:['#FAFEFF','#9CD5E8'],starry:['#3A3F8A','#140F38'],sakura:['#FFF2F6','#E9A3BD']};
 const rgbS=v=>`rgb(${v.map(x=>Math.round(clamp(x,0,255))).join(',')})`;
 function baseFn(crop){
   if(crop==='tomato')return t=>{const c=C(t),sv=S(t),lobe=1+0.018*C(6*t);return [1.12*sv*lobe,-0.88*c*lobe+(c>0.85?0.06*(c-0.85)/0.15:0)]};
@@ -1443,8 +1449,8 @@ function fruitPrep(w,h,d){
 /* ===== 57（15w）：夢幻色八種的畫法。u、v＝果實本體範圍內的 0–1；r＝到中心的距離（邊緣約 1）；ang＝繞中心的角度；f＝影格。
    每種顏色依材質疊三到五層（深處、反射、邊緣回光、亮點），所有色塊都是漸層；動態＝第 2、3 影格把光或內容移到別的位置（48.3 交叉淡入淡出）。
    銀、金、珍珠白、彩虹 2 個影格；黑曜、水藍、水晶、星空 3 個影格。彩虹維持橫向彩虹（在 fruitColSpec 裡）。 */
-const DREAM_NF={silver:2,gold:2,pearl:2,rainbow:2,obsidian:3,blue:3,crystal:3,starry:3};
-const DREAM_PERIOD={silver:2.6,gold:1.4,pearl:3.2,rainbow:4,obsidian:3.2,blue:2.6,crystal:2,starry:1.8};/* 80.3（16l） */
+const DREAM_NF={silver:2,gold:2,pearl:2,rainbow:2,obsidian:3,blue:3,crystal:3,starry:3,sakura:2};
+const DREAM_PERIOD={silver:2.6,gold:1.4,pearl:3.2,rainbow:4,obsidian:3.2,blue:2.6,crystal:2,starry:1.8,sakura:3};/* 80.3（16l） */
 const dzR=seed=>{let R=seed>>>0;return ()=>{R=(R*1664525+1013904223)>>>0;return R/4294967296}};
 const DZ_STARS=(()=>{const R=dzR(4242),o=[];for(let i=0;i<26;i++)o.push([0.1+R()*0.8,0.1+R()*0.8,0.012+R()*0.01,i%3]);return o})();
 const DZ_XSTAR=[[0.30,0.34,0],[0.66,0.28,1],[0.58,0.70,2],[0.26,0.66,1]];
@@ -1491,6 +1497,10 @@ function dreamPx(n,f,u,v,sh,asp){
     c=shade([20,20,26]);c=mx(c,[96,108,110],Math.pow(Math.max(0,1-d/1.2),1.2)*0.50);c=mx(c,O.o,bd(d,0.66,0.36)*0.66*side);c=mx(c,O.i,bd(d,0.30,0.34)*0.50*side);
     c=mx(c,[14,14,18],cl((r-0.74)/0.26)*0.85);c=mx(c,[235,240,255],el(0.33,0.27,0.17,0.13)*0.35);c=mx(c,W,cl(el(0.33,0.27,0.075,0.055)*3));
     for(const [sx,sy] of [[0.66,0.38],[0.28,0.60],[0.62,0.76]])c=mx(c,W,dot(sx,sy,0.02)*0.9)}
+  else if(n==='sakura'){/* 82.5B 櫻雪：柔和淡粉底、上方偏亮；散落幾朵固定的粉白小花 */
+    c=shade([250,204,220]);c=mx(c,[255,236,242],cl((0.5-v)/0.5)*0.55);c=mx(c,[236,160,190],cl((r-0.6)/0.4)*0.45);
+    for(const [fx,fy,fr] of [[0.34,0.36,0.085],[0.66,0.52,0.075],[0.42,0.72,0.07],[0.70,0.26,0.06]]){const ex=(u-fx)/fr,ey=(v-fy)*asp/fr,rr=Math.hypot(ex,ey),th=Math.atan2(ey,ex),pet=0.55+0.45*Math.abs(Math.cos(2.5*th));if(rr<pet)c=mx(c,rr<0.28?[246,170,196]:[255,248,250],0.9)}
+    c=mx(c,W,hard(0.32,0.26)*0.8)}
   else return null;
   if(sh<1){const m=0.6+0.4*sh;c=[c[0]*m,c[1]*m,c[2]*m]}/* 疊完之後再留一點暗面，果實才有體積 */
   return c}
@@ -1520,12 +1530,14 @@ function fruitPaint(B,a,ripe,seed,frame,half,msel){/* msel（81）：{reg:'body'
   let pc=null;if(pat)pc=pat.c===a.skin?{at:sk.at,fx:sk.fx,dim:0.85}:fruitColSpec(pat.c,fr);
   const spots=[],stars=[];
   if(forms.includes(1))for(let k=0;k<12;k++)spots.push([x0+W*(0.12+rnd()*0.76),y0+H*(0.12+rnd()*0.76),W/18*(0.8+rnd()*0.4)]);
+  const blos=[];if(forms.includes(4))for(let k=0;k<7;k++)blos.push([x0+W*(0.14+rnd()*0.72),y0+H*(0.14+rnd()*0.72),W/11*(0.8+rnd()*0.4),rnd()*6.283]);/* 82.5A 櫻花瓣：5–8 朵小五瓣花 */
   if(forms.includes(2))for(let k=0;k<14;k++)stars.push([x0+W*(0.08+rnd()*0.84),y0+H*(0.08+rnd()*0.84),W/28*(0.8+rnd()*0.4)]);
   const inPat=(x,y,u,v)=>{let hit=false,grad=-1;
     for(const f of forms){
       if(f===0){const a0=rl[y],a1=rr[y];if(a1>a0){const uu=(x-a0)/(a1-a0);if((uu*6)%1<0.5)hit=true}}
       else if(f===1){for(const s of spots){const dx=x-s[0],dy=y-s[1];if(dx*dx+dy*dy<=s[2]*s[2]){hit=true;break}}}
       else if(f===2){for(const s of stars){const dx=Math.abs(x-s[0]),dy=Math.abs(y-s[1]);if(dx<=s[2]&&dy<=s[2]&&Math.sqrt(dx)+Math.sqrt(dy)<=Math.sqrt(s[2])){hit=true;break}}}
+      else if(f===4){for(const b of blos){const dx=x-b[0],dy=y-b[1],rr=Math.hypot(dx,dy);if(rr>b[2])continue;const th=Math.atan2(dy,dx)+b[3];if(rr<=b[2]*(0.5+0.5*Math.abs(Math.cos(2.5*th)))){hit=true;break}}}
       else grad=v;}
     return [hit,grad]};
   /* 一個顏色在這個像素的樣子：基本色、混色＝底色套明暗；夢幻色＝57 的畫法（淡的和淡底色各半）。k＝明暗 */
@@ -1604,6 +1616,7 @@ function dreamLightSVG(n,per,dl,u){const st=(c,extra)=>`class="${c}" style="anim
   if(n==='obsidian')return `<defs><linearGradient id="dg${u}" x1="0" x2="1"><stop offset="0" stop-color="#9A6CE0"/><stop offset=".5" stop-color="#5A9CE0"/><stop offset="1" stop-color="#48C49C"/></linearGradient></defs>`
     +`<g ${st('dlrot')}><circle r="1.9" fill="none"/><path d="M-0.85 0.25 A0.95 0.75 0 0 1 0.75 -0.35" stroke="url(#dg${u})" stroke-width="0.32" fill="none" stroke-linecap="round" opacity=".75"/></g>`;
   if(n==='starry')return [[-0.4,-0.45,0.1],[0.42,-0.2,0.08],[-0.1,0.25,0.12],[0.5,0.55,0.07],[-0.55,0.6,0.08]].map(([x,y,r],k)=>`<g transform="translate(${x} ${y})" ${st('dltw',-per*k/5)}>${DL_STAR(r*1.6)}<circle r="${r*0.45}" fill="#fff"/></g>`).join('');
+  if(n==='sakura')return [[-0.6,0],[0.35,-0.5],[-0.1,-1.0],[0.6,-1.5],[-0.45,-2.0],[0.15,-2.5]].map(([x,o],k)=>`<g transform="translate(${x} -1.45)"><g ${st('dlfall',-per*k/6)}><path d="M0 -0.11 C0.09 -0.1 0.11 0.02 0 0.12 C-0.11 0.02 -0.09 -0.1 0 -0.11Z" fill="${k%2?'#FFFFFF':'#FFD9E6'}" stroke="#E79AB6" stroke-width="0.012"/></g></g>`).join('');/* 82.5B：5–7 片粉白小花瓣由上往下飄、邊飄邊輕擺和旋轉 */
   if(n==='rainbow'){const Lb=3.2,C=RAINBOW.concat([RAINBOW[0]]),stops=[0,1].map(h=>C.map((c,i)=>`<stop offset="${f3((h+i/(C.length-1))/2)}" stop-color="${c}"/>`).join('')).join('');
     return `<defs><linearGradient id="dg${u}" gradientUnits="userSpaceOnUse" x1="0" x2="0" y1="-1.6" y2="${f3(-1.6+2*Lb)}">${stops}</linearGradient></defs><g ${st('dlrb')}><rect x="-1.7" y="-1.6" width="3.4" height="${2*Lb}" fill="url(#dg${u})" opacity=".85"/></g>`}
   return ''}
@@ -1699,6 +1712,7 @@ function fruitInner(a,ripe,crop){
       if(f===0){for(let k=-4;k<=4;k++){let dd='';for(let v=-1.6;v<=1.61;v+=0.1){dd+=(dd?' L':'M')+f3(k*0.3*(1-0.16*v*v)+0.055*S(v*4.2+k*1.3))+' '+f3(v)}deco+=`<path d="${dd}" stroke="${pc}" stroke-width="0.075" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".92"/>`}}
       else if(f===1){for(let k=0;k<11;k++){const t=R()*6.283,r=sq(R())*0.85,rx=0.08+R()*0.09,cx=C(t)*r,cy=S(t)*r;deco+=`<ellipse cx="${f3(cx)}" cy="${f3(cy)}" rx="${f3(rx)}" ry="${f3(rx*(0.7+R()*0.5))}" fill="${pc}" opacity=".92"/>`}}
       else if(f===2){for(let k=0;k<14;k++){const x=(R()-0.5)*2.2,y=(R()-0.5)*2.4,r=0.07+R()*0.05;deco+=`<path d="M${f3(x)} ${f3(y-r*1.6)} L${f3(x+r*0.4)} ${f3(y-r*0.4)} L${f3(x+r*1.6)} ${f3(y)} L${f3(x+r*0.4)} ${f3(y+r*0.4)} L${f3(x)} ${f3(y+r*1.6)} L${f3(x-r*0.4)} ${f3(y+r*0.4)} L${f3(x-r*1.6)} ${f3(y)} L${f3(x-r*0.4)} ${f3(y-r*0.4)}Z" fill="${pc}" opacity=".95"/>`}}
+      else if(f===4){for(let k=0;k<7;k++){const x=(R()-0.5)*2,y=(R()-0.5)*2.2,r=0.14+R()*0.05,a=R()*72;let d='';for(let q=0;q<5;q++){const t=(a+q*72)*Math.PI/180;d+=`<ellipse cx="${f3(x+C(t)*r*0.55)}" cy="${f3(y+S(t)*r*0.55)}" rx="${f3(r*0.5)}" ry="${f3(r*0.32)}" transform="rotate(${f3(a+q*72)} ${f3(x+C(t)*r*0.55)} ${f3(y+S(t)*r*0.55)})" fill="${pc}"/>`}deco+=d}}
       else{gdef=`<linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${pc}" stop-opacity=".95"/><stop offset=".85" stop-color="${pc}" stop-opacity="0"/></linearGradient>`;deco+=`<rect x="-1.6" y="-1.6" width="3.2" height="3.2" fill="url(#g${id})"/>`}
     }
   }
@@ -2555,6 +2569,7 @@ function abilRange(l){
 }
 function tick(){
   if(!state)return;
+  try{sakuraCheck()}catch(e){}/* 82.2：花季開始、結束或測試開關改了就重畫櫻花之丘 */
   try{rsvTick()}catch(e){}
   try{mqPoll();noteFlush();if(scene==='explore'&&exBiome==='snow'&&regMap==='cave2'&&Math.hypot(exMe.x-400,exMe.y-290)<95)mqEv('vault')}catch(e){}
   if(scene==='explore')exHintUpd();
@@ -2581,6 +2596,7 @@ function renderSpeed(){
   if(!TEST_MODE){el.innerHTML='';return}
   const on=isTestMode();testTagUpd();
   let h=`<h3 style="margin-top:0">遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'測試模式：探索地圖會標出機關與秘境的位置和進度，地圖面板可以直接傳送。只存在這台裝置，別人看不到。':'一般模式：和正式玩家看到的一樣。'}</p>`;
+  if(on)h+=`<h3>櫻花之丘</h3><button class="btn" data-tool="sklook">花季外觀：${sakuraLook()?'櫻花（花季）':'綠葉（花季外）'}（按一下切換，只換畫面）</button><p class="note">測試模式沒有季節限制：千年櫻樹下的植株點隨時都有。今天實際${sakuraBloom()?'是':'不是'}花季（每年 ${SAKURA_SEASON.from.join('/')}～${SAKURA_SEASON.to.join('/')}）。</p>`;
   if(on)h+=`<h3>會影響存檔的測試工具</h3><p class="note">下面這些會加快進度或送東西，用了存檔就和一般玩家不一樣。切回一般模式時，時間加速當成 ×1、探索每日上限當成開啟。</p><p class="note" style="margin:6px 0 2px">時間加速</p><div class="row2" style="grid-template-columns:repeat(4,1fr)">${SPEEDS.map(v=>`<button class="btn${state.speed===v?' primary':''}" data-spd="${v}">×${v}</button>`).join('')}</div>
   <button class="btn" data-tool="excap">探索每日上限：${exCapOn()?'開啟':'關閉'}（按一下切換）</button><button class="btn" data-tool="adv">所有植株進入下一階段</button><button class="btn" data-tool="ex">領取辣椒、茄子、南瓜野生種原</button><button class="btn" data-tool="lvup">等級 +1（現在 Lv ${myLv()}）</button><button class="btn" data-tool="mqre">主線任務從第 1 章重來</button><h3>只多顯示</h3><button class="btn" data-tool="geno">${state.showG?'隱藏':'顯示'}植株的完整因子</button>`;
   if(isAdmin())h+='<button class="btn warn" data-tool="wipe">管理員：清空伺服器的圖鑑、品種權與市集</button>';
@@ -3967,6 +3983,8 @@ const BIOMES={
     objs:[{f:OBJ.tree,w:6},{f:OBJ.mushroom,w:2},{f:OBJ.fern,w:3,flat:1},{f:OBJ.log,w:1.5}],thumb:[['fern',100,86],['tree',40,84],['tree',132,62],['mushroom',84,80],['tree',92,44]]},
   snow:{n:'雪原',ch:'雪',base:'#EEF4F6',patch:'#DCE7EE',patch2:'#FFFFFF',dens:10,crops:[['broccoli',3],['strawberry',2],['eggplant',2],['pumpkin',2]],cols:['white'],pf:[1,3],prof:{pr:[.04,.12],py:[.04,.12],pp:[.02,.08]},desc:'寒冷少雨。常見白色果實與迷你植株。',
     objs:[{f:OBJ.pine,w:5},{f:OBJ.drift,w:3,flat:1},{f:OBJ.icepond,w:1.5,flat:1},{f:OBJ.snowrock,w:2},{f:OBJ.sparkle,w:3,flat:1}],thumb:[['icepond',112,80],['drift',36,84],['pine',46,72],['pine',128,52],['snowrock',84,62]]},
+  sakura:{n:'櫻花之丘',ch:'櫻',base:'#B2CB8C',patch:'#A6BF80',patch2:'#C2D79E',dens:11,crops:[['strawberry',4],['tomato',3],['melon',2],['chili',2],['eggplant',1]],cols:['red','white','red'],pf:[0,1,2,3],prof:{pr:[.3,.4],py:[.3,.4],pp:[.3,.4]},desc:'日式春天的山丘：鳥居、錦鯉池、竹林、茶屋、古寺。常見紅、粉色系的果實，野生植株會帶「櫻花瓣」花紋；花季（3/15～4/15）千年櫻樹下才有「櫻雪」。',
+    objs:[{f:OBJ.tuft,w:5,flat:1},{f:OBJ.flowers,w:4,flat:1},{f:OBJ.bush,w:3},{f:OBJ.boulder,w:1.5}],thumb:[['flowers',30,80],['tuft',96,86],['bush',58,66],['boulder',128,74],['bush',118,46]]},
   marsh:{n:'濕地',ch:'澤',base:'#93C27E',patch:'#7FB06C',patch2:'#A7D08F',dens:11,crops:[['eggplant',4],['zucchini',2],['pumpkin',2],['melon',2]],cols:['purple','green'],pf:[1,2],prof:{pr:[.3,.4],py:[.04,.1],pp:[.66,.76]},desc:'水氣充沛。野生植株常長得巨大，也是特殊造型最容易出現的地區。',
     objs:[{f:OBJ.pond,w:2.5,flat:1},{f:OBJ.reeds,w:5},{f:OBJ.mud,w:2,flat:1},{f:OBJ.marshtuft,w:4,flat:1}],thumb:[['pond',96,76],['mud',30,82],['reeds',40,70],['reeds',140,58],['marshtuft',120,90]]}
 };
@@ -3987,6 +4005,7 @@ function makeWild(crop,bk,rare,deep){
   if(bk==='marsh'&&rnd()<0.5)g.n.size=numLoci(0.88,0.06);
   if((bk==='desert'||bk==='snow')&&rnd()<0.4)g.n.size=numLoci(0.1,0.06);
   if(rare){const hi=rnd()<.5;g.n.perf=numLoci(hi?0.85+rnd()*0.1:0.05+rnd()*0.05,0.06)}
+  if(bk==='sakura'){const t=rnd();if(t<SAKURA_PF.two)g.pf=[4,4];else if(t<SAKURA_PF.two+SAKURA_PF.one)g.pf=[g.pf[0],4]}/* 82.5A：只有櫻花區的野生植株帶「櫻花瓣」 */
   return g;
 }
 function wildName(bk,crop,rare){
@@ -4082,7 +4101,7 @@ function exPlants(bk,cx,cy){
   for(let k=0;k<n;k++){const x=x0+40+R()*(EXC-80),y=y0+60+R()*(EXC-100),crop=wpickR(BIOMES[bk].crops,R)[0],rel=R()<0.08,seed=Math.floor(R()*1e9);if(Math.hypot(x-EXGATE[0],y-EXGATE[1])<90)continue;out.push({key:key+'|'+k,x,y,crop,rel,seed,bk})}
   wpCache.set(key,out);return out;
 }
-function wpGeno(w){if(!w.g){w.g=withSeed(w.seed,()=>w.rel?makeRel(w.crop,w.bk,w.deep):makeWild(w.crop,w.bk,false,w.deep));{const k=exRoll(uid,w),e=EX_OF[w.crop];if(k===2)w.g.sp=[e,e];else if(k===1)w.g.sp=[w.g.sp[0]>6?0:w.g.sp[0],e]}/* 60.2：只有專屬因子是個人抽的，其他特徵全服一致 */}return w.g}
+function wpGeno(w){if(!w.g){w.g=withSeed(w.seed,()=>w.rel?makeRel(w.crop,w.bk,w.deep):makeWild(w.crop,w.bk,false,w.deep));if(w.sk){const t=seededRnd(hashStr('skd|'+w.key))();if(t<SAKURA_DREAM.full)w.g.c=['sakura','sakura'];else if(t<SAKURA_DREAM.full+SAKURA_DREAM.carry)w.g.c=[w.g.c[0],'sakura']}/* 82.5B */{const k=exRoll(uid,w),e=EX_OF[w.crop];if(k===2)w.g.sp=[e,e];else if(k===1)w.g.sp=[w.g.sp[0]>6?0:w.g.sp[0],e]}/* 60.2：只有專屬因子是個人抽的，其他特徵全服一致 */}return w.g}
 function exVisiblePlants(){if(regHas(exBiome)&&state&&state.ex)return regPlants(exBiome,regMap).filter(w=>!state.ex.got.includes(w.key)&&(!w.hid||regHid[w.key])).map(wpView);if(!exRg||!state.ex)return [];const out=[];for(let cy=exRg.cy0;cy<=exRg.cy1;cy++)for(let cx=exRg.cx0;cx<=exRg.cx1;cx++)for(const w of exPlants(exBiome,cx,cy))if(!state.ex.got.includes(w.key))out.push(w);return out}
 function wpSVG(w,hl){
   const cd=CROPS[w.crop],ph=phen(wpGeno(w),w.crop),x=Math.round(w.x),y=Math.round(w.y),sz=cd.fs*sizeScale(ph.ab.size),im=plantImgSVG(w.crop,'ripe',x,y,1);/* 14w：植株圖片＋掛點果實；圖片還沒載好照舊畫法 */
@@ -4693,8 +4712,88 @@ function npcExtraHTML(n){const m=mqCur(),got=(state.favGot&&state.favGot[n])||0;
    REGION_ART／REGION_IMG／REGION_FLAT／REGION_SWAY／REGION_GLOW 依地區分表；素材在 assets/<REGION_CFG.dir 或地區鍵>/。
    REGION_CFG[地區]：名稱、地面與洞內顏色、邊界自動排的樹與灌木、天氣、腳印。
    雪原的亂數種子、刷新點鍵值、多人頻道名稱和 14j 完全相同（vm 比對過）；還沒有地圖的地區（REGION_MAPS 沒有）照舊用無限方塊。 */
-const REGION_MAPS={snow:SNOW_MAPS,grass:GRASS_MAPS,forest:FOREST_MAPS,desert:DESERT_MAPS,marsh:MARSH_MAPS,town:TOWN_MAPS};/* town 沒有 entry，所以 regHas('town') 是 false，探索流程不會用到 */
-const REGION_ART={snow:SNOW_ART,grass:GRASS_ART,forest:FOREST_ART,desert:DESERT_ART,marsh:MARSH_ART,town:TOWN_ART},REGION_IMG={snow:SNOW_IMG,grass:GRASS_IMG,forest:FOREST_IMG,desert:DESERT_IMG,marsh:MARSH_IMG,town:TOWN_IMG},REGION_FLAT={snow:SNOW_FLAT,grass:GRASS_FLAT,forest:FOREST_FLAT,desert:DESERT_FLAT,marsh:MARSH_FLAT,town:TOWN_FLAT},REGION_SWAY={snow:SNOW_SWAY,grass:GRASS_SWAY,forest:FOREST_SWAY,desert:DESERT_SWAY,marsh:MARSH_SWAY,town:TOWN_SWAY},REGION_GLOW={snow:{glow:1,ped:0.8},grass:{glowflower:0.6,ped:0.8},forest:{glowmush:1,spirit:0.62,ped:0.8,campfire:0.5},desert:{altar:0.8,ped:0.8,torch:0.86},marsh:{lantern:1,glowmush:1,glotus:0.5,ped:0.8,fireflyjar:0.5},town:TOWN_GLOW};
+// ===== 櫻花之丘地圖（16m，第 82 節）：8 張相連小地圖；素材 assets/sakura/（草原、濕地的小物借用原路徑） =====
+const SAKURA_IMG={bamboo:[193,230],lanterns:[209,170],pagoda:[161,300],parasol_bench:[201,200],sakura_ancient:[297,264],sakura_big:[254,240],sakura_small:[152,170],sakura_weep:[228,223],taiko_bridge:[187,150],teahouse:[241,220],torii:[202,200],
+  '../grass/flower_bush':[307,226],'../grass/tall_grass':[281,224],'../grass/wildflowers':[266,209],'../grass/boulder':[308,269],'../grass/log':[319,224],'../grass/signpost':[206,293],'../wetland/stone_lantern':[206,300],'../wetland/cattails':[226,300]};
+/* [檔名, 顯示高度, 碰撞寬, 碰撞高]：鳥居、太鼓橋不擋路（鳥居兩根柱子用 blocks）；茶屋、五重塔的門口留空 */
+const SAKURA_ART={sakura_small:['sakura_small',120,20,12],sakura_big:['sakura_big',170,28,14],sakura_weep:['sakura_weep',170,28,14],sakura_ancient:['sakura_ancient',260,80,24],
+  torii:['torii',150,0,0],bridge:['taiko_bridge',152,0,0],pagoda:['pagoda',240,120,36],teahouse:['teahouse',160,150,40],bamboo:['bamboo',150,60,16],lanterns:['lanterns',95,96,14],bench:['parasol_bench',105,70,16],
+  lantern:['../wetland/stone_lantern',84,30,12],flower_bush:['../grass/flower_bush',58,54,16],tallgrass:['../grass/tall_grass',46,0,0],flowers:['../grass/wildflowers',42,0,0],boulder:['../grass/boulder',64,58,18],
+  log:['../grass/log',48,70,14],sign:['../grass/signpost',78,16,8],reed:['../wetland/cattails',44,0,0]};
+const SAKURA_FLAT={bridge:1},SAKURA_SWAY={sakura_small:1,sakura_weep:1,bamboo:1};
+const SAKURA_TINT=new Set(['sakura_small','sakura_big','sakura_weep','sakura_ancient']);/* 花季外改成綠葉的櫻花樹 */
+const SAKURA_MAPS={
+  entry:{n:'鳥居參道',gx:1,gy:2,v2:1,
+    exits:[{side:'s',c:400,w:120,to:'farm'},{side:'n',c:400,w:120,to:'path'},{side:'e',c:620,w:120,to:'koi_pond'}],
+    paths:[{p:[[400,1150],[400,980],[394,800],[400,620],[406,420],[400,220],[400,-40]],w:58},{p:[[404,700],[560,660],[700,626],[840,620]],w:46}],
+    blocks:[[336,506,358,524],[442,506,464,524]],/* 鳥居兩根柱子 */
+    objs:[['torii',400,520],['sakura_big',236,430],['sakura_big',566,430,null,{fl:1}],['sakura_big',236,880,null,{fl:1}],['sakura_big',570,890],
+      ['lantern',344,700],['lantern',456,744],['lantern',344,330],['lantern',456,330],['bench',640,980],['boulder',150,640,null,{s:0.6}]],
+    groves:[[140,250,2,45],[680,280,2,45]],
+    meadows:[[200,620,7,60,26,0],[620,520,6,55,24,1]],
+    suns:[[400,640,230,150]],petal:[[170,330],[640,760],[200,1000]],
+    spawns:[[260,760],[560,780],[180,520],[640,350]],items:[[120,980]]},
+  path:{n:'櫻花林道',gx:1,gy:1,v2:1,petalDense:1,
+    exits:[{side:'s',c:400,w:120,to:'entry'},{side:'n',c:300,w:120,to:'bamboo'},{side:'e',c:580,w:120,to:'teahouse'}],
+    belts:[{k:'sakura_small',p:[[48,700],[190,690],[316,630]],step:54,w:20},{k:'sakura_small',p:[[470,420],[610,380],[756,384]],step:54,w:20}],
+    paths:[{p:[[400,1150],[420,960],[520,860],[590,740],[560,640],[420,560],[300,470],[262,340],[300,200],[300,-40]],w:50},{p:[[520,600],[680,584],[840,580]],w:44}],
+    objs:[['bench',190,950],['bench',650,960,null,{fl:1}],['sakura_big',120,860],['flower_bush',300,880,null,{s:0.8}]],
+    groves:[[650,250,2,40],[700,800,2,42]],
+    meadows:[[200,500,6,55,24,1],[620,700,5,50,20,0]],
+    suns:[[420,700,220,150]],petal:[[150,540],[640,250],[300,900]],
+    spawns:[[180,560],[660,700],[230,1000],[520,300]],items:[[700,180]]},
+  koi_pond:{n:'錦鯉池',gx:2,gy:2,v2:1,koi:1,
+    exits:[{side:'w',c:620,w:120,to:'entry'},{side:'n',c:560,w:120,to:'teahouse'}],
+    lakes:[[290,460,150,100],[480,830,170,100]],
+    rivers2:[{p:[[330,520],[352,580],[372,630],[392,682],[412,734],[436,790]],w:60,pinch:[[382,656,0.85]]}],bridges:[{at:[382,656]}],
+    paths:[{p:[[-40,620],[100,620],[200,640],[262,660]],w:48,br:[0,0]},{p:[[510,630],[560,560],[566,400],[560,220],[560,-40]],w:48,br0:[0,1]}],
+    objs:[['sakura_weep',110,560],['sakura_weep',700,760,null,{fl:1}],['sakura_weep',640,470],['lantern',600,640],['boulder',190,930,null,{s:0.6}],['bench',220,1010]],
+    groves:[[140,250,2,45],[700,1000,2,40]],
+    meadows:[[700,300,6,50,22,1]],
+    suns:[[400,640,240,160]],petal:[[660,330],[150,800],[300,1020]],
+    spawns:[[180,760],[690,620],[660,920],[440,250]],items:[[100,330]]},
+  bamboo:{n:'竹林',gx:1,gy:0,v2:1,
+    exits:[{side:'s',c:300,w:120,to:'path'},{side:'e',c:300,w:120,to:'garden'}],
+    belts:[{k:'bamboo',p:[[44,820],[300,820],[560,820]],step:46,w:22},{k:'bamboo',p:[[240,600],[500,600],[756,600]],step:46,w:22},
+      {k:'bamboo',p:[[44,400],[290,400],[520,400]],step:46,w:22},{k:'bamboo',p:[[300,404],[300,460],[300,520]],step:40,w:22}],/* 竹牆來回，左上角是死路（道具點在底） */
+    paths:[{p:[[300,1150],[320,1000],[630,900],[650,760],[480,700],[150,680],[130,560],[300,560],[620,480],[640,360],[700,304],[840,300]],w:44}],
+    objs:[['boulder',600,1000,null,{s:0.6}],['tallgrass',160,960]],
+    petal:[[160,960],[600,700],[500,250]],
+    spawns:[[200,960],[620,690],[460,520],[560,220]],items:[[150,460]]},
+  teahouse:{n:'茶屋',gx:2,gy:1,v2:1,
+    exits:[{side:'s',c:560,w:120,to:'koi_pond'},{side:'w',c:580,w:120,to:'path'},{side:'n',c:400,w:120,to:'garden'}],
+    paths:[{p:[[-40,580],[150,580],[300,610],[430,620]],w:48},{p:[[560,1150],[560,900],[480,720],[430,620],[430,450]],w:50,end:'dirt'},{p:[[430,620],[620,560],[660,370],[570,260],[430,220],[400,140],[400,-40]],w:46}],
+    objs:[['teahouse',430,420],['lanterns',290,520],['lanterns',580,500,null,{fl:1}],['bench',250,800],['bench',650,800,null,{fl:1}],['sakura_big',150,350],['sakura_small',700,1000]],
+    groves:[[150,1000,2,45],[700,230,2,40]],
+    meadows:[[660,960,5,50,20,1]],
+    suns:[[430,760,240,150]],petal:[[150,760],[700,640],[220,250]],
+    spawns:[[180,880],[640,960],[700,420],[160,450]],items:[[100,200]]},
+  garden:{n:'枯山水',gx:2,gy:0,v2:1,zen:[220,400,600,800],zenRocks:[[330,520,1],[500,660,0.8],[430,450,0.55]],
+    exits:[{side:'w',c:300,w:120,to:'bamboo'},{side:'s',c:400,w:120,to:'teahouse'},{side:'n',c:420,w:120,to:'pagoda'}],
+    paths:[{p:[[-40,300],[150,300],[300,320],[420,330]],w:46},{p:[[420,330],[420,160],[420,-40]],w:48},{p:[[400,1150],[400,960],[260,880],[150,720],[150,440],[200,340],[300,320]],w:46}],
+    objs:[['boulder',330,520,null,{s:1}],['boulder',500,660,null,{s:0.8}],['boulder',430,450,null,{s:0.55}],['lantern',660,880]],
+    groves:[[690,320,2,40],[680,1000,2,40],[120,1010,2,40]],
+    suns:[[410,600,220,160]],petal:[[680,600],[120,950],[600,200]],
+    spawns:[[680,480],[600,950],[110,560],[250,1000]],items:[[720,780]]},
+  pagoda:{n:'古寺',gx:2,gy:-1,v2:1,
+    exits:[{side:'s',c:420,w:120,to:'garden'},{side:'n',c:400,w:120,to:'ancient'}],
+    paths:[{p:[[420,1150],[410,900],[400,700],[400,470]],w:50,end:'dirt'},{p:[[400,700],[580,610],[610,360],[490,200],[400,90],[400,-40]],w:46}],
+    objs:[['pagoda',400,440],['lantern',340,560],['lantern',460,560],['lantern',340,760],['lantern',460,760],['sakura_big',190,420],['sakura_big',640,860,null,{fl:1}],['sakura_big',190,900]],
+    groves:[[690,230,2,40]],
+    meadows:[[220,640,6,55,22,1]],
+    suns:[[400,640,220,160]],petal:[[180,620],[660,500],[250,1040]],
+    spawns:[[200,760],[650,720],[620,1000],[250,250]],items:[[700,1030]]},
+  ancient:{n:'千年櫻',gx:2,gy:-2,v2:1,rare:0.15,sk:[400,600],
+    exits:[{side:'s',c:400,w:120,to:'pagoda'}],
+    paths:[{p:[[400,1150],[400,900],[400,700]],w:50,end:'dirt'}],
+    objs:[['sakura_ancient',400,530],['lantern',300,760],['lantern',500,760],['sakura_weep',130,850],['sakura_weep',670,850,null,{fl:1}]],
+    groves:[[130,240,2,45],[670,240,2,45]],
+    meadows:[[220,980,6,55,22,1],[600,990,6,55,22,0]],
+    suns:[[400,620,260,180]],petal:[[150,600],[650,600],[400,1000]],
+    spawns:[[200,700],[600,700],[250,950],[560,950]],items:[[130,420]]}
+};
+const REGION_MAPS={snow:SNOW_MAPS,grass:GRASS_MAPS,forest:FOREST_MAPS,desert:DESERT_MAPS,marsh:MARSH_MAPS,sakura:SAKURA_MAPS,town:TOWN_MAPS};/* town 沒有 entry，所以 regHas('town') 是 false，探索流程不會用到 */
+const REGION_ART={snow:SNOW_ART,grass:GRASS_ART,forest:FOREST_ART,desert:DESERT_ART,marsh:MARSH_ART,sakura:SAKURA_ART,town:TOWN_ART},REGION_IMG={snow:SNOW_IMG,grass:GRASS_IMG,forest:FOREST_IMG,desert:DESERT_IMG,marsh:MARSH_IMG,sakura:SAKURA_IMG,town:TOWN_IMG},REGION_FLAT={snow:SNOW_FLAT,grass:GRASS_FLAT,forest:FOREST_FLAT,desert:DESERT_FLAT,marsh:MARSH_FLAT,sakura:SAKURA_FLAT,town:TOWN_FLAT},REGION_SWAY={snow:SNOW_SWAY,grass:GRASS_SWAY,forest:FOREST_SWAY,desert:DESERT_SWAY,marsh:MARSH_SWAY,sakura:SAKURA_SWAY,town:TOWN_SWAY},REGION_GLOW={sakura:{lantern:1,lanterns:0.7},snow:{glow:1,ped:0.8},grass:{glowflower:0.6,ped:0.8},forest:{glowmush:1,spirit:0.62,ped:0.8,campfire:0.5},desert:{altar:0.8,ped:0.8,torch:0.86},marsh:{lantern:1,glowmush:1,glotus:0.5,ped:0.8,fireflyjar:0.5},town:TOWN_GLOW};
 const REGION_CFG={
   snow:{name:'雪原',ground:'#E9EFF4',outer:'#E3EAF0',spots:['#DDE6ED','#F3F7F9'],path:['#D3DDE6','#DEE7EE'],water:['#9DBCCD','#C7E0EC'],cliff:['#8D9299','#767B83','#FFFFFF'],
     edgeTree:'pine',edgeBush:'bush',weather:'snow',shadow:'rgba(70,95,120,.2)',glow:'#C8F4FF',footprints:true,
@@ -4710,6 +4809,9 @@ const REGION_CFG={
     caveGround:'#C9A76E',caveOuter:'#5E4527',caveSpots:['#BF9C63','#D3B37C'],cavePath:['#B8955E','#C2A06A'],caveWall:'#8E6E44',caveEdge:'#E2C796'},
   marsh:{name:'濕地',dir:'wetland',ground:'#96AF78',outer:'#8AA36D',spots:['#8DA770','#A1B985'],path:['#A39A74','#B0A782'],water:['#6F9A92','#8FB8B0'],cliff:['#7E7A5E','#68654D','#96AF78'],
     edgeTree:'willow',edgeBush:'cattails',weather:'marsh',shadow:'rgba(30,50,30,.25)',glow:'#FFE6A8',footprints:false,
+    caveGround:'#5E4A34',caveOuter:'#291F14',caveSpots:['#55432E','#6A553C'],cavePath:['#6E5940','#79644A'],caveWall:'#4A3A26',caveEdge:'#927858'},
+  sakura:{name:'櫻花之丘',ground:'#B2CB8C',outer:'#A6BF80',spots:['#ABC484','#BFD49A'],path:['#CFC6B6','#DCD4C6'],water:['#6F9A92','#8FB8B0'],cliff:['#8E8476','#766D60','#B2CB8C'],/* 82.3：比草原再柔和、偏暖的春草綠；小路是淺石板色 */
+    edgeTree:'sakura_small',edgeBush:'flower_bush',weather:'sakura',shadow:'rgba(60,72,40,.22)',glow:'#FFE6EE',footprints:false,
     caveGround:'#5E4A34',caveOuter:'#291F14',caveSpots:['#55432E','#6A553C'],cavePath:['#6E5940','#79644A'],caveWall:'#4A3A26',caveEdge:'#927858'},
   /* 15b 城鎮：暖灰米色石板（tiles＝石板細格線），外圍草地；不畫程式大門（noGate，用 gate 素材當入口拱門） */
   town:{name:'城鎮',ground:'#E6DCC6',outer:'#A8C478',spots:['#DED3BC','#ECE3CF'],path:['#D6C6A4','#DED0B2'],water:['#9DBCCD','#C7E0EC'],cliff:['#9C8A6A','#857458','#E6DCC6'],tiles:'#D3C6AA',noGate:true,
@@ -4790,7 +4892,8 @@ function regObjHTML(o,M,R){
   const bk=M.bk,cave=M.cave,a=REGION_ART[bk][o[0]];if(!a)return '';const im=REGION_IMG[bk][a[0]];if(!im)return '';const op=o[4]&&typeof o[4]==='object'?o[4]:{},sk=op.s||1;const [iw,ih]=im,dh=a[1]*sk,w=dh*iw/ih,x=o[1],y=o[2]+(op.dy||0);/* dy：畫的位置上下移，前後排序仍用 o[2]（64.6：棺材疊在石台上） */
   let s=op.ns?'':`<ellipse cx="${f1(x)}" cy="${f1(y-1)}" rx="${f1(w*0.34)}" ry="${f1(Math.max(4,w*0.08))}" fill="${cave?'rgba(0,0,0,.3)':REGION_CFG[bk].shadow}"/>`;
   {const gv=(REGION_GLOW[bk]||{})[o[0]];if(gv&&!M.lightPuzzle)s+=`<circle class="glw" cx="${f1(x)}" cy="${f1(y-dh*(gv<1?gv:0.45))}" r="58" fill="url(#sglow)"/>`}
-  let img=`<image href="assets/${regDir(bk)}/${a[0]}.png" x="${f1(x-w/2)}" y="${f1(y-dh)}" width="${f1(w)}" height="${sk===1?dh:f1(dh)}"/>`;
+  const href=bk==='sakura'&&SAKURA_TINT.has(a[0])&&!sakuraLook()?(sakuraGreen(a[0])||`assets/${regDir(bk)}/${a[0]}.png`):`assets/${regDir(bk)}/${a[0]}.png`;/* 82.2 */
+  let img=`<image href="${href}" x="${f1(x-w/2)}" y="${f1(y-dh)}" width="${f1(w)}" height="${sk===1?dh:f1(dh)}"/>`;
   if(op.fl&&o[0]!=='sign')img=`<g transform="translate(${f1(2*x)} 0) scale(-1 1)">${img}</g>`;
   if(op.stn!=null)img=`<g class="stn" data-k="${op.stn}">${img}</g>`;if(op.cls)img=`<g class="${op.cls}">${img}</g>`;
   s+=(REGION_SWAY[bk]||{})[o[0]]&&R()<0.4?`<g class="sway${o[0]==='bunting'?' swayB':''}" style="animation-delay:-${(R()*5).toFixed(1)}s">${img}</g>`:(o[0]==='bunting'?`<g class="sway swayB">${img}</g>`:img);
@@ -4863,6 +4966,11 @@ const REG_V2={
     terr:{art:'cliff',stairs:'stairs',sa:[0.30,0.60],rock:'#F09A50',rockD:'#B36A30',shade:'#8A6030',drip:['#E3B46A','#EDC583']},
     water:{edge:'#4E7A70',sh:'#7ECEC8',deep:'#348C98',glint:'#EAFBF6',wet:'#D6AA68'},shore:['rock','succ','reed'],pal:[['#F2B8C6','#F7E68A','#FFFFFF']],
     bridge:{k:'bridge',s:1,a:[0.24,0.80],b:[0.90,0.40],hw:0.16,n:[0.56,0.83]}},
+  sakura:{tree:'sakura_small',big:'sakura_big',hero:'sakura_big',bush:'flower_bush',tuft:'tallgrass',flower:'flowers',rock:'boulder',log:'log',
+    path:['#BBB2A2','#D6CEBE','#E0D8C9','#CAC1B0','#A69C8C'],tufts:['#9DB873','#A8C27E','#93AE6A'],spots:['#ABC484','#BFD49A','#B4CB8E'],
+    shade:'#4E6A34',vig:'#2A3E1E',hi:'#C2D79E',lip:'#B8CF92',lipLine:'#7C9A52',terr:null,
+    water:{edge:'#55704C',sh:'#A4D4CC',deep:'#4E9098',glint:'#F2FBF7',wet:'#9DB27A'},shore:['boulder','tallgrass','reed'],pal:[['#FFFFFF','#F8C8D8','#F2A9C2'],['#FFFFFF','#FBE3EC','#F7E68A']],
+    bridge:{k:'bridge',s:1,a:[0.16,0.86],b:[0.84,0.52],hw:0.17,n:[0.34,0.94]}},
   snow:{tree:'pine',big:'bigpine',hero:'bare',bush:'bush',tuft:null,flower:'crystals',rock:'boulder',log:'log',
     path:['#C6D2DC','#DCE5EC','#E6EDF2','#CDD8E1','#B8C4CE'],tufts:['#C3D2DD','#CCD9E3','#B9C8D4'],spots:['#DDE6ED','#F3F7F9','#E4ECF2'],
     shade:'#6E86A0',vig:'#3A5068',hi:'#FFFFFF',lip:'#F7FAFD',lipLine:'#A9BCCC',
@@ -5004,7 +5112,7 @@ function regPrepV2(bk,id,M){
     if(onPath(x,y,cw+(o.soft?2:8))||exitZone(x,y)||inWalk(x,y,14)||inWater(x,y,cw+4)||(!o.keep&&inTerr(x,y,10))||pts2.some(([px,py])=>Math.hypot(px-x,py-y)<(a.cw?44:26)))continue;
     objs.push(g)}
   /* 79.4（16l）：樹、仙人掌、建築的底部不可以在水裡（離岸至少 12px）：往最近的岸上挪 */
-  if(!M.cave&&!M.ice){const TR=new Set([V.tree,V.big,V.hero,V.bush,'palm','saguaro','bigsaguaro','pear','barrel','oak','round_tree','pine','bigpine','old','purple','willow','bigwillow','swamp','tent','cabin','well','stump','wagon']);
+  if(!M.cave&&!M.ice){const TR=new Set([V.tree,V.big,V.hero,V.bush,'palm','saguaro','bigsaguaro','pear','barrel','oak','round_tree','pine','bigpine','old','purple','willow','bigwillow','swamp','tent','cabin','well','stump','wagon','sakura_small','sakura_big','sakura_weep','pagoda','teahouse','lanterns','bench']);
     for(const o of objs){if(!TR.has(o[0])||!inWater(o[1],o[2],12))continue;let best=null;for(let r=6;r<=90&&!best;r+=6)for(let k=0;k<24;k++){const nx=o[1]+Math.cos(k/24*6.283)*r,ny=o[2]+Math.sin(k/24*6.283)*r;if(!inWater(nx,ny,12)&&!onPath(nx,ny,6)){best=[nx,ny];break}}if(best){o[1]=Math.round(best[0]);o[2]=Math.round(best[1])}}
     /* 岸邊物件：一群一群跨在岸線上（一半在岸上、一半在水裡），把輪廓打斷；每個水池 3–5 群，不平均 */
     if(V.shore){const SR=seededRnd(hashStr('shore|'+bk+id)),SK=V.shore.filter(k=>v2artDim(bk,k)),okAt=(x,y)=>x>B.x0+10&&x<B.x1-10&&y>B.y0+10&&y<B.y1-6&&!onPath(x,y,10)&&!exitZone(x,y)&&!inWalk(x,y,18)&&!pts2.some(([px,py])=>Math.hypot(px-x,py-y)<34)&&!inWater(x,y,-12);/* 不放到水中央 */
@@ -5040,6 +5148,12 @@ function regGroundSVG(M){
   if(M.grain){for(let y=B.y0;y<B.y1;y+=26)s+=`<path d="M${B.x0} ${y} Q${W/2} ${y+(R()-.5)*14} ${B.x1} ${y+(R()-.5)*8}" stroke="${C.caveSpots[1]}" stroke-width="2.2" fill="none" opacity=".5"/>`}
   /* 高地：整片較亮 */
   for(const t of M._T){s+=`<path d="M-40 -40 L${W+40} -40 `+Array.from({length:Math.ceil((W+80)/20)+1},(_,i)=>{const x=W+40-i*20;return `L${x} ${v2f(t.E(x)+26)}`}).join(' ')+`Z" fill="${V.hi}" opacity=".72"/>`}
+  /* 82.3 枯山水：程式畫的白砂，耙出平行紋與繞石頭的同心紋 */
+  if(M.zen){const [x0,y0,x1,y1]=M.zen;s+=`<defs><clipPath id="zen${M.id}"><rect x="${x0}" y="${y0}" width="${x1-x0}" height="${y1-y0}" rx="26"/></clipPath></defs><rect x="${x0-6}" y="${y0-6}" width="${x1-x0+12}" height="${y1-y0+12}" rx="30" fill="#8E8476" opacity=".55"/><rect x="${x0}" y="${y0}" width="${x1-x0}" height="${y1-y0}" rx="26" fill="#EEE9DD"/><g clip-path="url(#zen${M.id})">`;
+    const RK=M.zenRocks||[],inR=(x,y)=>RK.some(([rx,ry,k])=>Math.hypot(x-rx,(y-ry)*1.5)<70*k+22);
+    for(let y=y0+12;y<y1;y+=11){let d='',on=false;for(let x=x0;x<=x1;x+=6){const ok=!inR(x,y);if(ok){d+=(on?' L':' M')+x+' '+v2f(y+Math.sin(x/40)*1.2);on=true}else on=false}if(d)s+=`<path d="${d}" stroke="#CFC8B8" stroke-width="1.6" fill="none"/>`}
+    for(const [rx,ry,k] of RK)for(let i=1;i<=4;i++)s+=`<ellipse cx="${rx}" cy="${ry-4}" rx="${v2f(36*k+i*11)}" ry="${v2f((36*k+i*11)/1.5)}" stroke="#CFC8B8" stroke-width="1.6" fill="none"/>`;
+    s+='</g>'}
   /* 水：外框（深色）→ 淺水帶 → 深水（多個橢圓合成一個輪廓） */
   const lakes=M.lakes||[],ice=M.ice,WC=V.water;
   /* 79（16l）：水邊由外往內四層，不描外框：濕沙帶（岸上，往外漸淡、寬度沿岸變化）→ 浪花線（細、粗細不均）→ 淺水 → 深水（用離岸距離做漸層，不是同心圓）。
@@ -5170,7 +5284,7 @@ function regWaterHTML(M){
     const id='wlk'+M.id;let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const [cx,cy,rx,ry] of lakes){x0=Math.min(x0,cx-rx);y0=Math.min(y0,cy-ry);x1=Math.max(x1,cx+rx);y1=Math.max(y1,cy+ry)}
     const an=!ice&&mv<2;if(an)mv++;
     s+=`<clipPath id="${id}"><path d="${d}" clip-rule="evenodd"/></clipPath><g clip-path="url(#${id})" pointer-events="none"><rect class="${an?'wdrift':''}" x="${v2f(x0-200)}" y="${v2f(y0-400)}" width="${v2f(x1-x0+400)}" height="${v2f(y1-y0+800)}" fill="url(#wfx)" opacity="${ice?0.7:0.6}"/>${ice||ambOff()?'':M._LG.map((G,gi)=>{const [cx,cy,rx,ry]=G.ell.slice().sort((a,b)=>b[2]*b[3]-a[2]*a[3])[0],r=Math.min(rx,ry)*0.46;if(rx<40)return '';/* 56：魚影、漣漪 */
-      let f='';for(let j=0;j<(rx>150?2:1);j++)f+=`<g class="fishO" style="transform-origin:${cx}px ${cy}px;animation-delay:-${gi*5+j*13}s;animation-duration:${28+j*9}s"><ellipse cx="${cx+r*(j?0.7:1)}" cy="${cy}" rx="2.8" ry="8" fill="#16343A" opacity=".26"/></g>`;
+      let f='';const koi=M.koi;for(let j=0;j<(koi?3:rx>150?2:1);j++)f+=`<g class="fishO" style="transform-origin:${cx}px ${cy}px;animation-delay:-${gi*5+j*13}s;animation-duration:${28+j*9}s">${koi?`<ellipse cx="${cx+r*[1,0.7,0.45][j]}" cy="${cy}" rx="3.4" ry="9" fill="${['#F08A3C','#FFFFFF','#E9643A'][j]}" opacity=".85"/><ellipse cx="${cx+r*[1,0.7,0.45][j]}" cy="${cy-3}" rx="2" ry="3" fill="${['#FFFFFF','#F08A3C','#FFFFFF'][j]}" opacity=".85"/>`:`<ellipse cx="${cx+r*(j?0.7:1)}" cy="${cy}" rx="2.8" ry="8" fill="#16343A" opacity=".26"/>`}</g>`;/* 82.3 錦鯉池：橘白的錦鯉 */
       for(let j=0;j<3;j++){const gx=cx+[-0.34,0.12,0.3][j]*rx,gy=cy+[-0.18,0.2,-0.02][j]*ry;f+=`<path class="wgl" style="animation-delay:-${j*2.3+gi}s" d="M${v2f(gx-11)} ${v2f(gy)} q11 -3.5 22 0" stroke="${REG_V2[M.bk].water.glint}" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".7"/>`}/* 79.2：波光，慢慢左右飄 */
       for(let j=0;j<1;j++)f+=`<ellipse class="ripA" cx="${v2f(cx+(j?rx*0.34:-rx*0.3))}" cy="${v2f(cy+(j?-ry*0.22:ry*0.28))}" rx="15" ry="6.5" fill="none" stroke="#FFFFFF" stroke-width="1.5" style="animation-delay:-${j*4.5+gi*2}s"/>`;return f}).join('')}</g>`}
   for(const [k,[cx,cy,rx,ry]] of (M.isles||[]).entries()){const IR=()=>seededRnd(hashStr('isle'+M.id+k)),C=REGION_CFG[M.bk],V=REG_V2[M.bk];/* 水中的小島 */
@@ -5238,6 +5352,7 @@ function quickAt(x,y){if(!regIn())return false;const M=regCur();if(!M.quick)retu
 /* 每走一步檢查一次的機關與秘境觸發；slide＝這一步是不是在冰上滑（放開搖桿後的滑行，或特別滑的冰） */
 function regFxStep(slide){
   if(!regIn()||regBusy)return;const M=regCur(),m=curMe(),bk=exBiome;if(!M.v2)return;
+  sakuraStep(M,m);
   if(M.tg){let k=-1;M.tg.forEach(([x,y],i)=>{if(Math.hypot(m.x-x,(m.y-y)*1.3)<34)k=i});
     if(k!==tgIn){tgIn=k;if(k>=0){try{document.querySelectorAll('.tg'+k).forEach(e=>{e.classList.remove('shk');void e.getBBox;e.classList.add('shk')})}catch(e){}
       const w=regPlants(bk,regMap).find(w=>w.hid&&Math.hypot(w.x-M.tg[k][0],w.y-M.tg[k][1])<3);
@@ -5268,9 +5383,47 @@ function regStandTick(){
     if(Math.floor(ringT)!==old)renderWorld()}catch(e){}
 }
 try{setInterval(regStandTick,500)}catch(e){}
+/* ===== 82（16m）櫻花之丘：花季、綠葉、落花、花瓣風、千年櫻 ===== */
+const SAKURA_SEASON={from:[3,15],to:[4,15]};/* 82.2：每年 3/15～4/15（台北時間，全服一致） */
+const SAKURA_DREAM={carry:0.30,full:0.03};/* 82.5B：千年櫻樹下那一株帶一份／完整的「櫻雪」 */
+const SAKURA_PF={one:0.20,two:0.03};/* 82.5A：櫻花區的野生植株帶一份／兩份「櫻花瓣」花紋 */
+function sakuraBloom(t){const d=new Date((t||Date.now())+8*3600e3),m=d.getUTCMonth()+1,dd=d.getUTCDate(),v=m*100+dd,a=SAKURA_SEASON.from[0]*100+SAKURA_SEASON.from[1],b=SAKURA_SEASON.to[0]*100+SAKURA_SEASON.to[1];return v>=a&&v<=b}
+/* 花季限定的內容（千年櫻樹下的植株點）：花季中，或測試模式（沒有季節限制） */
+function sakuraContent(){return sakuraBloom()||(typeof isTestMode==='function'&&isTestMode())}
+/* 畫面（櫻花／綠葉、花瓣／落葉）：一般模式照日期；測試模式可以用「花季外觀」開關切換 */
+let SK_LOOK=null;try{const v=localStorage.getItem('sw_sklook');if(v==='1'||v==='0')SK_LOOK=v==='1'}catch(e){}
+function sakuraLook(){if(typeof isTestMode==='function'&&isTestMode()&&SK_LOOK!=null)return SK_LOOK;return sakuraBloom()}
+let SK_LAST=null;
+function sakuraReprep(){for(const [id,M] of Object.entries(SAKURA_MAPS)){M._p=0;delete REG_GIMG['sakura|'+id];delete REG_GSVG['sakura|'+id]}wpCache.clear&&wpCache.clear();if(typeof wxCur!=='undefined')wxCur=undefined}
+function sakuraCheck(){const k=sakuraLook()+'|'+sakuraContent();if(k!==SK_LAST){const first=SK_LAST==null;SK_LAST=k;if(!first){sakuraReprep();try{if(scene==='explore'&&exBiome==='sakura'){renderHUD();renderWorld()}}catch(e){}}}}
+/* 花季外：櫻花樹用同一張圖，只把粉紅色系的像素調成嫩綠（樹幹、外框不動）。畫好存成 blob 網址 */
+const SK_GREEN={};
+function sakuraGreen(f){const c=SK_GREEN[f];if(c&&c!==1)return c;if(c===1||typeof document==='undefined'||typeof Image==='undefined')return null;SK_GREEN[f]=1;
+  try{const im=new Image();im.onload=()=>{try{const cv=document.createElement('canvas');cv.width=im.naturalWidth;cv.height=im.naturalHeight;const cx=cv.getContext('2d');cx.drawImage(im,0,0);const D=cx.getImageData(0,0,cv.width,cv.height),d=D.data;
+      for(let i=0;i<d.length;i+=4){if(d[i+3]<8)continue;const r=d[i],g=d[i+1],b=d[i+2],mx=Math.max(r,g,b),mn=Math.min(r,g,b);if(mx-mn<18)continue;let h;if(mx===r)h=((g-b)/(mx-mn)+6)%6;else if(mx===g)h=(b-r)/(mx-mn)+2;else h=(r-g)/(mx-mn)+4;h*=60;
+        if(!(h>=300||h<=18)||r<150)continue;/* 只改粉紅色系（含花瓣的淺粉）；樹幹的棕、外框的深色不動 */
+        const L=(r+g+b)/3/255,s=Math.min(1,(mx-mn)/mx*1.2);d[i]=Math.round(110+70*L-50*s*(1-L));d[i+1]=Math.round(150+80*L);d[i+2]=Math.round(70+60*L-30*s)}
+      cx.putImageData(D,0,0);cv.toBlob(bl=>{try{SK_GREEN[f]=URL.createObjectURL(bl);sakuraReprep();if(scene==='explore'&&exBiome==='sakura')renderWorld()}catch(e){}})}catch(e){SK_GREEN[f]=-1}};im.onerror=()=>{SK_GREEN[f]=-1};im.src='assets/sakura/'+f+'.png'}catch(e){SK_GREEN[f]=-1}
+  return null}
+/* 地面散落的花瓣、池面的花筏、花瓣風（每次重畫都重算，畫在地面之上） */
+function sakuraDynHTML(M){if(M.bk!=='sakura'||M.cave)return '';const look=sakuraLook(),R=seededRnd(hashStr('skp|'+M.id)),W=M.W,H=M.H;let s='<g pointer-events="none">';
+  const PC=look?['#F7C6D6','#FBE1EA','#F2A9C2','#FFFFFF']:['#A8C770','#BCD486','#94B460'];
+  const pet=(x,y,r,c,rot,op)=>`<ellipse cx="${v2f(x)}" cy="${v2f(y)}" rx="${v2f(r)}" ry="${v2f(r*0.55)}" fill="${c}" opacity="${op}" transform="rotate(${rot|0} ${v2f(x)} ${v2f(y)})"/>`;
+  const n=look?(M.petalDense?150:70):24;
+  for(let i=0;i<n;i++){const x=40+R()*(W-80),y=110+R()*(H-160);let wet=false;for(const G of M._LG)if(v2pip(G.blk,x,y))wet=true;if(wet||M._RV.some(r=>v2ribIn(r.rb,x,y,0)))continue;s+=pet(x,y,2.6+R()*1.8,PC[Math.floor(R()*PC.length)],R()*180,0.85)}
+  if(look)for(const G of M._LG){const [x0,y0,x1,y1]=G.bb;let k=0;for(let t=0;t<200&&k<26;t++){const x=x0+R()*(x1-x0),y=y0+R()*(y1-y0);if(!v2pip(G.poly(-10),x,y))continue;k++;s+=pet(x,y,2.8+R()*1.6,PC[Math.floor(R()*3)],R()*180,0.92)}}/* 花筏 */
+  /* 82.4 花瓣風：今天藏植株的那個點附近，花瓣往那裡偏飄、在那裡打轉 */
+  if(M.petal&&!ambOff()){const w=regPlants('sakura',M.id).find(w=>w.pw);if(w&&!regHid[w.key]&&!(state.ex.got||[]).includes(w.key)){
+    for(let i=0;i<7;i++){const a=i/7*6.283,d=70+R()*80,sx=Math.cos(a)*d,sy=Math.sin(a)*d*0.6-30;s+=`<g transform="translate(${v2f(w.x)} ${v2f(w.y-8)})"><g class="skin" style="--sx:${v2f(sx)}px;--sy:${v2f(sy)}px;animation-delay:-${(i*0.55).toFixed(2)}s">${pet(0,0,3.2,PC[i%PC.length],i*40,0.95)}</g></g>`}
+    for(let i=0;i<4;i++)s+=`<g transform="translate(${v2f(w.x)} ${v2f(w.y-10)})"><g class="skorb" style="animation-delay:-${(i*0.9).toFixed(2)}s"><circle r="16" fill="none"/>${pet(16,0,3,PC[(i+1)%PC.length],0,0.95)}</g></g>`}}
+  return s+'</g>'}
+function sakuraStep(M,m){if(M.bk!=='sakura'||!M.petal)return;const w=regPlants('sakura',M.id).find(w=>w.pw);if(!w||regHid[w.key]||(state.ex.got||[]).includes(w.key))return;
+  if(Math.hypot(m.x-w.x,m.y-w.y)<28){regHid[w.key]=1;toast(sakuraLook()?'花瓣打轉的地方，藏著一株植物！':'落葉打轉的地方，藏著一株植物！');renderWorld()}}
+/* 82.2：花季開始時公布欄一則消息（全服一則，文件 id 固定，誰先登入誰寫） */
+async function sakuraNews(){if(!uid||!sakuraBloom())return;const yr=new Date(Date.now()+8*3600e3).getUTCFullYear();try{const ref=db.collection('news').doc('sakura_'+yr),s=await ref.get();if(s.exists)return;await ref.set({v:4,uid,name:'櫻花之丘',kind:'season',text:'櫻花之丘的櫻花開了',tier:0,at:Date.now()})}catch(e){logErr(e,'news')}}
 /* 每次重畫都要重新算的東西（畫在地面之上、物件之下） */
 function regDynHTML(M){
-  let s='';const bk=M.bk,T=M.secTrig;
+  let s=sakuraDynHTML(M);const bk=M.bk,T=M.secTrig;
   if(M.quick){/* 78.2（16k）：流沙用 assets/common/quicksand_disc.png（圓形、邊緣已羽化，不另外裁切）。外層壓扁成橢圓（寬＝流沙寬、高＝寬×0.55），
        第一層 18 秒一圈；第二層放大 1.15、透明度 .4、反方向 26 秒一圈。相位由 animSync 對到全域時間，重畫不會從頭轉 */
     for(const [k,[cx,cy,rx]] of M.quick.entries()){const r=rx,r2=r*1.15;
@@ -5385,15 +5538,17 @@ function regEnter(id,from){
   const mp=document.getElementById('mapPanel');if(mp&&!mp.hidden)renderRegMap();
 }
 function regPlants(bk,id,day){
-  if(day==null){ensureEx();day=state.ex.day}const key='w|'+bk+'|'+id+'|'+day;/* 同一天、同一張圖全服相同 */let c=wpCache.get(key);if(c)return c;
+  if(day==null){ensureEx();day=state.ex.day}const key='w|'+bk+'|'+id+'|'+day;/* 同一天、同一張圖全服相同 */const ck=key+(bk==='sakura'&&(REGION_MAPS[bk][id]||{}).sk&&sakuraContent()?'|S':'');let c=wpCache.get(ck);if(c)return c;
   const M=REGION_MAPS[bk][id],R=seededRnd(hashStr(key)),out=[];
   M.spawns.forEach(([x,y],k)=>{const on=R()<0.55,crop=wpickR(BIOMES[bk].crops,R)[0],rel=R()<(M.rare||0.08),seed=Math.floor(R()*1e9);if(on)out.push({key:key+'|'+k,x,y,crop,rel,seed,bk})});
   /* 33.1 發光種子台座：每天一株，30% 帶一份專屬造型、5% 直接是專屬造型（見 wpGeno）。51.3：高草叢裡、樹洞正中央藏的那一株（hid，找到才看得到） */
   if(M.ped){const R2=seededRnd(hashStr('ped|'+key));out.push({key:key+'|ped',x:M.ped[0],y:M.ped[1]-26,crop:wpickR(BIOMES[bk].crops,R2)[0],rel:false,seed:Math.floor(R2()*1e9),bk,ped:1})}
   if(M.tg&&M.tg.length){const R3=seededRnd(hashStr('hid|'+key)),k=Math.floor(R3()*M.tg.length);out.push({key:key+'|h',x:M.tg[k][0],y:M.tg[k][1],crop:wpickR(BIOMES[bk].crops,R3)[0],rel:R3()<(M.rare||0.08),seed:Math.floor(R3()*1e9),bk,hid:1})}
   if(M.lightPuzzle&&M.rings){const R3=seededRnd(hashStr('hid|'+key));out.push({key:key+'|h',x:M.rings[0],y:M.rings[1],crop:wpickR(BIOMES[bk].crops,R3)[0],rel:R3()<0.15,seed:Math.floor(R3()*1e9),bk,hid:1})}
+  if(M.petal&&M.petal.length){const R3=seededRnd(hashStr('pw|'+key)),k=Math.floor(R3()*M.petal.length);out.push({key:key+'|pw',x:M.petal[k][0],y:M.petal[k][1],crop:wpickR(BIOMES[bk].crops,R3)[0],rel:R3()<(M.rare||0.08),seed:Math.floor(R3()*1e9),bk,hid:1,pw:1})}/* 82.4 花瓣風 */
+  if(M.sk&&sakuraContent()){const R4=seededRnd(hashStr('sk|'+key));out.push({key:key+'|sk',x:M.sk[0],y:M.sk[1],crop:wpickR(BIOMES[bk].crops,R4)[0],rel:false,seed:Math.floor(R4()*1e9),bk,sk:1})}/* 82.5B 千年櫻樹下（花季限定） */
   if(REG_DEEP[bk]===id)for(const w of out)w.deep=1;/* 43.3 */
-  wpCache.set(key,out);return out;
+  wpCache.set(ck,out);return out;
 }
 function regItems(bk,id,day){
   if(day==null){ensureEx();day=state.ex.day}const key='i|'+bk+'|'+id+'|'+day;let c=exItemCache.get(key);if(c)return c;
@@ -6258,10 +6413,10 @@ function exRefreshLeft(now){now=now||new Date();const nx=new Date(now.getFullYea
 function exRefreshTxt(now){const h=exRefreshLeft(now);return `野外植株每天 0 點換一批，還有${h<1?'不到 1 小時':`約 ${Math.round(h)} 小時`}`}
 function exHintUpd(){const el=document.getElementById('exHint');if(!el)return;const on=scene==='explore';if(el.hidden===on)el.hidden=!on;if(on){const t=exRefreshTxt();if(el.textContent!==t)el.textContent=t}}
 let wxCur=null;
-const WXN={snow:34,desert:26,marsh:14,forest:16,grass:7,cave:8};/* 粒子數量控制在 40 個以內 */
+const WXN={snow:34,desert:26,marsh:14,forest:16,grass:7,cave:8,sakura:18,sakuraoff:8};/* 粒子數量控制在 40 個以內 */
 function wxReduced(){try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}}
 function setWeather(bk){
-  const el=document.getElementById('wx');if(!el)return;if(wxReduced()||!WXN[bk])bk=null;if(bk===wxCur)return;wxCur=bk;
+  const el=document.getElementById('wx');if(!el)return;if(bk==='sakura'&&!sakuraLook())bk='sakuraoff';/* 82.2：花季外是落葉 */if(wxReduced()||!WXN[bk])bk=null;if(bk===wxCur)return;wxCur=bk;
   if(!bk){el.hidden=true;el.className='';el.innerHTML='';return}
   const r=Math.random,f=(v,d)=>v.toFixed(d==null?1:d);let h='';
   if(bk==='desert')for(let k=0;k<4;k++)h+=`<div class="sv" style="top:${f(52+k*11+r()*6)}vh;height:${f(7+r()*6)}vh;animation-duration:${f(6+r()*4)}s;animation-delay:${f(-r()*8)}s"></div>`;/* 貼地的沙幕 */
@@ -6274,7 +6429,7 @@ function setWeather(bk){
       st=`top:${f(lift?52+r()*44:8+r()*45)}vh;left:${f(lift?-12+r()*14:-6)}vw;width:${f(sz)}px;height:${f(sz*(.8+r()*.3))}px;background:rgba(${c.join(',')},${a.toFixed(2)});`+
         (lift?`--h:${f(6+r()*22)}vh;--d:${f(2+r()*1.8,2)}s;--l:${f(-r()*6,2)}s;--a:wxLift`:`--dy:${f(r()*10-5)}vh;--b:${f(.8+r()*1.5)}vh;--d:${f(4+r()*3,2)}s;--l:${f(-r()*8,2)}s;--a:wxBlow`)}
     else if(bk==='marsh')st=`--x:${f(r()*100)}vw;--y:${f(15+r()*80)}vh;--dx:${f(r()*60-30,0)}px;--dy:${f(r()*50-25,0)}px;--d:${f(3+r()*4)}s;--l:${f(-r()*6)}s`;
-    else st=`--x:${f(r()*100)}vw;--s:${f((bk==='grass'?6:8)+r()*5,0)}px;--dx:${f(r()*30-10)}vw;--d:${f(9+r()*8)}s;--l:${f(-r()*16)}s;--a:wxLeaf;--c:${bk==='grass'?['#F7B6C8','#FFE1EA','#F2C94C'][k%3]:['#D9822B','#C9473A','#E8B13A','#6FA544'][k%4]}`;
+    else st=`--x:${f(r()*100)}vw;--s:${f((bk==='grass'||bk==='sakura'?6:8)+r()*5,0)}px;--dx:${f(r()*30-10)}vw;--d:${f(9+r()*8)}s;--l:${f(-r()*16)}s;--a:wxLeaf;--c:${bk==='sakura'?['#F7C6D6','#FBE1EA','#F2A9C2','#FFFFFF'][k%4]:bk==='sakuraoff'?['#A8C770','#BCD486','#94B460'][k%3]:bk==='grass'?['#F7B6C8','#FFE1EA','#F2C94C'][k%3]:['#D9822B','#C9473A','#E8B13A','#6FA544'][k%4]}`;
     h+=`<i style="${st}"></i>`}
   el.className='wx-'+bk;el.innerHTML=h;el.hidden=false;
 }
@@ -6459,6 +6614,7 @@ document.getElementById('testBox').addEventListener('click',e=>{
   const t=e.target.closest('[data-tool]');if(!t)return;const k=t.dataset.tool;
   if(k==='adv'){advanceAll();toast('所有植株都往下一階段了')}
   if(k==='excap'){state.exCap=!exCapOn();save();renderSpeed();toast(state.exCap?'探索每日上限已開啟':'探索每日上限已關閉')}
+  if(k==='sklook'){SK_LOOK=!sakuraLook();try{localStorage.setItem('sw_sklook',SK_LOOK?'1':'0')}catch(e){}sakuraCheck();renderSpeed();toast(SK_LOOK?'櫻花之丘：花季的樣子':'櫻花之丘：花季外的樣子')}
   if(k==='geno'){state.showG=!state.showG;save();renderSpeed();toast(state.showG?'植株資訊會顯示完整因子':'已隱藏完整因子')}
   if(k==='ex'){giveWildCrop('chili','desert');giveWildCrop('eggplant','marsh');giveWildCrop('pumpkin','grass');save();renderAll();toast('領取了辣椒、茄子、南瓜的野生種原')}
   if(k==='lvup'){addXp(xpNeed(myLv())-(state.xp||0),true);save();renderSpeed()}
@@ -6499,11 +6655,11 @@ document.getElementById('ordersBtn').onclick=()=>{sheet={orders:true};renderShee
    存檔欄位：lv、xp、xd（每日經驗上限）、fin（育成過的成品外觀）、st（累計收成、雜交、開始日期）、mq（主線）、cm（今日委託）、weekly（每週大委託）、
    fav／favGot（好感度與領過的階段）、titles（稱號徽章）、pname／pnameAt（自訂名字）。旗標 lvV（lvMigrate，newGame 同步）。 */
 const LV_CROP={tomato:1,chili:4,strawberry:6,eggplant:8,corn:10,pumpkin:12,zucchini:14,melon:16,broccoli:20};
-const LV_REG={grass:4,forest:8,marsh:12,desert:16,snow:20},LV_TOWN=2,LV_COMM=6;
+const LV_REG={grass:4,forest:8,marsh:12,sakura:15,desert:16,snow:20},LV_TOWN=2,LV_COMM=6;
 const LV_TITLES=[[1,'見習育種家'],[5,'育種家'],[10,'資深育種家'],[15,'育種專家'],[20,'育種大師'],[25,'傳奇育種家']];
 const XP_MUL=[1,2,3,5,8,12],XP_CAP={c:60,h:100};
 const LV_GIFT=['lavender','birdhouse','stone_lantern','hammock','beehives','koi_pond','windmill'];/* 每 5 級送一件裝飾（放進裝飾倉庫） */
-const REG_DEEP={grass:'old_well',forest:'hollow',marsh:'tunnel',desert:'temple2',snow:'cave2'};/* 43.3：各地區最深處 */
+const REG_DEEP={grass:'old_well',forest:'hollow',marsh:'tunnel',desert:'temple2',snow:'cave2',sakura:'ancient'};/* 43.3：各地區最深處 */
 const myLv=()=>(state&&state.lv)||1;
 const xpNeed=lv=>50+25*lv;
 const lvTitle=lv=>LV_TITLES.filter(t=>lv>=t[0]).pop()[1];
@@ -6616,12 +6772,12 @@ function mqDone(){
 const OLD_EX_P=0.05;let oldPick={crop:null,col:null,sure:false};
 const oldLucky=u=>seededRnd(hashStr('old|'+u))()<OLD_EX_P;
 function oldGeno(crop,col,u){const g=makeWild(crop,'grass',false);g.c=[g.c[0],col];if(isSpecC(g.c[0]))g.c[0]=WILD[crop]||'red';g.sp=[0,0];if(EX_OF[crop]&&oldLucky(u))g.sp=[0,EX_OF[crop]];return g}
-function mqOldSeed(crop,col){if(!state.mq||!state.mq.old||!CROPS[crop]||!cropOpen(crop)||!SPECIAL.includes(col))return;const g=oldGeno(crop,col,uid);qLot(crop,'古老的'+CROPS[crop].short,g,5,0);state.lots[0].old=1;state.lots[0].source='古老的種子';delete state.mq.old;oldPick={crop:null,col:null,sure:false};exAnnounce(crop,g);save();renderAll();renderOrdersBtn();toast(`收下「古老的${CROPS[crop].short}」5 顆，放進種子袋了。它帶著一份${cnSe(col)}，自交後大約四分之一會是完整的`,6000)}
+function mqOldSeed(crop,col){if(!state.mq||!state.mq.old||!CROPS[crop]||!cropOpen(crop)||!DREAM8.includes(col))return;const g=oldGeno(crop,col,uid);qLot(crop,'古老的'+CROPS[crop].short,g,5,0);state.lots[0].old=1;state.lots[0].source='古老的種子';delete state.mq.old;oldPick={crop:null,col:null,sure:false};exAnnounce(crop,g);save();renderAll();renderOrdersBtn();toast(`收下「古老的${CROPS[crop].short}」5 顆，放進種子袋了。它帶著一份${cnSe(col)}，自交後大約四分之一會是完整的`,6000)}
 function exAnnounce(crop,g){try{const e=g.sp.find(v=>v>6);if(e)postNews('ex',`${myName()} 得到了一包神秘的${EXN[e]||''}${CROPS[crop].n}種子！`,4)}catch(e){}}
 function mqCardHTML(){
   const m=mqCur(),s=state.mq||{};let h='';
   if(s.old){const oc=oldPick.crop,ok=oc&&oldPick.col;
-    h+=`<div class="lot"><div class="lot-name">古老的種子</div><p class="note">種子庫裡最古老的一包。先選一種作物，再選一種夢幻色：你會收下 5 顆帶著一份那個顏色的種子（外表是淡的，自交後大約四分之一是完整的）。只能選一次。</p><div class="filters">${openCrops().map(c=>`<button class="fchip" data-act="oldc" data-k="${c}" aria-pressed="${oc===c}">${CROPS[c].n}</button>`).join('')}</div>${oc?`<div class="tcells" style="grid-template-columns:repeat(4,1fr);margin-top:6px">${SPECIAL.map(k=>`<button class="tcell${oldPick.col===k?' on':''}" data-act="oldk" data-k="${k}" aria-pressed="${oldPick.col===k}" style="aspect-ratio:auto;flex-direction:column;padding:4px 0">${fruitSVG({level:0,sp:0,skin:k,pat:null,perfCls:2},oc,40)}<i style="position:static;font-style:normal;font-size:11px">${cnOf(k)}</i></button>`).join('')}</div>`:''}${ok?`<button class="btn primary" data-act="oldok">${oldPick.sure?'確定（之後不能改）':`收下${cnSe(oldPick.col)}的${CROPS[oc].n}種子`}</button>`:''}</div>`}
+    h+=`<div class="lot"><div class="lot-name">古老的種子</div><p class="note">種子庫裡最古老的一包。先選一種作物，再選一種夢幻色：你會收下 5 顆帶著一份那個顏色的種子（外表是淡的，自交後大約四分之一是完整的）。只能選一次。</p><div class="filters">${openCrops().map(c=>`<button class="fchip" data-act="oldc" data-k="${c}" aria-pressed="${oc===c}">${CROPS[c].n}</button>`).join('')}</div>${oc?`<div class="tcells" style="grid-template-columns:repeat(4,1fr);margin-top:6px">${DREAM8.map(k=>`<button class="tcell${oldPick.col===k?' on':''}" data-act="oldk" data-k="${k}" aria-pressed="${oldPick.col===k}" style="aspect-ratio:auto;flex-direction:column;padding:4px 0">${fruitSVG({level:0,sp:0,skin:k,pat:null,perfCls:2},oc,40)}<i style="position:static;font-style:normal;font-size:11px">${cnOf(k)}</i></button>`).join('')}</div>`:''}${ok?`<button class="btn primary" data-act="oldok">${oldPick.sure?'確定（之後不能改）':`收下${cnSe(oldPick.col)}的${CROPS[oc].n}種子`}</button>`:''}</div>`}
   if(!m)return h+'<div class="lot"><div class="lot-name">主線任務全部完成了</div><p class="note">之後的目標：把想要的樣子育成成品、收集標本、完成 NPC 的委託。</p></div>';
   const ch=s.ch;
   if(s.st===0){if(myLv()<m.lv)return h+`<div class="lot"><div class="lot-name">第 ${ch} 章　${m.t}</div><p class="note">Lv ${m.lv} 開放（你現在 Lv ${myLv()}）。收成、雜交、發現新的樣子、育出成品、探索都能得到經驗。</p></div>`;
@@ -6660,7 +6816,7 @@ function ensureComm(){
     /* 42.3：Lv 20 以後，一半的週次換成進階委託（另一組亂數，不影響原本的題目）。sup＝整齊供應：交 need 顆外觀一模一樣的混色果實；intro＝性狀導入：特殊造型＋指定的夢幻色。獎勵多 50% */
     if(myLv()>=WK_ADV_LV){const A=srand(hashStr('wk2|'+wk)),x=A();
       if(x<0.25){const mx=Object.values(MIX15);state.weekly={wk,v:2,adv:'sup',n:'mei',c:{crop:crops[Math.floor(A()*crops.length)],skin:mx[Math.floor(A()*mx.length)]},need:WK_SUP_N,got:0,r:1200,x:90,s:3,prize:'acc',pn:30,pt:'生長加速劑 30 次',done:false}}
-      else if(x<0.5)state.weekly={wk,v:2,adv:'intro',n:'mo',c:{sp:1+Math.floor(A()*6),dream:SPECIAL[Math.floor(A()*SPECIAL.length)]},r:1200,x:90,s:3,prize:'acc',pn:30,pt:'生長加速劑 30 次',done:false}}}
+      else if(x<0.5)state.weekly={wk,v:2,adv:'intro',n:'mo',c:{sp:1+Math.floor(A()*6),dream:DREAM8[Math.floor(A()*DREAM8.length)]},r:1200,x:90,s:3,prize:'acc',pn:30,pt:'生長加速劑 30 次',done:false}}}
 }
 const WK_ADV_LV=20,WK_SUP_N=8;
 function wkTxt(w){return w.need?`交出 ${w.need} 顆長得一模一樣的${cnSe(w.c.skin)}${CROPS[w.c.crop].n}`:condTxt(w.c)}
@@ -7150,7 +7306,7 @@ async function bootStart(cloud,noLocal){
   ensureCrops();shapeMigrate();cleanupObs();ensureComm();setTimeout(wkSettle,6000);
   {const m=state._lvMsg;delete state._lvMsg;if(cloud)delete cloud._lvMsg;if(local)delete local._lvMsg;if(m)setTimeout(()=>noteOpen(`<h2>新增了育種家等級</h2><p>依照你種出過的樣子和標本，你現在是 Lv ${m}・${lvTitle(m)}。</p><p class="note">主線任務已經幫你標成完成，補償 2,000 金幣和生長加速劑 30 次。每日訂單改成 NPC 委託（左邊的「任務」）；左上角點自己的名字可以看名片、改名字、打扮。</p>`),3200)}
   dirty=true;flush();
-  db.collection('profiles').doc(uid).set({name:myName(),avatar:avNorm(state.avatar),at:TS()},{merge:true}).catch(()=>{});pushProfile();
+  db.collection('profiles').doc(uid).set({name:myName(),avatar:avNorm(state.avatar),at:TS()},{merge:true}).catch(()=>{});pushProfile();try{sakuraNews()}catch(e){}/* 82.2 */
   startListeners();startSocial();watchOwnSave();checkBuild();specMigrate();
   if(repaired){save();repNotice(repaired)}
   closePanel();scene='farm';viewing=null;renderHUD();renderAll();tick();tutRender();renderOrdersBtn();joinFarm(uid);renderChars();updateCam();refreshAct();

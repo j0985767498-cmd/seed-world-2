@@ -691,6 +691,42 @@ details.gfold .gfb{margin-top:8px}
 .bump{animation:uibump .4s cubic-bezier(.3,1.8,.5,1)}
 @keyframes uibump{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
 @media (prefers-reduced-motion:reduce){.bump{animation:none}}
+
+/* ===== 16w 介面改版第三步：面板（木框＋紙張、緞帶標題、紅色關閉鈕、立體按鈕、卡片、植株大圖的光座）。只改外觀，不動排版 ===== */
+:root{--paperbg:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .55 0 0 0 0 .4 0 0 0 0 .2 0 0 0 .07 0'/></filter><rect width='100%' height='100%' filter='url(%23p)'/></svg>"),linear-gradient(180deg,#FFFBF0,#FFF3DA)}
+#sheet{background:var(--paperbg);border:0;box-shadow:0 0 0 5px var(--w1),0 0 0 7px var(--w3),0 -8px 24px rgba(0,0,0,.35)}
+.panel{background:var(--paperbg);border:0;box-shadow:0 0 0 5px var(--w1),0 0 0 7px var(--w3),0 -8px 24px rgba(0,0,0,.35)}
+.ph{background:var(--uiwood);border-bottom:0;box-shadow:inset 0 2px 0 rgba(255,220,170,.4),0 3px 0 var(--w3);border-radius:16px 16px 0 0}
+.ph h2{font:20px var(--uifont);color:#fff;text-shadow:var(--uistroke)}
+.grip{background:#C9A77A;height:5px;width:44px}
+.xbtn{border:0;color:#fff;font:700 18px var(--uifont);background:radial-gradient(circle at 38% 30%,#FF9C86,#E0462E 60%,#B32E1C);box-shadow:inset 0 2px 0 rgba(255,255,255,.4),0 0 0 3px #fff,0 0 0 5px #8E2A1A,0 4px 0 2px #6E1F13;text-shadow:0 1px 0 #8E2A1A}
+.xbtn:active{transform:translateY(2px) scale(.96)}
+#sheetBody>h2:first-child,#sheetBody>.lot-top:first-child h2{display:inline-block;font:19px var(--uifont);color:#fff;padding:5px 22px 7px;margin:2px 0 12px;background:linear-gradient(180deg,#8EDB5A,#4E9F2C);text-shadow:0 2px 0 #2F6E17,1px 0 0 #2F6E17,-1px 0 0 #2F6E17;clip-path:polygon(0 0,100% 0,calc(100% - 10px) 50%,100% 100%,0 100%,10px 50%);box-shadow:inset 0 2px 0 rgba(255,255,255,.35)}
+#sheet h2,.panel h2{font-family:var(--uifont)}
+#sheet h3,.panel h3{font-family:var(--uifont);font-weight:400;color:#6A3E14}
+.btn{font-family:var(--uifont);font-weight:400;font-size:15px;border:0;color:#6A3E14;background:linear-gradient(180deg,#FFFDF6,#F4E4C2);box-shadow:inset 0 2px 0 #fff,inset 0 0 0 2px #D9BE8C,0 4px 0 #B88B52,0 6px 8px rgba(90,52,22,.18)}
+.btn:active{transform:translateY(3px);box-shadow:inset 0 2px 0 #fff,inset 0 0 0 2px #D9BE8C,0 1px 0 #B88B52}
+.btn.primary{color:#fff;background:linear-gradient(180deg,#8EDB5A,#4E9F2C);text-shadow:0 1.5px 0 #2F6E17,1px 0 0 #2F6E17,-1px 0 0 #2F6E17;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 0 0 2px #3E8A22,0 4px 0 #2B5E14,0 6px 8px rgba(30,70,10,.25)}
+.btn.primary:active{box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 0 0 2px #3E8A22,0 1px 0 #2B5E14}
+.btn.warn{color:#B23A1E}
+.btn:disabled{opacity:.55;filter:grayscale(.4)}
+.chip{font-family:var(--uifont);background:#FFF6E0;border:1.5px solid #E2C796;color:#6A3E14}
+.badge{font-family:var(--uifont)}
+.fchip{font-family:var(--uifont);font-weight:400;border:0;background:#FFFDF6;box-shadow:inset 0 0 0 2px #E2C796,0 2px 0 #D2B47E}
+.fchip[aria-pressed="true"]{background:linear-gradient(180deg,#8EDB5A,#4E9F2C);color:#fff;box-shadow:inset 0 0 0 2px #3E8A22,0 2px 0 #2B5E14;text-shadow:0 1px 0 #2F6E17}
+.lot,.lotrow,.pick{border:0;background:#FFFEF9;box-shadow:inset 0 0 0 2px #EAD7B0,0 3px 0 #E0C99A;border-radius:14px}
+.regbox{background:#FFF4DA;box-shadow:inset 0 0 0 2px #EED9AE;border-radius:14px}
+.note{color:#7A6650}
+.bar{background:#EADBB8;box-shadow:inset 0 2px 2px rgba(90,52,22,.18);height:10px}
+.bar>i{background:linear-gradient(180deg,#B7EE7E,#5DBB3A);box-shadow:inset 0 2px 0 rgba(255,255,255,.45)}
+.hero{position:relative;padding:18px 0 22px;margin:4px -6px 6px;border-radius:18px;background:radial-gradient(ellipse at 50% 46%,#FFF6CC 0,rgba(255,240,190,.55) 34%,rgba(255,240,190,0) 62%)}
+.hero::before{content:"";position:absolute;left:50%;top:46%;width:230px;height:230px;transform:translate(-50%,-50%);background:repeating-conic-gradient(from 0deg,rgba(255,226,122,.22) 0 10deg,rgba(255,226,122,0) 10deg 22deg);-webkit-mask:radial-gradient(circle,#000 25%,transparent 66%);mask:radial-gradient(circle,#000 25%,transparent 66%);animation:herorot 24s linear infinite;pointer-events:none}
+.hero::after{content:"";position:absolute;left:50%;bottom:12px;width:120px;height:20px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(120,80,30,.28),rgba(120,80,30,0) 70%);pointer-events:none}
+.hero>*{position:relative;z-index:1}
+#sheet input:not([type=checkbox]):not([type=radio]),#sheet select,#sheet textarea,.panel input:not([type=checkbox]):not([type=radio]),.panel select,.panel textarea{border:2px solid #E2C796;border-radius:10px;background:#FFFEF9;color:#4A3020;box-shadow:inset 0 2px 2px rgba(90,52,22,.08)}
+#sheet input:focus,#sheet select:focus,.panel input:focus,.panel select:focus{outline:none;border-color:#7DC24E;box-shadow:0 0 0 3px rgba(125,194,78,.25)}
+@keyframes herorot{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.hero::before{animation:none}}
 </style>
 </head>
 <body class="game">
@@ -1338,7 +1374,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-16v';
+const BUILD='2026-11-16w';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;

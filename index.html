@@ -656,7 +656,7 @@ details.gfold .gfb{margin-top:8px}
 #joy{width:124px;height:124px;border:0;background:radial-gradient(circle,rgba(255,255,255,.2) 0,rgba(255,255,255,.08) 60%,rgba(255,255,255,.26) 61%,rgba(255,255,255,.06) 70%);box-shadow:inset 0 0 0 3px rgba(255,255,255,.55),0 4px 10px rgba(0,0,0,.15)}
 #joyKnob{width:54px;height:54px;margin:-27px 0 0 -27px;border:0;background:radial-gradient(circle at 40% 35%,#fff,#EDE3CF);box-shadow:0 4px 0 rgba(0,0,0,.18),0 6px 10px rgba(0,0,0,.2)}
 
-/* ===== 93（16u）花仙子 ===== */
+/* ===== 93（16u）花精靈 ===== */
 .fybob{animation:fybob 2.8s ease-in-out infinite}
 @keyframes fybob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-2.6px) rotate(2deg)}}
 .fyglow{animation:fyglow 2.4s ease-in-out infinite}@keyframes fyglow{0%,100%{opacity:.25}50%{opacity:.6}}
@@ -678,6 +678,19 @@ details.gfold .gfb{margin-top:8px}
 .fynm{display:flex;gap:6px;align-items:center}.fynm input{flex:1}.fynm .btn{margin:0;width:auto}
 #dexFilter[hidden]{display:none}/* 93：圖鑑的作物篩選列只在「品種圖鑑」分頁出現（以前 .filters 的 display 蓋過 hidden） */
 .cel-fruit>svg.fyart{filter:drop-shadow(0 6px 10px rgba(80,50,10,.28))}
+
+/* ===== 16v 收成回饋 ===== */
+.pf.fl2{width:28px;height:28px;filter:drop-shadow(0 3px 3px rgba(60,30,0,.3))}.pf.fl2 svg{width:28px;height:28px}
+.pf.fcoin{width:24px;height:24px;background:url(assets/icons/s/coin.png) center/contain no-repeat;filter:drop-shadow(0 2px 2px rgba(0,0,0,.3))}
+.pf.hdot{width:7px;height:7px;border-radius:50%;animation:hburst .7s cubic-bezier(.2,.8,.3,1) forwards}
+.pf.hleaf{width:11px;height:6px;border-radius:50% 0 50% 0;background:#6DBF45;animation:hburst .7s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes hburst{0%{opacity:1;transform:translate(-50%,-50%) rotate(var(--r)) scale(.6)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) translate(var(--dx),var(--dy)) rotate(calc(var(--r) + 180deg)) scale(1)}}
+.pf.hring{width:20px;height:20px;border-radius:50%;border:3px solid #FFF3B0;animation:hring .55s ease-out forwards}
+@keyframes hring{0%{opacity:.9;transform:translate(-50%,-50%) scale(.4)}100%{opacity:0;transform:translate(-50%,-50%) scale(3.2)}}
+.pf.gain{background:none;border:0;padding:0;font:20px var(--uifont,inherit);color:#fff;text-shadow:0 2px 0 #55300F,1.5px 0 0 #55300F,-1.5px 0 0 #55300F,0 -1px 0 #55300F,0 4px 6px rgba(0,0,0,.25)}
+.bump{animation:uibump .4s cubic-bezier(.3,1.8,.5,1)}
+@keyframes uibump{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.bump{animation:none}}
 </style>
 </head>
 <body class="game">
@@ -1214,7 +1227,7 @@ function exMigrate(o){
   }catch(e){}
   o.exV=2;
 }
-function migrate(o){if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fairy))o.fairy={};for(const k of Object.keys(o.fairy)){if(k==='follow'||k==='mj')continue;const f=o.fairy[k];if(!FY[k]||!f||typeof f!=='object'||!f.no)delete o.fairy[k]}if(o.fairy.follow&&!o.fairy[o.fairy.follow])o.fairy.follow=null;/* 93：花仙子 */if(!o.wardrobe||typeof o.wardrobe!=='object')o.wardrobe={};if(!o.meihin||typeof o.meihin!=='object')o.meihin={};/* 86.5：衣櫃（特殊取得的衣服），用到才建立 */
+function migrate(o){if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fairy))o.fairy={};for(const k of Object.keys(o.fairy)){if(k==='follow'||k==='mj')continue;const f=o.fairy[k];if(!FY[k]||!f||typeof f!=='object'||!f.no)delete o.fairy[k]}if(o.fairy.follow&&!o.fairy[o.fairy.follow])o.fairy.follow=null;/* 93：花精靈 */if(!o.wardrobe||typeof o.wardrobe!=='object')o.wardrobe={};if(!o.meihin||typeof o.meihin!=='object')o.meihin={};/* 86.5：衣櫃（特殊取得的衣服），用到才建立 */
   if(!o.nextLid)o.nextLid=1;if(!o.counts)o.counts={};
   while(o.plots.length<64)o.plots.push(null);
   geneMigrate(o);exMigrate(o);
@@ -1325,7 +1338,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-16u';
+const BUILD='2026-11-16v';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2338,7 +2351,7 @@ function boardStats(u){let pts=0;const places=[];for(const c of CROP_KEYS)for(co
 
 // ===== 圖鑑面板：分頁 =====
 let dexTab='dex',dexQ='',dexTier=-1,rdraft={},rerr={},rconfirm=null;
-function dexTabsHTML(){return `<div class="filters" role="tablist">${[['dex','品種圖鑑'],['cab','收藏櫃'],['mh','名品'],['fy','花仙子'],['boards','紀錄榜'],['rank','育種家排行']].map(([k,n])=>`<button class="fchip" role="tab" data-dtab="${k}" aria-pressed="${dexTab===k}">${k==='cab'?uiIcon('specimen',16):''}${n}</button>`).join('')}</div>`}
+function dexTabsHTML(){return `<div class="filters" role="tablist">${[['dex','品種圖鑑'],['cab','收藏櫃'],['mh','名品'],['fy','花精靈'],['boards','紀錄榜'],['rank','育種家排行']].map(([k,n])=>`<button class="fchip" role="tab" data-dtab="${k}" aria-pressed="${dexTab===k}">${k==='cab'?uiIcon('specimen',16):''}${n}</button>`).join('')}</div>`}
 function renderDex(){
   if(!state)return;const el=document.getElementById('dex');if(!el)return;
   document.getElementById('dexTabs').innerHTML=dexTabsHTML();
@@ -2753,7 +2766,7 @@ function renderSpeed(){
   const el=document.getElementById('testBox');if(!el)return;
   if(!TEST_MODE){el.innerHTML='';return}
   const on=isTestMode();testTagUpd();
-  let h=`<h3 style="margin-top:0">遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'測試模式：探索地圖會標出機關與秘境的位置和進度，地圖面板可以直接傳送。只存在這台裝置，別人看不到。':'一般模式：和正式玩家看到的一樣。'}</p>`;
+  let h=`<h3 style="margin-top:0">音效</h3><button class="btn${SFX_ON?' primary':''}" data-tool="sfx">音效：${SFX_ON?'開':'關'}（按一下切換）</button><h3>遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'測試模式：探索地圖會標出機關與秘境的位置和進度，地圖面板可以直接傳送。只存在這台裝置，別人看不到。':'一般模式：和正式玩家看到的一樣。'}</p>`;
   if(on)h+=`<h3>遠緣雜交</h3><button class="btn" data-tool="xc">跨界機率 100%：${(()=>{try{return localStorage.getItem('sw_xc')==='1'}catch(e){return false}})()?'開啟':'關閉'}（按一下切換）</button>`;
   if(on)h+=`<h3>櫻花之丘</h3><button class="btn" data-tool="sklook">花季外觀：${sakuraLook()?'櫻花（花季）':'綠葉（花季外）'}（按一下切換，只換畫面）</button><p class="note">測試模式沒有季節限制：千年櫻樹下的植株點隨時都有。今天實際${sakuraBloom()?'是':'不是'}花季（每年 ${SAKURA_SEASON.from.join('/')}～${SAKURA_SEASON.to.join('/')}）。</p>`;
   if(on)h+=`<h3>會影響存檔的測試工具</h3><p class="note">下面這些會加快進度或送東西，用了存檔就和一般玩家不一樣。切回一般模式時，時間加速當成 ×1、探索每日上限當成開啟。</p><p class="note" style="margin:6px 0 2px">時間加速</p><div class="row2" style="grid-template-columns:repeat(4,1fr)">${SPEEDS.map(v=>`<button class="btn${state.speed===v?' primary':''}" data-spd="${v}">×${v}</button>`).join('')}</div>
@@ -3699,8 +3712,8 @@ function stallHTML(){
     return h+`<div class="lot-top">${fruitSVG(ph,l.crop,56)}<div><div class="lot-name">${esc(l.name)}</div><div class="meta">${CROPS[l.crop].n}・剩 ${n} 顆</div></div></div><div class="regbox sellbox"><label>數量（最多 ${n} 顆）<input id="f1" type="number" inputmode="numeric" min="1" max="${n}" value="${esc(sheet.d1)}"></label><label>價格（金幣）<input id="f2" type="number" inputmode="numeric" min="1" value="${esc(sheet.d2)}"></label><div class="err" id="ferr">${sheet.err}</div><div class="row2"><button class="btn primary" data-act="ssave">確定上架</button><button class="btn" data-act="sback">返回</button></div></div>`;
   }
   if(i<0)return h+`<p class="note">道具行隨時收購道具：生長加速劑每次 ${NPC_BUY.acc} 金幣、誘變劑每瓶 ${NPC_BUY.mut} 金幣。</p><button class="btn primary" data-act="nstart">賣道具給道具行</button>`;/* 15b：城鎮的道具行 */
-  if(!inf.owner)h+=`<p class="note">這個攤位目前沒人使用。在這裡上架種子或道具就能占用它，全部賣完後攤位會自動空出來，讓別人使用。</p><div class="row2"><button class="btn primary" data-act="sstart">上架種子</button><button class="btn primary" data-act="istart">上架道具</button></div>`+(FY_KEYS.some(fyHas)?`<button class="btn" data-act="fstart">上架花仙子</button>`:'');
-  else if(inf.owner===uid)h+=`<p class="note">你有 ${inf.ls.length} 件商品在這裡販售。朋友買走後，金幣會自動入帳。</p><div class="row2"><button class="btn primary" data-act="sstart">再上架種子</button><button class="btn primary" data-act="istart">再上架道具</button></div>`+(FY_KEYS.some(fyHas)?`<button class="btn" data-act="fstart">再上架花仙子</button>`:'')+inf.ls.map(listingCard).join('');
+  if(!inf.owner)h+=`<p class="note">這個攤位目前沒人使用。在這裡上架種子或道具就能占用它，全部賣完後攤位會自動空出來，讓別人使用。</p><div class="row2"><button class="btn primary" data-act="sstart">上架種子</button><button class="btn primary" data-act="istart">上架道具</button></div>`+(FY_KEYS.some(fyHas)?`<button class="btn" data-act="fstart">上架花精靈</button>`:'');
+  else if(inf.owner===uid)h+=`<p class="note">你有 ${inf.ls.length} 件商品在這裡販售。朋友買走後，金幣會自動入帳。</p><div class="row2"><button class="btn primary" data-act="sstart">再上架種子</button><button class="btn primary" data-act="istart">再上架道具</button></div>`+(FY_KEYS.some(fyHas)?`<button class="btn" data-act="fstart">再上架花精靈</button>`:'')+inf.ls.map(listingCard).join('');
   else h+=`<p class="note">${esc(inf.ownerName)} 正在販售 ${inf.ls.length} 件商品。</p>`+inf.ls.map(listingCard).join('');
   h+=`<div class="regbox" style="margin-top:12px"><b>道具行</b><p class="note">隨時收購道具：生長加速劑每次 ${NPC_BUY.acc} 金幣、誘變劑每瓶 ${NPC_BUY.mut} 金幣。</p><button class="btn" data-act="nstart">賣道具給道具行</button></div>`;
   return h;
@@ -3714,7 +3727,7 @@ function bindStall(){
 async function stallAction(b){
   const act=b.dataset.act,i=sheet.stall;
   if(act==='sstart'){sheet.step='pick';renderSheet();return}
-  if(act==='fstart'){sheet.step='fpick';sheet.err='';renderSheet();return}if(act==='fpick'){sheet.fk=b.dataset.k;sheet.step='fform';sheet.d2='';sheet.err='';renderSheet();return}if(act==='fsave'){await fyStallSave(i,b);return}/* 93：上架花仙子 */
+  if(act==='fstart'){sheet.step='fpick';sheet.err='';renderSheet();return}if(act==='fpick'){sheet.fk=b.dataset.k;sheet.step='fform';sheet.d2='';sheet.err='';renderSheet();return}if(act==='fsave'){await fyStallSave(i,b);return}/* 93：上架花精靈 */
   if(act==='sback'){sheet.step=sheet.step==='form'?'pick':sheet.step==='iform'?'ipick':sheet.step==='nform'?'npick':sheet.step==='fform'?'fpick':'view';sheet.ksel=null;sheet.err='';renderSheet();return}
   if(act==='istart'){sheet.step='ipick';renderSheet();return}
   if(act==='nstart'){sheet.step='npick';renderSheet();return}
@@ -4939,7 +4952,7 @@ const TOWN_ART={hall:['farm_hall',230,170,125],appraisal:['appraisal',215,160,11
 const TOWN_FLAT={},TOWN_SWAY={shrub:1,bunting:1,tree:1},TOWN_GLOW={lamp:0.86};/* 路燈的光暈在燈頭（顯示高度的 86%） */
 /* 建築與公布欄：k＝TOWN_ART 鍵、door＝門在圖上的左右位置（0–1）、sg＝招牌高度（顯示高度的比例，0＝不放招牌） */
 const TOWN_BLD=[{id:'appraisal',k:'appraisal',x:150,y:365,n:'品種鑑定所',door:0.46,sg:0.37},{id:'hall',k:'hall',x:400,y:365,n:'農會',door:0.5,sg:0.36},{id:'lounge',k:'lounge',x:650,y:365,n:'交誼廳',door:0.32,sg:0.36},
-  {id:'item',k:'itemshop',x:140,y:1150,n:'道具行',door:0.33,sg:0.42},{id:'dessert',k:'dessert',x:660,y:1150,n:'甜點店',door:0.47,sg:0.40},{id:'notice',k:'notice',x:540,y:1112,n:'公布欄',door:0.5,sg:0},{id:'spring',k:'fountain',x:400,y:520,n:'仙子之泉',door:0.5,sg:0.98}];/* 93：噴水池＝仙子之泉 */
+  {id:'item',k:'itemshop',x:140,y:1150,n:'道具行',door:0.33,sg:0.42},{id:'dessert',k:'dessert',x:660,y:1150,n:'甜點店',door:0.47,sg:0.40},{id:'notice',k:'notice',x:540,y:1112,n:'公布欄',door:0.5,sg:0},{id:'spring',k:'fountain',x:400,y:520,n:'精靈之泉',door:0.5,sg:0.98}];/* 93：噴水池＝精靈之泉 */
 /* NPC：外觀用現有換裝系統組；第 29、30 節做好前只打招呼 */
 const TOWN_NPC=[
   {id:'tu',n:'阿土伯',x:470,y:410,at:'hall',av:{...AV_DEF,skin:2,face:1,hair:6,hairC:6,hat:1,hatC:12,top:2,topC:13,bottom:0,bottomC:10,shoe:0,shoeC:12},/* 40.1：老農夫：平頭、草帽、條紋 T＋深藍吊帶褲、靴子、灰白頭髮 */line:'年輕人，來啦！田裡的事有不懂的就來問我。'},
@@ -6122,10 +6135,10 @@ function enterVisit(fu){
 function openFriendPlot(p){sheet={fplot:p};renderSheet();openSheetUI()}
 function fplotHTML(){const p=sheet.fplot,ph=phen(p.g,p.crop),lvl=p.stage==='seedling'?1:p.stage==='ripe'?3:2;return `<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・${stageLabel(p)}・${esc(viewing?viewing.name:'')} 的作物</p>${infoHTML(ph,lvl,p.g,p.crop,true)}`}
 
-/* ===== 93（16u）：花仙子 =====
+/* ===== 93（16u）：花精靈 =====
    傳說標本→喚醒、神話標本→進化；全服名額 fairy/<鍵>={base:[{u,no,at}],evo:[…]}（transaction 領取，編號不重複使用）。
    圖：assets/fairy/fairy_<鍵>[_evo].png，頭髮、衣服、鞋子是灰色，照 26.2／85 用果實上色（fruitPrep／fruitPaint／光層），綠色部分（蒂頭遮罩）維持原色。
-   存檔 state.fairy={<鍵>:{name,col,sb,no,evo,evoNo,at},follow:'<鍵>',mj:甜瓜吃醋旗標}。仙子之泉＝城鎮噴水池（TOWN_BLD 的 spring）。 */
+   存檔 state.fairy={<鍵>:{name,col,sb,no,evo,evoNo,at},follow:'<鍵>',mj:甜瓜吃醋旗標}。精靈之泉＝城鎮噴水池（TOWN_BLD 的 spring）。 */
 const FAIRY_CAP={base:10,evo:3},FAIRY_BASE_READY=false;
 const FY_KEYS=['tomato','eggplant','chili','strawberry','corn','pumpkin','broccoli','zucchini','melon'];
 const FY={tomato:{g:'f',p:'開朗大姊頭'},eggplant:{g:'f',p:'文靜優雅'},chili:{g:'m',p:'熱血急性子'},strawberry:{g:'f',p:'甜美愛撒嬌'},corn:{g:'m',p:'愛幻想的小發明家'},pumpkin:{g:'m',p:'偷偷惡作劇'},broccoli:{g:'m',p:'外冷內熱'},zucchini:{g:'f',p:'酷酷的運動少女'},melon:{g:'f',p:'瘋狂愛爆炸'}};
@@ -6150,11 +6163,11 @@ const FY_LINES={
   zucchini:['熱身完了，走吧。','跟上我的速度。','贏了？那當然。','別停下來，繼續練。','今天狀態不錯。'],
   melon:['嘿嘿，要不要看看會爆炸的那種？','砰！……嚇到了嗎？','好無聊～來點刺激的嘛！','這顆一定會開出很大的花火！','主人只能看我喔～']};
 const FY_JEALOUS=['你剛剛帶誰出門了？','哼，我才沒有生氣呢。','下次不准丟下我喔！'];
-const fyN=k=>(CROPS[k]?CROPS[k].n:k)+'仙子',fyPron=k=>FY[k]&&FY[k].g==='m'?'他':'她';
+const fyN=k=>(CROPS[k]?CROPS[k].n:k)+'精靈',fyPron=k=>FY[k]&&FY[k].g==='m'?'他':'她';
 const fyImgName=(k,evo)=>'fairy_'+k+(evo||!FAIRY_BASE_READY?'_evo':'');
 const fyMine=()=>{const F=state&&state.fairy;return F&&typeof F==='object'?F:{}};
 const fyHas=k=>{const f=fyMine()[k];return !!(f&&typeof f==='object'&&f.no)};
-function fyRoll(k,not){const L=FY_NAMES[k]||['小仙'];let v=L[Math.floor(Math.random()*L.length)];for(let t=0;t<6&&v===not;t++)v=L[Math.floor(Math.random()*L.length)];return v}
+function fyRoll(k,not){const L=FY_NAMES[k]||['小精靈'];let v=L[Math.floor(Math.random()*L.length)];for(let t=0;t<6&&v===not;t++)v=L[Math.floor(Math.random()*L.length)];return v}
 /* 素材：用到才載入；載好後清掉「蒂頭」遮罩（綠色部分維持原色，不調灰綠） */
 function fyBase(nm){const key='fy:'+nm,b=FB[key];if(b)return b.st===1?b:null;
   const nb=FB[key]={st:0};
@@ -6163,7 +6176,7 @@ function fyBase(nm){const key='fy:'+nm,b=FB[key];if(b)return b.st===1?b:null;
   return null}
 const fyApp=f=>{const a={skin:f&&f.col&&fruitColSpecOk(f.col)?f.col:'white',pat:null,perfCls:2,seed:7};if(f&&f.sb&&a.skin.startsWith('l-'))a.sb=f.sb;return a};
 function fruitColSpecOk(c){try{fruitColSpec(c,0);return true}catch(e){return false}}
-/* 仙子圖（座標：高 H、中心在原點）。anim＝夢幻色光層強度（true＝完整、數字＝透明度、false＝不播） */
+/* 精靈圖（座標：高 H、中心在原點）。anim＝夢幻色光層強度（true＝完整、數字＝透明度、false＝不播） */
 const FY_SVG=new Map();
 function fyArt(k,f,H,anim){
   const nm=fyImgName(k,f&&f.evo),B=fyBase(nm);
@@ -6179,7 +6192,7 @@ function fyArtHTML(k,f,px,anim){const H=3.2,ev=f&&f.evo;
   return `<svg class="fyart" viewBox="-1.05 -1.75 2.1 3.5" width="${Math.round(px*2.1/3.5)}" height="${px}" aria-hidden="true">${ev?fyEvoBack(H):''}${fyArt(k,f,H,anim)}${ev?fyEvoFront(H):''}</svg>`}
 const fyEvoBack=H=>`<ellipse class="fyglow" cx="0" cy="${f3(-H*0.12)}" rx="${f3(H*0.27)}" ry="${f3(H*0.33)}" fill="url(#fyGl)"/><defs><radialGradient id="fyGl"><stop offset="0" stop-color="#FFF3B0" stop-opacity=".95"/><stop offset=".6" stop-color="#FFE7A0" stop-opacity=".45"/><stop offset="1" stop-color="#FFE7A0" stop-opacity="0"/></radialGradient></defs>`;
 const fyEvoFront=H=>`<ellipse class="fyhalo" cx="0" cy="${f3(-H*0.53)}" rx="${f3(H*0.11)}" ry="${f3(H*0.03)}" fill="none" stroke="#FFD54A" stroke-width="${f3(H*0.014)}"/>`;
-/* 跟隨：飄在玩家肩膀後上方（角色座標，charG 外層還會 ×1.15）；高度約玩家 70%；面向哪邊仙子就在另一側、跟著左右鏡像 */
+/* 跟隨：飄在玩家肩膀後上方（角色座標，charG 外層還會 ×1.15）；高度約玩家 70%；面向哪邊精靈就在另一側、跟著左右鏡像 */
 const FY_FH=38,fyPos=flip=>[flip?21:-21,-37];
 const fyHit=(x,y,flip,who)=>{const [cx,cy]=fyPos(flip);return `<circle cx="${Math.round(x+cx*1.15)}" cy="${Math.round(y+cy*1.15)}" r="14" fill="transparent" style="pointer-events:auto" data-fy="${esc(who)}"/>`};
 let fyTalk=null;const fyLineI={};
@@ -6226,13 +6239,13 @@ async function fyWakeGo(k,col,sb){let no=0;
   const F=state.fairy||(state.fairy={});F[k]={name:fyRoll(k),col,sb:sb||undefined,no,evo:0,evoNo:0,at:Date.now()};if(!F.follow)F.follow=k;save();try{pushPos(true)}catch(e){}
   if(no===1)postNews('fairy',`${myName()} 喚醒了全服第一隻${fyN(k)}！`,4);
   sheet={fy:{m:'name',k,draft:F[k].name,first:1}};renderSheet();openSheetUI();
-  celShow({th:'gold',kicker:'花仙子',title:`${fyN(k)}醒來了！`,sub:`全服第 ${no} 隻（名額 ${FAIRY_CAP.base}）・衣服是你的標本的顏色`,fruit:fyArtHTML(k,F[k],200,true),chips:[FY[k].p]})}
+  celShow({th:'gold',kicker:'花精靈',title:`${fyN(k)}醒來了！`,sub:`全服第 ${no} 隻（名額 ${FAIRY_CAP.base}）・衣服是你的標本的顏色`,fruit:fyArtHTML(k,F[k],200,true),chips:[FY[k].p]})}
 function fyEvolve(k,test){const f=fyMine()[k];if(!fyHas(k)||f.evo)return;
   if(!test&&!fyQual(k,5).length){toast(`需要${CROPS[k].n}的神話標本`);return}fyEvoGo(k)}
 async function fyEvoGo(k){let no=0;
   try{no=await fyClaim(k,'evo')}catch(err){const m=err&&err.message;toast(m==='full'?'進化名額已滿':'進化失敗，請檢查網路後再試一次');fyRefresh();return}
   const f=state.fairy[k];f.evo=1;f.evoNo=no;save();try{pushPos(true)}catch(e){}fyRefresh();
-  celShow({th:'rainbow',kicker:'仙子進化',title:`${f.name||fyN(k)}進化了！`,sub:`全服第 ${no} 隻進化的${fyN(k)}（名額 ${FAIRY_CAP.evo}）`,fruit:fyArtHTML(k,f,200,true),chips:[EXN[EX_OF[k]]||'專屬造型']})}
+  celShow({th:'rainbow',kicker:'精靈進化',title:`${f.name||fyN(k)}進化了！`,sub:`全服第 ${no} 隻進化的${fyN(k)}（名額 ${FAIRY_CAP.evo}）`,fruit:fyArtHTML(k,f,200,true),chips:[EXN[EX_OF[k]]||'專屬造型']})}
 function fyRename(k,v){v=String(v||'').trim();const n=[...v].length;if(n<1||n>6)return '名字要 1～6 個字';if(/[<>]/.test(v))return '名字不能有 < >';state.fairy[k].name=v;save();try{pushPos(true)}catch(e){}return ''}
 /* ---- 畫面 ---- */
 const fySil=k=>`<img class="fysil" src="assets/fairy/${fyImgName(k,1)}.png?v=${BUILD}" alt="" aria-hidden="true">`;
@@ -6241,11 +6254,11 @@ function fyStatus(k){const has=fyHas(k),f=fyMine()[k],qb=fyLeft(k,'base'),qe=fyL
   if(!f.evo)return {txt:myth?'可以進化':`進化需要${CROPS[k].n}的神話標本`,btn:myth&&qe>0?'evo':null,why:myth&&qe<=0?'進化名額已滿':''};
   return {txt:'已進化',btn:null,why:''}}
 function fySpringHTML(){fyLoadQ();const t=isTestMode();
-  let h=`<h2>仙子之泉</h2><p class="note">收藏櫃裡有某種作物傳說以上的標本，就能在這裡喚醒那種作物的花仙子；再有神話標本，就能讓它進化。標本只要出示，不會用掉。每種仙子全服名額有限，每人每種一隻。</p>`;
+  let h=`<h2>精靈之泉</h2><p class="note">收藏櫃裡有某種作物傳說以上的標本，就能在這裡喚醒那種作物的花精靈；再有神話標本，就能讓它進化。標本只要出示，不會用掉。每種精靈全服名額有限，每人每種一隻。</p>`;
   for(const k of FY_KEYS){const has=fyHas(k),f=fyMine()[k],S=fyStatus(k),q=fyQ(k);
     h+=`<div class="fyrow"><span class="fyth">${has?fyArtHTML(k,f,72,false):fySil(k)}</span><div class="fyrc"><b>${fyN(k)}</b>${has?`<span class="meta">「${esc(f.name||'')}」#${f.no}${f.evo?`・進化 #${f.evoNo}`:''}</span>`:''}<span class="meta">全服 ${q.base.length}／${FAIRY_CAP.base}・進化 ${q.evo.length}／${FAIRY_CAP.evo}${FYQ_AT?'':'（讀取中）'}</span><span class="meta">${S.why||S.txt}</span></div>
       <div class="fyrb">${S.btn==='wake'?`<button class="btn primary" data-act="fywake" data-k="${k}">喚醒</button>`:S.btn==='evo'?`<button class="btn primary" data-act="fyevo" data-k="${k}">進化</button>`:''}${t&&!(has&&f.evo)?`<button class="btn small" data-act="${has?'fyevo':'fywake'}" data-k="${k}" data-t="1">測試：直接${has?'進化':'喚醒'}</button>`:''}</div></div>`}
-  return h+`<button class="btn" data-act="fygrid">看我的花仙子</button>`}
+  return h+`<button class="btn" data-act="fygrid">看我的花精靈</button>`}
 function fyOneHTML(k){const f=fyMine()[k];if(!fyHas(k))return `<p class="note">還沒有${fyN(k)}。</p>`;const F=fyMine(),fol=F.follow===k,n=fyQual(k,4).length;
   return `<h2>${esc(f.name||fyN(k))}</h2><div class="fybig">${fyArtHTML(k,f,240,true)}</div><p class="note" style="text-align:center">${fyN(k)} #${f.no}／${FAIRY_CAP.base}${f.evo?`・進化 #${f.evoNo}／${FAIRY_CAP.evo}`:''}・${FY[k].p}</p>
     <div class="row2"><button class="btn primary" data-act="fyfol" data-k="${k}">${fol?'不要跟隨':'讓'+fyPron(k)+'跟隨'}</button><button class="btn" data-act="fyren" data-k="${k}">改名字</button></div>
@@ -6270,9 +6283,9 @@ function fyAction(b){const a=b.dataset.act,k=b.dataset.k,s=sheet.fy;
   if(a==='fypk'){const id=b.dataset.id;if(s.act==='wake'){closeSheet();fyWake(k,false,id);return}const e=fyQual(k,4).find(x=>x.id===id);if(e){const ap=specApp(e),f=state.fairy[k];f.col=ap.skin;f.sb=ap.sb||undefined;save();try{pushPos(true)}catch(x){}toast('衣服換好了')}sheet={fy:{m:'one',k}};renderSheet();return}
   if(a==='fydice'){const i=document.getElementById('fyname');s.draft=fyRoll(k,i?i.value:s.draft);s.err='';renderSheet();return}
   if(a==='fyok'){const i=document.getElementById('fyname'),e=fyRename(k,i?i.value:s.draft);if(e){s.err=e;renderSheet();return}toast(`就叫「${state.fairy[k].name}」吧！`);sheet={fy:{m:'one',k}};renderSheet();return}}
-/* 圖鑑的「花仙子」分頁（sheet 版 inSheet＝true 時按鈕走 data-act） */
+/* 圖鑑的「花精靈」分頁（sheet 版 inSheet＝true 時按鈕走 data-act） */
 function fyGridHTML(inSheet){fyLoadQ();const A=inSheet?'data-act':'data-ract',F=fyMine(),n=FY_KEYS.filter(fyHas).length;
-  let h=`<p class="note">收藏櫃裡有傳說以上的標本，就能到城鎮的<b>仙子之泉</b>（噴水池）喚醒那種作物的花仙子；有神話標本可以進化。已經有 <b>${n}</b>／9 隻。</p><div class="fygrid">`;
+  let h=`<p class="note">收藏櫃裡有傳說以上的標本，就能到城鎮的<b>精靈之泉</b>（噴水池）喚醒那種作物的花精靈；有神話標本可以進化。已經有 <b>${n}</b>／9 隻。</p><div class="fygrid">`;
   for(const k of FY_KEYS){const f=F[k],q=fyQ(k);
     if(fyHas(k))h+=`<div class="fycell on${f.evo?' evo tcard':''}"><button class="fycb" ${A}="fyone" data-k="${k}" aria-label="${esc(f.name||fyN(k))}">${fyArtHTML(k,f,96,false)}<b>${esc(f.name||'')}</b><small>${fyN(k)} #${f.no}${f.evo?'・進化':''}</small></button><button class="btn small${F.follow===k?' primary':''}" ${A}="fyfol" data-k="${k}">${F.follow===k?'跟隨中':'跟隨'}</button></div>`;
     else h+=`<div class="fycell">${fySil(k)}<b>${fyN(k)}</b><small>需要傳說標本・剩 ${Math.max(0,FAIRY_CAP.base-q.base.length)}／${FAIRY_CAP.base}</small></div>`}
@@ -6282,14 +6295,14 @@ const fyListName=l=>`${fyN(l.fk)}「${l.fname||''}」`;
 function fyListCard(l){const mine=l.sellerUid===uid,f={...(l.fairy||{}),k:l.fk};
   return `<div class="lot"><div class="lot-top"><span class="fyth">${fyArtHTML(l.fk,f,72,true)}</span><div><div class="lot-name">${esc(fyListName(l))}</div><div class="meta">#${f.no||'?'}${f.evo?`・進化 #${f.evoNo}`:''}・衣服：${esc(colorName(f.col||'white',f.sb))}</div><div class="meta">買下後可以重新取名・賣家：${esc(l.sellerName||'')}</div></div></div>${mine?`<button class="btn" data-act="scancel" data-id="${l.id}">收回（售價 ${l.price} 金幣）</button>`:`<button class="btn primary" data-act="sbuy" data-id="${l.id}">用 ${l.price} 金幣購買</button>`}</div>`}
 function fyStallHTML(h){const st=sheet.step;
-  if(st==='fpick'){const ks=FY_KEYS.filter(fyHas);h+=`<p class="note">選一隻要上架的花仙子。上架期間牠不在你身邊；收回就會回來。</p>`+(ks.length?ks.map(k=>{const f=fyMine()[k];return `<button class="pick" data-act="fpick" data-k="${k}"><span class="fyth">${fyArtHTML(k,f,48,false)}</span><span><b>${esc(f.name||'')}</b><span class="meta">${fyN(k)} #${f.no}${f.evo?'・進化':''}</span></span></button>`}).join(''):'<p class="note">你還沒有花仙子。</p>');return h+`<button class="btn" data-act="sback">返回</button>`}
+  if(st==='fpick'){const ks=FY_KEYS.filter(fyHas);h+=`<p class="note">選一隻要上架的花精靈。上架期間牠不在你身邊；收回就會回來。</p>`+(ks.length?ks.map(k=>{const f=fyMine()[k];return `<button class="pick" data-act="fpick" data-k="${k}"><span class="fyth">${fyArtHTML(k,f,48,false)}</span><span><b>${esc(f.name||'')}</b><span class="meta">${fyN(k)} #${f.no}${f.evo?'・進化':''}</span></span></button>`}).join(''):'<p class="note">你還沒有花精靈。</p>');return h+`<button class="btn" data-act="sback">返回</button>`}
   const k=sheet.fk,f=fyMine()[k];if(!fyHas(k)){sheet.step='fpick';return fyStallHTML(h)}
   return h+`<div class="lot-top"><span class="fyth">${fyArtHTML(k,f,64,false)}</span><div><div class="lot-name">${esc(f.name||'')}</div><div class="meta">${fyN(k)} #${f.no}${f.evo?`・進化 #${f.evoNo}`:''}</div></div></div><div class="regbox sellbox"><label>價格（金幣）<input id="f2" type="number" inputmode="numeric" min="1" value="${esc(sheet.d2)}"></label><div class="err" id="ferr">${sheet.err}</div><div class="row2"><button class="btn primary" data-act="fsave">確定上架</button><button class="btn" data-act="sback">返回</button></div></div>`}
 async function fyStallSave(i,b){const k=sheet.fk,f=fyMine()[k];if(!fyHas(k))return;
   const inf=stallInfo(i);if(inf.owner&&inf.owner!==uid){sheet.err='這個攤位剛被別人占用了，換一個空攤位吧';renderSheet();return}
   const price=parseInt(sheet.d2,10);if(!(price>=1&&price<=9999999)){sheet.err='請輸入 1 以上的價格';renderSheet();return}
   b.disabled=true;const fairy={col:f.col||'white',sb:f.sb||null,no:f.no,evo:f.evo?1:0,evoNo:f.evoNo||0,at:f.at||Date.now()};
-  try{await db.collection('listings').add({kind:'fairy',fk:k,fairy,fname:f.name||'',crop:'',name:`${fyN(k)}「${f.name||''}」`,source:'花仙子',sellerUid:uid,sellerName:myName(),price,count:1,stall:i,lot:'{}',sold:false,createdAt:TS()});
+  try{await db.collection('listings').add({kind:'fairy',fk:k,fairy,fname:f.name||'',crop:'',name:`${fyN(k)}「${f.name||''}」`,source:'花精靈',sellerUid:uid,sellerName:myName(),price,count:1,stall:i,lot:'{}',sold:false,createdAt:TS()});
     delete state.fairy[k];if(state.fairy.follow===k)state.fairy.follow=null;save();try{pushPos(true)}catch(e){}renderAll();sheet.step='view';renderSheet();toast(`已上架 ${fyN(k)}，售價 ${price} 金幣`)}
   catch(e){sheet.err='上架失敗，請檢查網路後再試一次';b.disabled=false;renderSheet()}}
 async function fyBuy(l,b){if(fyHas(l.fk)){toast('你已經有'+fyN(l.fk)+'了，每人每種一隻');return}
@@ -6300,7 +6313,7 @@ async function fyBuy(l,b){if(fyHas(l.fk)){toast('你已經有'+fyN(l.fk)+'了，
       tx.update(ref,{sold:true,buyerUid:uid,buyerName:myName(),soldAt:TS()});tx.set(fref,{base:sw(x.base),evo:sw(x.evo),tx:l.id})});
     paid=true;state.coins-=l.price;const f=l.fairy||{};state.fairy[l.fk]={name:l.fname||fyRoll(l.fk),col:f.col||'white',sb:f.sb||undefined,no:f.no||0,evo:f.evo?1:0,evoNo:f.evoNo||0,at:Date.now()};if(!state.fairy.follow)state.fairy.follow=l.fk;save();renderAll();FYQ_AT=0;
     sheet={fy:{m:'name',k:l.fk,draft:fyRoll(l.fk,l.fname)}};renderSheet();openSheetUI();toast(`買到${fyN(l.fk)}！幫${fyPron(l.fk)}取個新名字吧`,4000)}
-  catch(err){b.disabled=false;const code=(err&&(err.code||err.message))||'unknown';logErr(err,'購買仙子');toast(paid?`購買已成立，但寫入時出錯（${code}），請截圖給開發者`:code==='gone'?'這隻仙子已經被別人買走了':`購買失敗（${code}），沒有扣金幣`,7000)}}
+  catch(err){b.disabled=false;const code=(err&&(err.code||err.message))||'unknown';logErr(err,'購買精靈');toast(paid?`購買已成立，但寫入時出錯（${code}），請截圖給開發者`:code==='gone'?'這隻精靈已經被別人買走了':`購買失敗（${code}），沒有扣金幣`,7000)}}
 function fyCancel(l){const f=l.fairy||{};state.fairy=state.fairy||{};state.fairy[l.fk]={name:l.fname||fyRoll(l.fk),col:f.col||'white',sb:f.sb||undefined,no:f.no||0,evo:f.evo?1:0,evoNo:f.evoNo||0,at:f.at||Date.now()};save();renderAll();toast(`已收回，${fyN(l.fk)}回到你身邊了`)}
 function fyStallMini(l,gx,cy){return `<svg x="${gx}" y="${f1(cy-30)}" width="22" height="34" viewBox="-1.05 -1.75 2.1 3.5">${fyArt(l.fk,{...(l.fairy||{}),k:l.fk},3.2,false)}</svg>`}
 
@@ -6631,20 +6644,62 @@ function ringRun(k){closeRing();const why=ringState(k);if(why){toast(why);return
 /* 回饋特效（36.8 C）：畫在場景外的 HTML 層，重畫農場不會打斷；減少動態效果時不播 */
 const RMQ=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)')}catch(e){return {matches:false}}})();
 function plotScreen(i){try{const g=sceneEl.querySelector(`[data-plot="${i}"]`);if(!g)return null;const r=g.getBoundingClientRect();if(!r.width)return null;return {x:r.left+r.width/2,y:r.top+r.height*0.3}}catch(e){return null}}
+/* ===== 16v：合成音效（Web Audio，不用音效檔）=====
+   設定頁可以關（localStorage sw_sfx='0'）。iPhone 要在使用者第一次觸控時才能出聲，所以在 pointerdown 時建立／喚醒 AudioContext。切到背景不出聲。 */
+let SFX_ON=(()=>{try{return localStorage.getItem('sw_sfx')!=='0'}catch(e){return true}})(),SFX_AC=null,SFX_M=null;
+function sfxAC(){if(!SFX_ON||(typeof document!=='undefined'&&document.hidden))return null;
+  if(!SFX_AC){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;SFX_AC=new C();SFX_M=SFX_AC.createGain();SFX_M.gain.value=0.7;SFX_M.connect(SFX_AC.destination)}catch(e){SFX_AC=null;return null}}
+  if(SFX_AC.state==='suspended'){try{SFX_AC.resume()}catch(e){}}return SFX_AC}
+try{addEventListener('pointerdown',()=>{try{sfxAC()}catch(e){}},{capture:true,passive:true})}catch(e){}
+function sfxTone(f0,f1,dur,type,vol,delay){const a=sfxAC();if(!a||!a.createOscillator)return;const t=a.currentTime+(delay||0),o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f0,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol||0.2,t+0.012);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);o.connect(g);g.connect(SFX_M);o.start(t);o.stop(t+dur+0.03)}
+function sfxNoise(dur,f0,f1,vol,delay){const a=sfxAC();if(!a||!a.createBuffer)return;const t=a.currentTime+(delay||0),n=a.createBufferSource(),b=a.createBuffer(1,Math.floor(a.sampleRate*dur),a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);n.buffer=b;const f=a.createBiquadFilter();f.type='bandpass';f.frequency.setValueAtTime(f0,t);f.frequency.exponentialRampToValueAtTime(f1,t+dur*0.85);const g=a.createGain();g.gain.value=vol;n.connect(f);f.connect(g);g.connect(SFX_M);n.start(t)}
+const SFX={
+  click:()=>sfxTone(880,640,0.05,'sine',0.09),
+  pop:()=>{sfxTone(520,170,0.14,'sine',0.32);sfxTone(1200,600,0.06,'triangle',0.07)},
+  plant:()=>{sfxTone(300,520,0.08,'sine',0.14);sfxTone(760,null,0.05,'triangle',0.04,0.03)},
+  sparkle:()=>[1046,1318,1568,2093].forEach((f,i)=>sfxTone(f,null,0.25,'triangle',0.06,i*0.05)),
+  coin:d=>{sfxTone(1318,null,0.08,'square',0.035,d);sfxTone(1975,null,0.2,'triangle',0.1,(d||0)+0.06)},
+  whoosh:d=>sfxNoise(0.3,600,2400,0.1,d),
+  chime:()=>{sfxTone(1568,null,0.18,'sine',0.08);sfxTone(2349,null,0.22,'sine',0.05,0.05)},
+  up:()=>{sfxTone(440,1320,0.22,'triangle',0.08);sfxTone(880,1760,0.18,'sine',0.04,0.06)},
+  skip:()=>sfxTone(220,160,0.08,'square',0.03),
+  fan:()=>{[523,659,784,1046].forEach((f,i)=>sfxTone(f,null,0.22,'triangle',0.09,i*0.09));sfxTone(1046,null,0.6,'sine',0.07,0.36);sfxTone(1318,null,0.6,'sine',0.05,0.4)}};
+const SFX_T={};
+function sfx(k,gap,...a){try{if(!SFX_ON||!SFX[k])return;const now=Date.now();if(gap&&SFX_T[k]&&now-SFX_T[k]<gap)return;SFX_T[k]=now;SFX[k](...a)}catch(e){}}
+/* 按鈕按下去「啵」一聲（同一時間只響一次） */
+try{addEventListener('pointerdown',e=>{const b=e.target&&e.target.closest&&e.target.closest('button,.btn,[role="button"]');if(b&&!b.disabled)sfx('click',60)},{capture:true,passive:true})}catch(e){}
+function bumpEl(el,cls){if(!el||RMQ.matches)return;el.classList.remove(cls||'bump');void el.offsetWidth;el.classList.add(cls||'bump');setTimeout(()=>el.classList.remove(cls||'bump'),450)}
 function fxAdd(cls,x,y,html,ms,css){const L=document.getElementById('fxH');if(!L)return null;const d=document.createElement('div');d.className='pf '+cls;d.style.left=x+'px';d.style.top=y+'px';if(css)d.style.cssText+=css;if(html)d.innerHTML=html;L.appendChild(d);setTimeout(()=>d.remove(),ms);return d}
-function plotFx(i,kind){if(RMQ.matches)return;const c=plotScreen(i);if(!c)return;const top=c.y-18;
+function plotFx(i,kind){sfx(kind==='self'?'chime':kind==='accel'?'up':kind==='skip'?'skip':'click',kind==='self'?70:60);if(RMQ.matches)return;const c=plotScreen(i);if(!c)return;const top=c.y-18;
   if(kind==='skip'){fxAdd('sk',c.x,top,'✕',420);return}
   if(kind==='check'){fxAdd('ck',c.x,top-14,'✓',640);return}
   if(kind==='self'){for(let k=0;k<7;k++){const a=k/7*Math.PI*2;fxAdd('pd',c.x,top,'',640,`--dx:${(Math.cos(a)*22).toFixed(0)}px;--dy:${(Math.sin(a)*16-6).toFixed(0)}px`)}fxAdd('ht',c.x+10,top-10,'♥',640);return}
   if(kind==='accel'){fxAdd('ar',c.x,top,'↑',740);for(let k=0;k<4;k++){const a=-Math.PI/2+(k-1.5)*0.6;fxAdd('gd',c.x+(k-1.5)*8,top+8,'',740,`--dx:${(Math.cos(a)*14).toFixed(0)}px;--dy:${(Math.sin(a)*26).toFixed(0)}px`)}return}}
 function seedTotal(){let n=0;try{for(const l of state.lots||[])if(l)n+=lc(l);for(const l of (Array.isArray(state.vault)?state.vault:[]))if(l&&l.crop)n+=lc(l)}catch(e){}return n}
-function harvestFly(from,seeds,coins){
-  const bag=document.querySelector('[data-open="bag"]'),cn=document.querySelector('.coin');
+function harvestFly(from,seeds,coins){/* 16v：收成回饋：植株上爆出葉子與光點、果實沿弧線飛進種子袋、種子袋與錢包彈一下、金幣一顆顆飛進錢包、數字往上跳、有聲音 */
+  const bag=document.querySelector('[data-open="bag"]'),cw=document.querySelector('.coins'),cn=document.querySelector('.coins .coin')||document.querySelector('.coin'),ce=document.getElementById('coins');
   const tgt=(el,fx,fy)=>{const r=el&&el.getBoundingClientRect();return r&&r.width?{x:r.left+r.width/2,y:r.top+r.height/2}:{x:fx,y:fy}};
-  const tb=tgt(bag,40,200),tc=tgt(cn,60,30);
-  if(!RMQ.matches)from.forEach(({c,p},k)=>{let svg='';try{svg=fruitSVG({...phen(p.g,p.crop),perfCls:2,seed:7},p.crop,24)}catch(e){}const d=fxAdd('fly',c.x,c.y-10,svg,900);if(!d)return;setTimeout(()=>{d.style.left=tb.x+'px';d.style.top=tb.y+'px';d.style.opacity='.2'},40+k*45)});
-  if(seeds)setTimeout(()=>fxAdd('gain',tb.x+28,tb.y,`+${seeds} 顆種子`,1500),RMQ.matches?0:650);
-  if(coins)setTimeout(()=>fxAdd('gain',tc.x+30,tc.y+18,`+${coins} 金幣`,1500),RMQ.matches?0:650)}
+  const tb=tgt(bag,40,200),tc=tgt(cn,60,30),rm=RMQ.matches;
+  if(from.length){sfx('pop');sfx('sparkle')}
+  if(!rm){
+    from.slice(0,6).forEach(({c})=>{const cs=['#FFE27A','#FFB347','#8EDB5A','#FFFFFF','#FF8FB1'];fxAdd('hring',c.x,c.y-14,'',600);
+      for(let k=0;k<12;k++){const a=Math.random()*Math.PI*2,d=26+Math.random()*34,lf=k%3===0;fxAdd(lf?'hleaf':'hdot',c.x,c.y-14,'',700,`--dx:${(Math.cos(a)*d).toFixed(0)}px;--dy:${(Math.sin(a)*d*0.8-14).toFixed(0)}px;--r:${(Math.random()*360).toFixed(0)}deg;${lf?'':`background:${cs[k%cs.length]};`}`)}});
+    let first=true;
+    from.forEach(({c,p},k)=>{let svg='';try{svg=fruitSVG({...phen(p.g,p.crop),perfCls:2,seed:7},p.crop,28)}catch(e){}const d=fxAdd('fl2',c.x,c.y-12,svg,1100+k*50);if(!d||!d.animate)return;
+      const dx=tb.x-c.x,dy=tb.y-(c.y-12),lift=-70-Math.min(60,Math.abs(dx)*0.15);
+      const an=d.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:`translate(-50%,-50%) translate(${(dx*0.45).toFixed(0)}px,${(dy*0.45+lift).toFixed(0)}px) scale(1.3)`,opacity:1,offset:0.45},{transform:`translate(-50%,-50%) translate(${dx.toFixed(0)}px,${dy.toFixed(0)}px) scale(.5)`,opacity:.6}],{duration:700,delay:k*55,easing:'cubic-bezier(.45,.05,.55,.95)',fill:'both'});
+      if(k===0)sfx('whoosh',0,0.08);
+      an.onfinish=()=>{d.remove();if(bag)bumpEl(bag);if(first){first=false;sfx('click')}}});
+  }
+  if(seeds)setTimeout(()=>fxAdd('gain',tb.x+30,tb.y,`+${seeds} 顆種子`,1500),rm?0:650);
+  if(coins){const end=state.coins,start=Math.max(0,end-coins),n=rm?0:Math.min(6,Math.max(3,Math.ceil(coins/40)));
+    if(!n||!ce){sfx('coin');}else{ce.textContent=Math.round(start).toLocaleString('zh-TW');let got=0;
+      const c0=from[0]?from[0].c:{x:innerWidth/2,y:innerHeight/2};
+      for(let k=0;k<n;k++){const sx=c0.x+(Math.random()*40-20),sy=c0.y-20,d=fxAdd('fcoin',sx,sy,'',1400);if(!d||!d.animate)continue;
+        const dx=tc.x-sx,dy=tc.y-sy,an=d.animate([{transform:'translate(-50%,-50%) scale(.6)',opacity:0},{transform:`translate(-50%,-50%) translate(${(Math.random()*30-15).toFixed(0)}px,-34px) scale(1.1)`,opacity:1,offset:0.25},{transform:`translate(-50%,-50%) translate(${dx.toFixed(0)}px,${dy.toFixed(0)}px) scale(.8)`,opacity:1}],{duration:750,delay:250+k*80,easing:'cubic-bezier(.5,0,.6,1)',fill:'both'});
+        an.onfinish=()=>{d.remove();got++;const v=got>=n?end:start+(end-start)*got/n;ce.textContent=Math.round(v).toLocaleString('zh-TW');if(cw)bumpEl(cw);sfx('coin')}}
+      setTimeout(()=>{try{renderCoins()}catch(e){}},250+n*80+1200)}
+    setTimeout(()=>fxAdd('gain',tc.x+34,tc.y+20,`+${coins} 金幣`,1500),rm?0:900)}}
 /* 點裝飾就能操作（36.8 D）、點大門（36.8 F） */
 var quickMove=null;let decoPopT=null;
 function closeDecoPop(){clearTimeout(decoPopT);const el=document.getElementById('decoPop');if(el){el.hidden=true;el.innerHTML='';el.dataset.k=''}}
@@ -6666,7 +6721,7 @@ document.getElementById('decoPop').addEventListener('click',e=>{const b=e.target
   if(a==='flip'){if(d.fl)delete d.fl;else d.fl=1;save();renderWorld();return}
   if(a==='move'){openDecor();selDecor=i;quickMove=i;renderWorld();renderDecoBar();toast('按住這件裝飾拖到想放的位置，放開就完成',3000);return}});
 sceneEl.addEventListener('pointerdown',()=>{if(!document.getElementById('decoPop').hidden)closeDecoPop()},true);
-sceneEl.addEventListener('pointerdown',e=>{const g=e.target&&e.target.closest&&e.target.closest('[data-fy]');if(!g||!state||uiBusy())return;e.stopPropagation();e.preventDefault();fyTap(g.dataset.fy)},true);/* 93.4：點仙子說話 */
+sceneEl.addEventListener('pointerdown',e=>{const g=e.target&&e.target.closest&&e.target.closest('[data-fy]');if(!g||!state||uiBusy())return;e.stopPropagation();e.preventDefault();fyTap(g.dataset.fy)},true);/* 93.4：點精靈說話 */
 sceneEl.addEventListener('pointerdown',e=>{const g=e.target&&e.target.closest&&e.target.closest('[data-ply]');if(!g||!state||uiBusy())return;e.stopPropagation();e.preventDefault();openMe(g.dataset.ply)},true);/* 41.1：點其他玩家開名片 */
 function gateText(st){const t=st&&st.gateTxt;if(t)return t;const n=st===state?myName():(viewing&&viewing.name)||'朋友';return `${n} 的農場`}
 function gateSignHTML(){return `<h2>農場大門的招牌</h2><p class="note">最多 8 個字，來拜訪的朋友也看得到。空白就顯示「${esc(myName())} 的農場」。</p><div class="regbox"><input id="signIn" maxlength="8" value="${esc(sheet.draft)}" aria-label="大門招牌文字" aria-describedby="signErr"><div class="err" id="signErr">${sheet.err}</div></div><button class="btn primary" data-act="gatesave">儲存</button><button class="btn" data-act="close">取消</button>`}
@@ -6886,6 +6941,7 @@ function exitSow(){
 const sowCurLot=()=>state.lots.find(l=>l.id===sowLot&&lc(l)>0)||null;
 function sowAt(cx,cy){const el=document.elementFromPoint(cx,cy),g=el&&el.closest&&el.closest('[data-plot]');if(!g)return;const i=+g.dataset.plot;if(state.plots[i]||!posOf(state,i))return;sowOne(i)}
 function sowOne(i){
+  sfx('plant',50);
   if(sowTray){const t=trayObj(),idx=t.cells.findIndex(c=>c.sel);if(idx<0){sowing=false;exitSow();return}
     const c=t.cells[idx],src=t.srcs[c.s];if(!src){t.cells.splice(idx,1);return}
     state.plots[i]=plantFromLot(src,c.g);if(c.mu)state.plots[i].mu=c.mu;t.cells.splice(idx,1);sowHist.push({i,tray:c,idx,plant:state.plots[i]});if(sowHist.length>60)sowHist.shift();sowN++;sowOK++;
@@ -7289,6 +7345,7 @@ document.getElementById('testBox').addEventListener('click',e=>{
   const md=e.target.closest('[data-mode]');if(md){setTestMode(md.dataset.mode==='test');return}
   const sp=e.target.closest('[data-spd]');if(sp){tick();state.speed=+sp.dataset.spd;save();renderSpeed();toast(`時間加速 ×${state.speed}`);return}
   const t=e.target.closest('[data-tool]');if(!t)return;const k=t.dataset.tool;
+  if(k==='sfx'){SFX_ON=!SFX_ON;try{localStorage.setItem('sw_sfx',SFX_ON?'1':'0')}catch(x){}renderSpeed();if(SFX_ON)sfx('sparkle');toast(SFX_ON?'音效開了':'音效關了');return}
   if(k==='adv'){advanceAll();toast('所有植株都往下一階段了')}
   if(k==='excap'){state.exCap=!exCapOn();save();renderSpeed();toast(state.exCap?'探索每日上限已開啟':'探索每日上限已關閉')}
   if(k==='xc'){let v=false;try{v=localStorage.getItem('sw_xc')!=='1';localStorage.setItem('sw_xc',v?'1':'0')}catch(e){}renderSpeed();toast(v?'跨界機率 100%（只在測試模式有效）':'跨界機率恢復正常')}
@@ -7371,6 +7428,7 @@ function addXp(n,quiet){
   renderMe();
 }
 function levelUp(lv){
+  sfx('fan');
   const out=[],c=50+10*lv;state.coins+=c;out.push(`得到 ${c} 金幣`);
   for(const k of BASE_CROPS)if(LV_CROP[k]===lv)out.push(`新作物：${CROPS[k].n}（野外開始出現）`);
   for(const k in LV_REG)if(LV_REG[k]===lv)out.push(`新地區：${BIOMES[k].n}`);
@@ -7392,7 +7450,7 @@ function noteOpen(h){noteQ.push(h);noteFlush()}
    noteOpen({cel:{th,kicker,title,sub,fruit,chips,brag,go}})：th＝gold／rainbow／dream；go＝{label,fn} 第二顆按鈕 */
 let celOpen=false;
 const CEL_PAL={gold:['#FFD54A','#FFB13B','#FFF3B0','#E8763A','#FFFFFF'],rainbow:['#FF8FB1','#FFD966','#8FE3A1','#7CC8FF','#C9A2FF'],dream:['#B9A6FF','#8FD8FF','#FFC2E8','#FFFFFF','#A6F0E0']};
-function celShow(o){celOpen=true;const th=o.th||'gold',pal=CEL_PAL[th]||CEL_PAL.gold,R=Math.random;
+function celShow(o){celOpen=true;sfx('fan');setTimeout(()=>sfx('sparkle'),450);const th=o.th||'gold',pal=CEL_PAL[th]||CEL_PAL.gold,R=Math.random;
   const conf=Array.from({length:34},(_,k)=>{const a=R()*Math.PI*2,d=120+R()*170,x=Math.cos(a)*d,y=Math.sin(a)*d*0.8-60;return `<i style="--x:${x.toFixed(0)}px;--y:${y.toFixed(0)}px;--r:${(R()*720-360).toFixed(0)}deg;--d:${(R()*0.25).toFixed(2)}s;background:${pal[k%pal.length]};${k%3?'':'border-radius:50%;'}width:${(6+R()*6).toFixed(0)}px;height:${(k%3?10+R()*8:7).toFixed(0)}px"></i>`}).join('');
   const star=(x,y,s,d)=>`<svg class="cel-tw" style="left:${x}%;top:${y}%;width:${s}px;height:${s}px;animation-delay:${d}s" viewBox="-10 -10 20 20"><path d="M0 -10 C1 -2 2 -1 10 0 C2 1 1 2 0 10 C-1 2 -2 1 -10 0 C-2 -1 -1 -2 0 -10Z" fill="#FFFFFF"/></svg>`;
   const tw=[[14,22,18,0],[82,18,14,.6],[90,58,20,1.1],[8,62,12,.3],[70,8,12,1.5],[24,6,10,.9],[60,74,12,1.9]].map(a=>star(...a)).join('');

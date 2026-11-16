@@ -1163,7 +1163,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-16i';
+const BUILD='2026-11-16j';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -4346,7 +4346,7 @@ const DESERT_MAPS={/* 53、54.4（15r）：照 53.2 重擺；峽谷改成彎曲�
   oasis:{n:'綠洲',gx:2,gy:1,v2:1,
     exits:[{side:'s',c:600,w:120,to:'cactus'},{side:'w',c:300,w:120,to:'canyon'}],
     lakes:[[420,600,180,105],[520,650,120,80],[330,560,110,80]],
-    paths:[{p:[[-40,300],[140,310],[330,330],[560,352],[690,470],[712,690],[640,880],[600,1150]],w:50},{p:[[160,314],[196,420],[214,492]],w:40,end:'dirt'},{p:[[640,880],[540,836],[462,790]],w:40,end:'dirt'}],
+    paths:[{p:[[-40,300],[140,310],[330,330],[560,352],[690,470],[712,690],[640,880],[600,1150]],w:50},{p:[[160,314],[190,400],[200,452]],w:40,end:'dirt'},{p:[[640,880],[540,836],[462,790]],w:40,end:'dirt'}],
     objs:[['palm',170,560,null,{s:1.05}],['palm',250,712,null,{s:0.9,fl:1}],['palm',636,548,null,{s:0.95}],['palm',600,770,null,{s:1.1,fl:1}],['palm',520,452,null,{s:0.85}],['palm',306,446,null,{s:0.9,fl:1}],
       ['succ',220,640],['succ',300,738,null,{s:0.8}],['succ',560,790],['succ',640,620,null,{s:0.8}],['succ',420,470],['rock',370,748,null,{s:0.55}],['rock',612,668,null,{s:0.5}],['barrel',150,470,null,{s:0.7}]],
     groves:[[150,880,2,40],[660,220,2,40]],
@@ -4884,7 +4884,7 @@ function regPrepV2(bk,id,M){
     for(const p of PATHS)if(!p._br){if(p.br)p.p=p.p.concat(brEnd(p.br));if(p.br0)p.p=brEnd(p.br0).reverse().concat(p.p);p._br=1}}
   /* 小路 */
   for(const p of PATHS)if(p.toStairs!=null&&!p._st){const T=M._T[p.toStairs],[bx,by]=T.bot,[ux,uy]=T.u;p.p=p.p.concat([[bx-ux*110,by-uy*110],[bx-ux*40,by-uy*40],[bx+ux*6,by+uy*6]]);p._st=1}
-  M._P=PATHS.map((p,k)=>({...p,seed:hashStr(bk+id+'p'+k),rb:v2ribbon(p.p,p.w||52,hashStr(bk+id+'p'+k),{taper:p.end==='taper',taper0:p.start==='taper'})}));
+  M._P=PATHS.map((p,k)=>({...p,seed:hashStr(bk+id+'p'+k),rb:v2ribbon(p.p,p.w||52,hashStr(bk+id+'p'+k),{taper:p.end==='taper'||p.end==='dirt',taper0:p.start==='taper'})/* 76：end:'dirt' 也漸漸變窄，不再用圓斑收尾 */}));
   const onPath=(x,y,pad)=>M._P.some(p=>v2ribIn(p.rb,x,y,pad));
   /* 河（v2）、裂谷 */
   M._RV=(M.rivers2||[]).map((r,k)=>({...r,seed:hashStr(bk+id+'r'+k),rb:v2ribbon(r.p,r.w,hashStr(bk+id+'r'+k),{var:0.2,widen:r.widen||0,pinch:r.pinch})}));
@@ -4992,13 +4992,16 @@ function regGroundSVG(M){
     for(let i=8;i<rb.pts.length-8;i+=22){const [x,y]=rb.pts[i];s+=`<path d="M${v2f(x-8)} ${v2f(y)} q6 -3 14 0" stroke="${WC.glint}" stroke-width="2" fill="none" opacity=".6"/>`}}
   if(M._CH){const rb=M._CH.rb,o={var:0.22,pinch:M._CH.pinch},inner=v2ribbon(M._CH.p,M._CH.w,M._CH.seed,{...o,add:-M._CH.w*0.2}),core=v2ribbon(M._CH.p,M._CH.w,M._CH.seed,{...o,add:-M._CH.w*0.36});
     s+=`<path d="${v2d(v2ribbon(M._CH.p,M._CH.w,M._CH.seed,{...o,add:4}).poly)}" fill="#4A3020"/><path d="${v2d(rb.poly)}" fill="#6E4A2C"/><path d="${v2d(inner.poly)}" fill="#3E2816"/><path d="${v2d(core.poly)}" fill="#22140A"/>`}
+  /* 76：從這裡到花點，全部包在挖掉水面的遮罩裡 */
+  const hasW=!cave&&(M._LG.length||M._RV.length),wmId='wm'+M.bk+M.id;
+  if(hasW){s+=`<defs><mask id="${wmId}" maskUnits="userSpaceOnUse" x="-80" y="-80" width="${W+160}" height="${H+160}"><rect x="-80" y="-80" width="${W+160}" height="${H+160}" fill="#fff"/>${M._LG.map(G=>`<path d="${v2d(G.poly(-2))}" fill="#000"/>`).join('')}${M._RV.map(r=>`<path d="${v2d(r.rb.poly)}" fill="#000"/>`).join('')}${(M.isles||[]).map(([cx,cy,rx,ry])=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#fff"/>`).join('')}</mask></defs><g mask="url(#${wmId})">`}
   /* 小路 */
   const P=M._P,pc=cave?[C.cavePath[0],C.cavePath[1],C.caveSpots[1],C.caveSpots[0],C.caveEdge]:V.path;
-  for(const p of P)s+=`<path d="${v2d(v2ribbon(p.p,p.w||52,p.seed,{taper:p.end==='taper',taper0:p.start==='taper',add:5}).poly)}" fill="${pc[0]}" opacity=".8"/>`;
+  for(const p of P)s+=`<path d="${v2d(v2ribbon(p.p,p.w||52,p.seed,{taper:p.end==='taper'||p.end==='dirt',taper0:p.start==='taper',add:5}).poly)}" fill="${pc[0]}" opacity=".8"/>`;
   for(const G of M._BR||[])for(const pass of [0,1])for(const [E,o,mo] of G.ends){const ra=G.hw*2.05+6,rn=G.hw*1.1+5,cx=E[0]+mo[0]*(rn-5)+o[0]*4,cy=E[1]+mo[1]*(rn-5)+o[1]*4,ang=Math.atan2(G.n[1],G.n[0])*180/Math.PI,CR=seededRnd(hashStr('brc'+M.id+(E[0]|0)));
     s+=`<path d="${v2d(v2wob(0,0,ra+(pass?0:5),rn+(pass?0:4),CR,0.06))}" transform="translate(${v2f(cx)} ${v2f(cy)}) rotate(${v2f(ang)})" fill="${pc[pass]}"${pass?'':' opacity=".8"'}/>`}
   for(const p of P)s+=`<path d="${v2d(p.rb.poly)}" fill="${pc[1]}"/>`;
-  for(const p of P){if(p.end==='dirt'){const q=p.p[p.p.length-1];s+=`<ellipse cx="${q[0]}" cy="${q[1]}" rx="${(p.w||52)*1.3}" ry="${(p.w||52)*0.85}" fill="${pc[0]}" opacity=".55"/><ellipse cx="${q[0]}" cy="${q[1]}" rx="${(p.w||52)*1.2}" ry="${(p.w||52)*0.75}" fill="url(#dirt)"/>`}
+  for(const p of P){
     const w=p.w||52;for(let i=0;i<p.rb.pts.length;i+=7){const [x,y]=p.rb.pts[i];s+=`<ellipse cx="${(x+(R()-.5)*w*0.6)|0}" cy="${(y+(R()-.5)*12)|0}" rx="${5+R()*8|0}" ry="${3+R()*3|0}" fill="${pc[2+Math.floor(R()*2)]}" opacity=".7"/>`}
     for(let i=0;i<p.rb.pts.length;i+=5)if(R()<.45){const [x,y]=p.rb.pts[i];s+=`<circle cx="${(x+(R()-.5)*w*0.84)|0}" cy="${(y+(R()-.5)*10)|0}" r="${(1.5+R()*1.5).toFixed(1)}" fill="${pc[4]}"/>`}}
   if(M.wornRing){const [x,y,rx,ry]=M.wornRing;s+=`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="none" stroke="${V.path[1]}" stroke-width="13" opacity=".5" stroke-dasharray="38 9"/>`}/* 51.4 濕地：石像周圍被踩出來的一圈 */
@@ -5012,6 +5015,7 @@ function regGroundSVG(M){
   for(const [cx,cy,rx,ry] of M.suns||[])s+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#sun)"/>`;
   for(const [cx,cy,rx,ry] of M._shades)s+=`<ellipse cx="${v2f(cx)}" cy="${v2f(cy)}" rx="${v2f(rx)}" ry="${v2f(ry)}" fill="url(#gsh)"/>`;
   for(const [x,y,r,c] of M._drift){if(x<B.x0||x>B.x1||y<B.y0||y>B.y1||P.some(p=>v2ribIn(p.rb,x,y,0))||M._T.some(t=>{const e=t.E(x);return y>e+2&&y<t.Bt(x)+16}))continue;s+=`<circle cx="${x|0}" cy="${y|0}" r="${r.toFixed(1)}" fill="${c}"/><circle cx="${x|0}" cy="${y|0}" r="${(r*.38).toFixed(1)}" fill="#E8B93C" opacity=".8"/>`}
+  if(hasW)s+='</g>';
   /* 洞壁（51.1E）：地板以外全部是岩壁；貼著地板的一圈顏色較亮（看得出厚度），邊緣一條亮線；出口是壁上的開口，往外漸暗 */
   if(cave){const FL=M._FL||[[[B.x0-8,B.y0-8],[B.x1+8,B.y0-8],[B.x1+8,B.y1+8],[B.x0-8,B.y1+8]]],fd=FL.map(p=>v2d(p)).join(' ');
     const mix=(a,b,t)=>{const h=c=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16)),A=h(a),Bc=h(b);return '#'+A.map((v,i)=>Math.round(v+(Bc[i]-v)*t).toString(16).padStart(2,'0')).join('')};

@@ -342,7 +342,9 @@ body.game{background:#5E9E38}
 #meChip svg{border-radius:50%;background:#EAD9B0;flex:none}#meChip .mcn{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}#meChip b{font-size:13px;max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#meChip .mcn>i{font-style:normal;font-size:11px;font-weight:700}
 .xpbar{display:block;width:64px;height:4px;border-radius:3px;background:#E2D2A8;overflow:hidden}.xpbar i{display:block;height:100%;background:#6FAE4A}.xpbar.big{width:100%;height:8px;margin:6px 0 2px}
 .mecard{display:flex;gap:12px;align-items:flex-start}.meav{display:flex;flex-direction:column;align-items:center;gap:4px}.meinf{flex:1;min-width:0}.starz{color:#D9912B;letter-spacing:1px}.favrow{display:flex;align-items:center;gap:8px;margin:6px 0}.favrow b{min-width:56px}.favrow .xpbar{flex:1;height:8px}
-.gfam .gfc{display:flex!important;align-items:flex-start;justify-content:center;gap:2px}.galh{opacity:.42;outline:1px dashed #8A5A2B;outline-offset:-1px}.gor{font-style:normal;font-size:12px;color:#8A5A2B;margin:0 4px;align-self:center}.gsub{margin-top:8px}.gsub>summary{cursor:pointer;color:#8A5A2B;font-weight:700;font-size:13px}
+.gfam .gfc{display:flex!important;align-items:flex-start;justify-content:center;gap:2px}.xgrps{display:grid;gap:4px;margin:4px 0;max-height:96px;overflow:auto}.xgrp{border-left:4px solid;padding:2px 6px;border-radius:6px;background:rgba(255,255,255,.55);font-size:12px;line-height:1.6}.xgrp.on{background:#FFF8E0}.xpl{display:inline-flex;align-items:center;gap:1px;white-space:nowrap}.xpl svg{vertical-align:middle}
+.avwl,.avwr{transform-box:fill-box;animation:avflap 1.4s ease-in-out infinite}.avwl{transform-origin:100% 100%}.avwr{transform-origin:0 100%}@keyframes avflap{50%{transform:scaleX(.78)}}@media (prefers-reduced-motion:reduce){.avwl,.avwr{animation:none}}
+.galh{opacity:.42;outline:1px dashed #8A5A2B;outline-offset:-1px}.gor{font-style:normal;font-size:12px;color:#8A5A2B;margin:0 4px;align-self:center}.gsub{margin-top:8px}.gsub>summary{cursor:pointer;color:#8A5A2B;font-weight:700;font-size:13px}
 .gpair{display:inline-flex;gap:3px;padding:3px 5px;border:2px solid #5A3416;border-radius:999px;background:#FFF6DE}.gpair .sw{width:20px;height:20px}
 .stline{display:flex;align-items:center;gap:5px;font-size:12px;color:#6B5A48}.stline small{color:#8A7A66}.stdot{width:9px;height:9px;border-radius:50%;background:#B8B0A4;flex:none}.stdot.on{background:#4CAF50;box-shadow:0 0 0 2px rgba(76,175,80,.25)}.friend .fnm{flex:1;min-width:0;display:flex;flex-direction:column}
 #testTag{position:fixed;left:10px;top:calc(116px + env(safe-area-inset-top,0px));z-index:11;background:#C0392B;color:#fff;font-weight:700;font-size:12px;padding:3px 9px;border-radius:9px;pointer-events:none}#testTag[hidden],#testNote[hidden]{display:none}
@@ -984,7 +986,7 @@ function packKeys(l){
   return lotDist(l).map(x=>({key:x.key,p:x.p}));
 }
 function drawSeed(l){if(l.zs)unzipLot(l);if(l.seeds&&l.seeds.length)return l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0];l.count--;return child(l.m,l.f).g}
-function newGame(){state={vault:[],v:4,mapV:MAPV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,lv:1,xp:0,mq:{ch:1,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
+function newGame(){state={wardrobe:{},vault:[],v:4,mapV:MAPV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,lv:1,xp:0,mq:{ch:1,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
 const WILD={tomato:'red',strawberry:'red',zucchini:'green',corn:'yellow',broccoli:'white',melon:'yellow',chili:'red',pumpkin:'yellow',eggplant:'purple'};
 function originalFor(crop){
   const wild=rnd()<0.7,col=wild?WILD[crop]:pk(['red','yellow','green','white','purple'].filter(c=>c!==WILD[crop]));
@@ -1098,7 +1100,7 @@ function exMigrate(o){
   }catch(e){}
   o.exV=2;
 }
-function migrate(o){
+function migrate(o){if(!o.wardrobe||typeof o.wardrobe!=='object')o.wardrobe={};/* 86.5：衣櫃（特殊取得的衣服），用到才建立 */
   if(!o.nextLid)o.nextLid=1;if(!o.counts)o.counts={};
   while(o.plots.length<64)o.plots.push(null);
   geneMigrate(o);exMigrate(o);
@@ -1859,7 +1861,7 @@ function plantSVG(p,x,y){
   }
   {const ym=y-mk;
   if(p.pollen&&p.pollen.failed&&p.stage!=='flower')s+=`<g stroke="#7A2A1A" stroke-width="1.4"><circle cx="${x+24}" cy="${ym-74}" r="7" fill="#FFE1D6"/><path d="M${x+21} ${ym-77} l6 6 M${x+27} ${ym-77} l-6 6" stroke-linecap="round"/></g>`;
-  if(p.stage==='fruit'&&p.pollen&&!p.pollen.failed)s+=`<g aria-hidden="true"><circle cx="${x-24}" cy="${ym-72}" r="4.5" fill="#FFE36E" stroke="#B0882A" stroke-width="1.2"/><circle cx="${x-25.3}" cy="${ym-73.3}" r="1.3" fill="#FFF8D0"/></g>`;/* 36.8 C：已授粉 */
+/* 88.1（16p）：已授粉的小黃點改成田地上的倒數圈（plotSVG） */
   if(p.stage==='flower'&&!p.pollen)s+=`<g aria-hidden="true"><circle cx="${x-26}" cy="${ym-76}" r="9" fill="#FFFDF6" stroke="#B07A44" stroke-width="1.5"/>${[0,1,2,3,4].map(k=>{const a=k*1.2566-1.5708;return `<circle cx="${(x-26+3.6*Math.cos(a)).toFixed(1)}" cy="${(ym-76+3.6*Math.sin(a)).toFixed(1)}" r="2.6" fill="#F28DB2"/>`}).join('')}<circle cx="${x-26}" cy="${ym-76}" r="2" fill="#FFD54A"/></g>`;}/* 等待授粉 */
   s+=muMarkSVG(p,x,y,mk)+rsvMarkSVG(p,x,y,mk);/* 47.1、44.2 */
   plantCache.set(p,{key,svg:s});TFX_OK=true;DZ_OK=true;
@@ -2606,6 +2608,7 @@ function tick(){
   if(!state)return;
   try{sakuraCheck()}catch(e){}/* 82.2：花季開始、結束或測試開關改了就重畫櫻花之丘 */
   try{rsvTick()}catch(e){}
+  try{if(!tick._wd||Date.now()-tick._wd>8000){tick._wd=Date.now();wardCheck(!tick._wf);tick._wf=1}}catch(e){}/* 86.5：衣櫃條件每 8 秒看一次 */
   try{mqPoll();noteFlush();if(scene==='explore'&&exBiome==='snow'&&regMap==='cave2'&&Math.hypot(exMe.x-400,exMe.y-290)<95)mqEv('vault')}catch(e){}
   if(scene==='explore')exHintUpd();
   testRefill();
@@ -2787,13 +2790,21 @@ const HAIRC=['#2E2018','#6B4128','#8B5A2B','#C68E3F','#E8C47E','#B7472A','#8A8A8
 const CLOTHC=['#4F86C0','#D2584C','#4F8048','#EEC85A','#8C66C2','#EE9DBA','#F6F1E4','#4D4A47','#E08A4C','#5DB3A6','#5B7FAF','#C9B48A','#8A5A34','#93A98A'];
 /* 25 節（14m）：只在各清單後面新增選項，既有編號不變 */
 const AV_OPT={face:['點點眼','笑眼','眨眼','驚訝','瞇眼','開心','大笑','害羞','鼓臉','哭哭','星星眼','想睡'],hair:['短髮','長髮','馬尾','雙馬尾','捲髮','丸子頭','平頭','齊瀏海','鮑伯頭','刺蝟頭','旁分','波浪長髮','單側辮子','半紮蝴蝶結','低側包頭','蓬鬆亂髮','及肩外翹','雙辮子','高馬尾瀏海','中分','呆毛短髮','雙丸子','狼尾'],hat:['無','草帽','毛帽','鴨舌帽','貝雷帽','漁夫帽','寬邊遮陽帽','貓耳毛帽','報童帽','花圈','毛絨耳罩'],top:['T恤','條紋T','吊帶褲','外套','毛衣','帽T','格子襯衫','針織背心','羽絨外套','雨衣','水手領上衣','開襟毛衣','細肩帶洋裝','園藝圍裙'],bottom:['長褲','短褲','裙子','工裝褲','百褶裙','七分牛仔褲','吊帶裙'],shoe:['靴子','布鞋','雨靴','涼鞋','高筒帆布鞋'],acc:['無','圍巾','眼鏡','背包','花朵髮飾','草籃','鐮刀','斜背包','領巾','耳機'],blush:['無腮紅','有腮紅']};
-const AV_LBL={skin:'膚色',face:'表情',hair:'髮型',hairC:'髮色',hat:'帽子',hatC:'帽子顏色',top:'上衣',topC:'上衣顏色',bottom:'下身',bottomC:'下身顏色',shoe:'鞋子',shoeC:'鞋子顏色',acc:'配件',accC:'配件顏色',blush:'腮紅'};
-const AV_KEYS=['skin','face','hair','hairC','hat','hatC','top','topC','bottom','bottomC','shoe','shoeC','acc','accC','blush'];
-const AV_DEF={v:2,skin:0,face:0,hair:0,hairC:1,hat:0,hatC:1,top:2,topC:13,bottom:0,bottomC:10,shoe:0,shoeC:12,acc:0,accC:1,blush:0};
+/* 86.5（16p）：新款接在各類別最後面；果實帽 15–23、專屬造型頭飾 1–9 照 WARD_CROPS 的順序 */
+const WARD_CROPS=['tomato','chili','strawberry','eggplant','corn','pumpkin','zucchini','melon','broccoli'];
+(()=>{const cn={tomato:'番茄',chili:'辣椒',strawberry:'草莓',eggplant:'茄子',corn:'玉米',pumpkin:'南瓜',zucchini:'櫛瓜',melon:'甜瓜',broccoli:'甘藍'};
+  AV_OPT.hat.push('牛仔帽','三角頭巾','蝴蝶結髮帶','南瓜頭套',...WARD_CROPS.map(c=>cn[c]+'帽'));
+  AV_OPT.top.push('研究員白袍','浴衣','夏威夷花襯衫','運動背心','Polo衫','連身工作服','斗篷');
+  AV_OPT.bottom.push('寬褲','蓬蓬裙','運動褲');AV_OPT.shoe.push('拖鞋','皮鞋','木屐','雪靴');
+  AV_OPT.acc.push('育種野帳','放大鏡項鍊','種子腰包','捕蟲網','墨鏡','花環項鍊','狐狸面具','小精靈翅膀');
+  AV_OPT.head=['無',...WARD_CROPS.map(c=>({7:'皇冠',8:'鈴鐺',9:'火焰',10:'南瓜燈',11:'鑽石',12:'火箭',13:'火山',15:'球棒',16:'炸彈'})[{tomato:7,eggplant:8,chili:9,strawberry:11,corn:12,pumpkin:10,zucchini:15,melon:16,broccoli:13}[c]]+'（'+cn[c]+'）')]})();
+const AV_LBL={skin:'膚色',face:'表情',hair:'髮型',hairC:'髮色',hat:'帽子',hatC:'帽子顏色',top:'上衣',topC:'上衣顏色',bottom:'下身',bottomC:'下身顏色',shoe:'鞋子',shoeC:'鞋子顏色',acc:'配件',accC:'配件顏色',blush:'腮紅',head:'頭飾',fc:'果實顏色'};
+const AV_KEYS=['skin','face','hair','hairC','hat','hatC','top','topC','bottom','bottomC','shoe','shoeC','acc','accC','blush','head','fc','fcb'];/* 86.5：head 專屬造型頭飾、fc／fcb 果實帽與頭飾的果皮顏色（夢幻色的另一半） */
+const AV_DEF={v:2,skin:0,face:0,hair:0,hairC:1,hat:0,hatC:1,top:2,topC:13,bottom:0,bottomC:10,shoe:0,shoeC:12,acc:0,accC:1,blush:0,head:0,fc:'',fcb:''};
 /* 換裝資料統一入口：新版物件、精簡陣列（位置同步用）、舊版（14j 以前）都轉成新版物件 */
 function avNorm(a){
   if(Array.isArray(a)){/* 精簡陣列：數字照 AV_KEYS 順序；布料是陣列裡的物件（14l 以前的陣列沒有 blush，布料在第 15 格） */
-    const o={v:2};AV_KEYS.forEach((k,i)=>{if(typeof a[i+1]==='number')o[k]=a[i+1]});const f=a.slice(1).find(x=>x&&typeof x==='object');if(f)o.fab=f;return {...AV_DEF,...o}}
+    const o={v:2};AV_KEYS.forEach((k,i)=>{if(typeof a[i+1]==='number'||((k==='fc'||k==='fcb')&&typeof a[i+1]==='string'))o[k]=a[i+1]});const f=a.slice(1).find(x=>x&&typeof x==='object');if(f)o.fab=f;return {...AV_DEF,...o}}
   a=a||{};if(a.v===2)return {...AV_DEF,...a};
   const H=[0,8,1,2,9,5,3,4,10,6],F=[0,1,0,2,4,1],T=[0,0,3,5,1,3,0,4],B=[1,0,2,0,0,0],n=(v,d)=>Number.isInteger(v)?v:d;
   const o={...AV_DEF,skin:n(a.skin,0),face:F[n(a.face,0)]??0,hair:H[n(a.hair,0)]??0,hairC:n(a.hairC,1),top:T[n(a.top,0)]??0,topC:n(a.topC,0),bottom:B[n(a.bottom,1)]??0,bottomC:n(a.bottomC,7),shoe:1,shoeC:7,hat:0,acc:0};
@@ -3142,23 +3153,23 @@ function avImg(u,b){return `<image href="${u}" x="${b[0]}" y="${b[1]}" width="${
    AVO_TOP／AVO_BOT／AVO_SHOE：AV_OPT 的編號 → 款式；avOutfitOf(av) 回傳 null 表示就是 v3 原圖（吊帶褲＋靴子）。 */
 let AVO_N=0;
 const AVO_V={front:{t0:-31.6,open:[-2.3,2.3],cx:0.4,nk:1,fw:6},fq:{t0:-31.2,open:[0.6,3.6],cx:0,nk:1,fw:5.8},side:{t0:-31.4,open:[1.8,5.2],cx:-0.6,nk:1,fw:4.6,side:1},bq:{t0:-32,open:null,cx:0,nk:0,fw:5.8},back:{t0:-32,open:null,cx:0,nk:0,fw:6}};
-const AVO_TOP=['tee','stripe',null,'jacket','sweater','hoodie','plaid','vest','puffer','rain','sailor','cardigan','slip','apron'];
-const AVO_BOT=['pants','shorts','skirt','cargo','pleat','crop','pinafore'];
-const AVO_SHOE=['boot','sneaker','rainboot','sandal','hightop'];
-const AVO_LONG={jacket:1,sweater:1,hoodie:1,plaid:1,puffer:1,rain:1,cardigan:1};/* 長袖 */
+const AVO_TOP=['tee','stripe',null,'jacket','sweater','hoodie','plaid','vest','puffer','rain','sailor','cardigan','slip','apron','labcoat','yukata','aloha','tank','polo','coverall','cape'];/* 86.5（16p）：14 起是新款 */
+const AVO_BOT=['pants','shorts','skirt','cargo','pleat','crop','pinafore','wide','tutu','jogger'];
+const AVO_SHOE=['boot','sneaker','rainboot','sandal','hightop','slipper','loafer','geta','snowboot'];
+const AVO_LONG={jacket:1,sweater:1,hoodie:1,plaid:1,puffer:1,rain:1,cardigan:1,labcoat:1,yukata:1,coverall:1};/* 長袖 */
 function avOutfitOf(av){const top=AVO_TOP[av.top],bottom=AVO_BOT[av.bottom]||'pants',shoe=AVO_SHOE[av.shoe]||'boot';if(top===null&&shoe==='boot'&&!(av.fab&&av.fab.top))return null;return {top:top===undefined?'tee':top,bottom,shoe}}
 const avoBox=d=>{const a=d.match(/-?\d*\.?\d+/g).map(Number);let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(let i=0;i+1<a.length;i+=2){x0=Math.min(x0,a[i]);x1=Math.max(x1,a[i]);y0=Math.min(y0,a[i+1]);y1=Math.max(y1,a[i+1])}return [x0,y0,x1,y1]};
 function avOutfitParts(P,av,view,o){
   const D=AV3[view]||AV3.front,V=AVO_V[view]||AVO_V.front,n='o'+(++AVO_N);
   const hex=c=>c.startsWith('#')?c:'#'+c.match(/\d+/g).slice(0,3).map(v=>(+v).toString(16).padStart(2,'0')).join('');
-  const tc=hex(avCol(o.jacketC!=null&&o.top==='jacket'?o.jacketC:av.topC)),bc=hex(avCol(av.bottomC)),sc=hex(avCol(av.shoeC)),skin=hex(SKINS[av.skin]||SKINS[0]),CR='#F4EBD8',NV='#33476E',OL=AV_OL,dk=c=>shade(c,-0.24),lt=c=>shade(c,0.45);
+  const tc=hex(avCol(o.jacketC!=null&&o.top==='jacket'?o.jacketC:av.topC)),bc=o.top==='coverall'?hex(avCol(av.topC)):hex(avCol(av.bottomC)),sc=hex(avCol(av.shoeC)),skin=hex(SKINS[av.skin]||SKINS[0]),CR='#F4EBD8',NV='#33476E',OL=AV_OL,dk=c=>shade(c,-0.24),lt=c=>shade(c,0.45);
   const top=o.top,bot=o.bottom,back=view==='back'||view==='bq',side=!!V.side,T0=V.t0,cx=V.cx,waist=-18.2;
-  const dress=top==='dress'||top==='slip',skirtB=!dress&&top!==null&&(bot==='skirt'||bot==='pleat'||bot==='pinafore');
+  const dress=top==='dress'||top==='slip'||top==='yukata',skirtB=!dress&&top!==null&&(bot==='skirt'||bot==='pleat'||bot==='pinafore'||bot==='tutu'),LAB='#F6F4EE',sleeveless=top==='slip'||top==='tank';
   const line=(d,w)=>`<path d="${d}" fill="none" stroke="${OL}" stroke-width="${w||0.7}" stroke-linecap="round" stroke-linejoin="round"/>`;
   const rect=(x,y,w,h,f,op)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${f}"${op?` opacity="${op}"`:''}/>`;
   const shd=(x,y,h)=>rect(x,y,30,h,'#2A1A10',0.16);/* 右側陰影（布料也一起變暗） */
   let defs='';const fab=(spec,tag)=>{const F=avFab(spec,tag+n);defs+=F.defs;return F.fill};
-  const topFill=av.fab&&av.fab.top?fab(av.fab.top,'t'):top==='plaid'?fab({c:av.topC,p:4,pc:'#F4EBD8'},'t'):tc;
+  const topFill=av.fab&&av.fab.top?fab(av.fab.top,'t'):top==='plaid'?fab({c:av.topC,p:4,pc:'#F4EBD8'},'t'):top==='cape'?CR:tc;
   const bodyOl=D.body[0].d;
   const legOnly=top===null;/* 吊帶褲：上身用 v3 原圖，只換鞋子 */
   /* ===== 上身 ===== */
@@ -3166,8 +3177,8 @@ function avOutfitParts(P,av,view,o){
   if(!legOnly){let tor='';
     const fillAll=f=>rect(-20,T0,40,30,f),sleeveMask=w=>rect(-20,T0,20-w,30,'')+rect(w,T0,20,30,'');
     const waistBand=c=>rect(-20,waist,40,8,c)+shd(cx+2.6,waist,8)+line(`M-12 ${waist}H12`,0.6);
-    const hasBottomBand=!dress&&!['rain','puffer'].includes(top);
-    if(top==='vest'||top==='apron'){tor+=fillAll(CR)+shd(cx+2.6,T0,30)}else if(top==='slip'){tor+=fillAll(skin)}else tor+=fillAll(topFill)+shd(cx+2.6,T0,30);
+    const hasBottomBand=!dress&&!['rain','puffer','coverall'].includes(top);
+    if(top==='vest'||top==='apron'){tor+=fillAll(CR)+shd(cx+2.6,T0,30)}else if(top==='slip'||top==='tank'){tor+=fillAll(skin)}else tor+=fillAll(topFill)+shd(cx+2.6,T0,30);
     if(top==='stripe')for(let y=T0+2.2;y<waist;y+=2.4)tor+=rect(-20,y,40,1.1,lt(tc),0.95);
     if(top==='vest'){const w=side?3.6:5;tor+=rect(-w,T0,2*w,30,topFill)+shd(cx+2.4,T0,30)+line(`M${-w} ${T0}V${waist}M${w} ${T0}V${waist}`,0.6);
       if(!back)tor+=`<path d="M-2.4 ${T0}L${cx} ${T0+5.4}L2.4 ${T0}Z" fill="${CR}"/>`+line(`M-2.4 ${T0}L${cx} ${T0+5.4}L2.4 ${T0}`,0.55)+line(`M-1.9 ${T0+7}q.6 1.6 0 3.2q-.6 1.6 0 3.2M2.3 ${T0+7}q.6 1.6 0 3.2q-.6 1.6 0 3.2`,0.4)}
@@ -3176,11 +3187,12 @@ function avOutfitParts(P,av,view,o){
       else tor+=line(`M-5 ${waist-2}H5`,0.6)+`<path d="M-0.2 ${waist-2}l-2.6 -1.6v3.2zM0.2 ${waist-2}l2.6 -1.6v3.2z" fill="${tc}" stroke="${OL}" stroke-width=".45"/>`}
     if(hasBottomBand)tor+=waistBand(bc);
     if(top==='dress')tor+=line(`M-12 ${waist-2.4}H12`,0.55)+rect(-12,waist-2.4,24,1.2,'#2A1A10',0.18);
-    if(top==='jacket'||top==='cardigan'){const jc=topFill;if(V.open){const [a,b]=V.open,a2=top==='cardigan'?a+0.8:a,b2=top==='cardigan'?b-0.8:b,inner=top==='cardigan'?CR:hex(avCol(6));
+    if(top==='jacket'||top==='cardigan'||top==='labcoat'){const jc=top==='labcoat'?LAB:topFill;if(V.open){const [a,b]=V.open,a2=top==='cardigan'?a+0.8:a,b2=top==='cardigan'?b-0.8:b,inner=top==='cardigan'?CR:top==='labcoat'?topFill:hex(avCol(6));
         tor=fillAll(inner)+shd(cx+2.6,T0,30)+(hasBottomBand?waistBand(bc):'')+rect(-20,T0,20+a2,30,jc)+rect(b2,T0,20,30,jc)+shd(Math.max(b2,cx+2.6),T0,30)+line(`M${a2} ${T0+1.4}V-12M${b2} ${T0+1.4}V-12`,0.65);
-        if(top==='jacket')tor+=`<path d="M${a2} ${T0+1.2}l-1.6 3.4M${b2} ${T0+1.2}l1.6 3.4" stroke="${OL}" stroke-width=".55" fill="none"/>`;
-        else for(let y=T0+5;y<waist;y+=3.2)tor+=`<circle cx="${b2+0.7}" cy="${y}" r=".45" fill="${OL}"/>`}
-      else tor+=line(`M-4 ${T0+1.6}Q0 ${T0+3} 4 ${T0+1.6}`,0.5)}
+        if(top==='jacket'||top==='labcoat')tor+=`<path d="M${a2} ${T0+1.2}l-1.6 3.4M${b2} ${T0+1.2}l1.6 3.4" stroke="${OL}" stroke-width=".55" fill="none"/>`;
+        if(top==='labcoat'&&!side){const px=a2-5.2;tor+=rect(px,T0+5,3.4,3,shade(LAB,-0.08))+line(`M${px} ${T0+5}h3.4v3h-3.4z`,0.45)+rect(px+0.9,T0+3.2,0.7,2.6,'#3F6FB8')+rect(px+0.9,T0+3.2,0.7,0.8,'#E8C14A')}/* 研究員白袍：胸前口袋插一支筆 */
+        if(top==='cardigan')for(let y=T0+5;y<waist;y+=3.2)tor+=`<circle cx="${b2+0.7}" cy="${y}" r=".45" fill="${OL}"/>`}
+      else{if(top==='labcoat')tor=fillAll(LAB)+shd(cx+2.6,T0,30)+line(`M${cx} -16V-12`,0.5);tor+=line(`M-4 ${T0+1.6}Q0 ${T0+3} 4 ${T0+1.6}`,0.5)}}
     if(top==='sweater'||top==='cardigan')tor+=rect(-20,-16.4,40,2.6,'#2A1A10',0.14)+line('M-12 -16.4H12',0.5)+[-4,-2,0,2,4].map(x=>line(`M${x} -16.2V-14.2`,0.3)).join('');
     if(top==='hoodie'){if(back)tor+=`<path d="M-4.6 ${T0}Q-4.8 ${T0+7} 0 ${T0+7.6}Q4.8 ${T0+7} 4.6 ${T0}Z" fill="${dk(tc)}"/>`+line(`M-4.6 ${T0}Q-4.8 ${T0+7} 0 ${T0+7.6}Q4.8 ${T0+7} 4.6 ${T0}`,0.55);
       else tor+=line(`M-4 ${T0+0.6}Q${cx} ${T0+3.4} 4 ${T0+0.6}`,1.1)+(side?'':line(`M-1 ${T0+2.4}V${T0+6.4}M1.6 ${T0+2.4}V${T0+6.4}`,0.4)+`<path d="M-3.2 -21.4H3.6L4.4 -17.2H-4Z" fill="${dk(tc)}"/>`+line('M-3.2 -21.4H3.6L4.4 -17.2H-4Z',0.5));
@@ -3190,18 +3202,30 @@ function avOutfitParts(P,av,view,o){
     if(top==='plaid'&&!back)tor+=`<path d="M-2.6 ${T0}L${cx} ${T0+3}L2.6 ${T0}L1.4 ${T0+2.6}L${cx} ${T0+3}L-1.4 ${T0+2.6}Z" fill="#F3EEE4"/>`+line(`M${side?2.8:cx} ${T0+3}V${waist}`,0.45)+[0,1,2].map(k=>`<circle cx="${side?2.8:cx}" cy="${T0+5+k*3.4}" r=".45" fill="${OL}"/>`).join('');
     if(top==='sailor'){if(!back){tor+=`<path d="M-6.4 ${T0+1}L${cx} ${T0+7.4}L6.4 ${T0+1}L6.4 ${T0+4}L${cx} ${T0+10}L-6.4 ${T0+4}Z" fill="${NV}"/>`+line(`M-6.4 ${T0+1}L${cx} ${T0+7.4}L6.4 ${T0+1}M-6.4 ${T0+4}L${cx} ${T0+10}L6.4 ${T0+4}`,0.55)+line(`M-5.6 ${T0+3}L${cx} ${T0+8.8}L5.6 ${T0+3}`,0.35).replace(OL,'#F3EEE4')+`<path d="M${cx-1.4} ${T0+9.4}L${cx+1.4} ${T0+9.4}L${cx} ${T0+12.6}Z" fill="#D2584C" stroke="${OL}" stroke-width=".45"/>`}
       else tor+=rect(-5.2,T0,10.4,7.4,NV)+line(`M-5.2 ${T0+7.4}H5.2M-5.2 ${T0}V${T0+7.4}M5.2 ${T0}V${T0+7.4}`,0.55)+line(`M-4.4 ${T0+6.4}H4.4`,0.35).replace(OL,'#F3EEE4')}
+    /* 86.5 新款上衣 */
+    if(top==='yukata'){if(!back){tor+=`<path d="M-3.4 ${T0}L${cx+0.4} ${T0+5}L3.4 ${T0}Z" fill="${skin}"/>`+line(`M-3.4 ${T0}L${cx+3.4} ${waist-0.8}M3.4 ${T0}L${cx+0.4} ${T0+5}`,0.6)+line(`M-2.4 ${T0}L${cx+3} ${waist-1.6}`,0.35).replace(OL,lt(tc))}
+      for(const [x,y] of [[-6,T0+4],[3.6,T0+8],[-3,T0+10.5],[6,T0+3]])tor+=`<circle cx="${x}" cy="${y}" r=".8" fill="${lt(tc)}"/><circle cx="${x}" cy="${y}" r=".3" fill="${dk(tc)}"/>`;
+      tor+=rect(-20,waist-2.6,40,3.4,'#C8564A')+shd(cx+2.6,waist-2.6,3.4)+line(`M-12 ${waist-2.6}H12M-12 ${waist+0.8}H12`,0.5)}
+    if(top==='aloha'){for(const [x,y] of [[-5.6,T0+3.6],[2.2,T0+5.2],[-1.6,T0+9.6],[5.4,T0+10.4],[-6.4,T0+12]]){let f='';for(let k=0;k<5;k++){const a=k/5*6.283;f+=`<circle cx="${(x+Math.cos(a)*0.9).toFixed(2)}" cy="${(y+Math.sin(a)*0.9).toFixed(2)}" r=".7" fill="${(x+y)%2>0?'#FFFFFF':'#E2533F'}"/>`}tor+=f+`<circle cx="${x}" cy="${y}" r=".45" fill="#F2C24A"/>`}
+      if(!back)tor+=`<path d="M-3.2 ${T0}L${cx} ${T0+4.4}L3.2 ${T0}Z" fill="${skin}"/>`+`<path d="M-3.2 ${T0}L${cx-0.2} ${T0+4.4}L-4.6 ${T0+3}Z M3.2 ${T0}L${cx+0.2} ${T0+4.4}L4.6 ${T0+3}Z" fill="${lt(tc)}" stroke="${OL}" stroke-width=".45" stroke-linejoin="round"/>`+line(`M${side?2.6:cx} ${T0+4.4}V${waist}`,0.4)}
+    if(top==='tank'){const w=side?4:5.6;tor+=rect(-w,T0+0.6,2*w,30,topFill)+shd(cx+2.4,T0+0.6,30)+`<path d="M-2.8 ${T0+0.6}Q${cx} ${T0+4.4} 2.8 ${T0+0.6}Z" fill="${skin}"/>`+line(`M${-w} ${T0+0.6}V${waist}M${w} ${T0+0.6}V${waist}M-2.8 ${T0+0.6}Q${cx} ${T0+4.4} 2.8 ${T0+0.6}`,0.55)}
+    if(top==='polo'&&!back)tor+=`<path d="M-3.4 ${T0}L${cx-0.3} ${T0+3}L-1.2 ${T0+3.4}Z M3.4 ${T0}L${cx+0.3} ${T0+3}L1.2 ${T0+3.4}Z" fill="${lt(tc)}" stroke="${OL}" stroke-width=".45" stroke-linejoin="round"/>`+line(`M${side?2.6:cx} ${T0+3}V${T0+7.4}`,0.45)+[0,1].map(k=>`<circle cx="${(side?2.6:cx)+0.7}" cy="${T0+4.4+k*2}" r=".38" fill="${OL}"/>`).join('');
+    if(top==='polo'&&back)tor+=rect(-4,T0,8,1.4,lt(tc))+line(`M-4 ${T0+1.4}H4`,0.45);
+    if(top==='coverall'){tor+=`<path d="M-3 ${T0}L${cx} ${T0+2.6}L3 ${T0}Z" fill="${shade(tc,0.25)}"/>`+line(`M-3 ${T0}L${cx} ${T0+2.6}L3 ${T0}`,0.5);if(!back)tor+=line(`M${side?2.6:cx} ${T0+2.6}V-12`,0.5)+line(`M${side?-0.4:-5.2} ${T0+5}h3v2.6h-3z`,0.45)+rect(-20,waist-0.4,40,1,'#2A1A10',0.2)}
     if(bot==='pinafore'&&!dress){const w=side?2.6:3.6;tor+=rect(side?0.4:-w,-27,2*w,10,bc)+shd(cx+2,-27,10)+line(`M${side?0.4:-w} -17V-27H${(side?0.4:-w)+2*w}V-17`,0.55)+(back?line(`M-4 ${T0+2}L3.4 -21M4 ${T0+2}L-3.4 -21`,0.9).replace(OL,bc)+line(`M-4 ${T0+2}L3.4 -21M4 ${T0+2}L-3.4 -21`,0.25):line(`M${side?0.8:-w+0.6} -27L${side?-1.4:-5} ${T0+0.6}M${side?0.4+2*w-0.4:w-0.6} -27L${side?3.4:5} ${T0+0.6}`,0.9).replace(OL,bc))}
-    if(V.nk&&!['jacket','hoodie','rain','puffer','sailor'].includes(top)&&top!=='slip')tor+=`<path d="M-3.2 ${T0}Q${cx} ${T0+3.2} 3.2 ${T0}Z" fill="${skin}"/>`+line(`M-3.2 ${T0}Q${cx} ${T0+3.2} 3.2 ${T0}`,0.6);
+    if(V.nk&&!['jacket','hoodie','rain','puffer','sailor','labcoat','yukata','aloha','tank','polo','coverall'].includes(top)&&top!=='slip')tor+=`<path d="M-3.2 ${T0}Q${cx} ${T0+3.2} 3.2 ${T0}Z" fill="${skin}"/>`+line(`M-3.2 ${T0}Q${cx} ${T0+3.2} 3.2 ${T0}`,0.6);
     tor+=`<path d="${bodyOl}" fill="none" stroke="${OL}" stroke-width="1.5"/>`;
     body+=`<clipPath id="${n}b"><path d="${bodyOl}"/></clipPath><clipPath id="${n}t"><rect x="-30" y="${T0}" width="60" height="30"/></clipPath><g clip-path="url(#${n}t)"><g clip-path="url(#${n}b)">${tor}</g></g>`;
     /* 外套、毛衣類的衣襬（畫在身體外框以外） */
-    const hem={jacket:-12.6,cardigan:-13.2,rain:-9,puffer:-13.4,hoodie:-14,sweater:-14}[top];
-    if(hem&&hem>-14.01&&top!=='hoodie'&&top!=='sweater'){const hw=side?5.4:6.6,fl=top==='rain'?2.2:0.4,cl=top==='rain'?topFill:topFill;
+    const hem={jacket:-12.6,cardigan:-13.2,rain:-9,puffer:-13.4,hoodie:-14,sweater:-14,labcoat:-7.6}[top];
+    if(hem&&hem>-14.01&&top!=='hoodie'&&top!=='sweater'){const hw=side?5.4:6.6,fl=top==='rain'?2.2:top==='labcoat'?1.2:0.4,cl=top==='labcoat'?LAB:topFill;
       body+=`<path d="M${-hw} -14.6L${-hw-fl} ${hem}Q0 ${hem+0.6} ${hw+fl} ${hem}L${hw} -14.6Z" fill="${cl}" stroke="${OL}" stroke-width=".7" stroke-linejoin="round"/>`+`<path d="M${cx+2.4} -14.6L${cx+2.8+fl*0.6} ${hem+0.3}Q${hw*0.6} ${hem+0.5} ${hw+fl} ${hem}L${hw} -14.6Z" fill="#2A1A10" opacity=".16"/>`+
-        ((top==='jacket'||top==='cardigan')&&V.open&&!side?`<path d="M${V.open[0]} -14.6V${hem+0.3}M${V.open[1]} -14.6V${hem+0.3}" stroke="${OL}" stroke-width=".6"/>`+rect(V.open[0]+0.35,-14.6,V.open[1]-V.open[0]-0.7,hem+14.3,top==='cardigan'?CR:hex(avCol(6))):'')+
+        ((top==='jacket'||top==='cardigan'||top==='labcoat')&&V.open&&!side?`<path d="M${V.open[0]} -14.6V${hem+0.3}M${V.open[1]} -14.6V${hem+0.3}" stroke="${OL}" stroke-width=".6"/>`+rect(V.open[0]+0.35,-14.6,V.open[1]-V.open[0]-0.7,hem+14.3,top==='cardigan'?CR:top==='labcoat'?bc:hex(avCol(6))):'')+(top==='labcoat'&&back?line('M0 -14.6V'+(hem+0.4),0.5):'')+
         (top==='rain'&&!back?line(`M${side?2.6:cx} -14.6V${hem+0.4}`,0.5):'')}
     /* 裙子：洋裝、細肩帶洋裝、裙子、百褶裙、吊帶裙 */
-    if(dress||skirtB){const fc=dress?tc:bc,long=dress?-6.2:-8.6,w0=side?4.6:V.fw-0.2,w1=(side?7:8.6)+(bot==='pleat'&&!dress?0.6:0),y0=waist-(top==='dress'?1.2:0.2),y1=long;
+    if(skirtB&&bot==='tutu'){const w0=side?4.6:V.fw-0.2,y0=waist-0.2;const lay=(w1,y1,f)=>{let d=`M${-w0} ${y0}L${-w1} ${y1}`;const n=6;for(let k=0;k<n;k++){const xa=-w1+2*w1*k/n,xb=-w1+2*w1*(k+1)/n;d+=`Q${((xa+xb)/2).toFixed(2)} ${(y1+1.6).toFixed(2)} ${xb.toFixed(2)} ${y1}`}d+=`L${w0} ${y0}Z`;return `<path d="${d}" fill="${f}" stroke="${OL}" stroke-width=".65" stroke-linejoin="round"/>`};
+      body+=lay(side?8.6:10.6,-11.2,lt(bc))+lay(side?7.4:9,-12.6,bc)+`<path d="M${cx+2} ${y0}L${cx+3.4} -12.4L${side?7.4:9} -12.6L${w0} ${y0}Z" fill="#2A1A10" opacity=".14"/>`}
+    else if(dress||skirtB){const fc=dress?tc:bc,long=top==='yukata'?-3.6:dress?-6.2:-8.6,w0=side?4.6:V.fw-0.2,w1=top==='yukata'?w0+0.9:(side?7:8.6)+(bot==='pleat'&&!dress?0.6:0),y0=waist-(top==='dress'?1.2:0.2),y1=long;
       body+=`<path d="M${-w0} ${y0}L${-w1} ${y1}Q${-w1*0.5} ${y1+1.1} 0 ${y1}Q${w1*0.5} ${y1+1.1} ${w1} ${y1}L${w0} ${y0}Z" fill="${fc}"/><path d="M${cx+2} ${y0}L${cx+3.2} ${y1+0.6}Q${w1*0.6} ${y1+1} ${w1} ${y1}L${w0} ${y0}Z" fill="#2A1A10" opacity=".18"/>`+
         `<path d="M${-w0} ${y0}L${-w1} ${y1}Q${-w1*0.5} ${y1+1.1} 0 ${y1}Q${w1*0.5} ${y1+1.1} ${w1} ${y1}L${w0} ${y0}" fill="none" stroke="${OL}" stroke-width=".75" stroke-linejoin="round"/>`+
         (bot==='pleat'&&!dress?[-0.66,-0.33,0,0.33,0.66].map(k=>line(`M${(k*w0).toFixed(2)} ${y0+0.6}L${(k*w1).toFixed(2)} ${y1+0.6}`,0.4)).join(''):line(`M${-w1*0.35} ${y0+3}L${-w1*0.5} ${y1+0.6}M${w1*0.3} ${y0+3}L${w1*0.42} ${y1+0.6}`,0.45))}
@@ -3209,12 +3233,13 @@ function avOutfitParts(P,av,view,o){
     if(top==='apron'&&!back){const w=side?2.6:3.8,x0=side?0.6:-w-0.4,ww=2*w+0.8;body+=rect(x0,-14.6,ww,6.2,topFill)+rect(cx+2.2,-14.6,Math.max(0,x0+ww-cx-2.2),6.2,'#2A1A10',0.16)+line(`M${x0} -14.6V-8.4H${x0+ww}V-14.6`,0.6)+line(`M${x0+ww*0.25} -12.6h${ww*0.5}v2.6h${-ww*0.5}z`,0.45)}
   }
   /* ===== 手：長袖蓋到手腕 ===== */
-  const arms=P.arms.map((A,i)=>{if(legOnly||!AVO_LONG[top])return A;const ol=D.arms[i].L[0].d,bx=avoBox(ol),cut=bx[3]-2.6,id=n+'a'+i,mid=(bx[0]+bx[2])/2;
+  const arms=P.arms.map((A,i)=>{if(sleeveless){/* 86.5：無袖（運動背心、細肩帶洋裝）：袖子的部分畫成皮膚 */const sk=skin;return {p:A.p,s:D.arms[i].L.map(x=>{const c=x.r==='shirt'||x.r==='cream'?sk:x.r==='ol'?OL:x.r==='skin'?sk:hex(avCol(av.topC));return `<path d="${x.d}" fill="${x.k?shade(c,x.k):c}"/>`}).join('')}}
+    if(legOnly||!AVO_LONG[top])return A;const ol=D.arms[i].L[0].d,bx=avoBox(ol),cut=bx[3]-2.6,id=n+'a'+i,mid=(bx[0]+bx[2])/2,sf=top==='labcoat'?LAB:topFill;
     const cuff=top==='sweater'||top==='cardigan'||top==='hoodie'?rect(-30,cut-1.4,60,1.4,'#2A1A10',0.14)+line(`M-30 ${cut-1.4}H30`,0.4):'';
     const quilt=top==='puffer'?[3.3,6.6].map(k=>line(`M-30 ${bx[1]+k}H30`,0.4)).join(''):'';
-    return {p:A.p,s:A.s+`<clipPath id="${id}"><path d="${ol}"/></clipPath><g clip-path="url(#${id})">${rect(-30,-40,60,cut+40,topFill)}${shd(mid+0.6,-40,cut+40)}${cuff}${quilt}${line(`M-30 ${cut}H30`,0.6)}<path d="${ol}" fill="none" stroke="${OL}" stroke-width="1.4"/></g>`}});
+    return {p:A.p,s:A.s+`<clipPath id="${id}"><path d="${ol}"/></clipPath><g clip-path="url(#${id})">${rect(-30,-40,60,cut+40,sf)}${shd(mid+0.6,-40,cut+40)}${cuff}${quilt}${line(`M-30 ${cut}H30`,0.6)}<path d="${ol}" fill="none" stroke="${OL}" stroke-width="1.4"/></g>`}});
   /* ===== 腿與鞋 ===== */
-  const shoeTop={boot:-6.35,sneaker:-4.6,rainboot:-7.6,sandal:-2.2,hightop:-6}[o.shoe]||-6.35;
+  const shoeTop={boot:-6.35,sneaker:-4.6,rainboot:-7.6,sandal:-2.2,hightop:-6,slipper:-2.2,loafer:-3.6,geta:-2.8,snowboot:-8.6}[o.shoe]||-6.35;
   const legs=P.legs.map((L,i)=>{const ol=L.ol,bx=avoBox(ol),id=n+'l'+i,mid=(bx[0]+bx[2])/2,lw=bx[2]-bx[0];let k=0;
     const clip=(y0,y1,s)=>{const cid=id+'r'+(k++);return `<clipPath id="${cid}"><rect x="-30" y="${y0}" width="60" height="${y1-y0}"/></clipPath><g clip-path="url(#${cid})">${s}</g>`};
     const inLeg=s=>`<clipPath id="${id}"><path d="${ol}"/></clipPath><g clip-path="url(#${id})">${s}<path d="${ol}" fill="none" stroke="${OL}" stroke-width="1.4"/></g>`;
@@ -3223,6 +3248,10 @@ function avOutfitParts(P,av,view,o){
     const shoe=()=>{const s=o.shoe;if(s==='boot')return clip(-6.35,2,L.s)+inLeg(line('M-30 -6.35H30',0.6));
       if(s==='sneaker')return inLeg(rect(-30,-4.6,60,5,sc)+shd(mid+0.8,-4.6,5)+rect(-30,-1.5,60,2,'#F3EEE4')+line('M-30 -4.6H30',0.6)+line('M-30 -1.5H30',0.45));
       if(s==='hightop')return inLeg(rect(-30,-6,60,6.5,sc)+shd(mid+0.8,-6,6.5)+rect(-30,-1.6,60,2,'#F3EEE4')+(side?rect(1.4,-3.4,6,1.8,'#F3EEE4'):'')+line('M-30 -6H30',0.6)+line('M-30 -1.6H30',0.45)+line(`M${mid-1} -5.2h2M${mid-1} -4h2M${mid-1} -2.8h2`,0.35));
+      if(s==='loafer')return inLeg(rect(-30,-3.6,60,4.2,sc)+shd(mid+0.8,-3.6,4.2)+rect(-30,-1,60,1.6,dk(sc))+line('M-30 -3.6H30',0.6)+line(`M${mid-1.2} -2.8h2.4`,0.4));
+      if(s==='snowboot')return inLeg(rect(-30,-8.6,60,9.2,sc)+shd(mid+0.8,-8.6,9.2)+rect(-30,-1.2,60,1.8,dk(sc))+line('M-30 -1.2H30',0.45))+`<rect x="${(bx[0]-0.5).toFixed(2)}" y="-9" width="${(lw+1).toFixed(2)}" height="2.4" rx="1.2" fill="#F4EFE6" stroke="${OL}" stroke-width=".6"/>`;
+      if(s==='slipper')return skinLeg(-2.8,-1)+inLeg(rect(-30,-1.2,60,1.8,dk(sc))+rect(-30,-2.6,60,1.4,sc)+line('M-30 -2.6H30M-30 -1.2H30',0.45));
+      if(s==='geta')return skinLeg(-3.4,-1.6)+`<rect x="${(bx[0]-0.2).toFixed(2)}" y="-1.8" width="${(lw+0.4).toFixed(2)}" height="1.3" fill="#C9955C" stroke="${OL}" stroke-width=".5"/><rect x="${(bx[0]+0.4).toFixed(2)}" y="-0.5" width="1.1" height="1.3" fill="#9E6E3E" stroke="${OL}" stroke-width=".35"/><rect x="${(bx[2]-1.5).toFixed(2)}" y="-0.5" width="1.1" height="1.3" fill="#9E6E3E" stroke="${OL}" stroke-width=".35"/>`+line(`M${(mid-1.2).toFixed(2)} -2.4L${mid.toFixed(2)} -3.2L${(mid+1.2).toFixed(2)} -2.4`,0.6).replace(OL,'#C8564A');
       if(s==='rainboot')return inLeg(rect(-30,-7.6,60,8,sc)+shd(mid+0.8,-7.6,8)+rect(mid-1.6,-7,0.8,4.6,'#FFFFFF',0.55)+rect(-30,-1.2,60,1.6,dk(sc))+line('M-30 -7.6H30',0.6));
       return skinLeg(Math.min(-2.2,shoeTop),-1.2)+inLeg(rect(-30,-1.4,60,2,shade(sc,-0.1))+rect(-30,-2.4,60,0.7,sc)+rect(mid-0.4,-3.4,0.8,2.2,sc)+line('M-30 -1.4H30',0.45))};/* 涼鞋：腳＋帶子 */
     let s;
@@ -3232,14 +3261,68 @@ function avOutfitParts(P,av,view,o){
     if(dress||skirtB)s=skinLeg(-14.4,shoeTop+0.4)+shoe();
     else if(bot==='shorts')s=skinLeg(-10,shoeTop+0.4)+clip(-30,-9.6,L.s+inLeg(rect(-30,-30,60,30,bc)+shd(mid+0.8,-30,30)+line('M-30 -9.6H30',0.6)))+shoe();
     else if(bot==='crop')s=skinLeg(-8.2,shoeTop+0.4)+clip(-30,-7.8,L.s+inLeg(rect(-30,-30,60,30,bc)+shd(mid+0.8,-30,30)+rect(-30,-9.2,60,1.4,lt(bc))+line('M-30 -9.2H30',0.45)+line('M-30 -7.8H30',0.6)))+shoe();
-    else{const hemY=o.shoe==='sandal'?-3.2:shoeTop;s=(o.shoe==='sandal'?skinLeg(-4,-1.2):'')+clip(-30,hemY,L.s+inLeg(rect(-30,-30,60,30,bc)+shd(mid+0.8,-30,30)+line(`M-30 ${hemY}H30`,0.6)+(bot==='cargo'?line(`M${mid<0||side?bx[0]+0.6:bx[2]-3} -14.2h2.4v3h-2.4z`,0.45):'')))+shoe()}
+    else if(bot==='wide'&&top!=='coverall'){/* 寬褲：從膝蓋往下張開 */const f=lw*0.42,out=side?0:(mid<0?-1:1),hy=Math.min(shoeTop,-2.2)+0.6,xl=bx[0]-f*(out<0?0.75:out>0?-0.05:0.5),xr=bx[2]+f*(out>0?0.75:out<0?-0.05:0.5);
+      s=(['sandal','slipper','geta'].includes(o.shoe)?skinLeg(-4,-1.2):'')+shoe()+`<path d="M${bx[0].toFixed(2)} -17.6L${xl.toFixed(2)} ${hy}Q${mid.toFixed(2)} ${hy+0.8} ${xr.toFixed(2)} ${hy}L${bx[2].toFixed(2)} -17.6Z" fill="${bc}" stroke="${OL}" stroke-width=".75" stroke-linejoin="round"/><path d="M${(mid+0.6).toFixed(2)} -17.6L${(mid+1.4).toFixed(2)} ${hy+0.3}L${xr.toFixed(2)} ${hy}L${bx[2].toFixed(2)} -17.6Z" fill="#2A1A10" opacity=".16"/>`+line(`M${(mid-0.4).toFixed(2)} -12L${(mid-0.8).toFixed(2)} ${hy-1}`,0.4)}
+    else{const hemY=['sandal','slipper','geta'].includes(o.shoe)?-3.2:shoeTop;s=(['sandal','slipper','geta'].includes(o.shoe)?skinLeg(-4,-1.2):'')+clip(-30,hemY,L.s+inLeg(rect(-30,-30,60,30,bc)+shd(mid+0.8,-30,30)+line(`M-30 ${hemY}H30`,0.6)+(bot==='cargo'?line(`M${mid<0||side?bx[0]+0.6:bx[2]-3} -14.2h2.4v3h-2.4z`,0.45):'')
+      +(bot==='jogger'&&top!=='coverall'?rect(-30,hemY-1.8,60,1.8,dk(bc))+line(`M-30 ${hemY-1.8}H30`,0.45)+rect(side?mid-0.3:(mid<0?bx[0]+0.5:bx[2]-1.1),-20,0.6,18,'#F4EFE6',0.9):'')))+shoe()}
     return {p:L.p,s,ol}});
+  /* 86.5 斗篷：正面、斜前、側面畫在身體後面；背面、斜後蓋在身體上。走路時由 avV3SVG 擺動 */
+  let cape=null;if(top==='cape'){const cc=tc,y0=T0+0.6;
+    if(side)cape={front:1,s:`<path d="M-1 ${y0}Q-6 -16 -9.6 -5.4Q-5 -4.2 -1.4 -5.2L1.6 ${y0}Z" fill="${dk(cc)}" stroke="${OL}" stroke-width=".75" stroke-linejoin="round"/>`};
+    else if(!back)cape={front:1,s:`<path d="M-6.6 ${y0}L-10.4 -5.4Q0 -3.6 10.4 -5.4L6.6 ${y0}Z" fill="${dk(cc)}" stroke="${OL}" stroke-width=".75" stroke-linejoin="round"/>`};
+    else cape={front:0,s:`<path d="M-6.4 ${y0}L-10.2 -5.8Q0 -4 10.2 -5.8L6.4 ${y0}Z" fill="${cc}" stroke="${OL}" stroke-width=".8" stroke-linejoin="round"/><path d="M1.6 ${y0}L3.2 -4.8Q7 -5 10.2 -5.8L6.4 ${y0}Z" fill="#2A1A10" opacity=".16"/>`+line(`M-3 ${y0+3}L-4.6 -6M3 ${y0+3}L4.4 -6`,0.4)};
+    if(!back)body+=`<path d="M-5.6 ${T0+0.4}Q${cx} ${T0+2.6} 5.6 ${T0+0.4}" fill="none" stroke="${cc}" stroke-width="1.6"/><circle cx="${side?2.4:cx}" cy="${T0+1.8}" r=".9" fill="#E8C14A" stroke="${OL}" stroke-width=".4"/>`}
   if(defs)body=`<defs>${defs}</defs>`+body;
-  return {body,arms,legs};
+  return {body,arms,legs,cape};
 }
+/* 86.5：新款帽子（牛仔帽、三角頭巾、蝴蝶結髮帶、南瓜頭套、果實帽）與專屬造型頭飾，程式畫在頭上。回傳 {s, brim（帽簷以上的頭髮剪掉）} */
+function avFruitBit(av,crop,sp,tr){const a={level:0,sp:sp||0,skin:av.fc||'red',sb:av.fcb||undefined,pat:null,perfCls:2,seed:7,sizeCls:2};
+  const RM=typeof RMQ!=='undefined'&&RMQ.matches,fa=FRUIT_ANIM;FRUIT_ANIM=RM?false:0.7;let inner='';try{inner=fruitInner(a,1,crop)}catch(e){}FRUIT_ANIM=fa;return `<g transform="${tr}">${inner}</g>`}
+function avHatX(av,view){
+  const h=av.hat,back=view==='back'||view==='bq',side=view==='side',OL=AV_OL,c=avHex(av.hatC),d=shade(c,-0.25),l=shade(c,0.4);let s='',brim=null;
+  const ln=(p,w,col)=>`<path d="${p}" fill="none" stroke="${col||OL}" stroke-width="${w||0.7}" stroke-linecap="round" stroke-linejoin="round"/>`;
+  if(h===11){brim=-50.2;/* 牛仔帽 */
+    s+=side?`<path d="M-14.5 -47.2Q-16 -50.4 -12.4 -49Q0 -46.2 12.6 -49Q16 -50.4 14.5 -47.2Q0 -43.6 -14.5 -47.2Z" fill="${c}" stroke="${OL}" stroke-width=".8"/>`:`<ellipse cx="0" cy="-47.6" rx="15.4" ry="3.2" fill="${c}" stroke="${OL}" stroke-width=".8"/>`;
+    s+=`<path d="M-10.2 -47.8L-8.8 -55.4Q-4.4 -57.6 0 -55Q4.4 -57.6 8.8 -55.4L10.2 -47.8Q0 -46.4 -10.2 -47.8Z" fill="${c}" stroke="${OL}" stroke-width=".8" stroke-linejoin="round"/><path d="M2 -55.6Q4.4 -57.6 8.8 -55.4L10.2 -47.8Q6 -47.2 3.6 -47.2Z" fill="#2A1A10" opacity=".16"/><path d="M-10 -49.6Q0 -48.2 10 -49.6L10.2 -47.8Q0 -46.4 -10.2 -47.8Z" fill="${d}"/>`+ln('M-10 -49.6Q0 -48.2 10 -49.6',0.5);
+    if(!side)s+=`<path d="M-15.4 -47.6Q0 -42.6 15.4 -47.6Q0 -44.6 -15.4 -47.6Z" fill="${d}" opacity=".6"/>`}
+  else if(h===12){/* 三角頭巾 */
+    s+=`<path d="M-11.6 -45.4Q-12.4 -55.8 0 -56.2Q12.4 -55.8 11.6 -45.4Q0 -48.6 -11.6 -45.4Z" fill="${c}" stroke="${OL}" stroke-width=".8" stroke-linejoin="round"/><path d="M3 -56Q12.4 -55.8 11.6 -45.4Q8 -46.6 5 -47Z" fill="#2A1A10" opacity=".14"/>`;
+    for(const [x,y] of [[-6,-52],[0,-53.6],[5.6,-51.4],[-3,-49],[3.4,-48.6],[-8.6,-48.4]])s+=`<circle cx="${x}" cy="${y}" r=".75" fill="${l}"/>`;
+    if(back)s+=`<path d="M-1 -46.6L-3.6 -41.2L-0.2 -42.8L3 -41.4L1.2 -46.6Z" fill="${c}" stroke="${OL}" stroke-width=".6" stroke-linejoin="round"/><circle cx="0" cy="-46.4" r="1.3" fill="${d}" stroke="${OL}" stroke-width=".5"/>`;
+    else if(side)s+=`<path d="M-10.6 -47L-15 -43.4L-11.8 -43.6L-10.8 -40.8L-9 -46.4Z" fill="${c}" stroke="${OL}" stroke-width=".6" stroke-linejoin="round"/>`}
+  else if(h===13){/* 蝴蝶結髮帶 */
+    s+=side?ln('M-4.2 -55.6Q1.2 -52 2.6 -44.6',1.8,c)+ln('M-4.2 -55.6Q1.2 -52 2.6 -44.6',0.35):ln('M-11 -44.6Q-11.8 -55.2 0 -55.6Q11.8 -55.2 11 -44.6',1.8,c)+ln('M-11 -44.6Q-11.8 -55.2 0 -55.6Q11.8 -55.2 11 -44.6',0.35);
+    const bx=side?-2.4:back?5.4:-5.4,by=side?-55.6:-54.2;s+=`<g transform="translate(${bx} ${by}) rotate(${side?0:back?18:-18})"><path d="M0 0L-4.4 -2.6L-4 2.4Z M0 0L4.4 -2.6L4 2.4Z" fill="${c}" stroke="${OL}" stroke-width=".6" stroke-linejoin="round"/><circle r="1.1" fill="${d}" stroke="${OL}" stroke-width=".5"/></g>`}
+  else if(h===14){/* 南瓜頭套：整顆頭罩住 */
+    const O='#E58A2C',Od='#B8621C';s+=`<ellipse cx="0" cy="-41.8" rx="13" ry="12.4" fill="${O}" stroke="${OL}" stroke-width=".9"/><path d="M3 -54Q13 -50 13 -41.8Q13 -32 3 -29.6Q9 -36 9 -41.8Q9 -49 3 -54Z" fill="${Od}" opacity=".55"/>`+ln('M-4.6 -53.4Q-8.6 -42 -4.6 -30.2M4.6 -53.4Q8.6 -42 4.6 -30.2M0 -54.2V-29.4',0.5)+`<path d="M-1 -54L-0.6 -57.4L1.6 -57.8L1.2 -54Z" fill="#6E7A3C" stroke="${OL}" stroke-width=".55"/>`;
+    if(!back){const ox=side?5.2:view==='fq'?1.2:0,face=side?`<path d="M${ox} -45L${ox+3.4} -42.8L${ox} -41.4Z M${ox-1.8} -37.4Q${ox+1.6} -35.6 ${ox+4.6} -37.8L${ox+3} -34.4Q${ox+1} -33.6 ${ox-1} -35Z" fill="#5A2A10"/>`:`<path d="M${ox-6} -43.6L${ox-2.6} -46.6L${ox-1.6} -42.4Z M${ox+6} -43.6L${ox+2.6} -46.6L${ox+1.6} -42.4Z M${ox-6.6} -37.8L${ox-4.4} -36.6L${ox-2.6} -38.4L${ox-0.8} -36.4L${ox+1.2} -38.4L${ox+3} -36.4L${ox+4.8} -38.2L${ox+6.6} -37.6Q${ox} -30.6 ${ox-6.6} -37.8Z" fill="#5A2A10"/>`;
+      s+=face+face.replace('#5A2A10','#FFD36A').replace('<path','<path opacity=".55" transform="translate(.25 .35) scale(.96)"')}}
+  else if(h>=15&&h<=23){/* 果實帽：那種作物的第一種造型，顏色＝選的成品 */
+    s+=avFruitBit(av,WARD_CROPS[h-15],0,`translate(0 -52.6) scale(7.2 5.4)`)+`<path d="M-9.6 -46.2Q0 -43.6 9.6 -46.2" fill="none" stroke="${OL}" stroke-width=".7" opacity=".5"/>`}
+  if(av.head>0&&av.head<=9){const cr=WARD_CROPS[av.head-1],tr=side?'translate(-1 -57) scale(2.7) rotate(-8)':back?'translate(-8.6 -51) scale(2.6) rotate(-16)':'translate(8.6 -51) scale(2.6) rotate(16)';
+    s+=avFruitBit(av,cr,EX_OF[cr],tr)}
+  return {s,brim}}
+/* 86.5 配件：回傳 {P（手上拿的畫進手臂，跟著擺動）, back（身體後面）, mid（身體上）, face（臉上）, top（頭側）} */
+function avAccX(av,view,P){const a=av.acc,r={P,back:'',mid:'',face:'',top:''};if(!(a>=10&&a<=17))return r;
+  const back=view==='back'||view==='bq',side=view==='side',OL=AV_OL,V=AVO_V[view]||AVO_V.front,T0=V.t0,cx=V.cx,D=AV3[view]||AV3.front,ac=avHex(av.accC);
+  const ln=(p,w,col)=>`<path d="${p}" fill="none" stroke="${col||OL}" stroke-width="${w||0.6}" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const hand=i=>{const A=D.arms[i]||D.arms[0],b=avoBox(A.L[0].d);return [(b[0]+b[2])/2,b[3]-1.6]};
+  const addArm=(i,svg)=>{const k=Math.min(i,P.arms.length-1);r.P={...P,arms:P.arms.map((A,j)=>j===k?{p:A.p,s:A.s+svg}:A)}};
+  if(a===10){const [x,y]=hand(0);addArm(0,`<g transform="translate(${(x+(side?2:1)).toFixed(2)} ${(y-1).toFixed(2)}) rotate(${side?-10:8})"><rect x="-2.6" y="-3.4" width="5.2" height="6.6" rx=".5" fill="#B88A5A" stroke="${OL}" stroke-width=".55"/><rect x="-2" y="-2.4" width="4" height="5.2" fill="#FBF7EC"/><path d="M-1.4 -1.2h2.8M-1.4 .2h2.8M-1.4 1.6h2" stroke="#9AA6B8" stroke-width=".35"/><rect x="-1.1" y="-3.9" width="2.2" height="1.1" rx=".3" fill="#C9CED6" stroke="${OL}" stroke-width=".4"/><path d="M2.2 -2.2L3.6 1.8" stroke="#3F6FB8" stroke-width=".7" stroke-linecap="round"/></g>`)}/* 育種野帳 */
+  else if(a===13){const [x,y]=hand(P.arms.length>1?1:0);addArm(P.arms.length>1?1:0,ln(`M${x} ${y}L${x+5} ${y-28}`,0.8,'#A8784A')+`<ellipse cx="${x+6}" cy="${y-32}" rx="4" ry="4.4" fill="rgba(255,255,255,.35)" stroke="${OL}" stroke-width=".7"/>`+ln(`M${x+3} ${y-34}L${x+8} ${y-29}M${x+4} ${y-36}L${x+9.4} ${y-31}M${x+9} ${y-35}L${x+3} ${y-29.6}`,0.3,'#8A7A6A'))}/* 捕蟲網 */
+  else if(a===11){r.mid=back?ln(`M-3 ${T0}Q0 ${T0+1.6} 3 ${T0}`,0.4,'#7A5A3A'):ln(`M-3 ${T0+0.2}L${cx} ${T0+7.6}L3 ${T0+0.2}`,0.4,'#7A5A3A')+`<circle cx="${side?2.4:cx}" cy="${T0+9.6}" r="1.9" fill="#CDEBF5" stroke="#C99A3A" stroke-width=".7"/><path d="M${(side?2.4:cx)-0.8} ${T0+9}a1 1 0 0 1 .9 -.9" stroke="#fff" stroke-width=".4" fill="none"/>`}/* 放大鏡項鍊 */
+  else if(a===12){const x=side?1.4:back?-6.6:3.2;r.mid=`<rect x="${x}" y="-19.4" width="4.4" height="3.8" rx=".7" fill="#A8784A" stroke="${OL}" stroke-width=".55"/><path d="M${x} -18.2h4.4" stroke="${OL}" stroke-width=".45"/><ellipse cx="${x+2.2}" cy="-16.8" rx=".7" ry=".9" fill="#E8C878"/>`}/* 種子腰包 */
+  else if(a===15){const pts=back?[[-4.6,1],[-2.4,1.8],[0,2.1],[2.4,1.8],[4.6,1]]:side?[[-1,1.6],[0.8,2.8],[2.6,3.4],[4.2,2.2]]:[[-5.4,0.8],[-4,2.8],[-2.2,4.2],[cx,4.8],[2.2,4.2],[4,2.8],[5.4,0.8]],cl=['#F28AB0','#FFE07A','#FFFFFF','#9FD6F2'];
+    r.mid=pts.map(([x,y],k)=>`<circle cx="${x}" cy="${T0+y}" r="1.25" fill="${cl[k%4]}" stroke="${OL}" stroke-width=".4"/><circle cx="${x}" cy="${T0+y}" r=".4" fill="#E8A23A"/>`).join('')}/* 花環項鍊 */
+  else if(a===14&&!back){r.face=side?`<path d="M0 -38.8H4.6" stroke="#2A2A33" stroke-width=".6"/><rect x="4.2" y="-40.4" width="3.4" height="3" rx="1" fill="#2A2A33" stroke="${OL}" stroke-width=".4"/>`:`<rect x="-6.5" y="-40.5" width="5.2" height="3.6" rx="1.4" fill="#2A2A33" stroke="${OL}" stroke-width=".45"/><rect x="1.3" y="-40.5" width="5.2" height="3.6" rx="1.4" fill="#2A2A33" stroke="${OL}" stroke-width=".45"/><path d="M-1.3 -39.3Q0 -40 1.3 -39.3" stroke="#2A2A33" stroke-width=".6" fill="none"/><path d="M-5.6 -39.6l1.4 -.6M2.2 -39.6l1.4 -.6" stroke="#fff" stroke-width=".45" opacity=".7"/>`}/* 墨鏡 */
+  else if(a===16){const tr=side?'translate(-3.6 -45) rotate(-12)':back?'translate(8.4 -48.6) rotate(24)':'translate(-8.6 -48.6) rotate(-24)';
+    r.top=`<g transform="${tr}"><path d="M-3.4 -1.6L-3 -4.6L-1.2 -2.4L1.2 -2.4L3 -4.6L3.4 -1.6Q3.6 2.2 0 4Q-3.6 2.2 -3.4 -1.6Z" fill="#FBF7EC" stroke="${OL}" stroke-width=".55" stroke-linejoin="round"/><path d="M-2.6 -2.8L-2.4 -1.6L-1.6 -2ZM2.6 -2.8L2.4 -1.6L1.6 -2Z" fill="#D2584C"/><path d="M-2 -.2L-.8 .4M2 -.2L.8 .4" stroke="#D2584C" stroke-width=".55" stroke-linecap="round"/><circle cx="0" cy="2.6" r=".5" fill="#4A3020"/></g>`}/* 狐狸面具（戴在頭側） */
+  else if(a===17){const w=(sg)=>`<g class="${sg<0?'avwl':'avwr'}"><path d="M0 0Q${sg*7} ${-11} ${sg*11.6} ${-7.4}Q${sg*10} ${-1.6} 0 0Z" fill="rgba(206,238,250,.78)" stroke="${OL}" stroke-width=".55"/><path d="M0 0Q${sg*8} ${3.6} ${sg*7} ${7}Q${sg*2.6} ${6} 0 0Z" fill="rgba(226,214,250,.78)" stroke="${OL}" stroke-width=".55"/>${ln(`M0 0Q${sg*5} -4 ${sg*9} -6.4`,0.3,'#FFFFFF')}</g>`;
+    const g=`<g transform="translate(0 -23)">${side?w(-1):w(-1)+w(1)}</g>`;if(back)r.mid+=g;else r.back+=g}/* 小精靈翅膀 */
+  return r}
 function avV3SVG(av,flip,pose){
   av=avNorm(av);if(typeof pose!=='object'||pose===null)pose={bob:pose||0};
-  const view=pose.view||'front',oo=pose.outfit!==undefined?pose.outfit:avOutfitOf(av),P=oo?avOutfitParts(av3Parts(av,view),av,view,oo):av3Parts(av,view);/* 86（16o）：上衣、下身、鞋子照選的款式畫（吊帶褲＋靴子就是 v3 原圖） */
+  const view=pose.view||'front',oo=pose.outfit!==undefined?pose.outfit:avOutfitOf(av),P0=oo?avOutfitParts(av3Parts(av,view),av,view,oo):av3Parts(av,view),AX=avAccX(av,view,P0),P=AX.P,HX=(av.hat>=11||av.head>0)?avHatX(av,view):{s:'',brim:null};/* 86.5：配件、新款帽子、頭飾 *//* 86（16o）：上衣、下身、鞋子照選的款式畫（吊帶褲＋靴子就是 v3 原圖） */
   const walk=pose.ph!=null,ph=pose.ph||0,t=pose.t||0,sn=Math.sin(ph);
   const act=pose.act||null,ap=Math.min(1,Math.max(0,pose.actP||0)),e=Math.sin(ap*Math.PI);
   const crouch=(act==='plant'||act==='harvest')?e*3.2:0;
@@ -3265,7 +3348,7 @@ function avV3SVG(av,flip,pose){
   if(H){const n=++AVH_N,co=H.collar[view];
     let hu=null,hd=null;if(hid&&H.heads[hid]){hd=H.heads[hid][view];hu=avhHead(hid,hd.img,HAIRC[av.hairC]||HAIRC[1],hd.hl)}
     let tu=null,td=null;if(ht&&H.hats[ht]){td=H.hats[ht][view];tu=avhHat(ht,td.img,avHex(av.hatC),td.bl)}
-    const brim=tu&&td.brim!=null?td.brim:null;
+    const brim=HX.brim!=null?HX.brim:tu&&td.brim!=null?td.brim:null;
     if(hu){const top=brim!=null?brim:-80;
       headA=`<clipPath id="avA${n}"><rect x="-40" y="${top}" width="80" height="${(co-top).toFixed(2)}"/></clipPath><g clip-path="url(#avA${n})">${avImg(hu,hd.box)}</g>`;
       headB=`<clipPath id="avB${n}"><rect x="-40" y="${co}" width="80" height="60"/></clipPath><g clip-path="url(#avB${n})">${avImg(hu,hd.box)}</g>`;
@@ -3275,7 +3358,8 @@ function avV3SVG(av,flip,pose){
     if(bodyTop!=null)bodyTop=[bodyTop,n];}
   const body=bodyTop!=null?`<clipPath id="avC${bodyTop[1]}"><rect x="-40" y="${bodyTop[0]}" width="80" height="80"/></clipPath><g clip-path="url(#avC${bodyTop[1]})">${P.body}</g>`:P.body;
   const blink=view==='front'&&!walk&&!act?`<g class="blink" style="animation-delay:-${((AVH_N*1.7)%5).toFixed(1)}s"><ellipse cx="-3.87" cy="-38.7" rx="1.05" ry="1.9" fill="${SKINS[av.skin]||SKINS[0]}"/><ellipse cx="3.83" cy="-38.7" rx="1.05" ry="1.9" fill="${SKINS[av.skin]||SKINS[0]}"/><path d="M-4.7 -38.4h1.7M3 -38.4h1.7" stroke="#4A3020" stroke-width=".55" stroke-linecap="round"/></g>`:'';/* 56：每 5 秒眨一次眼 */
-  const inner=`<g transform="translate(0 ${bob.toFixed(2)})">${headA}${legs}${armsB}${body}${armsF}${headB}${blink}${hat}</g>`;
+  const cp=P.cape?`<g transform="rotate(${(walk?sn*5:Math.sin(t*1.3)*1.2).toFixed(1)} 0 -31)">${P.cape.s}</g>`:'';/* 86.5 斗篷：走路時擺動 */
+  const inner=`<g transform="translate(0 ${bob.toFixed(2)})">${headA}${P.cape&&P.cape.front?cp:''}${AX.back}${legs}${armsB}${body}${AX.mid}${armsF}${P.cape&&!P.cape.front?cp:''}${headB}${blink}${AX.face}${hat}${HX.s}${AX.top}</g>`;
   return `<ellipse cx="0" cy=".3" rx="${walk?9.4-Math.abs(sn)*0.6:10}" ry="2.6" fill="rgba(60,40,20,.18)"/>`+(flip?`<g transform="scale(-1 1)">${inner}</g>`:inner);
 }
 
@@ -3380,21 +3464,29 @@ let SOIL_OK=0;function soilReady(){if(SOIL_OK)return SOIL_OK===1;SOIL_OK=3;try{c
 const SOIL_W=86,SOIL_H=48.5,SOIL_CY=0.505;/* 圖上菱形左右角在高度約 0.5 的地方 */
 function plotEdit(){return !!(buildMode||pickMode||recallMode||shovelMode||sowMode||accelMode)}
 var growPop={};
-function plotSVG(st,i,hov){
+function plotSVG(st,i,hov,part){/* 88.1：part='soil' 只畫田（平鋪在最底層）、'top' 只畫田上面的東西；倒數圈才不會被前一排的田蓋住 */
   const pos=posOf(st,i);if(!pos)return '';
   const [x,y]=pos,p=st.plots[i];
   const lbl=p?`第 ${i+1} 塊土地，${CROPS[p.crop].n}「${pname(p)}」，${stageLabel(p)}`:`第 ${i+1} 塊土地，空地`;
   let s;if(soilReady())s=`<g data-plot="${i}" role="button" aria-label="${esc(lbl)}"><image pointer-events="none" href="assets/farm/s/soil_patch.png?v=${BUILD}" x="${x-SOIL_W/2}" y="${(y-SOIL_H*SOIL_CY).toFixed(1)}" width="${SOIL_W}" height="${SOIL_H}"/><polygon points="${x},${y-23} ${x+41},${y} ${x},${y+23} ${x-41},${y}" fill="transparent"${hov===i?' stroke="#FFD54A" stroke-width="3.5"':st===state&&plotEdit()?' stroke="rgba(255,248,220,.55)" stroke-width="1.2"':' stroke="none"'}/></g>`;/* 31.5：建設、選取等模式才畫淡色細框 */  else{s=`<g data-plot="${i}" role="button" aria-label="${esc(lbl)}" stroke="#4A2A12" stroke-width="1.5" stroke-linejoin="round"><polygon points="${x-41},${y} ${x},${y+23} ${x},${y+32} ${x-41},${y+9}" fill="#9C6635"/><polygon points="${x},${y+23} ${x+41},${y} ${x+41},${y+9} ${x},${y+32}" fill="#80502A"/><polygon points="${x},${y-23} ${x+41},${y} ${x},${y+23} ${x-41},${y}" fill="#D9A15F"${hov===i?' stroke="#FFD54A" stroke-width="3.5"':''}/><polygon points="${x},${y-17} ${x+32},${y} ${x},${y+17} ${x-32},${y}" fill="#8C5A32" stroke-width="1"/>`;
   for(const a of [.3,.5,.7])s+=`<line x1="${x-32+32*a+3}" y1="${y-17*a+1.6}" x2="${x+32*a-3}" y2="${y+17-17*a-1.6}" stroke="#6A4022" stroke-width="2" stroke-linecap="round"/>`;
   s+=`</g>`}
+  if(part==='soil')return s;const s0=s.length;
   if(st===state&&p&&(pickMode&&pickSet.has(i)||srcHL!=null&&p.lotId===srcHL&&!(sheet&&sheet.i===i))){const on=pickMode&&pickSet.has(i);/* 31.4 */
     s+=`<polygon points="${x-41},${y} ${x},${y-23} ${x+41},${y} ${x},${y+23}" fill="${on?'rgba(255,213,74,.28)':'none'}" stroke="${on?'#FFD54A':'#FFF6C2'}" stroke-width="${on?3:2}"${on?'':' stroke-dasharray="6 4"'} pointer-events="none"/>`}
-  if(st===state&&p&&pickMode==='cross'&&i===crossDad)s+=`<g pointer-events="none"><polygon points="${x-41},${y} ${x},${y-23} ${x+41},${y} ${x},${y+23}" fill="rgba(120,170,255,.25)" stroke="#4A7FD0" stroke-width="3"/><circle cx="${x+30}" cy="${y-22}" r="10" fill="#4A7FD0" stroke="#fff" stroke-width="1.5"/><text x="${x+30}" y="${y-17.5}" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">父</text></g>`;/* 44.1 */
+  if(st===state&&p&&pickMode==='cross'){/* 88：每組一個顏色；父本「父」、母本「母」＋到父本的虛線 */
+    const badge=(c,t)=>`<circle cx="${x+30}" cy="${y-22}" r="10" fill="${c}" stroke="#fff" stroke-width="1.5"/><text x="${x+30}" y="${y-17.5}" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">${t}</text>`;
+    const gd=crossGroupOf(i),gm=crossMomOf(i);
+    if(gd>=0){const G=XG[gd];s+=`<g pointer-events="none"><polygon points="${x-41},${y} ${x},${y-23} ${x+41},${y} ${x},${y+23}" fill="${G.c}" fill-opacity="${gd===XC?.3:.16}" stroke="${G.c}" stroke-width="${gd===XC?3.5:2.5}"/>${badge(G.c,'父')}</g>`}
+    if(gm>=0){const G=XG[gm],fp=posOf(st,G.d);s+=`<g pointer-events="none">${fp?`<line x1="${fp[0]}" y1="${fp[1]-6}" x2="${x}" y2="${y-6}" stroke="${G.c}" stroke-width="2.6" stroke-dasharray="5 6" stroke-linecap="round" opacity=".9"/>`:''}<polygon points="${x-41},${y} ${x},${y-23} ${x+41},${y} ${x},${y+23}" fill="none" stroke="${G.c}" stroke-width="3"/>${badge(G.c,'母')}</g>`}}
   if(p){const k=tfxKind(phen(p.g,p.crop));if(k)s+=tfxRingSVG(k,x,y)}/* 34.3 */
+  if(p&&p.stage==='fruit'&&p.pollen&&!p.pollen.failed&&!p.rsv){/* 88.1 授粉倒數圈：剛授粉是完整一圈，順時針變短，可以收成時剛好消失；分 24 段，不用每格重畫 */
+    let f=1;try{f=1-(p.prog||0)/stageDur(p,phen(p.g,p.crop))}catch(e){}const seg=Math.ceil(Math.max(0,Math.min(1,f))*24);
+    if(seg>0){const d=`M${x} ${y+20}A38 20 0 1 1 ${x} ${y-20}A38 20 0 1 1 ${x} ${y+20}`;/* 從正前方（6 點鐘）開始順時針，快成熟時剩下的那一小段在植株前面看得到 */s+=`<g pointer-events="none" class="polring" data-seg="${seg}"><path d="${d}" pathLength="24" fill="none" stroke="#5A3A12" stroke-width="5.2" stroke-linecap="round" stroke-dasharray="${seg} 24" opacity=".55"/><path d="${d}" pathLength="24" fill="none" stroke="#FFD54A" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="${seg} 24"/></g>`}}
   if(p){const gp=st===state&&growPop[i]&&Date.now()-growPop[i]<320&&!ambOff();s+=`<g pointer-events="none"${gp?' class="growpop"':''}><g transform="translate(${x} ${y+3}) scale(0.72) translate(${-x} ${-y-3})">${plantSVG(p,x,y+3)}</g></g>`}/* 56：換階段的那一刻彈一下 */
   else if(st===state&&shovelFx[i]&&Date.now()-shovelFx[i].t<400){const el=Date.now()-shovelFx[i].t;s+=`<g pointer-events="none" class="sinkfx" style="animation-delay:-${el}ms"><g transform="translate(${x} ${y+3}) scale(0.72) translate(${-x} ${-y-3})">${plantSVG(shovelFx[i].p,x,y+3)}</g></g>`}/* 39.3 */
   else if(st===state&&typeof sowFx!=='undefined'&&sowFx[i]&&Date.now()-sowFx[i]<1200)s+=`<g pointer-events="none"><circle cx="${x}" cy="${y-6}" r="10" fill="#FFE1D6" stroke="#7A2A1A" stroke-width="1.5"/><path d="M${x-4} ${y-10} l8 8 M${x+4} ${y-10} l-8 8" stroke="#7A2A1A" stroke-width="2" stroke-linecap="round"/></g>`;
-  return s;
+  return part==='top'?s.slice(s0):s;
 }
 function farmWorld(st,hov,selD){
   const {W,H}=WORLD.farm,[gx,gy]=GATE.farm;
@@ -3402,7 +3494,7 @@ function farmWorld(st,hov,selD){
   s+=`<path d="M${gx} ${gy-48} V${gy+4}" stroke="#C9A363" stroke-width="44" stroke-linecap="round"/><path d="M${gx} ${gy-48} V${gy+4}" stroke="#F0D49A" stroke-width="36" stroke-linecap="round"/>`+gateSVG(gx,gy+4,esc(gateText(st)));/* 36.8 F：大門招牌寫字 */
   const all=[];tfxPickFull(st),dzPickFull(st);/* 34.6 */
   (st.decor||[]).forEach((d,i)=>{const it=DECOR_MAP[d.t];if(!it)return;all.push({z:d.e?isoZ(d.e):it.flat?-1e5+d.y:d.y,h:()=>decorSVG({...d,i},selD===i,st===state&&!!decoDrag&&decoDrag.on&&decoDrag.i===i&&decoDrag.bad)})});
-  for(let i=0;i<st.plots.length;i++){const pos=posOf(st,i);if(!pos)continue;if(st===state&&dragPlot&&dragPlot.on&&dragPlot.i===i){const [gx,gy]=snapPos(dragPlot.x,dragPlot.y),ok=!plotSpotErr(state,gx,gy,i);const fake={...state,plotPos:state.plotPos.slice()};fake.plotPos[i]=[gx,gy];all.push({z:1e6,h:()=>`<g opacity=".75">${plotSVG(fake,i,null)}</g><polygon points="${gx-41},${gy} ${gx},${gy-23} ${gx+41},${gy} ${gx},${gy+23}" fill="none" stroke="${ok?'#2F9E3A':'#C0392B'}" stroke-width="3" stroke-dasharray="6 4"/>`});continue}all.push({z:pos[1]+20,h:()=>plotSVG(st,i,hov)})}
+  for(let i=0;i<st.plots.length;i++){const pos=posOf(st,i);if(!pos)continue;if(st===state&&dragPlot&&dragPlot.on&&dragPlot.i===i){const [gx,gy]=snapPos(dragPlot.x,dragPlot.y),ok=!plotSpotErr(state,gx,gy,i);const fake={...state,plotPos:state.plotPos.slice()};fake.plotPos[i]=[gx,gy];all.push({z:1e6,h:()=>`<g opacity=".75">${plotSVG(fake,i,null)}</g><polygon points="${gx-41},${gy} ${gx},${gy-23} ${gx+41},${gy} ${gx},${gy+23}" fill="none" stroke="${ok?'#2F9E3A':'#C0392B'}" stroke-width="3" stroke-dasharray="6 4"/>`});continue}all.push({z:-1e5+pos[1],h:()=>plotSVG(st,i,hov,'soil')});all.push({z:pos[1]+20,h:()=>plotSVG(st,i,hov,'top')})}
   if(st===state&&buildMode==='build'&&buildBad&&Date.now()-buildBad.t<900){const {x,y}=buildBad;all.push({z:1e6+1,h:()=>`<polygon points="${x-41},${y} ${x},${y-23} ${x+41},${y} ${x},${y+23}" fill="rgba(192,57,43,.25)" stroke="#C0392B" stroke-width="3" pointer-events="none"/>`})}/* 31.1：不合法的位置閃紅 */
   all.sort((a,b)=>a.z-b.z);
   for(const o of all)s+=o.h();
@@ -3574,7 +3666,7 @@ async function stallAction(b){
 // ===== 面板與 HUD =====
 function openSheetUI(){sheetEl.classList.add('open');bd.style.display='block'}
 /* 37.1（15l）：打開其他頁面、切到背景時結束目前的模式（裝飾模式裡打開裝飾面板除外） */
-function exitAllModes(keepDeco){try{if(typeof closeRing==='function'&&ringOpen)closeRing();if(sowMode)exitSow();if(shovelMode){shoveling=false;exitShovel()}if(accelMode)exitAccel();if(pickMode)exitPick();if(buildMode)exitBuild();if(decoMode&&!keepDeco)exitDecor();if(typeof closeDecoPop==='function')closeDecoPop()}catch(e){}}
+function exitAllModes(keepDeco){if(pickMode==='cross'&&crossMarkN()&&!document.hidden&&!confirm(`還有 ${crossMarkN()} 筆還沒完成，要放棄嗎？`))return;/* 88.2 */try{if(typeof closeRing==='function'&&ringOpen)closeRing();if(sowMode)exitSow();if(shovelMode){shoveling=false;exitShovel()}if(accelMode)exitAccel();if(pickMode)exitPick();if(buildMode)exitBuild();if(decoMode&&!keepDeco)exitDecor();if(typeof closeDecoPop==='function')closeDecoPop()}catch(e){}}
 function openPanel(name){exitAllModes(name==='decor');if(name==='bag')uiCrop='all';
   closeSheet();curPanel=name;
   for(const p of document.querySelectorAll('.panel'))p.hidden=p.id!=='p-'+name;
@@ -6184,10 +6276,10 @@ const PICK={self:{n:'自交',ok:p=>p&&!p.obs&&p.stage==='flower'&&!p.rsv,why:'�
 function openPick(kind){
   if(scene!=='farm'||viewing){toast('回到自己的農場才能使用');return}
   closeSheet();closePanel();if(shovelMode)exitShovel();if(sowMode)exitSow();if(buildMode)exitBuild();if(accelMode)exitAccel();
-  const m=curMe();buildCam={x:m.x,y:m.y};pickMode=kind;pickSet.clear();pickSkip.clear();pickHist.length=0;pickN=0;pickStroke=null;moveTo=null;crossDad=null;crossPt=null;crossHist.length=0;renderPickBar();renderHUD();applyCtrl();updateCam();renderWorld();
-  toast(kind==='cross'?'雜交模式：從父本拖到母本，或先點父本、再點母本':kind==='self'?'自交模式：點或滑過開花的植株就會自交':'收成模式：點或滑過成熟的植株選起來，再按「完成」',3000);
+  const m=curMe();buildCam={x:m.x,y:m.y};pickMode=kind;pickSet.clear();pickSkip.clear();pickHist.length=0;pickN=0;pickStroke=null;moveTo=null;crossDad=null;crossPt=null;crossHist.length=0;crossReset();renderPickBar();renderHUD();applyCtrl();updateCam();renderWorld();
+  toast(kind==='cross'?'雜交模式：先點父本，再點或滑過母本，按「完成」才授粉':kind==='self'?'自交模式：點或滑過開花的植株就會自交':'收成模式：點或滑過成熟的植株選起來，再按「完成」',3000);
 }
-function exitPick(){if(!pickMode)return;pickMode=null;picking=false;pickSet.clear();crossDad=null;crossPt=null;crossLine(null);renderPickBar();renderHUD();applyCtrl();updateCam();renderWorld()}
+function exitPick(){if(!pickMode)return;crossReset();pickMode=null;picking=false;pickSet.clear();crossDad=null;crossPt=null;crossLine(null);renderPickBar();renderHUD();applyCtrl();updateCam();renderWorld()}
 function pickAt(cx,cy){const el=document.elementFromPoint(cx,cy),g=el&&el.closest&&el.closest('[data-plot]');if(!g)return;const i=+g.dataset.plot;if(pickHit.has(i)||!state.plots[i])return;pickHit.add(i);
   if(pickMode==='self'||pickMode==='harvest'){const p=state.plots[i];/* 36.8 B */
     if(!PICK[pickMode].ok(p)){pickSkip.add(i);plotFx(i,'skip');return}
@@ -6198,7 +6290,7 @@ let pickStroke=null,pickN=0;const pickHist=[],pickSkip=new Set();
 function pickSelfUndo(){const st=pickHist.pop();if(!st){toast('沒有可以復原的');return}for(const q of st.slice().reverse()){const p=state.plots[q.i];if(!p)continue;p.pollen=q.pollen;p.stage=q.stage;p.prog=q.prog;p.watered=q.watered;p.fert=q.fert;pickN--}save();renderWorld();renderPickBar();toast(`復原了 ${st.length} 株`)}
 function pickSelfAll(){const st=[];state.plots.forEach((p,i)=>{if(PICK.self.ok(p)){st.push({i,pollen:p.pollen,stage:p.stage,prog:p.prog,watered:p.watered,fert:p.fert});pollinate(i,null);pickN++;plotFx(i,'self')}});if(!st.length){toast('目前沒有開花、等待授粉的植株');return}pickHist.push(st);playAct('pollinate');save();renderWorld();renderPickBar();toast(`${st.length} 株已經自交`)}
 function pickFinish(){const kind=pickMode,sk=pickSkip.size,sel=[...pickSet].filter(i=>PICK.harvest.ok(state.plots[i])),n=pickN;
-  if(kind==='cross'){const n2=crossHist.length;exitPick();save();renderAll();toast(n2?`配好了 ${n2} 株`:'結束雜交');return}
+  if(kind==='cross'){const [a,b]=crossCommit();exitPick();save();renderAll();toast(a||b?`雜交 ${a} 株${b?`、預約 ${b} 株`:''}`:'結束雜交');return}/* 88.2：按完成才授粉 */
   if(kind==='self'){exitPick();save();renderAll();toast(`${n?`自交了 ${n} 株`:'結束自交'}${sk?`，略過 ${sk} 株（不是開花中的）`:''}`);return}
   if(kind==='harvest'){if(!sel.length){exitPick();toast(`沒有選到成熟的植株${sk?`（略過 ${sk} 株）`:''}`);return}exitPick();openHarvest(sel);if(sk)toast(`略過 ${sk} 株（不是成熟的）`);return}}
 function renderPickBar(){const el=document.getElementById('pickBar');if(!el)return;if(!pickMode){el.hidden=true;return}el.hidden=false;
@@ -6207,6 +6299,7 @@ function renderPickBar(){const el=document.getElementById('pickBar');if(!el)retu
   if(pickMode==='harvest'){const sel=[...pickSet].filter(i=>PICK.harvest.ok(state.plots[i])).length;el.innerHTML=`<div class="bbtip">點一下或用手指滑過成熟的植株把它們選起來，再點一次可以取消<br><small>拖曳空白處可以移動畫面・按「完成」打開收成總表，在那裡決定取種或賣</small></div><div class="bbtip"><b>已選 ${sel} 株</b></div><div class="bbrow" style="grid-template-columns:1fr 1fr 1fr"><button data-pk="all">全部</button><button data-pk="cancel">取消</button><button data-pk="fin" class="done"${sel?'':' disabled'}>完成</button></div>`;}}
 document.getElementById('pickBar').addEventListener('click',e=>{const b=e.target.closest('[data-pk]');if(!b||!pickMode)return;const a=b.dataset.pk;
   if(a==='xundo'){crossUndo();return}
+  if(a==='xnew'){XC=-1;crossRefresh();toast('下一次點的植株會成為新的父本');return}/* 88.3 */
   if(a==='cancel'){exitPick();return}if(a==='fin'){pickFinish();return}if(a==='sall'){pickSelfAll();return}if(a==='sundo'){pickSelfUndo();return}
   if(a==='all'){state.plots.forEach((q,i)=>{if(PICK[pickMode].ok(q)){if(pickMode==='harvest'&&!pickSet.has(i))plotFx(i,'check');pickSet.add(i)}});renderWorld();renderPickBar();}});
 // ===== 全部收成：依外觀分組，一次決定取種、賣果實或先不收 =====
@@ -6714,11 +6807,42 @@ function walkLoop(t){
   if(arrive&&moveTo){const fn=moveTo.then;moveTo=null;if(fn)fn()}
 }
 
+// ===== 86.5（16p）衣櫃：有特殊取得方式的衣服 =====
+/* id＝類別字首＋編號（h 帽子、t 上衣、s 鞋子、a 配件；果實帽 hf_作物、頭飾 hx_作物）。取得紀錄存在 state.wardrobe，舊玩家符合條件時自動補發。
+   暫定門檻：研究員白袍 Lv 10、育種野帳 雜交成功 50 次、放大鏡項鍊 育成 10 種成品、小精靈翅膀 9 種專屬造型標本收齊 */
+const HALLOWEEN={from:[10,25],to:[11,1]};
+function halloween(t){const d=new Date((t||Date.now())+8*3600e3),v=(d.getUTCMonth()+1)*100+d.getUTCDate();return v>=HALLOWEEN.from[0]*100+HALLOWEEN.from[1]&&v<=HALLOWEEN.to[0]*100+HALLOWEEN.to[1]}
+const WARD_LV=10,WARD_CR=50,WARD_FIN=10;
+const exSpecHas=c=>(state.specs||[]).some(e=>e&&e.crop===c&&String(e.key||'').startsWith('p'+EX_OF[c]+'|'));
+const finHas=c=>Object.keys(state.fin||{}).some(k=>k.startsWith(c+'|'));
+const WARD=(()=>{const cn=c=>(CROPS[c]||{}).n||c,L=[
+  {k:'hat',v:14,id:'h14',how:'萬聖節期間（10/25～11/1）上線就送',ok:()=>halloween()},
+  {k:'top',v:14,id:'t14',how:'Lv '+WARD_LV+' 送',ok:()=>myLv()>=WARD_LV},
+  {k:'top',v:15,id:'t15',how:'櫻花季（3/15～4/15）上線就送',ok:()=>sakuraBloom()},
+  {k:'top',v:20,id:'t20',how:'收成過神話等級的果實',ok:()=>false},
+  {k:'shoe',v:7,id:'s7',how:'櫻花季（3/15～4/15）上線就送',ok:()=>sakuraBloom()},
+  {k:'shoe',v:8,id:'s8',how:'第一次到雪原',ok:()=>!!(state.snowSeen&&Object.keys(state.snowSeen).length)},
+  {k:'acc',v:10,id:'a10',how:'雜交成功 '+WARD_CR+' 次',ok:()=>((state.st&&state.st.cr)||0)>=WARD_CR},
+  {k:'acc',v:11,id:'a11',how:'育成 '+WARD_FIN+' 種成品',ok:()=>Object.keys(state.fin||{}).length>=WARD_FIN},
+  {k:'acc',v:16,id:'a16',how:'櫻花季（3/15～4/15）上線就送',ok:()=>sakuraBloom()},
+  {k:'acc',v:17,id:'a17',how:'收藏櫃集滿 9 種專屬造型標本',ok:()=>WARD_CROPS.every(exSpecHas)}];
+  WARD_CROPS.forEach((c,i)=>{L.push({k:'hat',v:15+i,id:'hf_'+c,how:'收成過'+cn(c)+'的成品',ok:()=>finHas(c)});L.push({k:'head',v:1+i,id:'hx_'+c,how:'收藏櫃有'+cn(c)+'的專屬造型標本',ok:()=>exSpecHas(c)})});return L})();
+const wardReq=(k,v)=>WARD.find(w=>w.k===k&&w.v===v)||null;
+function wardHas(k,v){const w=wardReq(k,v);if(!w)return true;if(typeof isTestMode==='function'&&isTestMode())return true;return !!(state&&state.wardrobe&&state.wardrobe[w.id])}
+function wardNote(names){if(names&&names.length)toast('拿到新衣服：'+names.join('、')+'（到「打扮」看看）',4500)}
+function wardCheck(full){if(!state)return;if(!state.wardrobe)state.wardrobe={};const W=state.wardrobe,got=[];
+  for(const w of WARD){if(W[w.id])continue;let ok=false;try{ok=w.ok()}catch(e){}if(ok){W[w.id]=1;got.push(w.k==='head'?AV_OPT.head[w.v]:AV_OPT[w.k][w.v])}}
+  if(full&&!W.t20){/* 舊玩家補發斗篷：圖鑑或收藏櫃裡有神話 */try{const myth=(state.specs||[]).some(e=>e&&e.tier>=5)||Object.values(state.seen||{}).some(a=>(a||[]).some(k=>{try{return rarityOf(appFromKey(k)).tier>=5}catch(e){return false}}));if(myth){W.t20=1;got.push('斗篷')}}catch(e){}}
+  if(got.length){save();wardNote(got)}}
+/* 果實帽、頭飾可以選的顏色：那種作物的成品種子包 */
+function wardColors(crop){const out=[],seen=new Set();for(const l of (state.lots||[]).concat(state.vault||[])){if(!l||l.crop!==crop)continue;let c;try{c=lotCat(l)}catch(e){continue}if(!c||c.c!=='done')continue;let a;try{a=lotDist(l)[0].app}catch(e){continue}const k=a.skin+'/'+(a.sb||'');if(seen.has(k))continue;seen.add(k);out.push({fc:a.skin,fcb:a.skin.startsWith('l-')?(a.sb||''):''})}return out}
+const wardCrop=d=>d.hat>=15&&d.hat<=23?WARD_CROPS[d.hat-15]:d.head>0?WARD_CROPS[d.head-1]:null;
+
 // ===== 角色編輯 =====
 /* 14k 打扮頁：依類別分頁、上方即時預覽並可切換方向 */
 const AV_DIRS=[[2,'正面'],[1,'斜前'],[0,'側面'],[7,'斜後'],[6,'背面']];
 const AV_TABS=[['face','膚色'],['hair','頭髮'],['hat','帽子'],['cloth','衣服'],['acc','配件']];
-const AV_TAB_ITEMS={face:[['skin',SKINS]],hair:[['hair'],['hairC',HAIRC]],hat:[['hat'],['hatC',CLOTHC]],cloth:[['top'],['topC',CLOTHC],['bottom'],['bottomC',CLOTHC],['shoe'],['shoeC',CLOTHC]],acc:[]};/* 86.4（16o）：上衣、下身、鞋子的款式都能選 *//* 35（15i）：表情固定；衣服、配件的新款製作中 */
+const AV_TAB_ITEMS={face:[['skin',SKINS]],hair:[['hair'],['hairC',HAIRC]],hat:[['hat'],['hatC',CLOTHC],['head']],cloth:[['top'],['topC',CLOTHC],['bottom'],['bottomC',CLOTHC],['shoe'],['shoeC',CLOTHC]],acc:[['acc'],['accC',CLOTHC]]};/* 86.5：帽子分頁多「頭飾」；配件分頁開放（舊的 1–9 號配件新畫法沒有畫，先不列） *//* 86.4（16o）：上衣、下身、鞋子的款式都能選 *//* 35（15i）：表情固定；衣服、配件的新款製作中 */
 function openAvatar(){sheet={avatar:true,draft:avNorm(state.avatar),avTab:'face',avDir:0};renderSheet();openSheetUI()}
 function avatarEditorHTML(){
   const d=sheet.draft,dir=AV_DIRS[sheet.avDir||0][0],tab=sheet.avTab||'face';
@@ -6726,16 +6850,17 @@ function avatarEditorHTML(){
   let h=`<h2>打扮我的角色</h2><div class="avprev"><svg viewBox="-30 -66 60 70" width="150" height="175" role="img" aria-label="角色預覽">${avatarSVG(d,false,{t:performance.now()/1000,view:VIEWS[dir]})}</svg></div>`;
   h+=`<div class="avdirbtns" role="group" aria-label="方向">${AV_DIRS.map(([f,n],i)=>`<button class="fchip" data-avdir="${i}" aria-pressed="${(sheet.avDir||0)===i}">${n}</button>`).join('')}</div>`;
   h+=`<div class="filters avtabs" role="tablist">${AV_TABS.map(([k,n])=>`<button class="fchip" role="tab" data-avtab="${k}" aria-pressed="${tab===k}">${n}</button>`).join('')}</div>`;
-  if(tab==='acc')h+='<p class="note">配件的新款還在製作中。</p>';
   if(tab==='face')h+='<p class="note">表情固定是微笑。</p>';
   for(const [k,cols] of AV_TAB_ITEMS[tab]){
     if(cols){h+=`<div class="avrow"><span>${AV_LBL[k]}</span><div class="avsw">${cols.map((c,i)=>`<button class="swatch" style="background:${c}" data-avc="${k}" data-v="${i}" aria-label="${AV_LBL[k]} ${i+1}" aria-pressed="${d[k]===i}"></button>`).join('')}</div></div>`;continue}
     h+=`<h3 class="avh3">${AV_LBL[k]}</h3>`;
     if(k==='bottom'&&d.top===2)h+='<p class="note">吊帶褲已經包含褲子，換成其他上衣才看得到下身。</p>';
     if(k==='bottom'&&d.top===12)h+='<p class="note">洋裝已經包含裙子，換成其他上衣才看得到下身。</p>';
-    const idxs=k==='hair'?AVH_LIST:AV_OPT[k].map((_,i)=>i);
-    h+=`<div class="avopts">${idxs.map(i=>{const n=AV_OPT[k][i],pv={...d,[k]:i},off=k==='hat'&&!AVH_HATS.includes(i),on=k==='hair'?avHid(d.hair)===i:d[k]===i;if(k==='hair')pv.hat=0;
-      return `<button class="avopt" data-avk="${k}" data-v="${i}" aria-pressed="${on}"${off?' disabled style="opacity:.45"':''}><svg viewBox="${vb}" width="56" height="${head?56:68}" aria-hidden="true">${off?'':avatarSVG(pv,false,{view:VIEWS[dir]})}</svg><span>${n}${off?'<br><small>新款製作中</small>':''}</span></button>`}).join('')}</div>`;
+    const idxs=k==='hair'?AVH_LIST:k==='acc'?[0,10,11,12,13,14,15,16,17]:AV_OPT[k].map((_,i)=>i);
+    if(k==='head'){const cr=wardCrop(d);if(cr){const cs=wardColors(cr);h+=`<div class="avrow"><span>果實顏色</span><div class="avsw">${cs.length?cs.map(o=>`<button class="swatch avfc" data-avfc="${o.fc}" data-avfcb="${o.fcb}" aria-pressed="${d.fc===o.fc&&(d.fcb||'')===o.fcb}" aria-label="${esc(cnOf(o.fc))}" style="background:none;padding:0">${fruitSVG({level:0,sp:0,skin:o.fc,sb:o.fcb||undefined,pat:null,perfCls:2,seed:7},cr,26)}</button>`).join(''):'<span class="note">還沒有這種作物的成品，先用紅色</span>'}</div></div>`}}
+    h+=`<div class="avopts">${idxs.map(i=>{const n=AV_OPT[k][i],pv={...d,[k]:i},off=k==='hat'&&i<11&&!AVH_HATS.includes(i),on=k==='hair'?avHid(d.hair)===i:d[k]===i;if(k==='hair')pv.hat=0;
+      const lk=!off&&!wardHas(k,i),wq=lk?wardReq(k,i):null;if((k==='hat'&&i>=15||k==='head'&&i>0)&&!pv.fc){const cs=wardColors(k==='hat'?WARD_CROPS[i-15]:WARD_CROPS[i-1]);if(cs[0]){pv.fc=cs[0].fc;pv.fcb=cs[0].fcb}}
+      return `<button class="avopt" data-avk="${k}" data-v="${i}" aria-pressed="${on}"${off||lk?' disabled style="opacity:.55"':''}><svg viewBox="${vb}" width="56" height="${head?56:68}" aria-hidden="true"${lk?' style="filter:brightness(0) opacity(.35)"':''}>${off?'':avatarSVG(pv,false,{view:VIEWS[dir]})}</svg><span>${n}${off?'<br><small>新款製作中</small>':''}${lk?`<br><small>${wq.how}</small>`:''}</span></button>`}).join('')}</div>`;
   }
   return h+`<button class="btn primary" data-act="avsave">儲存角色</button>`;
 }
@@ -6743,11 +6868,13 @@ function avatarAction(b){
   const d=sheet.draft;
   if(b.dataset.avtab){sheet.avTab=b.dataset.avtab;renderSheet();return}
   if(b.dataset.avdir!=null){sheet.avDir=+b.dataset.avdir;renderSheet();return}
-  if(b.dataset.avk){const k=b.dataset.avk,v=+b.dataset.v;if(d[k]!==v){if(k==='top'&&v===9)d.topC=3;if(k==='shoe'&&v===2)d.shoeC=3}/* 雨衣、雨靴預設黃色，之後可換色 */d[k]=v;renderSheet();return}
+  if(b.dataset.avk){const k=b.dataset.avk,v=+b.dataset.v;if(!wardHas(k,v))return;if(d[k]!==v){if(k==='top'&&v===9)d.topC=3;if(k==='shoe'&&v===2)d.shoeC=3}/* 雨衣、雨靴預設黃色，之後可換色 */d[k]=v;
+    {const cr=wardCrop(d);if(cr&&(k==='hat'||k==='head')){const cs=wardColors(cr);if(cs.length&&!cs.some(o=>o.fc===d.fc&&o.fcb===(d.fcb||''))){d.fc=cs[0].fc;d.fcb=cs[0].fcb}}}/* 86.5：果實帽、頭飾預設用第一包成品的顏色 */renderSheet();return}
+  if(b.dataset.avfc!=null){d.fc=b.dataset.avfc;d.fcb=b.dataset.avfcb||'';renderSheet();return}
   if(b.dataset.avc){d[b.dataset.avc]=+b.dataset.v;renderSheet();return}
   if(b.dataset.act==='avsave'){state.avatar=avNorm(d);save();db.collection('profiles').doc(uid).set({avatar:state.avatar},{merge:true}).catch(()=>{});pushPos(true);renderChars();closeSheet();toast('角色已更新')}
 }
-sb.addEventListener('click',e=>{if(!sheet||!sheet.avatar)return;const b=e.target.closest('[data-avk],[data-avc],[data-avtab],[data-avdir]');if(b){e.stopPropagation();avatarAction(b)}},true);
+sb.addEventListener('click',e=>{if(!sheet||!sheet.avatar)return;const b=e.target.closest('[data-avk],[data-avc],[data-avtab],[data-avdir],[data-avfc]');if(b){e.stopPropagation();avatarAction(b)}},true);
 const avB=document.getElementById('avatarBtn2');if(avB)avB.onclick=()=>{closePanel();openAvatar()};
 
 
@@ -6792,7 +6919,7 @@ function tutEv(ev){const t=state&&state.tut;if(!t||t.done)return;const st=TUT[t.
 document.getElementById('tutNext').onclick=()=>{state.tut.done=true;save();tutRender()};
 document.getElementById('tutSkip').onclick=()=>{state.tut.done=true;save();tutRender();toast('已略過教學')};
 const ORDERS=[{k:'harvest',t:'收成任何一種作物一次',r:100},{k:'cross',t:'完成一次雜交並取得種子',r:150},{k:'yellow',t:'收成一株黃色的作物',r:200},{k:'pattern',t:'收成一株有花紋的作物',r:300},{k:'selfseed',t:'完成一次自交並取得種子',r:300}];
-function harvested(ph){stInc('hv');addXpCap('h',1);tutEv('harvest');orderDone('harvest');if(ph&&ph.cname==='黃')orderDone('yellow');if(ph&&ph.pat)orderDone('pattern')}
+function harvested(ph){try{if(ph&&ph.tier>=5&&state.wardrobe&&!state.wardrobe.t20){state.wardrobe.t20=1;wardNote(['斗篷'])}}catch(e){}/* 86.5：收成過神話 → 斗篷 */stInc('hv');addXpCap('h',1);tutEv('harvest');orderDone('harvest');if(ph&&ph.cname==='黃')orderDone('yellow');if(ph&&ph.pat)orderDone('pattern')}
 function orderDone(k){if(!state.orders)state.orders={};if(!state.orders[k]){state.orders[k]=1;save();toast('完成了一項入門練習，到「任務」領取獎勵');renderOrdersBtn()}}
 document.getElementById('meChip').onclick=()=>{if(!state)return;exitAllModes();openMe()};
 document.getElementById('ordersBtn').onclick=()=>{sheet={orders:true};renderSheet();sheetEl.classList.add('open');bd.style.display='block'};
@@ -7136,29 +7263,54 @@ function crossWhy(d,m){const P=state.plots[d],M=state.plots[m];
   if(!P||!M||P.obs||M.obs)return '這裡沒有可以雜交的植株';if(d===m)return '父本和母本要是不同的兩株';
   if(P.crop!==M.crop&&!isWide(M,P))return `${CROPS[P.crop].n}和${CROPS[M.crop].n}不能雜交`;
   if(M.stage!=='seedling'&&M.stage!=='flower')return '這株已經授粉了，等它收成後重新開花再配';return ''}
-function crossSet(){pickSet.clear();if(crossDad!=null)state.plots.forEach((q,i)=>{if(q&&!crossWhy(crossDad,i))pickSet.add(i)})}
-function crossDo(d,m){
-  const why=crossWhy(d,m);if(why){plotFx(m,'skip');toast(why);return}
-  const P=state.plots[d],M=state.plots[m];crossHist.push({m,pollen:M.pollen,stage:M.stage,prog:M.prog,rsv:M.rsv?{...M.rsv}:null});
-  if(M.stage==='flower'&&hasPollen(P)){delete M.rsv;pollinate(m,d);plotFx(m,'self');playAct('pollinate')}
-  else{M.rsv={i:d,lotId:P.lotId,no:P.no};toast(`預約好了：「${pname(M)}」開花時會和「${pname(P)}」雜交`,3000);plotFx(m,'check')}
-  save();crossSet();renderWorld();renderPickBar();
-}
-function crossUndo(){const q=crossHist.pop();if(!q){toast('沒有可以復原的');return}const M=state.plots[q.m];if(M){M.pollen=q.pollen;M.stage=q.stage;M.prog=q.prog;if(q.rsv)M.rsv=q.rsv;else delete M.rsv}save();crossSet();renderWorld();renderPickBar();toast('復原了上一筆')}
-function crossLine(a,b){let el=document.getElementById('crossLn');if(!a){if(el)el.remove();return}
+/* 88（16p）：雜交模式改成「先標記、按完成才授粉」；一次可以有 5 個父本（每組一個顏色），從父本按住滑過可以一次選好幾株母本 */
+const XCOL=['#4A7FD0','#8E5BD0','#3E9E5A','#E08A2E','#2F9FA8'];let XG=[],XC=-1;const XH=[];
+const crossGroupOf=i=>XG.findIndex(G=>G.d===i),crossMomOf=i=>XG.findIndex(G=>G.ms.includes(i)),crossMarkN=()=>XG.reduce((n,G)=>n+G.ms.length,0);
+function crossSync(){crossDad=XC>=0&&XG[XC]?XG[XC].d:null;crossSet()}
+function crossSet(){pickSet.clear();if(crossDad!=null)state.plots.forEach((q,i)=>{if(q&&!crossWhy(crossDad,i)&&crossGroupOf(i)<0)pickSet.add(i)})}
+function crossRefresh(){crossSync();renderWorld();renderPickBar()}
+function crossReset(){XG=[];XC=-1;XH.length=0;crossDad=null}
+function crossFather(i){const p=state.plots[i];if(!p||p.obs)return false;const gd=crossGroupOf(i);if(gd>=0){XC=gd;return true}
+  if(crossMomOf(i)>=0){toast('這株已經標成母本了，不能同時當父本');plotFx(i,'skip');return false}
+  if(XG.length>=XCOL.length){toast('最多 5 個父本，先按「完成」');return false}
+  const used=new Set(XG.map(G=>G.c));XG.push({d:i,ms:[],c:XCOL.find(c=>!used.has(c))});XC=XG.length-1;return true}
+function crossMark(i,stroke){const G=XG[XC];if(!G||i===G.d)return;const p=state.plots[i];if(!p||p.obs)return;
+  if(G.ms.includes(i)){if(stroke)return;G.ms.splice(G.ms.indexOf(i),1);XH.push({t:'rm',G,m:i});return}
+  const why=crossGroupOf(i)>=0?'這株是父本，不能同時當母本':crossWhy(G.d,i);if(why){plotFx(i,'skip');if(!stroke)toast(why);return}
+  const og=crossMomOf(i);if(og>=0){const F=XG[og];F.ms.splice(F.ms.indexOf(i),1);XH.push({t:'mv',G,F,m:i});if(!stroke)toast('改到這一組父本了')}else XH.push({t:'add',G,m:i});
+  G.ms.push(i);plotFx(i,'check')}
+function crossTap(i){const p=state.plots[i];if(!p||p.obs)return;const gd=crossGroupOf(i);
+  if(gd>=0){if(gd===XC&&!XG[gd].ms.length){XG.splice(gd,1);XC=-1}else XC=gd;crossRefresh();return}
+  if(XC<0){crossFather(i);crossRefresh();return}
+  crossMark(i,false);crossRefresh()}
+function crossUndo(){const q=XH.pop();if(!q){toast('沒有可以復原的標記');return}
+  if(q.t==='add')q.G.ms.splice(q.G.ms.indexOf(q.m),1);else if(q.t==='rm')q.G.ms.push(q.m);else{q.G.ms.splice(q.G.ms.indexOf(q.m),1);q.F.ms.push(q.m)}
+  crossRefresh();toast('取消了上一筆標記')}
+/* 按「完成」才真的授粉：兩邊都開花的立刻雜交，還沒開花的變預約（crossDo 的規則不變） */
+function crossApply(d,m){const why=crossWhy(d,m);if(why)return 0;const P=state.plots[d],M=state.plots[m];crossHist.push({m,pollen:M.pollen,stage:M.stage,prog:M.prog,rsv:M.rsv?{...M.rsv}:null});
+  if(M.stage==='flower'&&hasPollen(P)){delete M.rsv;pollinate(m,d);plotFx(m,'self');return 1}M.rsv={i:d,lotId:P.lotId,no:P.no};plotFx(m,'check');return 2}
+function crossCommit(){let a=0,b=0;for(const G of XG)for(const m of G.ms){const r=crossApply(G.d,m);if(r===1)a++;else if(r===2)b++}
+  if(a)playAct('pollinate');crossReset();save();return [a,b]}
+function crossDo(d,m){const why=crossWhy(d,m);if(why){plotFx(m,'skip');toast(why);return}crossApply(d,m);save();crossSet();renderWorld();renderPickBar()}
+function crossLine(a,b,col){let el=document.getElementById('crossLn');if(!a){if(el)el.remove();return}
   if(!el){el=document.createElementNS('http://www.w3.org/2000/svg','svg');el.id='crossLn';el.setAttribute('style','position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:9;pointer-events:none');el.innerHTML='<line stroke="#F2B63A" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 10"/><circle r="9" fill="#FFE27A" stroke="#B9840F" stroke-width="2"/>';document.body.appendChild(el)}
-  const ln=el.firstChild,c=el.lastChild;ln.setAttribute('x1',a.x);ln.setAttribute('y1',a.y);ln.setAttribute('x2',b.x);ln.setAttribute('y2',b.y);c.setAttribute('cx',b.x);c.setAttribute('cy',b.y)}
+  const ln=el.firstChild,c=el.lastChild;if(col)ln.setAttribute('stroke',col);ln.setAttribute('x1',a.x);ln.setAttribute('y1',a.y);ln.setAttribute('x2',b.x);ln.setAttribute('y2',b.y);c.setAttribute('cx',b.x);c.setAttribute('cy',b.y)}
 const plotUnder=(x,y)=>{const el=document.elementFromPoint(x,y),g=el&&el.closest&&el.closest('[data-plot]');return g?+g.dataset.plot:-1};
-function crossDown(e){const i=plotUnder(e.clientX,e.clientY);if(i<0||!state.plots[i]){panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}crossPt={i,x:e.clientX,y:e.clientY,drag:false}}
-function crossMove(e){const c=crossPt;if(!c.drag&&Math.hypot(e.clientX-c.x,e.clientY-c.y)>12){c.drag=true;crossDad=c.i;crossSet();renderWorld();renderPickBar()}
-  if(c.drag){const s=plotScreen(c.i)||{x:c.x,y:c.y};crossLine({x:s.x,y:s.y-16},{x:e.clientX,y:e.clientY})}}
+function crossDown(e){const i=plotUnder(e.clientX,e.clientY);if(i<0||!state.plots[i]){panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}crossPt={i,x:e.clientX,y:e.clientY,drag:false,hit:new Set()}}
+/* 從父本按住滑過：經過的植株都標成這組的母本 */
+function crossMove(e){const c=crossPt;if(!c.drag&&Math.hypot(e.clientX-c.x,e.clientY-c.y)>12){
+    if(crossMomOf(c.i)>=0&&crossGroupOf(c.i)<0){crossPt=null;toast('從父本按住滑過，才會一次選好幾株母本');return}
+    if(!crossFather(c.i)){crossPt=null;return}c.drag=true;c.hit.add(c.i);crossRefresh()}
+  if(c.drag){const s=plotScreen(c.i)||{x:c.x,y:c.y};crossLine({x:s.x,y:s.y-16},{x:e.clientX,y:e.clientY},XG[XC]&&XG[XC].c);
+    const j=plotUnder(e.clientX,e.clientY);if(j>=0&&!c.hit.has(j)){c.hit.add(j);crossMark(j,true);crossRefresh()}}}
 function crossUp(e){const c=crossPt;crossPt=null;crossLine(null);if(!c)return;
-  if(c.drag){const j=plotUnder(e.clientX,e.clientY);if(j>=0&&state.plots[j]&&j!==c.i)crossDo(c.i,j);else toast('拖到另一株植株上放開，就會把花粉給它',2500);return}
-  if(crossDad==null){if(state.plots[c.i].obs)return;crossDad=c.i;crossSet();renderWorld();renderPickBar();return}
-  if(c.i===crossDad){crossDad=null;crossSet();renderWorld();renderPickBar();return}
-  crossDo(crossDad,c.i)}
-function crossBarHTML(){const P=crossDad!=null?state.plots[crossDad]:null,nr=state.plots.filter(q=>q&&q.rsv).length;
-  return `<div class="bbtip">${P?`父本：<b>${esc(pname(P))}</b>（${P.stage==='seedling'?'還沒開花，會先預約':'有花粉'}）。點有黃框的植株當母本；再點一次父本可以取消`:'先點一株當父本，或直接從父本拖到母本'}<br><small>兩邊都開花了就立刻雜交；還沒開花的會先預約，開花時自動雜交・拖曳空白處可以移動畫面</small></div><div class="bbtip"><b>這次配了 ${crossHist.length} 株</b>${nr?`<small>・預約中 ${nr} 株</small>`:''}</div><div class="bbrow" style="grid-template-columns:1fr 1fr"><button data-pk="xundo"${crossHist.length?'':' disabled'}>復原上一筆</button><button data-pk="fin" class="done">完成</button></div>`}
+  if(c.drag){if(c.hit.size<2)toast('滑過其他植株，就會把它們標成母本',2500);return}
+  crossTap(c.i)}
+function crossBarHTML(){const nr=state.plots.filter(q=>q&&q.rsv).length,N=crossMarkN();
+  const ic=i=>{const q=state.plots[i];if(!q)return '';let f='';try{f=fruitSVG(phen(q.g,q.crop),q.crop,18)}catch(e){}return `<span class="xpl">${f}${esc(pname(q))}</span>`};
+  const rows=XG.map((G,k)=>`<div class="xgrp${k===XC?' on':''}" style="border-color:${G.c}"><b style="color:${G.c}">父本</b> ${ic(G.d)} <b style="color:${G.c}">→ 母本</b> ${G.ms.length?G.ms.map(ic).join('、'):'<small>（還沒選）</small>'}</div>`).join('');
+  const P=XC>=0&&XG[XC]?state.plots[XG[XC].d]:null;
+  return `<div class="bbtip">${P?`點有黃框的植株標成母本（再點一次取消），或從父本按住滑過一次選好幾株・按「完成」才會授粉`:'先點一株當父本'}<br><small>兩邊都開花的會立刻雜交，還沒開花的變預約${nr?`・預約中 ${nr} 株`:''}</small></div>${rows?`<div class="xgrps">${rows}</div>`:''}<div class="bbrow" style="grid-template-columns:1fr 1fr 1.3fr"><button data-pk="xnew"${XG.length>=XCOL.length||XC<0?' disabled':''}>換父本</button><button data-pk="xundo"${XH.length?'':' disabled'}>復原上一筆</button><button data-pk="fin" class="done">完成（${N} 筆）</button></div>`}
 /* 每秒：預約到期就雜交；父本不見就標記 */
 function rsvTick(){let ch=false;state.plots.forEach((p,i)=>{if(!p||!p.rsv)return;
   if(p.stage!=='seedling'&&p.stage!=='flower'){delete p.rsv;ch=true;return}

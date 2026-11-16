@@ -1,66 +1,98 @@
-// 第 95 節「標本是一次性通行證」要用的 Firestore 安全規則。
-// 貼到 Firebase 主控台 → Firestore Database → 規則，放在 match /databases/{database}/documents { … } 裡面。
+// 第 95 節「標本是一次性通行證」要用的 Firestore 安全規則（17c 版）。
+// 貼到 Firebase 主控台 → Firestore Database → 規則，放在 match /databases/{database}/documents { … } 裡面：
+//   ・下面的 match /rights/{id}、match /listings/{id} 整段「取代」主控台上原本的同名區塊。
+//   ・match /fairyFirst/{key} 是新加的。
+//   ・主控台上第 93 節加的 match /fairy/{key} 那段拿掉（遊戲已經不讀寫 fairy 集合，集合裡的資料留著不清）。
 //
-// 1. rights/{id}（標本）：用下面整段「取代」你現在的 match /rights/{id} { … }。
-//    現在主控台上的 rights 規則如果是「登入就能讀寫」，換成這段後只允許下面幾種寫入：
-//      a. 採收標本：holders 只多了自己一筆（第一次採收、14i 的品種權轉換都是這種）
-//      b. 命名：holders 不變，而且自己是 namerUid
-//      c. 用掉標本（喚醒、進化、換色）：只把自己那一筆改成 used:true
-//      d. 標本交易：同一個交易裡那筆上架（listings/<tx>）是 kind:'spec2'、品種相同、被自己買下，
-//         holders 只動賣家和買家兩筆：賣家那一筆拿掉、買家那一筆的取得時間（at）和賣家的一樣（編號跟著走），
-//         而且那一筆不能是 used。
-//    其他欄位（tier、auto、g、n、v、kind…）採收時會一起寫，所以 a 不限制其他欄位。
-// 2. fairyFirst/{key}：全服第一個喚醒某種精靈的紀錄，只能建立一次，不能改。
-// 3. fairy/{key}（第 93 節的精靈名額）：第 95 節起不再使用。要不要刪掉這個集合、拿掉 tools/firestore_rules_93.txt 那段，由你決定；
-//    留著也不會被遊戲讀寫。
-// 4. listings：上架標本用 kind:'spec2'。如果你現在的 listings 規則有限制 kind，要加上 'spec2'。
+// rights（標本）只允許五種寫入：
+//   a. 建立：holders 只能有自己一筆。
+//   b. 採收：只能改 holders，只多了自己一筆，總數不能超過這個稀有度的名額（照文件裡的 tier：史詩 3、傳說 2、神話 1）。
+//   c. 命名：holders 不變，自己是 namerUid，name 原本是空的，只能改 name。
+//   d. 用掉標本（喚醒、進化、換色）：只能把自己那一筆改成 used:true。
+//   e. 標本交易：同一個交易裡那筆上架（listings/<tx>）是 kind:'spec2'、指向這份文件、被自己買下；
+//      holders 只動賣家和買家兩筆：賣家那一筆拿掉、買家那一筆的取得時間（at）和賣家的一樣（編號跟著走），那一筆不能是 used；
+//      namerUid／namerName 只有在 name 是空的、而且賣家原本就是命名者時，才能轉給買家（買家自己）。
+// listings（攤位）：
+//   ・建立：sellerUid 一定是自己，sold 是 false。
+//   ・購買：只能改 sold（false → true）和 buyerUid（自己），賣家不能買自己的。
+//   ・刪除：只有賣家（收錢、收回）。
 
     // ---- 95：標本（rights）----
+    function me() { return request.auth.uid; }
     function hOld() { return resource.data.get('holders', {}); }
     function hNew() { return request.resource.data.get('holders', {}); }
     function hChanged() { return hNew().diff(hOld()).affectedKeys(); }
-    function me() { return request.auth.uid; }
+    function docChanged() { return request.resource.data.diff(resource.data).affectedKeys(); }
+    function specCap(t) { return t == 3 ? 3 : (t == 4 ? 2 : (t == 5 ? 1 : 1000000)); }
+    function specCreateOk() {
+      return hNew().keys().hasOnly([me()]) && hNew().size() == 1;
+    }
     function specClaim() {
-      return !(me() in hOld())
+      return docChanged().hasOnly(['holders'])
+        && !(me() in hOld())
         && hChanged().hasOnly([me()])
-        && (me() in hNew());
+        && (me() in hNew())
+        && hNew().size() <= specCap(resource.data.get('tier', 0));
     }
     function specName() {
-      return hChanged().size() == 0
+      return docChanged().hasOnly(['name'])
         && resource.data.get('namerUid', '') == me()
-        && resource.data.get('name', '') == '';
+        && resource.data.get('name', '') == ''
+        && request.resource.data.name is string;
     }
     function specUse() {
-      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['holders'])
+      return docChanged().hasOnly(['holders'])
         && hChanged().hasOnly([me()])
         && (me() in hOld())
         && hOld()[me()].get('used', false) != true
         && hNew()[me()].diff(hOld()[me()]).affectedKeys().hasOnly(['used'])
         && hNew()[me()].used == true;
     }
+    function specNamerOk(seller) {
+      return !docChanged().hasAny(['namerUid', 'namerName'])
+        || (resource.data.get('name', '') == ''
+            && resource.data.get('namerUid', '') == seller
+            && request.resource.data.namerUid == me());
+    }
     function specTrade() {
-      let tx = request.resource.data.tx;
-      let l = getAfter(/databases/$(database)/documents/listings/$(tx)).data;
+      let l = getAfter(/databases/$(database)/documents/listings/$(request.resource.data.tx)).data;
       let seller = l.sellerUid;
-      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['holders', 'tx', 'namerUid', 'namerName'])
-        && l.kind == 'spec2' && l.specId == request.resource.id
+      return docChanged().hasOnly(['holders', 'tx', 'namerUid', 'namerName'])
+        && l.kind == 'spec2'
+        && (l.specId == request.resource.id || l.get('rid', '') == request.resource.id)
         && l.sold == true && l.buyerUid == me()
         && (seller in hOld()) && hOld()[seller].get('used', false) != true
         && !(me() in hOld())
         && hChanged().hasOnly([seller, me()])
         && !(seller in hNew()) && (me() in hNew())
         && hNew()[me()].at == hOld()[seller].at
-        && hNew()[me()].get('used', false) != true;
+        && hNew()[me()].get('used', false) != true
+        && specNamerOk(seller);
     }
     match /rights/{id} {
       allow read: if request.auth != null;
-      allow create: if request.auth != null;
+      allow create: if request.auth != null && specCreateOk();
       allow update: if request.auth != null
         && (specClaim() || specName() || specUse() || (('tx' in request.resource.data) && specTrade()));
       allow delete: if false;
     }
 
-    // ---- 95：全服第一隻精靈的紀錄 ----
+    // ---- 95：攤位（listings）----
+    match /listings/{id} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+        && request.resource.data.sellerUid == request.auth.uid
+        && request.resource.data.sold == false;
+      allow update: if request.auth != null
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sold', 'buyerUid'])
+        && resource.data.sold == false
+        && request.resource.data.sold == true
+        && request.resource.data.buyerUid == request.auth.uid
+        && resource.data.sellerUid != request.auth.uid;
+      allow delete: if request.auth != null && resource.data.sellerUid == request.auth.uid;
+    }
+
+    // ---- 95：全服第一隻精靈的紀錄（只能建立一次）----
     match /fairyFirst/{key} {
       allow read: if request.auth != null;
       allow create: if request.auth != null && request.resource.data.u == request.auth.uid;

@@ -1470,7 +1470,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-17b';
+const BUILD='2026-11-17c';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -1609,7 +1609,7 @@ function collectSales(){
   for(const l of listings){
     if(l.sellerUid!==uid||!l.sold||collecting.has(l.id))continue;
     collecting.add(l.id);
-    db.collection('listings').doc(l.id).delete().then(()=>{state.coins+=l.price;spSold(l);save();renderCoins();toast(`${l.buyerName||'有人'}買了你的「${l.kind==='item'?itemName(l.item):l.name}」，得到 ${l.price} 金幣`,l.kind==='spec2'?5000:undefined)}).catch(()=>collecting.delete(l.id));
+    db.collection('listings').doc(l.id).delete().then(()=>{state.coins+=l.price;spSold(l);save();renderCoins();toast(`${l.buyerName||((profiles||[]).find(x=>x.id===l.buyerUid)||{}).name||'有人'}買了你的「${l.kind==='item'?itemName(l.item):l.name}」，得到 ${l.price} 金幣`,l.kind==='spec2'?5000:undefined)}).catch(()=>collecting.delete(l.id));
   }
 }
 
@@ -3912,7 +3912,7 @@ async function stallAction(b){
     if(l.kind!=='item'){const o0=lotOf(l);if(!o0||!o0.m){toast('這個商品的資料讀不到，請重新整理遊戲後再試一次');return}}
     b.disabled=true;let paid=false;
     try{
-      await db.runTransaction(async tx=>{const ref=db.collection('listings').doc(l.id),d=await tx.get(ref);if(!d.exists||d.data().sold)throw new Error('gone');tx.update(ref,{sold:true,buyerUid:uid,buyerName:myName(),soldAt:TS()})});
+      await db.runTransaction(async tx=>{const ref=db.collection('listings').doc(l.id),d=await tx.get(ref);if(!d.exists||d.data().sold)throw new Error('gone');tx.update(ref,{sold:true,buyerUid:uid})});
       paid=true;
       if(l.kind==='item'){state.coins-=l.price;if(isOldFert(l.item)){const c=oldFertCoin(l.item)*l.count;state.coins+=c;save();renderAll();toast(`買到的是舊肥料，已直接換成 ${c} 金幣`,6000);return}if(!state.items)state.items={};state.items[l.item]=(state.items[l.item]||0)+l.count;save();renderAll();toast(`買到 ${l.count} ${itemUnit(l.item)}${itemName(l.item)}`);return}
       const lot=lotOf(l);state.coins-=l.price;
@@ -4092,6 +4092,8 @@ function specNorm(r,now){
   let key=r.app;try{key=exAppKey(r.crop,legacyMap(r.app)||r.app)}catch(e){}
   return {v:5,kind:'spec',crop:r.crop,app:key,tier:r.tier|0,g:r.g||'',holders:{[r.ownerUid]:{name:r.ownerName||'',at:r.createdAt||now}},name:r.name||'',namerUid:r.ownerUid,namerName:r.ownerName||'',auto:'',createdAt:r.createdAt||now};
 }
+/* 95（17c）：在 transaction 裡讀標本文件；新 id 沒有、舊 id（73.3）有就直接用舊的那份（不複製到新 id，安全規則不允許建立時有別人） */
+async function rightsTx(tx,id){const ref=db.collection('rights').doc(id),d=await tx.get(ref);if(d.exists)return {ref,d};const od=ridOld(id);if(od){const r2=db.collection('rights').doc(od),d2=await tx.get(r2);if(d2.exists)return {ref:r2,d:d2}}return {ref,d}}
 function specClaimStep(sp,c){
   if(!sp)sp={v:5,kind:'spec',crop:c.crop,app:c.key,tier:c.tier,g:c.g,holders:{},name:c.reg?c.reg.name:'',namerUid:c.reg?c.reg.inventorUid:c.uid,namerName:c.reg?c.reg.inventorName:c.me,auto:c.auto,createdAt:c.now};
   const h=sp.holders||{};if(h[c.uid])throw new Error('mine');
@@ -4133,7 +4135,7 @@ async function claimSpec(i){
   const c={uid,me,now,crop:p.crop,key:ph.key,tier:ph.tier,g:JSON.stringify(p.g),auto:shortApp(ph),reg};
   if(!specCapped(ph.tier)){addOwnSpec({id,crop:p.crop,key:ph.key,tier:ph.tier,at:now,auto:c.auto,from:pname(p),bt:p.bt?1:undefined,sb:ph.sb,cb:ph.pat&&ph.pat.cb||undefined});save();if(sheet)renderSheet();toast('採收了果實標本！放進「圖鑑 → 收藏櫃」了',4000);return true}/* 28.3：沒有名額的等級只寫進自己的存檔，不用全服文件 */
   let out=null;
-  try{const ref=db.collection('rights').doc(id),od=ridOld(id);await db.runTransaction(async tx=>{const d=await tx.get(ref);let dat=d.exists?d.data():null;if(!dat&&od){const d2=await tx.get(db.collection('rights').doc(od));if(d2.exists)dat=d2.data()}/* 73.3 */out=specClaimStep(specNorm(dat,now),c);tx.set(ref,out,{merge:true})})}
+  try{await db.runTransaction(async tx=>{const {ref,d}=await rightsTx(tx,id),dat=d.exists?d.data():null;out=specClaimStep(specNorm(dat,now),c);if(d.exists)tx.update(ref,{[`holders.${uid}`]:out.holders[uid]});else tx.set(ref,out)})}/* 95（17c）：安全規則只准改 holders */
   catch(err){const m=err&&err.message;specCache.delete(id);
     if(m==='mine')addOwnSpec({id,crop:p.crop,key:ph.key,tier:ph.tier,at:now,auto:c.auto,from:pname(p),bt:p.bt?1:undefined,sb:ph.sb,cb:ph.pat&&ph.pat.cb||undefined});
     toast(m==='full'?'這個品種的全服名額剛好滿了':m==='mine'?'你已經有這個品種的標本了':`採收失敗（${(err&&(err.code||m))||'unknown'}），沒有變動。請確認網路後再試一次`,5000);save();if(sheet)renderSheet();return false}
@@ -4147,7 +4149,7 @@ async function claimSpec(i){
 async function nameSpec(id,v){
   v=(v||'').trim();const len=glen(v);if(len<2||len>8)return '名稱需要 2 到 8 個字';if(nameTaken(v))return '圖鑑裡已經有這個名稱了';
   const ref=db.collection('rights').doc(id),me=myName();let sp=null;
-  try{const od=ridOld(id);await db.runTransaction(async tx=>{const d=await tx.get(ref);let dat=d.exists?d.data():null,moved=false;if(!dat&&od){const d2=await tx.get(db.collection('rights').doc(od));if(d2.exists){dat=d2.data();moved=true}}sp=specNorm(dat);if(!sp)throw new Error('gone');if(sp.namerUid!==uid)throw new Error('notyou');if(sp.name)throw new Error('named');sp.name=v;tx.set(ref,moved?{...sp,n:Object.keys(sp.holders||{}).length}:{name:v,kind:'spec',v:5},{merge:true})})}
+  try{await db.runTransaction(async tx=>{const r=await rightsTx(tx,id);sp=specNorm(r.d.exists?r.d.data():null);if(!sp)throw new Error('gone');if(sp.namerUid!==uid)throw new Error('notyou');if(sp.name)throw new Error('named');sp.name=v;tx.update(r.ref,{name:v})})}
   catch(e){return {gone:'找不到這個品種',notyou:'只有第一個取得標本的人可以命名',named:'這個品種已經命名了'}[e&&e.message]||'命名失敗，請稍後再試'}
   specCache.set(id,{s:sp,at:Date.now()});
   if(!findVariety(sp.crop,sp.app)&&sp.g){try{await db.collection('registry').add({v:4,crop:sp.crop,name:v,norm:norm(v),inventorUid:uid,inventorName:me,at:TS(),app:sp.app,g:sp.g,tier:sp.tier,rec:{}})}catch(e){}}
@@ -6362,8 +6364,8 @@ const fyQual=(k,t)=>(state.specs||[]).filter(e=>e&&e.crop===k&&(e.tier|0)>=t&&!e
 const FY_ACT={wake:{n:'喚醒',t:4},evo:{n:'進化',t:5},col:{n:'換色',t:4}};
 const FY_TESTCOL=['red','gold','starry','l-gold','pearl','rainbow','obsidian','blue','purple'];
 /* 用掉一個標本：只把自己那一筆改成 used:true；回傳這個標本的編號、名額、品種名 */
-async function specUse(e){const ref=db.collection('rights').doc(e.id);let out=null;
-  await db.runTransaction(async tx=>{const d=await tx.get(ref);const sp=specNorm(d.exists?d.data():null);if(!sp)throw new Error('gone');const h=sp.holders[uid];if(!h)throw new Error('notmine');if(h.used)throw new Error('used');
+async function specUse(e){let out=null;
+  await db.runTransaction(async tx=>{const {ref,d}=await rightsTx(tx,e.id);const sp=specNorm(d.exists?d.data():null);if(!sp)throw new Error('gone');const h=sp.holders[uid];if(!h)throw new Error('notmine');if(h.used)throw new Error('used');
     tx.update(ref,{[`holders.${uid}.used`]:true});out={no:specNo(sp,uid),cap:SPEC_CAP[e.tier|0]||0,name:sp.name||sp.auto||e.auto||''}});
   if(!out)throw new Error('net');specCache.delete(e.id);return out}
 /* 全服第一個喚醒某種精靈：fairyFirst/<鍵> 只能建立一次（不需要名額） */
@@ -6445,18 +6447,18 @@ function spStallHTML(h){const st=sheet.step;
 async function spStallSave(i,b){const e=(state.specs||[]).find(x=>x.id===sheet.tid);if(!e||!specTradable(e))return;
   const inf=stallInfo(i);if(inf.owner&&inf.owner!==uid){sheet.err='這個攤位剛被別人占用了，換一個空攤位吧';renderSheet();return}
   const price=parseInt(sheet.d2,10);if(!(price>=1&&price<=9999999)){sheet.err='請輸入 1 以上的價格';renderSheet();return}
-  b.disabled=true;const sp=specGet(e.id);
-  try{const ref=await db.collection('listings').add({kind:'spec2',specId:e.id,crop:e.crop,key:e.key,tier:e.tier|0,sb:e.sb||null,cb:e.cb||null,auto:e.auto||'',sno:sp?specNo(sp,uid):0,scap:SPEC_CAP[e.tier|0]||0,name:spListName(e),source:'標本',sellerUid:uid,sellerName:myName(),price,count:1,stall:i,lot:'{}',sold:false,createdAt:TS()});
+  b.disabled=true;const sp=specGet(e.id);let rid0=e.id;try{const d0=await db.collection('rights').doc(e.id).get();if(!d0.exists&&ridOld(e.id))rid0=ridOld(e.id)}catch(x){}
+  try{const ref=await db.collection('listings').add({kind:'spec2',specId:e.id,rid:rid0,crop:e.crop,key:e.key,tier:e.tier|0,sb:e.sb||null,cb:e.cb||null,auto:e.auto||'',sno:sp?specNo(sp,uid):0,scap:SPEC_CAP[e.tier|0]||0,name:spListName(e),source:'標本',sellerUid:uid,sellerName:myName(),price,count:1,stall:i,lot:'{}',sold:false,createdAt:TS()});
     e.listed=(ref&&ref.id)||1;save();renderAll();sheet.step='view';renderSheet();toast(`標本上架了，售價 ${price} 金幣`)}
   catch(err){sheet.err='上架失敗，請檢查網路後再試一次';b.disabled=false;renderSheet()}}
 async function spBuy(l,b){if(hasSpec(l.specId)){toast('你已經有這個品種的標本了');return}
   if(state.coins<l.price){toast('金幣不夠');return}
   b.disabled=true;let paid=false;
-  try{await db.runTransaction(async tx=>{const ref=db.collection('listings').doc(l.id),rref=db.collection('rights').doc(l.specId),d=await tx.get(ref),rd=await tx.get(rref);if(!d.exists||d.data().sold)throw new Error('gone');
+  try{await db.runTransaction(async tx=>{const ref=db.collection('listings').doc(l.id),d=await tx.get(ref),{ref:rref,d:rd}=await rightsTx(tx,l.specId);if(!d.exists||d.data().sold)throw new Error('gone');
       const r=rd.exists?rd.data():null,H=(r&&r.holders)||{},h=H[l.sellerUid];if(!h)throw new Error('gone');if(h.used)throw new Error('used');if(H[uid])throw new Error('mine');
       const up={[`holders.${l.sellerUid}`]:firebase.firestore.FieldValue.delete(),[`holders.${uid}`]:{...h,name:myName()},tx:l.id};
       if(!r.name&&r.namerUid===l.sellerUid){up.namerUid=uid;up.namerName=myName()}/* 命名權跟著 #1（還沒命名時） */
-      tx.update(ref,{sold:true,buyerUid:uid,buyerName:myName(),soldAt:TS()});tx.update(rref,up)});
+      tx.update(ref,{sold:true,buyerUid:uid});tx.update(rref,up)});
     paid=true;state.coins-=l.price;addOwnSpec({id:l.specId,crop:l.crop,key:l.key,tier:l.tier|0,at:Date.now(),auto:l.auto||'',from:`向 ${l.sellerName||''} 購買`,sb:l.sb||undefined,cb:l.cb||undefined});specCache.delete(l.specId);save();renderAll();toast('買到標本了！放進收藏櫃',3500)}
   catch(err){b.disabled=false;const code=(err&&(err.code||err.message))||'unknown';logErr(err,'購買標本');toast(paid?`購買已成立，但寫入時出錯（${code}），請截圖給開發者`:code==='gone'?'這個標本已經被別人買走了':code==='used'?'這個標本已經用過，不能買':code==='mine'?'你已經有這個品種的標本了':`購買失敗（${code}），沒有扣金幣`,7000)}}
 function spCancel(l){const e=(state.specs||[]).find(x=>x.id===l.specId);if(e)delete e.listed;save();renderAll();toast('標本收回收藏櫃了')}

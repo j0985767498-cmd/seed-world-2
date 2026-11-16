@@ -459,7 +459,7 @@ input,textarea,select{font-size:16px !important}
 .rip1{fill:none;stroke:#fff;stroke-width:2;transform-box:fill-box;transform-origin:center;animation:rip1 .75s ease-out forwards}@keyframes rip1{from{transform:scale(.35);opacity:.8}to{transform:scale(1.25);opacity:0}}
 .stn.sink{animation:stnsink .4s ease-out}@keyframes stnsink{0%{transform:translateY(0)}40%{transform:translateY(2.5px)}100%{transform:translateY(0)}}
 .qsw{animation:qsw 16s linear infinite}@keyframes qsw{to{transform:rotate(360deg)}}
-.qsr{transform-box:fill-box;transform-origin:50% 50%;animation:qsr 20s linear infinite}.qsr2{animation-duration:31s;animation-direction:reverse}@keyframes qsr{to{transform:rotate(360deg)}}
+.qsr{transform-box:fill-box;transform-origin:50% 50%;animation:qsr 18s linear infinite}.qsr2{animation-duration:26s;animation-direction:reverse}@keyframes qsr{to{transform:rotate(360deg)}}
 .qsp{fill:#B8935A;animation:qsp .75s ease-in forwards}@keyframes qsp{0%{opacity:.9;transform:translate(0,0)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.4)}}
 .rspk{opacity:0;animation:rspk 7s ease-in-out infinite}@keyframes rspk{0%,82%,100%{opacity:0;transform:translateY(0)}88%{opacity:.9}96%{opacity:0;transform:translateY(-16px)}}
 .twroll{transform-box:fill-box;transform-origin:center;opacity:0;animation:twroll 20s linear infinite}@keyframes twroll{0%,80%{transform:translateX(300px) rotate(0);opacity:0}82%{opacity:1}96%{transform:translateX(0) rotate(-720deg);opacity:1}100%{transform:translateX(0) rotate(-720deg);opacity:0}}
@@ -488,9 +488,10 @@ input,textarea,select{font-size:16px !important}
 .sway.swayB{animation-name:swayB;animation-duration:3.6s}@keyframes swayB{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
 #scene.bgp *{animation-play-state:paused !important}
 @media (prefers-reduced-motion:reduce){.brth,.blink,.asmk,.bfx,.bfy,.bfw,.fishO,.ripA,.twX,.twB,.spkA,.sndr,.fdrop,.flick,.fire,.sprk,.growpop,.sway.swayB{animation:none}.asmk,.ripA,.spkA,.sndr,.fdrop,.sprk,.blink{display:none}}
-.dz2{opacity:0;animation:dz2 3s ease-in-out infinite}@keyframes dz2{0%,100%{opacity:0}50%{opacity:1}}
-.dz3b{opacity:0;animation:dz3b 6s linear infinite}@keyframes dz3b{0%{opacity:0}33.3%{opacity:1}66.6%{opacity:1}66.7%,100%{opacity:0}}
-.dz3c{opacity:0;animation:dz3c 6s linear infinite}@keyframes dz3c{0%,33.3%{opacity:0}66.6%{opacity:1}100%{opacity:0}}
+/* 80.2（16l）：停一下 → 快速換 → 停一下，比一直慢慢糊在中間更看得出在動 */
+.dz2{opacity:0;animation:dz2 3s ease-in-out infinite}@keyframes dz2{0%,35%{opacity:0}50%,85%{opacity:1}100%{opacity:0}}
+.dz3b{opacity:0;animation:dz3b 6s ease-in-out infinite}@keyframes dz3b{0%,23%{opacity:0}33.3%,66.6%{opacity:1}66.7%,100%{opacity:0}}
+.dz3c{opacity:0;animation:dz3c 6s ease-in-out infinite}@keyframes dz3c{0%,56%{opacity:0}66.6%,90%{opacity:1}100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){.dz2,.dz3b,.dz3c{display:none}}
 .wflow{animation:wflow 12s linear infinite}@keyframes wflow{from{transform:translateY(0)}to{transform:translateY(375px)}}
 .wdrift{animation:wdrift 40s linear infinite}@keyframes wdrift{0%{transform:translate(0,0);opacity:.75}50%{transform:translate(91px,187px);opacity:1}100%{transform:translate(183px,375px);opacity:.75}}
@@ -871,7 +872,7 @@ function likely(l){const d=lotDist(l);const top=d[0];const ties=d.filter(x=>Math
 const pctTxt=p=>p>=0.9995?'100%':p<0.01?'不到 1%':Math.round(p*100)+'%';
 function regStatus(crop,key){const v=findVariety(crop,key);return v?(v.inventorUid==='system'?`系統持有（${esc(v.name)}）`:`已是品種「${esc(v.name)}」`):'尚未發現'}
 function distHTML(d,crop,label,open){
-  const rows=d.map(x=>`<div class="prow">${fruitSVG(x.app,crop,40)}<span class="pl"><b>${tagName(x.app,crop)}・${colorLabelA(x.app)}</b><span class="meta">${regStatus(crop,x.key)}</span></span><span class="pp">${pctTxt(x.p)}</span></div>`).join('');
+  const rows=d.map(x=>`<div class="prow">${fruitSVG(x.app,crop,40,1,'','p')}<span class="pl"><b>${tagName(x.app,crop)}・${colorLabelA(x.app)}</b><span class="meta">${regStatus(crop,x.key)}</span></span><span class="pp">${pctTxt(x.p)}</span></div>`).join('');
   return `<details class="dist"${open?' open':''}><summary>${label}（${d.length} 種外觀）</summary>${rows}<p class="note" style="margin:6px 0 0">另有約 ${((MUT_P.spec+MUT_P.spsh)*100).toFixed(2)}% 機率突變出夢幻色或特殊造型。</p></details>`;
 }
 const OLD_SHAPES={
@@ -1163,7 +1164,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-16j';
+const BUILD='2026-11-16l';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -1431,14 +1432,14 @@ function fruitPrep(w,h,d){
    每種顏色依材質疊三到五層（深處、反射、邊緣回光、亮點），所有色塊都是漸層；動態＝第 2、3 影格把光或內容移到別的位置（48.3 交叉淡入淡出）。
    銀、金、珍珠白、彩虹 2 個影格；黑曜、水藍、水晶、星空 3 個影格。彩虹維持橫向彩虹（在 fruitColSpec 裡）。 */
 const DREAM_NF={silver:2,gold:2,pearl:2,rainbow:2,obsidian:3,blue:3,crystal:3,starry:3};
-const DREAM_PERIOD={silver:3,gold:3,pearl:6,rainbow:6,obsidian:6,blue:6,crystal:6,starry:6};
+const DREAM_PERIOD={silver:2.6,gold:1.4,pearl:3.2,rainbow:4,obsidian:3.2,blue:2.6,crystal:2,starry:1.8};/* 80.3（16l） */
 const dzR=seed=>{let R=seed>>>0;return ()=>{R=(R*1664525+1013904223)>>>0;return R/4294967296}};
 const DZ_STARS=(()=>{const R=dzR(4242),o=[];for(let i=0;i<26;i++)o.push([0.1+R()*0.8,0.1+R()*0.8,0.012+R()*0.01,i%3]);return o})();
 const DZ_XSTAR=[[0.30,0.34,0],[0.66,0.28,1],[0.58,0.70,2],[0.26,0.66,1]];
 const DZ_FACET=[0,1,2].map(f=>{const R=dzR(900+f*77);return Array.from({length:21},()=>R())});
-const DZ_GSPK=[[[0.62,0.30],[0.30,0.56],[0.66,0.68]],[[0.52,0.24],[0.36,0.66],[0.72,0.52]]];
-const DZ_CSPK=[[[0.64,0.30],[0.30,0.60],[0.60,0.74]],[[0.36,0.30],[0.70,0.50],[0.44,0.76]],[[0.56,0.24],[0.26,0.46],[0.70,0.70]]];
-const DZ_OBS=[{e:[0.50,0.56],fa:-2.2,o:[128,88,204],i:[88,132,220]},{e:[0.54,0.52],fa:-1.2,o:[60,156,130],i:[156,178,150]},{e:[0.47,0.54],fa:-2.9,o:[84,124,186],i:[156,104,196]}];
+const DZ_GSPK=[[[0.62,0.30],[0.30,0.56],[0.66,0.68]],[[0.48,0.22],[0.38,0.70],[0.74,0.46]]];
+const DZ_CSPK=[[[0.64,0.30],[0.30,0.60],[0.60,0.74]],[[0.32,0.30],[0.72,0.46],[0.40,0.78]],[[0.54,0.22],[0.24,0.42],[0.72,0.70]]];
+const DZ_OBS=[{e:[0.50,0.56],fa:-2.2,o:[128,88,204],i:[88,132,220]},{e:[0.56,0.50],fa:-0.8,o:[60,156,130],i:[156,178,150]},{e:[0.455,0.53],fa:-3.3,o:[84,124,186],i:[156,104,196]}];
 function dreamPx(n,f,u,v,sh,asp){
   /* sh＝明暗（<1 暗、>1 亮）；asp＝高／寬（算圓點用） */
   const mx=(c,d,a)=>{a=a<0?0:a>1?1:a;return [c[0]+(d[0]-c[0])*a,c[1]+(d[1]-c[1])*a,c[2]+(d[2]-c[2])*a]};
@@ -1448,32 +1449,32 @@ function dreamPx(n,f,u,v,sh,asp){
   const dot=(cx,cy,rad)=>cl(1.6-1.6*Math.hypot(u-cx,(v-cy)*asp)/rad),cross=(cx,cy,len)=>{const a=Math.abs(u-cx),b=Math.abs(v-cy)*asp;return Math.max(cl(1-a/len)*cl(1-b/(len*0.16)),cl(1-b/len)*cl(1-a/(len*0.16)))};
   const hard=(cx,cy)=>cl(el(cx,cy,0.085,0.062)*3);
   let c;
-  if(n==='pearl'){const g1=f?[0.45,0.68]:[0.40,0.66],rot=f?0.5:0,sx=f?0.04:0,sy=f?0.03:0;
+  if(n==='pearl'){const g1=f?[0.475,0.69]:[0.40,0.66],rot=f?0.75:0,sx=f?0.06:0,sy=f?0.045:0;
     c=shade([236,240,246]);const g=el(g1[0],g1[1],0.57,0.41);c=mx(c,[128,140,164],Math.pow(g,0.75)*0.92);c=mx(c,[104,114,140],Math.pow(el(g1[0],g1[1],0.40,0.26),1.6)*0.45);
     c=mx(c,[246,248,252],cl((r-0.8)/0.2)*Math.max(0,Math.cos(ang-2.0))*0.9);
     c=mx(c,[240,196,216],0.7*rim*Math.max(0,Math.cos(ang-Math.PI-rot))*0.6);c=mx(c,[190,226,236],0.45*rim*Math.max(0,Math.cos(ang-rot))*0.7);
     c=mx(c,W,Math.pow(el(0.40+sx,0.30+sy,0.30,0.24),1.2)*0.95);c=mx(c,W,el(0.58+sx,0.48+sy,0.15,0.11)*0.7)}
-  else if(n==='silver'||n==='gold'){const gd=n==='gold',o=f?0.07:0,hz=v-(0.56+o)+0.64*dx*dx-0.05*dx,q=u+0.6*v;
+  else if(n==='silver'||n==='gold'){const gd=n==='gold',o=f?0.105:0,hz=v-(0.56+o)+0.64*dx*dx-0.05*dx,q=u+0.6*v;
     c=shade(gd?[246,200,62]:[214,220,230]);
     c=mx(c,gd?[214,150,34]:[150,158,174],cl((hz-0.08)/0.1)*0.55);c=mx(c,gd?[168,96,18]:[92,100,118],bd(hz,0.07,0.15)*(gd?0.80:0.90));
     c=mx(c,gd?[255,238,150]:[240,244,250],bd(hz,-0.025,0.05)*0.9);
     c=mx(c,gd?[255,226,120]:[232,238,246],cl((r-0.72)/0.28)*Math.max(0,Math.cos(ang-2.3))*0.85);
-    if(gd){const h=f?[0.42,0.31]:[0.36,0.29];c=mx(c,[255,250,214],el(h[0],h[1],0.24,0.19)*0.85);c=mx(c,W,hard(h[0]-0.02,h[1]-0.02));for(const [sx,sy] of DZ_GSPK[f])c=mx(c,[255,252,230],cross(sx,sy,0.075))}
-    else{const p=f?0.66:0.50;c=mx(c,W,bd(q,p,0.05)*0.8*(1-rim*0.5));c=mx(c,W,bd(q,p+0.17,0.02)*0.7*(1-rim*0.5));c=mx(c,W,hard(0.33,0.26))}}
-  else if(n==='blue'){const p=[0,2.1,4.2][f];
+    if(gd){const h=f?[0.45,0.32]:[0.36,0.29];c=mx(c,[255,250,214],el(h[0],h[1],0.24,0.19)*0.85);c=mx(c,W,hard(h[0]-0.02,h[1]-0.02));for(const [sx,sy] of DZ_GSPK[f])c=mx(c,[255,253,236],cross(sx,sy,0.09)*1.2)}
+    else{const p=f?0.74:0.50;c=mx(c,W,bd(q,p,0.05)*0.9*(1-rim*0.5));c=mx(c,W,bd(q,p+0.17,0.02)*0.7*(1-rim*0.5));c=mx(c,W,hard(0.33,0.26))}}
+  else if(n==='blue'){const p=[0,3.15,6.3][f];
     c=shade([53,182,230]);c=mx(c,[18,112,198],cl((v-0.45)/0.55)*0.75);c=mx(c,[150,232,255],cl((0.42-v)/0.42)*0.55);
     const a1=1-Math.abs(Math.sin(8.5*u+1.3*Math.sin(6*v+p)+0.7*p)),a2=1-Math.abs(Math.sin(9.5*v+1.3*Math.sin(6.5*u-p)+1.3*p)),net=Math.pow(Math.max(a1,a2),9)+0.6*Math.pow(a1*a2,3);
     c=mx(c,[214,248,255],cl(net)*0.62*(1-rim*rim));c=mx(c,[120,226,250],cl((r-0.7)/0.3)*Math.max(0,Math.cos(ang-0.8))*0.7);c=mx(c,W,hard(0.33,0.27))}
   else if(n==='crystal'){const ex=u-0.47,ey=v-0.47,rr=Math.hypot(ex,ey)*2,ring=rr<0.42?0:rr<0.78?1:2,t=((Math.atan2(ey,ex)/(2*Math.PI)+(ring%2)*0.5/7)%1+1)%1*7,id=Math.floor(t),fr=t-id,val=DZ_FACET[f][ring*7+id];
     c=shade([178,226,242]);c=val<0.55?mx(c,[92,150,196],(0.55-val)/0.55*0.42):mx(c,W,(val-0.55)/0.45*0.5);
     const edge=Math.max(bd(Math.min(fr,1-fr),0,0.035/Math.max(0.25,rr)),bd(rr,0.42,0.03),bd(rr,0.78,0.03));c=mx(c,[240,252,255],edge*0.40);
-    const hu=((Math.atan2(ey,ex)/(2*Math.PI)+f*0.12)%1+1)%1*6,hc=[[255,170,190],[255,220,160],[190,240,170],[160,230,250],[180,190,255],[230,180,250]],h0=hc[Math.floor(hu)%6],h1=hc[(Math.floor(hu)+1)%6];
-    c=mx(c,mx(h0,h1,hu%1),bd(rr,0.78,0.07)*0.35);c=mx(c,W,hard(0.33,0.27));for(const [sx,sy] of DZ_CSPK[f])c=mx(c,W,cross(sx,sy,0.07))}
-  else if(n==='starry'){const np=[[0.40,0.44],[0.46,0.48],[0.36,0.50]][f],nc=[[0.60,0.66],[0.56,0.62],[0.64,0.60]][f],br=[1,0.45,0.15];
+    const hu=((Math.atan2(ey,ex)/(2*Math.PI)+f*0.18)%1+1)%1*6,hc=[[255,170,190],[255,220,160],[190,240,170],[160,230,250],[180,190,255],[230,180,250]],h0=hc[Math.floor(hu)%6],h1=hc[(Math.floor(hu)+1)%6];
+    c=mx(c,mx(h0,h1,hu%1),bd(rr,0.78,0.07)*0.35);c=mx(c,W,hard(0.33,0.27));for(const [sx,sy] of DZ_CSPK[f])c=mx(c,W,cross(sx,sy,0.085)*1.2)}
+  else if(n==='starry'){const np=[[0.40,0.44],[0.49,0.50],[0.34,0.53]][f],nc=[[0.60,0.66],[0.54,0.60],[0.66,0.57]][f],br=[1,0.3,0.04];
     c=shade([26,28,84]);c=mx(c,[120,70,190],el(np[0],np[1],0.34,0.27)*0.62);c=mx(c,[40,130,180],el(nc[0],nc[1],0.30,0.23)*0.55);
     c=mx(c,[190,180,240],bd((v-0.52)-0.55*dx,0,0.10)*0.30);c=mx(c,[14,14,46],cl((r-0.7)/0.3)*0.8);
-    for(const [sx,sy,sr,g] of DZ_STARS){if(Math.abs(u-sx)>0.04)continue;c=mx(c,W,dot(sx,sy,sr)*br[(g+f)%3])}
-    for(const [sx,sy,g] of DZ_XSTAR)c=mx(c,W,cross(sx,sy,0.06)*br[(g+f)%3]);c=mx(c,[230,236,255],hard(0.32,0.26)*0.8)}
+    for(const [sx,sy,sr,g] of DZ_STARS){if(Math.abs(u-sx)>0.04)continue;c=mx(c,W,dot(sx,sy,sr*1.15)*br[(g+f)%3])}
+    for(const [sx,sy,g] of DZ_XSTAR)c=mx(c,W,cross(sx,sy,0.072)*br[(g+f)%3]);c=mx(c,[230,236,255],hard(0.32,0.26)*0.8)}
   else if(n==='obsidian'){const O=DZ_OBS[f],ox=(u-O.e[0])/0.50,oy=(v-O.e[1])/0.44,d=Math.hypot(ox,oy),an=Math.atan2(oy,ox),side=0.30+0.70*Math.pow(Math.max(0,0.5+0.5*Math.cos(an-O.fa)),1.5);
     c=shade([20,20,26]);c=mx(c,[96,108,110],Math.pow(Math.max(0,1-d/1.2),1.2)*0.50);c=mx(c,O.o,bd(d,0.66,0.36)*0.66*side);c=mx(c,O.i,bd(d,0.30,0.34)*0.50*side);
     c=mx(c,[14,14,18],cl((r-0.74)/0.26)*0.85);c=mx(c,[235,240,255],el(0.33,0.27,0.17,0.13)*0.35);c=mx(c,W,cl(el(0.33,0.27,0.075,0.055)*3));
@@ -1483,7 +1484,7 @@ function dreamPx(n,f,u,v,sh,asp){
   return c}
 /* 這個外觀有幾個影格、多久一輪（沒有夢幻色＝1 個影格） */
 function dreamInfo(a){let nf=1,per=0,pale=true;const add=k=>{if(!k)return;const P=colParts(k);if(P.t!=='s'&&P.t!=='l'&&P.t!=='d')return;for(const n of [P.a,P.b])if(n&&DREAM_NF[n]){nf=Math.max(nf,DREAM_NF[n]);per=Math.max(per,DREAM_PERIOD[n]);if(P.t!=='l')pale=false}};
-  add(a.skin);if(a.pat)add(a.pat.c);if(nf<2)return null;const r={nf,per:per*(pale?1.5:1)},P=colParts(a.skin);
+  add(a.skin);if(a.pat)add(a.pat.c);if(nf<2)return null;const r={nf,per}/* 80.2：淡的週期和完整的一樣 */,P=colParts(a.skin);
   /* 48.2 雙夢幻色：左右兩半各用自己的影格數與週期 */
   if(P.t==='d'&&P.a!==P.b&&DREAM_NF[P.a]&&DREAM_NF[P.b])r.dual=[{n:P.a,h:-1},{n:P.b,h:1}];return r}
 function fruitColSpec(key,frame){
@@ -1572,7 +1573,7 @@ function fruitImgSVG(a,ripe,crop){
   const img=(u,cls,st)=>`<image${cls?` class="${cls}"`:''}${st?` style="${st}"`:''} href="${u}" x="${f3(-w/2)}" y="${f3(-h/2)}" width="${f3(w)}" height="${f3(h)}" preserveAspectRatio="none"/>`;
   let out=img(url);
   /* 48：夢幻色的動態。第 2（、3）影格疊在上面，只用 CSS 改透明度交叉淡入淡出；小圖示、結果期、減少動態效果時不播 */
-  if(rp&&FRUIT_ANIM&&!(typeof RMQ!=='undefined'&&RMQ.matches)){const di=dreamInfo(a);if(di){try{const dl=-((hashStr(key)+(++DZ_N)*37)%60)/10;
+  if(rp&&FRUIT_ANIM&&!(typeof RMQ!=='undefined'&&RMQ.matches)){const di=dreamInfo(a);if(di){try{const dl=-(hashStr(key)%60)/10;/* 80（16l）：起始相位只看外觀，重畫時一樣；再由 animSync 對到全域時間 */
     const lay=(nf,per,hf,d)=>{const st=`animation-duration:${per}s;animation-delay:${d}s`;return nf===2?img(fruitURL(B,a,rp,key,1,hf),'dz2',st):img(fruitURL(B,a,rp,key,1,hf),'dz3b',st)+img(fruitURL(B,a,rp,key,2,hf),'dz3c',st)};
     const ov=di.dual?di.dual.map((s,k)=>lay(DREAM_NF[s.n],DREAM_PERIOD[s.n],s.h,f3(dl-k*1.3))).join(''):lay(di.nf,di.per,0,dl);
     out+=FRUIT_ANIM===true?ov:`<g opacity="${FRUIT_ANIM}">${ov}</g>`/* 48.4：農場、野外的植株強度 70% */}catch(e){}}}
@@ -1681,8 +1682,10 @@ function fruitInner(a,ripe,crop){
   const glint=pc===3&&ok?`<path d="M1.05 -1.2 l0.06 0.16 0.16 0.06 -0.16 0.06 -0.06 0.16 -0.06 -0.16 -0.16 -0.06 0.16 -0.06z" fill="#FFF6C2" stroke="#B9840F" stroke-width="0.02"/>`:'';
   return `<defs><clipPath id="c${id}"><path d="${d}"/></clipPath>${gdef}${spDef}${kdef}</defs><g stroke="#24461A" stroke-width="0.06" stroke-linejoin="round">${behind}</g><path d="${d}" fill="${fill}"/><g clip-path="url(#c${id})">${deco}<path d="M-2 -2H2V2H-2Z ${d2}" fill-rule="evenodd" fill="#2A0E00" opacity="${cd.deco==='kernels'?.12:pc<=1?.3:.22}"/>${hl}${spark}</g><path d="${d}" fill="none" stroke="${rgbS(c.map(v=>v*0.55))}" stroke-width="${pc===3?0.08:0.065}" stroke-linejoin="round"/><g stroke="#1E4A12" stroke-width="0.055" stroke-linejoin="round" transform="translate(${f3(capX)} 0)">${front}</g>${glint}`;
 }
+let DZ_PV=0;/* 80.1（16l）：預覽圖（anim==='p'）的夢幻色也要動；同一次畫面最多 24 顆，超過的顯示靜態第一影格。畫完這一輪（同步產生 HTML）就歸零 */
+function dzPrev(ph,ripe){if(ripe<1)return false;let ok=false;try{ok=!!dreamInfo(ph)}catch(e){}if(!ok)return false;if(!DZ_PV)Promise.resolve().then(()=>{DZ_PV=0});return DZ_PV++<24}
 function fruitSVG(ph,crop,size=80,ripe=1,label='',anim=false){
-  FRUIT_ANIM=anim||size>=48;const k=ripe>=1?tfxKind(ph):0,inner=fruitInner(ph,ripe,crop);FRUIT_ANIM=false;/* 34.2、34.5；48.4：48px 以上才播夢幻色動態 */
+  FRUIT_ANIM=anim==='p'?dzPrev(ph,ripe):anim||size>=48;const k=ripe>=1?tfxKind(ph):0,inner=fruitInner(ph,ripe,crop);FRUIT_ANIM=false;/* 34.2、34.5；48.4：48px 以上才播夢幻色動態 */
   return `<svg viewBox="-1.5 -1.6 3 3.2" width="${size}" height="${Math.round(size*3.2/3)}"${k?' overflow="visible" style="overflow:visible"':''} ${label?`role="img" aria-label="${esc(label)}"`:'aria-hidden="true"'}>${k?tfxWrap(k,inner,size>=48,size>=80):inner}</svg>`;
 }
 
@@ -2430,10 +2433,10 @@ function polCard(p,i,o){
   const badges=self?'':`${isBack(p,q)?'<span class="badge r1">回交</span>':''}${isWide(p,q)?'<span class="badge r2">遠緣雜交</span>':''}`;
   const title=self?'自交（用自己的花粉）':`和「${esc(pname(q))}」雜交`;
   const sub=self?'後代會越來越像這一株':`${CROPS[q.crop].n}・${qp.shapeName}・${colorLabel(qp)}・第 ${o.j+1} 塊土地`;
-  let h=`<div class="polcard${open?' open':''}"><button class="polhead" data-act="polopen" data-k="${k}" aria-expanded="${open}">${fruitSVG(qp,q.crop,48)}<span class="pl"><b>${title} ${badges}</b><span class="meta">${sub}</span><span class="meta">${self?'一定成功':`成功率約 ${Math.round(rate*100)}%`}</span></span><span class="chev" aria-hidden="true">${open?'▲':'▼'}</span></button>`;
-  h+=`<div class="polrow"><div class="polstrip" data-act="polopen" data-k="${k}">${top.map(x=>`<span class="pth">${fruitSVG(x.app,p.crop,34)}<i>${pctTxt(x.p)}</i></span>`).join('')}${more>0?`<span class="pmore">還有 ${more} 種</span>`:''}</div>${self?`<button class="polgo" data-act="self">自交</button>`:`<button class="polgo" data-act="cross" data-j="${o.j}">雜交</button>`}</div>`;
+  let h=`<div class="polcard${open?' open':''}"><button class="polhead" data-act="polopen" data-k="${k}" aria-expanded="${open}">${fruitSVG(qp,q.crop,48,1,'','p')}<span class="pl"><b>${title} ${badges}</b><span class="meta">${sub}</span><span class="meta">${self?'一定成功':`成功率約 ${Math.round(rate*100)}%`}</span></span><span class="chev" aria-hidden="true">${open?'▲':'▼'}</span></button>`;
+  h+=`<div class="polrow"><div class="polstrip" data-act="polopen" data-k="${k}">${top.map(x=>`<span class="pth">${fruitSVG(x.app,p.crop,34,1,'','p')}<i>${pctTxt(x.p)}</i></span>`).join('')}${more>0?`<span class="pmore">還有 ${more} 種</span>`:''}</div>${self?`<button class="polgo" data-act="self">自交</button>`:`<button class="polgo" data-act="cross" data-j="${o.j}">雜交</button>`}</div>`;
   if(open){
-    h+=`<div class="polbody">`+d.map(x=>`<div class="prow">${fruitSVG(x.app,p.crop,40)}<span class="pl"><b>${shapeNameOf(x.app,p.crop)}・${colorLabelA(x.app)}</b><span class="meta">${regStatus(p.crop,x.key)}</span></span><span class="pp">${pctTxt(x.p)}</span></div>`).join('');
+    h+=`<div class="polbody">`+d.map(x=>`<div class="prow">${fruitSVG(x.app,p.crop,40,1,'','p')}<span class="pl"><b>${shapeNameOf(x.app,p.crop)}・${colorLabelA(x.app)}</b><span class="meta">${regStatus(p.crop,x.key)}</span></span><span class="pp">${pctTxt(x.p)}</span></div>`).join('');
     h+=`<p class="note" style="margin:6px 0">另有約 ${((MUT_P.spec+MUT_P.spsh)*100).toFixed(2)}% 機率突變出夢幻色或特殊造型。${self?'':`<br>親本大小：${SIZE_N[pp.sizeCls]}／${SIZE_N[qp.sizeCls]}；完美度：${PERF_N[pp.perfCls]}／${PERF_N[qp.perfCls]}，後代大約介於兩者之間。<br>如果雜交失敗，會改為自交。`}</p>`;
     h+=`</div>`;
   }
@@ -4304,13 +4307,13 @@ const FOREST_MAPS={/* 53（15o）：照 53.2 重擺；樹洞內（洞內）最�
 };
 // ===== 沙漠地圖（14s，第 27 節 27.4）：6 張相連小地圖＋神殿 2 張（洞內）；素材 assets/desert/ =====
 const DESERT_IMG={barrel_cactus:[248,261],oasis:[288,300],palm:[261,300],prickly_pear:[255,300],rope_bridge:[319,265],ruins:[299,297],saguaro:[187,300],sand_arch:[311,258],sand_cliff:[312,300],sand_dune:[288,123],sand_stairs:[292,266],sandstone_rock:[300,300],signpost:[229,298],succulents:[289,238],temple:[348,300],tent:[323,240],tumbleweed:[273,251],wagon:[327,203],'../secret/seed_altar':[308,327],'../secret/seed_pedestal':[263,239],
-  sarcophagus:[189,220],stone_dais:[238,140],anubis:[139,200],torch:[66,180],obelisk:[146,280],canopic_jars:[83,90],hiero_wall:[210,200],treasure:[117,90]};/* 64.6（16h）：神殿的埃及擺設 */
+  sarcophagus:[189,220],stone_dais:[238,140],anubis:[139,200],torch:[66,180],obelisk:[146,280],canopic_jars:[83,90],hiero_wall:[210,200],treasure:[117,90],sarcophagus_dais:[313,316]};/* 64.6（16h）：神殿的埃及擺設 */
 /* [檔名, 顯示高度, 碰撞寬, 碰撞高]：多肉不擋路；神殿、砂岩拱門的碰撞用 blocks（門口、拱門中間要留空）；吊橋、石階畫在地面層；峽谷的深溝用 chasms（程式畫，擋路） */
 const DESERT_ART={saguaro:['saguaro',120,20,12],bigsaguaro:['saguaro',150,24,14],tumbleweed:['tumbleweed',52,44,14],tent:['tent',110,120,36],
   barrel:['barrel_cactus',54,46,16],pear:['prickly_pear',70,48,16],succ:['succulents',44,0,0],wagon:['wagon',70,90,24],oasis:['oasis',130,110,36],palm:['palm',150,20,12],
   bridge:['rope_bridge',130,0,0],cliff:['sand_cliff',96,0,0],sidecliff:['sand_cliff',110,92,30],dune:['sand_dune',46,100,18],stairs:['sand_stairs',92,0,0],
   rock:['sandstone_rock',60,56,18],ruins:['ruins',110,90,26],arch:['sand_arch',120,0,0],temple:['temple',160,0,0],sign:['signpost',78,16,8],altar:['../secret/seed_altar',160,120,40],ped:['../secret/seed_pedestal',52,34,12],
-  dais:['stone_dais',95,150,46],sarco:['sarcophagus',92,0,0],anubis:['anubis',100,44,14],torch:['torch',90,14,8],obelisk:['obelisk',140,48,16],jars:['canopic_jars',45,40,10],hiero:['hiero_wall',100,92,14],treasure:['treasure',45,50,12]};/* 64.6：棺材放在石台上（碰撞只算石台底部） */
+  dais:['stone_dais',95,150,46],sarco:['sarcophagus',92,0,0],sdais:['sarcophagus_dais',150,130,44],/* 77（16k）：棺材已經躺在兩層石台上；碰撞只算下層石台底部 */anubis:['anubis',100,44,14],torch:['torch',90,14,8],obelisk:['obelisk',140,48,16],jars:['canopic_jars',45,40,10],hiero:['hiero_wall',100,92,14],treasure:['treasure',45,50,12]};/* 64.6：棺材放在石台上（碰撞只算石台底部） */
 const DESERT_FLAT={bridge:1,stairs:1},DESERT_SWAY={palm:1,tumbleweed:1};
 const DESERT_MAPS={/* 53、54.4（15r）：照 53.2 重擺；峽谷改成彎曲的裂谷＋階地；神殿兩張（洞內）最後和其他洞一起改 */
   entry:{n:'沙漠入口',gx:1,gy:2,v2:1,
@@ -4389,7 +4392,7 @@ const DESERT_MAPS={/* 53、54.4（15r）：照 53.2 重擺；峽谷改成彎曲�
     exits:[{side:'s',c:400,w:120,to:'temple1'}],
     floor:[{rect:[120,150,680,1130],j:3}],
     paths:[{p:[[400,1130],[400,800],[400,470]],w:60,end:'dirt'}],
-    objs:[['dais',400,430],['sarco',408,431,null,{dy:-60,ns:1,nocol:1}],['anubis',262,446],['anubis',538,446,null,{fl:1}],['torch',312,512],['torch',488,512,null,{fl:1}],
+    objs:[['sdais',400,432],['anubis',262,446],['anubis',538,446,null,{fl:1}],['torch',312,512],['torch',488,512,null,{fl:1}],
       ['jars',176,236],['treasure',622,240],['treasure',174,1050,null,{s:0.9,fl:1}],['jars',630,1056,null,{fl:1}],['jars',214,262,null,{s:0.7,fl:1}],
       ['ruins',200,640],['ruins',600,640,null,{fl:1}],['ruins',200,880,null,{s:0.9}],['ruins',600,880,null,{s:0.9,fl:1}]],
     spawns:[[400,520],[250,760],[550,760],[300,990],[520,1000]],items:[[400,214],[620,960]]},
@@ -4654,7 +4657,7 @@ const REGION_CFG={
   forest:{name:'森林',ground:'#8CAA69',outer:'#809E5F',spots:['#839F61','#97B474'],path:['#A99A72','#B6A780'],water:['#6F9A92','#8FB8B0'],cliff:['#857A64','#6F6552','#8CAA69'],
     edgeTree:'pine',edgeBush:'mossy_bush',weather:'forest',shadow:'rgba(30,45,20,.25)',glow:'#BFE8FF',footprints:false,
     caveGround:'#6B5236',caveOuter:'#2E2316',caveSpots:['#614A30','#76603F'],cavePath:['#7A6142','#856C4C'],caveWall:'#4A3622',caveEdge:'#9C7E56'},
-  desert:{name:'沙漠',ground:'#F0DCA4',outer:'#E6CF94',spots:['#EBD292','#F6E6B8'],path:['#CDB37E','#D8C08E'],water:['#6F9A92','#8FB8B0'],cliff:['#C49A62','#A97F4C','#F0DCA4'],/* 64.4（16h）：地面改成溫暖的金黃沙色，比沙丘本體（#FED784）淡、彩度低 */
+  desert:{name:'沙漠',ground:'#FAD487',outer:'#F2C77A',spots:['#F6CB7E','#FCDD9E'],path:['#E9BC6E','#EFC67E'],water:['#6F9A92','#8FB8B0'],cliff:['#C49A62','#A97F4C','#FAD487'],/* 78.1（16k）：地面＝沙丘素材亮面的黃金沙色（#FAD487），沙丘靠暗面和外框跳出來 */
     edgeTree:'saguaro',edgeBush:'tumbleweed',weather:'desert',shadow:'rgba(110,80,40,.22)',glow:'#FFE6A0',footprints:true,
     caveGround:'#C9A76E',caveOuter:'#5E4527',caveSpots:['#BF9C63','#D3B37C'],cavePath:['#B8955E','#C2A06A'],caveWall:'#8E6E44',caveEdge:'#E2C796'},
   marsh:{name:'濕地',dir:'wetland',ground:'#96AF78',outer:'#8AA36D',spots:['#8DA770','#A1B985'],path:['#A39A74','#B0A782'],water:['#6F9A92','#8FB8B0'],cliff:['#7E7A5E','#68654D','#96AF78'],
@@ -4807,9 +4810,9 @@ const REG_V2={
     shade:'#2C4626',vig:'#14301E',hi:'#A6BE88',lip:'#9EB781',lipLine:'#5E7A4A',
     terr:null,water:{edge:'#4A6656',sh:'#9EC2B8',deep:'#76A49A',glint:'#E2F2EC'},pal:[['#FFFFFF','#F6D9E6','#FBEFA8'],['#FFFFFF','#E9D7F4']]},
   desert:{tree:'saguaro',big:'bigsaguaro',hero:'palm',bush:'tumbleweed',tuft:'succ',flower:'succ',fs:0.8,rock:'rock',log:'barrel',
-    path:['#B4935C','#CDB078','#D8BE86','#C2A46C','#A08352'],tufts:['#C9AE70','#D3B978','#BFA266'],spots:['#EBD292','#F6E6B8','#EFD89C'],wind:['#FBF0CC','#D9BB78'],
-    shade:'#8A6A3A',vig:'#5A3A1A',hi:'#F8EBC2',lip:'#F4E4B4',lipLine:'#C9A562',
-    terr:{art:'cliff',stairs:'stairs',sa:[0.30,0.60],rock:'#F09A50',rockD:'#B36A30',shade:'#8A6030',drip:['#C4AA72','#D6BF8B']},
+    path:['#EDC47A','#E9BC6E','#EFC680','#E3B466','#C99550'],tufts:['#E8B868','#EEC47C','#DDA85C'],spots:['#F6CB7E','#FCDD9E','#F8D28C'],wind:['#F1C776','#E4B062'],/* 78.1：小路 #E9BC6E、外圈接近地面色所以邊緣漸淡；風紋 #F1C776 */
+    shade:'#8A6A3A',vig:'#5A3A1A',hi:'#FCDC98',lip:'#FAD487',lipLine:'#D9A55C',
+    terr:{art:'cliff',stairs:'stairs',sa:[0.30,0.60],rock:'#F09A50',rockD:'#B36A30',shade:'#8A6030',drip:['#E3B46A','#EDC583']},
     water:{edge:'#4E7A70',sh:'#9ED0C6',deep:'#6AAAA0',glint:'#EAF8F2'},pal:[['#F2B8C6','#F7E68A','#FFFFFF']],
     bridge:{k:'bridge',s:1,a:[0.24,0.80],b:[0.90,0.40],hw:0.16,n:[0.56,0.83]}},
   snow:{tree:'pine',big:'bigpine',hero:'bare',bush:'bush',tuft:null,flower:'crystals',rock:'boulder',log:'log',
@@ -5201,10 +5204,10 @@ try{setInterval(regStandTick,500)}catch(e){}
 /* 每次重畫都要重新算的東西（畫在地面之上、物件之下） */
 function regDynHTML(M){
   let s='';const bk=M.bk,T=M.secTrig;
-  if(M.quick){/* 64.5（16h）：流沙用 assets/common/quicksand_tile.png（中央是漩渦）。先轉、再壓扁成橢圓；橢圓遮罩邊緣約 15px 羽化融進地面；第二層放大 1.15、透明度 .4、反方向慢慢轉 */
-    s+=`<defs><radialGradient id="qsg"><stop offset="0" stop-color="#fff"/><stop offset=".72" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>`;
-    for(const [k,[cx,cy,rx,ry]] of M.quick.entries()){const r=rx*1.1,r2=r*1.15;
-      s+=`<g pointer-events="none"><mask id="qsm${k}" maskUnits="userSpaceOnUse" x="${cx-rx-2}" y="${cy-ry-2}" width="${2*rx+4}" height="${2*ry+4}"><ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#qsg)"/></mask><g mask="url(#qsm${k})"><g transform="translate(${cx} ${cy}) scale(1 ${(ry/rx).toFixed(3)})"><image class="qsr" href="assets/common/quicksand_tile.png" x="${v2f(-r)}" y="${v2f(-r)}" width="${v2f(2*r)}" height="${v2f(2*r)}" style="animation-delay:-${k*6}s"/><image class="qsr qsr2" href="assets/common/quicksand_tile.png" x="${v2f(-r2)}" y="${v2f(-r2)}" width="${v2f(2*r2)}" height="${v2f(2*r2)}" opacity=".4" style="animation-delay:-${k*4}s"/></g></g></g>`}}
+  if(M.quick){/* 78.2（16k）：流沙用 assets/common/quicksand_disc.png（圓形、邊緣已羽化，不另外裁切）。外層壓扁成橢圓（寬＝流沙寬、高＝寬×0.55），
+       第一層 18 秒一圈；第二層放大 1.15、透明度 .4、反方向 26 秒一圈。相位由 animSync 對到全域時間，重畫不會從頭轉 */
+    for(const [k,[cx,cy,rx]] of M.quick.entries()){const r=rx,r2=r*1.15;
+      s+=`<g pointer-events="none" transform="translate(${cx} ${cy}) scale(1 .55)"><image class="qsr" href="assets/common/quicksand_disc.png" x="${v2f(-r)}" y="${v2f(-r)}" width="${v2f(2*r)}" height="${v2f(2*r)}" style="animation-delay:-${k*6}s"/><image class="qsr qsr2" href="assets/common/quicksand_disc.png" x="${v2f(-r2)}" y="${v2f(-r2)}" width="${v2f(2*r2)}" height="${v2f(2*r2)}" opacity=".4" style="animation-delay:-${k*4}s"/></g>`}}
 
   if(!T)return s;
   if(T.ring){const [cx,cy]=T.ring,n=Math.floor(ringT);/* 蘑菇圈：偶爾飄起一兩點微光；站著不動時蘑菇一朵一朵亮 */
@@ -5717,7 +5720,7 @@ sceneEl.addEventListener('wheel',e=>{if(!state)return;e.preventDefault();setZoom
 /* 14h：種子包只寫一行親本；育種中的種子包另顯示目標外觀 */
 function lotParentHTML(l,ph,cross){let f='';if(cross){try{f=shortApp(phen(l.f,l.crop))}catch(e){f='？'}}return `<p class="note"><b>親本：</b>${shortApp(ph)}${cross?' × '+f:''}</p>`}
 function lotTarget(l){const c=lotCat(l);return c.c==='breed'?c.r:null}
-function lotTargetHTML(l,ph){const r=lotTarget(l);if(r==null)return '';return `<div class="lot-top" style="margin:4px 0 8px">${fruitSVG(ph,l.crop,48)}<div><b>目標外觀</b><div class="meta">${ph.shapeName}・${colorLabel(ph)}</div><div class="meta">種下去約 ${pctTxt(r)} 會長成這樣</div></div></div>`}
+function lotTargetHTML(l,ph){const r=lotTarget(l);if(r==null)return '';return `<div class="lot-top" style="margin:4px 0 8px">${fruitSVG(ph,l.crop,48,1,'','p')}<div><b>目標外觀</b><div class="meta">${ph.shapeName}・${colorLabel(ph)}</div><div class="meta">種下去約 ${pctTxt(r)} 會長成這樣</div></div></div>`}
 function lotUniHTML(l){try{const d=lotDist(l);if(!d.length)return '';
   if(d.length===1||d[0].p>=0.9995)return `<p class="note">${l.cross?'這包是雜交成品：種下去全部長一樣。但長出來的植株自交後，後代會分開，想一直有這個樣子，要留著兩個純的親本再雜交。':'這包種下去會長得一樣。'}</p>`;
   return `<p class="note">這包種下去會長出 ${d.length} 種外觀。</p>`}catch(e){return ''}}
@@ -6797,6 +6800,8 @@ function rsvMarkSVG(p,x,y,mk){if(!p.rsv)return '';const cx=x-14,cy=y-56-mk;
 /* ===== 63（16b）：循環的 CSS 動畫跟著全域時間走 =====
    畫面重畫（innerHTML 整段換掉）時元素會重新建立，CSS 動畫從 0% 重來，看起來像倒帶。重畫之後把每個無限循環的動畫對到「現在時間 % 週期」，
    元素就算被重建也接在原本的進度；每個元素自己的 animation-delay 照舊當成固定的偏移，所以同一排不會整齊同步。只播一次的動畫（彈出、特效）不動。 */
+/* 80（16l）：面板重畫時夢幻色的動畫接著原本的進度 */
+setTimeout(()=>{try{const f=renderSheet;renderSheet=function(){f.apply(this,arguments);try{animSync(sb)}catch(e){}}}catch(e){}},0);
 function animSync(root){try{if(!root||!root.getAnimations||(typeof RMQ!=='undefined'&&RMQ.matches))return;const tl=document.timeline&&document.timeline.currentTime,now=typeof tl==="number"?tl:performance.now();/* 用動畫自己的時鐘，切到背景時鐘停了也對得上 */
   for(const a of root.getAnimations({subtree:true})){const ef=a.effect,t=ef&&ef.getComputedTiming&&ef.getComputedTiming();if(!t||t.iterations!==Infinity)continue;const d=+t.duration;if(!(d>0))continue;let off=0;
     if(!t.delay&&/^sway/.test(a.animationName||'')){const el=ef.target,im=el&&(el.tagName==='image'?el:el.querySelector&&el.querySelector('image'));if(im)off=(Math.abs(parseFloat(im.getAttribute('x'))*37+parseFloat(im.getAttribute('y'))*17)||0)%1}/* 沒有自己偏移的晃動物件：用座標算一個固定的偏移，同一排不會整齊同步 */

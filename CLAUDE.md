@@ -1,6 +1,6 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 版本：遊戲程式 `index.html`，`BUILD = '2026-11-17k'`
+> 版本：遊戲程式 `index.html`，`BUILD = '2026-11-17l'`
 > 用途：交給新的對話，讓接手者一讀就能理解目前版本、所有已定案的決定與下一步工作，不會改錯。
 > **程式碼才是唯一的事實來源。** 企畫書 v0.7 已經落後於程式，兩者衝突時一律以程式為準。
 > 程式碼就是本資料夾的 `index.html`（約 380 KB）。
@@ -1214,6 +1214,17 @@
   - 圖片載入的部分照使用者指示放到最後（99.2 已經先改了地面圖）。
   - 沒測：iPhone 上實際有沒有變順（預覽視窗沒辦法量 Safari 的重畫）。
 
+### 9.97 加入主畫面、App 內建瀏覽器提示（17l，第 100 節）
+
+- `manifest.json`（專案根目錄）：名稱「種子的世界」、`display:standalone`、`orientation:portrait`、`start_url`／`scope` 都是 `./`、底色與主題色 `#A8C478`（載入畫面的草地色）、圖示 192／512。`<head>` 多了 manifest、`theme-color`、`apple-mobile-web-app-capable`、`apple-mobile-web-app-status-bar-style`（`black-translucent`）、`apple-mobile-web-app-title`、`apple-touch-icon`；`viewport-fit=cover` 原本就有。
+- 圖示 `assets/app/icon-180／192／512.png`：暫用 `assets/icons/seed_bag.png`（種子袋）放在淡綠底＋淺色圓上，不透明。要換圖時直接覆蓋這三個檔。
+- **沒有加 service worker**，`index.html`、`version.json` 照舊每次走網路，更新流程不變。
+- 版本檢查改成函式 `verCheck()`：載入時查一次；`visibilitychange` 回到前景、離上次檢查超過 10 分鐘再查一次（`verAt`）。發現新版先試著 `flush()`（最多等 1.5 秒）再重整；同一版只重整一次（`sw_reload`）。原本每 5 分鐘抓整份 index.html 的 `checkBuild`（只停存檔、不重整）照舊。
+- 版面：HUD、圓盤、底部面板、工具列原本就有 `env(safe-area-inset-*)`；這次補了存檔修復框 `#repairBox`、存檔保護框 `#saveGuard` 的上方。
+- 設定頁「音效」下面多「加到主畫面」一行＋「？」（iPhone：分享 → 加入主畫面；Android：選單 → 安裝應用程式）；`isStandalone()`（`navigator.standalone` 或 `display-mode: standalone／fullscreen`）時不顯示。
+- App 內建瀏覽器：`INAPP`（userAgent 含 `Instagram`、`FBAN`、`FBAV`、`FB_IAB`、`Line/`、`MicroMessenger`）時，畫面上方一條提示 `#inappBar`「建議用 Safari 開啟：點右上角 ⋯ →「在外部瀏覽器開啟」」＋「複製網址」（`navigator.clipboard`，不行就 `execCommand`，再不行把網址寫在按鈕上）；Android 多一顆「用 Chrome 開啟」（`intent://…;package=com.android.chrome;end`）。只在載入畫面或登入畫面看得到的時候顯示（`inappUpd`，`bootShow`／`bootHide` 會呼叫），進遊戲就收起。登入畫面原本的 `#inapp` 那一行拿掉。
+- 測試：語法檢查、manifest JSON、vm 19 個全部通過。Edge 無頭模式 496 寬截圖：iPhone＋Instagram UA 只有「複製網址」、Android＋FB UA 多「用 Chrome 開啟」、一般瀏覽器沒有提示。沒測：iPhone 加入主畫面後的實際樣子（圖示、全螢幕、瀏海與 Home 條）、IG 裡 Google 登入能不能用、主畫面 App 回到前景的版本檢查。
+
 ### 9.9 其他既有系統
 
 播種模式（`openSow`、`sowOne`、`sowUndo`、`renderSowBar`）、種原庫與壓縮（`zipLot` 等，存檔時自動壓縮）、種原庫查詢、批次丟棄、存檔大小報告（超過 900 KB 提醒）、種子袋滿時新種子自動放進種原庫「暫存櫃」（`ensureSlots`）、每日訂單與每週挑戰（`state.daily`、`state.weekly`、`deliverables(p,ph)`）、市集攤位交易、紀錄榜、跑馬燈。
@@ -1239,6 +1250,7 @@
 | `14o` | 果實素模上色（9.16，26.7 第 1 步）：`fruitInner` 改用 `assets/fruits/` 素模＋canvas 上色（花紋、特殊色效果、結果期偏綠），快取 300 筆；結果期果實 70% 大小、辣椒／玉米 b2 ×0.7；植株照舊；對照頁 `tools/fruit_compare.html` |
 | `14p` | 地區地圖通用化（9.17，27.7 第 1 步）：雪原程式改成 `REGION_MAPS`／`REGION_CFG` 與 `reg*` 函式共用，雪原完全不變（vm 比對）；新增河流 `rivers`；其他 4 區仍是無限方塊 |
 | `14q` | 草原地圖（9.18，27.7 第 2 步）：入口、野花坡、小河邊（河＋橋）、山丘（懸崖＋石階）、古井遺跡 5 張固定小地圖，取代草原的無限方塊；總覽頁 `tools/region_grass.html`；素模果實大小改成框的 0.82 |
+| `17l` | 第 100 節（9.97）：加入主畫面（manifest、圖示、全螢幕）、回到前景 10 分鐘以上再檢查版本、IG／FB／LINE 內建瀏覽器提示 |
 | `17k` | 第 99.1 節（9.96：播種只從點空田、綠色按鈕＝育苗盤、拿掉重複的按鈕）、99.8（洞內暗場不用遮罩、角色層內容沒變就不重建） |
 | `17j` | 第 99 節（9.95）：閃退紀錄與地面圖省記憶體、數字改系統字型、佈置拖到邊緣視角跟著移、打扮頁與名片用手指轉身；99.1 只盤點 |
 | `17i` | 第 98 節（9.94）：存檔修復不再刪櫻花瓣花紋、從備份救回、存檔比程式新時不修復不存檔；地圖面板置中、不超出畫面 |
@@ -1780,7 +1792,7 @@ vm 測試至少涵蓋：紅×黃 F1 全為橙；橙自交 紅：橙：黃 ≈ 1�
 實作時產生一個「人物對照頁」（HTML，不放進遊戲），畫出所有髮型、帽子、衣服在正、側、背三個方向，以及和 assets/snow 素材、新植株並排的畫面，讓使用者用瀏覽器檢查。
 23. 待辦總表（36.4；唯一的待辦清單，每做完一個 BUILD 就更新）
 
-狀態只有四種：**已做（BUILD）**、**可以做**、**等使用者決定：○○**、**等素材：○○**。每次回報最後附上「等使用者決定」與「等素材」的項目。下一版 BUILD 是 `2026-11-17l`。
+狀態只有四種：**已做（BUILD）**、**可以做**、**等使用者決定：○○**、**等素材：○○**。每次回報最後附上「等使用者決定」與「等素材」的項目。下一版 BUILD 是 `2026-11-17m`。
 
 使用者 2026-11-15 指定的順序（已做完：31.7、36.7、32.0–32.4、36.8、36.1、34、35、39、46）：**① 39＋46＋45 → ② 37（15l）→ ②' 49＋50（15m）→ ③ 40 → ④ 28.4＋29＋30＋41＋43 → ⑤ 47 → ⑥ 32 尚未實作的修改（32.1 Lv 2 開放）→ ⑦ 44 → ⑧ 38 → ⑨ 34＋48（iPhone 看過後的調整、幻色動態）→ ⑩ 33 → ⑪ 42**。每做完一組更新 BUILD、回報改了什麼和測了什麼，然後停下來；**由使用者 commit、push 並在 iPhone 測過**再做下一組。40.2、42.1 先貼清單，確認後才做；38.1 先做外框與淺水帶，紋理等素材。
 
@@ -1902,6 +1914,7 @@ vm 測試至少涵蓋：紅×黃 F1 全為橙；橙自交 紅：橙：黃 ≈ 1�
 | 99.8 | 洞內、秘境一直卡 | 已做（17k，見 9.96）；iPhone 未測 |
 | 99.2 | 蓮花島點台座閃退 | 已做（17j，見 9.95）；原因是推測（iPhone 記憶體），要使用者在 iPhone 再試，閃退的話看設定頁「回報問題」 |
 | 99.3–99.5 | 數字字型、佈置拖到邊緣、手指轉身 | 已做（17j，見 9.95） |
+| 100 | 加入主畫面（PWA）、IG 內建瀏覽器提示 | 已做（17l，見 9.97）；圖示是暫用的種子袋；IG 裡 Google 登入能不能用、主畫面模式的版面：等使用者 iPhone 實測 |
 | 95 | 標本是一次性通行證（取代 93.3 的名額、精靈交易、換色） | 已做（17b，見 9.83）；Firebase 規則要貼（`tools/firestore_rules_95.txt`）；`fairy` 集合要不要清空：等使用者決定 |
 | — | iPhone 實測 14l–16h | 等使用者決定：實測回報 |
 
@@ -5206,3 +5219,29 @@ function terrace(o){const {W,E,H,gap,art,aw,ah,stairs,sw,sh,hi,lip,rock,rockD,sh
 ### 99.8 洞內、秘境一直卡（2026-11-17 使用者補充）
 - 使用者回報：不是只有剛進去那幾秒卡，是在秘境、神殿、樹洞裡面一直都卡。
 - 先查「每一幀都在重畫」的東西：暗場遮罩、光暈濾鏡（blur、drop-shadow）、mix-blend-mode、發光粒子動畫、以 requestAnimationFrame 每幀重畫 SVG 的效果。圖片載入的問題放到最後。
+
+## 100. 加入主畫面（PWA）（2026-11-17 使用者同意試做）
+
+狀態：可以實作。目的：iPhone「分享 → 加入主畫面」後有圖示、打開是全螢幕（沒有 Safari 網址列）。**更新流程完全不變**（照舊 push 到 GitHub Pages），不可以因為這節讓玩家卡在舊版。
+
+### 100.1 要加的東西
+- `manifest.json`：`name` 種子的世界、`short_name` 種子的世界、`display: standalone`、`orientation: portrait`、`start_url` 與 `scope` 用相對路徑 `./`（GitHub Pages 在子路徑下）、`background_color`／`theme_color` 用載入畫面（71.2）的底色。
+- `index.html` 的 `<head>`：`<link rel="manifest">`、`apple-mobile-web-app-capable`、`apple-mobile-web-app-status-bar-style`（`black-translucent`）、`apple-mobile-web-app-title`、`apple-touch-icon`、`viewport-fit=cover`。
+- 圖示：`assets/app/icon-180.png`、`icon-192.png`、`icon-512.png`（不透明底）。先用現有素材暫做（例如番茄果實或種子袋圖示放在淡綠底上），回報用了哪張；之後使用者可以另外生圖換掉。
+
+### 100.2 更新不能變麻煩（重要）
+- **不加會快取 index.html 的 service worker。** 如果需要 service worker，只能是 network-first 或只快取圖片；`index.html`、`version.json` 一律走網路。
+- 71.3 的版本檢查（`version.json`、`cache:'no-store'`、不同就重整一次）在主畫面模式下照樣要有效；另外在 `visibilitychange` 回到前景、且離上次檢查超過 10 分鐘時再查一次（主畫面 App 常常整天不關，不會重新載入）。
+
+### 100.3 全螢幕後的版面
+- 沒有網址列後，上方會有瀏海、下方有 Home 條：HUD、右下圓盤、底部面板都要避開 `env(safe-area-inset-*)`。
+- 98.2 的面板高度規則照用。
+- 檢查：主畫面模式與一般 Safari 兩種都截圖回報（農場、地圖面板、道具行）。
+
+### 100.4 給玩家的提示
+- 設定頁加一行「把遊戲加到主畫面」：點了顯示簡短說明（iPhone：分享 → 加入主畫面；Android：選單 → 安裝應用程式）。已經是主畫面模式（`navigator.standalone` 或 `display-mode: standalone`）時不顯示。不主動跳視窗。
+
+### 100.5 從 IG／LINE／FB 打開（App 內建瀏覽器）
+- 使用者的朋友多半從 IG 點連結進來。App 內建瀏覽器：不能「加入主畫面」；Google 登入常被擋（Google 禁止在內嵌瀏覽器登入）；存檔、登入狀態和 Safari 分開；記憶體限制更嚴，比較容易閃退、卡頓。
+- 偵測 userAgent 含 `Instagram`、`FBAN`／`FBAV`、`Line/` 時，在載入畫面與登入按鈕上方顯示一條提示（不擋操作）：「建議用 Safari 開啟：點右上角 ⋯ →『在外部瀏覽器開啟』」，附一個「複製網址」按鈕。Android 另外可以試 `intent://` 直接跳 Chrome。
+- 先回報：目前在 IG 內建瀏覽器裡 Google 登入能不能用（用電腦模擬 IG userAgent 不準，請使用者用 iPhone 實測並回報畫面）。

@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
 <title>種子的世界</title>
+<!-- 100（17l）：加入主畫面 -->
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#A8C478"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="種子的世界"><link rel="apple-touch-icon" href="assets/app/icon-180.png"><link rel="icon" type="image/png" sizes="192x192" href="assets/app/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet"><!-- 16t：介面標題、數字用「粉圓」 -->
 
 
@@ -406,6 +408,7 @@ body.game{background:#5E9E38}
 #mapPanel{position:fixed;right:8px;top:calc(302px + env(safe-area-inset-top,0px));z-index:20;background:#FFF6DE;border:2px solid #5A3416;border-radius:14px;padding:8px;width:min(310px,calc(100vw - 24px));color:#3B2A18}#mapPanel[hidden]{display:none}
 #boot{position:fixed;inset:0;z-index:300;background:#A8C478;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;transition:opacity .4s}#boot.out{opacity:0;pointer-events:none}#boot[hidden]{display:none}
 #boot h1{font-size:34px;margin:0 0 14px;color:#3B2A18;letter-spacing:2px}#bootMsg{font-size:16px;color:#4A3A22;margin:0 0 10px;font-weight:700}.bootIn{max-width:330px}#bootErr{background:#FFF6DE;border:2px solid #5A3416;border-radius:14px;padding:12px;box-shadow:0 3px 0 #5A3416}#bootErr[hidden]{display:none}#bootErrMsg{font-size:14px;color:#8A2A16;margin:0 0 8px;word-break:break-all}#bootErr .btn{margin-top:6px}#bootSlow{font-size:13px;color:#5A3416;opacity:0;animation:bootslow .4s 22s forwards}@keyframes bootslow{to{opacity:1}}#bootErr:not([hidden])~#bootSlow,#boot.out #bootSlow{display:none}
+#inappBar{position:fixed;left:8px;right:8px;top:calc(8px + env(safe-area-inset-top,0px));z-index:310;background:#FFF6DE;border:2px solid #5A3416;border-radius:12px;box-shadow:0 3px 0 #5A3416;padding:8px 10px;font-size:14px;line-height:1.4;color:#4A3020;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;justify-content:center;text-align:center}#inappBar[hidden],#inappBar [hidden]{display:none !important}#inappBar .iab{display:flex;gap:6px}#inappBar .btn{margin:0;padding:6px 12px;font-size:14px;width:auto;text-decoration:none}
 #bootVer{position:fixed;right:10px;bottom:calc(8px + env(safe-area-inset-bottom,0px));font-size:11px;color:#5E7A40}
 #fadeOv{position:fixed;inset:0;background:#0E1A26;opacity:0;pointer-events:none;transition:opacity .15s;z-index:40}
 .sway{animation:sway 5s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}@keyframes sway{0%,100%{transform:rotate(-.9deg)}50%{transform:rotate(.9deg)}}
@@ -902,12 +905,12 @@ window.firebase=new Proxy(function(){},{get:(o,k)=>{
  return P}});
 })();</script></head>
 <body class="game">
+<div id="inappBar" role="note" hidden><span>建議用 Safari 開啟：點右上角 ⋯ →「在外部瀏覽器開啟」</span><span class="iab"><button type="button" class="btn" id="inappCopy">複製網址</button><a class="btn" id="inappChrome" hidden>用 Chrome 開啟</a></span></div>
 <div id="boot"><div class="bootIn"><h1>種子的世界</h1><p id="bootMsg" role="status">讀取中…</p><p id="bootSlow">讀取太久了，請重新整理。一直這樣的話，請更新瀏覽器。</p><div id="bootErr" hidden><p id="bootErrMsg"></p><button class="btn primary" onclick="location.reload()">重新整理</button><button class="btn" id="bootReset" hidden>保留舊存檔、開始新遊戲</button><p class="note" id="bootResetNote" hidden></p></div></div><small id="bootVer"></small></div>
 <div id="login" hidden>
   <h1>種子的世界</h1>
   <p class="note">培育只屬於你的作物品種</p>
   <button class="btn primary" id="loginBtn">用 Google 帳號登入</button>
-  <p class="note" id="inapp" hidden style="max-width:320px;margin-top:16px">在 LINE 或其他 App 裡不能用 Google 登入。請點右上角選單，選「用預設瀏覽器開啟」。</p>
   <p class="err" id="loginErr" style="max-width:320px;margin-top:12px"></p>
 </div>
 <svg id="scene" viewBox="0 0 400 800" role="application" aria-label="遊戲畫面"><defs><radialGradient id="dglow"><stop offset="0" stop-color="#FFE6A8" stop-opacity=".75"/><stop offset="1" stop-color="#FFE6A8" stop-opacity="0"/></radialGradient></defs><g id="worldLayer"></g><g id="fxLayer" pointer-events="none"></g><g id="fyBack"></g><g id="charLayer"></g><g id="fyFront"></g><g id="fgLayer" pointer-events="none"></g></svg>
@@ -1575,7 +1578,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-17k';
+const BUILD='2026-11-17l';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -1618,7 +1621,7 @@ function repNotice(r){
   const names=r.lots.map(x=>`「${x.name}」${x.source?'（'+x.source+'）':''}`);
   logErr(`修復存檔：移除 ${r.lots.length} 包種子${names.length?'：'+names.slice(0,8).join('、'):''}；移除壞掉的種子 ${r.seeds} 顆、修正父本 ${r.fathers} 包、移除植株 ${r.plants} 株`,'');
   let el=document.getElementById('repairBox');
-  if(!el){el=document.createElement('div');el.id='repairBox';el.setAttribute('role','status');el.style.cssText='position:fixed;left:12px;right:12px;top:12px;z-index:190;background:#FFFBEA;border:3px solid #B9840F;border-radius:14px;padding:12px;font-size:15px;line-height:1.55;color:#4A3208;box-shadow:0 4px 0 #8A6A12;max-height:60vh;overflow:auto';document.body.appendChild(el)}
+  if(!el){el=document.createElement('div');el.id='repairBox';el.setAttribute('role','status');el.style.cssText='position:fixed;left:12px;right:12px;top:calc(12px + env(safe-area-inset-top,0px));z-index:190;background:#FFFBEA;border:3px solid #B9840F;border-radius:14px;padding:12px;font-size:15px;line-height:1.55;color:#4A3208;box-shadow:0 4px 0 #8A6A12;max-height:60vh;overflow:auto';document.body.appendChild(el)}
   el.innerHTML=`<b>存檔已自動修復</b><br>存檔裡有讀不懂的資料，已先備份到雲端再處理：${r.lots.length?`<br>移除 ${r.lots.length} 包種子：${names.join('、')}`:''}${r.seeds?`<br>移除壞掉的種子 ${r.seeds} 顆`:''}${r.fathers?`<br>修正父本資料 ${r.fathers} 包`:''}${r.plants?`<br>移除植株 ${r.plants} 株`:''}<br>你自己雜交、取種得到的種子都還在。<br><button class="btn primary" style="margin-top:8px" onclick="this.parentNode.remove()">知道了</button>`;
 }
 // ===== 舊頁面防護：定期確認自己是不是最新版本 =====
@@ -1652,7 +1655,7 @@ function sizeReportHTML(){
 function blockSaves(msg){
   saveBlocked=true;clearTimeout(saveTimer);
   let el=document.getElementById('saveGuard');
-  if(!el){el=document.createElement('div');el.id='saveGuard';el.setAttribute('role','alert');el.style.cssText='position:fixed;left:12px;right:12px;top:12px;z-index:200;background:#FFF1E6;border:3px solid #B5482A;border-radius:14px;padding:12px;font-size:15px;line-height:1.5;color:#5A1E10;box-shadow:0 4px 0 #8A3A22';document.body.appendChild(el)}
+  if(!el){el=document.createElement('div');el.id='saveGuard';el.setAttribute('role','alert');el.style.cssText='position:fixed;left:12px;right:12px;top:calc(12px + env(safe-area-inset-top,0px));z-index:200;background:#FFF1E6;border:3px solid #B5482A;border-radius:14px;padding:12px;font-size:15px;line-height:1.5;color:#5A1E10;box-shadow:0 4px 0 #8A3A22';document.body.appendChild(el)}
   el.innerHTML=`<b>已暫停存檔</b><br>${msg}<br><button class="btn primary" style="margin-top:8px" onclick="location.reload()">重新整理</button>`;
 }
 function watchOwnSave(){
@@ -3017,7 +3020,7 @@ function renderSpeed(){
   const el=document.getElementById('testBox');if(!el)return;
   if(!TEST_MODE){el.innerHTML='';return}
   const on=isTestMode();testTagUpd();
-  let h=`<h3 style="margin-top:0">回報問題</h3>${crashHTML()}<h3>音效</h3><button class="btn${SFX_ON?' primary':''}" data-tool="sfx">音效：${SFX_ON?'開':'關'}（按一下切換）</button><h3>遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'標出機關和秘境，可以傳送。'+qh('只存在這台裝置，別人看不到。'):'和正式玩家看到的一樣。'}</p>`;
+  let h=`<h3 style="margin-top:0">回報問題</h3>${crashHTML()}<h3>音效</h3><button class="btn${SFX_ON?' primary':''}" data-tool="sfx">音效：${SFX_ON?'開':'關'}（按一下切換）</button>${isStandalone()?'':`<h3>加到主畫面</h3><p class="note">把遊戲加到主畫面，打開就是全螢幕。${qh('iPhone：用 Safari 開，按下方的分享 → 加入主畫面。Android：Chrome 右上角選單 → 安裝應用程式（或加到主畫面）。')}</p>`}<h3>遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'標出機關和秘境，可以傳送。'+qh('只存在這台裝置，別人看不到。'):'和正式玩家看到的一樣。'}</p>`;
   if(on)h+=`<h3>遠緣雜交</h3><button class="btn" data-tool="xc">跨界機率 100%：${(()=>{try{return localStorage.getItem('sw_xc')==='1'}catch(e){return false}})()?'開啟':'關閉'}（按一下切換）</button>`;
   if(on)h+=`<h3>櫻花之丘</h3><button class="btn" data-tool="sklook">花季外觀：${sakuraLook()?'櫻花（花季）':'綠葉（花季外）'}（按一下切換，只換畫面）</button><p class="note">測試模式沒有季節限制。<button type="button" class="qh" aria-expanded="false" aria-label="說明">？</button><span class="qhx" hidden>今天實際${sakuraBloom()?'是':'不是'}花季（每年 ${SAKURA_SEASON.from.join('/')}～${SAKURA_SEASON.to.join('/')}）。</span></p>`;
   if(on)h+=`<h3>會影響存檔的測試工具</h3><p class="note">用了存檔會和一般玩家不一樣。${qh('切回一般模式時，時間加速當 ×1、探索上限當開啟。')}</p><p class="note" style="margin:6px 0 2px">時間加速</p><div class="row2" style="grid-template-columns:repeat(4,1fr)">${SPEEDS.map(v=>`<button class="btn${state.speed===v?' primary':''}" data-spd="${v}">×${v}</button>`).join('')}</div>
@@ -8512,7 +8515,17 @@ function isoPaintAt(cx,cy){
   renderWorld();renderDecoBar();renderCoins()}
 let loop=null;
 const loginEl=document.getElementById('login');
-if(/Line\/|FBAN|FBAV|Instagram|MicroMessenger/i.test(navigator.userAgent))document.getElementById('inapp').hidden=false;
+/* 100.5（17l）：IG／FB／LINE 內建瀏覽器：載入畫面與登入畫面上方一條提示（不擋操作），在遊戲裡就收起 */
+/* 100.4（17l）：已經是主畫面模式時，設定頁不顯示「加到主畫面」 */
+function isStandalone(){try{return navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches}catch(e){return false}}
+const INAPP=/Line\/|FBAN|FBAV|FB_IAB|Instagram|MicroMessenger/i.test(navigator.userAgent);
+function inappUpd(){const b=document.getElementById('inappBar');if(!b)return;const bt=document.getElementById('boot');b.hidden=!(INAPP&&((bt&&!bt.hidden&&!bt.classList.contains('out'))||!loginEl.hidden))}
+(()=>{if(!INAPP)return;const url=location.origin+location.pathname;
+  const cp=document.getElementById('inappCopy');if(cp)cp.onclick=async()=>{let ok=false;try{await navigator.clipboard.writeText(url);ok=true}catch(e){}
+    if(!ok){try{const t=document.createElement('textarea');t.value=url;t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);t.select();ok=document.execCommand('copy');t.remove()}catch(e){}}
+    cp.textContent=ok?'已複製':url};
+  const ch=document.getElementById('inappChrome');if(ch&&/Android/i.test(navigator.userAgent)){ch.href='intent://'+location.host+location.pathname+'#Intent;scheme=https;package=com.android.chrome;end';ch.hidden=false}
+  inappUpd()})();
 document.getElementById('loginBtn').onclick=async()=>{
   const err=document.getElementById('loginErr');err.textContent='';
   const provider=new firebase.auth.GoogleAuthProvider();
@@ -8577,8 +8590,8 @@ let bootDone=false,bootTimer=null,bootRaw=null,bootResetArm=false;
 const bootEl=id=>document.getElementById(id);
 try{bootEl('bootVer').textContent=BUILD}catch(e){}
 function bootMsg(t){const el=bootEl('bootMsg');if(el)el.textContent=t}
-function bootShow(t){bootDone=false;const el=bootEl('boot');if(el){el.hidden=false;el.classList.remove('out')}const er=bootEl('bootErr');if(er)er.hidden=true;bootMsg(t||'讀取中…')}
-function bootHide(){bootDone=true;clearTimeout(bootTimer);const el=bootEl('boot');if(el&&!el.hidden){el.classList.add('out');setTimeout(()=>{if(bootDone)el.hidden=true},450)}}
+function bootShow(t){bootDone=false;try{setTimeout(inappUpd,0)}catch(e){}const el=bootEl('boot');if(el){el.hidden=false;el.classList.remove('out')}const er=bootEl('bootErr');if(er)er.hidden=true;bootMsg(t||'讀取中…')}
+function bootHide(){bootDone=true;clearTimeout(bootTimer);const el=bootEl('boot');if(el&&!el.hidden){el.classList.add('out');setTimeout(()=>{if(bootDone)el.hidden=true},450)}try{inappUpd()}catch(e){}}
 function bootFail(msg,opt){opt=opt||{};clearTimeout(bootTimer);const el=bootEl('boot');if(el){el.hidden=false;el.classList.remove('out')}try{bootEl('bootSlow').style.display='none'}catch(e){}
   bootMsg(opt.slow?'讀取太久了':'讀取失敗');const er=bootEl('bootErr');if(er)er.hidden=false;const m=bootEl('bootErrMsg');if(m)m.textContent=String(msg||'不知道的錯誤').slice(0,100);
   const rb=bootEl('bootReset'),nt=bootEl('bootResetNote');bootResetArm=false;if(rb){rb.hidden=!opt.reset;rb.disabled=false;rb.textContent='保留舊存檔、開始新遊戲'}if(nt){nt.hidden=!opt.reset;nt.textContent='舊存檔會先完整備份（不會刪掉），再開始新遊戲。'}}
@@ -8588,9 +8601,14 @@ try{bootEl('bootReset').onclick=async()=>{const b=bootEl('bootReset');if(!bootRa
   if(!ok){bootFail('備份沒有成功，所以沒有開始新遊戲。請檢查網路再試，或截圖給開發者。',{reset:true});return}
   try{bootEl('bootErr').hidden=true;bootMsg('開始新遊戲…');await bootStart(null,true)}catch(e){logErr(e,'新遊戲');bootFail(e&&e.message||String(e))}}}catch(e){}
 /* 版本檢查：抓一個不快取的小檔（version.json，內容只有 BUILD）；和程式裡的不一樣就換網址重新載入一次（同一個版本只重整一次，避免一直重整） */
-(async()=>{try{if(location.protocol==='file:')return;const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const j=await r.json(),rb=j&&j.build;if(!rb||rb===BUILD)return;
+/* 100.2（17l）：主畫面 App 常常整天不關，回到前景且離上次檢查超過 10 分鐘就再查一次 */
+let verAt=0;
+async function verCheck(){try{if(location.protocol==='file:')return;verAt=Date.now();const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const j=await r.json(),rb=j&&j.build;if(!rb||rb===BUILD)return;
   let done=null;try{done=localStorage.getItem('sw_reload')}catch(e){return}if(done===rb)return;try{localStorage.setItem('sw_reload',rb)}catch(e){return}
-  location.replace(location.pathname+'?v='+encodeURIComponent(rb))}catch(e){}})();
+  try{if(typeof flush==='function'&&state&&uid)await Promise.race([flush(),new Promise(r=>setTimeout(r,1500))])}catch(e){}
+  location.replace(location.pathname+'?v='+encodeURIComponent(rb))}catch(e){}}
+verCheck();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-verAt>10*60e3)verCheck()});
 auth.onAuthStateChanged(async user=>{
   if(!user){if(selfUnsub){selfUnsub();selfUnsub=null}stopListeners();uid=null;state=null;closeSheet();loginEl.hidden=false;bootHide();return}
   uid=user.uid;loginEl.hidden=true;setSync('loading');bootRaw=null;bootShow('讀取雲端存檔中…');

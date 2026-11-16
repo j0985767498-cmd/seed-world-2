@@ -8,7 +8,7 @@ const root=path.join(__dirname,'..');
 const h=fs.readFileSync(path.join(root,'index.html'),'utf8');
 let js=h.slice(h.indexOf('<script>',h.indexOf('</style>'))+8,h.lastIndexOf('</script>'));
 const P=new Proxy(function(){},{get:(t,k)=>k===Symbol.toPrimitive?()=>'':(k==='then'?undefined:P),apply:()=>P,construct:()=>P,set:()=>true});
-const DATA=['RGBC','SPGRAD','RAINBOW','EX_OF','ALL_SKINS','BASIC','SPECIAL','BASE_SHAPES','SPN','EXN','CN','CSTR','MIX15','FRUIT_SHAPE_MUL','FRUIT_UNRIPE','PFN','BUILD','TFX_STAR','DREAM_NF','DREAM_PERIOD','DZ_STARS','DZ_XSTAR','DZ_FACET','DZ_GSPK','DZ_CSPK','DZ_OBS','STEM_MUL','STEM_MUL_EGG'];
+const DATA=['RGBC','SPGRAD','RAINBOW','EX_OF','ALL_SKINS','BASIC','SPECIAL','BASE_SHAPES','SPN','EXN','CN','CSTR','MIX15','FRUIT_SHAPE_MUL','FRUIT_UNRIPE','PFN','BUILD','TFX_STAR','DREAM_NF','DREAM_PERIOD','DZ_STARS','DZ_XSTAR','DZ_FACET','DZ_GSPK','DZ_CSPK','DZ_OBS','STEM_MUL','STEM_MUL_EGG','HALF_DEF','DZ_SKP'];
 const FNS=['clamp','hexRGB','mixRGB','rgbS','isSpecC','colParts','cnOf','patKey','hashStr','f3','pfName','fruitShapeKey','stemMulOf','fruitPrep','dreamPx','dreamInfo','fruitColSpec','fruitPaint','tfxRM','tfxWrap','dreamLayers','DL_STAR','dreamLightSVG'];
 js+=';globalThis.T={'+[...DATA,...FNS].join(',')+'};';
 const ctx={document:P,window:P,firebase:P,navigator:P,location:{pathname:'/',search:'',hash:''},localStorage:P,console,setTimeout:()=>0,setInterval:()=>0,clearTimeout(){},clearInterval(){},requestAnimationFrame:()=>0,fetch:()=>new Promise(()=>{}),btoa:s=>Buffer.from(s,'binary').toString('base64'),atob:s=>Buffer.from(s,'base64').toString('binary'),TextEncoder,Math,Date,JSON,addEventListener(){},matchMedia:()=>({matches:false,addEventListener(){}}),performance:{now:()=>0},innerWidth:400,innerHeight:800,devicePixelRatio:1,screen:P,history:P,alert(){},confirm:()=>true,URLSearchParams};
@@ -25,7 +25,7 @@ const page=`<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><met
 .ctl label{font-size:13px}select{font-size:13px}table{border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden}td,th{border:1px solid #E4DCCF;padding:3px;text-align:center;font-size:12px}
 th{background:#F6F1E8;font-weight:600}canvas{display:block;margin:auto}.wrap{overflow-x:auto}.note{color:#6B5A48;font-size:13px}.tiny{display:flex;flex-wrap:wrap;gap:3px;background:#fff;border-radius:10px;padding:8px}
 .tiny div{text-align:center;font-size:10px;color:#7A6A58}.grass{background:#A9CF7C}
-.dyn{display:flex;flex-wrap:wrap;gap:8px;background:#fff;border-radius:10px;padding:8px}.dyn>div{text-align:center;font-size:12px;color:#5A4A38;width:104px}.stk{position:relative;margin:auto}.stk canvas,.stk svg{position:absolute;left:0;top:0}
+.dyn{display:flex;flex-wrap:wrap;gap:8px;background:#fff;border-radius:10px;padding:8px}.dyn{display:grid;grid-template-columns:repeat(4,104px)}.dyn>div{text-align:center;font-size:12px;color:#5A4A38;width:104px}.stk{position:relative;margin:auto}.stk canvas,.stk svg{position:absolute;left:0;top:0}
 /* 81（16l）：夢幻色的光層，連續移動、沒有停頓（取代 48.3 的兩影格與 80.2 的停頓節奏）。單位是果實框（-1.5～1.5） */.dlay *{will-change:transform}.dlsw{animation:dlsw 2.6s linear infinite}@keyframes dlsw{from{transform:translate(-2.4px,-1.5px)}to{transform:translate(2.4px,1.5px)}}.dlsp{transform-box:fill-box;transform-origin:50% 50%;animation:dlsp 1.4s ease-in-out infinite}@keyframes dlsp{0%,100%{transform:scale(0)}50%{transform:scale(1)}}.dlci{animation:dlci 2.6s linear infinite}@keyframes dlci{0%{transform:translate(.2px,0)}12.5%{transform:translate(.14px,.1px)}25%{transform:translate(0,.14px)}37.5%{transform:translate(-.14px,.1px)}50%{transform:translate(-.2px,0)}62.5%{transform:translate(-.14px,-.1px)}75%{transform:translate(0,-.14px)}87.5%{transform:translate(.14px,-.1px)}100%{transform:translate(.2px,0)}}.dlrot{transform-box:fill-box;transform-origin:50% 50%;animation:dlrot 3.2s linear infinite}@keyframes dlrot{to{transform:rotate(360deg)}}.dltw{animation:dltw 1.8s ease-in-out infinite}@keyframes dltw{0%,100%{opacity:.2}50%{opacity:1}}.dlrb{animation:dlrb 4s linear infinite}@keyframes dlrb{from{transform:translateY(0)}to{transform:translateY(-3.2px)}}
 .still .dlay{display:none}</style></head><body>
 <h1>果實對照頁（${T.BUILD}）</h1>
@@ -42,7 +42,7 @@ th{background:#F6F1E8;font-weight:600}canvas{display:block;margin:auto}.wrap{ove
 </div>
 <h2>9 種作物 × 10 個造型</h2><div class="wrap"><table id="tb"></table></div>
 <h2>夢幻色動態（第 48 節；番茄・圓形）</h2>
-<p class="note">和遊戲同一套疊影格的做法。完整、淡的（光層透明度一半，第 81 節）、雙夢幻色（左右各跑各的）；最後兩格是「金色＋專屬造型」（表面的閃爍是顏色的、外面的光暈是造型的）和農場上的強度（70%）。</p>
+<p class="note">和遊戲同一套做法（靜態底圖＋光層，第 81 節）。每種夢幻色一列：整顆、半（配紅）、半（配黃）、雙夢幻色；半夢幻色和雙夢幻色斜切一半一半（第 87 節），夢幻色那一半不減弱；最後兩格是「金色＋專屬造型」（表面的閃爍是顏色的、外面的光暈是造型的）和農場上的強度（70%）。</p>
 <div class="ctl" style="position:static;margin-bottom:6px"><label><input type="checkbox" id="dy" checked> 動態（取消就停在第 1 影格）</label></div>
 <div class="dyn" id="dyn"></div>
 <h2>所有果皮顏色（番茄・圓形，22px）</h2><div class="tiny" id="all"></div>
@@ -53,7 +53,7 @@ const PB={};
 function loadAll(){return Promise.all(Object.entries(IMG).map(([k,u])=>new Promise(res=>{const im=new Image();im.onload=()=>{const cv=document.createElement('canvas');cv.width=im.naturalWidth;cv.height=im.naturalHeight;const cx=cv.getContext('2d');cx.drawImage(im,0,0);const id=cx.getImageData(0,0,cv.width,cv.height);PB[k]=fruitPrep(id.width,id.height,id.data);PB[k].sm=stemMulOf(k);res()};im.onerror=res;im.src=u})))}
 function draw(name,a,ripe,size,frame,half){
   const B=PB[name];const cv=document.createElement('canvas');const H=Math.round(size*3.2/3);cv.width=size*2;cv.height=H*2;cv.style.width=size+'px';cv.style.height=H+'px';
-  if(!B)return cv;const px=fruitPaint(B,a,ripe,hashStr(name+'|'+a.skin+'|'+patKey(a.pat)+'|'+ripe),frame!=null?frame:(+(document.getElementById('fr')||{value:0}).value||0),half||0);
+  if(!B)return cv;const px=fruitPaint(B,a,ripe,hashStr(name+'|'+a.skin+(a.sb||'')+'|'+patKey(a.pat)+'|'+ripe),frame!=null?frame:(+(document.getElementById('fr')||{value:0}).value||0),half||0);
   const t=document.createElement('canvas');t.width=B.w;t.height=B.h;const tc=t.getContext('2d');const id=tc.createImageData(B.w,B.h);id.data.set(px);tc.putImageData(id,0,0);
   const m=(FRUIT_SHAPE_MUL[name]||1)*(ripe?1:0.7),s=Math.min(cv.width/B.w,cv.height/B.h)*m,w=B.w*s,h=B.h*s;const cx=cv.getContext('2d');cx.imageSmoothingQuality='high';cx.drawImage(t,(cv.width-w)/2,(cv.height-h)/2,w,h);return cv;
 }
@@ -62,15 +62,16 @@ function anim(name,a,size,it){
   const H=Math.round(size*3.2/3),d=document.createElement('div');d.className='stk';d.style.width=size+'px';d.style.height=H+'px';const cv=draw(name,a,1,size,0);d.appendChild(cv);
   const B=PB[name],ls=dreamLayers(a);if(!B||!ls.length)return d;
   const m=FRUIT_SHAPE_MUL[name]||1,sc=Math.min(cv.width/B.w,cv.height/B.h)*m,w=B.w*sc,h=B.h*sc,u=3/cv.width,rx=-1.5+(cv.width-w)/2*u,ry=-1.6+(cv.height-h)/2*u,rw=w*u,rh=h*u;
-  let o='';for(const L of ls){const k=++DL_N,px=fruitPaint(B,a,1,hashStr(name+'|'+a.skin+'|'+patKey(a.pat)+'|1'),0,0,{reg:L.reg,side:L.side});const t=document.createElement('canvas');t.width=B.w;t.height=B.h;const tc=t.getContext('2d');const id=tc.createImageData(B.w,B.h);id.data.set(px);tc.putImageData(id,0,0);
+  let o='';for(const L of ls){const k=++DL_N,px=fruitPaint(B,a,1,hashStr(name+'|'+a.skin+(a.sb||'')+'|'+patKey(a.pat)+'|1'),0,0,{reg:L.reg,side:L.side});const t=document.createElement('canvas');t.width=B.w;t.height=B.h;const tc=t.getContext('2d');const id=tc.createImageData(B.w,B.h);id.data.set(px);tc.putImageData(id,0,0);
     o+='<mask id="cm'+k+'" maskUnits="userSpaceOnUse" x="'+rx+'" y="'+ry+'" width="'+rw+'" height="'+rh+'"><image href="'+t.toDataURL()+'" x="'+rx+'" y="'+ry+'" width="'+rw+'" height="'+rh+'" preserveAspectRatio="none"/></mask><g class="dlay" mask="url(#cm'+k+')" opacity="'+(L.s>=1?1:0.5)+'">'+dreamLightSVG(L.n,DREAM_PERIOD[L.n]||3,-(k%7)*0.37,k)+'</g>'}
   d.insertAdjacentHTML('beforeend','<svg viewBox="-1.5 -1.6 3 3.2" width="'+size+'" height="'+H+'" style="position:absolute;inset:0;opacity:'+(it||1)+'">'+o+'</svg>');return d}
 function renderDyn(){
   const el=document.getElementById('dyn');el.innerHTML='';el.className='dyn'+(document.getElementById('dy').checked?'':' still');
   const add=(node,t)=>{const b=document.createElement('div');b.appendChild(node);b.appendChild(document.createTextNode(t));el.appendChild(b)};
-  for(const n of SPECIAL)add(anim('tomato_b0',{level:0,sp:0,skin:n,pat:null},96),cnOf(n));
-  for(const k of ALL_SKINS.filter(k=>colParts(k).t==='l'))add(anim('tomato_b0',{level:0,sp:0,skin:k,pat:null},96),cnOf(k));
-  for(const k of ALL_SKINS.filter(k=>colParts(k).t==='d').slice(0,8))add(anim('tomato_b0',{level:0,sp:0,skin:k,pat:null},96),cnOf(k));
+  /* 87：每種夢幻色一列：整顆、半（配紅）、半（配黃）、雙夢幻色（配下一種） */
+  SPECIAL.forEach((n,i)=>{const m=SPECIAL[(i+1)%SPECIAL.length],d='d-'+[n,m].sort().join('-');
+    add(anim('tomato_b0',{level:0,sp:0,skin:n,pat:null},96),cnOf(n));add(anim('tomato_b0',{level:0,sp:0,skin:'l-'+n,sb:'red',pat:null},96),cnOf('l-'+n)+'（紅）');
+    add(anim('tomato_b0',{level:0,sp:0,skin:'l-'+n,sb:'yellow',pat:null},96),cnOf('l-'+n)+'（黃）');add(anim('tomato_b0',{level:0,sp:0,skin:d,pat:null},96),cnOf(d))});
   add(anim('tomato_b0',{level:0,sp:0,skin:'red',pat:{c:'gold',f:0}},96),'紅底金條紋');
   {const a={level:0,sp:7,skin:'gold',pat:null},s=anim('tomato_ex',a,96),H=Math.round(96*3.2/3),w=document.createElement('div');w.className='stk';w.style.cssText='width:96px;height:'+H+'px;overflow:visible';
     w.insertAdjacentHTML('beforeend','<svg viewBox="-1.5 -1.6 3 3.2" width="96" height="'+H+'" style="overflow:visible">'+tfxWrap(1,'<g></g>',true,true)+'</svg>');s.style.position='absolute';s.style.left='0';s.style.top='0';w.appendChild(s);add(w,'金色＋專屬造型')}

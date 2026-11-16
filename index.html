@@ -6537,15 +6537,15 @@ const FY_WING={tomato:'#FF8A3D',eggplant:'#5B4BC0',chili:'#FF5A2A',strawberry:'#
 /* 專屬粒子：種類、冒出的位置（圖寬、圖高的比例，左上角為 0） */
 const FY_PART={tomato:['star',[[0.40,0.04]]],eggplant:['note',[[0.62,0.30]]],chili:['ember',[[0.12,0.05],[0.88,0.05]]],strawberry:['spark4',[[0.50,0.05],[0.50,0.30]]],corn:['smoke',[[0.88,0.36]]],pumpkin:['lantern',[[0.15,0.45]]],broccoli:['volcano',[[0.22,0.07]]],zucchini:['swing',[[0.06,0.14]]],melon:['sparkler',[[0.90,0.16]]]};
 const FY_S=1.15,FY_DX=21*FY_S,FY_DY=-37*FY_S,FY_HW=FY_FH*FY_S;/* 和角色同一個縮放：肩膀後上方、高度約玩家 70% */
-const FYO=new Map();let fyOwners=new Map(),fyRaf=0,fyLastT=0;
+const FYO=new Map();let fyOwners=new Map(),fyRaf=0,fyLastT=0,fyGen=0;
 const fyRM=()=>typeof RMQ!=='undefined'&&RMQ.matches;
 /* renderChars 每次都會把這一輪看得到的精靈登記進來 */
-function fyRegister(who,f,getPos){if(f&&FY[f.k])fyOwners.set(who,{f,getPos,seen:performance.now()})}
+function fyRegister(who,f,getPos){if(f&&FY[f.k])fyOwners.set(who,{f,getPos,gen:fyGen})}
 function fyLayers(){return [document.getElementById('fyBack'),document.getElementById('fyFront')]}
 function fyArtKey(f){return f.k+'|'+(f.col||'')+'|'+(f.sb||'')+'|'+(f.evo?1:0)+'|'+FRUIT_VER}
 function fyBodySVG(f){const H=FY_FH,ev=f.evo,w=FY_WING[f.k]||'#FFE6A0';
   let s='';
-  if(ev)s+=`<ellipse class="fybl" cx="0" cy="${f3(-H*0.08)}" rx="${f3(H*0.34)}" ry="${f3(H*0.4)}" fill="${w}"/>`;/* 97.4 背光：翅膀主色 */
+  if(ev)s+=`<defs><radialGradient id="fyblg-${f.k}"><stop offset="0" stop-color="${w}" stop-opacity="1"/><stop offset=".55" stop-color="${w}" stop-opacity=".55"/><stop offset="1" stop-color="${w}" stop-opacity="0"/></radialGradient></defs><ellipse class="fybl" cx="0" cy="${f3(-H*0.1)}" rx="${f3(H*0.42)}" ry="${f3(H*0.5)}" fill="url(#fyblg-${f.k})"/>`;/* 97.4 背光：翅膀主色 */
   s+=fyArt(f.k,f,H,0.7);
   if(ev)s+=`<g transform="translate(0 ${f3(-H*0.53)}) scale(1 .3)"><circle r="${f3(H*0.12)}" fill="none" stroke="#FFD54A" stroke-width="2.2"/><g class="fyorb">${[0,120,240].map(a=>`<circle cx="${f3(H*0.12*Math.cos(a*Math.PI/180))}" cy="${f3(H*0.12*Math.sin(a*Math.PI/180))}" r="1.9" fill="#FFF8D0"/>`).join('')}</g></g>`;/* 97.4 光環：細金環＋三顆繞圈的亮點 */
   return s+`<rect x="${-H*0.28}" y="${-H*0.5}" width="${H*0.56}" height="${H}" fill="transparent"/>`}
@@ -6573,7 +6573,7 @@ function fyEmit(S,kind,x,y,moving){const r=Math.random;
   else if(kind==='sparkler'){for(let k=0;k<(r()<.25?3:1);k++){const a=r()*Math.PI*2;fyPuff('fyp-burst',x,y,`<circle r=".9" fill="${['#FFE27A','#FFFFFF','#FF9AD5'][k%3]}"/>`,600,1,`--dx:${(Math.cos(a)*7).toFixed(1)}px;--dy:${(Math.sin(a)*7).toFixed(1)}px`)}}}
 function fyLoop(ts){fyRaf=requestAnimationFrame(fyLoop);if(document.hidden)return;const t=ts/1000,dt=Math.min(0.05,Math.max(0.001,t-(fyLastT||t)));fyLastT=t;
   const now=performance.now(),rm=fyRM(),[,FR]=fyLayers();
-  for(const [who,o] of fyOwners){if(now-o.seen>600){fyOwners.delete(who);fyDrop(who);continue}
+  for(const [who,o] of fyOwners){
     const S=fyNode(who,o);if(!S)continue;const p=o.getPos();if(!p)continue;
     if(Math.hypot(p.x-S.lx,p.y-S.ly)>160){S.x=p.x+(p.flip?FY_DX:-FY_DX);S.y=p.y+FY_DY;S.lx=p.x;S.ly=p.y;S.idle=null;S.side=null}
     const mv=Math.hypot(p.x-S.lx,p.y-S.ly)/dt,moving=mv>8;S.lx=p.x;S.ly=p.y;
@@ -6616,7 +6616,7 @@ function fyBubbleTick(S,who,fl){const on=fyTalk&&fyTalk.who===who&&Date.now()<fy
     g.innerHTML=`<rect x="${f1(-tw/2)}" y="-30" width="${f1(tw)}" height="28" rx="9" fill="#FFFDF6" stroke="#B07CC6" stroke-width="1.3"/><path d="M-4 -2.5 L0 4 L4 -2.5Z" fill="#FFFDF6" stroke="#B07CC6" stroke-width="1.3" stroke-linejoin="round"/><rect x="-5" y="-4" width="10" height="2.8" fill="#FFFDF6"/><text x="0" y="-19" text-anchor="middle" font-size="7" font-weight="700" fill="#8A4FA8" font-family="Noto Sans TC,sans-serif">${esc(nm)}</text><text x="0" y="-8" text-anchor="middle" font-size="7.4" fill="#3A2614" font-family="Noto Sans TC,sans-serif">${esc(t)}</text>`;
     (FR||S.g.parentNode).appendChild(g);S.bub=g;S.bubT=fyTalk.text}
   S.bub.setAttribute('transform',`translate(${f1(S.x)} ${f1(Math.min(S.y+fl-FY_HW*0.55,S.ly-92))})`)}
-function fyStart(){if(!fyRaf&&typeof requestAnimationFrame==='function')fyRaf=requestAnimationFrame(fyLoop)}
+function fyStart(){for(const [w,o] of [...fyOwners])if(o.gen!==fyGen){fyOwners.delete(w);fyDrop(w)}fyGen++;if(!fyRaf&&typeof requestAnimationFrame==='function')fyRaf=requestAnimationFrame(fyLoop)}
 /* ---- 97.2 喚醒演出、97.3 進化演出（約 3 秒，點一下可以跳過） ---- */
 let fyShowOn=false;
 function fyShow(kind,k,f,opt,done){opt=opt||{};const el=document.createElement('div');el.className='fyshow fy-'+kind;el.setAttribute('role','dialog');el.setAttribute('aria-label',kind==='wake'?`${fyN(k)}醒來了`:`${f.name||fyN(k)}進化了`);fyShowOn=true;

@@ -43,7 +43,7 @@ h2.sec{font:400 22px "Huninn",sans-serif;color:#FFE7A8;margin:30px 0 10px}
 @keyframes sq{0%{transform:scale(1)}25%{transform:scale(1.18,.78)}55%{transform:scale(.9,1.12)}100%{transform:scale(1)}}
 .shake{animation:shk .25s linear}
 @keyframes shk{0%,100%{transform:none}20%{transform:translate(3px,-2px)}40%{transform:translate(-3px,1px)}60%{transform:translate(2px,2px)}80%{transform:translate(-2px,-1px)}}
-.hint{position:absolute;left:50%;top:352px;transform:translateX(-50%);font:14px "Huninn";color:#fff;background:rgba(60,35,10,.55);padding:6px 14px;border-radius:999px;white-space:nowrap;animation:bob 1.6s ease-in-out infinite}
+.hint{position:absolute;left:50%;top:440px;transform:translateX(-50%);font:14px "Huninn";color:#fff;background:rgba(60,35,10,.55);padding:6px 14px;border-radius:999px;white-space:nowrap;animation:bob 1.6s ease-in-out infinite}
 @keyframes bob{50%{transform:translate(-50%,-4px)}}
 /* ===== HUD ===== */
 .plaque{position:absolute;left:10px;top:12px;height:50px;width:182px;padding:5px 10px 0 58px;border-radius:14px;background:var(--noise),var(--grain),linear-gradient(180deg,var(--wood1),var(--wood2));box-shadow:inset 0 2px 0 rgba(255,220,170,.45),inset 0 -3px 0 rgba(0,0,0,.25),0 3px 0 var(--wood3),0 5px 8px rgba(0,0,0,.3)}
@@ -177,7 +177,7 @@ const SFX={pop:()=>{tone(520,170,0.14,'sine',0.35);tone(1200,600,0.06,'triangle'
   click:()=>tone(880,660,0.05,'sine',0.12),
   whoosh:()=>{const a=ac();if(!a)return;const n=a.createBufferSource(),b=a.createBuffer(1,a.sampleRate*0.3,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);n.buffer=b;const f=a.createBiquadFilter();f.type='bandpass';f.frequency.setValueAtTime(600,a.currentTime);f.frequency.exponentialRampToValueAtTime(2400,a.currentTime+0.25);const g=a.createGain();g.gain.value=0.12;n.connect(f).connect(g).connect(a.destination);n.start()}};
 /* ===== 農場 ===== */
-const TILES=[];for(let r=0;r<7;r++)for(let c=0;c<4;c++){const x=66+c*84+(r%2)*42,y=455+r*24;if(x<360)TILES.push([x,y,r,c])}
+const TILES=[];for(let r=0;r<7;r++)for(let c=0;c<4;c++){const x=66+c*84+(r%2)*42,y=482+r*24;if(x<360)TILES.push([x,y,r,c])}
 function buildFarm(el,withPlants,fruits){let s='';for(const [x,y] of TILES)s+='<div class="tile" style="left:'+(x-43)+'px;top:'+(y-25)+'px"></div>';el.innerHTML=s;
   if(!withPlants)return;const spots=TILES.map((t,k)=>k).filter(k=>TILES[k][2]===0||TILES[k][2]===3||TILES[k][2]===6).slice(0,11);spots.forEach((k,i)=>{const [x,y]=TILES[k];const d=document.createElement('div');d.className='plant';d.style.cssText='left:'+(x-30)+'px;top:'+(y-62)+'px;width:60px;height:64px';d.innerHTML='<img class="pl" src="../assets/crops/tomato_3.png" alt=""><img class="fr" src="'+fruits[i%fruits.length]+'" alt="">';d.onclick=e=>harvest(d,e);el.appendChild(d)})}
 function partBurst(ph,x,y){const cols=['#FFE27A','#FFB347','#8EDB5A','#FFFFFF','#FF8FB1'];for(let i=0;i<16;i++){const p=document.createElement('div');p.className='prt';const leaf=i%3===0,a=Math.random()*Math.PI*2,d=40+Math.random()*60,sz=leaf?12:7+Math.random()*5;

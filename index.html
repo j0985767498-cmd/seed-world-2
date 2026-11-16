@@ -727,6 +727,62 @@ details.gfold .gfb{margin-top:8px}
 #sheet input:focus,#sheet select:focus,.panel input:focus,.panel select:focus{outline:none;border-color:#7DC24E;box-shadow:0 0 0 3px rgba(125,194,78,.25)}
 @keyframes herorot{to{transform:translate(-50%,-50%) rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.hero::before{animation:none}}
+
+/* ===== 16x 介面改版第四步：剩下的 9 處（模式工具列、圓盤、提示、地圖按鈕與面板、教學、種子袋格子、探索提示與地名、裝飾小選單、讀取與登入畫面） ===== */
+:root{--btn3d:inset 0 2px 0 #fff,inset 0 0 0 2px #D9BE8C,0 4px 0 #B88B52,0 6px 8px rgba(90,52,22,.18);--btn3dg:inset 0 2px 0 rgba(255,255,255,.45),inset 0 0 0 2px #3E8A22,0 4px 0 #2B5E14,0 6px 8px rgba(30,70,10,.25);--woodframe:0 0 0 4px var(--w1),0 0 0 6px var(--w3),0 6px 14px rgba(0,0,0,.3)}
+/* 1 模式工具列 */
+#shovelBar,#sowBar,#accelBar,#decoBar,#pickBar,#buildBar{background:var(--paperbg);border:0;border-radius:16px;box-shadow:var(--woodframe);left:12px;right:12px}
+#shovelBar .bbtip,#sowBar .bbtip,#accelBar .bbtip,#decoBar .bbtip,#pickBar .bbtip,#buildBar .bbtip{color:#6A3E14}
+#shovelBar .bbtip b,#sowBar .bbtip b,#accelBar .bbtip b,#decoBar .bbtip b,#pickBar .bbtip b,#buildBar .bbtip b{font-family:var(--uifont);font-weight:400}
+#shovelBar button,#sowBar button,#accelBar button,#decoBar button,#pickBar button,#buildBar button{border:0;font:15px var(--uifont);color:#6A3E14;background:linear-gradient(180deg,#FFFDF6,#F4E4C2);box-shadow:var(--btn3d)}
+#shovelBar button:active,#sowBar button:active,#accelBar button:active,#decoBar button:active,#pickBar button:active,#buildBar button:active{transform:translateY(3px);box-shadow:inset 0 2px 0 #fff,inset 0 0 0 2px #D9BE8C,0 1px 0 #B88B52}
+#shovelBar button.done,#sowBar button.done,#accelBar button.done,#decoBar button.done,#pickBar button.done,#buildBar button.done,#buildBar button[aria-pressed="true"]{color:#fff;background:linear-gradient(180deg,#8EDB5A,#4E9F2C);text-shadow:0 1.5px 0 #2F6E17,1px 0 0 #2F6E17,-1px 0 0 #2F6E17;box-shadow:var(--btn3dg)}
+/* 2 圓盤 */
+#ringOv{background:radial-gradient(circle at 85% 90%,rgba(40,25,10,.15),rgba(40,25,10,.45))}
+#ringMenu .ri{border:0;color:#6A3E14;font-family:var(--uifont)!important;font-weight:400;background:radial-gradient(circle at 38% 30%,#FFFDF4 0,#F7E9C8 55%,#E6CE9C 100%);box-shadow:inset 0 -3px 0 rgba(140,90,40,.25),0 0 0 3px var(--w1),0 0 0 5px var(--w3),0 4px 0 2px var(--w3),0 6px 10px rgba(0,0,0,.3)}
+#ringMenu .ri img{width:30px!important;height:30px!important}
+#ringMenu .ri span{font:12px var(--uifont);color:#6A3E14;line-height:1}
+#ringMenu .ri.off{background:radial-gradient(circle at 38% 30%,#F2EEE6,#D8D2C6);box-shadow:0 0 0 3px #A89C8C,0 0 0 5px #6E655A,0 4px 0 2px #6E655A}
+#ringMenu .ri.off span{color:#8A8378}
+#ringMenu .ri.hl{background:radial-gradient(circle at 38% 30%,#FFF6C2,#FFD54A);box-shadow:0 0 0 4px #F2C14E,0 0 0 6px var(--w3),0 0 18px 6px rgba(255,213,74,.7)}
+/* 3 提示 */
+#toast{background:var(--uiwood);color:#fff;font:15px var(--uifont);padding:9px 18px 10px;border-radius:14px;text-shadow:0 1.5px 0 var(--w3);box-shadow:inset 0 2px 0 rgba(255,220,170,.4),0 3px 0 var(--w3),0 6px 12px rgba(0,0,0,.3);max-width:calc(100vw - 40px);text-align:center}
+/* 4 地圖按鈕與地圖面板 */
+#mapBtn{width:52px;height:52px;padding:0;border:0;border-radius:50%;right:12px;color:#fff;font:12px var(--uifont);background:radial-gradient(circle at 38% 30%,#FFFDF4 0,#F7E9C8 55%,#E6CE9C 100%);box-shadow:inset 0 -3px 0 rgba(140,90,40,.25),0 0 0 4px var(--w1),0 0 0 6px var(--w3),0 5px 0 2px var(--w3),0 7px 10px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center}
+#mapBtn .ibimg{width:36px;height:36px;margin:0}
+#mapBtn>span{position:absolute;left:50%;bottom:-19px;transform:translateX(-50%);white-space:nowrap;font:12.5px var(--uifont);color:#fff;text-shadow:var(--uistroke)}
+#mapBtn:active{transform:translateY(3px) scale(.96)}
+#mapPanel{background:var(--paperbg);border:0;border-radius:16px;box-shadow:var(--woodframe);right:14px}
+#mapPanel h2,#mapPanel h3,#mapPanel b{font-family:var(--uifont);font-weight:400;color:#6A3E14}
+#mapPanel button{font-family:var(--uifont)}
+/* 5 教學 */
+#tut{background:var(--paperbg);border:0;border-radius:16px;box-shadow:var(--woodframe);left:14px}
+.tuth{font-family:var(--uifont);font-weight:400;color:#6A3E14;font-size:16px}
+.tuth .gp{border:3px solid #F2C14E;box-shadow:0 0 0 2px var(--w3)}
+#tutText{color:#4A3020}
+.tutb button{border:0;font:14px var(--uifont);color:#6A3E14;padding:7px 14px;background:linear-gradient(180deg,#FFFDF6,#F4E4C2);box-shadow:var(--btn3d)}
+.tutb button:active{transform:translateY(3px)}
+#tutNext{color:#fff;background:linear-gradient(180deg,#8EDB5A,#4E9F2C);text-shadow:0 1.5px 0 #2F6E17;box-shadow:var(--btn3dg)}
+/* 6 種子袋格子 */
+.slots{background:var(--uiwood);border:0;border-radius:14px;padding:6px;box-shadow:inset 0 2px 0 rgba(255,220,170,.35),0 3px 0 var(--w3)}
+.slot{border:0;border-radius:10px;background:radial-gradient(circle at 50% 40%,#FFFDF4,#F6E7C4);box-shadow:inset 0 -2px 0 rgba(140,90,40,.18),inset 0 0 0 1.5px #D9BE8C}
+.slot.my{background:radial-gradient(circle at 50% 40%,#FFFFF8,#EEF7DD);box-shadow:inset 0 -2px 0 rgba(60,110,30,.18),inset 0 0 0 2px #7DC24E}
+.slot.empty{opacity:1;background:rgba(255,246,222,.35);box-shadow:inset 0 2px 3px rgba(60,30,5,.3)}
+/* 7 探索的小提示、地名橫幅 */
+#exHint{background:rgba(70,42,16,.78);border:0;color:#FFF6E2;border-radius:12px;font-family:var(--uifont);text-shadow:0 1px 0 rgba(0,0,0,.4);box-shadow:0 3px 8px rgba(0,0,0,.2)}
+#mapBanner{background:var(--uiwood);font:17px var(--uifont);padding:7px 16px 8px;border-radius:12px;text-shadow:var(--uistroke);box-shadow:inset 0 2px 0 rgba(255,220,170,.4),0 3px 0 var(--w3),0 6px 12px rgba(0,0,0,.3)}
+/* 8 點裝飾的小選單 */
+#decoPop{background:var(--paperbg);border:0;border-radius:14px;box-shadow:var(--woodframe);padding:7px;gap:7px}
+#decoPop button{border:0;font:14px var(--uifont);color:#6A3E14;background:linear-gradient(180deg,#FFFDF6,#F4E4C2);box-shadow:var(--btn3d)}
+#decoPop button:active{transform:translateY(3px)}
+/* 9 讀取畫面、登入畫面 */
+#boot,#login{background:radial-gradient(ellipse 120% 70% at 50% 108%,#7FB04E 0,#9CC768 40%,rgba(156,199,104,0) 41%),radial-gradient(ellipse 140% 60% at 50% 118%,#6E9E42 0,#6E9E42 38%,rgba(110,158,66,0) 39%),linear-gradient(180deg,#BFE6F6 0,#E6F5EC 55%,#C9E39E 100%)}
+#boot h1,#login h1{font:44px var(--uifont);color:#fff;letter-spacing:3px;text-shadow:0 4px 0 #55300F,2px 0 0 #55300F,-2px 0 0 #55300F,0 -2px 0 #55300F,2px 2px 0 #55300F,-2px 2px 0 #55300F,0 8px 14px rgba(60,30,5,.35)}
+#boot h1::before,#login h1::before{content:"";display:block;width:64px;height:64px;margin:0 auto 6px;background:url(assets/icons/s/seed_bag.png) center/contain no-repeat;filter:drop-shadow(0 4px 4px rgba(60,30,5,.3));animation:bootbob 2.4s ease-in-out infinite}
+@keyframes bootbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+#bootMsg,#login>.note:first-of-type{font:16px var(--uifont);color:#4A3020}
+#bootVer{color:#3A5A20}
+@media (prefers-reduced-motion:reduce){#boot h1::before,#login h1::before{animation:none}}
 </style>
 </head>
 <body class="game">
@@ -1374,7 +1430,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-16w';
+const BUILD='2026-11-16x';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -6645,9 +6701,9 @@ function ringState(k){const nd=sbtnNeed(state),acc=((state.items||{}).acc)||0;
   if(k==='tray')return trayObj().cells.length?'':'育苗盤是空的，點綠色按鈕就能種植';
   if(k==='shovel')return state.plots.some(p=>p)?'':'田裡沒有植株';
   return ''}
-function openRing(){if(ringOpen||!state)return;const b=document.getElementById('ringBtn').getBoundingClientRect(),cx=b.left+b.width/2,cy=b.top+b.height/2,R=Math.min(170,Math.max(140,cx-160));
+function openRing(){if(ringOpen||!state)return;const b=document.getElementById('ringBtn').getBoundingClientRect(),cx=b.left+b.width/2,cy=b.top+b.height/2,R=Math.min(205,Math.max(150,cx-115));/* 16x：按鈕有木框，半徑放大，彼此不重疊 */
   /* 從左邊（9 點鐘）順時針排到正上方（12 點鐘）：按鈕在右下角，右邊沒有空間 */
-  const a0=185,a1=90,m=document.getElementById('ringMenu');
+  const a0=185,a1=88,m=document.getElementById('ringMenu');
   m.innerHTML=RING.map(([k,n],j)=>{const a=(a0+(a1-a0)*j/(RING.length-1))*Math.PI/180,x=cx+R*Math.cos(a),y=cy-R*Math.sin(a),off=ringState(k);
     return `<button class="ri${off?' off':''}" role="menuitem" data-ring="${k}" aria-disabled="${off?'true':'false'}" style="left:${x.toFixed(0)}px;top:${y.toFixed(0)}px;--dx:${(cx-x).toFixed(0)}px;--dy:${(cy-y).toFixed(0)}px;animation-delay:${j*28}ms"><img src="assets/icons/s/${RING_ICON[k]}.png" alt="" aria-hidden="true" onerror="this.remove()"><span>${n}</span></button>`}).join('');
   m.hidden=false;document.getElementById('ringOv').hidden=false;document.getElementById('ringBtn').classList.add('on');ringOpen=true;ringHl=null}

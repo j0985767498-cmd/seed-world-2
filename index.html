@@ -694,7 +694,7 @@ const CN={white:'白',green:'綠',yellow:'黃',red:'紅',purple:'紫',black:'黑
 /* 一對顏色因子 → 看到的顏色鍵值：純色 'red'、混色 'orange'、夢幻色 'starry'、淡夢幻色 'l-starry'、雙色 'd-gold-starry' */
 function colKey(p){const a=p[0],b=p[1];if(a===b)return a;const sa=isSpecC(a),sb=isSpecC(b);if(sa&&sb)return 'd-'+[a,b].sort().join('-');if(sa)return 'l-'+a;if(sb)return 'l-'+b;return mixOf(a,b)||a}
 function colParts(k){k=k||'';if(k.startsWith('l-'))return {t:'l',a:k.slice(2)};if(k.startsWith('d-')){const q=k.split('-');return {t:'d',a:q[1],b:q[2]}}return {t:isSpecC(k)?'s':MIXSET.has(k)?'m':'p',a:k}}
-function cnOf(k){if(!k)return '';const p=colParts(k);return p.t==='l'?'淡'+CN[p.a]:p.t==='d'?CN[p.a]+CN[p.b]+'雙色':(CN[k]||k)}
+function cnOf(k){if(!k)return '';const p=colParts(k);return p.t==='l'?'半'+CN[p.a]:p.t==='d'?CN[p.a]+CN[p.b]+'雙色':(CN[k]||k)}
 const isSpecK=k=>{const p=colParts(k);return p.t==='s'||p.t==='l'||p.t==='d'};
 const COLOR_ORDER=['sakura','rainbow','starry','crystal','obsidian','gold','blue','pearl','silver','black','plum','crimson','wine','purple','darkgreen','slate','brown','olive','amber','red','orange','pink','lavender','gray','yellow','cream','yellowgreen','green','mint','white'];
 const colOrd=k=>{const p=colParts(k),i=COLOR_ORDER.indexOf(p.a);return (i<0?99:i)+(p.t==='l'?0.3:p.t==='d'?-0.3:0)};
@@ -781,10 +781,17 @@ function mutateX(g){return mutRound(g,MUTX.mult,true,MUTX.spec)}/* 28.2：夢幻
 function child(m,f){const g=fuse(gamete(m),gamete(f));const mu=mutate(g);return {g,mu}}
 const perfConv=v=>Math.max(0,Math.min(100,Math.round((v-6)/94*100)));
 const abilOf=(g,k)=>{const v=Math.round(g.n[k].reduce((s,p)=>s+p[0]+p[1],0)/(2*NUMN)*100);return k==='perf'?perfConv(v):v};
+/* 87（16o）：半夢幻色（夢幻色＋基本色）一半一半；另一半的基本色記在 a.sb（果皮）、pat.cb（花紋），不進外觀鍵值，鍵值、存檔、計分都不變 */
+const halfBase=p=>isSpecC(p[0])?p[1]:p[0];
+const HALF_DEF='white';/* 只有外觀鍵值、不知道另一半時（圖鑑、紀錄榜…）用白色 */
+/* 預覽：從親本找另一半最可能的基本色 */
+function halfFrom(gs,fld){const n={};for(const g of gs)if(g&&g[fld])for(const c of g[fld])if(!isSpecC(c))n[c]=(n[c]||0)+1;let b=null,m=0;for(const c in n)if(n[c]>m){m=n[c];b=c}return b}
+/* 87：標本記下另一半的顏色（sb、cb），收藏櫃照實際的樣子畫；舊標本沒有就用白色 */
+const specApp=e=>{const a={...appFromKey(e.key),perfCls:2,seed:7};if(e.sb&&a.skin.startsWith('l-'))a.sb=e.sb;if(e.cb&&a.pat)a.pat={...a.pat,cb:e.cb};return a};
 function appParts(g){
   const sp=spExpr(g.sp),level=g.b[0]===g.b[1]?g.b[0]:0,skin=colKey(g.c);
-  let pat=null;if(g.pw[0]&&g.pw[1]){const c=colKey(g.pc),f=Math.min(g.pf[0],g.pf[1]);pat=g.pf[0]===g.pf[1]?{c,f}:{c,f,f2:Math.max(g.pf[0],g.pf[1])}}
-  return {level,sp,skin,pat};
+  let pat=null;if(g.pw[0]&&g.pw[1]){const c=colKey(g.pc),f=Math.min(g.pf[0],g.pf[1]);pat=g.pf[0]===g.pf[1]?{c,f}:{c,f,f2:Math.max(g.pf[0],g.pf[1])};if(c.startsWith('l-'))pat.cb=halfBase(g.pc)}
+  const r={level,sp,skin,pat};if(skin.startsWith('l-'))r.sb=halfBase(g.c);return r;
 }
 const patKey=p=>p?p.c+'/'+p.f+(p.f2!=null?'+'+p.f2:''):'-';
 /* 外觀鍵值（v3，小寫開頭）：'b{0-2}' 基本造型、'p{1-14}' 特殊／專屬造型 | 果皮 | 花紋顏色/形式 */
@@ -895,6 +902,7 @@ function lotDist(l){
   // 後代外觀機率一律依母本 × 父本的遺傳規則計算（理論值），不依包內實際的種子，避免洩漏每顆種子的內容
   const m=new Map();
   for(const [k,p] of offspringDist(l.m,l.f)){const a=appFromKey(k);m.set(k,{key:k,p,app:{...a,perfCls:2,seed:7}})}
+  const hs=halfFrom([l.m,l.f],'c'),hp=halfFrom([l.m,l.f],'pc');for(const e of m.values()){if(e.app.skin&&e.app.skin.startsWith('l-')&&hs)e.app.sb=hs;if(e.app.pat&&e.app.pat.c.startsWith('l-')&&hp)e.app.pat={...e.app.pat,cb:hp}}
   const mk=phen(l.m,l.crop);if(m.has(mk.key))m.get(mk.key).app=mk;
   return [...m.values()].sort((x,y)=>y.p-x.p||rarityOf(y.app,50,50).score-rarityOf(x.app,50,50).score);
 }
@@ -1526,25 +1534,28 @@ function dreamInfo(a){let nf=1,per=0,pale=true;const add=k=>{if(!k)return;const 
   add(a.skin);if(a.pat)add(a.pat.c);if(nf<2)return null;const r={nf,per}/* 80.2：淡的週期和完整的一樣 */,P=colParts(a.skin);
   /* 48.2 雙夢幻色：左右兩半各用自己的影格數與週期 */
   if(P.t==='d'&&P.a!==P.b&&DREAM_NF[P.a]&&DREAM_NF[P.b])r.dual=[{n:P.a,h:-1},{n:P.b,h:1}];return r}
-function fruitColSpec(key,frame){
+function fruitColSpec(key,frame,hb){
   const P=colParts(key),rgb=n=>RGBC[n]||RGBC.white,fr=frame||0;
   /* 57.1 彩虹：維持橫向彩虹；第 2 影格色帶位移 0.17（循環） */
   const rainbow=(v,pale)=>{let c;if(fr%2){const t=(((v+0.17)%1)+1)%1*RAINBOW.length,i=Math.floor(t)%RAINBOW.length;c=mixRGB(hexRGB(RAINBOW[i]),hexRGB(RAINBOW[(i+1)%RAINBOW.length]),t-Math.floor(t))}
     else{const t=clamp(v,0,1)*(RAINBOW.length-1),i=Math.min(RAINBOW.length-2,Math.floor(t));c=mixRGB(hexRGB(RAINBOW[i]),hexRGB(RAINBOW[i+1]),t-i)}return pale?mixRGB(c,[255,255,255],0.42):c};
   const one=(n,pale)=>n==='rainbow'?((u,v)=>rainbow(v,pale)):(()=>{const c=pale?mixRGB(rgb(n),[255,255,255],0.42):rgb(n);return ()=>c})();
-  if(P.t==='d'){const A=one(P.a,false),B=one(P.b,false);return {at:(u,v)=>u<0.5?A(u,v):B(u,v),fx:[{n:P.a,s:1,side:-1},{n:P.b,s:1,side:1}]}}
-  if(P.t==='l')return {at:one(P.a,true),fx:[{n:P.a,s:0.5,side:0}]};
+  /* 87：一半一半（at 第三個參數＝哪一半），夢幻色那半邊不減弱 */
+  if(P.t==='d'){const A=one(P.a,false),B=one(P.b,false);return {split:1,at:(u,v,sd)=>sd<0?A(u,v):B(u,v),fx:[{n:P.a,s:1,side:-1},{n:P.b,s:1,side:1}]}}
+  if(P.t==='l'){const A=one(P.a,false),B=one(hb||HALF_DEF,false);return {split:1,at:(u,v,sd)=>sd<0?A(u,v):B(u,v),fx:[{n:P.a,s:1,side:-1}]}}
   if(P.t==='s')return {at:one(P.a,false),fx:[{n:P.a,s:1,side:0}]};
   return {at:one(P.a,false),fx:[]};
 }
 /* 上色（純函式，方便測試）：B=fruitPrep 結果，a=外觀，ripe<1＝結果期，frame＝夢幻色的影格（48.3） */
 function fruitPaint(B,a,ripe,seed,frame,half,msel){/* msel（81）：{reg:'body'|'skin'|'pat',side}＝只輸出光層的遮罩（選到的範圍白色不透明，其他透明） *//* half：-1／1＝只留左半／右半的果實本體，其他透明（雙夢幻色各半各自播） */
   const {w,h,d,body,stem,L,base,x0,x1,y0,y1,rl,rr}=B,out=new Uint8ClampedArray(d),W=Math.max(1,x1-x0),H=Math.max(1,y1-y0),asp=H/W,fr=frame||0;
-  const ok=ripe>=1,sk=fruitColSpec(a.skin,fr);
+  const ok=ripe>=1,sk=fruitColSpec(a.skin,fr,a.sb);
+  /* 87.2 分界線：通過本體中心、上端偏右下端偏左（和垂直約 25°），2 個波、振幅約本體寬 4%；回傳和分界線的水平距離（像素，左上為負） */
+  const sdist=(u,v)=>(u-(0.5+0.4663*asp*(0.5-v)+0.04*Math.sin(v*12.566)))*W,sideOf=(u,v)=>sdist(u,v)<0?-1:1;
   let R=seed>>>0||7;const rnd=()=>{R=(R*1664525+1013904223)>>>0;return R/4294967296};
   /* 花紋 */
   const pat=ok&&a.pat?a.pat:null,forms=pat?(pat.f2!=null?[pat.f,pat.f2]:[pat.f]):[];
-  let pc=null;if(pat)pc=pat.c===a.skin?{at:sk.at,fx:sk.fx,dim:0.85}:fruitColSpec(pat.c,fr);
+  let pc=null;if(pat)pc=pat.c===a.skin?{at:sk.at,fx:sk.fx,split:sk.split,dim:0.85}:fruitColSpec(pat.c,fr,pat.cb);
   const spots=[],stars=[];
   if(forms.includes(1))for(let k=0;k<12;k++)spots.push([x0+W*(0.12+rnd()*0.76),y0+H*(0.12+rnd()*0.76),W/18*(0.8+rnd()*0.4)]);
   const blos=[];if(forms.includes(4))for(let k=0;k<6;k++)blos.push([x0+W*(0.16+rnd()*0.68),y0+H*(0.16+rnd()*0.68),W/7.5*(0.8+rnd()*0.4),rnd()*6.283]);/* 82.5A 櫻花瓣：5–8 朵小五瓣花 */
@@ -1558,11 +1569,13 @@ function fruitPaint(B,a,ripe,seed,frame,half,msel){/* msel（81）：{reg:'body'
       else grad=v;}
     return [hit,grad]};
   /* 一個顏色在這個像素的樣子：基本色、混色＝底色套明暗；夢幻色＝57 的畫法（淡的和淡底色各半）。k＝明暗 */
-  const px=(S,u,v,k)=>{let c=S.at(u,v);c=k<=1?c.map(z=>z*k):mixRGB(c,[255,255,255],Math.min((k-1)/0.25,1));
-    if(ok)for(const f of S.fx){if(f.side<0&&u>=0.5||f.side>0&&u<0.5)continue;if(f.n==='rainbow')continue;const D=dreamPx(f.n,fr%DREAM_NF[f.n],u,v,k,asp);if(D)c=f.s>=1?D:mixRGB(c,D,0.5)}
+  const px1=(S,u,v,k,sd)=>{let c=S.at(u,v,sd);c=k<=1?c.map(z=>z*k):mixRGB(c,[255,255,255],Math.min((k-1)/0.25,1));
+    if(ok)for(const f of S.fx){if(f.side&&f.side!==sd)continue;if(f.n==='rainbow')continue;const D=dreamPx(f.n,fr%DREAM_NF[f.n],u,v,k,asp);if(D)c=f.s>=1?D:mixRGB(c,D,0.5)}
     if(S.dim)c=c.map(z=>z*S.dim);return c};
+  /* 87：一半一半的交界 2–3px 漸變 */
+  const px=(S,u,v,k)=>{if(!S.split)return px1(S,u,v,k,0);const d=sdist(u,v);if(d<=-1.3)return px1(S,u,v,k,-1);if(d>=1.3)return px1(S,u,v,k,1);return mixRGB(px1(S,u,v,k,-1),px1(S,u,v,k,1),(d+1.3)/2.6)};
   for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x,o=i*4;
-    if(msel){if(body[i]){const u=(x-x0)/W,v=(y-y0)/H;let on=true;if(msel.reg!=='body'){let inP=false;if(pat){const [hit,grad]=inPat(x,y,u,v);inP=hit||grad>0.5}on=msel.reg==='pat'?inP:!inP}if(msel.side&&(msel.side<0?u>=0.5:u<0.5))on=false;if(on){out[o]=out[o+1]=out[o+2]=out[o+3]=255}}continue}
+    if(msel){if(body[i]){const u=(x-x0)/W,v=(y-y0)/H;let on=true;if(msel.reg!=='body'){let inP=false;if(pat){const [hit,grad]=inPat(x,y,u,v);inP=hit||grad>0.5}on=msel.reg==='pat'?inP:!inP}if(msel.side&&sideOf(u,v)!==msel.side)on=false;if(on){out[o]=out[o+1]=out[o+2]=out[o+3]=255}}continue}
     if(body[i]){
       const u=(x-x0)/W,v=(y-y0)/H;
       /* 明暗：k = 亮度 / 基準，暗部加強 1.7 倍；亮部往白色混合 */
@@ -1576,7 +1589,7 @@ function fruitPaint(B,a,ripe,seed,frame,half,msel){/* msel（81）：{reg:'body'
       /* 蒂頭調成灰綠：原色 × 0.6 ＋ 亮度 × 0.4，再乘 (1.0, 0.9, 1.15) */
       const l=L[i],sm=B.sm||STEM_MUL;out[o]=(d[o]*0.6+l*0.4)*sm[0];out[o+1]=(d[o+1]*0.6+l*0.4)*sm[1];out[o+2]=(d[o+2]*0.6+l*0.4)*sm[2];
     }
-    if(half&&(!body[i]||(half<0?(x-x0)/W>=0.5:(x-x0)/W<0.5)))out[o+3]=0;
+    if(half&&(!body[i]||sideOf((x-x0)/W,(y-y0)/H)!==half))out[o+3]=0;
   }
   return out;
 }
@@ -1617,8 +1630,8 @@ function fruitMaskURL(B,a,key0,reg,side){
   FRUIT_CACHE.set(key,u);return u}
 /* 這個外觀要哪幾層光：果皮（有不同顏色的花紋時扣掉花紋）、花紋（夢幻色花紋）；雙夢幻色左右各一層；淡的透明度一半 */
 function dreamLayers(a){const L=[],pd=a.pat&&a.pat.c!==a.skin;
-  for(const f of fruitColSpec(a.skin).fx)if(DREAM_NF[f.n])L.push({n:f.n,s:f.s,side:f.side||0,reg:pd?'skin':'body'});
-  if(pd)for(const f of fruitColSpec(a.pat.c).fx)if(DREAM_NF[f.n])L.push({n:f.n,s:f.s,side:f.side||0,reg:'pat'});return L}
+  for(const f of fruitColSpec(a.skin,0,a.sb).fx)if(DREAM_NF[f.n])L.push({n:f.n,s:f.s,side:f.side||0,reg:pd?'skin':'body'});
+  if(pd)for(const f of fruitColSpec(a.pat.c,0,a.pat.cb).fx)if(DREAM_NF[f.n])L.push({n:f.n,s:f.s,side:f.side||0,reg:'pat'});return L}
 const DL_STAR=d=>`<path d="M0 -${d} L${d*0.22} -${d*0.22} ${d} 0 ${d*0.22} ${d*0.22} 0 ${d} -${d*0.22} ${d*0.22} -${d} 0 -${d*0.22} -${d*0.22}Z" fill="#fff"/>`;
 function dreamLightSVG(n,per,dl,u){const st=(c,extra)=>`class="${c}" style="animation-duration:${per}s;animation-delay:${f3(+dl+(extra||0))}s"`;
   const band=(col,w,op)=>`<defs><linearGradient id="dg${u}" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="${col}" stop-opacity="0"/><stop offset=".5" stop-color="${col}" stop-opacity="${op}"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><g ${st('dlsw')}><rect x="${-w/2}" y="-3" width="${w}" height="6" fill="url(#dg${u})" transform="rotate(32)"/></g>`;
@@ -1646,7 +1659,7 @@ let FRUIT_ANIM=false,DZ_N=0,DZ_FULL=null,DZ_OK=true;/* FRUIT_ANIM：呼叫 fruit
 function fruitImgSVG(a,ripe,crop){
   if(!a||!CROPS[crop])return null;
   const name=fruitShapeKey(a,crop),B=fruitBase(name);if(!B)return null;
-  const rp=ripe>=1?1:0,key=name+'|'+a.skin+'|'+patKey(rp?a.pat:null)+'|'+rp;
+  const rp=ripe>=1?1:0,key=name+'|'+a.skin+(a.sb&&a.skin.startsWith('l-')?'/'+a.sb:'')+'|'+patKey(rp?a.pat:null)+(rp&&a.pat&&a.pat.cb?'/'+a.pat.cb:'')+'|'+rp;
   let url;try{url=fruitURL(B,a,rp,key)}catch(e){return null}
   const m=(FRUIT_SHAPE_MUL[name]||1)*0.82,s=Math.min(3/B.w,3.2/B.h)*m,w=B.w*s,h=B.h*s;/* 0.82：和舊畫法的果實大小差不多（舊的果實約佔框的 75–90%） */
   const pc=a.perfCls==null?2:a.perfCls;
@@ -3742,14 +3755,14 @@ async function claimSpec(i){
   const e=specBlock(p,ph);if(e){toast(e);return false}
   const id=specId(p.crop,ph.key),me=myName(),now=Date.now(),reg=findVariety(p.crop,ph.key);
   const c={uid,me,now,crop:p.crop,key:ph.key,tier:ph.tier,g:JSON.stringify(p.g),auto:shortApp(ph),reg};
-  if(!specCapped(ph.tier)){addOwnSpec({id,crop:p.crop,key:ph.key,tier:ph.tier,at:now,auto:c.auto,from:pname(p),bt:p.bt?1:undefined});save();if(sheet)renderSheet();toast('採收了果實標本！放進「圖鑑 → 收藏櫃」了',4000);return true}/* 28.3：沒有名額的等級只寫進自己的存檔，不用全服文件 */
+  if(!specCapped(ph.tier)){addOwnSpec({id,crop:p.crop,key:ph.key,tier:ph.tier,at:now,auto:c.auto,from:pname(p),bt:p.bt?1:undefined,sb:ph.sb,cb:ph.pat&&ph.pat.cb||undefined});save();if(sheet)renderSheet();toast('採收了果實標本！放進「圖鑑 → 收藏櫃」了',4000);return true}/* 28.3：沒有名額的等級只寫進自己的存檔，不用全服文件 */
   let out=null;
   try{const ref=db.collection('rights').doc(id),od=ridOld(id);await db.runTransaction(async tx=>{const d=await tx.get(ref);let dat=d.exists?d.data():null;if(!dat&&od){const d2=await tx.get(db.collection('rights').doc(od));if(d2.exists)dat=d2.data()}/* 73.3 */out=specClaimStep(specNorm(dat,now),c);tx.set(ref,out,{merge:true})})}
   catch(err){const m=err&&err.message;specCache.delete(id);
-    if(m==='mine')addOwnSpec({id,crop:p.crop,key:ph.key,tier:ph.tier,at:now,auto:c.auto,from:pname(p),bt:p.bt?1:undefined});
+    if(m==='mine')addOwnSpec({id,crop:p.crop,key:ph.key,tier:ph.tier,at:now,auto:c.auto,from:pname(p),bt:p.bt?1:undefined,sb:ph.sb,cb:ph.pat&&ph.pat.cb||undefined});
     toast(m==='full'?'這個品種的全服名額剛好滿了':m==='mine'?'你已經有這個品種的標本了':`採收失敗（${(err&&(err.code||m))||'unknown'}），沒有變動。請確認網路後再試一次`,5000);save();if(sheet)renderSheet();return false}
   specCache.set(id,{s:out,at:Date.now()});
-  addOwnSpec({id,crop:p.crop,key:ph.key,tier:ph.tier,at:now,auto:c.auto,from:pname(p),bt:p.bt?1:undefined});
+  addOwnSpec({id,crop:p.crop,key:ph.key,tier:ph.tier,at:now,auto:c.auto,from:pname(p),bt:p.bt?1:undefined,sb:ph.sb,cb:ph.pat&&ph.pat.cb||undefined});
   save();if(sheet)renderSheet();
   toast(`採收了果實標本！放進「圖鑑 → 收藏櫃」了${out.namerUid===uid&&!out.name?'。你是第一個，可以在收藏櫃替品種命名':''}`,6000);
   postNews('spec',`🏅 ${me} 採收了${TIERS[ph.tier]}級${CROPS[p.crop].n}「${out.name||c.auto}」的果實標本（全服 ${out.n}／${SPEC_CAP[ph.tier]}）`,ph.tier);
@@ -3793,7 +3806,7 @@ function cabListHTML(list,owner,mine){
   const dt=t=>{try{const d=new Date(t);return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`}catch(e){return ''}};
   const sc=e=>{try{return rarityScore(appFromKey(e.key))}catch(err){return 0}};
   return list.slice().sort((a,b)=>(b.tier||0)-(a.tier||0)||sc(b)-sc(a)||(b.at||0)-(a.at||0)).map(e=>{
-    const sp=specCapped(e.tier)?specGet(e.id):null,reg=findVariety(e.crop,e.key),app={...appFromKey(e.key),perfCls:2,seed:7};
+    const sp=specCapped(e.tier)?specGet(e.id):null,reg=findVariety(e.crop,e.key),app=specApp(e);
     const nm=(sp&&sp.name)||(reg&&reg.name)||'',namerUid=sp?sp.namerUid:(reg&&reg.inventorUid),namer=sp?sp.namerName:(reg&&reg.inventorName);
     const title=nm?`${esc(nm)}${namerUid&&namerUid!==owner?`<span class="meta">（命名者：${esc(namer||'')}）</span>`:''}`:`${esc(e.auto||CROPS[e.crop].n)}${specCapped(e.tier)?'<span class="meta">（尚未命名）</span>':''}`;
     let h=`<div class="lot${tfxKind(app)?' tcard':''}"><div class="lot-top">${fruitSVG(app,e.crop,64)}<div><div class="lot-name">${title}</div><div class="meta">${CROPS[e.crop].n}・取得於 ${dt(e.at)}</div>${specCapped(e.tier)?`<div class="meta">這個品種全服名額 ${sp?specCount(sp):'…'}／${SPEC_CAP[e.tier]}</div>`:''}<div class="badges" style="justify-content:flex-start;margin-top:4px"><span class="badge r${e.tier}">${TIERS[e.tier]||''}</span></div></div></div>`;
@@ -3894,10 +3907,10 @@ function ownedCrops(){const s=new Set();state.lots.forEach(l=>s.add(l.crop));sta
 function condTxt(c){
   const crop=c.crop?CROPS[c.crop].n:'任何作物';const bits=[];
   if(c.bt!=null)bits.push(c.crop?`形狀是「${CROPS[c.crop].shapes[c.bt]}」`:`形狀是第 ${c.bt+1} 種造型（例如番茄${CROPS.tomato.shapes[c.bt]}）`);
-  if(c.sp)bits.push(`${SPN[c.sp]}`);if(c.skin)bits.push(`${cnSe(c.skin)}`);if(c.dream)bits.push(`${CN[c.dream]}色（淡的也可以）`);if(c.pat)bits.push('有花紋');if(c.minSize!=null)bits.push(`大小「${SIZE_N[c.minSize]}」以上`);if(c.minTier!=null)bits.push(`${TIERS[c.minTier]}以上`);
+  if(c.sp)bits.push(`${SPN[c.sp]}`);if(c.skin)bits.push(`${cnSe(c.skin)}`);if(c.dream)bits.push(`${CN[c.dream]}色（半的也可以）`);if(c.pat)bits.push('有花紋');if(c.minSize!=null)bits.push(`大小「${SIZE_N[c.minSize]}」以上`);if(c.minTier!=null)bits.push(`${TIERS[c.minTier]}以上`);
   return `交出一顆${bits.join('、')}的${crop}`;
 }
-function dreamHas(k,d){const P=colParts(k);return (P.t==='s'||P.t==='l'||P.t==='d')&&(P.a===d||P.b===d)}/* 42.3：果皮帶著這種夢幻色（完整、淡、雙色都算） */
+function dreamHas(k,d){const P=colParts(k);return (P.t==='s'||P.t==='l'||P.t==='d')&&(P.a===d||P.b===d)}/* 42.3：果皮帶著這種夢幻色（完整、半、雙色都算） */
 function condOk(c,p,ph){return !c.wild&&(!c.dream||dreamHas(ph.skin,c.dream))&&(c.pf==null||(!!ph.pat&&(ph.pat.f===c.pf||ph.pat.f2===c.pf)))&&(!c.pc||(!!ph.pat&&ph.pat.c===c.pc))&&(!c.sp||ph.sp===c.sp)&&(!c.crop||c.crop===p.crop)&&(c.bt==null||(!ph.sp&&ph.level===c.bt))&&(!c.skin||ph.skin===c.skin)&&(!c.pat||!!ph.pat)&&(c.minSize==null||ph.sizeCls>=c.minSize)&&(c.minTier==null||ph.tier>=c.minTier)}
 
 function plotMove(i){
@@ -4807,7 +4820,7 @@ function townNameHTML(){
   for(const e of (state.specs||[])){if(!specCapped(e.tier))continue;const sp=specGet(e.id),reg=findVariety(e.crop,e.key);if(sp===undefined){wait=true;continue}if(sp&&sp.namerUid===uid&&!sp.name&&!reg)ls.push(e)}
   let h=`<h3>品種登記</h3>`;
   if(!ls.length)return h+`<p class="note">${wait?'正在讀取你的標本…':'目前沒有要登記名字的品種。史詩以上的品種，第一個採收標本的人可以在這裡命名。'}</p>`;
-  return h+ls.map(e=>{const app={...appFromKey(e.key),perfCls:2,seed:7},d=rdraft[e.id]!=null?rdraft[e.id]:'';
+  return h+ls.map(e=>{const app=specApp(e),d=rdraft[e.id]!=null?rdraft[e.id]:'';
     return `<div class="lot${tfxKind(app)?' tcard':''}"><div class="lot-top">${fruitSVG(app,e.crop,56)}<div><div class="lot-name">${esc(e.auto||CROPS[e.crop].n)}</div><div class="badges" style="justify-content:flex-start"><span class="badge r${e.tier}">${TIERS[e.tier]||''}</span></div></div></div><label class="note">替這個品種取名字（2–8 個字，命名後不能修改）<input data-rname="${e.id}" maxlength="8" value="${esc(d)}"></label><div class="err">${rerr[e.id]||''}</div><button class="btn primary" data-act="twname" data-id="${e.id}">${rconfirm===e.id?'確定命名（之後不能修改）':'命名並登錄到圖鑑'}</button></div>`}).join('');
 }
 try{sb.addEventListener('input',e=>{const t=e.target;if(sheet&&sheet.town&&t&&t.dataset&&t.dataset.rname){rdraft[t.dataset.rname]=t.value;rerr[t.dataset.rname]=''}})}catch(e){}
@@ -6491,11 +6504,12 @@ function renderGenes(){
   const done=`<span class="badge gdone">成品</span>`;
   h+=card('三個常用做法','照著圖做就行',`<div class="gflow">${row(icon({sp:3,skin:'red'},'tomato',32),selfA,arrow,icon({sp:3,skin:'red'},'tomato',32),selfB,arrow,done)}<p class="gk"><b>固定一個樣子</b></p></div>
     <div class="gflow">${row(icon({skin:'red'},'tomato',32),cross,icon({skin:'yellow'},'tomato',32),arrow,four(['orange','orange','orange','orange'],26))}<p class="gk"><b>混色每次都雜交</b></p></div>
-    <div class="gflow">${row(icon({sp:3,skin:'red'},'tomato',30),crossB,icon({skin:'gold'},'tomato',30),arrow,icon({skin:'l-gold'},'tomato',30),selfB,arrow,`<span class="gfind">${icon({sp:3,skin:'gold'},'tomato',32)}</span>`,arrow,done)}<p class="gk"><b>把兩個特徵湊在一起</b></p></div>`);
+    <div class="gflow">${row(icon({sp:3,skin:'red'},'tomato',30),crossB,icon({skin:'gold'},'tomato',30),arrow,icon({skin:'l-gold',sb:'red'},'tomato',30),selfB,arrow,`<span class="gfind">${icon({sp:3,skin:'gold'},'tomato',32)}</span>`,arrow,done)}<p class="gk"><b>把兩個特徵湊在一起</b></p></div>`);
   /* 卡片 5：夢幻色（會動） */
   h+=card('夢幻色','幾乎只能靠突變',`<div class="ladder gl4">${SPECIAL.map(c=>step(icon({skin:c},'tomato',52),CN[c])).join('')}</div>
-    ${row(st2(icon({skin:'gold'},'tomato',42),'完整'),st2(icon({skin:'l-gold'},'tomato',42),'淡'),st2(icon({skin:'d-gold-starry'},'tomato',42),'雙'))}
-    ${row(icon({skin:'l-gold'},'tomato',34),selfB,arrow,four([{skin:'gold'},{skin:'l-gold'},{skin:'l-gold'},{skin:'yellow'}]),cap('<b>淡的千萬別丟</b>'))}
+    ${row(pair(al('gold'),al('gold')),arrow,icon({skin:'gold'},'tomato',36),cap('整顆金'))}${row(pair(al('gold'),al('red')),arrow,icon({skin:'l-gold',sb:'red'},'tomato',36),cap('一半金、一半紅'))}${row(pair(al('gold'),al('silver')),arrow,icon({skin:'d-gold-silver'},'tomato',36),cap('一半金、一半銀'))}
+    <p class="gk"><b>夢幻色不會和別的顏色混在一起，兩份各顯各的</b></p>
+    ${row(st2(icon({skin:'l-gold',sb:'red'},'tomato',34),pair(al('gold'),al('red'))),selfA,arrow,four([{skin:'gold'},{skin:'l-gold',sb:'red'},{skin:'l-gold',sb:'red'},{skin:'red'}]),cap('<b>半的千萬別丟</b>'))}
     <p class="note" style="margin:4px 0 0">櫻雪：只在花季（3/15～4/15）櫻花之丘的千年櫻樹下才有。</p>`);
   /* 卡片 6：花紋 */
   h+=card('花紋','三件事分開決定',`<p class="gk"><b>有沒有花紋：規則同造型，兩份都「有」才出現</b></p>
@@ -6902,7 +6916,7 @@ function exAnnounce(crop,g){try{const e=g.sp.find(v=>v>6);if(e)postNews('ex',`${
 function mqCardHTML(){
   const m=mqCur(),s=state.mq||{};let h='';
   if(s.old){const oc=oldPick.crop,ok=oc&&oldPick.col;
-    h+=`<div class="lot"><div class="lot-name">古老的種子</div><p class="note">種子庫裡最古老的一包。先選一種作物，再選一種夢幻色：你會收下 5 顆帶著一份那個顏色的種子（外表是淡的，自交後大約四分之一是完整的）。只能選一次。</p><div class="filters">${openCrops().map(c=>`<button class="fchip" data-act="oldc" data-k="${c}" aria-pressed="${oc===c}">${CROPS[c].n}</button>`).join('')}</div>${oc?`<div class="tcells" style="grid-template-columns:repeat(4,1fr);margin-top:6px">${DREAM8.map(k=>`<button class="tcell${oldPick.col===k?' on':''}" data-act="oldk" data-k="${k}" aria-pressed="${oldPick.col===k}" style="aspect-ratio:auto;flex-direction:column;padding:4px 0">${fruitSVG({level:0,sp:0,skin:k,pat:null,perfCls:2},oc,40)}<i style="position:static;font-style:normal;font-size:11px">${cnOf(k)}</i></button>`).join('')}</div>`:''}${ok?`<button class="btn primary" data-act="oldok">${oldPick.sure?'確定（之後不能改）':`收下${cnSe(oldPick.col)}的${CROPS[oc].n}種子`}</button>`:''}</div>`}
+    h+=`<div class="lot"><div class="lot-name">古老的種子</div><p class="note">種子庫裡最古老的一包。先選一種作物，再選一種夢幻色：你會收下 5 顆帶著一份那個顏色的種子（外表是一半那個顏色、一半原本的顏色，自交後大約四分之一是整顆的）。只能選一次。</p><div class="filters">${openCrops().map(c=>`<button class="fchip" data-act="oldc" data-k="${c}" aria-pressed="${oc===c}">${CROPS[c].n}</button>`).join('')}</div>${oc?`<div class="tcells" style="grid-template-columns:repeat(4,1fr);margin-top:6px">${DREAM8.map(k=>`<button class="tcell${oldPick.col===k?' on':''}" data-act="oldk" data-k="${k}" aria-pressed="${oldPick.col===k}" style="aspect-ratio:auto;flex-direction:column;padding:4px 0">${fruitSVG({level:0,sp:0,skin:k,pat:null,perfCls:2},oc,40)}<i style="position:static;font-style:normal;font-size:11px">${cnOf(k)}</i></button>`).join('')}</div>`:''}${ok?`<button class="btn primary" data-act="oldok">${oldPick.sure?'確定（之後不能改）':`收下${cnSe(oldPick.col)}的${CROPS[oc].n}種子`}</button>`:''}</div>`}
   if(!m)return h+'<div class="lot"><div class="lot-name">主線任務全部完成了</div><p class="note">之後的目標：把想要的樣子育成成品、收集標本、完成 NPC 的委託。</p></div>';
   const ch=s.ch;
   if(s.st===0){if(myLv()<m.lv)return h+`<div class="lot"><div class="lot-name">第 ${ch} 章　${m.t}</div><p class="note">Lv ${m.lv} 開放（你現在 Lv ${myLv()}）。收成、雜交、發現新的樣子、育出成品、探索都能得到經驗。</p></div>`;

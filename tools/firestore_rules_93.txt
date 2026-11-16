@@ -1,0 +1,51 @@
+// 第 93 節「花仙子」要新增的 Firestore 安全規則。
+// 貼到 Firebase 主控台 → Firestore Database → 規則，放在 match /databases/{database}/documents { … } 裡面，
+// 和現有的 match /players/…、match /roamers/… 等並排（原本的規則不用動）。檔案開頭要是 rules_version = '2';。
+//
+// 資料：fairy/<仙子鍵>（tomato、eggplant、chili、strawberry、corn、pumpkin、broccoli、zucchini、melon）
+//   { base:[{u, no, at}], evo:[{u, no, at}], tx:(交易時才有：那筆攤位上架的 id) }
+// 名額上限寫在下面（測試期 基本型 10、進化型 3）；遊戲裡的 FAIRY_CAP 改了，這裡也要一起改。
+//
+// 允許的三種寫入：
+//   1. 喚醒：base 多一筆、最後一筆是自己；evo 不變。
+//   2. 進化：evo 多一筆、最後一筆是自己；base 不變。
+//   3. 交易：base、evo 筆數不變，而且同一個交易裡那筆上架（listings/<tx>）是仙子、鍵相同、被自己買下。
+// 沒有刪除、沒有釋放名額。
+
+    // ---- 93：花仙子名額 ----
+    function fairyCapOk(d) {
+      return d.keys().hasOnly(['base', 'evo', 'tx'])
+        && d.base is list && d.evo is list
+        && d.base.size() <= 10
+        && d.evo.size() <= 3;
+    }
+    function fairyLastIsMe(l) {
+      return l.size() > 0 && l[l.size() - 1].u == request.auth.uid;
+    }
+    function fairyClaim(key) {
+      let n = request.resource.data;
+      let o = resource.data;
+      return (n.base.size() == o.base.size() + 1 && fairyLastIsMe(n.base) && n.evo == o.evo)
+          || (n.evo.size() == o.evo.size() + 1 && fairyLastIsMe(n.evo) && n.base == o.base);
+    }
+    function fairyTrade(key) {
+      let n = request.resource.data;
+      let o = resource.data;
+      let l = getAfter(/databases/$(database)/documents/listings/$(n.tx)).data;
+      return n.base.size() == o.base.size() && n.evo.size() == o.evo.size()
+        && l.kind == 'fairy' && l.fk == key
+        && l.sold == true && l.buyerUid == request.auth.uid;
+    }
+    match /fairy/{key} {
+      allow read: if request.auth != null;
+      // 全服第一隻：建立時 base 只有自己一筆
+      allow create: if request.auth != null
+        && fairyCapOk(request.resource.data)
+        && request.resource.data.base.size() == 1
+        && fairyLastIsMe(request.resource.data.base)
+        && request.resource.data.evo.size() == 0;
+      allow update: if request.auth != null
+        && fairyCapOk(request.resource.data)
+        && (fairyClaim(key) || (('tx' in request.resource.data) && fairyTrade(key)));
+      allow delete: if false;
+    }

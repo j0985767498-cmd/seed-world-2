@@ -656,7 +656,7 @@ details.gfold .gfb{margin-top:8px}
 #joy{width:124px;height:124px;border:0;background:radial-gradient(circle,rgba(255,255,255,.2) 0,rgba(255,255,255,.08) 60%,rgba(255,255,255,.26) 61%,rgba(255,255,255,.06) 70%);box-shadow:inset 0 0 0 3px rgba(255,255,255,.55),0 4px 10px rgba(0,0,0,.15)}
 #joyKnob{width:54px;height:54px;margin:-27px 0 0 -27px;border:0;background:radial-gradient(circle at 40% 35%,#fff,#EDE3CF);box-shadow:0 4px 0 rgba(0,0,0,.18),0 6px 10px rgba(0,0,0,.2)}
 
-/* ===== 93（16u）花精靈 ===== */
+/* ===== 93（16u）精靈 ===== */
 .fybob{animation:fybob 2.8s ease-in-out infinite}
 @keyframes fybob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-2.6px) rotate(2deg)}}
 .fyglow{animation:fyglow 2.4s ease-in-out infinite}@keyframes fyglow{0%,100%{opacity:.25}50%{opacity:.6}}
@@ -794,6 +794,30 @@ details.gfold .gfb{margin-top:8px}
 .npctalk.pgw~.btn,.npctalk.pgw~.row2,.npctalk.pgw~button{display:none!important}
 #tut.pgw #tutNext{display:none!important}
 #tutText .pgnext{margin-top:4px}
+
+/* ===== 94.3（16z）授粉卡片：算式 ===== */
+.polhd{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.badge.polfl{background:linear-gradient(180deg,#FFE3F0,#FFC3DC);border:1.5px solid #E58AB0;color:#8A2E58}
+.polcard.pf2{padding:8px 10px;border-radius:14px;margin:8px 0;background:#FFFEF9;box-shadow:inset 0 0 0 2px #EAD7B0,0 3px 0 #E0C99A}
+.pf2 .ptags{display:flex;gap:4px;margin:0 0 4px}
+.pf2 .peq{display:flex;align-items:center;gap:4px}
+.pf2 .pmate{display:flex;flex-direction:column;align-items:center;min-width:42px;flex:none}
+.pf2 .pmate small{font-size:10.5px;color:#7A6650;line-height:1.1;max-width:58px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.pf2 .pfind{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;min-width:42px;border-radius:10px}
+.pf2 .pfind:active{background:#FFF1D2}
+.pf2 .ploop{width:36px;height:36px;display:grid;place-items:center;font:700 22px var(--uifont,inherit);color:#4E9F2C;border-radius:50%;background:#EEF7DD;box-shadow:inset 0 0 0 2px #B9DD99}
+.pf2 .pop{font:18px var(--uifont,inherit);color:#B08550;flex:none}
+.pf2 .polstrip{all:unset;cursor:pointer;flex:1;min-width:0;display:flex;align-items:center;gap:2px;padding:2px 4px;border-radius:10px;background:#FFF6E2;box-shadow:inset 0 0 0 1.5px #EAD7B0}
+.pf2 .pth{position:relative;display:flex;flex-direction:column;align-items:center}
+.pf2 .pth i{font:11px var(--uifont,inherit);font-style:normal;color:#6A3E14;line-height:1}
+.pf2 .pnew{position:absolute;top:-2px;right:-4px;font:10px var(--uifont,inherit);color:#fff;background:#E0462E;border-radius:6px;padding:0 3px;line-height:14px}
+.pf2 .pmore{font:12px var(--uifont,inherit);color:#8A6A4A;margin-left:2px}
+.pf2 .polgo{flex:none;margin-left:4px;min-width:58px;min-height:44px;padding:0 10px;border:0;font:15px var(--uifont,inherit);color:#fff;background:linear-gradient(180deg,#8EDB5A,#4E9F2C);text-shadow:0 1.5px 0 #2F6E17;box-shadow:var(--btn3dg)}
+.pf2 .polgo:active{transform:translateY(3px)}
+.pf2 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px;margin-top:8px;padding-top:8px;border-top:1.5px dashed #EAD7B0}
+#sheet.peek{transform:translateY(calc(100% - 56px))!important;transition:transform .25s ease!important}
+.pf.pkfl{width:70px;height:40px;border-radius:50%;border:4px solid #FFD54A;box-shadow:0 0 14px 4px rgba(255,213,74,.8);animation:pkfl .65s ease-in-out 2}
+@keyframes pkfl{0%,100%{opacity:0;transform:translate(-50%,-50%) scale(.7)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}}
 </style>
 </head>
 <body class="game">
@@ -1330,7 +1354,7 @@ function exMigrate(o){
   }catch(e){}
   o.exV=2;
 }
-function migrate(o){if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fairy))o.fairy={};for(const k of Object.keys(o.fairy)){if(k==='follow'||k==='mj')continue;const f=o.fairy[k];if(!FY[k]||!f||typeof f!=='object'||!f.no)delete o.fairy[k]}if(o.fairy.follow&&!o.fairy[o.fairy.follow])o.fairy.follow=null;/* 93：花精靈 */if(!o.wardrobe||typeof o.wardrobe!=='object')o.wardrobe={};if(!o.meihin||typeof o.meihin!=='object')o.meihin={};/* 86.5：衣櫃（特殊取得的衣服），用到才建立 */
+function migrate(o){if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fairy))o.fairy={};for(const k of Object.keys(o.fairy)){if(k==='follow'||k==='mj')continue;const f=o.fairy[k];if(!FY[k]||!f||typeof f!=='object'||!f.no)delete o.fairy[k]}if(o.fairy.follow&&!o.fairy[o.fairy.follow])o.fairy.follow=null;/* 93：精靈 */if(!o.wardrobe||typeof o.wardrobe!=='object')o.wardrobe={};if(!o.meihin||typeof o.meihin!=='object')o.meihin={};/* 86.5：衣櫃（特殊取得的衣服），用到才建立 */
   if(!o.nextLid)o.nextLid=1;if(!o.counts)o.counts={};
   while(o.plots.length<64)o.plots.push(null);
   geneMigrate(o);exMigrate(o);
@@ -1441,7 +1465,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-16y';
+const BUILD='2026-11-17a';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2454,7 +2478,7 @@ function boardStats(u){let pts=0;const places=[];for(const c of CROP_KEYS)for(co
 
 // ===== 圖鑑面板：分頁 =====
 let dexTab='dex',dexQ='',dexTier=-1,rdraft={},rerr={},rconfirm=null;
-function dexTabsHTML(){return `<div class="filters" role="tablist">${[['dex','品種圖鑑'],['cab','收藏櫃'],['mh','名品'],['fy','花精靈'],['boards','紀錄榜'],['rank','育種家排行']].map(([k,n])=>`<button class="fchip" role="tab" data-dtab="${k}" aria-pressed="${dexTab===k}">${k==='cab'?uiIcon('specimen',16):''}${n}</button>`).join('')}</div>`}
+function dexTabsHTML(){return `<div class="filters" role="tablist">${[['dex','品種圖鑑'],['cab','收藏櫃'],['mh','名品'],['fy','精靈'],['boards','紀錄榜'],['rank','育種家排行']].map(([k,n])=>`<button class="fchip" role="tab" data-dtab="${k}" aria-pressed="${dexTab===k}">${k==='cab'?uiIcon('specimen',16):''}${n}</button>`).join('')}</div>`}
 function renderDex(){
   if(!state)return;const el=document.getElementById('dex');if(!el)return;
   document.getElementById('dexTabs').innerHTML=dexTabsHTML();
@@ -2658,18 +2682,19 @@ function renderSheet(){
     h+=`<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・已絕版</p><p class="note">這株的外觀在新版本中已經不存在，已停止生長，只能拔掉。</p><button class="btn warn" data-act="uproot">${sheet.confirm?'再按一次確定拔掉':'拔掉這株'}</button>`;
   }else{
     const ph=phen(p.g,p.crop),lvl=p.stage==='seedling'?1:p.stage==='ripe'?3:2;
-    h+=`<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・第 ${i+1} 塊土地・${stageLabel(p)}${p.pollen?`・${p.pollen.type==='cross'?`與 ${esc(p.pollen.fatherName)} 雜交`:'自交'}`:''}${p.wide?'・遠緣雜種':''}${genTxt(p.gen)}</p>${p.rsv?(()=>{const j=rsvFather(p);return j<0?`<p class="note" style="color:var(--danger)">預約的父本不見了，請重新選。<button class="mini" data-act="rsvx">取消預約</button></p>`:`<p class="note">預約和「${esc(pname(state.plots[j]))}」雜交（開花時自動進行）。<button class="mini" data-act="rsvx">取消預約</button></p>`})():''}${p.old?'<p class="note">古老的種子：種子庫裡最古老的一包。</p>':''}${p.mu?`<p class="note"><b>${p.mu.lv>=2?'突變：'+p.mu.t:'這株和預期的不一樣（'+p.mu.t+'）'}</b></p>`:''}${srcSame(p,i)?`<p class="note">同一包種子還有 ${srcSame(p,i)} 株（田裡有淡色外框的那些）</p>`:''}${p.pollen&&p.pollen.failed?'<p class="note" style="color:var(--danger)">雜交沒有成功，這次改為自交。</p>':''}<button class="mini warn uptop" data-act="uproot">${sheet.confirm?'再按一次確定拔掉':'拔掉這株'}</button>`;
+    const FL=p.stage==='flower'&&!p.pollen;
+    h+=(FL?`<h2>${esc(pname(p))}</h2><p class="stage polhd">${genTxt(p.gen).replace('・','')||CROPS[p.crop].n}<span class="badge polfl">開花中</span>${p.wide?'<span class="badge r2">遠緣雜種</span>':''}${qh(POL_HELP)}</p>`:`<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・第 ${i+1} 塊土地・${stageLabel(p)}${p.pollen?`・${p.pollen.type==='cross'?`與 ${esc(p.pollen.fatherName)} 雜交`:'自交'}`:''}${p.wide?'・遠緣雜種':''}${genTxt(p.gen)}</p>`)+`${p.rsv?(()=>{const j=rsvFather(p);return j<0?`<p class="note" style="color:var(--danger)">預約的父本不見了，請重新選。<button class="mini" data-act="rsvx">取消預約</button></p>`:`<p class="note">預約和「${esc(pname(state.plots[j]))}」雜交（開花時自動進行）。<button class="mini" data-act="rsvx">取消預約</button></p>`})():''}${p.old?'<p class="note">古老的種子：種子庫裡最古老的一包。</p>':''}${p.mu?`<p class="note"><b>${p.mu.lv>=2?'突變：'+p.mu.t:'這株和預期的不一樣（'+p.mu.t+'）'}</b></p>`:''}${srcSame(p,i)?`<p class="note">同一包種子還有 ${srcSame(p,i)} 株（田裡有淡色外框的那些）</p>`:''}${p.pollen&&p.pollen.failed?'<p class="note" style="color:var(--danger)">雜交沒有成功，這次改為自交。</p>':''}<button class="mini warn uptop" data-act="uproot">${sheet.confirm?'再按一次確定拔掉':'拔掉這株'}</button>`;
     if(p.stage!=='ripe'){
       const own=p.stage==='fruit'||p.stage==='flower',fl=p.stage==='flower',pm=p.m||(state.lots.find(l=>l.lid===p.lid)||{}).m,ref=own?ph:(pm?phen(pm,p.crop):null);
       if(ref)h+=`<div class="hero${tfxKind(ref)&&(fl||!own||p.stage==='ripe')?' tcard':''}">${fruitSVG(ref,p.crop,Math.round(110*(own&&ref===ph?sizeScale(ph.ab.size):1)),fl?1:own?Math.max(0.15,clamp(p.prog/stageDur(p,ph),0,1)*0.4):1,fl?'這株將結出的果實':own?'這株正在長的果實':'親本的樣子')}</div><p class="note" style="text-align:center">${fl?`開花了！這株會結出：${ph.shapeName}・${colorLabel(ph)}・${SIZE_N[ph.sizeCls]}`:own?'這株正在長大，顏色會在成熟時揭曉。':'這是親本的樣子，開花後才看得到自己的。'}</p>`;
-      const pi=progInfo(p);h+=`<div class="bar"><i id="pbar" style="width:${pi.pct}%"></i></div><p class="note" id="ptime">${pi.txt}</p>`;
+      if(FL)h=h.replace(/<p class="note" style="text-align:center">開花了！這株會結出：[^<]*<\/p>$/,'');
+      if(!FL){const pi=progInfo(p);h+=`<div class="bar"><i id="pbar" style="width:${pi.pct}%"></i></div><p class="note" id="ptime">${pi.txt}</p>`}
     }
     if(p.stage==='flower'){
-      h+=`<p class="note" style="margin-top:12px">按卡片右邊的按鈕授粉。${qh('點卡片展開全部後代預覽。預覽只有形狀、顏色、花紋；大小約介於兩個親本之間。')}</p>`;
       h+=polCard(p,i,null);
       const me0=posOf(state,i)||[0,0],dist=j=>{const q=posOf(state,j)||[0,0];return Math.hypot(q[0]-me0[0],q[1]-me0[1])};
       const others=state.plots.map((q,j)=>({q,j})).filter(o=>o.q&&o.j!==i&&o.q.stage==='flower'&&!o.q.obs&&(o.q.crop===p.crop||isWide(p,o.q))).sort((a,b)=>dist(a.j)-dist(b.j));
-      h+=others.length?`<h3>選擇雜交對象</h3>`+others.map(o=>polCard(p,i,o)).join(''):`<p class="note">想雜交的話，需要另一株同時開花的${CROPS[p.crop].n}。</p>`;
+      h+=others.length?`<h3>雜交</h3>`+others.map(o=>polCard(p,i,o)).join(''):`<p class="note">沒有同時開花的${CROPS[p.crop].n}</p>`;
     }
     if(p.stage==='seedling'||p.stage==='fruit'){const na=(state.items||{}).acc||0;
       h+=na>0?`<div class="row2" style="margin-top:10px"><button class="btn" data-act="accel">使用加速劑（剩 ${na} 次）</button><button class="btn" data-act="accelmode">連續使用<br><small>點或滑過多株</small></button></div><p class="note">剩下的生長時間減半，可以重複用。${qh('到探索世界可以撿到。')}</p>`:`<p class="note" style="margin-top:10px">生長加速劑：剩下的生長時間減半。${qh('到探索世界可以撿到。')}</p>`;}
@@ -2735,6 +2760,7 @@ sb.addEventListener('click',e=>{
   if(act==='accel'&&p)useAccel(i);
   if(act==='accelmode'){closeSheet();openAccel();return}
   if(act==='polopen'){sheet.openPol=sheet.openPol===b.dataset.k?null:b.dataset.k;renderSheet();return}
+  if(act==='polfind'){polFind(+b.dataset.j);return}/* 94.3 */
   if(act==='self'&&p)pollinate(i,null);
   if(act==='rsvx'&&p){delete p.rsv;save();renderSheet();renderWorld();toast('取消預約了');return}
   if(act==='cross'&&p){delete p.rsv;pollinate(i,+b.dataset.j)}
@@ -2759,23 +2785,27 @@ function pollinate(i,j){
 }
 
 // ===== 開花期：授粉卡片（預覽後代，按兩次才授粉）=====
+/* 94.3（16z）授粉卡片：「這株 × 那株 → 會長出什麼」的算式，看圖就懂；說明都在頂部的「？」 */
+const POL_HELP='預覽只有形狀、顏色、花紋；大小約介於兩個親本之間。雜交失敗會改成自交。有少量機率突變出夢幻色或特殊造型。遠緣雜交發芽率減半。';
 function polCard(p,i,o){
   const self=!o,q=self?p:o.q,k=self?'self':String(o.j),open=sheet.openPol===k;
   let d;try{d=lotDist({m:p.g,f:q.g,crop:p.crop})}catch(e){d=[]}
-  const qp=phen(q.g,q.crop),pp=phen(p.g,p.crop),rate=self?1:crossRate(p,q);
-  const top=d.slice(0,3),more=d.length-top.length;
-  const badges=self?'':`${isBack(p,q)?'<span class="badge r1">回交</span>':''}${isWide(p,q)?'<span class="badge r2">遠緣雜交</span>':''}`;
-  const title=self?'自交（用自己的花粉）':`和「${esc(pname(q))}」雜交`;
-  const sub=self?'後代會越來越像這一株':`${CROPS[q.crop].n}・${qp.shapeName}・${colorLabel(qp)}・第 ${o.j+1} 塊土地`;
-  let h=`<div class="polcard${open?' open':''}"><button class="polhead" data-act="polopen" data-k="${k}" aria-expanded="${open}">${fruitSVG(qp,q.crop,48,1,'','p')}<span class="pl"><b>${title} ${badges}</b><span class="meta">${sub}</span><span class="meta">${self?'一定成功':`成功率約 ${Math.round(rate*100)}%`}</span></span><span class="chev" aria-hidden="true">${open?'▲':'▼'}</span></button>`;
-  h+=`<div class="polrow"><div class="polstrip" data-act="polopen" data-k="${k}">${top.map(x=>`<span class="pth">${fruitSVG(x.app,p.crop,34,1,'','p')}<i>${pctTxt(x.p)}</i></span>`).join('')}${more>0?`<span class="pmore">還有 ${more} 種</span>`:''}</div>${self?`<button class="polgo" data-act="self">自交</button>`:`<button class="polgo" data-act="cross" data-j="${o.j}">雜交</button>`}</div>`;
-  if(open){
-    h+=`<div class="polbody">`+d.map(x=>`<div class="prow">${fruitSVG(x.app,p.crop,40,1,'','p')}<span class="pl"><b>${shapeNameOf(x.app,p.crop)}・${colorLabelA(x.app)}</b><span class="meta">${regStatus(p.crop,x.key)}</span></span><span class="pp">${pctTxt(x.p)}</span></div>`).join('');
-    h+=`<p class="note" style="margin:6px 0">另有約 ${((MUT_P.spec+MUT_P.spsh)*100).toFixed(2)}% 機率突變出夢幻色或特殊造型。${self?'':`<br>親本大小：${SIZE_N[pp.sizeCls]}／${SIZE_N[qp.sizeCls]}，後代大約介於兩者之間。<br>如果雜交失敗，會改為自交。`}</p>`;
-    h+=`</div>`;
-  }
+  const qp=phen(q.g,q.crop),pp=phen(p.g,p.crop),rate=self?1:crossRate(p,q),seen=new Set((state.seen&&state.seen[p.crop])||[]);
+  const top=d.slice(0,3),more=d.length-top.length,short=t=>{const a=[...String(t)];return a.length>6?a.slice(0,6).join('')+'…':t};
+  const tags=self?'':[isWide(p,q)?'<span class="badge r2">遠緣</span>':'',isBack(p,q)?'<span class="badge r1">回交</span>':'',rate<1?`<span class="badge">成功 ${Math.round(rate*100)}%</span>`:''].join('');
+  const th=(x,sz)=>`<span class="pth">${fruitSVG(x.app,p.crop,sz,1,'','p')}${seen.has(x.key)?'':'<b class="pnew">新</b>'}<i>${pctTxt(x.p)}</i></span>`;
+  const mate=self?`<span class="pmate"><span class="ploop" aria-hidden="true">↻</span><small>自己</small></span>`:`<button type="button" class="pmate pfind" data-act="polfind" data-j="${o.j}" aria-label="在田裡找「${esc(pname(q))}」">${fruitSVG(qp,q.crop,36,1,'','p')}<small>${esc(short(pname(q)))}</small></button>`;
+  let h=`<div class="polcard pf2${open?' open':''}">${tags?`<div class="ptags">${tags}</div>`:''}<div class="peq"><span class="pmate">${fruitSVG(pp,p.crop,36,1,'','p')}<small>這株</small></span><span class="pop">×</span>${mate}<span class="pop">→</span>
+    <button type="button" class="polstrip" data-act="polopen" data-k="${k}" aria-expanded="${open}" aria-label="看全部後代">${top.map(x=>th(x,30)).join('')}${more>0?`<span class="pmore">+${more}</span>`:''}</button>
+    ${self?`<button class="polgo" data-act="self">自交</button>`:`<button class="polgo" data-act="cross" data-j="${o.j}">雜交</button>`}</div>`;
+  if(open)h+=`<div class="pgrid">${d.map(x=>th(x,40)).join('')}</div>`;
   return h+`</div>`;
 }
+/* 點對方小圖：面板暫時收到畫面下方，鏡頭移到那株、閃兩下（約 1.5 秒）再回來 */
+let peekCam=null;
+function polFind(j){const pos=posOf(state,j);if(!pos)return;peekCam={x:pos[0],y:pos[1]+40};sheetEl.classList.add('peek');bd.style.display='none';try{updateCam()}catch(e){}
+  setTimeout(()=>{const c=plotScreen(j);if(c){fxAdd('pkfl',c.x,c.y+6,'',1300)}},180);
+  setTimeout(()=>{peekCam=null;try{updateCam()}catch(e){}if(sheet){sheetEl.classList.remove('peek');bd.style.display='block'}},1550)}
 function sellPlot(i,quiet){const p=state.plots[i],ph=phen(p.g,p.crop),total=sellPrice(p);state.coins+=total;if(!quiet)toast(`賣出 5 個果實，得到 ${total} 金幣`);harvested(ph);afterHarvest(i);return total}
 function sellPrice(p){const ph=phen(p.g,p.crop);return Math.round(CROPS[p.crop].price*5*(0.6+0.8*ph.ab.size/100)*(1+0.3*ph.tier)*(mhOf(ph)?MH_SELL:1))}
 function seedCount(p){const ph=phen(p.g,p.crop),cross=p.pollen&&p.pollen.type==='cross';let n=ph.seedBase+ph.yBonus;if(p.wide&&!cross)n=Math.max(1,Math.floor(n/2));return n}
@@ -3762,7 +3792,7 @@ function updateCam(){
   if(!state)return;
   if(regIn()){regCam();return}
   if(scene==='explore'){const r=camRect();sceneEl.setAttribute('viewBox',`${r.x.toFixed(1)} ${r.y.toFixed(1)} ${r.w.toFixed(1)} ${r.h.toFixed(1)}`);if(exRange(r).key!==exKey)renderWorld();return}
-  const vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zoom,w=vw/k,h=vh/k,{W,H}=scene==='market'?WORLD.market:WORLD.farm,m=(buildMode||shovelMode||sowMode||accelMode||decoMode||pickMode)?buildCam:curMe();
+  const vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zoom,w=vw/k,h=vh/k,{W,H}=scene==='market'?WORLD.market:WORLD.farm,m=peekCam||((buildMode||shovelMode||sowMode||accelMode||decoMode||pickMode)?buildCam:curMe());
   let x=m.x-w/2,y=m.y-h*0.55;
   x=W<=w?(W-w)/2:clamp(x,0,W-w);y=H+80<=h?(H-h)/2:clamp(y,-70,H-h+80);
   sceneEl.setAttribute('viewBox',`${x.toFixed(1)} ${y.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
@@ -3815,8 +3845,8 @@ function stallHTML(){
     return h+`<div class="lot-top">${fruitSVG(ph,l.crop,56)}<div><div class="lot-name">${esc(l.name)}</div><div class="meta">${CROPS[l.crop].n}・剩 ${n} 顆</div></div></div><div class="regbox sellbox"><label>數量（最多 ${n} 顆）<input id="f1" type="number" inputmode="numeric" min="1" max="${n}" value="${esc(sheet.d1)}"></label><label>價格（金幣）<input id="f2" type="number" inputmode="numeric" min="1" value="${esc(sheet.d2)}"></label><div class="err" id="ferr">${sheet.err}</div><div class="row2"><button class="btn primary" data-act="ssave">確定上架</button><button class="btn" data-act="sback">返回</button></div></div>`;
   }
   if(i<0)return h+`<p class="note">加速劑 ${NPC_BUY.acc}／次・誘變劑 ${NPC_BUY.mut}／瓶</p><button class="btn primary" data-act="nstart">賣道具給道具行</button>`;/* 15b：城鎮的道具行 */
-  if(!inf.owner)h+=`<p class="note">空攤位，上架就能使用。${qh('全部賣完後會自動空出來。')}</p><div class="row2"><button class="btn primary" data-act="sstart">上架種子</button><button class="btn primary" data-act="istart">上架道具</button></div>`+(FY_KEYS.some(fyHas)?`<button class="btn" data-act="fstart">上架花精靈</button>`:'');
-  else if(inf.owner===uid)h+=`<p class="note">你有 ${inf.ls.length} 件商品在這裡販售。朋友買走後，金幣會自動入帳。</p><div class="row2"><button class="btn primary" data-act="sstart">再上架種子</button><button class="btn primary" data-act="istart">再上架道具</button></div>`+(FY_KEYS.some(fyHas)?`<button class="btn" data-act="fstart">再上架花精靈</button>`:'')+inf.ls.map(listingCard).join('');
+  if(!inf.owner)h+=`<p class="note">空攤位，上架就能使用。${qh('全部賣完後會自動空出來。')}</p><div class="row2"><button class="btn primary" data-act="sstart">上架種子</button><button class="btn primary" data-act="istart">上架道具</button></div>`+(FY_KEYS.some(fyHas)?`<button class="btn" data-act="fstart">上架精靈</button>`:'');
+  else if(inf.owner===uid)h+=`<p class="note">你有 ${inf.ls.length} 件商品在這裡販售。朋友買走後，金幣會自動入帳。</p><div class="row2"><button class="btn primary" data-act="sstart">再上架種子</button><button class="btn primary" data-act="istart">再上架道具</button></div>`+(FY_KEYS.some(fyHas)?`<button class="btn" data-act="fstart">再上架精靈</button>`:'')+inf.ls.map(listingCard).join('');
   else h+=`<p class="note">${esc(inf.ownerName)} 正在販售 ${inf.ls.length} 件商品。</p>`+inf.ls.map(listingCard).join('');
   h+=`<div class="regbox" style="margin-top:12px"><b>道具行</b><p class="note">隨時收購道具：生長加速劑每次 ${NPC_BUY.acc} 金幣、誘變劑每瓶 ${NPC_BUY.mut} 金幣。</p><button class="btn" data-act="nstart">賣道具給道具行</button></div>`;
   return h;
@@ -3830,7 +3860,7 @@ function bindStall(){
 async function stallAction(b){
   const act=b.dataset.act,i=sheet.stall;
   if(act==='sstart'){sheet.step='pick';renderSheet();return}
-  if(act==='fstart'){sheet.step='fpick';sheet.err='';renderSheet();return}if(act==='fpick'){sheet.fk=b.dataset.k;sheet.step='fform';sheet.d2='';sheet.err='';renderSheet();return}if(act==='fsave'){await fyStallSave(i,b);return}/* 93：上架花精靈 */
+  if(act==='fstart'){sheet.step='fpick';sheet.err='';renderSheet();return}if(act==='fpick'){sheet.fk=b.dataset.k;sheet.step='fform';sheet.d2='';sheet.err='';renderSheet();return}if(act==='fsave'){await fyStallSave(i,b);return}/* 93：上架精靈 */
   if(act==='sback'){sheet.step=sheet.step==='form'?'pick':sheet.step==='iform'?'ipick':sheet.step==='nform'?'npick':sheet.step==='fform'?'fpick':'view';sheet.ksel=null;sheet.err='';renderSheet();return}
   if(act==='istart'){sheet.step='ipick';renderSheet();return}
   if(act==='nstart'){sheet.step='npick';renderSheet();return}
@@ -6238,7 +6268,7 @@ function enterVisit(fu){
 function openFriendPlot(p){sheet={fplot:p};renderSheet();openSheetUI()}
 function fplotHTML(){const p=sheet.fplot,ph=phen(p.g,p.crop),lvl=p.stage==='seedling'?1:p.stage==='ripe'?3:2;return `<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・${stageLabel(p)}・${esc(viewing?viewing.name:'')} 的作物</p>${infoHTML(ph,lvl,p.g,p.crop,true)}`}
 
-/* ===== 93（16u）：花精靈 =====
+/* ===== 93（16u）：精靈 =====
    傳說標本→喚醒、神話標本→進化；全服名額 fairy/<鍵>={base:[{u,no,at}],evo:[…]}（transaction 領取，編號不重複使用）。
    圖：assets/fairy/fairy_<鍵>[_evo].png，頭髮、衣服、鞋子是灰色，照 26.2／85 用果實上色（fruitPrep／fruitPaint／光層），綠色部分（蒂頭遮罩）維持原色。
    存檔 state.fairy={<鍵>:{name,col,sb,no,evo,evoNo,at},follow:'<鍵>',mj:甜瓜吃醋旗標}。精靈之泉＝城鎮噴水池（TOWN_BLD 的 spring）。 */
@@ -6342,7 +6372,7 @@ async function fyWakeGo(k,col,sb){let no=0;
   const F=state.fairy||(state.fairy={});F[k]={name:fyRoll(k),col,sb:sb||undefined,no,evo:0,evoNo:0,at:Date.now()};if(!F.follow)F.follow=k;save();try{pushPos(true)}catch(e){}
   if(no===1)postNews('fairy',`${myName()} 喚醒了全服第一隻${fyN(k)}！`,4);
   sheet={fy:{m:'name',k,draft:F[k].name,first:1}};renderSheet();openSheetUI();
-  celShow({th:'gold',kicker:'花精靈',title:`${fyN(k)}醒來了！`,sub:`全服第 ${no} 隻（名額 ${FAIRY_CAP.base}）・衣服是你的標本的顏色`,fruit:fyArtHTML(k,F[k],200,true),chips:[FY[k].p]})}
+  celShow({th:'gold',kicker:'精靈',title:`${fyN(k)}醒來了！`,sub:`全服第 ${no} 隻（名額 ${FAIRY_CAP.base}）・衣服是你的標本的顏色`,fruit:fyArtHTML(k,F[k],200,true),chips:[FY[k].p]})}
 function fyEvolve(k,test){const f=fyMine()[k];if(!fyHas(k)||f.evo)return;
   if(!test&&!fyQual(k,5).length){toast(`需要${CROPS[k].n}的神話標本`);return}fyEvoGo(k)}
 async function fyEvoGo(k){let no=0;
@@ -6361,7 +6391,7 @@ function fySpringHTML(){fyLoadQ();const t=isTestMode();
   for(const k of FY_KEYS){const has=fyHas(k),f=fyMine()[k],S=fyStatus(k),q=fyQ(k);
     h+=`<div class="fyrow"><span class="fyth">${has?fyArtHTML(k,f,72,false):fySil(k)}</span><div class="fyrc"><b>${fyN(k)}</b>${has?`<span class="meta">「${esc(f.name||'')}」#${f.no}${f.evo?`・進化 #${f.evoNo}`:''}</span>`:''}<span class="meta">全服 ${q.base.length}／${FAIRY_CAP.base}・進化 ${q.evo.length}／${FAIRY_CAP.evo}${FYQ_AT?'':'（讀取中）'}</span><span class="meta">${S.why||S.txt}</span></div>
       <div class="fyrb">${S.btn==='wake'?`<button class="btn primary" data-act="fywake" data-k="${k}">喚醒</button>`:S.btn==='evo'?`<button class="btn primary" data-act="fyevo" data-k="${k}">進化</button>`:''}${t&&!(has&&f.evo)?`<button class="btn small" data-act="${has?'fyevo':'fywake'}" data-k="${k}" data-t="1">測試：直接${has?'進化':'喚醒'}</button>`:''}</div></div>`}
-  return h+`<button class="btn" data-act="fygrid">看我的花精靈</button>`}
+  return h+`<button class="btn" data-act="fygrid">看我的精靈</button>`}
 function fyOneHTML(k){const f=fyMine()[k];if(!fyHas(k))return `<p class="note">還沒有${fyN(k)}。</p>`;const F=fyMine(),fol=F.follow===k,n=fyQual(k,4).length;
   return `<h2>${esc(f.name||fyN(k))}</h2><div class="fybig">${fyArtHTML(k,f,240,true)}</div><p class="note" style="text-align:center">${fyN(k)} #${f.no}／${FAIRY_CAP.base}${f.evo?`・進化 #${f.evoNo}／${FAIRY_CAP.evo}`:''}・${FY[k].p}</p>
     <div class="row2"><button class="btn primary" data-act="fyfol" data-k="${k}">${fol?'不要跟隨':'讓'+fyPron(k)+'跟隨'}</button><button class="btn" data-act="fyren" data-k="${k}">改名字</button></div>
@@ -6386,7 +6416,7 @@ function fyAction(b){const a=b.dataset.act,k=b.dataset.k,s=sheet.fy;
   if(a==='fypk'){const id=b.dataset.id;if(s.act==='wake'){closeSheet();fyWake(k,false,id);return}const e=fyQual(k,4).find(x=>x.id===id);if(e){const ap=specApp(e),f=state.fairy[k];f.col=ap.skin;f.sb=ap.sb||undefined;save();try{pushPos(true)}catch(x){}toast('衣服換好了')}sheet={fy:{m:'one',k}};renderSheet();return}
   if(a==='fydice'){const i=document.getElementById('fyname');s.draft=fyRoll(k,i?i.value:s.draft);s.err='';renderSheet();return}
   if(a==='fyok'){const i=document.getElementById('fyname'),e=fyRename(k,i?i.value:s.draft);if(e){s.err=e;renderSheet();return}toast(`就叫「${state.fairy[k].name}」吧！`);sheet={fy:{m:'one',k}};renderSheet();return}}
-/* 圖鑑的「花精靈」分頁（sheet 版 inSheet＝true 時按鈕走 data-act） */
+/* 圖鑑的「精靈」分頁（sheet 版 inSheet＝true 時按鈕走 data-act） */
 function fyGridHTML(inSheet){fyLoadQ();const A=inSheet?'data-act':'data-ract',F=fyMine(),n=FY_KEYS.filter(fyHas).length;
   let h=`<p class="note">已經有 <b>${n}</b>／9 隻。${qh('到城鎮的精靈之泉（噴水池）喚醒或進化。')}</p><div class="fygrid">`;
   for(const k of FY_KEYS){const f=F[k],q=fyQ(k);
@@ -6398,14 +6428,14 @@ const fyListName=l=>`${fyN(l.fk)}「${l.fname||''}」`;
 function fyListCard(l){const mine=l.sellerUid===uid,f={...(l.fairy||{}),k:l.fk};
   return `<div class="lot"><div class="lot-top"><span class="fyth">${fyArtHTML(l.fk,f,72,true)}</span><div><div class="lot-name">${esc(fyListName(l))}</div><div class="meta">#${f.no||'?'}${f.evo?`・進化 #${f.evoNo}`:''}・衣服：${esc(colorName(f.col||'white',f.sb))}</div><div class="meta">買下後可以重新取名・賣家：${esc(l.sellerName||'')}</div></div></div>${mine?`<button class="btn" data-act="scancel" data-id="${l.id}">收回（售價 ${l.price} 金幣）</button>`:`<button class="btn primary" data-act="sbuy" data-id="${l.id}">用 ${l.price} 金幣購買</button>`}</div>`}
 function fyStallHTML(h){const st=sheet.step;
-  if(st==='fpick'){const ks=FY_KEYS.filter(fyHas);h+=`<p class="note">上架期間不在身邊，收回就回來。</p>`+(ks.length?ks.map(k=>{const f=fyMine()[k];return `<button class="pick" data-act="fpick" data-k="${k}"><span class="fyth">${fyArtHTML(k,f,48,false)}</span><span><b>${esc(f.name||'')}</b><span class="meta">${fyN(k)} #${f.no}${f.evo?'・進化':''}</span></span></button>`}).join(''):'<p class="note">你還沒有花精靈。</p>');return h+`<button class="btn" data-act="sback">返回</button>`}
+  if(st==='fpick'){const ks=FY_KEYS.filter(fyHas);h+=`<p class="note">上架期間不在身邊，收回就回來。</p>`+(ks.length?ks.map(k=>{const f=fyMine()[k];return `<button class="pick" data-act="fpick" data-k="${k}"><span class="fyth">${fyArtHTML(k,f,48,false)}</span><span><b>${esc(f.name||'')}</b><span class="meta">${fyN(k)} #${f.no}${f.evo?'・進化':''}</span></span></button>`}).join(''):'<p class="note">你還沒有精靈。</p>');return h+`<button class="btn" data-act="sback">返回</button>`}
   const k=sheet.fk,f=fyMine()[k];if(!fyHas(k)){sheet.step='fpick';return fyStallHTML(h)}
   return h+`<div class="lot-top"><span class="fyth">${fyArtHTML(k,f,64,false)}</span><div><div class="lot-name">${esc(f.name||'')}</div><div class="meta">${fyN(k)} #${f.no}${f.evo?`・進化 #${f.evoNo}`:''}</div></div></div><div class="regbox sellbox"><label>價格（金幣）<input id="f2" type="number" inputmode="numeric" min="1" value="${esc(sheet.d2)}"></label><div class="err" id="ferr">${sheet.err}</div><div class="row2"><button class="btn primary" data-act="fsave">確定上架</button><button class="btn" data-act="sback">返回</button></div></div>`}
 async function fyStallSave(i,b){const k=sheet.fk,f=fyMine()[k];if(!fyHas(k))return;
   const inf=stallInfo(i);if(inf.owner&&inf.owner!==uid){sheet.err='這個攤位剛被別人占用了，換一個空攤位吧';renderSheet();return}
   const price=parseInt(sheet.d2,10);if(!(price>=1&&price<=9999999)){sheet.err='請輸入 1 以上的價格';renderSheet();return}
   b.disabled=true;const fairy={col:f.col||'white',sb:f.sb||null,no:f.no,evo:f.evo?1:0,evoNo:f.evoNo||0,at:f.at||Date.now()};
-  try{await db.collection('listings').add({kind:'fairy',fk:k,fairy,fname:f.name||'',crop:'',name:`${fyN(k)}「${f.name||''}」`,source:'花精靈',sellerUid:uid,sellerName:myName(),price,count:1,stall:i,lot:'{}',sold:false,createdAt:TS()});
+  try{await db.collection('listings').add({kind:'fairy',fk:k,fairy,fname:f.name||'',crop:'',name:`${fyN(k)}「${f.name||''}」`,source:'精靈',sellerUid:uid,sellerName:myName(),price,count:1,stall:i,lot:'{}',sold:false,createdAt:TS()});
     delete state.fairy[k];if(state.fairy.follow===k)state.fairy.follow=null;save();try{pushPos(true)}catch(e){}renderAll();sheet.step='view';renderSheet();toast(`已上架 ${fyN(k)}，售價 ${price} 金幣`)}
   catch(e){sheet.err='上架失敗，請檢查網路後再試一次';b.disabled=false;renderSheet()}}
 async function fyBuy(l,b){if(fyHas(l.fk)){toast('你已經有'+fyN(l.fk)+'了，每人每種一隻');return}

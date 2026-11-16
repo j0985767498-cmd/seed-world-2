@@ -43,7 +43,7 @@ h2.sec{font:400 22px "Huninn",sans-serif;color:#FFE7A8;margin:30px 0 10px}
 @keyframes sq{0%{transform:scale(1)}25%{transform:scale(1.18,.78)}55%{transform:scale(.9,1.12)}100%{transform:scale(1)}}
 .shake{animation:shk .25s linear}
 @keyframes shk{0%,100%{transform:none}20%{transform:translate(3px,-2px)}40%{transform:translate(-3px,1px)}60%{transform:translate(2px,2px)}80%{transform:translate(-2px,-1px)}}
-.hint{position:absolute;left:50%;top:390px;transform:translateX(-50%);font:14px "Huninn";color:#fff;background:rgba(60,35,10,.55);padding:6px 14px;border-radius:999px;white-space:nowrap;animation:bob 1.6s ease-in-out infinite}
+.hint{position:absolute;left:50%;top:352px;transform:translateX(-50%);font:14px "Huninn";color:#fff;background:rgba(60,35,10,.55);padding:6px 14px;border-radius:999px;white-space:nowrap;animation:bob 1.6s ease-in-out infinite}
 @keyframes bob{50%{transform:translate(-50%,-4px)}}
 /* ===== HUD ===== */
 .plaque{position:absolute;left:10px;top:12px;height:50px;width:182px;padding:5px 10px 0 58px;border-radius:14px;background:var(--noise),var(--grain),linear-gradient(180deg,var(--wood1),var(--wood2));box-shadow:inset 0 2px 0 rgba(255,220,170,.45),inset 0 -3px 0 rgba(0,0,0,.25),0 3px 0 var(--wood3),0 5px 8px rgba(0,0,0,.3)}
@@ -150,7 +150,7 @@ h2.sec{font:400 22px "Huninn",sans-serif;color:#FFE7A8;margin:30px 0 10px}
    <div class="card"><div class="lb">外觀穩定度<small>自交後約 100% 一樣</small></div><div class="bar"><i style="width:100%"></i></div></div>
    <div class="card"><div class="lb">還能採收<small>2／3 次</small></div><div class="dots"><i></i><i></i><i class="off"></i></div></div>
    <div class="btns"><button class="b3 gold"><img class="ic" src="../assets/icons/s/coin.png" alt="">賣果實<small>+246 金幣</small></button><button class="b3 green"><img class="ic" src="../assets/icons/s/seed_bag.png" alt="">取種<small>18 顆放回原包</small></button></div>
-   <div class="card"><div class="lb">自交的後代<small>4 種外觀</small></div><div class="pv" id="pv"></div></div>
+   <div class="card"><div class="lb">自交的後代<small>1 種外觀</small></div><div class="pv" id="pv"></div></div>
   </div></div></div><span class="cap">新：木框＋紙張面板、緞帶標題、果實站在光座上、資訊做成小卡片、立體按鈕</span></div>
 </div>
 
@@ -177,9 +177,9 @@ const SFX={pop:()=>{tone(520,170,0.14,'sine',0.35);tone(1200,600,0.06,'triangle'
   click:()=>tone(880,660,0.05,'sine',0.12),
   whoosh:()=>{const a=ac();if(!a)return;const n=a.createBufferSource(),b=a.createBuffer(1,a.sampleRate*0.3,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);n.buffer=b;const f=a.createBiquadFilter();f.type='bandpass';f.frequency.setValueAtTime(600,a.currentTime);f.frequency.exponentialRampToValueAtTime(2400,a.currentTime+0.25);const g=a.createGain();g.gain.value=0.12;n.connect(f).connect(g).connect(a.destination);n.start()}};
 /* ===== 農場 ===== */
-const TILES=[];for(let r=0;r<6;r++)for(let c=0;c<4;c++){const x=40+c*84+(r%2)*42,y=470+r*24;TILES.push([x,y])}
+const TILES=[];for(let r=0;r<7;r++)for(let c=0;c<4;c++){const x=66+c*84+(r%2)*42,y=455+r*24;if(x<360)TILES.push([x,y,r,c])}
 function buildFarm(el,withPlants,fruits){let s='';for(const [x,y] of TILES)s+='<div class="tile" style="left:'+(x-43)+'px;top:'+(y-25)+'px"></div>';el.innerHTML=s;
-  if(!withPlants)return;const spots=[1,2,5,6,9,10,13,14];spots.forEach((k,i)=>{const [x,y]=TILES[k];const d=document.createElement('div');d.className='plant';d.style.cssText='left:'+(x-30)+'px;top:'+(y-62)+'px;width:60px;height:64px';d.innerHTML='<img class="pl" src="../assets/crops/tomato_3.png" alt=""><img class="fr" src="'+fruits[i%fruits.length]+'" alt="">';d.onclick=e=>harvest(d,e);el.appendChild(d)})}
+  if(!withPlants)return;const spots=TILES.map((t,k)=>k).filter(k=>TILES[k][2]===0||TILES[k][2]===3||TILES[k][2]===6).slice(0,11);spots.forEach((k,i)=>{const [x,y]=TILES[k];const d=document.createElement('div');d.className='plant';d.style.cssText='left:'+(x-30)+'px;top:'+(y-62)+'px;width:60px;height:64px';d.innerHTML='<img class="pl" src="../assets/crops/tomato_3.png" alt=""><img class="fr" src="'+fruits[i%fruits.length]+'" alt="">';d.onclick=e=>harvest(d,e);el.appendChild(d)})}
 function partBurst(ph,x,y){const cols=['#FFE27A','#FFB347','#8EDB5A','#FFFFFF','#FF8FB1'];for(let i=0;i<16;i++){const p=document.createElement('div');p.className='prt';const leaf=i%3===0,a=Math.random()*Math.PI*2,d=40+Math.random()*60,sz=leaf?12:7+Math.random()*5;
   p.style.cssText='left:'+x+'px;top:'+y+'px;width:'+sz+'px;height:'+(leaf?sz*0.55:sz)+'px;background:'+(leaf?'#6DBE3C':cols[i%cols.length])+';border-radius:'+(leaf?'60% 0':'50%')+';box-shadow:0 0 6px '+(leaf?'transparent':'rgba(255,240,180,.9)');ph.appendChild(p);
   p.animate([{transform:'translate(-50%,-50%) scale(.4) rotate(0)',opacity:1},{transform:'translate(calc(-50% + '+Math.cos(a)*d+'px),calc(-50% + '+(Math.sin(a)*d-30)+'px)) scale(1) rotate('+(Math.random()*360)+'deg)',opacity:1,offset:.6},{transform:'translate(calc(-50% + '+Math.cos(a)*d*1.1+'px),calc(-50% + '+(Math.sin(a)*d+20)+'px)) scale(.6) rotate(400deg)',opacity:0}],{duration:900,easing:'cubic-bezier(.2,.8,.4,1)'}).onfinish=()=>p.remove()}}
@@ -201,6 +201,7 @@ document.querySelectorAll('.rb,.b3,.big,.xbtn').forEach(b=>b.addEventListener('p
 loadAll().then(()=>{const fr=[fruitURL('tomato_b0',{skin:'red',pat:null}),fruitURL('tomato_b1',{skin:'orange',pat:null}),fruitURL('tomato_b0',{skin:'l-gold',sb:'red',pat:null}),fruitURL('tomato_b0',{skin:'red',pat:{c:'yellow',f:0}})];
   buildFarm(document.getElementById('farm'),true,fr);buildFarm(document.getElementById('farm2'),true,fr);
   document.getElementById('bigfruit').src=fruitURL('tomato_sp2',{skin:'gold',pat:null});
+  const dm=/demo=(\d+)/.exec(location.search);if(dm){const d=document.querySelectorAll('#farm .plant')[5];harvest(d);const t=+dm[1];requestAnimationFrame(()=>{document.getAnimations().forEach(a=>{a.pause();a.currentTime=t})})}/* 截圖用：收成後把所有動畫停在第 t 毫秒 */
   const pv=[[{skin:'gold',pat:null},'tomato_sp2','100%']];document.getElementById('pv').innerHTML=pv.map(([a,n,p])=>'<span><img src="'+fruitURL(n,a)+'" alt="">'+p+'</span>').join('')+'<span style="flex:3;text-align:left;align-self:center">自交後代全部都是金字塔番茄。</span>'});
 </script></body></html>`;
 fs.writeFileSync(path.join(__dirname,'ui_mock.html'),page);

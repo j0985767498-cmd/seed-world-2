@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
 <title>種子的世界</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet"><!-- 16t：介面標題、數字用「粉圓」 -->
+
+
+
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700&display=swap" rel="stylesheet">
@@ -610,7 +614,7 @@ details.gfold .gfb{margin-top:8px}
 .uptop{float:right;margin-top:-4px}
 
 /* ===== 16t 介面改版：農場畫面框（全部程式畫：木頭漸層＋木紋＋細雜訊；標題、數字用粉圓，畫面上的字加描邊） ===== */
-:root{--w1:#A86C3A;--w2:#7E4B22;--w3:#55300F;--uifont:"Huninn","Noto Sans TC",system-ui,sans-serif;
+:root{--w1:#A86C3A;--w2:#7E4B22;--w3:#55300F;--uifont:"SWNum","Huninn","Noto Sans TC",system-ui,sans-serif;
   --uinoise:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .1 0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   --uigrain:repeating-linear-gradient(92deg,rgba(255,255,255,.06) 0 2px,rgba(0,0,0,0) 2px 7px,rgba(0,0,0,.05) 7px 8px,rgba(0,0,0,0) 8px 15px);
   --uiwood:var(--uinoise),var(--uigrain),linear-gradient(180deg,var(--w1),var(--w2));
@@ -875,6 +879,15 @@ details.gfold .gfb{margin-top:8px}
 #mapPanel{position:fixed;left:50% !important;right:auto !important;top:50% !important;transform:translate(-50%,-50%);max-height:calc(var(--vvh,100vh) - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 32px);max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 32px);overflow:auto;z-index:24;width:min(340px,calc(100vw - 32px));box-sizing:border-box}
 #mapPanel svg{display:block;margin:4px auto}
 #sheet{max-height:calc(var(--vvh,100vh)*.86);max-height:86dvh}
+.avspin{touch-action:pan-y;cursor:grab;display:inline-block;-webkit-user-select:none;user-select:none}
+.avspin svg{transform-origin:50% 90%}.avspin svg.spinfx{animation:spinfx .12s ease-in-out}
+@keyframes spinfx{0%,100%{transform:scaleX(1)}50%{transform:scaleX(0)}}
+.spinhint{text-align:center;margin:-2px 0 6px;opacity:.7}
+/* 99.3（17j）：數字一律用系統字型＋等寬數字。用 unicode-range 只把數字與數字符號（%、.、,、+、-、/、×、:）換掉，標題、按鈕的中文字型不動 */
+@font-face{font-family:"SWNum";font-weight:100 500;src:local("PingFangTC-Regular"),local("PingFang TC"),local(".SFUI-Regular"),local("HelveticaNeue"),local("Helvetica Neue"),local("Roboto"),local("Segoe UI"),local("Arial");unicode-range:U+0025,U+002B-002F,U+0030-003A,U+00D7}
+@font-face{font-family:"SWNum";font-weight:600 900;src:local("PingFangTC-Semibold"),local("PingFang TC Semibold"),local(".SFUI-Semibold"),local("HelveticaNeue-Bold"),local("Helvetica Neue Bold"),local("Roboto Bold"),local("Segoe UI Bold"),local("Arial Bold"),local("Arial");unicode-range:U+0025,U+002B-002F,U+0030-003A,U+00D7}
+body{font-variant-numeric:tabular-nums}
+.num{font-family:-apple-system,"PingFang TC","Noto Sans TC",sans-serif;font-variant-numeric:tabular-nums}
 </style>
 <script>(function(){
 const R={exists:false,docs:[],size:0,empty:true,data:()=>({}),val:()=>null,forEach(){},numChildren:()=>0};
@@ -942,6 +955,27 @@ window.firebase=new Proxy(function(){},{get:(o,k)=>{
 <div id="sheet" role="dialog" aria-modal="true" aria-label="詳細資料"><div class="shead"><div class="grip"></div><button id="sheetX" class="xbtn" aria-label="關閉">✕</button></div><div class="sheet-wrap" id="sheetBody"></div></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <script>
+/* 99.2（17j）：錯誤紀錄。JS 錯誤存最後一筆（訊息、檔名行號、當下的地方與動作）；
+   iPhone 記憶體不夠時分頁會被直接關掉、沒有任何錯誤，所以另外記「最後一個動作」＋「還開著」旗標，下次打開時發現上次不是正常離開，就記成「上次異常結束」。
+   只顯示在設定頁的「回報問題」，不跳視窗。 */
+let CRUMB='';
+function crashWhere(){try{if(typeof scene==='undefined')return '讀取中';if(scene==='explore'&&typeof regIn==='function'&&regIn()){const M=regCur();return REGION_CFG[exBiome].name+'・'+(M&&M.n||'')}return scene==='farm'?(typeof viewing!=='undefined'&&viewing?'朋友的農場':'農場'):scene==='market'?'城鎮':String(scene)}catch(e){return '?'}}
+function crashPut(k,o){try{o.t=Date.now();o.b=typeof BUILD!=='undefined'?BUILD:'';o.at=crashWhere();o.act=CRUMB;localStorage.setItem(k,JSON.stringify(o))}catch(e){}}
+function crumb(a){CRUMB=String(a||'').slice(0,60);try{localStorage.setItem('sw_crumb',JSON.stringify({t:Date.now(),at:crashWhere(),act:CRUMB,b:typeof BUILD!=='undefined'?BUILD:''}));localStorage.setItem('sw_alive','1')}catch(e){}}
+function crashGet(k){try{const o=JSON.parse(localStorage.getItem(k)||'null');return o&&typeof o==='object'?o:null}catch(e){return null}}
+window.addEventListener('error',e=>{crashPut('sw_err',{m:String(e.message||'錯誤').slice(0,160),f:String(e.filename||'').split('/').pop().split('?')[0]+':'+(e.lineno||0)+':'+(e.colno||0)})});
+window.addEventListener('unhandledrejection',e=>{const r=e.reason;crashPut('sw_err',{m:'（非同步）'+String(r&&r.message||r||'錯誤').slice(0,160),f:String(r&&r.stack||'').split('\n')[1]?.trim().slice(0,120)||''})});
+try{if(localStorage.getItem('sw_alive')==='1'){const c=crashGet('sw_crumb');if(c&&Date.now()-c.t<30*60000)localStorage.setItem('sw_crash',JSON.stringify(c))}localStorage.setItem('sw_alive','1')}catch(e){}
+{const clean=()=>{try{localStorage.setItem('sw_alive','0')}catch(e){}},live=()=>{try{localStorage.setItem('sw_alive','1')}catch(e){}};
+  window.addEventListener('pagehide',clean);document.addEventListener('visibilitychange',()=>{document.hidden?clean():live()})}
+document.addEventListener('click',e=>{try{const t=e.target,c=t&&t.closest&&t.closest('[data-wp],[data-npc],[data-bld],[data-item],[data-stall],[data-plot],[data-decor],[data-act],[data-ply],[data-fy],button');if(!c)return;
+  const d=c.dataset||{};crumb(d.wp?('點野外植株'+(String(d.wp).endsWith('|ped')?'（種子台座）':'')):d.npc?'點 NPC '+d.npc:d.bld?'點建築 '+d.bld:d.item?'撿道具':d.stall!=null?'點攤位':d.plot!=null?'點田地':d.decor!=null?'點裝飾':d.ply?'點玩家':d.fy?'點精靈':d.act?'按 '+d.act:'按「'+(c.textContent||'').trim().slice(0,12)+'」')}catch(x){}},true);
+function crashHTML(){const e=crashGet('sw_err'),c=crashGet('sw_crash');if(!e&&!c)return '<p class="note">目前沒有問題紀錄。</p>';
+  const tm=t=>{const d=new Date(t);return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`};let h='';
+  if(c)h+=`<p class="note"><b>上次異常結束</b>（${tm(c.t)}，${esc(c.b)}）<br>在：${esc(c.at)}<br>最後的動作：${esc(c.act||'不知道')}</p>`;
+  if(e)h+=`<p class="note"><b>最後一筆錯誤</b>（${tm(e.t)}，${esc(e.b)}）<br>${esc(e.m)}<br>${esc(e.f||'')}<br>在：${esc(e.at)}，動作：${esc(e.act||'不知道')}</p>`;
+  return h+'<p class="note">截圖這一段傳給我們。</p><button class="btn" data-tool="crashclr">清除紀錄</button>'}
+
 const LS_KEY='seedworld_v04';
 const HOUR=3600e3;
 const S=Math.sin,C=Math.cos,P=Math.pow,ab=Math.abs,sg=Math.sign,sq=Math.sqrt;
@@ -2983,7 +3017,7 @@ function renderSpeed(){
   const el=document.getElementById('testBox');if(!el)return;
   if(!TEST_MODE){el.innerHTML='';return}
   const on=isTestMode();testTagUpd();
-  let h=`<h3 style="margin-top:0">音效</h3><button class="btn${SFX_ON?' primary':''}" data-tool="sfx">音效：${SFX_ON?'開':'關'}（按一下切換）</button><h3>遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'標出機關和秘境，可以傳送。'+qh('只存在這台裝置，別人看不到。'):'和正式玩家看到的一樣。'}</p>`;
+  let h=`<h3 style="margin-top:0">回報問題</h3>${crashHTML()}<h3>音效</h3><button class="btn${SFX_ON?' primary':''}" data-tool="sfx">音效：${SFX_ON?'開':'關'}（按一下切換）</button><h3>遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'標出機關和秘境，可以傳送。'+qh('只存在這台裝置，別人看不到。'):'和正式玩家看到的一樣。'}</p>`;
   if(on)h+=`<h3>遠緣雜交</h3><button class="btn" data-tool="xc">跨界機率 100%：${(()=>{try{return localStorage.getItem('sw_xc')==='1'}catch(e){return false}})()?'開啟':'關閉'}（按一下切換）</button>`;
   if(on)h+=`<h3>櫻花之丘</h3><button class="btn" data-tool="sklook">花季外觀：${sakuraLook()?'櫻花（花季）':'綠葉（花季外）'}（按一下切換，只換畫面）</button><p class="note">測試模式沒有季節限制。<button type="button" class="qh" aria-expanded="false" aria-label="說明">？</button><span class="qhx" hidden>今天實際${sakuraBloom()?'是':'不是'}花季（每年 ${SAKURA_SEASON.from.join('/')}～${SAKURA_SEASON.to.join('/')}）。</span></p>`;
   if(on)h+=`<h3>會影響存檔的測試工具</h3><p class="note">用了存檔會和一般玩家不一樣。${qh('切回一般模式時，時間加速當 ×1、探索上限當開啟。')}</p><p class="note" style="margin:6px 0 2px">時間加速</p><div class="row2" style="grid-template-columns:repeat(4,1fr)">${SPEEDS.map(v=>`<button class="btn${state.speed===v?' primary':''}" data-spd="${v}">×${v}</button>`).join('')}</div>
@@ -5777,7 +5811,8 @@ function regGroundSVG(M){
     s+=`<defs><filter id="fwet${wid}" ${fr}><feMorphology in="SourceAlpha" operator="dilate" radius="14" result="d"/><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="${sd}" result="n"/><feDisplacementMap in="d" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G" result="dd"/><feGaussianBlur in="dd" stdDeviation="5" result="b"/><feComposite in="b" in2="SourceAlpha" operator="out" result="ring"/><feFlood flood-color="${WC.wet}" flood-opacity="1"/><feComposite in2="ring" operator="in"/></filter>`
       +`<filter id="fdeep${wid}" ${fr}><feMorphology in="SourceAlpha" operator="erode" radius="7" result="e"/><feGaussianBlur in="e" stdDeviation="13" result="b"/><feFlood flood-color="${WC.deep}"/><feComposite in2="b" operator="in" result="c"/><feComposite in="c" in2="SourceAlpha" operator="in"/></filter>`
       +`<filter id="ffoam${wid}" ${fr}><feMorphology in="SourceAlpha" operator="erode" radius="1" result="e1"/><feComposite in="SourceAlpha" in2="e1" operator="out" result="r1"/><feMorphology in="SourceAlpha" operator="erode" radius="2.6" result="e3"/><feComposite in="SourceAlpha" in2="e3" operator="out" result="r3"/><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="1" seed="${sd+5}" result="t"/><feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  3.2 0 0 0 -1.25" result="tm"/><feComposite in="r3" in2="tm" operator="in" result="r3m"/><feMerge result="ring"><feMergeNode in="r1"/><feMergeNode in="r3m"/></feMerge><feFlood flood-color="${WC.glint}" flood-opacity=".62"/><feComposite in2="ring" operator="in"/></filter></defs>`;
-    s+=`<g filter="url(#fwet${wid})">${U}</g>`+U.replace('fill="#fff"',`fill="${WC.sh}"`)+`<g filter="url(#fdeep${wid})">${U}</g><g filter="url(#ffoam${wid})">${U}</g>`;
+    if(REG_LITE)s+=U.replace('fill="#fff"',`fill="${WC.sh}" stroke="${WC.wet}" stroke-width="14" paint-order="stroke" stroke-linejoin="round"`)+U.replace('fill="#fff"',`fill="${WC.deep}" opacity=".32"`);/* 99.2：簡化水邊（沒有濾鏡） */
+    else s+=`<g filter="url(#fwet${wid})">${U}</g>`+U.replace('fill="#fff"',`fill="${WC.sh}"`)+`<g filter="url(#fdeep${wid})">${U}</g><g filter="url(#ffoam${wid})">${U}</g>`;
     for(const r of M._RV){const rb=r.rb;for(let i=8;i<rb.pts.length-8;i+=22){const [x,y]=rb.pts[i];s+=`<path d="M${v2f(x-8)} ${v2f(y)} q6 -3 14 0" stroke="${WC.glint}" stroke-width="2" fill="none" opacity=".6"/>`}}}
   if(ice&&M._LG.length){for(const G of M._LG)s+=`<path d="${v2d(G.poly(12))}" fill="#FFFFFF"/>`;
     for(const G of M._LG)s+=`<path d="${v2d(G.poly(9))}" fill="#DCEFF7"/>`;
@@ -5831,14 +5866,24 @@ function regGroundImg(M){/* 瀏覽器裡先放佔位符，regWorld 每次重畫�
   if(typeof Blob==='undefined'||typeof URL==='undefined'||!URL.createObjectURL||typeof Image==='undefined')return regGroundInline(M);
   return '%%GI%%'}
 const REG_GSVG={};
+/* 99.2（17j）：地面圖省記憶體。轉成 PNG 之前先放一塊地面色（不再把帶濾鏡的 SVG 直接放進畫面，iPhone 每次重畫都要重算水邊濾鏡）；
+   轉好後丟掉 SVG；PNG 只留最近 3 張。瀏覽器不讓 SVG 畫進 canvas 時（舊 Safari），改用沒有濾鏡的簡化水邊（REG_LITE）。 */
+let REG_LITE=false;const REG_GLRU=[];
+function regGroundColor(M){const C=REGION_CFG[M.bk];return M.cave?(M.cground||C.caveGround):(M.ground||C.ground)}
+function regGroundKeep(key,url){REG_GLRU.splice(REG_GLRU.indexOf(key)>>>0,REG_GLRU.indexOf(key)<0?0:1);REG_GLRU.push(key);
+  while(REG_GLRU.length>3){const k=REG_GLRU.shift();const u=REG_GIMG[k];if(u&&u!=='x'&&k!==key){try{URL.revokeObjectURL(u)}catch(e){}delete REG_GIMG[k]}}}
 function regGroundEl(M){const key=M.bk+'|'+M.id,W=M.W,H=M.H;
-  if(REG_GIMG[key]==='x')return REG_GSVG[key]||(REG_GSVG[key]=regGroundInline(M));/* 圖片載不到（例如瀏覽器不讓 SVG 當圖片用）：直接放向量，畫面不會空白 */
-  if(!REG_GIMG[key]){try{const u=URL.createObjectURL(new Blob([regGroundSVG(M)],{type:'image/svg+xml'}));REG_GIMG[key]=u;
-    const im=new Image();im.onload=()=>{try{const k=1.5,cv=document.createElement('canvas');cv.width=W*k;cv.height=H*k;cv.getContext('2d').drawImage(im,0,0,W*k,H*k);
-      cv.toBlob(b=>{if(!b||REG_GIMG[key]!==u)return;const pu=URL.createObjectURL(b);REG_GIMG[key]=pu;try{const el=document.getElementById('rgimg');if(el&&el.dataset.k===key)el.setAttribute('href',pu)}catch(e){}},'image/png')}catch(e){}};
-    im.onerror=()=>{if(REG_GIMG[key]!==u)return;REG_GIMG[key]='x';try{if(regIn()&&regCur()===M)renderWorld()}catch(e){}};im.src=u}
-    catch(e){REG_GIMG[key]='x';return regGroundEl(M)}}
-  return `<image id="rgimg" data-k="${key}" href="${REG_GIMG[key]}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>`}
+  if(REG_GIMG[key]==='x'){const was=REG_LITE;REG_LITE=true;try{return REG_GSVG[key]||(REG_GSVG[key]=regGroundInline(M))}finally{REG_LITE=was}}/* 圖片載不到：直接放沒有濾鏡的向量 */
+  const ready=REG_GIMG[key]&&REG_GIMG[key]!=='p';
+  if(!REG_GIMG[key]){REG_GIMG[key]='p';
+    const go=(lite)=>{let u;try{const was=REG_LITE;REG_LITE=lite;try{u=URL.createObjectURL(new Blob([regGroundSVG(M)],{type:'image/svg+xml'}))}finally{REG_LITE=was}}catch(e){REG_GIMG[key]='x';return}
+      const done=pu=>{REG_GIMG[key]=pu;regGroundKeep(key,pu);try{const el=document.getElementById('rgimg');if(el&&el.dataset.k===key)el.setAttribute('href',pu)}catch(e){}};
+      const im=new Image();im.onload=()=>{let ok=false;try{const k=1.5,cv=document.createElement('canvas');cv.width=W*k;cv.height=H*k;cv.getContext('2d').drawImage(im,0,0,W*k,H*k);
+        cv.toBlob(b=>{if(!b){if(lite)done(u);else{try{URL.revokeObjectURL(u)}catch(e){}go(true)}return}try{URL.revokeObjectURL(u)}catch(e){}done(URL.createObjectURL(b))},'image/png');ok=true}catch(e){}
+        if(!ok){if(lite)done(u);else{try{URL.revokeObjectURL(u)}catch(e){}go(true)}}};/* canvas 被擋：改用簡化版，簡化版直接當圖片用 */
+      im.onerror=()=>{try{URL.revokeObjectURL(u)}catch(e){}if(!lite)go(true);else{REG_GIMG[key]='x';try{if(regIn()&&regCur()===M)renderWorld()}catch(e){}}};im.src=u};
+    go(false)}
+  return `<rect x="0" y="0" width="${W}" height="${H}" fill="${regGroundColor(M)}"/><image id="rgimg" data-k="${key}" ${ready?`href="${REG_GIMG[key]}" `:''}x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>`}
 /* 階地（DOM：岩壁圖、石階、蓋過邊緣的草帶） */
 function regTerraceHTML(M){
   const bk=M.bk,V=REG_V2[bk],W=M.W;let s='';if(!M._T.length||!V.terr)return s;const TC=V.terr;
@@ -6865,8 +6910,7 @@ sceneEl.addEventListener('pointerdown',e=>{
       decoPend={i,x:e.clientX,y:e.clientY,t:setTimeout(()=>{if(decoPend&&decoPend.i===i&&state.decor[i]===d){decoPend=null;decoDrag=dd;try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}toast('拖到新的位置再放開',1500)}},350)};return}}
     const ps={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};
     if(!decoSel){panStart=ps;return}
-    decoPaint=decoSel;decoStroke=[];decoPaintAt(e.clientX,e.clientY);
-    if(decoGrid(decoSel))decoPainting=true;else panStart=ps;
+    if(decoGrid(decoSel)){decoPaint=decoSel;decoStroke=[];decoPaintAt(e.clientX,e.clientY);decoPainting=true}else{panStart=ps;decoTapPut=true}/* 99.4：一般裝飾點一下才放，拖曳＝移動畫面 */
     return}
   if(pickMode==='cross'){crossDown(e);return}
   if(pickMode){pickHit.clear();const g=e.target.closest&&e.target.closest('[data-plot]');if(g&&state.plots[+g.dataset.plot]){picking=true;pickDir=!pickSet.has(+g.dataset.plot);pickStroke=[];strokeLast=null;strokeTo(e.clientX,e.clientY,pickAt)}else panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}
@@ -6899,16 +6943,17 @@ sceneEl.addEventListener('pointermove',e=>{
   if(decoPend&&tapStart&&tapStart.moved){const c=decoPend;clearTimeout(c.t);decoPend=null;decoRec=[];strokeLast=null;strokeTo(c.x,c.y,decoRecallAt)}
   if(decoRec){strokeTo(e.clientX,e.clientY,decoRecallAt);return}
   if(decoPainting){decoPaintAt(e.clientX,e.clientY);return}
-  if(decoDrag){if(tapStart&&tapStart.moved)decoDragTo(e.clientX,e.clientY);return}
+  if(decoDrag){if(tapStart&&tapStart.moved){decoDragTo(e.clientX,e.clientY);edgeSee(e.clientX,e.clientY)}return}
   if(sowing){sowAt(e.clientX,e.clientY);return}
-  if(dragPlot&&tapStart&&tapStart.moved){const w=screenToWorld(e.clientX,e.clientY);dragPlot.x=w.x;dragPlot.y=w.y;dragPlot.on=true;renderWorld();return}
-  if(panStart&&tapStart&&tapStart.moved){const r=sceneEl.getBoundingClientRect(),vb=sceneEl.viewBox.baseVal,s=vb.width/r.width;buildCam.x=panStart.cx-(e.clientX-panStart.x)*s;buildCam.y=panStart.cy-(e.clientY-panStart.y)*s;updateCam()}
+  if(dragPlot&&tapStart&&tapStart.moved){const w=screenToWorld(e.clientX,e.clientY);dragPlot.x=w.x;dragPlot.y=w.y;dragPlot.on=true;renderWorld();edgeSee(e.clientX,e.clientY);return}
+  if(panStart&&tapStart&&tapStart.moved){const r=sceneEl.getBoundingClientRect(),vb=sceneEl.viewBox.baseVal,s=vb.width/r.width;buildCam.x=panStart.cx-(e.clientX-panStart.x)*s;buildCam.y=panStart.cy-(e.clientY-panStart.y)*s;camKeepIn();updateCam()}
 });
 const ptrEnd=e=>{
   if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);
   if(pinch){if(ptrs.size<2)pinch=null;return}
   if(recallMode){if(recalling){recalling=false;if(recallStroke&&recallStroke.length)recallHist.push(recallStroke);recallStroke=null;save()}panStart=null;tapStart=null;return}
-  if(decoMode){panStart=null;
+  if(decoMode){panStart=null;edgeStop();
+    if(decoTapPut){decoTapPut=false;if(e.type==='pointerup'&&tapStart&&!tapStart.moved&&decoSel){decoPaint=decoSel;decoStroke=[];decoPaintAt(e.clientX,e.clientY)}}
     if(decoPend){const c=decoPend;clearTimeout(c.t);decoPend=null;if(e.type==='pointerup'){decoRec=[];decoRecallAt(c.x,c.y)}}
     if(decoRec){const st=decoRec;decoRec=null;if(st.length){decoHist.push({t:'rec',items:st});save();toast(`收回 ${st.length} 個到倉庫`,1500)}renderDecoBar();tapStart=null;return}
     if(decoStroke){const st=decoStroke;decoStroke=null;decoPainting=false;decoPaint=null;if(st.length){decoHist.push({t:'put',items:st});save()}renderDecoBar()}
@@ -6916,7 +6961,7 @@ const ptrEnd=e=>{
     tapStart=null;return}
   if(cultPend){const c=cultPend;clearTimeout(c.t);cultPend=null;if(e.type==='pointerup'){cultDel=[];cultDelAt(c.x,c.y)}}
   if(cultDel){if(cultDel.length){cultHist.push({t:'del',items:cultDel});save()}cultDel=null;renderBuildBar();panStart=null;tapStart=null;return}
-  if(dragPlot){const d=dragPlot;dragPlot=null;if(d.on){const [x,y]=snapPos(d.x,d.y),err=plotSpotErr(state,x,y,d.i);if(err){toast(err+'，已放回原位')}else{state.plotPos[d.i]=[x,y];if(buildMode==='build')cultHist.push({t:'move',i:d.i,from:d.from});save();toast('農地移好了')}renderWorld();renderBuildBar();tapStart=null;return}if(buildMode==='build'){tapStart=null;return}}
+  if(dragPlot){edgeStop();const d=dragPlot;dragPlot=null;if(d.on){const [x,y]=snapPos(d.x,d.y),err=plotSpotErr(state,x,y,d.i);if(err){toast(err+'，已放回原位')}else{state.plotPos[d.i]=[x,y];if(buildMode==='build')cultHist.push({t:'move',i:d.i,from:d.from});save();toast('農地移好了')}renderWorld();renderBuildBar();tapStart=null;return}if(buildMode==='build'){tapStart=null;return}}
   panStart=null;
   if(sowMode){if(sowing){sowing=false;save()}tapStart=null;return}
   if(shovelMode){if(shoveling){shoveling=false;const st=shovelStroke;shovelStroke=null;if(st&&st.length>=5){shovelAsk=st}else if(st&&st.length)shovelHist.push(st);save();renderShovelBar()}tapStart=null;return}
@@ -6934,7 +6979,21 @@ sceneEl.addEventListener('pointerup',ptrEnd);sceneEl.addEventListener('pointerca
 const ptrDrop=e=>{if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(pinch&&ptrs.size<2)pinch=null;tapStart=null};
 sceneEl.addEventListener('lostpointercapture',ptrDrop);
 window.addEventListener('pointerup',ptrDrop);window.addEventListener('pointercancel',ptrDrop);
-function resetPtrs(){ptrs.clear();pinch=null;tapStart=null;panStart=null;dragPlot=null}
+function resetPtrs(){ptrs.clear();pinch=null;tapStart=null;panStart=null;dragPlot=null;edgeStop()}
+/* 99.4（17j）：拖著裝飾或農地靠近畫面邊緣 60px 內，視角往那邊移，越靠邊越快（最快每秒 400 個螢幕像素）；離開邊緣就停。視角不超出農場 */
+let decoTapPut=false,edgeP=null,edgeT=0,edgeLast=0;
+function camKeepIn(){if(scene!=='farm')return;const vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zk(),w=vw/k,h=vh/k,{W,H}=WORLD.farm;
+  buildCam.x=W<=w?W/2:clamp(buildCam.x,w/2,W-w/2);buildCam.y=H+80<=h?H/2:clamp(buildCam.y,h*0.55-70,H+80-h*0.45)}
+function edgeStop(){edgeP=null;if(edgeT){cancelAnimationFrame(edgeT);clearTimeout(edgeT);edgeT=0}}
+function edgeSee(x,y){edgeP={x,y};if(!edgeT){edgeLast=performance.now();edgeT=requestAnimationFrame(edgeStep)}}
+function edgeVec(x,y){const r=sceneEl.getBoundingClientRect(),E=60,f=(d)=>d<E?(1-Math.max(0,d)/E):0;
+  return {x:f(x-r.left)*-1+f(r.right-x),y:f(y-r.top)*-1+f(r.bottom-y)}}
+function edgeStep(t){edgeT=0;if(!edgeP||!(decoDrag&&decoDrag.on||dragPlot&&dragPlot.on)){edgeP=null;return}
+  const dt=Math.min(0.05,Math.max(0,(t-edgeLast)/1000));edgeLast=t;const v=edgeVec(edgeP.x,edgeP.y);
+  if(v.x||v.y){const r=sceneEl.getBoundingClientRect(),vb=sceneEl.viewBox.baseVal,s=vb.width/r.width,ox=buildCam.x,oy=buildCam.y;
+    buildCam.x+=v.x*400*dt*s;buildCam.y+=v.y*400*dt*s;camKeepIn();
+    if(buildCam.x!==ox||buildCam.y!==oy){updateCam();if(decoDrag&&decoDrag.on)decoDragTo(edgeP.x,edgeP.y);else if(dragPlot&&dragPlot.on){const w=screenToWorld(edgeP.x,edgeP.y);dragPlot.x=w.x;dragPlot.y=w.y;renderWorld()}}}
+  edgeT=requestAnimationFrame(edgeStep)}
 document.addEventListener('visibilitychange',()=>{if(document.hidden){resetPtrs();try{cultEnd()}catch(e){}exitAllModes(false)}});/* 37.1、39：切到背景自動結束所有模式 */
 window.addEventListener('blur',resetPtrs);window.addEventListener('pagehide',resetPtrs);
 /* 37.2（15l）：手指數量以 touch 事件為準。全部放開就清掉手指紀錄（有時收不到某一根手指的 pointerup）；只剩一根就結束縮放；
@@ -7670,11 +7729,25 @@ const AV_DIRS=[[2,'正面'],[1,'斜前'],[0,'側面'],[7,'斜後'],[6,'背面']]
 const AV_TABS=[['face','膚色'],['hair','頭髮'],['hat','帽子'],['cloth','衣服'],['acc','配件']];
 const AV_TAB_ITEMS={face:[['skin',SKINS]],hair:[['hair'],['hairC',HAIRC]],hat:[['hat'],['hatC',CLOTHC],['head']],cloth:[['top'],['topC',CLOTHC],['bottom'],['bottomC',CLOTHC],['shoe'],['shoeC',CLOTHC]],acc:[['acc'],['accC',CLOTHC]]};/* 86.5：帽子分頁多「頭飾」；配件分頁開放（舊的 1–9 號配件新畫法沒有畫，先不列） *//* 86.4（16o）：上衣、下身、鞋子的款式都能選 *//* 35（15i）：表情固定；衣服、配件的新款製作中 */
 function openAvatar(){sheet={avatar:true,draft:avNorm(state.avatar),avTab:'face',avDir:0};renderSheet();openSheetUI()}
+/* 99.5（17j）：角色用手指轉。左右滑動每 50px 換一個方向（正面→斜前→側面→斜後→背面→另一邊…，可以一路轉下去）；點一下回到正面；
+   換方向時 120ms 寬度縮到 0 再展開。打扮頁（sheet.avDir）、名片（sheet.dir）共用。 */
+const SPIN=[2,1,0,7,6,5,4,3];let spinG=null;
+function spinIdx(k){return ((k==='av'?sheet.avDir:sheet.dir)||0)%8}
+function spinAv(k){if(k==='av')return sheet.draft;if(sheet.me===uid)return state.avatar;const P=profiles.find(p=>p.id===sheet.me);return P?avNorm(P.avatar):state.avatar}
+function spinSVG(k){const f=SPIN[spinIdx(k)];return avatarSVG(spinAv(k),faceFlip(f),{t:performance.now()/1000,view:VIEWS[f]})}
+function spinHint(){let seen=false;try{seen=localStorage.getItem('sw_spin')==='1'}catch(e){}return seen?'':'<p class="note spinhint">左右滑動可以轉身</p>'}
+function spinSet(el,k,i){i=((i%8)+8)%8;if(k==='av')sheet.avDir=i;else sheet.dir=i;const sv=el.querySelector('svg');if(!sv)return;
+  if(RMQ&&RMQ.matches){sv.innerHTML=spinSVG(k);return}
+  sv.classList.remove('spinfx');void sv.getBoundingClientRect();sv.classList.add('spinfx');clearTimeout(el._st);el._st=setTimeout(()=>{sv.innerHTML=spinSVG(k)},60)}
+document.addEventListener('pointerdown',e=>{const el=e.target.closest&&e.target.closest('.avspin');if(!el)return;spinG={el,k:el.dataset.spin,x:e.clientX,n:0,i0:spinIdx(el.dataset.spin),moved:false,id:e.pointerId};try{el.setPointerCapture(e.pointerId)}catch(_){}},true);
+document.addEventListener('pointermove',e=>{const g=spinG;if(!g||e.pointerId!==g.id)return;const dx=e.clientX-g.x;if(Math.abs(dx)>8)g.moved=true;const n=Math.trunc(dx/50);
+  if(n!==g.n){g.n=n;spinSet(g.el,g.k,g.i0-n);if(!g.hid){g.hid=1;try{localStorage.setItem('sw_spin','1')}catch(_){}document.querySelectorAll('.spinhint').forEach(x=>x.remove())}}},true);
+const spinUp=e=>{const g=spinG;if(!g||e.pointerId!==g.id)return;spinG=null;if(!g.moved&&e.type==='pointerup'&&spinIdx(g.k)!==0)spinSet(g.el,g.k,0)};
+document.addEventListener('pointerup',spinUp,true);document.addEventListener('pointercancel',spinUp,true);
 function avatarEditorHTML(){
-  const d=sheet.draft,dir=AV_DIRS[sheet.avDir||0][0],tab=sheet.avTab||'face';
+  const d=sheet.draft,dir=SPIN[(sheet.avDir||0)%8],tab=sheet.avTab||'face';
   const head=['face','hair','hat'].includes(tab),vb=head?'-18 -60 36 36':'-28 -64 56 68';
-  let h=`<h2>打扮我的角色</h2><div class="avprev"><svg viewBox="-30 -66 60 70" width="150" height="175" role="img" aria-label="角色預覽">${avatarSVG(d,false,{t:performance.now()/1000,view:VIEWS[dir]})}</svg></div>`;
-  h+=`<div class="avdirbtns" role="group" aria-label="方向">${AV_DIRS.map(([f,n],i)=>`<button class="fchip" data-avdir="${i}" aria-pressed="${(sheet.avDir||0)===i}">${n}</button>`).join('')}</div>`;
+  let h=`<h2>打扮我的角色</h2><div class="avprev"><div class="avspin" data-spin="av"><svg viewBox="-30 -66 60 70" width="150" height="175" role="img" aria-label="角色預覽">${spinSVG('av')}</svg></div></div>${spinHint()}`;
   h+=`<div class="filters avtabs" role="tablist">${AV_TABS.map(([k,n])=>`<button class="fchip" role="tab" data-avtab="${k}" aria-pressed="${tab===k}">${n}</button>`).join('')}</div>`;
   if(tab==='face')h+='<p class="note">表情固定是微笑。</p>';
   for(const [k,cols] of AV_TAB_ITEMS[tab]){
@@ -7710,6 +7783,7 @@ document.getElementById('testBox').addEventListener('click',e=>{
   const md=e.target.closest('[data-mode]');if(md){setTestMode(md.dataset.mode==='test');return}
   const sp=e.target.closest('[data-spd]');if(sp){tick();state.speed=+sp.dataset.spd;save();renderSpeed();toast(`時間加速 ×${state.speed}`);return}
   const t=e.target.closest('[data-tool]');if(!t)return;const k=t.dataset.tool;
+  if(k==='crashclr'){try{localStorage.removeItem('sw_err');localStorage.removeItem('sw_crash')}catch(x){}renderSpeed();toast('已清除');return}
   if(k==='sfx'){SFX_ON=!SFX_ON;try{localStorage.setItem('sw_sfx',SFX_ON?'1':'0')}catch(x){}renderSpeed();if(SFX_ON)sfx('sparkle');toast(SFX_ON?'音效開了':'音效關了');return}
   if(k==='adv'){advanceAll();toast('所有植株都往下一階段了')}
   if(k==='excap'){state.exCap=!exCapOn();save();renderSpeed();toast(state.exCap?'探索每日上限已開啟':'探索每日上限已關閉')}
@@ -8035,7 +8109,7 @@ function meSheetHTML(){
   const av=own?state.avatar:avNorm(P.avatar),nm=own?myName():(P.name||'玩家'),lv=own?myLv():(P.lv||1),S=own?meStats():(P.st||{}),tl=own?(state.titles||[]):(P.titles||[]);
   if(own&&sheet.ren){const first=!state.pname,wait=state.pnameAt?7*DAY-(Date.now()-state.pnameAt):0;
     return `<h2>${sheet.first?'先幫自己取個名字':'改名字'}</h2><p class="note">2–8 個字，不能和別人一樣。${first?'第一次設定之後還可以再改；':''}每 7 天能改一次。${qh('已登錄的品種、紀錄榜上的舊名字不會跟著改。')}</p>${wait>0?`<p class="err">還要 ${Math.ceil(wait/DAY)} 天才能再改名字。</p>`:`<input id="meName" maxlength="8" value="${esc(sheet.d!=null?sheet.d:myName().slice(0,8))}" aria-label="名字"><div class="err">${sheet.err||''}</div><button class="btn primary" data-act="merenok">確定</button>`}${sheet.first?'':'<button class="btn" data-act="merenx">取消</button>'}`}
-  let h=`<h2>${own?'我的名片':esc(nm)+' 的名片'}</h2><div class="mecard"><div class="meav"><svg viewBox="-30 -66 60 70" width="120" height="140" role="img" aria-label="角色">${avatarSVG(av,false,{view:VIEWS[sheet.dir||0]})}</svg><button class="mini" data-act="meturn">轉一下</button></div><div class="meinf"><div class="lot-name">${esc(nm)}</div><div class="meta">Lv ${lv}　${lvTitle(lv)}</div>${own?`<span class="xpbar big"><i style="width:${Math.round((state.xp||0)/xpNeed(lv)*100)}%"></i></span><div class="meta">離下一級還差 ${xpNeed(lv)-(state.xp||0)} 經驗</div><div class="row2" style="margin-top:6px"><button class="btn" data-act="meren">改名字</button><button class="btn" data-act="medress">${uiIcon('dress',18)}打扮</button></div>`:`${statusHTML(sheet.me)}<button class="btn" data-act="mevisit">參觀農場</button>`}</div></div>`;
+  let h=`<h2>${own?'我的名片':esc(nm)+' 的名片'}</h2><div class="mecard"><div class="meav"><div class="avspin" data-spin="me"><svg viewBox="-30 -66 60 70" width="120" height="140" role="img" aria-label="角色">${spinSVG('me')}</svg></div></div><div class="meinf"><div class="lot-name">${esc(nm)}</div><div class="meta">Lv ${lv}　${lvTitle(lv)}</div>${own?`<span class="xpbar big"><i style="width:${Math.round((state.xp||0)/xpNeed(lv)*100)}%"></i></span><div class="meta">離下一級還差 ${xpNeed(lv)-(state.xp||0)} 經驗</div><div class="row2" style="margin-top:6px"><button class="btn" data-act="meren">改名字</button><button class="btn" data-act="medress">${uiIcon('dress',18)}打扮</button></div>`:`${statusHTML(sheet.me)}<button class="btn" data-act="mevisit">參觀農場</button>`}</div></div>`;
   if(own){const m=mqCur(),done=state.cm?state.cm.list.filter(o=>o.done).length:0;
     h+=`<h3>目前的任務</h3><div class="lot"><div class="meta">${m?(state.mq.st?`主線第 ${state.mq.ch} 章：${m.hint}`:myLv()>=m.lv?`主線第 ${state.mq.ch} 章「${m.t}」可以接了`:`主線第 ${state.mq.ch} 章 Lv ${m.lv} 開放`):'主線任務全部完成'}</div>${state.cm?`<div class="meta">今天的委託完成 ${done}／${state.cm.list.length} 張</div>`:''}<button class="btn" data-act="quests">${uiIcon('quest',18)}看任務</button></div>`}
   if(tl.length)h+=`<h3>徽章</h3><div class="badges" style="justify-content:flex-start">${tl.map(t=>`<span class="badge r3">${esc(t)}</span>`).join('')}</div>`;

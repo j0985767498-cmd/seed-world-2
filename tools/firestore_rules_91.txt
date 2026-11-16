@@ -1,0 +1,37 @@
+// 第 91 節（16q）「發光的植株」要新增的 Firestore 安全規則。
+// 貼到 Firebase 主控台 → Firestore Database → 規則，放在 match /databases/{database}/documents { … } 裡面，
+// 和現有的 match /players/…、match /rights/… 等並排（原本的規則不用動）。檔案開頭要是 rules_version = '2';（現在多半已經是）。
+// 時間欄位（spawnAt、takenAt）是用戶端的毫秒數；允許和伺服器時間差 10 分鐘。
+
+    // ---- 91：發光的植株（每個地區一份文件 roamers/<地區>）----
+    function roamFresh(d) {
+      return d.keys().hasAll(['map', 'x', 'y', 'crop', 'spawnAt', 'takenBy'])
+        && d.takenBy == null
+        && d.spawnAt is int
+        && math.abs(d.spawnAt - request.time.toMillis()) < 600000;
+    }
+    function roamExpired(d) {
+      return (d.takenBy != null && request.time.toMillis() - d.takenAt > 14400000 - 600000)
+        || (d.takenBy == null && request.time.toMillis() - d.spawnAt > 14400000 - 600000);
+    }
+    function roamTakeOk() {
+      return resource.data.takenBy == null
+        && request.resource.data.takenBy == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['takenBy', 'takenName', 'takenAt'])
+        && request.time.toMillis() - resource.data.spawnAt < 14400000 + 600000
+        && request.resource.data.takenAt is int
+        && math.abs(request.resource.data.takenAt - request.time.toMillis()) < 600000;
+    }
+    match /roamers/{bk} {
+      allow read: if request.auth != null;
+      // 第一次建立：沒人拿，spawnAt 是現在
+      allow create: if request.auth != null && roamFresh(request.resource.data);
+      // 搶：takenBy 只能從空的改成自己；重生：只有已經過期才能寫新的一株
+      allow update: if request.auth != null
+        && (roamTakeOk() || (roamExpired(resource.data) && roamFresh(request.resource.data)));
+      allow delete: if false;
+    }
+    // 測試模式用（只有測試按鈕會寫），登入就能讀寫
+    match /roamers_test/{bk} {
+      allow read, write: if request.auth != null;
+    }

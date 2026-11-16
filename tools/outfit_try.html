@@ -2,7 +2,7 @@
 <style>body{margin:0;padding:12px;background:#EEF2F5;font:14px "Noto Sans TC",sans-serif;color:#3B2A18}h1{font-size:20px;margin:0}h2{font-size:16px;margin:16px 0 6px}
 .note{color:#6B5A48;font-size:13px}.wrap{overflow-x:auto;background:#A8C478;border-radius:10px;padding:6px}table{border-collapse:collapse}td,th{padding:2px 4px;text-align:center;font-size:12px;vertical-align:bottom}
 th{color:#3B2A18;font-weight:600;white-space:nowrap}.ctl{background:#fff;border-radius:10px;padding:8px;margin:8px 0}.game{display:flex;gap:6px;align-items:flex-end;background:#A8C478;border-radius:10px;padding:10px}</style></head><body>
-<h1>新畫法換衣服試做（第 86.3 節，2026-11-16o）</h1>
+<h1>新畫法換衣服試做（第 86.3 節，2026-11-16r）</h1>
 <p class="note">不放進遊戲。頭、臉、髮型、手、身形照 v3；上衣、下身、鞋子用程式畫在 v3 零件的外形上（外框、兩階明暗、粗的細節線）。第一列是現在的預設造型（條紋 T＋吊帶褲＋靴子），下面三列是試做。顏色可以換。</p>
 <div class="ctl">上衣色：<span id="tc"></span><br>下身色：<span id="bc"></span><br>外套色：<span id="jc"></span>　<label><input type="checkbox" id="walk"> 走路姿勢（勾了每個方向畫兩個影格）</label></div>
 <h2>4 套 × 5 個方向</h2><div class="wrap"><table id="tb"></table></div>
@@ -11,12 +11,12 @@ th{color:#3B2A18;font-weight:600;white-space:nowrap}.ctl{background:#fff;border-
 <h2>全部下身（7）（上衣素 T）</h2><div class="wrap"><table id="bots"></table></div>
 <h2>86.5 新款（帽子、頭飾、上衣、下身、鞋子、配件）</h2><p class="note">果實帽、頭飾在這頁用簡化的紅色果實代替（遊戲裡照選的成品顏色上色，夢幻色也會動）。</p><div class="wrap"><table id="news"></table></div>
 <h2>全部鞋子（5）（長褲；最後一列是短褲）</h2><div class="wrap"><table id="shoes"></table></div>
-<script src="../assets/char/av3.js?v=2026-11-16o"></script><script src="../assets/char/av3_heads.js?v=2026-11-16o"></script>
+<script src="../assets/char/av3.js?v=2026-11-16r"></script><script src="../assets/char/av3_heads.js?v=2026-11-16r"></script>
 <script>
-const BUILD="2026-11-16o";
+const BUILD="2026-11-16r";
 const AV_DEF={"v":2,"skin":0,"face":0,"hair":0,"hairC":1,"hat":0,"hatC":1,"top":2,"topC":13,"bottom":0,"bottomC":10,"shoe":0,"shoeC":12,"acc":0,"accC":1,"blush":0,"head":0,"fc":"","fcb":""};
 const AV_KEYS=["skin","face","hair","hairC","hat","hatC","top","topC","bottom","bottomC","shoe","shoeC","acc","accC","blush","head","fc","fcb"];
-const AV_OPT={"face":["點點眼","笑眼","眨眼","驚訝","瞇眼","開心","大笑","害羞","鼓臉","哭哭","星星眼","想睡"],"hair":["短髮","長髮","馬尾","雙馬尾","捲髮","丸子頭","平頭","齊瀏海","鮑伯頭","刺蝟頭","旁分","波浪長髮","單側辮子","半紮蝴蝶結","低側包頭","蓬鬆亂髮","及肩外翹","雙辮子","高馬尾瀏海","中分","呆毛短髮","雙丸子","狼尾"],"hat":["無","草帽","毛帽","鴨舌帽","貝雷帽","漁夫帽","寬邊遮陽帽","貓耳毛帽","報童帽","花圈","毛絨耳罩","牛仔帽","三角頭巾","蝴蝶結髮帶","南瓜頭套","番茄帽","辣椒帽","草莓帽","茄子帽","玉米帽","南瓜帽","櫛瓜帽","甜瓜帽","甘藍帽"],"top":["T恤","條紋T","吊帶褲","外套","毛衣","帽T","格子襯衫","針織背心","羽絨外套","雨衣","水手領上衣","開襟毛衣","細肩帶洋裝","園藝圍裙","研究員白袍","浴衣","夏威夷花襯衫","運動背心","Polo衫","連身工作服","斗篷"],"bottom":["長褲","短褲","裙子","工裝褲","百褶裙","七分牛仔褲","吊帶裙","寬褲","蓬蓬裙","運動褲"],"shoe":["靴子","布鞋","雨靴","涼鞋","高筒帆布鞋","拖鞋","皮鞋","木屐","雪靴"],"acc":["無","圍巾","眼鏡","背包","花朵髮飾","草籃","鐮刀","斜背包","領巾","耳機","育種野帳","放大鏡項鍊","種子腰包","捕蟲網","墨鏡","花環項鍊","狐狸面具","小精靈翅膀"],"blush":["無腮紅","有腮紅"],"head":["無","皇冠（番茄）","火焰（辣椒）","鑽石（草莓）","鈴鐺（茄子）","火箭（玉米）","南瓜燈（南瓜）","球棒（櫛瓜）","炸彈（甜瓜）","火山（甘藍）"]};
+const AV_OPT={"face":["點點眼","笑眼","眨眼","驚訝","瞇眼","開心","大笑","害羞","鼓臉","哭哭","星星眼","想睡"],"hair":["短髮","長髮","馬尾","雙馬尾","捲髮","丸子頭","平頭","齊瀏海","鮑伯頭","刺蝟頭","旁分","波浪長髮","單側辮子","半紮蝴蝶結","低側包頭","蓬鬆亂髮","及肩外翹","雙辮子","高馬尾瀏海","中分","呆毛短髮","雙丸子","狼尾"],"hat":["無","草帽","毛帽","鴨舌帽","貝雷帽","漁夫帽","寬邊遮陽帽","貓耳毛帽","報童帽","花圈","毛絨耳罩","牛仔帽","三角頭巾","蝴蝶結髮帶","南瓜頭套","番茄帽","辣椒帽","草莓帽","茄子帽","玉米帽","南瓜帽","櫛瓜帽","甜瓜帽","甘藍帽"],"top":["T恤","條紋T","吊帶褲","外套","毛衣","帽T","格子襯衫","針織背心","羽絨外套","雨衣","水手領上衣","開襟毛衣","細肩帶洋裝","園藝圍裙","研究員白袍","浴衣","夏威夷花襯衫","運動背心","Polo衫","連身工作服","斗篷"],"bottom":["長褲","短褲","裙子","工裝褲","百褶裙","七分牛仔褲","吊帶裙","寬褲","蓬蓬裙","運動褲"],"shoe":["靴子","布鞋","雨靴","涼鞋","高筒帆布鞋","拖鞋","皮鞋","木屐","雪靴"],"acc":["無","圍巾","眼鏡","背包","花朵髮飾","草籃","鐮刀","斜背包","領巾","耳機","育種野帳","放大鏡項鍊","種子腰包","捕蟲網","墨鏡","花環項鍊","狐狸面具","小精靈翅膀","名品胸針"],"blush":["無腮紅","有腮紅"],"head":["無","皇冠（番茄）","火焰（辣椒）","鑽石（草莓）","鈴鐺（茄子）","火箭（玉米）","南瓜燈（南瓜）","球棒（櫛瓜）","炸彈（甜瓜）","火山（甘藍）"]};
 const HAIRC=["#2E2018","#6B4128","#8B5A2B","#C68E3F","#E8C47E","#B7472A","#8A8A8A","#EFEDE6","#3E5FA8","#C2558F"];
 const SKINS=["#FBE0C8","#F3CBA0","#E3AE80","#C68D5C","#94613F","#6A4429"];
 const CLOTHC=["#4F86C0","#D2584C","#4F8048","#EEC85A","#8C66C2","#EE9DBA","#F6F1E4","#4D4A47","#E08A4C","#5DB3A6","#5B7FAF","#C9B48A","#8A5A34","#93A98A"];
@@ -226,7 +226,7 @@ function avHatX(av,view){
   if(av.head>0&&av.head<=9){const cr=WARD_CROPS[av.head-1],tr=side?'translate(-1 -57) scale(2.7) rotate(-8)':back?'translate(-8.6 -51) scale(2.6) rotate(-16)':'translate(8.6 -51) scale(2.6) rotate(16)';
     s+=avFruitBit(av,cr,EX_OF[cr],tr)}
   return {s,brim}}
-function avAccX(av,view,P){const a=av.acc,r={P,back:'',mid:'',face:'',top:''};if(!(a>=10&&a<=17))return r;
+function avAccX(av,view,P){const a=av.acc,r={P,back:'',mid:'',face:'',top:''};if(!(a>=10&&a<=18))return r;
   const back=view==='back'||view==='bq',side=view==='side',OL=AV_OL,V=AVO_V[view]||AVO_V.front,T0=V.t0,cx=V.cx,D=AV3[view]||AV3.front,ac=avHex(av.accC);
   const ln=(p,w,col)=>`<path d="${p}" fill="none" stroke="${col||OL}" stroke-width="${w||0.6}" stroke-linecap="round" stroke-linejoin="round"/>`;
   const hand=i=>{const A=D.arms[i]||D.arms[0],b=avoBox(A.L[0].d);return [(b[0]+b[2])/2,b[3]-1.6]};
@@ -240,6 +240,7 @@ function avAccX(av,view,P){const a=av.acc,r={P,back:'',mid:'',face:'',top:''};if
   else if(a===14&&!back){r.face=side?`<path d="M0 -38.8H4.6" stroke="#2A2A33" stroke-width=".6"/><rect x="4.2" y="-40.4" width="3.4" height="3" rx="1" fill="#2A2A33" stroke="${OL}" stroke-width=".4"/>`:`<rect x="-6.5" y="-40.5" width="5.2" height="3.6" rx="1.4" fill="#2A2A33" stroke="${OL}" stroke-width=".45"/><rect x="1.3" y="-40.5" width="5.2" height="3.6" rx="1.4" fill="#2A2A33" stroke="${OL}" stroke-width=".45"/><path d="M-1.3 -39.3Q0 -40 1.3 -39.3" stroke="#2A2A33" stroke-width=".6" fill="none"/><path d="M-5.6 -39.6l1.4 -.6M2.2 -39.6l1.4 -.6" stroke="#fff" stroke-width=".45" opacity=".7"/>`}/* 墨鏡 */
   else if(a===16){const tr=side?'translate(-3.6 -45) rotate(-12)':back?'translate(8.4 -48.6) rotate(24)':'translate(-8.6 -48.6) rotate(-24)';
     r.top=`<g transform="${tr}"><path d="M-3.4 -1.6L-3 -4.6L-1.2 -2.4L1.2 -2.4L3 -4.6L3.4 -1.6Q3.6 2.2 0 4Q-3.6 2.2 -3.4 -1.6Z" fill="#FBF7EC" stroke="${OL}" stroke-width=".55" stroke-linejoin="round"/><path d="M-2.6 -2.8L-2.4 -1.6L-1.6 -2ZM2.6 -2.8L2.4 -1.6L1.6 -2Z" fill="#D2584C"/><path d="M-2 -.2L-.8 .4M2 -.2L.8 .4" stroke="#D2584C" stroke-width=".55" stroke-linecap="round"/><circle cx="0" cy="2.6" r=".5" fill="#4A3020"/></g>`}/* 狐狸面具（戴在頭側） */
+  else if(a===18&&!back){const x=side?2.4:cx-3.6,y=T0+6;r.mid=`<g transform="translate(${x} ${y})"><path d="M0 -2.2L.65 -.7 2.2 -.6 1 .4 1.4 2 0 1.1 -1.4 2 -1 .4 -2.2 -.6 -.65 -.7Z" fill="#F2C14E" stroke="#8A5A10" stroke-width=".4" stroke-linejoin="round"/><circle r=".6" fill="#FFF4C2"/></g>`}/* 90.3 名品胸針 */
   else if(a===17){const w=(sg)=>`<g class="${sg<0?'avwl':'avwr'}"><path d="M0 0Q${sg*7} ${-11} ${sg*11.6} ${-7.4}Q${sg*10} ${-1.6} 0 0Z" fill="rgba(206,238,250,.78)" stroke="${OL}" stroke-width=".55"/><path d="M0 0Q${sg*8} ${3.6} ${sg*7} ${7}Q${sg*2.6} ${6} 0 0Z" fill="rgba(226,214,250,.78)" stroke="${OL}" stroke-width=".55"/>${ln(`M0 0Q${sg*5} -4 ${sg*9} -6.4`,0.3,'#FFFFFF')}</g>`;
     const g=`<g transform="translate(0 -23)">${side?w(-1):w(-1)+w(1)}</g>`;if(back)r.mid+=g;else r.back+=g}/* 小精靈翅膀 */
   return r}

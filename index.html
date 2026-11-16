@@ -1470,7 +1470,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-17c';
+const BUILD='2026-11-17d';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -3969,6 +3969,9 @@ const iconbarClick=e=>{
   if(a==='orders'){sheet={orders:true};renderSheet();openSheetUI()}
 };
 document.querySelectorAll('.iconbar').forEach(el=>el.addEventListener('click',iconbarClick));
+/* 17d：探索的「地圖」按鈕排在右邊選單最後一顆的下面（16t 加大按鈕間距後，固定的 top:252px 剛好被「設定」蓋住） */
+function placeMapBtn(mb){try{const bs=[...document.querySelectorAll('#iconbar button')].filter(b=>!b.hidden&&b.offsetParent!==null);if(!bs.length)return;const r=bs[bs.length-1].getBoundingClientRect(),t=Math.round(r.bottom+27)+'px';if(mb.style.top!==t)mb.style.top=t;const mp=document.getElementById('mapPanel');if(mp){const pt=Math.round(r.bottom+27+52+26);mp.style.top=Math.max(90,Math.min(pt,innerHeight-mp.offsetHeight-100))+'px'}}catch(e){}}
+try{addEventListener('resize',()=>{const mb=document.getElementById('mapBtn');if(mb&&!mb.hidden)placeMapBtn(mb)})}catch(e){}
 function renderHUD(){
   if(!state)return;renderMe();renderBagBadge();
   document.getElementById('sceneName').textContent=scene==='market'?'城鎮':scene==='explore'?(regHas(exBiome)?`${REGION_CFG[exBiome].name}・${REGION_MAPS[exBiome][regMap].n}`:`探索：${BIOMES[exBiome].n}`):viewing?`${viewing.name} 的農場`:'我的農場';
@@ -3977,7 +3980,7 @@ function renderHUD(){
   const own=scene==='farm'&&!viewing;
   layoutSbtns();
   setWeather(scene==='explore'?(regHas(exBiome)&&REGION_MAPS[exBiome][regMap].cave?'cave':exBiome):null);exHintUpd();
-  {const sn=regIn(),mb=document.getElementById('mapBtn');if(mb&&mb.hidden===sn)mb.hidden=!sn;if(!sn){const mp=document.getElementById('mapPanel');if(mp&&!mp.hidden)mp.hidden=true;regFxClear()}}
+  {const sn=regIn(),mb=document.getElementById('mapBtn');if(mb&&mb.hidden===sn)mb.hidden=!sn;if(sn&&mb)placeMapBtn(mb);if(!sn){const mp=document.getElementById('mapPanel');if(mp&&!mp.hidden)mp.hidden=true;regFxClear()}}
   document.getElementById('ibDecor').hidden=!own;/* 39.1：開墾只在圓盤 */
 }
 

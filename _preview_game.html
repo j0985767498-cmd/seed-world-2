@@ -896,6 +896,24 @@ details.gfold .gfb{margin-top:8px}
 .trbtns{display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex:none}
 .tcell .tst{position:absolute;right:2px;bottom:1px;font-size:10px;line-height:1.2;color:#fff;background:#3E7FD0;border-radius:4px;padding:0 3px}
 .tbest{text-align:right;font-size:11px;color:#6A5030;margin-top:2px}
+/* 105（17q）野外怪物 */
+.mon .ms,.mon .mb{transform-box:fill-box;transform-origin:50% 100%}
+.mon .ms.hit{animation:monsq .2s ease-out}
+.mon .ms.hit image{animation:monfl .16s ease-out}
+@keyframes monsq{0%{transform:translateX(6px) scale(1.12,.88)}100%{transform:none}}
+@keyframes monfl{0%{filter:brightness(2.6) saturate(.3)}100%{filter:none}}
+.mon .mb.die{animation:mondie .5s ease-in forwards;transform-origin:50% 60%}
+@keyframes mondie{to{transform:translate(38px,-48px) rotate(240deg) scale(.8);opacity:0}}
+.mon .mhpf{transform-box:fill-box;transform-origin:0 50%;transition:transform .25s ease-out}
+.mon .mhp{transition:opacity .2s}
+.mon .mnm{font:700 9px var(--uifont);fill:#fff;stroke:#4A3020;stroke-width:2.4px;paint-order:stroke;stroke-linejoin:round}
+.mon .mbn{fill:#FFE27A}
+#monSw .swg{animation:monsw .22s ease-out forwards}
+@keyframes monsw{from{transform:rotate(-110deg)}to{transform:rotate(90deg)}}
+#monSw .swarc{animation:monarc .22s ease-out forwards}
+@keyframes monarc{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
+@keyframes monfade{to{opacity:0}}
+@media (prefers-reduced-motion:reduce){.mon .ms.hit{animation:none}.mon .mb.die{animation:monfade .5s forwards}#monSw .swg{animation:none}}
 /* 103（17n）稀有度徽章、卡片外框、素色特徵標籤 */
 .rb{display:inline-block;font-family:var(--uifont);font-weight:800;line-height:1.25;white-space:nowrap;border-radius:999px;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.35);background:#8C8C8C;border:1.5px solid rgba(255,255,255,.85);box-shadow:0 1px 2px rgba(60,30,5,.35)}
 .rb.r0{background:#8E8A84}.rb.r1{background:#4F93C9}.rb.r2{background:#8A5CC6}.rb.r3{background:linear-gradient(180deg,#F2C94C,#D9A520)}.rb.r4{background:linear-gradient(110deg,#F08A3E,#FFC27A 45%,#F08A3E 55%,#D8601F);background-size:250% 100%}
@@ -946,7 +964,7 @@ window.firebase=new Proxy(function(){},{get:(o,k)=>{
   <button class="btn primary" id="loginBtn">用 Google 帳號登入</button>
   <p class="err" id="loginErr" style="max-width:320px;margin-top:12px"></p>
 </div>
-<svg id="scene" viewBox="0 0 400 800" role="application" aria-label="遊戲畫面"><defs><radialGradient id="dglow"><stop offset="0" stop-color="#FFE6A8" stop-opacity=".75"/><stop offset="1" stop-color="#FFE6A8" stop-opacity="0"/></radialGradient></defs><g id="worldLayer"></g><g id="fxLayer" pointer-events="none"></g><g id="fyBack"></g><g id="charLayer"></g><g id="fyFront"></g><g id="fgLayer" pointer-events="none"></g></svg>
+<svg id="scene" viewBox="0 0 400 800" role="application" aria-label="遊戲畫面"><defs><radialGradient id="dglow"><stop offset="0" stop-color="#FFE6A8" stop-opacity=".75"/><stop offset="1" stop-color="#FFE6A8" stop-opacity="0"/></radialGradient></defs><g id="worldLayer"></g><g id="fxLayer" pointer-events="none"></g><g id="fyBack"></g><g id="monBack"></g><g id="charLayer"></g><g id="monFront"></g><g id="monSw" pointer-events="none"></g><g id="fyFront"></g><g id="fgLayer" pointer-events="none"></g></svg>
 <div id="wx" aria-hidden="true" hidden></div>
 <div id="exHint" hidden></div>
 <div id="mapBanner" hidden></div><div id="testTag" hidden>測試模式</div><div id="testNote" hidden></div>
@@ -1650,7 +1668,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-17p';
+const BUILD='2026-11-17q';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -6355,6 +6373,7 @@ function regEnter(id,from){
   joinFarm('ex_'+bk+'_'+id);/* 多人同步：每張小地圖各自一個頻道，只看得到同一張圖的玩家（雪原仍是 ex_snow_<id>） */
   renderHUD();renderWorld();renderChars();updateCam();refreshAct();
   regBanner(REGION_CFG[bk].name+'・'+REGION_MAPS[bk][id].n);
+  try{monEnter()}catch(e){}/* 105 */
   const mp=document.getElementById('mapPanel');if(mp&&!mp.hidden)renderRegMap();
 }
 function regPlants(bk,id,day){
@@ -6420,7 +6439,7 @@ function regMapSVG(bk){
     if(cur)s+=`<circle cx="${x+56}" cy="${y+2}" r="6" fill="#D9473A" stroke="#fff" stroke-width="2"/>`}
   return `<svg viewBox="0 0 310 ${230+oy*58}" width="100%" aria-label="${REGION_CFG[bk].name}地圖">${s}</svg>`;
 }
-function renderRegMap(){const el=document.getElementById('mapPanel');if(!el||!regHas(exBiome))return;el.innerHTML=`<b>${REGION_CFG[exBiome].name}地圖</b><span class="meta">　黃色是你現在的位置，虛線是洞口</span>${regMapSVG(exBiome)}${isTestMode()?`<div class="meta" style="margin:4px 0 2px">測試模式：直接傳送</div><div style="display:flex;flex-wrap:wrap;gap:4px">${Object.entries(REGION_MAPS[exBiome]).map(([id,M])=>`<button class="btn" data-tp="${id}" style="margin:0;padding:4px 8px;width:auto;font-size:12px">${M.secret?'秘境・':''}${M.n}</button>`).join('')}</div>${ROAM_BK.includes(exBiome)&&ROAM_PTS[exBiome][regMap]?`<button class="btn" data-roamspawn="1" style="margin:4px 0 0;padding:4px 8px;width:auto;font-size:12px">在這張地圖立刻生出一株發光的植株（測試用）</button>`:''}`:''}<button class="btn" data-mp="close" style="margin:4px 0 0">關閉</button>`;fitMapPanel()}
+function renderRegMap(){const el=document.getElementById('mapPanel');if(!el||!regHas(exBiome))return;el.innerHTML=`<b>${REGION_CFG[exBiome].name}地圖</b><span class="meta">　黃色是你現在的位置，虛線是洞口</span>${regMapSVG(exBiome)}${isTestMode()?`<div class="meta" style="margin:4px 0 2px">測試模式：直接傳送</div><div style="display:flex;flex-wrap:wrap;gap:4px">${Object.entries(REGION_MAPS[exBiome]).map(([id,M])=>`<button class="btn" data-tp="${id}" style="margin:0;padding:4px 8px;width:auto;font-size:12px">${M.secret?'秘境・':''}${M.n}</button>`).join('')}</div>${monTable()?`<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px"><button class="btn" data-monre="1" style="margin:0;padding:4px 8px;width:auto;font-size:12px">怪物立刻全部重生</button><button class="btn${monForceBoss?' primary':''}" data-monboss="1" style="margin:0;padding:4px 8px;width:auto;font-size:12px">下一隻一定是王：${monForceBoss?'開':'關'}</button></div>`:''}${ROAM_BK.includes(exBiome)&&ROAM_PTS[exBiome][regMap]?`<button class="btn" data-roamspawn="1" style="margin:4px 0 0;padding:4px 8px;width:auto;font-size:12px">在這張地圖立刻生出一株發光的植株（測試用）</button>`:''}`:''}<button class="btn" data-mp="close" style="margin:4px 0 0">關閉</button>`;fitMapPanel()}
 /* 98.2：量真正看得到的高度（visualViewport），地圖 SVG 放不下就縮小高度、寬度跟著等比例 */
 function vvhSet(){try{const h=(window.visualViewport&&visualViewport.height)||innerHeight;document.documentElement.style.setProperty('--vvh',Math.round(h)+'px')}catch(e){}}
 function fitMapPanel(){try{const el=document.getElementById('mapPanel');if(!el||el.hidden)return;const sv=el.querySelector('svg');if(!sv)return;sv.style.height='';sv.style.width='';vvhSet();
@@ -6429,7 +6448,7 @@ function fitMapPanel(){try{const el=document.getElementById('mapPanel');if(!el||
 try{vvhSet();addEventListener('resize',()=>{vvhSet();fitMapPanel()});if(window.visualViewport)visualViewport.addEventListener('resize',()=>{vvhSet();fitMapPanel()})}catch(e){}
 const regLoaded={};
 function regPreload(bk){if(regLoaded[bk]||typeof Image==='undefined'||!REGION_IMG[bk])return;regLoaded[bk]=true;for(const f of Object.keys(REGION_IMG[bk])){try{const i=new Image();i.src='assets/'+regDir(bk)+'/'+f+'.png'}catch(e){}}}
-try{document.getElementById('mapBtn').addEventListener('click',()=>{const el=document.getElementById('mapPanel');el.hidden=!el.hidden;if(!el.hidden)renderRegMap()});document.getElementById('mapPanel').addEventListener('click',e=>{if(e.target.closest('[data-roamspawn]')){if(isTestMode()){roamRespawn(exBiome,true);testNote('已在這張地圖生出一株（roamers_test）')}return}const tp=e.target.closest('[data-tp]');if(tp&&isTestMode()&&regIn()&&!regBusy){const id=tp.dataset.tp,M=REGION_MAPS[exBiome][id],ex=M.exits.find(x=>!x.need&&!x.trig&&!x.hid)||M.exits[0];regEnter(id,ex.to);testNote('已傳送到 '+M.n);return}if(e.target.closest('[data-mp]'))document.getElementById('mapPanel').hidden=true})}catch(e){}
+try{document.getElementById('mapBtn').addEventListener('click',()=>{const el=document.getElementById('mapPanel');el.hidden=!el.hidden;if(!el.hidden)renderRegMap()});document.getElementById('mapPanel').addEventListener('click',e=>{if(isTestMode()&&e.target.closest('[data-monre]')){monTestRespawn();testNote('這張地圖的怪物全部重生了');return}if(isTestMode()&&e.target.closest('[data-monboss]')){monForceBoss=!monForceBoss;renderRegMap();return}if(e.target.closest('[data-roamspawn]')){if(isTestMode()){roamRespawn(exBiome,true);testNote('已在這張地圖生出一株（roamers_test）')}return}const tp=e.target.closest('[data-tp]');if(tp&&isTestMode()&&regIn()&&!regBusy){const id=tp.dataset.tp,M=REGION_MAPS[exBiome][id],ex=M.exits.find(x=>!x.need&&!x.trig&&!x.hid)||M.exits[0];regEnter(id,ex.to);testNote('已傳送到 '+M.n);return}if(e.target.closest('[data-mp]'))document.getElementById('mapPanel').hidden=true})}catch(e){}
 
 function biomeThumb(k){
   const B=BIOMES[k],R=seededRnd(hashStr('thumb|'+k));
@@ -6811,6 +6830,112 @@ function fyShow(kind,k,f,opt,done){opt=opt||{};const el=document.createElement('
   else el.innerHTML=`<div class="fys-bg"></div><div class="fys-stage"><div class="fys-pillar"></div><div class="fys-fairy fys-spin"><div class="fys-old">${art({...f,evo:0,col:opt.oldCol||f.col,sb:opt.oldSb})}</div><div class="fys-new">${art(f)}</div></div><div class="fys-burst">${burst}</div></div><div class="fys-flash"></div><h2 class="fys-title">${esc(f.name||fyN(k))}進化了！</h2><p class="fys-skip">點一下跳過</p>`;
   let closed=false;const close=()=>{if(closed)return;closed=true;el.classList.add('out');setTimeout(()=>{el.remove();fyShowOn=false;try{done&&done()}catch(e){}},fyRM()?0:220)};
   el.addEventListener('click',close);document.body.appendChild(el);setTimeout(close,fyRM()?600:3400)}
+
+/* ===== 105（17q）：野外怪物第一階段（草原） =====
+   不做戰鬥系統：怪物不反擊、角色不受傷。農場、城鎮、秘境不放。每張野外地圖同時 3 隻（主 70％／副 30％），每隻出現時 15％ 是王（每張最多 1 隻）。
+   每個人各自計算，不碰 Firestore：state.mon["地區|地圖"]=[{k,boss,t}×3]（t＝打倒的時間，0＝活著）；打倒後 15 分鐘重生（離線照時間算）。
+   位置、走動、血量只在記憶體（MON_RT），每次進地圖重新撒。畫在 #monBack（角色後面）／#monFront（角色前面），每幀只改 transform，停著不動就不寫 DOM。 */
+const MON_DEF={haybale:{n:'草捲獸',h:55},sprout_boar:{n:'穰豚',h:62},flower_snake:{n:'花冠蛇',h:55},wind_eel:{n:'風鰻妖',w:120,fly:20},branch_log:{n:'枝手浮木',h:58},crack_rock:{n:'裂眼滾石',h:60},moss_jar:{n:'苔手破甕',h:70},well_bucket:{n:'古井桶妖',h:62,nohit:1},one_leg_xiao:{n:'獨腳魈',h:68}};
+const MON_IMG={haybale:[200,140],haybale_hit:[197,162],sprout_boar:[182,140],sprout_boar_hit:[200,137],flower_snake:[196,140],flower_snake_hit:[208,145],wind_eel:[407,140],wind_eel_hit:[385,182],branch_log:[204,140],branch_log_hit:[203,151],crack_rock:[190,140],crack_rock_hit:[207,141],moss_jar:[176,140],moss_jar_hit:[180,143],well_bucket:[146,140],one_leg_xiao:[135,140],one_leg_xiao_hit:[143,133]};/* assets/monsters/grass/s/（正常版高 140；_hit 版和正常版同一個縮放比例） */
+const MON_MAP={grass:{entry:[['haybale',100]],meadow:[['sprout_boar',70],['flower_snake',30]],river:[['wind_eel',70],['branch_log',30]],hill:[['crack_rock',70],['one_leg_xiao',30]],old_well:[['moss_jar',70],['well_bucket',30]]}};
+const MON_N=3,MON_RESPAWN=15*60e3,MON_BOSS=0.15,MON_BOSS_K=1.4,MON_RANGE=30,MON_SWING=350,MON_HP=[3,5],MON_SPD=16,MON_COIN=[[3,6],[15,25]],MON_ACC=[0.08,0.30],MON_BAR_RESET=5000;
+let MON_RT=null,monRaf=0,monLast=0,monForceBoss=false,monFightI=-1,monSwingAt=0;
+const monKey=()=>exBiome+'|'+regMap;
+function monTable(){return ((MON_MAP[exBiome]||{})[regMap])||null}
+function monHere(){return state&&scene==='explore'&&typeof regIn==='function'&&regIn()&&!regBusy&&!!monTable()}
+function monSrc(k){return `assets/monsters/${exBiome}/s/${k}.png?v=${BUILD}`}
+function monScale(k,boss){const d=MON_DEF[k],I=MON_IMG[k];return (d.w?d.w/I[0]:d.h/I[1])*(boss?MON_BOSS_K:1)}
+function monPreload(){const T=monTable();if(!T)return;for(const [k] of T)for(const n of [k,k+'_hit'])if(MON_IMG[n]){const im=new Image();im.src=monSrc(n)}}
+/* 抽一隻：照 70／30 抽種類；王：這張圖沒有活著的王才可能（15％，測試開關可以強制） */
+function monRoll(slots,i,R){R=R||Math.random;const T=monTable()||[['haybale',100]];const k=wpickR(T,R)[0];const bossAlive=slots.some((s,j)=>j!==i&&s&&!s.t&&s.boss);
+  let boss=0;if(!bossAlive){if(monForceBoss){boss=1;monForceBoss=false}else if(R()<MON_BOSS)boss=1}return {k,boss,t:0}}
+function monSlots(){if(!state.mon||typeof state.mon!=='object'||Array.isArray(state.mon))state.mon={};const key=monKey();let S=state.mon[key];if(!Array.isArray(S)||S.length!==MON_N){S=[];for(let i=0;i<MON_N;i++)S[i]=monRoll(S,i);state.mon[key]=S}return S}
+function monRespawnDue(S,now){let ch=false;for(let i=0;i<S.length;i++){const s=S[i];if(!s||!MON_DEF[s.k]){S[i]=monRoll(S,i);ch=true;continue}if(s.t&&now-s.t>=MON_RESPAWN){S[i]=monRoll(S,i);ch=true}}return ch}
+/* 可走、從入口走得到、不在出口與抵達點旁邊（10px 格子 BFS，每張圖算一次） */
+function monReach(M){if(M._monR)return M._monR;const G=10,W=Math.ceil(M.W/G),H=Math.ceil(M.H/G),ok=new Uint8Array(W*H),seen=new Uint8Array(W*H),q=[];
+  const free=(x,y)=>!regBlocked(M,x,y)&&!regExitAt(M,x,y);
+  for(const e of M.exits){if(e.trig||e.hid||e.need)continue;let p;try{p=regArrival(M.bk,M.id,e.to)}catch(err){continue}const cx=Math.round(p[0]/G),cy=Math.round(p[1]/G);if(cx>=0&&cy>=0&&cx<W&&cy<H&&free(cx*G,cy*G)&&!seen[cy*W+cx]){seen[cy*W+cx]=1;q.push(cy*W+cx)}}
+  while(q.length){const c=q.pop(),x=c%W,y=(c/W)|0;ok[c]=1;for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy;if(nx<0||ny<0||nx>=W||ny>=H)continue;const n=ny*W+nx;if(seen[n])continue;seen[n]=1;if(free(nx*G,ny*G))q.push(n)}}
+  return M._monR={G,W,H,ok}}
+function monOkAt(M,x,y){const R=monReach(M),cx=Math.round(x/R.G),cy=Math.round(y/R.G);if(cx<0||cy<0||cx>=R.W||cy>=R.H||!R.ok[cy*R.W+cx])return false;if(regBlocked(M,x,y)||regExitAt(M,x,y))return false;
+  for(const e of M.exits){if(e.trig||e.hid)continue;let p;try{p=regArrival(M.bk,M.id,e.to)}catch(err){continue}if(Math.hypot(x-p[0],y-p[1])<70)return false}/* 不擋在出口、抵達點上 */
+  return true}
+function monSpot(M,R){R=R||Math.random;const B=M.B;for(let n=0;n<400;n++){const x=B.x0+20+R()*(B.x1-B.x0-40),y=B.y0+20+R()*(B.y1-B.y0-40);if(monOkAt(M,x,y))return [x,y]}return null}
+function monTarget(M,m){for(let n=0;n<30;n++){const a=Math.random()*Math.PI*2,d=40+Math.random()*110,x=m.x+Math.cos(a)*d,y=m.y+Math.sin(a)*d*0.7;if(monOkAt(M,x,y)&&monLineOk(M,m.x,m.y,x,y))return [x,y]}return null}
+function monLineOk(M,x0,y0,x1,y1){const n=Math.ceil(Math.hypot(x1-x0,y1-y0)/8);for(let i=1;i<=n;i++){const t=i/n;if(regBlocked(M,x0+(x1-x0)*t,y0+(y1-y0)*t))return false}return true}
+/* ---- 畫 ---- */
+function monImgTag(k,boss,hit){const n=hit&&MON_IMG[k+'_hit']?k+'_hit':k,I=MON_IMG[n],s=monScale(k,boss),w=I[0]*s,h=I[1]*s;return `<image href="${monSrc(n)}" x="${(-w/2).toFixed(1)}" y="${(-h).toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}"/>`}
+function monName(m){return (m.boss?'王・':'')+MON_DEF[m.k].n}
+function monNode(i,m){const NS='http://www.w3.org/2000/svg',g=document.createElementNS(NS,'g');g.setAttribute('data-mon',i);g.setAttribute('class','mon');
+  const s=monScale(m.k,m.boss),I=MON_IMG[m.k],H=I[1]*s,fly=(MON_DEF[m.k].fly||0)*(m.boss?MON_BOSS_K:1),sw=Math.min(I[0]*s*0.42,46*(m.boss?1.3:1));
+  const top=-(H+fly)-14;
+  g.innerHTML=`${isTestMode()?`<ellipse rx="${MON_RANGE}" ry="${MON_RANGE*0.5}" fill="rgba(255,80,80,.10)" stroke="#E04040" stroke-width="1" stroke-dasharray="3 3"/>`:''}<ellipse class="msh" rx="${sw.toFixed(1)}" ry="${(sw*0.28).toFixed(1)}" fill="rgba(40,30,15,.22)"/><g class="mb"><g class="mo" transform="translate(0 ${-fly})"><g class="mf"><g class="ms">${monImgTag(m.k,m.boss,false)}</g></g></g></g>
+    <g class="mhp" transform="translate(0 ${Math.min(top,-100).toFixed(1)})" opacity="0"><text class="mnm" y="-4" text-anchor="middle">${esc(monName(m))}</text><rect x="-18" y="0" width="36" height="5" rx="2.5" fill="#E7E2D6" stroke="#4A3020" stroke-width="1"/><rect class="mhpf" x="-17.5" y=".5" width="35" height="4" rx="2" fill="#7FBF4A"/></g>
+    ${m.boss?`<text class="mnm mbn" y="${(top-4).toFixed(1)}" text-anchor="middle">${esc(monName(m))}</text>`:''}`;
+  return g}
+function monPaint(i,m){const g=m.el;if(!g)return;const bob=m.moving&&!RMQ.matches?-Math.abs(Math.sin(m.ph*Math.PI*2))*2.2:0;
+  const tr=`translate(${m.x.toFixed(1)} ${m.y.toFixed(1)})`;if(m._tr!==tr){g.setAttribute('transform',tr);m._tr=tr}
+  const o=g.querySelector('.mo'),fly=(MON_DEF[m.k].fly||0)*(m.boss?MON_BOSS_K:1),ot=`translate(0 ${(bob-fly+(fly?Math.sin(m.ph*Math.PI)*2.5:0)).toFixed(1)})`;if(o&&m._ot!==ot){o.setAttribute('transform',ot);m._ot=ot}
+  const f=g.querySelector('.mf'),ft=m.face>0?'scale(-1 1)':'';if(f&&m._ft!==ft){f.setAttribute('transform',ft);m._ft=ft}
+  const me=curMe(),want=m.y>me.y?'monFront':'monBack';if(g.parentNode&&g.parentNode.id!==want){const L=document.getElementById(want);if(L)L.appendChild(g)}}
+function monBar(m,show){const b=m.el&&m.el.querySelector('.mhp');if(!b)return;b.setAttribute('opacity',show?'1':'0');const f=m.el.querySelector('.mhpf');if(f)f.style.transform=`scaleX(${Math.max(0,m.hp/m.max)})`;const bn=m.el.querySelector('.mbn');if(bn)bn.setAttribute('opacity',show?'0':'1')}
+function monReplay(el,cls){if(!el)return;el.classList.remove(cls);void el.getBoundingClientRect();el.classList.add(cls)}
+/* ---- 進地圖、離開 ---- */
+function monClear(){for(const id of ['monBack','monFront','monSw']){const L=document.getElementById(id);if(L)L.textContent=''}MON_RT=null;monFightI=-1}
+function monEnter(){monClear();if(!monHere())return;monPreload();const M=regCur(),S=monSlots();monRespawnDue(S,Date.now());MON_RT={key:monKey(),list:[]};
+  S.forEach((s,i)=>{if(s.t)return;monSpawnRT(M,i,s)});monStart()}
+function monSpawnRT(M,i,s){const p=monSpot(M);if(!p)return;const m={k:s.k,boss:s.boss,x:p[0],y:p[1],face:Math.random()<0.5?-1:1,wait:Math.random()*2,tgt:null,ph:0,moving:false,max:s.boss?MON_HP[1]:MON_HP[0],hp:0,lastHit:0,dead:false};m.hp=m.max;
+  m.el=monNode(i,m);const L=document.getElementById(m.y>curMe().y?'monFront':'monBack');if(L)L.appendChild(m.el);MON_RT.list[i]=m;monPaint(i,m)}
+function monStart(){if(!monRaf&&typeof requestAnimationFrame==='function'){monLast=0;monRaf=requestAnimationFrame(monLoop)}}
+/* ---- 每幀：走動、打、重生（畫面在背景就不更新；104） ---- */
+function monLoop(ts){monRaf=0;if(!monHere()){if(MON_RT)monClear();return}
+  if(!MON_RT||MON_RT.key!==monKey()){monEnter();return}
+  monRaf=requestAnimationFrame(monLoop);if(document.hidden)return;
+  const dt=monLast?Math.min(0.1,(ts-monLast)/1000):0;if(dt<1/31&&monLast)return;monLast=ts;
+  const M=regCur(),me=curMe(),now=Date.now(),L=MON_RT.list;
+  if(!monLoop._r||now-monLoop._r>1000){monLoop._r=now;const S=monSlots();if(monRespawnDue(S,now)){save();S.forEach((s,i)=>{if(!s.t&&!L[i])monSpawnRT(M,i,s)})}}
+  /* 打：角色腳底 30px 內最近的那隻 */
+  let best=-1,bd=1e9;L.forEach((m,i)=>{if(!m||m.dead)return;const d=Math.hypot(m.x-me.x,m.y-me.y);if(d<=MON_RANGE&&d<bd){bd=d;best=i}});
+  if(best!==monFightI){monFightI=best;if(best>=0)monSwingAt=now+120}
+  if(best>=0&&now>=monSwingAt){monSwingAt=now+MON_SWING;monHit(best)}
+  L.forEach((m,i)=>{if(!m||m.dead)return;
+    if(m.hp<m.max&&i!==best&&now-m.lastHit>MON_BAR_RESET){m.hp=m.max;monBar(m,false)}/* 打到一半走開超過 5 秒：補滿、血條消失 */
+    if(i===best){if(m.moving){m.moving=false;monPaint(i,m)}m.face=me.x>m.x?1:-1;monPaint(i,m);return}/* 被鎖定的停止走動、面向角色 */
+    if(m.wait>0){m.wait-=dt;if(m.moving){m.moving=false;monPaint(i,m)}return}
+    if(!m.tgt){m.tgt=monTarget(M,m);if(!m.tgt){m.wait=1+Math.random()*2;return}}
+    const [tx,ty]=m.tgt,dx=tx-m.x,dy=ty-m.y,d=Math.hypot(dx,dy),sp=MON_SPD*(MON_DEF[m.k].fly?1.25:1)*(m.boss?0.85:1)*dt;
+    if(d<=sp){m.x=tx;m.y=ty;m.tgt=null;m.wait=1+Math.random()*2;m.moving=false}else{const nx=m.x+dx/d*sp,ny=m.y+dy/d*sp;if(regBlocked(M,nx,ny)){m.tgt=null;m.wait=0.5;m.moving=false}else{m.x=nx;m.y=ny;m.moving=true;m.ph+=dt*1.6;if(Math.abs(dx)>2)m.face=dx>0?1:-1}}
+    monPaint(i,m)})}
+function monHit(i){const m=MON_RT&&MON_RT.list[i];if(!m||m.dead)return;const now=Date.now();m.hp--;m.lastHit=now;monSwing(m);try{sfx('pop',60)}catch(e){}
+  const s=m.el&&m.el.querySelector('.ms'),hasHit=!!MON_IMG[m.k+'_hit'];
+  if(hasHit&&s){s.innerHTML=monImgTag(m.k,m.boss,true);clearTimeout(m._ht);if(m.hp>0)m._ht=setTimeout(()=>{if(!m.dead)s.innerHTML=monImgTag(m.k,m.boss,false)},250)}
+  monReplay(s,'hit');monBar(m,true);
+  if(m.hp<=0)monKill(i,m)}
+function monKill(i,m){m.dead=true;monFightI=-1;const S=monSlots();if(S[i])S[i].t=Date.now();
+  const b=m.el&&m.el.querySelector('.mb');setTimeout(()=>monBar(m,false),120);if(b)monReplay(b,'die');
+  const sh=m.el&&m.el.querySelector('.msh');if(sh)sh.style.opacity='0';
+  setTimeout(()=>{try{m.el&&m.el.remove()}catch(e){}if(MON_RT&&MON_RT.list[i]===m)MON_RT.list[i]=null},560);
+  monDrop(m);save()}
+/* 揮鐮刀：鐮刀圖繞著角色揮半圈＋弧光 */
+function monSwing(m){const L=document.getElementById('monSw');if(!L)return;const me=curMe(),f=m.x>=me.x?1:-1,NS='http://www.w3.org/2000/svg',g=document.createElementNS(NS,'g');
+  g.setAttribute('transform',`translate(${me.x.toFixed(1)} ${(me.y-30).toFixed(1)}) scale(${f} 1)`);
+  g.innerHTML=`<path class="swarc" d="M -6 -30 A 32 32 0 0 1 22 26 A 26 26 0 0 0 -4 -22 Z" fill="rgba(255,255,236,.75)" stroke="rgba(255,255,255,.9)" stroke-width="1"/><g class="swg"><image href="assets/icons/s/sickle.png" x="-2" y="-33" width="35" height="24" transform="rotate(-30)"/></g>`;
+  L.appendChild(g);setTimeout(()=>{try{g.remove()}catch(e){}},260)}
+/* 掉落（105.6，暫定）：一定有金幣；另外有機會 1 次生長加速劑。不受每日上限限制 */
+function monDrop(m){const c=MON_COIN[m.boss?1:0],coins=c[0]+Math.floor(Math.random()*(c[1]-c[0]+1)),acc=Math.random()<MON_ACC[m.boss?1:0];
+  state.coins=(state.coins||0)+coins;if(acc){state.items=state.items||{};state.items.acc=(state.items.acc||0)+1}
+  const p=worldToScreenPt(m.x,m.y-30);monCoinFly(p,coins);if(acc)setTimeout(()=>{try{fxAdd('gain',p.x,p.y-30,'+1 次生長加速劑',1600)}catch(e){}},300);
+  if(m.boss)toast(`打倒了${monName(m)}！`)}
+function monCoinFly(p,coins){const cn=document.querySelector('.coins .coin')||document.querySelector('.coin'),ce=document.getElementById('coins'),cw=document.querySelector('.coins'),r=cn&&cn.getBoundingClientRect(),tc=r&&r.width?{x:r.left+r.width/2,y:r.top+r.height/2}:{x:60,y:30};
+  const end=state.coins,start=end-coins,n=RMQ.matches?0:Math.min(5,Math.max(2,Math.ceil(coins/5)));
+  if(!n||!ce){try{renderCoins()}catch(e){}sfx('coin')}else{ce.textContent=Math.round(start).toLocaleString('zh-TW');let got=0;
+    for(let k=0;k<n;k++){const sx=p.x+(Math.random()*30-15),sy=p.y,d=fxAdd('fcoin',sx,sy,'',1400);if(!d||!d.animate)continue;const dx=tc.x-sx,dy=tc.y-sy;
+      const an=d.animate([{transform:'translate(-50%,-50%) scale(.6)',opacity:0},{transform:`translate(-50%,-50%) translate(${(Math.random()*30-15).toFixed(0)}px,-30px) scale(1.1)`,opacity:1,offset:0.25},{transform:`translate(-50%,-50%) translate(${dx.toFixed(0)}px,${dy.toFixed(0)}px) scale(.8)`,opacity:1}],{duration:700,delay:k*70,easing:'cubic-bezier(.5,0,.6,1)',fill:'both'});
+      an.onfinish=()=>{d.remove();got++;ce.textContent=Math.round(got>=n?end:start+coins*got/n).toLocaleString('zh-TW');if(cw)bumpEl(cw);sfx('coin')}}
+    setTimeout(()=>{try{renderCoins()}catch(e){}},n*70+1300)}
+  try{fxAdd('gain',p.x+20,p.y-10,`+${coins} 金幣`,1300)}catch(e){}}
+/* 測試模式（105.7） */
+function monTestRespawn(){if(!monHere())return;const S=monSlots();for(let i=0;i<S.length;i++)S[i]=monRoll(S,i);save();monEnter()}
 
 // ===== 即時同場 =====
 let rtdbRef=null,rtdbOff=null,others={},lastPush=0,hb=null;

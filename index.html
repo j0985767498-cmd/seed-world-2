@@ -1659,7 +1659,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-17s';
+const BUILD='2026-11-17t';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -6844,7 +6844,7 @@ const MON_N=5,MON_RESPAWN=[1000,3000],MON_FAR=250,MON_SAFE=500,MON_BOSS=0.05,MON
 let MON_RT=null,monRaf=0,monLast=0,monForceBoss=false,monFightI=-1,monSwingAt=0;
 const monKey=()=>exBiome+'|'+regMap;
 function monTable(){return ((MON_MAP[exBiome]||{})[regMap])||null}
-function monHere(){return state&&scene==='explore'&&typeof regIn==='function'&&regIn()&&!regBusy&&!!monTable()}
+function monHere(){return state&&scene==='explore'&&typeof regIn==='function'&&regIn()&&!!monTable()}/* 17t：不看 regBusy。走出口換圖時 regEnter 是在 regBusy=true 的時候呼叫的，原本因此一隻都不生 */
 function monSrc(k){return `assets/monsters/${(REGION_CFG[exBiome]||{}).dir||exBiome}/s/${k}.png?v=${BUILD}`}/* 濕地的資料夾叫 wetland */
 function monScale(k,boss){const d=MON_DEF[k],I=MON_IMG[k];return (d.w?d.w/I[0]:d.h/I[1])*(boss?MON_BOSS_K:1)}
 function monPreload(){const T=monTable();if(!T)return;for(const [k] of T)for(const n of [k,k+'_hit'])if(MON_IMG[n]){const im=new Image();im.src=monSrc(n)}}
@@ -6898,7 +6898,7 @@ function monStart(){if(!monRaf&&typeof requestAnimationFrame==='function'){monLa
 /* ---- 每幀：走動、打、重生（畫面在背景就不更新；104） ---- */
 function monLoop(ts){monRaf=0;if(!monHere()){if(MON_RT)monClear();return}
   if(!MON_RT||MON_RT.key!==monKey()){monEnter();return}
-  monRaf=requestAnimationFrame(monLoop);if(document.hidden)return;
+  monRaf=requestAnimationFrame(monLoop);if(document.hidden||regBusy)return;/* 換圖的淡出淡入期間先不動 */
   const dt=monLast?Math.min(0.1,(ts-monLast)/1000):0;if(dt<1/31&&monLast)return;monLast=ts;
   const M=regCur(),me=curMe(),now=Date.now(),L=MON_RT.list;
   {const S=monSlots();for(let i=0;i<MON_N;i++){if(L[i])continue;const due=MON_RT.due[i];if(!due){MON_RT.due[i]=now+monDelay();continue}if(now>=due){S[i]=monRoll(S,i);monSpawnRT(M,i,S[i],true);monSaveSoon()}}}/* 105.10：打倒 1–3 秒後在遠處重生 */

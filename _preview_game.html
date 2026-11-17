@@ -916,6 +916,12 @@ details.gfold .gfb{margin-top:8px}
 .mon .mb.spawn{animation:monin .4s ease-out}
 @keyframes monin{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.mon .ms.hit{animation:none}.mon .mb.die{animation:monfade .5s forwards}#monSw .swg{animation:none}}
+/* 104.2、104.3（17w）：背景、閒置、省電 */
+body.paused *,body.paused *::before,body.paused *::after{animation-play-state:paused!important}
+body.idle #scene *,body.idle #wx,body.idle #wx *{animation-play-state:paused!important}
+body.idle .dlay,body.eco .dlay{display:none}
+body.eco #worldLayer *,body.eco #fgLayer *,body.eco #charLayer *,body.eco #fyBack *,body.eco #fyFront *,body.eco #fxLayer *{animation:none!important}
+body.eco #wx{display:none!important}
 /* 103（17n）稀有度徽章、卡片外框、素色特徵標籤 */
 .rb{display:inline-block;font-family:var(--uifont);font-weight:800;line-height:1.25;white-space:nowrap;border-radius:999px;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.35);background:#8C8C8C;border:1.5px solid rgba(255,255,255,.85);box-shadow:0 1px 2px rgba(60,30,5,.35)}
 .rb.r0{background:#8E8A84}.rb.r1{background:#4F93C9}.rb.r2{background:#8A5CC6}.rb.r3{background:linear-gradient(180deg,#F2C94C,#D9A520)}.rb.r4{background:linear-gradient(110deg,#F08A3E,#FFC27A 45%,#F08A3E 55%,#D8601F);background-size:250% 100%}
@@ -1670,7 +1676,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-17v';
+const BUILD='2026-11-17w';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -1760,9 +1766,18 @@ function watchOwnSave(){
 async function backupSave(json,tag){
   try{await db.collection('backups').doc(uid+'_'+tag).set({uid,save:json,savedAt:Date.now(),at:TS()})}catch(e){}
 }
+/* 106.3（17v）：存檔分兩種。save()＝重要變動（收成、取種、交易、標本、購買、升級…），照舊立刻存本機、1 秒後上雲端。
+   saveLite()＝輕量變動（打怪拿到的金幣、道具、怪物格位…）：本機最快 5 秒寫一次、雲端最快 60 秒寫一次。切到背景、關頁面時一定立刻存。 */
+let liteDirty=false,liteT=0,cloudAt=0;
+function saveLite(){if(!state||!uid)return;liteDirty=true;if(!liteT)liteT=setTimeout(liteRun,5000)}
+function liteRun(){clearTimeout(liteT);liteT=0;if(!liteDirty||!state||!uid)return;liteDirty=false;
+  state.savedAt=Date.now();try{localStorage.setItem(lsKey(),packState(state))}catch(e){}
+  dirty=true;setSync('saving');const wait=Math.max(0,60000-(Date.now()-cloudAt));if(!saveTimer||wait<1)saveTimer=setTimeout(flush,Math.max(1000,wait))}
+function saveNow(){if(liteDirty)liteRun();flush()}
 async function flush(){
+  if(liteDirty&&state&&uid){liteDirty=false;clearTimeout(liteT);liteT=0;state.savedAt=Date.now();try{localStorage.setItem(lsKey(),packState(state))}catch(e){}dirty=true}/* 輕量變動還沒寫到本機的一起寫 */
   if(!uid||!dirty||!state||saveBlocked)return;
-  dirty=false;clearTimeout(saveTimer);
+  dirty=false;clearTimeout(saveTimer);saveTimer=0;cloudAt=Date.now();
   const json=packState(state);
   const bytes=byteLen(json);if(bytes>SAVE_WARN&&!sizeWarned){sizeWarned=true;toast(`存檔約 ${Math.round(bytes/1024)} KB，接近雲端上限 1024 KB。到「設定 → 存檔大小」看看是哪裡佔空間`,8000)}
   if(Date.now()-lastBak>30*60e3){lastBak=Date.now();backupSave(json,'auto')}
@@ -3083,7 +3098,7 @@ function abilRange(l){
     return `<p class="note">包內範圍：${parts.join('・')}</p>`}catch(e){return ''}
 }
 function tick(){
-  if(!state)return;
+  if(!state||document.hidden===true)return;/* 104.2：背景不跑；回到前景會再叫一次，生長用經過的時間補算 */
   try{sakuraCheck()}catch(e){}/* 82.2：花季開始、結束或測試開關改了就重畫櫻花之丘 */
   try{rsvTick()}catch(e){}
   try{roamWatch()}catch(e){}/* 91 */
@@ -3112,7 +3127,7 @@ function renderSpeed(){
   const el=document.getElementById('testBox');if(!el)return;
   if(!TEST_MODE){el.innerHTML='';return}
   const on=isTestMode();testTagUpd();
-  let h=`<h3 style="margin-top:0">回報問題</h3>${crashHTML()}<h3>音效</h3><button class="btn${SFX_ON?' primary':''}" data-tool="sfx">音效：${SFX_ON?'開':'關'}（按一下切換）</button>${isStandalone()?'':`<h3>加到主畫面</h3><p class="note">把遊戲加到主畫面，打開就是全螢幕。${qh('iPhone：用 Safari 開，按下方的分享 → 加入主畫面。Android：Chrome 右上角選單 → 安裝應用程式（或加到主畫面）。')}</p>`}<h3>遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'標出機關和秘境，可以傳送。'+qh('只存在這台裝置，別人看不到。'):'和正式玩家看到的一樣。'}</p>`;
+  let h=`<h3 style="margin-top:0">回報問題</h3>${crashHTML()}<h3>音效</h3><button class="btn${SFX_ON?' primary':''}" data-tool="sfx">音效：${SFX_ON?'開':'關'}（按一下切換）</button><h3>省電模式</h3><button class="btn${ecoOn()?' primary':''}" data-tool="eco">省電模式：${ecoOn()?'開':'關'}（按一下切換）</button><p class="note">減少動畫，手機比較不會熱、比較省電${RMQ.matches?'（手機設定了「減少動態效果」，已經自動開啟）':''}</p>${isStandalone()?'':`<h3>加到主畫面</h3><p class="note">把遊戲加到主畫面，打開就是全螢幕。${qh('iPhone：用 Safari 開，按下方的分享 → 加入主畫面。Android：Chrome 右上角選單 → 安裝應用程式（或加到主畫面）。')}</p>`}<h3>遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'標出機關和秘境，可以傳送。'+qh('只存在這台裝置，別人看不到。'):'和正式玩家看到的一樣。'}</p>`;
   if(on)h+=`<h3>遠緣雜交</h3><button class="btn" data-tool="xc">跨界機率 100%：${(()=>{try{return localStorage.getItem('sw_xc')==='1'}catch(e){return false}})()?'開啟':'關閉'}（按一下切換）</button>`;
   if(on)h+=`<h3>櫻花之丘</h3><button class="btn" data-tool="sklook">花季外觀：${sakuraLook()?'櫻花（花季）':'綠葉（花季外）'}（按一下切換，只換畫面）</button><p class="note">測試模式沒有季節限制。<button type="button" class="qh" aria-expanded="false" aria-label="說明">？</button><span class="qhx" hidden>今天實際${sakuraBloom()?'是':'不是'}花季（每年 ${SAKURA_SEASON.from.join('/')}～${SAKURA_SEASON.to.join('/')}）。</span></p>`;
   if(on)h+=`<h3>會影響存檔的測試工具</h3><p class="note">用了存檔會和一般玩家不一樣。${qh('切回一般模式時，時間加速當 ×1、探索上限當開啟。')}</p><p class="note" style="margin:6px 0 2px">時間加速</p><div class="row2" style="grid-template-columns:repeat(4,1fr)">${SPEEDS.map(v=>`<button class="btn${state.speed===v?' primary':''}" data-spd="${v}">×${v}</button>`).join('')}</div>
@@ -6138,7 +6153,7 @@ function regFxStep(slide){
 }
 /* 站著不動的觸發（草原蘑菇圈）：每 0.5 秒看一次 */
 function regStandTick(){
-  try{if(!state||!regIn()||regBusy||curPanel)return;const M=regCur(),T=M.secTrig;if(!T)return;
+  try{if(!state||document.hidden===true||!regIn()||regBusy||curPanel)return;const M=regCur(),T=M.secTrig;if(!T)return;
     if(T.thin&&!(state.secrets&&state.secrets[exBiome])){/* 66.4：站在薄冰上不動 3 秒 → 裂痕變多、喀啦 → 冰破 */const m=curMe(),[cx,cy,rx,ry]=T.thin,a=(m.x-cx)/rx,b=(m.y-cy)/ry,inn=a*a+b*b<1,still=ringLast&&Math.hypot(m.x-ringLast[0],m.y-ringLast[1])<0.5,old=thinN;
       ringLast=[m.x,m.y];if(inn&&still){thinN++;if(thinN===2)toast('腳下的冰發出喀啦一聲…');if(thinN>=6){thinN=0;testNote('觸發成功：在薄冰上站滿 3 秒');toast('冰破了！',2600);secEnter(exBiome);return}}else{if(thinN&&inn)testNote('未觸發：移動了，重新計時');else if(thinN)testNote('未觸發：離開薄冰了');thinN=0}
       if(thinN!==old)renderWorld();return}
@@ -6765,7 +6780,7 @@ function fyEmit(S,kind,x,y,moving){const r=Math.random;
   else if(kind==='volcano'){fyPuff('fyp-smoke',x,y,`<circle r="2" fill="#B9B2A6"/>`,1200,1,`--dx:${(r()*4-2).toFixed(1)}px`);fyPuff('fyp-up',x,y,`<circle r=".9" fill="#FF4A2A"/>`,900,1,`--dx:${(r()*6-3).toFixed(1)}px`)}
   else if(kind==='swing'){if(moving)fyPuff('fyp-fade',x,y,`<path d="M-7 -4 Q0 -10 7 -4" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>`,500,1)}
   else if(kind==='sparkler'){for(let k=0;k<(r()<.25?3:1);k++){const a=r()*Math.PI*2;fyPuff('fyp-burst',x,y,`<circle r=".9" fill="${['#FFE27A','#FFFFFF','#FF9AD5'][k%3]}"/>`,600,1,`--dx:${(Math.cos(a)*7).toFixed(1)}px;--dy:${(Math.sin(a)*7).toFixed(1)}px`)}}}
-function fyLoop(ts){fyRaf=requestAnimationFrame(fyLoop);if(document.hidden)return;const t=ts/1000,dt=Math.min(0.05,Math.max(0.001,t-(fyLastT||t)));fyLastT=t;
+function fyLoop(ts){if(!fyOwners.size){fyRaf=0;fyLastT=0;return}/* 106.4：畫面上沒有精靈就停（原本沒有精靈也每一幀都在跑）；有人登記時 fyStart 會再啟動 */{const c=frameCap();if(c>0&&c<1e9){fyRaf=-1;setTimeout(()=>{fyRaf=requestAnimationFrame(fyLoop)},c<250?Math.max(0,c-18):c)}else fyRaf=requestAnimationFrame(fyLoop)}if(document.hidden)return;{const c=frameCap();if(c&&c<1e9&&fyLastT&&ts/1000-fyLastT<c/1000-0.004)return}const t=ts/1000,dt=Math.min(0.05,Math.max(0.001,t-(fyLastT||t)));fyLastT=t;
   const now=performance.now(),rm=fyRM(),[,FR]=fyLayers();
   for(const [who,o] of fyOwners){
     const S=fyNode(who,o);if(!S)continue;const p=o.getPos();if(!p)continue;
@@ -6910,8 +6925,8 @@ function monPaint(i,m){const g=m.el;if(!g)return;if(!monVis(m)){m.off=1;return}m
 function monBar(m,show){const b=m.el&&m.el.querySelector('.mhp');if(!b)return;b.setAttribute('opacity',show?'1':'0');const f=m.el.querySelector('.mhpf');if(f)f.style.transform=`scaleX(${Math.max(0,m.hp/m.max)})`;const bn=m.el.querySelector('.mbn');if(bn)bn.setAttribute('opacity',show?'0':'1')}
 function monReplay(el,cls){if(!el)return;el.classList.remove(cls);void el.getBoundingClientRect();el.classList.add(cls)}
 /* ---- 進地圖、離開 ---- */
-function monClear(){for(const id of ['monBack','monFront','monSw']){const L=document.getElementById(id);if(L)L.textContent=''}MON_RT=null;monFightI=-1;if(monSaveT){clearTimeout(monSaveT);monSaveT=0;save()}}
-let monSaveT=0;function monSaveSoon(){if(!monSaveT)monSaveT=setTimeout(()=>{monSaveT=0;save()},8000)}/* 打怪很頻繁：存檔最多 8 秒一次，離開地圖時馬上存 */
+function monClear(){for(const id of ['monBack','monFront','monSw']){const L=document.getElementById(id);if(L)L.textContent=''}MON_RT=null;monFightI=-1}
+function monSaveSoon(){saveLite()}/* 106.3：打怪的變動走輕量存檔（本機最快 5 秒、雲端最快 60 秒） */
 function monEnter(){monClear();if(!monHere())return;monPreload();const M=regCur(),S=monSlots();if(monFill(S))monSaveSoon();MON_RT={key:monKey(),list:[],due:[]};
   S.forEach((s,i)=>monSpawnRT(M,i,s));monStart()}
 function monSpawnRT(M,i,s,far){const p=far?monSpotFar(M,curMe()):monSpot(M);if(!p){MON_RT.due[i]=Date.now()+monDelay();return}const m={born:far?Date.now():0,k:s.k,boss:s.boss,x:p[0],y:p[1],face:Math.random()<0.5?-1:1,wait:Math.random()*2,tgt:null,ph:0,moving:false,max:s.boss?MON_HP[1]:MON_HP[0],hp:0,lastHit:0,dead:false};m.hp=m.max;
@@ -6921,8 +6936,8 @@ function monStart(){if(!monRaf&&typeof requestAnimationFrame==='function'){monLa
 /* ---- 每幀：走動、打、重生（畫面在背景就不更新；104） ---- */
 function monLoop(ts){monRaf=0;if(!monHere()){if(MON_RT)monClear();return}
   if(!MON_RT||MON_RT.key!==monKey()){monEnter();return}
-  monRaf=requestAnimationFrame(monLoop);if(document.hidden||regBusy)return;/* 換圖的淡出淡入期間先不動 */
-  const dt=monLast?Math.min(0.1,(ts-monLast)/1000):0;if(dt<1/31&&monLast)return;monLast=ts;
+  {const c=frameCap();if(c>0&&c<1e9){monRaf=-1;setTimeout(()=>{monRaf=requestAnimationFrame(monLoop)},c<250?Math.max(0,c-18):c)}else monRaf=requestAnimationFrame(monLoop)}/* 閒置：真的每 250ms 才排下一幀，不是每幀跑起來再跳過 */if(document.hidden||regBusy)return;/* 換圖的淡出淡入期間先不動 */
+  const dt=monLast?Math.min(0.3,(ts-monLast)/1000):0;if(dt<Math.max(1/31,frameCap()/1000)-0.004&&monLast)return;monLast=ts;/* 閒置每秒 4 次、省電 30 次 */
   const M=regCur(),me=curMe(),now=Date.now(),L=MON_RT.list;
   {const S=monSlots();for(let i=0;i<MON_N;i++){if(L[i])continue;const due=MON_RT.due[i];if(!due){MON_RT.due[i]=now+monDelay();continue}if(now>=due){S[i]=monRoll(S,i);monSpawnRT(M,i,S[i],true);monSaveSoon()}}}/* 105.10：打倒 1–3 秒後在遠處重生 */
   /* 打：角色腳底 30px 內最近的那隻 */
@@ -6979,7 +6994,7 @@ function joinFarm(key){
     const ref=rtdb.ref(`presence/${key}`);
     const cb=s=>{const v=s.val()||{};delete v[uid];others=v;renderChars()};
     ref.on('value',cb,()=>{});rtdbOff=()=>ref.off('value',cb);
-    hb=setInterval(()=>pushPos(true),30000);
+    hb=setInterval(()=>{if(document.hidden!==true)pushPos(true)},30000);
   }catch(e){rtdbRef=null}
 }
 function leavePresence(){try{if(rtdbRef)rtdbRef.remove()}catch(e){}rtdbRef=null;if(rtdbOff){rtdbOff();rtdbOff=null}if(hb){clearInterval(hb);hb=null}others={}}
@@ -7005,7 +7020,7 @@ function renderChars(){
   const key=s.replace(/(id="|url\(#|href="#)([A-Za-z_-]*)\d+/g,'$1$2').replace(/animation-delay:-?[\d.]+s/g,'');/* 圖層 id、眨眼的延遲每次都不一樣，比較時拿掉 */
   if(L._s===key)return false;L._s=key;L.innerHTML=s;return true;/* 99.8（17k）：每 80ms 都會叫一次，內容沒變就不重建（原本一直重建角色層、重新對齊所有動畫，站著也一直在重畫） */
 }
-function updateMe(){const g=document.getElementById('meG');if(!g){renderChars();return}const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y)}) scale(1.15)`);const mp=poseFor(true,null,performance.now()/1000);if(raf)mp.ph=walkPh;else if(!mp.act)mp.t=0;mp.view=VIEWS[meFace];const a=document.getElementById('meGAv');if(!a){renderChars();return}a.innerHTML=avIdle(state.avatar,faceFlip(meFace),mp)}/* 71.1：以前這裡每一格都把名牌重畫成只有「你」（沒帶等級），稱號那一行就一閃一閃；現在走路時完全不碰名牌 */
+function updateMe(){const g=document.getElementById('meG');if(!g){renderChars();return}const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y)}) scale(1.15)`);const mp=poseFor(true,null,performance.now()/1000);if(raf)mp.ph=walkPh;else if(!mp.act)mp.t=0;mp.view=VIEWS[meFace];const a=document.getElementById('meGAv');if(!a){renderChars();return}const h=avIdle(state.avatar,faceFlip(meFace),mp),k=h.replace(/(id="|url\(#|href="#)([A-Za-z_-]*)\d+/g,'$1$2');if(a._k===k)return;a._k=k;a.innerHTML=h}/* 106.4：內容沒變就不寫（站著、只是位置變時） *//* 71.1：以前這裡每一格都把名牌重畫成只有「你」（沒帶等級），稱號那一行就一閃一閃；現在走路時完全不碰名牌 */
 
 // ===== 互動按鈕 =====
 function nearest(){
@@ -7311,6 +7326,28 @@ function ringRun(k){closeRing();const why=ringState(k);if(why){toast(why);return
   document.getElementById('ringOv').addEventListener('pointerdown',e=>{e.preventDefault();closeRing()})}
 /* 回饋特效（36.8 C）：畫在場景外的 HTML 層，重畫農場不會打斷；減少動態效果時不播 */
 const RMQ=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)')}catch(e){return {matches:false}}})();
+/* ===== 104.2 第 1、2 點、104.3（17w）：背景就停、閒置降頻、省電模式 =====
+   背景：body.paused（所有 CSS 動畫暫停）、SVG 的 SMIL 動畫暫停；tick、秘境站立計時、位置心跳在背景都不跑（回到前景 tick 用經過的時間補算生長）。
+   閒置：30 秒沒有觸控或按鍵 → body.idle：地圖、天氣的動畫停住，夢幻色只顯示靜態底圖，rAF 降到每秒 4 次以下；一碰螢幕就恢復。
+   省電模式（設定頁，localStorage sw_eco，只存在這台裝置；減少動態效果時視為開啟）：環境小動畫、天氣、晃動、呼吸、眨眼不播，夢幻色靜態，rAF 上限 30 幀；走路、操作、打怪的效果照常。 */
+let ECO_USER=(()=>{try{return localStorage.getItem('sw_eco')==='1'}catch(e){return false}})();
+const ecoOn=()=>ECO_USER||RMQ.matches;
+let lastInput=Date.now(),IDLE=false;
+function ecoSmil(){try{if(document.hidden||IDLE||ecoOn())sceneEl.pauseAnimations();else sceneEl.unpauseAnimations()}catch(e){}}
+function idleSet(v){if(IDLE===v)return;IDLE=v;try{document.body.classList.toggle('idle',v)}catch(e){}ecoSmil()}
+function ecoApply(){try{document.body.classList.toggle('eco',ecoOn())}catch(e){}ecoSmil()}
+/* 每一幀之間至少要隔幾毫秒：背景＝不跑、閒置＝250（每秒 4 次）、省電＝32（30 幀） */
+function frameCap(){return document.hidden===true?1e9:IDLE?250:ecoOn()?32:0}
+try{for(const ev of ['pointerdown','pointermove','keydown','touchstart','wheel'])window.addEventListener(ev,()=>{lastInput=Date.now();if(IDLE)idleSet(false)},{passive:true,capture:true})}catch(e){}
+setInterval(()=>{if(document.hidden)return;if(!IDLE&&Date.now()-lastInput>30000)idleSet(true)},1000);
+try{document.addEventListener('visibilitychange',()=>{try{document.body.classList.toggle('paused',document.hidden)}catch(e){}if(!document.hidden){lastInput=Date.now();idleSet(false)}ecoSmil()})}catch(e){}
+try{if(RMQ.addEventListener)RMQ.addEventListener('change',ecoApply)}catch(e){}
+ecoApply();
+/* 104.3：一直掉幀（10 秒平均低於 30 幀）就提示一次可以開省電模式。每 20 秒量 2 秒，取最近 5 次；背景、閒置、已經是省電模式時不量 */
+const ECO_HINT=(()=>{try{return localStorage.getItem('sw_ecohint')==='1'}catch(e){return false}})();let ecoProbe=[];
+if(!ECO_HINT)setInterval(()=>{if(document.hidden||IDLE||ecoOn()||!state||typeof requestAnimationFrame!=='function')return;let n=0;const t0=performance.now();const f=()=>{n++;if(performance.now()-t0<2000)requestAnimationFrame(f);else{ecoProbe.push(n/((performance.now()-t0)/1000));if(ecoProbe.length>5)ecoProbe.shift();
+  if(ecoProbe.length===5&&ecoProbe.reduce((a,b)=>a+b,0)/5<30){try{localStorage.setItem('sw_ecohint','1')}catch(e){}ecoProbe=[1e9];toast('畫面有點卡：到「設定」打開「省電模式」，手機比較不會熱、比較省電',7000)}}};requestAnimationFrame(f)},20000);
+
 function plotScreen(i){try{const g=sceneEl.querySelector(`[data-plot="${i}"]`);if(!g)return null;const r=g.getBoundingClientRect();if(!r.width)return null;return {x:r.left+r.width/2,y:r.top+r.height*0.3}}catch(e){return null}}
 /* ===== 16v：合成音效（Web Audio，不用音效檔）=====
    設定頁可以關（localStorage sw_sfx='0'）。iPhone 要在使用者第一次觸控時才能出聲，所以在 pointerdown 時建立／喚醒 AudioContext。切到背景不出聲。 */
@@ -7929,6 +7966,7 @@ function buildTap(w,t){
 }
 
 function walkLoop(t){
+  {const c=frameCap();if(c&&lastF&&t-lastF<c){raf=requestAnimationFrame(walkLoop);return}}/* 104.3：省電模式 30 幀 */
   const dt=Math.min(0.05,(t-lastF)/1000);lastF=t;
   if(slickV&&scene==='explore'&&state&&!curPanel&&regIn()){slickStep(dt);walkPh+=dt*4;updateMe();updateCam();pushPos(false);regStep();regFxStep(true);raf=requestAnimationFrame(walkLoop);return}/* 51.3 雪原：特別滑的冰，滑到撞到東西才停 */
   let vx=joy.vx,vy=joy.vy,arrive=false;
@@ -8045,6 +8083,7 @@ document.getElementById('testBox').addEventListener('click',e=>{
   const sp=e.target.closest('[data-spd]');if(sp){tick();state.speed=+sp.dataset.spd;save();renderSpeed();toast(`時間加速 ×${state.speed}`);return}
   const t=e.target.closest('[data-tool]');if(!t)return;const k=t.dataset.tool;
   if(k==='crashclr'){try{localStorage.removeItem('sw_err');localStorage.removeItem('sw_crash')}catch(x){}renderSpeed();toast('已清除');return}
+  if(k==='eco'){if(RMQ.matches){toast('手機設定了「減少動態效果」，省電模式會一直開著');return}ECO_USER=!ECO_USER;try{localStorage.setItem('sw_eco',ECO_USER?'1':'0')}catch(x){}ecoApply();renderSpeed();toast(ECO_USER?'省電模式開了':'省電模式關了');return}
   if(k==='sfx'){SFX_ON=!SFX_ON;try{localStorage.setItem('sw_sfx',SFX_ON?'1':'0')}catch(x){}renderSpeed();if(SFX_ON)sfx('sparkle');toast(SFX_ON?'音效開了':'音效關了');return}
   if(k==='adv'){advanceAll();toast('所有植株都往下一階段了')}
   if(k==='excap'){state.exCap=!exCapOn();save();renderSpeed();toast(state.exCap?'探索每日上限已開啟':'探索每日上限已關閉')}
@@ -8934,8 +8973,8 @@ async function bootStart(cloud,noLocal){
   if(!loop)loop=setInterval(tick,1000);
   bootRaw=null;bootHide();/* 71.2：存檔讀完、第一個畫面畫好才把載入畫面拿掉 */
 }
-document.addEventListener('visibilitychange',()=>{if(document.hidden)flush();else tick()});
-window.addEventListener('pagehide',()=>{flush()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)saveNow();else tick()});
+window.addEventListener('pagehide',()=>{saveNow()});
 applyCtrl();
 </script>
 </body>

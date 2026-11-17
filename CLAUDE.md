@@ -5562,3 +5562,50 @@ function terrace(o){const {W,E,H,gap,art,aw,ah,stairs,sw,sh,hi,lip,rock,rockD,sh
 
 - 注意：`lily_bud_hit` 是「被打開花」的樣子，比正常版大很多，這是設計，不用縮。
 - 截圖回報：森林、濕地每張地圖各一張。
+
+### 105.12 全部 84 隻到齊：櫻花之丘、沙漠、雪原，以及補齊的空位（2026-11-17；素材已放好）
+- 素材：`assets/monsters/sakura/`、`assets/monsters/desert/`、`assets/monsters/snow/`，全部都有 `_hit`，`s/` 為高 140px 遊戲用圖。`MON_IMG` 尺寸從檔案讀。
+- 規則照 105.1–105.10。`浮`＝離地高度（影子留地面）。高度暫定，看截圖再調。
+
+**補齊先前的空位**
+- 草原古井遺跡：`well_bucket` 現在有 `_hit`（已重畫）。
+- 濕地倒木 `log`：主 spring_vine（70%）、副 **mud_hand** 泥沼手（30%，高 62）。
+- 濕地倒木隧道 `tunnel`：主 **wood_louse** 洞木蝨（高 50）、副 **glow_slug** 光痕蛞蝓（高 48）。
+
+**櫻花之丘 `sakura`**
+| 地圖 | 主（70%） | 副（30%） |
+| --- | --- | --- |
+| 鳥居參道 `entry` | paper_umbrella 獨眼紙傘（高 70） | offering_box 賽錢箱妖（高 60） |
+| 櫻花林道 `path` | sakura_aphid 櫻露蚜（高 50，浮 12） | blossom_twig 櫻枝蛇（寬 100） |
+| 錦鯉池 `koi_pond` | koi_newt 錦紋螈（寬 105） | ripple_wraith 倒影妖（高 62，浮 8） |
+| 竹林 `bamboo` | bamboo_beetle 筍盔蟲（寬 100） | glow_bamboo 竹光球（高 62，浮 15） |
+| 茶屋 `teahouse` | tea_cup 湯呑怪（高 50） | straw_sandal 草鞋妖（寬 90） |
+| 枯山水 `garden` | sand_ripple 砂紋怪（寬 100） | stone_basin 蹲踞妖（高 55） |
+| 古寺 `pagoda` | wood_fish 木魚妖（高 58） | bead_worm 念珠蟲（寬 110） |
+| 千年櫻 `ancient` | root_crab 櫻根足（寬 105） | old_sakura_spirit 古櫻樹靈（高 70） |
+
+**沙漠 `desert`**
+| 地圖 | 主（70%） | 副（30%） |
+| --- | --- | --- |
+| 入口 `entry` | spine_beast 棘背獸（寬 105） | sand_eye_worm 沙眼蟲（高 50） |
+| 沙丘 `dunes` | sun_scarab 聖甲蟲（寬 105） | red_sandworm 赤沙蟲（高 62） |
+| 仙人掌田 `cactus` | pad_cactus 掌刺怪（高 65） | barrel_ball 滾刺球（高 55） |
+| 綠洲 `oasis` | horned_lizard 角蜥（寬 105） | coconut_hopper 椰果妖（高 55） |
+| 峽谷 `canyon` | rock_hermit 碎岩蟹（高 58） | hoodoo_rock 風化獸（高 65） |
+| 遺跡 `ruins` | obelisk_imp 方尖碑怪（高 72） | coffin_beetle 石棺甲（寬 100） |
+| 神殿 `temple1` | bell_scorpion 鈴尾蠍（寬 105） | bandage_ball 繃帶怪（高 52） |
+| 神殿深處 `temple2` | crystal_scorpion 沙晶蠍（寬 125，比鈴尾蠍大） | gold_hourglass 金沙漏靈（高 62，浮 15） |
+
+**雪原 `snow`**
+| 地圖 | 主（70%） | 副（30%） |
+| --- | --- | --- |
+| 入口 `entry` | snow_pile 雪堆怪（高 60） | snow_whirl 吹雪靈（高 62，浮 10） |
+| 針葉林 `forest` | frost_bellgrass 冰鈴草（高 58） | frost_wolf 霜鬃狼（寬 105） |
+| 小木屋 `cabin` | iceclaw_bear 冰爪熊（寬 100） | ice_candle 冰燭（高 58） |
+| 結冰湖 `lake` | ice_crab 冰殼蟹（寬 95） | ice_bubbles 冰泡怪（高 60） |
+| 冰洞前 `cave_front` | ice_prism 冰稜怪（高 65） | snow_badger 雪洞獾（寬 100） |
+| 冰洞 `cave1` | yeti_cub 小雪怪（高 68） | ice_spider 冰晶蛛（寬 100） |
+| 冰洞深處 `cave2` | aurora_jelly 極光水母（高 68，浮 25） | ice_golem 冰岩像（高 72） |
+
+- 雪原冰面滑行（37.5）：怪物不受滑行影響，照一般走動。
+- 截圖回報：三個地區每張地圖各一張。

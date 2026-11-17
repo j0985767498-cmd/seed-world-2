@@ -1659,7 +1659,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-17u';
+const BUILD='2026-11-17v';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -3854,10 +3854,17 @@ function animOthers(dt){
   for(const id of Object.keys(animO))if(!others[id])delete animO[id];
 }
 let lastAnim=performance.now();
+/* 106.2（17v）：原本每 80ms 不管有沒有人都 animOthers＋renderChars（自己走路時角色層一秒重建 12 次）。
+   現在只在「有其他玩家在走、有人（含自己）正在做動作、其他玩家進出」時才重畫；自己走路由 updateMe 只改位置。 */
+let charsSig='',charsBusyPrev=false;
+function actOn(a,start){return !!(a&&a.type&&ACT_DUR[a.type]&&Date.now()-start<ACT_DUR[a.type]+120)}
 setInterval(()=>{
   if(!state||document.hidden)return;
   const now=performance.now(),dt=Math.min(0.2,(now-lastAnim)/1000);lastAnim=now;
-  animOthers(dt);renderChars();
+  const ids=Object.keys(others),sig=ids.join(',');
+  let busy=actOn(meAct,meAct&&meAct.at)||sig!==charsSig;charsSig=sig;
+  if(ids.length){animOthers(dt);if(!busy)for(const id of ids){const A=animO[id],o=others[id];if(A&&(A.moving||actOn(o&&o.a,A.aStart||0))){busy=true;break}}}
+  if(busy||charsBusyPrev)renderChars();charsBusyPrev=busy;/* 停下來那一下再畫一次（回到站姿） */
 },80);
 
 // ===== 模式、參觀、角色移動 =====
@@ -3982,11 +3989,13 @@ function stallSVG(i,hl){/* 15b：攤位用 assets/town/ 的圖，紅綠交錯；
 }
 function renderWorld(){
   if(!state)return;const L=document.getElementById('worldLayer');
-  if(scene==='market'){L.innerHTML=marketWorld(hoverStall);return}
+  if(scene==='market'){L._fk=null;L.innerHTML=marketWorld(hoverStall);return}
   {const F=document.getElementById('fgLayer');if(F&&(regFg||townFgOn)&&!regIn()&&scene!=='market'){F.innerHTML='';regFg='';townFgOn=false}}
-  if(scene==='explore'){L.innerHTML=exploreWorld();if(regHas(exBiome)){const F=document.getElementById('fgLayer');if(F)F.innerHTML=regFg}return}
-  if(viewing){L.innerHTML=viewing.st?farmWorld(viewing.st,hoverPlot,null):`<text x="230" y="300" text-anchor="middle" font-size="16" fill="var(--muted)">讀取朋友的農場中…</text>`;return}
-  L.innerHTML=farmWorld(state,hoverPlot,selDecor);
+  if(scene==='explore'){L._fk=null;L.innerHTML=exploreWorld();if(regHas(exBiome)){const F=document.getElementById('fgLayer');if(F)F.innerHTML=regFg}return}
+  if(viewing){L._fk=null;L.innerHTML=viewing.st?farmWorld(viewing.st,hoverPlot,null):`<text x="230" y="300" text-anchor="middle" font-size="16" fill="var(--muted)">讀取朋友的農場中…</text>`;return}
+  /* 106.1（17v）：tick 每秒都會叫一次。內容（拿掉每次都會變的圖層 id 流水號）和上次一樣就不重建、也不重新對齊動畫 */
+  const h=farmWorld(state,hoverPlot,selDecor),k=h.replace(/(id="|url\(#|href="#)([A-Za-z_-]*)\d+/g,'$1$2');
+  if(L._fk===k&&L.firstChild)return false;L._fk=k;L.innerHTML=h;
 }
 const renderFarm=renderWorld;
 function renderHint(){}
@@ -8524,7 +8533,7 @@ function animSync(root){try{if(!root||!root.getAnimations||(typeof RMQ!=='undefi
   for(const a of root.getAnimations({subtree:true})){const ef=a.effect,t=ef&&ef.getComputedTiming&&ef.getComputedTiming();if(!t||t.iterations!==Infinity)continue;const d=+t.duration;if(!(d>0))continue;let off=0;
     if(!t.delay&&/^sway/.test(a.animationName||'')){const el=ef.target,im=el&&(el.tagName==='image'?el:el.querySelector&&el.querySelector('image'));if(im)off=(Math.abs(parseFloat(im.getAttribute('x'))*37+parseFloat(im.getAttribute('y'))*17)||0)%1}/* 沒有自己偏移的晃動物件：用座標算一個固定的偏移，同一排不會整齊同步 */
     a.currentTime=d*4+(now+off*d)%d}}catch(e){}}
-{const rw=renderWorld,rc=renderChars;renderWorld=function(){rw.apply(this,arguments);animSync(sceneEl)};renderChars=function(){const r=rc.apply(this,arguments);if(r!==false)animSync(document.getElementById('charLayer')||sceneEl);return r}}
+{const rw=renderWorld,rc=renderChars;renderWorld=function(){const r=rw.apply(this,arguments);if(r!==false)animSync(sceneEl);return r};renderChars=function(){const r=rc.apply(this,arguments);if(r!==false)animSync(document.getElementById('charLayer')||sceneEl);return r}}
 /* ===== 62（16b）：好友上線狀態 =====
    Realtime Database 的 status/<uid>={on,at,place}（place：farm／town／地區鍵）。登入時寫入並設 onDisconnect 改成離線；換場景只改 place；
    切到背景超過 2 分鐘算離線。朋友面板打開、或看別人的名片時才監聽那些人的 status/<uid>，關掉就取消；不監聽整個 status。

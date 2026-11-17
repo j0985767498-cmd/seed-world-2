@@ -913,6 +913,8 @@ details.gfold .gfb{margin-top:8px}
 #monSw .swarc{animation:monarc .22s ease-out forwards}
 @keyframes monarc{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
 @keyframes monfade{to{opacity:0}}
+.mon .mb.spawn{animation:monin .4s ease-out}
+@keyframes monin{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.mon .ms.hit{animation:none}.mon .mb.die{animation:monfade .5s forwards}#monSw .swg{animation:none}}
 /* 103（17n）稀有度徽章、卡片外框、素色特徵標籤 */
 .rb{display:inline-block;font-family:var(--uifont);font-weight:800;line-height:1.25;white-space:nowrap;border-radius:999px;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.35);background:#8C8C8C;border:1.5px solid rgba(255,255,255,.85);box-shadow:0 1px 2px rgba(60,30,5,.35)}
@@ -1668,7 +1670,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-17q';
+const BUILD='2026-11-17r';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -6831,26 +6833,33 @@ function fyShow(kind,k,f,opt,done){opt=opt||{};const el=document.createElement('
   let closed=false;const close=()=>{if(closed)return;closed=true;el.classList.add('out');setTimeout(()=>{el.remove();fyShowOn=false;try{done&&done()}catch(e){}},fyRM()?0:220)};
   el.addEventListener('click',close);document.body.appendChild(el);setTimeout(close,fyRM()?600:3400)}
 
-/* ===== 105（17q）：野外怪物第一階段（草原） =====
-   不做戰鬥系統：怪物不反擊、角色不受傷。農場、城鎮、秘境不放。每張野外地圖同時 3 隻（主 70％／副 30％），每隻出現時 15％ 是王（每張最多 1 隻）。
-   每個人各自計算，不碰 Firestore：state.mon["地區|地圖"]=[{k,boss,t}×3]（t＝打倒的時間，0＝活著）；打倒後 15 分鐘重生（離線照時間算）。
+/* ===== 105（17q）：野外怪物（草原；17r 加森林、濕地，105.10 改成一直有怪） =====
+   不做戰鬥系統：怪物不反擊、角色不受傷。農場、城鎮、秘境不放。每張野外地圖同時 5 隻（主 70％／副 30％），每隻出現時 5％ 是王（每張最多 1 隻）。
+   每個人各自計算，不碰 Firestore：state.mon["地區|地圖"]=[{k,boss}×5]（只記目前的種類與王）；打倒後 1–3 秒在離角色 250px 以外的地方重生，進地圖時 5 隻都是活的。
    位置、走動、血量只在記憶體（MON_RT），每次進地圖重新撒。畫在 #monBack（角色後面）／#monFront（角色前面），每幀只改 transform，停著不動就不寫 DOM。 */
-const MON_DEF={haybale:{n:'草捲獸',h:55},sprout_boar:{n:'穰豚',h:62},flower_snake:{n:'花冠蛇',h:55},wind_eel:{n:'風鰻妖',w:120,fly:20},branch_log:{n:'枝手浮木',h:58},crack_rock:{n:'裂眼滾石',h:60},moss_jar:{n:'苔手破甕',h:70},well_bucket:{n:'古井桶妖',h:62,nohit:1},one_leg_xiao:{n:'獨腳魈',h:68}};
-const MON_IMG={haybale:[200,140],haybale_hit:[197,162],sprout_boar:[182,140],sprout_boar_hit:[200,137],flower_snake:[196,140],flower_snake_hit:[208,145],wind_eel:[407,140],wind_eel_hit:[385,182],branch_log:[204,140],branch_log_hit:[203,151],crack_rock:[190,140],crack_rock_hit:[207,141],moss_jar:[176,140],moss_jar_hit:[180,143],well_bucket:[146,140],one_leg_xiao:[135,140],one_leg_xiao_hit:[143,133]};/* assets/monsters/grass/s/（正常版高 140；_hit 版和正常版同一個縮放比例） */
-const MON_MAP={grass:{entry:[['haybale',100]],meadow:[['sprout_boar',70],['flower_snake',30]],river:[['wind_eel',70],['branch_log',30]],hill:[['crack_rock',70],['one_leg_xiao',30]],old_well:[['moss_jar',70],['well_bucket',30]]}};
-const MON_N=3,MON_RESPAWN=15*60e3,MON_BOSS=0.15,MON_BOSS_K=1.4,MON_RANGE=30,MON_SWING=350,MON_HP=[3,5],MON_SPD=16,MON_COIN=[[3,6],[15,25]],MON_ACC=[0.08,0.30],MON_BAR_RESET=5000;
+const MON_DEF={haybale:{n:'草捲獸',h:55},sprout_boar:{n:'穰豚',h:62},flower_snake:{n:'花冠蛇',h:55},wind_eel:{n:'風鰻妖',w:120,fly:20},branch_log:{n:'枝手浮木',h:58},crack_rock:{n:'裂眼滾石',h:60},moss_jar:{n:'苔手破甕',h:70},well_bucket:{n:'古井桶妖',h:62,nohit:1},one_leg_xiao:{n:'獨腳魈',h:68},
+  fern_curl:{n:'蕨捲怪',h:62},pine_needles:{n:'沙沙松針',h:58},bark_spirit:{n:'木魅',h:65},shadow_pine:{n:'影松怪',h:70},moss_snail:{n:'苔殼蝸',h:55},creek_stone:{n:'溪石獸',h:58},orbit_stone:{n:'石圈靈',h:58,fly:15},purple_leaf:{n:'紫葉妖',w:110,fly:8},root_stump:{n:'走根樁',h:65},bramble_ball:{n:'棘藤妖',h:60},tree_burl:{n:'樹瘤怪',h:60},red_shroom:{n:'紅菇妖',h:65},night_moth:{n:'夜眼蛾',h:58,fly:25},rot_grub:{n:'朽木蟲',h:50},
+  willow_mop:{n:'柳絲妖',h:65},cattail_candle:{n:'蒲燭怪',h:75},marsh_wisp:{n:'沼火',h:55,fly:20},weed_lizard:{n:'沼蜥人',h:65},bubble_snail:{n:'泡殼螺',h:55},lily_bud:{n:'睡蓮苞妖',h:60},barnacle_lump:{n:'藤壺妖',w:100},eave_bat:{n:'簷下蝠',w:110,fly:30},lotus_frog:{n:'荷傘蛙',h:62},tangle_weed:{n:'纏腳水草',h:62},spring_vine:{n:'垂藤怪',h:62}};
+const MON_IMG={haybale:[200,140],haybale_hit:[197,162],sprout_boar:[182,140],sprout_boar_hit:[200,137],flower_snake:[196,140],flower_snake_hit:[208,145],wind_eel:[407,140],wind_eel_hit:[385,182],branch_log:[204,140],branch_log_hit:[203,151],crack_rock:[190,140],crack_rock_hit:[207,141],moss_jar:[176,140],moss_jar_hit:[180,143],well_bucket:[146,140],one_leg_xiao:[135,140],one_leg_xiao_hit:[143,133],
+  bark_spirit:[158,140],bark_spirit_hit:[177,141],bramble_ball:[165,140],bramble_ball_hit:[208,144],creek_stone:[204,140],creek_stone_hit:[226,148],fern_curl:[156,140],fern_curl_hit:[174,133],moss_snail:[197,140],moss_snail_hit:[258,137],night_moth:[210,140],night_moth_hit:[237,152],orbit_stone:[218,140],orbit_stone_hit:[222,148],pine_needles:[156,140],pine_needles_hit:[205,139],purple_leaf:[295,140],purple_leaf_hit:[286,162],red_shroom:[185,140],red_shroom_hit:[229,146],root_stump:[166,140],root_stump_hit:[157,133],rot_grub:[172,140],rot_grub_hit:[208,140],shadow_pine:[163,140],shadow_pine_hit:[185,137],tree_burl:[163,140],tree_burl_hit:[185,134],
+  barnacle_lump:[281,140],barnacle_lump_hit:[321,166],bubble_snail:[125,140],bubble_snail_hit:[117,150],cattail_candle:[91,140],cattail_candle_hit:[171,133],eave_bat:[328,140],eave_bat_hit:[208,170],lily_bud:[114,140],lily_bud_hit:[207,156],lotus_frog:[149,140],lotus_frog_hit:[199,144],marsh_wisp:[200,140],marsh_wisp_hit:[218,90],spring_vine:[127,140],spring_vine_hit:[197,121],tangle_weed:[254,140],tangle_weed_hit:[231,156],weed_lizard:[128,140],weed_lizard_hit:[160,135],willow_mop:[197,140],willow_mop_hit:[231,143]};/* 森林、濕地：assets/monsters/forest、wetland 的 s/（17r） *//* assets/monsters/grass/s/（正常版高 140；_hit 版和正常版同一個縮放比例） */
+const MON_MAP={grass:{entry:[['haybale',100]],meadow:[['sprout_boar',70],['flower_snake',30]],river:[['wind_eel',70],['branch_log',30]],hill:[['crack_rock',70],['one_leg_xiao',30]],old_well:[['moss_jar',70],['well_bucket',30]]},
+  forest:{entry:[['fern_curl',70],['pine_needles',30]],pine_path:[['bark_spirit',70],['shadow_pine',30]],glen:[['moss_snail',70],['creek_stone',30]],shrine:[['orbit_stone',70],['purple_leaf',30]],cabin:[['root_stump',70],['bramble_ball',30]],giant_tree:[['tree_burl',70],['red_shroom',30]],hollow:[['night_moth',70],['rot_grub',30]]},
+  marsh:{entry:[['willow_mop',70],['cattail_candle',30]],marsh:[['marsh_wisp',70],['weed_lizard',30]],lotus:[['bubble_snail',70],['lily_bud',30]],village:[['barnacle_lump',70],['eave_bat',30]],frog:[['lotus_frog',70],['tangle_weed',30]],log:[['spring_vine',100]]}};/* 濕地的倒木隧道先不放（105.11） */
+const MON_N=5,MON_RESPAWN=[1000,3000],MON_FAR=250,MON_SAFE=500,MON_BOSS=0.05,MON_BOSS_K=1.4,MON_RANGE=30,MON_SWING=350,MON_HP=[3,5],MON_SPD=16,MON_COIN=[[1,2],[10,15]],MON_COIN_P=[0.30,1],MON_ACC=[0.03,0.20],MON_BAR_RESET=5000;/* 105.10（測試值） */
 let MON_RT=null,monRaf=0,monLast=0,monForceBoss=false,monFightI=-1,monSwingAt=0;
 const monKey=()=>exBiome+'|'+regMap;
 function monTable(){return ((MON_MAP[exBiome]||{})[regMap])||null}
 function monHere(){return state&&scene==='explore'&&typeof regIn==='function'&&regIn()&&!regBusy&&!!monTable()}
-function monSrc(k){return `assets/monsters/${exBiome}/s/${k}.png?v=${BUILD}`}
+function monSrc(k){return `assets/monsters/${(REGION_CFG[exBiome]||{}).dir||exBiome}/s/${k}.png?v=${BUILD}`}/* 濕地的資料夾叫 wetland */
 function monScale(k,boss){const d=MON_DEF[k],I=MON_IMG[k];return (d.w?d.w/I[0]:d.h/I[1])*(boss?MON_BOSS_K:1)}
 function monPreload(){const T=monTable();if(!T)return;for(const [k] of T)for(const n of [k,k+'_hit'])if(MON_IMG[n]){const im=new Image();im.src=monSrc(n)}}
 /* 抽一隻：照 70／30 抽種類；王：這張圖沒有活著的王才可能（15％，測試開關可以強制） */
-function monRoll(slots,i,R){R=R||Math.random;const T=monTable()||[['haybale',100]];const k=wpickR(T,R)[0];const bossAlive=slots.some((s,j)=>j!==i&&s&&!s.t&&s.boss);
-  let boss=0;if(!bossAlive){if(monForceBoss){boss=1;monForceBoss=false}else if(R()<MON_BOSS)boss=1}return {k,boss,t:0}}
+function monRoll(slots,i,R){R=R||Math.random;const T=monTable()||[['haybale',100]];const k=wpickR(T,R)[0];const bossAlive=slots.some((s,j)=>j!==i&&s&&s.boss);
+  let boss=0;if(!bossAlive){if(monForceBoss){boss=1;monForceBoss=false}else if(R()<MON_BOSS)boss=1}return {k,boss}}
 function monSlots(){if(!state.mon||typeof state.mon!=='object'||Array.isArray(state.mon))state.mon={};const key=monKey();let S=state.mon[key];if(!Array.isArray(S)||S.length!==MON_N){S=[];for(let i=0;i<MON_N;i++)S[i]=monRoll(S,i);state.mon[key]=S}return S}
-function monRespawnDue(S,now){let ch=false;for(let i=0;i<S.length;i++){const s=S[i];if(!s||!MON_DEF[s.k]){S[i]=monRoll(S,i);ch=true;continue}if(s.t&&now-s.t>=MON_RESPAWN){S[i]=monRoll(S,i);ch=true}}return ch}
+function monFill(S){let ch=false;for(let i=0;i<S.length;i++){const s=S[i];if(!s||!MON_DEF[s.k]||s.t){S[i]=monRoll(S,i);ch=true}}return ch}/* 空的、壞的、舊版留下的打倒時間：重抽（進地圖時 5 隻都是活的） */
+const monDelay=()=>MON_RESPAWN[0]+Math.random()*(MON_RESPAWN[1]-MON_RESPAWN[0]);
 /* 可走、從入口走得到、不在出口與抵達點旁邊（10px 格子 BFS，每張圖算一次） */
 function monReach(M){if(M._monR)return M._monR;const G=10,W=Math.ceil(M.W/G),H=Math.ceil(M.H/G),ok=new Uint8Array(W*H),seen=new Uint8Array(W*H),q=[];
   const free=(x,y)=>!regBlocked(M,x,y)&&!regExitAt(M,x,y);
@@ -6861,6 +6870,8 @@ function monOkAt(M,x,y){const R=monReach(M),cx=Math.round(x/R.G),cy=Math.round(y
   for(const e of M.exits){if(e.trig||e.hid)continue;let p;try{p=regArrival(M.bk,M.id,e.to)}catch(err){continue}if(Math.hypot(x-p[0],y-p[1])<70)return false}/* 不擋在出口、抵達點上 */
   return true}
 function monSpot(M,R){R=R||Math.random;const B=M.B;for(let n=0;n<400;n++){const x=B.x0+20+R()*(B.x1-B.x0-40),y=B.y0+20+R()*(B.y1-B.y0-40);if(monOkAt(M,x,y))return [x,y]}return null}
+/* 105.10：重生的位置離角色至少 250px；找不到就取試過的點裡最遠的 */
+function monSpotFar(M,me,R){R=R||Math.random;const B=M.B;let best=null,bd=-1;for(let n=0;n<300;n++){const x=B.x0+20+R()*(B.x1-B.x0-40),y=B.y0+20+R()*(B.y1-B.y0-40);if(!monOkAt(M,x,y))continue;const d=Math.hypot(x-me.x,y-me.y);if(d>=MON_FAR)return [x,y];if(d>bd){bd=d;best=[x,y]}}return best}
 function monTarget(M,m){for(let n=0;n<30;n++){const a=Math.random()*Math.PI*2,d=40+Math.random()*110,x=m.x+Math.cos(a)*d,y=m.y+Math.sin(a)*d*0.7;if(monOkAt(M,x,y)&&monLineOk(M,m.x,m.y,x,y))return [x,y]}return null}
 function monLineOk(M,x0,y0,x1,y1){const n=Math.ceil(Math.hypot(x1-x0,y1-y0)/8);for(let i=1;i<=n;i++){const t=i/n;if(regBlocked(M,x0+(x1-x0)*t,y0+(y1-y0)*t))return false}return true}
 /* ---- 畫 ---- */
@@ -6873,7 +6884,8 @@ function monNode(i,m){const NS='http://www.w3.org/2000/svg',g=document.createEle
     <g class="mhp" transform="translate(0 ${Math.min(top,-100).toFixed(1)})" opacity="0"><text class="mnm" y="-4" text-anchor="middle">${esc(monName(m))}</text><rect x="-18" y="0" width="36" height="5" rx="2.5" fill="#E7E2D6" stroke="#4A3020" stroke-width="1"/><rect class="mhpf" x="-17.5" y=".5" width="35" height="4" rx="2" fill="#7FBF4A"/></g>
     ${m.boss?`<text class="mnm mbn" y="${(top-4).toFixed(1)}" text-anchor="middle">${esc(monName(m))}</text>`:''}`;
   return g}
-function monPaint(i,m){const g=m.el;if(!g)return;const bob=m.moving&&!RMQ.matches?-Math.abs(Math.sin(m.ph*Math.PI*2))*2.2:0;
+function monVis(m){const v=sceneEl.viewBox&&sceneEl.viewBox.baseVal;if(!v||!v.width)return true;return m.x>v.x-90&&m.x<v.x+v.width+90&&m.y>v.y-30&&m.y<v.y+v.height+140}/* 畫面外的不寫 DOM（104） */
+function monPaint(i,m){const g=m.el;if(!g)return;if(!monVis(m)){m.off=1;return}m.off=0;const bob=m.moving&&!RMQ.matches?-Math.abs(Math.sin(m.ph*Math.PI*2))*2.2:0;
   const tr=`translate(${m.x.toFixed(1)} ${m.y.toFixed(1)})`;if(m._tr!==tr){g.setAttribute('transform',tr);m._tr=tr}
   const o=g.querySelector('.mo'),fly=(MON_DEF[m.k].fly||0)*(m.boss?MON_BOSS_K:1),ot=`translate(0 ${(bob-fly+(fly?Math.sin(m.ph*Math.PI)*2.5:0)).toFixed(1)})`;if(o&&m._ot!==ot){o.setAttribute('transform',ot);m._ot=ot}
   const f=g.querySelector('.mf'),ft=m.face>0?'scale(-1 1)':'';if(f&&m._ft!==ft){f.setAttribute('transform',ft);m._ft=ft}
@@ -6881,11 +6893,13 @@ function monPaint(i,m){const g=m.el;if(!g)return;const bob=m.moving&&!RMQ.matche
 function monBar(m,show){const b=m.el&&m.el.querySelector('.mhp');if(!b)return;b.setAttribute('opacity',show?'1':'0');const f=m.el.querySelector('.mhpf');if(f)f.style.transform=`scaleX(${Math.max(0,m.hp/m.max)})`;const bn=m.el.querySelector('.mbn');if(bn)bn.setAttribute('opacity',show?'0':'1')}
 function monReplay(el,cls){if(!el)return;el.classList.remove(cls);void el.getBoundingClientRect();el.classList.add(cls)}
 /* ---- 進地圖、離開 ---- */
-function monClear(){for(const id of ['monBack','monFront','monSw']){const L=document.getElementById(id);if(L)L.textContent=''}MON_RT=null;monFightI=-1}
-function monEnter(){monClear();if(!monHere())return;monPreload();const M=regCur(),S=monSlots();monRespawnDue(S,Date.now());MON_RT={key:monKey(),list:[]};
-  S.forEach((s,i)=>{if(s.t)return;monSpawnRT(M,i,s)});monStart()}
-function monSpawnRT(M,i,s){const p=monSpot(M);if(!p)return;const m={k:s.k,boss:s.boss,x:p[0],y:p[1],face:Math.random()<0.5?-1:1,wait:Math.random()*2,tgt:null,ph:0,moving:false,max:s.boss?MON_HP[1]:MON_HP[0],hp:0,lastHit:0,dead:false};m.hp=m.max;
-  m.el=monNode(i,m);const L=document.getElementById(m.y>curMe().y?'monFront':'monBack');if(L)L.appendChild(m.el);MON_RT.list[i]=m;monPaint(i,m)}
+function monClear(){for(const id of ['monBack','monFront','monSw']){const L=document.getElementById(id);if(L)L.textContent=''}MON_RT=null;monFightI=-1;if(monSaveT){clearTimeout(monSaveT);monSaveT=0;save()}}
+let monSaveT=0;function monSaveSoon(){if(!monSaveT)monSaveT=setTimeout(()=>{monSaveT=0;save()},8000)}/* 打怪很頻繁：存檔最多 8 秒一次，離開地圖時馬上存 */
+function monEnter(){monClear();if(!monHere())return;monPreload();const M=regCur(),S=monSlots();if(monFill(S))monSaveSoon();MON_RT={key:monKey(),list:[],due:[]};
+  S.forEach((s,i)=>monSpawnRT(M,i,s));monStart()}
+function monSpawnRT(M,i,s,far){const p=far?monSpotFar(M,curMe()):monSpot(M);if(!p){MON_RT.due[i]=Date.now()+monDelay();return}const m={born:far?Date.now():0,k:s.k,boss:s.boss,x:p[0],y:p[1],face:Math.random()<0.5?-1:1,wait:Math.random()*2,tgt:null,ph:0,moving:false,max:s.boss?MON_HP[1]:MON_HP[0],hp:0,lastHit:0,dead:false};m.hp=m.max;
+  m.el=monNode(i,m);const L=document.getElementById(m.y>curMe().y?'monFront':'monBack');if(L)L.appendChild(m.el);MON_RT.list[i]=m;MON_RT.due[i]=0;monPaint(i,m);
+  if(far&&!RMQ.matches){const b=m.el.querySelector('.mb');if(b)monReplay(b,'spawn')}}/* 出現時淡入＋從 0.8 倍放大（0.4 秒） */
 function monStart(){if(!monRaf&&typeof requestAnimationFrame==='function'){monLast=0;monRaf=requestAnimationFrame(monLoop)}}
 /* ---- 每幀：走動、打、重生（畫面在背景就不更新；104） ---- */
 function monLoop(ts){monRaf=0;if(!monHere()){if(MON_RT)monClear();return}
@@ -6893,9 +6907,9 @@ function monLoop(ts){monRaf=0;if(!monHere()){if(MON_RT)monClear();return}
   monRaf=requestAnimationFrame(monLoop);if(document.hidden)return;
   const dt=monLast?Math.min(0.1,(ts-monLast)/1000):0;if(dt<1/31&&monLast)return;monLast=ts;
   const M=regCur(),me=curMe(),now=Date.now(),L=MON_RT.list;
-  if(!monLoop._r||now-monLoop._r>1000){monLoop._r=now;const S=monSlots();if(monRespawnDue(S,now)){save();S.forEach((s,i)=>{if(!s.t&&!L[i])monSpawnRT(M,i,s)})}}
+  {const S=monSlots();for(let i=0;i<MON_N;i++){if(L[i])continue;const due=MON_RT.due[i];if(!due){MON_RT.due[i]=now+monDelay();continue}if(now>=due){S[i]=monRoll(S,i);monSpawnRT(M,i,S[i],true);monSaveSoon()}}}/* 105.10：打倒 1–3 秒後在遠處重生 */
   /* 打：角色腳底 30px 內最近的那隻 */
-  let best=-1,bd=1e9;L.forEach((m,i)=>{if(!m||m.dead)return;const d=Math.hypot(m.x-me.x,m.y-me.y);if(d<=MON_RANGE&&d<bd){bd=d;best=i}});
+  let best=-1,bd=1e9;L.forEach((m,i)=>{if(!m||m.dead||(m.born&&now-m.born<MON_SAFE))return;const d=Math.hypot(m.x-me.x,m.y-me.y);/* 剛出現 0.5 秒內不會被打 */if(d<=MON_RANGE&&d<bd){bd=d;best=i}});
   if(best!==monFightI){monFightI=best;if(best>=0)monSwingAt=now+120}
   if(best>=0&&now>=monSwingAt){monSwingAt=now+MON_SWING;monHit(best)}
   L.forEach((m,i)=>{if(!m||m.dead)return;
@@ -6905,26 +6919,28 @@ function monLoop(ts){monRaf=0;if(!monHere()){if(MON_RT)monClear();return}
     if(!m.tgt){m.tgt=monTarget(M,m);if(!m.tgt){m.wait=1+Math.random()*2;return}}
     const [tx,ty]=m.tgt,dx=tx-m.x,dy=ty-m.y,d=Math.hypot(dx,dy),sp=MON_SPD*(MON_DEF[m.k].fly?1.25:1)*(m.boss?0.85:1)*dt;
     if(d<=sp){m.x=tx;m.y=ty;m.tgt=null;m.wait=1+Math.random()*2;m.moving=false}else{const nx=m.x+dx/d*sp,ny=m.y+dy/d*sp;if(regBlocked(M,nx,ny)){m.tgt=null;m.wait=0.5;m.moving=false}else{m.x=nx;m.y=ny;m.moving=true;m.ph+=dt*1.6;if(Math.abs(dx)>2)m.face=dx>0?1:-1}}
-    monPaint(i,m)})}
+    monPaint(i,m)});
+  if(monLoop._v==null||now-monLoop._v>400){monLoop._v=now;L.forEach((m,i)=>{if(m&&!m.dead&&m.off&&monVis(m)){m._tr=m._ot=m._ft=null;monPaint(i,m)}})}/* 走進畫面的補畫一次 */
+}
 function monHit(i){const m=MON_RT&&MON_RT.list[i];if(!m||m.dead)return;const now=Date.now();m.hp--;m.lastHit=now;monSwing(m);try{sfx('pop',60)}catch(e){}
   const s=m.el&&m.el.querySelector('.ms'),hasHit=!!MON_IMG[m.k+'_hit'];
   if(hasHit&&s){s.innerHTML=monImgTag(m.k,m.boss,true);clearTimeout(m._ht);if(m.hp>0)m._ht=setTimeout(()=>{if(!m.dead)s.innerHTML=monImgTag(m.k,m.boss,false)},250)}
   monReplay(s,'hit');monBar(m,true);
   if(m.hp<=0)monKill(i,m)}
-function monKill(i,m){m.dead=true;monFightI=-1;const S=monSlots();if(S[i])S[i].t=Date.now();
+function monKill(i,m){m.dead=true;monFightI=-1;const S=monSlots();S[i]=null;MON_RT.due[i]=Date.now()+560+monDelay();
   const b=m.el&&m.el.querySelector('.mb');setTimeout(()=>monBar(m,false),120);if(b)monReplay(b,'die');
   const sh=m.el&&m.el.querySelector('.msh');if(sh)sh.style.opacity='0';
   setTimeout(()=>{try{m.el&&m.el.remove()}catch(e){}if(MON_RT&&MON_RT.list[i]===m)MON_RT.list[i]=null},560);
-  monDrop(m);save()}
+  monDrop(m);monSaveSoon()}
 /* 揮鐮刀：鐮刀圖繞著角色揮半圈＋弧光 */
 function monSwing(m){const L=document.getElementById('monSw');if(!L)return;const me=curMe(),f=m.x>=me.x?1:-1,NS='http://www.w3.org/2000/svg',g=document.createElementNS(NS,'g');
   g.setAttribute('transform',`translate(${me.x.toFixed(1)} ${(me.y-30).toFixed(1)}) scale(${f} 1)`);
   g.innerHTML=`<path class="swarc" d="M -6 -30 A 32 32 0 0 1 22 26 A 26 26 0 0 0 -4 -22 Z" fill="rgba(255,255,236,.75)" stroke="rgba(255,255,255,.9)" stroke-width="1"/><g class="swg"><image href="assets/icons/s/sickle.png" x="-2" y="-33" width="35" height="24" transform="rotate(-30)"/></g>`;
   L.appendChild(g);setTimeout(()=>{try{g.remove()}catch(e){}},260)}
 /* 掉落（105.6，暫定）：一定有金幣；另外有機會 1 次生長加速劑。不受每日上限限制 */
-function monDrop(m){const c=MON_COIN[m.boss?1:0],coins=c[0]+Math.floor(Math.random()*(c[1]-c[0]+1)),acc=Math.random()<MON_ACC[m.boss?1:0];
+function monDrop(m){const b=m.boss?1:0,c=MON_COIN[b],coins=Math.random()<MON_COIN_P[b]?c[0]+Math.floor(Math.random()*(c[1]-c[0]+1)):0,acc=Math.random()<MON_ACC[b];/* 105.10：普通 30% 掉 1–2 金幣、3% 加速劑；王一定掉 10–15、20% 加速劑 */
   state.coins=(state.coins||0)+coins;if(acc){state.items=state.items||{};state.items.acc=(state.items.acc||0)+1}
-  const p=worldToScreenPt(m.x,m.y-30);monCoinFly(p,coins);if(acc)setTimeout(()=>{try{fxAdd('gain',p.x,p.y-30,'+1 次生長加速劑',1600)}catch(e){}},300);
+  const p=worldToScreenPt(m.x,m.y-30);if(coins)monCoinFly(p,coins);if(acc)setTimeout(()=>{try{fxAdd('gain',p.x,p.y-30,'+1 次生長加速劑',1600)}catch(e){}},300);
   if(m.boss)toast(`打倒了${monName(m)}！`)}
 function monCoinFly(p,coins){const cn=document.querySelector('.coins .coin')||document.querySelector('.coin'),ce=document.getElementById('coins'),cw=document.querySelector('.coins'),r=cn&&cn.getBoundingClientRect(),tc=r&&r.width?{x:r.left+r.width/2,y:r.top+r.height/2}:{x:60,y:30};
   const end=state.coins,start=end-coins,n=RMQ.matches?0:Math.min(5,Math.max(2,Math.ceil(coins/5)));
@@ -6935,7 +6951,7 @@ function monCoinFly(p,coins){const cn=document.querySelector('.coins .coin')||do
     setTimeout(()=>{try{renderCoins()}catch(e){}},n*70+1300)}
   try{fxAdd('gain',p.x+20,p.y-10,`+${coins} 金幣`,1300)}catch(e){}}
 /* 測試模式（105.7） */
-function monTestRespawn(){if(!monHere())return;const S=monSlots();for(let i=0;i<S.length;i++)S[i]=monRoll(S,i);save();monEnter()}
+function monTestRespawn(){if(!monHere())return;const S=monSlots();for(let i=0;i<S.length;i++)S[i]=null;for(let i=0;i<S.length;i++)S[i]=monRoll(S,i);save();monEnter()}
 
 // ===== 即時同場 =====
 let rtdbRef=null,rtdbOff=null,others={},lastPush=0,hb=null;

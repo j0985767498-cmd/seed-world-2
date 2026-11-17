@@ -886,6 +886,16 @@ details.gfold .gfb{margin-top:8px}
 .avspin svg{transform-origin:50% 90%}.avspin svg.spinfx{animation:spinfx .12s ease-in-out}
 @keyframes spinfx{0%,100%{transform:scaleX(1)}50%{transform:scaleX(0)}}
 .spinhint{text-align:center;margin:-2px 0 6px;opacity:.7}
+/* 101（17m）育苗盤分區 */
+.trsrc{display:flex;gap:10px;align-items:center;margin:12px 0 2px;padding-top:8px;border-top:2px dashed #E2C796}
+.trslot{width:64px;flex:none}.trslot .slot{width:64px;height:64px}
+.trsinf{display:flex;flex-direction:column;min-width:0}.trsinf b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trtg{color:#2F7A22;font-weight:700}
+.hvgrp.tgt{border-color:#5DBB3A;box-shadow:0 0 0 2px rgba(93,187,58,.35)}
+.tgtb{display:inline-block;font-style:normal;font-size:11px;color:#fff;background:#3E9B3A;border-radius:6px;padding:0 5px;margin-right:4px;vertical-align:1px}
+.trbtns{display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex:none}
+.tcell .tst{position:absolute;right:2px;bottom:1px;font-size:10px;line-height:1.2;color:#fff;background:#3E7FD0;border-radius:4px;padding:0 3px}
+.tbest{text-align:right;font-size:11px;color:#6A5030;margin-top:2px}
 /* 99.3（17j）：數字一律用系統字型＋等寬數字。用 unicode-range 只把數字與數字符號（%、.、,、+、-、/、×、:）換掉，標題、按鈕的中文字型不動 */
 @font-face{font-family:"SWNum";font-weight:100 500;src:local("PingFangTC-Regular"),local("PingFang TC"),local(".SFUI-Regular"),local("HelveticaNeue"),local("Helvetica Neue"),local("Roboto"),local("Segoe UI"),local("Arial");unicode-range:U+0025,U+002B-002F,U+0030-003A,U+00D7}
 @font-face{font-family:"SWNum";font-weight:600 900;src:local("PingFangTC-Semibold"),local("PingFang TC Semibold"),local(".SFUI-Semibold"),local("HelveticaNeue-Bold"),local("Helvetica Neue Bold"),local("Roboto Bold"),local("Segoe UI Bold"),local("Arial Bold"),local("Arial");unicode-range:U+0025,U+002B-002F,U+0030-003A,U+00D7}
@@ -1578,7 +1588,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-17l';
+const BUILD='2026-11-17m';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -7282,6 +7292,7 @@ function traySow(lotId,mx){
     if(mx){const b0=gk(g),k0=phen(g,l.crop).key;if(mutateX(g)){md0=MU_LAST||md0;if(gk(g)!==b0&&phen(g,l.crop).key===k0)odd=true}}/* 外觀看不出來的突變：育苗盤加閃光 */
     if(rnd()<l.germ*(mx?MUTX.germ:1)){const c={g,s:si,sel:false};if(odd)c.odd=1;const mu=mu96(l,g,l.crop,md0);if(mu){c.mu=mu;muLs.push({crop:l.crop,g,mu})}t.cells.push(c);ok++}}
   muReveal(muLs);
+  {const S=t.srcs[si];S.sown=(S.sown||0)+n;S.ok=(S.ok||0)+ok}/* 101.2 */
   if(!lc(l))state.lots=state.lots.filter(x=>x!==l);
   trayPrune();save();renderAll();
   toast(`撒了 ${n} 顆，${ok} 顆發芽${n-ok?`，${n-ok} 顆沒有發芽`:''}${mx?`（用了 1 瓶誘變劑，剩 ${it.mut} 瓶）`:''}`);
@@ -7312,6 +7323,12 @@ function openTray(){
   if(!state||viewing||scene!=='farm'){toast('回到自己的農場才能使用育苗盤');return}
   closeSheet();if(curPanel)closePanel();sheet={tray:true,trayPick:false};renderSheet();openSheetUI();
 }
+/* 101（17m）：育苗盤的小工具。目標外觀＝成品、育種中的種子包的母本外觀（同 9.5、種子袋格子上畫的那個）；雜交、種原沒有目標 */
+function trayTargetKeys(t){return t.srcs.map(s=>{try{if(!s||!s.m||s.cross)return null;/* 雜交（含雜交成品）沒有目標 */const c=lotCat(s).c;if(c!=='done'&&c!=='breed')return null;return phen(s.m,s.crop||'tomato').key}catch(e){return null}})}
+function trayIsTgt(t,c,TK){const k=TK[c.s];if(!k)return false;try{return phen(c.g,(t.srcs[c.s]||{}).crop||'tomato').key===k}catch(e){return false}}
+function trayStab(t){for(const c of t.cells)if(c.st==null){try{c.st=Math.round(phen(c.g,(t.srcs[c.s]||{}).crop||'tomato').stab*1000)/1000}catch(e){c.st=0}}}/* 101.5：只算還沒算過的格子 */
+function trayShort(n){n=String(n||'');return n.length>6?n.slice(0,6)+'…':n}
+function traySlot(src){const l=trayFindLot(src.id)||{...src,count:0};const bc=bagCat;bagCat='all';let h='';try{h=slotCell(-1,l)}catch(e){h=''}bagCat=bc;return h.replace(/^<button class="slot/,'<div class="slot').replace(/ data-slot="-1"/,'').replace(/<\/button>$/,'</div>').replace('<b class="cnt">0</b>','')}/* 用完的包不顯示 0 */
 function trayHTML(){
   const t=trayObj();
   let h=`<h2>${uiIcon('tray',24)}育苗盤</h2><p class="stage">已用 ${t.cells.length} / ${trayCap()} 格</p>`;
@@ -7324,16 +7341,30 @@ function trayHTML(){
     if(t.cells.length)h+=`<button class="btn" data-act="trayback">回到育苗盤</button>`;
     return h+`<button class="btn" data-act="close">關閉</button>`;
   }
-  const groups=new Map();
-  t.cells.forEach((c,k)=>{const src=t.srcs[c.s]||{},crop=src.crop||'tomato',ph=phen(c.g,crop),key=crop+'|'+ph.key;if(!groups.has(key))groups.set(key,{crop,ph,ks:[]});groups.get(key).ks.push(k)});
-  const nSel=t.cells.filter(c=>c.sel).length,nEmpty=trayEmptyPlots().length;
-  h+=`<p class="note">點幼苗選取，選好後移植。</p>`;
+  /* 101（17m）：依來源種子包分區（標題用種子袋的格子）、篩選列、目標外觀、排序（目標→突變→稀有度→株數）、每株自交穩定度（存在 cell.st） */
+  const S=t.srcs,live=S.map((_,i)=>t.cells.filter(c=>c.s===i).length),multi=live.filter(n=>n).length>1,TK=trayTargetKeys(t);
+  trayStab(t);
+  let fs=sheet.traySrc;if(fs!=null&&!(live[fs]>0&&multi))fs=sheet.traySrc=null;
+  const nSel=t.cells.filter(c=>c.sel).length,nEmpty=trayEmptyPlots().length,nTgt=t.cells.filter(c=>trayIsTgt(t,c,TK)).length;
+  h+=`<p class="note">點幼苗選取，選好後移植。${qh('每組裡最可能自交保持原樣的 3 株標「穩」；點一格會顯示它自己的穩定度。')}</p>`;
+  if(nTgt)h+=`<button class="btn" data-act="traytgt">選所有目標（${nTgt} 株）</button>`;
+  if(multi)h+=`<div class="bagcats"><button class="fchip" data-act="traysrc" data-i="-1" aria-pressed="${fs==null}">全部 ${t.cells.length}</button>${S.map((x,i)=>live[i]?`<button class="fchip" data-act="traysrc" data-i="${i}" aria-pressed="${fs===i}">${esc(trayShort(x.name))} ${live[i]}</button>`:'').join('')}</div>`;
   if(t.cells.some(c=>c.odd))h+=`<p class="note"><b class="todd-l" aria-hidden="true">✦</b> 有閃光的幼苗：這株好像有點不一樣。</p>`;
-  for(const gr of [...groups.values()].sort((a,b)=>b.ph.tier-a.ph.tier||b.ks.length-a.ks.length)){
-    const allSel=gr.ks.every(k=>t.cells[k].sel);let rs='';try{rs=regStatus(gr.crop,gr.ph.key)}catch(e){}
-    h+=`<div class="hvgrp"><div class="hvhead">${fruitSVG(gr.ph,gr.crop,36)}<span style="flex:1;min-width:0"><b>${CROPS[gr.crop].n}・${tagName(gr.ph,gr.crop)}・${colorLabel(gr.ph)}</b><span class="meta">${gr.ks.length} 株・${TIERS[gr.ph.tier]}${rs?'・'+rs:''}</span></span><button class="fchip" data-act="traygrp" data-k="${gr.ks.join(',')}" aria-pressed="${allSel}">${allSel?'取消全選':'全選'}</button></div><div class="tcells">`;
-    for(const k of gr.ks){const c=t.cells[k],ph=phen(c.g,gr.crop);h+=`<button class="tcell${c.sel?' on':''}${c.mu?' tmu':''}" data-act="traycell" data-k="${k}" aria-pressed="${!!c.sel}" aria-label="${SIZE_N[ph.sizeCls]}${c.odd?'、這株好像有點不一樣':''}"${c.odd?' title="這株好像有點不一樣"':''}>${fruitSVG(ph,gr.crop,30)}<i>${SIZE_N[ph.sizeCls]}</i>${c.odd?'<b class="todd" aria-hidden="true">✦</b>':''}${c.mu?'<b class="tmk" aria-hidden="true">！</b>':''}</button>`}
-    h+=`</div></div>`;
+  for(let i=0;i<S.length;i++){if(!live[i]||(fs!=null&&fs!==i))continue;
+    const src=S[i],crop=src.crop||'tomato',tk=TK[i],groups=new Map();
+    t.cells.forEach((c,k)=>{if(c.s!==i)return;const ph=phen(c.g,crop);if(!groups.has(ph.key))groups.set(ph.key,{crop,ph,ks:[]});groups.get(ph.key).ks.push(k)});
+    const gl=[...groups.values()];for(const gr of gl){gr.tgt=!!tk&&gr.ph.key===tk;gr.mu=gr.ks.some(k=>t.cells[k].mu);gr.ks.sort((x,y)=>(t.cells[y].st||0)-(t.cells[x].st||0))}
+    gl.sort((x,y)=>(y.tgt-x.tgt)||(y.mu-x.mu)||(y.ph.tier-x.ph.tier)||(y.ks.length-x.ks.length));
+    const nT=gl.filter(g=>g.tgt).reduce((n,g)=>n+g.ks.length,0);
+    if(multi)h+=`<div class="trsrc"><div class="trslot">${traySlot(src)}</div><div class="trsinf"><b>${esc(src.name||'')}</b><span class="meta">${src.sown?`發芽 ${src.ok||0}／${src.sown} 株`:`${live[i]} 株`}${src.sown&&(src.ok||0)!==live[i]?`・盤裡 ${live[i]} 株`:''}</span>${tk?`<span class="meta trtg">符合目標 ${nT} 株</span>`:''}</div></div>`;
+    else if(tk)h+=`<p class="note trtg">符合目標 ${nT} 株</p>`;
+    for(const gr of gl){
+      const allSel=gr.ks.every(k=>t.cells[k].sel);let rs='';try{rs=regStatus(gr.crop,gr.ph.key)}catch(e){}
+      const best=t.cells[gr.ks[0]].st||0,many=gr.ks.length>3;
+      h+=`<div class="hvgrp${gr.tgt?' tgt':''}"><div class="hvhead">${fruitSVG(gr.ph,gr.crop,36)}<span style="flex:1;min-width:0"><b>${gr.tgt?'<i class="tgtb">目標</i>':''}${CROPS[gr.crop].n}・${tagName(gr.ph,gr.crop)}・${colorLabel(gr.ph)}</b><span class="meta">${gr.ks.length} 株・${TIERS[gr.ph.tier]}${rs?'・'+rs:''}</span></span><span class="trbtns"><button class="fchip" data-act="traygrp" data-k="${gr.ks.join(',')}" aria-pressed="${allSel}">${allSel?'取消全選':'全選'}</button>${many?`<button class="fchip" data-act="traytop" data-k="${gr.ks.join(',')}">選最穩定的 3 株</button>`:''}</span></div><div class="tcells">`;
+      gr.ks.forEach((k,j)=>{const c=t.cells[k],ph=phen(c.g,gr.crop);h+=`<button class="tcell${c.sel?' on':''}${c.mu?' tmu':''}" data-act="traycell" data-k="${k}" aria-pressed="${!!c.sel}" aria-label="${SIZE_N[ph.sizeCls]}、${stabName(c.st||0)}${c.odd?'、這株好像有點不一樣':''}"${c.odd?' title="這株好像有點不一樣"':''}>${fruitSVG(ph,gr.crop,30)}<i>${SIZE_N[ph.sizeCls]}</i>${c.odd?'<b class="todd" aria-hidden="true">✦</b>':''}${c.mu?'<b class="tmk" aria-hidden="true">！</b>':''}${many&&j<3?'<b class="tst" aria-hidden="true">穩</b>':''}</button>`});
+      h+=`</div><div class="tbest">最高 ${Math.round(best*100)}%</div></div>`;
+    }
   }
   h+=`<button class="btn primary" data-act="trayplant"${nSel?'':' disabled'}>移植選取的 ${nSel} 株（點空地種下，空地 ${nEmpty} 塊）</button>`;
   h+=`<button class="btn" data-act="trayret"${nSel?'':' disabled'}>選取的 ${nSel} 株退回種子袋</button>`;/* 37.3 */
@@ -7349,7 +7380,10 @@ function trayAction(b){
   if(a==='traymore'){sheet.trayPick=true;renderSheet();return}
   if(a==='traynew'){sheet.trayPick=true;renderSheet();return}
   if(a==='trayback'){sheet.trayPick=false;renderSheet();return}
-  if(a==='traycell'){const c=t.cells[+b.dataset.k];if(c){c.sel=!c.sel;renderSheet()}return}
+  if(a==='traycell'){const c=t.cells[+b.dataset.k];if(c){c.sel=!c.sel;if(c.st!=null)toast(stabName(c.st),1400);renderSheet()}return}
+  if(a==='traysrc'){const i=+b.dataset.i;sheet.traySrc=i<0?null:i;renderSheet();return}
+  if(a==='traytop'){const ks=b.dataset.k.split(',').map(Number).filter(k=>t.cells[k]);trayStab(t);const top=new Set([...ks].sort((x,y)=>(t.cells[y].st||0)-(t.cells[x].st||0)).slice(0,3));ks.forEach(k=>t.cells[k].sel=top.has(k));renderSheet();return}
+  if(a==='traytgt'){const TK=trayTargetKeys(t);let n=0;t.cells.forEach(c=>{c.sel=trayIsTgt(t,c,TK);if(c.sel)n++});toast(`選了 ${n} 株目標`,1400);renderSheet();return}
   if(a==='traygrp'){const ks=b.dataset.k.split(',').map(Number),all=ks.every(k=>t.cells[k]&&t.cells[k].sel);ks.forEach(k=>{if(t.cells[k])t.cells[k].sel=!all});renderSheet();return}
   if(a==='trayplant'){trayPlant();return}
   if(a==='trayret'){trayReturn();return}

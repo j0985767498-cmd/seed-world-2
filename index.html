@@ -1659,7 +1659,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-17t';
+const BUILD='2026-11-17u';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -6857,7 +6857,10 @@ const monDelay=()=>MON_RESPAWN[0]+Math.random()*(MON_RESPAWN[1]-MON_RESPAWN[0]);
 /* 可走、從入口走得到、不在出口與抵達點旁邊（10px 格子 BFS，每張圖算一次） */
 function monReach(M){if(M._monR)return M._monR;const G=10,W=Math.ceil(M.W/G),H=Math.ceil(M.H/G),ok=new Uint8Array(W*H),seen=new Uint8Array(W*H),q=[];
   const free=(x,y)=>!regBlocked(M,x,y)&&!regExitAt(M,x,y);
-  for(const e of M.exits){if(e.trig||e.hid||e.need)continue;let p;try{p=regArrival(M.bk,M.id,e.to)}catch(err){continue}const cx=Math.round(p[0]/G),cy=Math.round(p[1]/G);if(cx>=0&&cy>=0&&cx<W&&cy<H&&free(cx*G,cy*G)&&!seen[cy*W+cx]){seen[cy*W+cx]=1;q.push(cy*W+cx)}}
+  /* 起點：各出口的抵達點＋角色現在站的地方（17u）。對齊格子後不能走的，在半徑 40px 內找最近的可走格子，不直接略過 */
+  const seed=(px,py)=>{const c0=Math.round(px/G),r0=Math.round(py/G);let best=-1,bd=1e9;for(let dy=-4;dy<=4;dy++)for(let dx=-4;dx<=4;dx++){const cx=c0+dx,cy=r0+dy,d=Math.hypot(cx*G-px,cy*G-py);if(d>40||d>=bd||cx<0||cy<0||cx>=W||cy>=H)continue;if(free(cx*G,cy*G)){bd=d;best=cy*W+cx}}if(best>=0&&!seen[best]){seen[best]=1;q.push(best)}};
+  for(const e of M.exits){if(e.trig||e.hid||e.need)continue;let p;try{p=regArrival(M.bk,M.id,e.to)}catch(err){continue}seed(p[0],p[1])}
+  try{if(exBiome===M.bk&&regMap===M.id){const me=curMe();if(me)seed(me.x,me.y)}}catch(err){}
   while(q.length){const c=q.pop(),x=c%W,y=(c/W)|0;ok[c]=1;for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy;if(nx<0||ny<0||nx>=W||ny>=H)continue;const n=ny*W+nx;if(seen[n])continue;seen[n]=1;if(free(nx*G,ny*G))q.push(n)}}
   return M._monR={G,W,H,ok}}
 function monOkAt(M,x,y){const R=monReach(M),cx=Math.round(x/R.G),cy=Math.round(y/R.G);if(cx<0||cy<0||cx>=R.W||cy>=R.H||!R.ok[cy*R.W+cx])return false;if(regBlocked(M,x,y)||regExitAt(M,x,y))return false;

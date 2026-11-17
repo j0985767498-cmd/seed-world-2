@@ -1,0 +1,23 @@
+// 第 98 節「救回備份」（recover98）要用的 Firestore 規則（17u 整理）
+// 貼到 Firebase 主控台 → 左邊選單「Firestore Database」→ 上方分頁「規則」（Rules），
+// 放在 match /databases/{database}/documents { … } 裡面，和 match /players/…、match /rights/… 等並排。
+//   ・主控台上如果已經有 match /backups/{id} 的區塊，整段換成下面這段。
+//   ・沒有的話就新增這一段。
+// 貼好按「發布」（Publish）。
+//
+// 遊戲怎麼用 backups 集合：
+//   ・寫入：文件 id 一律是「自己的 uid_標籤」（存檔修復前的備份 _repair<時間>、舊格式備份 _v<版本>、保留舊存檔 _keep<時間>，
+//     太大時分段 _p0、_p1…），文件裡一定有 uid 欄位＝自己的 uid。同一個 id 可能再寫一次（覆蓋），所以要允許更新自己的文件。
+//   ・讀取：recover98 用 where('uid','==',自己的uid) 查自己的備份（設定頁錯誤紀錄裡的「救回備份 Missing or insufficient permissions.」就是這一步被擋）。
+//   ・不刪除。
+match /backups/{id} {
+  allow read: if request.auth != null
+              && resource.data.uid == request.auth.uid;
+  allow create: if request.auth != null
+                && request.resource.data.uid == request.auth.uid
+                && id.matches(request.auth.uid + '_.*');
+  allow update: if request.auth != null
+                && resource.data.uid == request.auth.uid
+                && request.resource.data.uid == request.auth.uid;
+  allow delete: if false;
+}

@@ -916,6 +916,10 @@ details.gfold .gfb{margin-top:8px}
 .mon .mb.spawn{animation:monin .4s ease-out}
 @keyframes monin{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.mon .ms.hit{animation:none}.mon .mb.die{animation:monfade .5s forwards}#monSw .swg{animation:none}}
+/* 108（17x）：3D 畫面 */
+#w3dc{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;display:none;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+body.w3d #scene{visibility:hidden}
+#w3dViewBtn{position:fixed;right:8px;top:calc(env(safe-area-inset-top,0px) + 420px);z-index:6;background:rgba(255,250,235,.94);border:2px solid #6b4a2b;border-radius:10px;padding:5px 10px;font:600 13px var(--uifont,sans-serif);color:#4a3020;box-shadow:0 2px 0 rgba(0,0,0,.18)}
 /* 104.2、104.3（17w）：背景、閒置、省電 */
 body.paused *,body.paused *::before,body.paused *::after{animation-play-state:paused!important}
 body.idle #scene *,body.idle #wx,body.idle #wx *{animation-play-state:paused!important}
@@ -965,7 +969,7 @@ body{font-variant-numeric:tabular-nums}
 <div id="wx" aria-hidden="true" hidden></div>
 <div id="exHint" hidden></div>
 <div id="mapBanner" hidden></div><div id="testTag" hidden>測試模式</div><div id="testNote" hidden></div>
-<button id="mapBtn" hidden aria-label="雪原地圖"><img class="ibimg" src="assets/icons/s/map.png" alt="" aria-hidden="true" onerror="this.remove()"><span>地圖</span></button>
+<button id="w3dViewBtn" hidden aria-label="切換 3D 視角">視角：低</button><button id="mapBtn" hidden aria-label="雪原地圖"><img class="ibimg" src="assets/icons/s/map.png" alt="" aria-hidden="true" onerror="this.remove()"><span>地圖</span></button>
 <div id="mapPanel" hidden role="dialog" aria-label="雪原地圖"></div>
 <div id="fadeOv" aria-hidden="true"></div>
 <div class="hudTop"><div class="hudRow"><button id="meChip" aria-label="我的名片"></button><div class="coins" aria-label="金幣"><span class="coin" aria-hidden="true"></span><span id="coins">0</span></div></div><div class="sceneName" id="sceneName">我的農場</div><div class="sync" id="sync" role="status"></div></div>
@@ -1027,11 +1031,11 @@ if(PERF){
     const t=Date.now();PF.net=PF.net.filter(x=>t-x<60000);
     let anim=0,animAll=0;try{for(const a of document.getAnimations()){animAll++;if(a.playState==='running')anim++}}catch(e){}
     const sc=document.getElementById('scene');let smil=0;try{smil=sc?sc.querySelectorAll('animate,animateTransform,animateMotion').length:0}catch(e){}
-    const o={fps:PF.fps,anim,animAll,smil,rafs:PF.rafs,fns,iv:PF.iv.size,to:PF.to.size,el:document.getElementsByTagName('*').length,svg:sc?sc.getElementsByTagName('*').length:0,net:PF.net.length,re:PF.reS};
+    const d3=Math.round((PF.d3||0)/dt);PF.d3=0;const o={d3,fps:PF.fps,anim,animAll,smil,rafs:PF.rafs,fns,iv:PF.iv.size,to:PF.to.size,el:document.getElementsByTagName('*').length,svg:sc?sc.getElementsByTagName('*').length:0,net:PF.net.length,re:PF.reS};
     PF.last=o;PF.hist.push(o);if(PF.hist.length>120)PF.hist.shift();
     let el=document.getElementById('perfBox');
     if(!el&&document.body){el=document.createElement('div');el.id='perfBox';el.style.cssText='position:fixed;right:4px;top:calc(env(safe-area-inset-top,0px) + 4px);z-index:99999;background:rgba(0,0,0,.72);color:#9F9;font:11px/1.35 ui-monospace,Menlo,Consolas,monospace;padding:4px 6px;border-radius:6px;pointer-events:none;white-space:pre;max-width:62vw;overflow:hidden';document.body.appendChild(el)}
-    if(el)el.textContent=`幀 ${o.fps}/秒\n動畫 ${o.anim}（共 ${o.animAll}）SMIL ${o.smil}\nrAF ${o.rafs}/秒 ${o.fns}\n計時器 間隔 ${o.iv}・逾時 ${o.to}\n元素 ${o.el}・地圖 ${o.svg}\n網路 ${o.net}/分\n重建/秒 地圖 ${o.re.w}・角色 ${o.re.c}・精靈 ${o.re.f}`;
+    if(el)el.textContent=`幀 ${o.fps}/秒・3D 每秒畫 ${o.d3} 次\n動畫 ${o.anim}（共 ${o.animAll}）SMIL ${o.smil}\nrAF ${o.rafs}/秒 ${o.fns}\n計時器 間隔 ${o.iv}・逾時 ${o.to}\n元素 ${o.el}・地圖 ${o.svg}\n網路 ${o.net}/分\n重建/秒 地圖 ${o.re.w}・角色 ${o.re.c}・精靈 ${o.re.f}`;
   };
   _si(sec,1000);
   const watch=()=>{const m=(id,k)=>{const e=document.getElementById(id);if(e)new MutationObserver(()=>{PF.re[k]++}).observe(e,{childList:true})};m('worldLayer','w');m('charLayer','c');m('fyFront','f')};
@@ -1665,7 +1669,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-17w';
+const BUILD='2026-11-17x';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -3116,7 +3120,7 @@ function renderSpeed(){
   const el=document.getElementById('testBox');if(!el)return;
   if(!TEST_MODE){el.innerHTML='';return}
   const on=isTestMode();testTagUpd();
-  let h=`<h3 style="margin-top:0">回報問題</h3>${crashHTML()}<h3>音效</h3><button class="btn${SFX_ON?' primary':''}" data-tool="sfx">音效：${SFX_ON?'開':'關'}（按一下切換）</button><h3>省電模式</h3><button class="btn${ecoOn()?' primary':''}" data-tool="eco">省電模式：${ecoOn()?'開':'關'}（按一下切換）</button><p class="note">減少動畫，手機比較不會熱、比較省電${RMQ.matches?'（手機設定了「減少動態效果」，已經自動開啟）':''}</p>${isStandalone()?'':`<h3>加到主畫面</h3><p class="note">把遊戲加到主畫面，打開就是全螢幕。${qh('iPhone：用 Safari 開，按下方的分享 → 加入主畫面。Android：Chrome 右上角選單 → 安裝應用程式（或加到主畫面）。')}</p>`}<h3>遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'標出機關和秘境，可以傳送。'+qh('只存在這台裝置，別人看不到。'):'和正式玩家看到的一樣。'}</p>`;
+  let h=`<h3 style="margin-top:0">回報問題</h3>${crashHTML()}<h3>音效</h3><button class="btn${SFX_ON?' primary':''}" data-tool="sfx">音效：${SFX_ON?'開':'關'}（按一下切換）</button><h3>省電模式</h3><button class="btn${ecoOn()?' primary':''}" data-tool="eco">省電模式：${ecoOn()?'開':'關'}（按一下切換）</button><p class="note">減少動畫，手機比較不會熱、比較省電${RMQ.matches?'（手機設定了「減少動態效果」，已經自動開啟）':''}</p><h3>3D 畫面</h3><button class="btn${W3D_USER?' primary':''}" data-tool="w3d">3D 畫面：${W3D_USER?'開':'關'}（按一下切換）</button><p class="note">目前只有草原入口是 3D${W3D_ST===-1?'（這台裝置不能用 3D，已經用原本的畫法）':''}</p>${isTestMode()?`<button class="btn${W3D_SVG?' primary':''}" data-tool="w3dsvg">測試：強制 SVG：${W3D_SVG?'開':'關'}</button>`:''}${isStandalone()?'':`<h3>加到主畫面</h3><p class="note">把遊戲加到主畫面，打開就是全螢幕。${qh('iPhone：用 Safari 開，按下方的分享 → 加入主畫面。Android：Chrome 右上角選單 → 安裝應用程式（或加到主畫面）。')}</p>`}<h3>遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'標出機關和秘境，可以傳送。'+qh('只存在這台裝置，別人看不到。'):'和正式玩家看到的一樣。'}</p>`;
   if(on)h+=`<h3>遠緣雜交</h3><button class="btn" data-tool="xc">跨界機率 100%：${(()=>{try{return localStorage.getItem('sw_xc')==='1'}catch(e){return false}})()?'開啟':'關閉'}（按一下切換）</button>`;
   if(on)h+=`<h3>櫻花之丘</h3><button class="btn" data-tool="sklook">花季外觀：${sakuraLook()?'櫻花（花季）':'綠葉（花季外）'}（按一下切換，只換畫面）</button><p class="note">測試模式沒有季節限制。<button type="button" class="qh" aria-expanded="false" aria-label="說明">？</button><span class="qhx" hidden>今天實際${sakuraBloom()?'是':'不是'}花季（每年 ${SAKURA_SEASON.from.join('/')}～${SAKURA_SEASON.to.join('/')}）。</span></p>`;
   if(on)h+=`<h3>會影響存檔的測試工具</h3><p class="note">用了存檔會和一般玩家不一樣。${qh('切回一般模式時，時間加速當 ×1、探索上限當開啟。')}</p><p class="note" style="margin:6px 0 2px">時間加速</p><div class="row2" style="grid-template-columns:repeat(4,1fr)">${SPEEDS.map(v=>`<button class="btn${state.speed===v?' primary':''}" data-spd="${v}">×${v}</button>`).join('')}</div>
@@ -4003,7 +4007,7 @@ function stallSVG(i,hl){/* 15b：攤位用 assets/town/ 的圖，紅綠交錯；
   return s+'</g>';
 }
 function renderWorld(){
-  if(!state)return;const L=document.getElementById('worldLayer');
+  if(!state)return;if(W3D_ON&&scene==='explore'){try{w3dDirty()}catch(e){}return}/* 108：3D 畫面開著時不重建 SVG 地圖 */const L=document.getElementById('worldLayer');
   if(scene==='market'){L._fk=null;L.innerHTML=marketWorld(hoverStall);return}
   {const F=document.getElementById('fgLayer');if(F&&(regFg||townFgOn)&&!regIn()&&scene!=='market'){F.innerHTML='';regFg='';townFgOn=false}}
   if(scene==='explore'){L._fk=null;L.innerHTML=exploreWorld();if(regHas(exBiome)){const F=document.getElementById('fgLayer');if(F)F.innerHTML=regFg}return}
@@ -4195,6 +4199,7 @@ document.querySelectorAll('.iconbar').forEach(el=>el.addEventListener('click',ic
 function placeMapBtn(mb){try{const bs=[...document.querySelectorAll('#iconbar button')].filter(b=>!b.hidden&&b.offsetParent!==null);if(!bs.length)return;const r=bs[bs.length-1].getBoundingClientRect(),t=Math.round(r.bottom+27)+'px';if(mb.style.top!==t)mb.style.top=t;/* 98.2：地圖面板改成置中，不跟著按鈕的位置 */}catch(e){}}
 try{addEventListener('resize',()=>{const mb=document.getElementById('mapBtn');if(mb&&!mb.hidden)placeMapBtn(mb)})}catch(e){}
 function renderHUD(){
+  try{w3dSync()}catch(e){}
   if(!state)return;renderMe();renderBagBadge();
   document.getElementById('sceneName').textContent=scene==='market'?'城鎮':scene==='explore'?(regHas(exBiome)?`${REGION_CFG[exBiome].name}・${REGION_MAPS[exBiome][regMap].n}`:`探索：${BIOMES[exBiome].n}`):viewing?`${viewing.name} 的農場`:'我的農場';
   const mb=document.getElementById('ibMarket');mb.querySelector('span').textContent=scene==='market'?'回農場':'城鎮';{const mi=mb.querySelector('img.ibimg'),f='assets/icons/s/'+(scene==='market'?'home':'town')+'.png';if(mi&&mi.getAttribute('src')!==f)mi.setAttribute('src',f)}/* 45：回農場用小屋圖示 */
@@ -5882,6 +5887,7 @@ function regPrepV2(bk,id,M){
   M.spawns=fix(M.spawns||[]);M.items=fix(M.items||[]);
   M._shades=shades;M._drift=drift;
   const SR=seededRnd(hashStr('sway|'+regPfx(bk)+id));
+  M._raw=objs;/* 108：3D 畫面用（種類、位置、大小、鏡像） */
   M._objs=objs.filter(o=>!FLAT[o[0]]).map(o=>({y:o[2],h:regObjHTML(o,M,SR)})).sort((a,b)=>a.y-b.y);M._ys=M._objs.map(o=>o.y);
   M._ground=regGroundV2(M,objs.filter(o=>FLAT[o[0]]));M._top=regTopV2(M);M._p=1;return M;
 }
@@ -6389,6 +6395,7 @@ function regEnter(id,from){
   renderHUD();renderWorld();renderChars();updateCam();refreshAct();
   regBanner(REGION_CFG[bk].name+'・'+REGION_MAPS[bk][id].n);
   try{monEnter()}catch(e){}/* 105 */
+  try{w3dSync()}catch(e){}/* 108 */
   const mp=document.getElementById('mapPanel');if(mp&&!mp.hidden)renderRegMap();
 }
 function regPlants(bk,id,day){
@@ -6973,6 +6980,51 @@ function monCoinFly(p,coins){const cn=document.querySelector('.coins .coin')||do
   try{fxAdd('gain',p.x+20,p.y-10,`+${coins} 金幣`,1300)}catch(e){}}
 /* 測試模式（105.7） */
 function monTestRespawn(){if(!monHere())return;const S=monSlots();for(let i=0;i<S.length;i++)S[i]=null;for(let i=0;i<S.length;i++)S[i]=monRoll(S,i);save();monEnter()}
+
+/* ===== 108（17x）：3D 畫面（立體化第一階段，js/w3d.js＋lib/three.min.js 用到才載入） =====
+   目前只有草原入口（108.8 第一步）。遊戲邏輯照舊（移動、碰撞、出口、打怪、採種都用 2D 地圖座標），3D 只負責畫與點擊換算。
+   設定頁「3D 畫面」（localStorage sw_3d，預設開；只存在這台裝置）；測試模式另有「強制 SVG」（sw_3dsvg）方便對照。
+   載入失敗、不支援 WebGL、建場景出錯 → 照舊用 SVG 畫法。 */
+var W3D_USER=(()=>{try{return localStorage.getItem('sw_3d')!=='0'}catch(e){return true}})();
+var W3D_SVG=(()=>{try{return localStorage.getItem('sw_3dsvg')==='1'}catch(e){return false}})();
+const W3D_MAPS={grass:{entry:1}};
+var W3D_ST=0,W3D_ON=false,W3D_N=0;/* W3D_ST：0 還沒載、1 載入中、2 好了、-1 不能用 */
+function w3dGL(){try{const c=document.createElement('canvas');return !!(window.WebGLRenderingContext&&(c.getContext('webgl')||c.getContext('experimental-webgl')))}catch(e){return false}}
+function w3dWant(){return !!(state&&scene==='explore'&&regIn()&&!regBusy&&W3D_USER&&!(isTestMode()&&W3D_SVG)&&W3D_ST!==-1&&(W3D_MAPS[exBiome]||{})[regMap])}
+function w3dLoad(cb){if(W3D_ST===2)return cb();w3dLoad.q.push(cb);if(W3D_ST===1)return;if(!w3dGL()){W3D_ST=-1;w3dLoad.q=[];return}W3D_ST=1;
+  const add=(src,ok)=>{const sc=document.createElement('script');sc.src=src+'?v='+BUILD;sc.onload=ok;sc.onerror=()=>{W3D_ST=-1;w3dLoad.q=[];w3dSync.k='';w3dSync()};document.head.appendChild(sc)};
+  add('lib/three.min.js',()=>add('js/w3d.js',()=>{W3D_ST=2;const q=w3dLoad.q;w3dLoad.q=[];q.forEach(f=>{try{f()}catch(e){console.error(e)}})}))}
+w3dLoad.q=[];
+function w3dOff(){if(!W3D_ON)return;W3D_ON=false;try{w3dLeave()}catch(e){}try{document.body.classList.remove('w3d')}catch(e){}if(state&&scene==='explore'){renderWorld();renderChars();updateCam()}w3dBtn()}
+function w3dSync(){const want=w3dWant(),key=want?exBiome+'|'+regMap:'';if(key===w3dSync.k)return;w3dSync.k=key;
+  if(!want){w3dOff();return}
+  w3dLoad(()=>{if(w3dSync.k!==key)return;try{w3dEnter(exBiome,regMap);W3D_ON=true;document.body.classList.add('w3d')}catch(e){console.error(e);try{crumb('3D 失敗 '+e.message)}catch(x){}W3D_ST=-1;w3dSync.k='';w3dOff()}w3dBtn()})}
+w3dSync.k='';
+function w3dBtn(){const b=document.getElementById('w3dViewBtn');if(!b)return;b.hidden=!W3D_ON;if(W3D_ON){try{b.textContent='視角：'+w3dViewName()}catch(e){}try{const r=document.getElementById('mapBtn').getBoundingClientRect();if(r.height)b.style.top=Math.round(r.bottom+30)+'px'}catch(e){}}}/* 放在右邊「地圖」按鈕下面 */
+try{document.getElementById('w3dViewBtn').addEventListener('click',()=>{try{w3dView();w3dBtn()}catch(e){}})}catch(e){}
+/* 立牌用的姿勢只分幾格（走路四格、動作六格），同一個樣子共用同一張貼圖 */
+function w3dPose(isMe,o,t,moving,ph,face){const ps=poseFor(isMe,o,t);let q=-1;if(moving){q=Math.floor((((ph%6.2832)+6.2832)%6.2832)/1.5708);ps.ph=q*1.5708+0.4}else if(!ps.act)ps.t=0;if(ps.act)ps.actP=Math.floor(ps.actP*6)/6;ps.blink=false;ps.view=VIEWS[face];
+  return {ps,k:ps.view+'|'+(faceFlip(face)?1:0)+'|'+q+'|'+(ps.act?ps.act+Math.round(ps.actP*6):'')}}
+const W3D_HOST={
+  map:()=>regCur(),eco:()=>ecoOn(),cap:()=>frameCap(),
+  pump(){const t=performance.now()/1000,m=curMe();
+    {const P=w3dPose(true,null,t,!!raf,walkPh,meFace);w3dSetPlayer(m.x,m.y,meFace,{key:'me|'+JSON.stringify(avPack(state.avatar))+'|'+P.k,svg:avatarSVG(state.avatar,faceFlip(meFace),P.ps)})}
+    {const L=[];for(const [id,o] of Object.entries(others)){if(!o||typeof o.x!=='number')continue;const A=animO[id]||{x:o.x,y:o.y,ph:0},of=o.f!=null?o.f:(o.d<0?3:1),P=w3dPose(false,{a:o.a,_aStart:A.aStart,_seed:A.seed},t,!!A.moving,A.ph||0,of);
+      L.push({id,x:A.x,y:A.y,key:'o|'+JSON.stringify(o.av)+'|'+P.k,svg:avatarSVG(o.av,faceFlip(of),P.ps)})}w3dSetOthers(L)}
+    {const L=[],now=Date.now();if(MON_RT)for(const mm of MON_RT.list){if(!mm)continue;const I=MON_IMG[mm.k];if(!I)continue;
+      L.push({id:mm._w3||(mm._w3=++W3D_N),x:mm.x,y:mm.y,face:mm.face,moving:mm.moving,wph:mm.ph,lastHit:mm.lastHit,dead:mm.dead,born:mm.born,hit:now-mm.lastHit<250&&!!MON_IMG[mm.k+'_hit'],src:monSrc(mm.k),srcHit:monSrc(mm.k+'_hit'),pxh:I[1]*monScale(mm.k,mm.boss),asp:I[0]/I[1],fly:(MON_DEF[mm.k]||{}).fly||0})}w3dSetMonsters(L)}
+    {const L=[];for(const w of exVisiblePlants()){const hl=w.key===hoverWp,x=Math.round(w.x),y=Math.round(w.y);L.push({key:'wp|'+w.key,kind:'wp',x,y,tk:w.key+'|'+(hl?1:0)+'|'+FRUIT_VER,svg:wpSVG(w,hl),vb:`${x-60} ${y-114} 120 120`,pw:192,ph:192,vh:120})}
+      for(const it of exVisibleItems()){const hl=it.key===hoverItem,x=Math.round(it.x),y=Math.round(it.y);L.push({key:'it|'+it.key,kind:'item',x,y,tk:it.key+'|'+(hl?1:0)+'|'+FRUIT_VER,svg:itemSVG(it,hl),vb:`${x-28} ${y-50} 56 56`,pw:112,ph:112,vh:56,bob:Math.sin(t*2.4)*0.05})}
+      {const d=roamHere();if(d){const x=Math.round(d.x),y=Math.round(d.y);L.push({key:'roam',kind:'roam',x,y,tk:'roam|'+d.spawnAt+'|'+FRUIT_VER,svg:roamSVG(d),vb:`${x-70} ${y-130} 140 140`,pw:200,ph:200,vh:140})}}
+      {const Rn=rdHere();if(Rn){const x=Math.round(Rn.x),y=Math.round(Rn.y);L.push({key:'rnpc',kind:'rnpc',x,y,tk:'rnpc|'+exBiome,svg:riddleSVG(Rn),vb:`${x-50} ${y-100} 100 104`,pw:160,ph:166,vh:104})}}
+      w3dSetPlants(L)}},
+  /* 點到植株、道具：和 SVG 畫面點到時一樣（近就打開、遠就先走過去）；點到地面就走過去 */
+  tap(p){if(!state||curPanel||regBusy||!regIn())return;const m=curMe();
+    if(p.kind==='wp'){const w=exVisiblePlants().find(x=>'wp|'+x.key===p.key);if(w){if(Math.hypot(w.x-m.x,w.y-m.y)<90)openWp(w);else walkTo(w.x,w.y+10,()=>openWp(w))}return}
+    if(p.kind==='item'){const it=exVisibleItems().find(x=>'it|'+x.key===p.key);if(it){if(Math.hypot(it.x-m.x,it.y-m.y)<80)pickItem(it);else walkTo(it.x,it.y+6,()=>pickItem(it))}return}
+    if(p.kind==='roam'||p.kind==='rnpc'){regTap(p.kind);return}
+    const M=regCur();walkTo(clamp(p.x,M.B.x0,M.B.x1),clamp(p.y,M.B.y0,M.B.y1))}
+};
 
 // ===== 即時同場 =====
 let rtdbRef=null,rtdbOff=null,others={},lastPush=0,hb=null;
@@ -8072,6 +8124,8 @@ document.getElementById('testBox').addEventListener('click',e=>{
   const sp=e.target.closest('[data-spd]');if(sp){tick();state.speed=+sp.dataset.spd;save();renderSpeed();toast(`時間加速 ×${state.speed}`);return}
   const t=e.target.closest('[data-tool]');if(!t)return;const k=t.dataset.tool;
   if(k==='crashclr'){try{localStorage.removeItem('sw_err');localStorage.removeItem('sw_crash')}catch(x){}renderSpeed();toast('已清除');return}
+  if(k==='w3d'){W3D_USER=!W3D_USER;try{localStorage.setItem('sw_3d',W3D_USER?'1':'0')}catch(x){}w3dSync();renderSpeed();toast(W3D_USER?'3D 畫面開了':'3D 畫面關了');return}
+  if(k==='w3dsvg'){W3D_SVG=!W3D_SVG;try{localStorage.setItem('sw_3dsvg',W3D_SVG?'1':'0')}catch(x){}w3dSync();renderSpeed();return}
   if(k==='eco'){if(RMQ.matches){toast('手機設定了「減少動態效果」，省電模式會一直開著');return}ECO_USER=!ECO_USER;try{localStorage.setItem('sw_eco',ECO_USER?'1':'0')}catch(x){}ecoApply();renderSpeed();toast(ECO_USER?'省電模式開了':'省電模式關了');return}
   if(k==='sfx'){SFX_ON=!SFX_ON;try{localStorage.setItem('sw_sfx',SFX_ON?'1':'0')}catch(x){}renderSpeed();if(SFX_ON)sfx('sparkle');toast(SFX_ON?'音效開了':'音效關了');return}
   if(k==='adv'){advanceAll();toast('所有植株都往下一階段了')}

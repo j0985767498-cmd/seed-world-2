@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-17z'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-18a'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-18a`。目前進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-18b`。目前進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -212,7 +212,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 **城鎮、任務、角色**
 - 城鎮：`TOWN_MAPS.plaza`、`TOWN_BLD`、`TOWN_NPC`（圖片 `npcReady`）、`marketWorld`、`townMove`、`openTown`／`townSheetHTML`／`townAction`、攤位 `stallHTML`、標本交易 `spBuy`。
 - 等級與任務（15y）：`addXp`、`levelUp`、`LV_CROP`／`LV_REG`、主線 `MQ`／`mqEv`、委託 `commGen`／`ensureComm`、每週 `wkTxt`／`wkFits`、NPC 故事 `NS`／`nsAccept`、種子庫館藏 `vdHTML`、主題榜 `wkTheme`／`wkSettle`。
-- 標本與精靈：`claimSpec`、`rightsTx`、`specUse`、收藏櫃 `cabListHTML`；精靈 `fyWake`／`fyEvolve`、`fySpringHTML`、跟隨 `fyLoop`、演出 `fyShow`。
+- 標本與精靈：`claimSpec`、`rightsTx`、`specUse`、收藏櫃 `cabListHTML`；精靈 `fyWake`／`fyEvolve`、`fySpringHTML`、跟隨 `fyLoop`、演出 `fyShow`、圖 `fyArt`／`fyArtHTML`（新畫布 `FY_CV`、上色開關 `FY_RECOLOR`）。
 - 角色：`avatarSVG`→`avV3SVG`（`av3.js`、`av3_heads.js`、衣服 `avOutfitParts`）、`avNorm`／`avPack`、打扮頁 `avatarEditorHTML`、衣櫃 `WARD`／`wardCheck`；`renderChars`、`updateMe`、`charG`、`poseFor`、`walkLoop`、`walkTo`。
 - 個人介面 `openMe`／`meSheetHTML`、通知 `noteOpen`、慶祝卡 `celShow`、提示 `toast`、「？」小說明 `qh`。
 
@@ -341,3 +341,4 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 107 | （沒有這一節） | — | — |
 | 108 | 立體化改版 | 未做 | docs/待實作/第108節.md；草原 5 張已做（17x、17y，見規格存檔 9.104、9.105）；其他地區、農場、城鎮還沒做 |
 | 109 | 3D 草原試玩回報修正 | 已完成 | docs/規格存檔.md；17z（9.106）；黑塊、頭閃的原因是推測，等 iPhone 確認 |
+| 110 | 花精靈新圖上線 | 已完成 | docs/規格存檔.md；18a（9.107）；換色暫停（`FY_RECOLOR=false`） |

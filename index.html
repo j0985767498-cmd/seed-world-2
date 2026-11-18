@@ -1670,7 +1670,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-18a';
+const BUILD='2026-11-18b';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -6547,8 +6547,8 @@ function fplotHTML(){const p=sheet.fplot,ph=phen(p.g,p.crop),lvl=p.stage==='seed
    圖：assets/fairy/fairy_<鍵>[_evo].png，頭髮、衣服、鞋子是灰色，照 26.2／85 用果實上色（fruitPrep／fruitPaint／光層），綠色部分（蒂頭遮罩）維持原色。
    存檔 state.fairy={<鍵>:{name,col,sb,no,evo,evoNo,at},follow:'<鍵>',mj:甜瓜吃醋旗標}。精靈之泉＝城鎮噴水池（TOWN_BLD 的 spring）。 */
 const FAIRY_BASE_READY=true;/* 110：基本型的圖到了 */
-const FY_RECOLOR=false;/* 110：新圖沒有可上色的灰色區，頭髮、衣服維持圖上的顏色；精靈之泉的「換色」暫停（喚醒時記下的 col 照存，開放上色時直接生效） */
-const FY_CV={w:360,h:456,fx:180,fy:412,body:360};/* 110：新圖的畫布（腳底 y=412、中心 x=180、身體高 360） *//* 95：精靈自己的全服名額拿掉，限量跟著標本走 */
+const FY_RECOLOR=true;/* 110（修訂）：新圖的頭髮、衣服、鞋子是中性灰，照 26.2 上色；設成 false 會改用原圖、精靈之泉的「換色」變灰 */
+const FY_CV={w:348,h:445,fx:174,fy:407,body:360};/* 110（修訂）：新圖的畫布 348×445（腳底 y=407、中心 x=174、身體高 360） *//* 95：精靈自己的全服名額拿掉，限量跟著標本走 */
 const FY_KEYS=['tomato','eggplant','chili','strawberry','corn','pumpkin','broccoli','zucchini','melon'];
 const FY={tomato:{g:'f',p:'開朗大姊頭'},eggplant:{g:'f',p:'文靜優雅'},chili:{g:'m',p:'熱血急性子'},strawberry:{g:'f',p:'甜美愛撒嬌'},corn:{g:'m',p:'愛幻想的小發明家'},pumpkin:{g:'m',p:'偷偷惡作劇'},broccoli:{g:'m',p:'外冷內熱'},zucchini:{g:'f',p:'酷酷的運動少女'},melon:{g:'f',p:'瘋狂愛爆炸'}};
 const FY_NAMES={
@@ -6668,7 +6668,7 @@ function fySpringHTML(){const t=isTestMode();
     const B=[];if(!has){if(nL)B.push(['wake','喚醒',1])}else{if(!f.evo&&nM)B.push(['evo','進化',1]);if(nL)B.push(['col',FY_RECOLOR?'換色':'換色（之後開放）',0])}
     const st=!has?(nL?`可用標本 ${nL} 個`:`需要${cr}的傳說以上標本`):(!f.evo?(nM?`神話標本 ${nM} 個`:`進化要${cr}的神話標本`):'已進化');
     h+=`<div class="fyrow"><span class="fyth">${has?fyArtHTML(k,f,72,false):fySil(k)}</span><div class="fyrc"><b>${fyN(k)}</b>${has?`<span class="meta">「${esc(f.name||'')}」${f.evo?'・已進化':''}</span>`:''}<span class="meta">${st}</span></div>
-      <div class="fyrb">${B.map(([a,n,pri])=>a==='col'&&!FY_RECOLOR?`<button class="btn" disabled aria-disabled="true">${n}</button>`:`<button class="btn${pri?' primary':''}" data-act="fyuse" data-a="${a}" data-k="${k}">${n}</button>`).join('')}${t&&!(has&&f.evo)?`<button class="btn small" data-act="fytest" data-a="${has?'evo':'wake'}" data-k="${k}">測試：直接${has?'進化':'喚醒'}</button>`:''}</div></div>`}
+      <div class="fyrb">${B.map(([a,n,pri])=>a==='col'&&!FY_RECOLOR?`<button class="btn" disabled aria-disabled="true">${n}</button>`:`<button class="btn${pri?' primary':''}" data-act="fyuse" data-a="${a}" data-k="${k}">${n}</button>`).join('')}${t&&!(has&&f.evo)?`<button class="btn small" data-act="fytest" data-a="${has?'evo':'wake'}" data-k="${k}">測試：直接${has?'進化':'喚醒'}</button>`:''}${t&&has?`<button class="btn small" data-act="fytest" data-a="col" data-k="${k}">測試：換色</button>`:''}</div></div>`}/* 110.3：用 FY_TESTCOL 的顏色檢查上色 */
   return h+`<button class="btn" data-act="fygrid">看我的精靈</button>`}
 function fyOneHTML(k){const f=fyMine()[k];if(!fyHas(k))return `<p class="note">還沒有${fyN(k)}。</p>`;const F=fyMine(),fol=F.follow===k,no=fyNoTxt(f);
   return `<h2>${esc(f.name||fyN(k))}</h2><div class="fybig">${fyArtHTML(k,f,240,true)}</div><p class="note" style="text-align:center">${fyN(k)}${f.evo?'・已進化':''}${no?`<br>${no}`:''}</p>
@@ -7030,7 +7030,7 @@ const W3D_HOST={
       {const Rn=rdHere();if(Rn){const x=Math.round(Rn.x),y=Math.round(Rn.y);L.push({key:'rnpc',kind:'rnpc',x,y,tk:'rnpc|'+exBiome+'|'+(rdSay&&rdSay.t||''),svg:riddleSVG(Rn),vb:`${x-120} ${y-176} 240 180`,pw:360,ph:270,vh:180})}}/* 對話泡泡也畫在同一張圖裡 */
       w3dSetPlants(L)}
     {const L=[];const add=(id,f,x,y,flip)=>{if(!f)return;const H=FY_FH,svg=fyArt(f.k,f,H,0);if(!svg)return;const tk='fy|'+f.k+'|'+f.col+'|'+(f.sb||'')+'|'+f.evo+'|'+FRUIT_VER;const T=fyTalk&&fyTalk.who===id&&Date.now()<fyTalk.until?{name:fyTalk.name,text:fyTalk.text}:null;
-      const k3=H/FY_CV.body;L.push({id,key:tk,svg,vb:`${f3(-FY_CV.fx*k3)} ${f3(H/2-FY_CV.fy*k3)} ${f3(FY_CV.w*k3)} ${f3(FY_CV.h*k3)}`,pw:180,ph:228,vh:FY_CV.h*k3*1.36,x,y,flip,talk:T,glow:null})};/* 110：整張畫布；光環、特效在圖上 */
+      const k3=H/FY_CV.body;L.push({id,key:tk,svg,vb:`${f3(-FY_CV.fx*k3)} ${f3(H/2-FY_CV.fy*k3)} ${f3(FY_CV.w*k3)} ${f3(FY_CV.h*k3)}`,pw:180,ph:230,vh:FY_CV.h*k3*1.36,x,y,flip,talk:T,glow:null})};/* 110：整張畫布；光環、特效在圖上 */
       add('me',fyMe(),m.x,m.y,faceFlip(meFace));for(const [id,o] of Object.entries(others)){if(!o||typeof o.x!=='number')continue;const A=animO[id]||o;add(id,fyUnpack(o.fy),A.x,A.y,faceFlip(o.f!=null?o.f:(o.d<0?3:1)))}
       w3dSetFairies(L)}},
   /* 點到植株、道具：和 SVG 畫面點到時一樣（近就打開、遠就先走過去）；點到地面就走過去 */

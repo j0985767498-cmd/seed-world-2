@@ -122,7 +122,7 @@ const BB_VS=`uniform float uTime,uSway,uPhase;varying vec2 vUv;varying float vFo
 void main(){vUv=uv;vec3 p=position;float h=uv.y;p.x+=uSway*h*h*(sin(uTime*1.5+uPhase)+0.4*sin(uTime*2.7+uPhase*1.3));
 vec4 mv=modelViewMatrix*vec4(p,1.);vFog=-mv.z;gl_Position=projectionMatrix*mv;}`;
 const BB_FS=`uniform sampler2D map;uniform vec3 uTint,uFogC;uniform float uAO,uFlip,uNear,uFar,uFlash,uOp;varying vec2 vUv;varying float vFog;
-void main(){vec2 uv=vec2(uFlip>0.5?1.-vUv.x:vUv.x,vUv.y);vec4 c=texture2D(map,uv);if(c.a<0.1)discard;
+void main(){vec2 uv=vec2(uFlip>0.5?1.-vUv.x:vUv.x,vUv.y);vec4 c=texture2D(map,uv);if(c.a<0.1)discard;c.rgb/=max(c.a,0.004);/* 109.1：貼圖是預乘透明度，邊緣先還原顏色，不會被算成黑邊 */
 float ao=mix(uAO,1.,smoothstep(0.,0.28,vUv.y));vec3 rgb=c.rgb*uTint*ao;rgb=mix(rgb,vec3(1.),uFlash);
 rgb=mix(rgb,uFogC,smoothstep(uNear,uFar,vFog));gl_FragColor=vec4(rgb,c.a*uOp);}`;
 const SH_FS=`uniform sampler2D map;uniform float uFlip,uA,uOp;varying vec2 vUv;
@@ -146,18 +146,20 @@ function gY(x,z){if(W.BR)for(const b of W.BR){const dx=x-b.c[0],dz=z-b.c[1],a=dx
 function brY(b,a){const t=a/b.L+0.5;return b.y0+(b.y1-b.y0)*t+b.arch*(1-(2*t-1)**2)+0.12}
 /* ---------- 圖片與 SVG 貼圖 ---------- */
 const TEXL=new Map();/* 素材圖 */
-function imgTex(url){let t=TEXL.get(url);if(t)return t;t=new T3.TextureLoader().load(url,()=>{if(W)W.dirty=true});t.encoding=T3.sRGBEncoding;t.anisotropy=4;TEXL.set(url,t);return t}
+function imgTex(url){let t=TEXL.get(url);if(t)return t;t=new T3.TextureLoader().load(url,()=>{if(W)W.dirty=true});t.encoding=T3.sRGBEncoding;t.anisotropy=4;t.premultiplyAlpha=true;TEXL.set(url,t);return t}
 /* SVG → canvas 貼圖：SVG 當成圖片畫的時候讀不到外部圖，所以先把每個 href 換成 data URL（同外觀快取） */
 const DURL=new Map(),SVGT=new Map();
 function toData(h){if(/^data:/.test(h))return Promise.resolve(h);let p=DURL.get(h);if(p)return p;p=fetch(h).then(r=>r.blob()).then(b=>new Promise(res=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=()=>res('');fr.readAsDataURL(b)})).catch(()=>'');DURL.set(h,p);return p}
-function svgTex(key,inner,vb,pw,ph){let e=SVGT.get(key);if(e){e.at=performance.now();return e.ready?e.tex:null}
-  const cv=document.createElement('canvas');cv.width=pw;cv.height=ph;e={tex:new T3.CanvasTexture(cv),ready:false,at:performance.now()};e.tex.encoding=T3.sRGBEncoding;SVGT.set(key,e);
+function svgTex(key,inner,vb,pw,ph,pin){let e=SVGT.get(key);if(e){e.at=performance.now();if(pin)e.pin=true;return e.ready?e.tex:null}
+  const cv=document.createElement('canvas');cv.width=pw;cv.height=ph;e={tex:new T3.CanvasTexture(cv),ready:false,at:performance.now(),pin:!!pin};e.tex.encoding=T3.sRGBEncoding;e.tex.premultiplyAlpha=true;e.tex.needsUpdate=false;SVGT.set(key,e);
   const hs=[...new Set([...inner.matchAll(/href="([^"#][^"]*)"/g)].map(m=>m[1]))];
   Promise.all(hs.map(toData)).then(us=>{let s=inner;hs.forEach((h,i)=>{s=s.split('href="'+h+'"').join('href="'+us[i]+'"')});
     const svg=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="${vb}" width="${pw}" height="${ph}">${s}</svg>`,im=new Image();
-    im.onload=()=>{const g=cv.getContext('2d');g.clearRect(0,0,pw,ph);g.drawImage(im,0,0,pw,ph);e.tex.needsUpdate=true;e.ready=true;if(W)W.dirty=true};im.onerror=()=>{e.ready=true};
+    const g=cv.getContext('2d'),draw=()=>{g.clearRect(0,0,pw,ph);g.drawImage(im,0,0,pw,ph);const d=g.getImageData(0,0,pw,ph).data;let n=0;for(let i=3;i<d.length;i+=16)if(d[i]>100)n++;return n};
+    /* 109.4：畫一次、等一下再畫一次，兩次一樣（裡面的頭髮、帽子、果實圖都到了）才換上去；最多試 5 次 */
+    im.onload=()=>{let last=-1,k=0;const step=()=>{const n=draw();if(n>0&&Math.abs(n-last)<=Math.max(2,n*0.005)||k>=5){e.tex.needsUpdate=true;e.ready=true;if(W)W.dirty=true;return}last=n;k++;setTimeout(step,120)};(im.decode?im.decode().catch(()=>{}):Promise.resolve()).then(()=>setTimeout(step,30))};im.onerror=()=>{e.ready=true};
     im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg)});
-  if(SVGT.size>220){const old=[...SVGT.entries()].sort((a,b)=>a[1].at-b[1].at).slice(0,40);for(const [k,v] of old){if(W&&W.inUse&&W.inUse.has(v.tex))continue;v.tex.dispose();SVGT.delete(k)}}
+  if(SVGT.size>220){const old=[...SVGT.entries()].sort((a,b)=>a[1].at-b[1].at).slice(0,40);for(const [k,v] of old){if(v.pin||(W&&W.inUse&&W.inUse.has(v.tex)))continue;v.tex.dispose();SVGT.delete(k)}}
   return null}
 
 /* ---------- 3D 樹、石頭、花叢（照試做頁「樹：葉叢」） ---------- */
@@ -200,7 +202,8 @@ function buildFlora(trees,rocks,bushes){const rnd=W.rnd,TPL=new T3.IcosahedronGe
     const ck=chunk(x,z);ck.x+=x;ck.z+=z;ck.n++;for(const b of bs)cards(b[0],b[1],b[2],b[3],tc,Rr,b[4],bl,y+h*0.35,cr,true,ck.d);for(const b of bs)cards(b[0],b[1],b[2],b[3],tc,Rr,b[4],bl,y+h*0.35,cr,false,ck.s)}
   for(const B of bushes){const y=hAt(W.HF,B.x,B.z),r=B.h*0.42,tc=[B.x,y+r*0.6,B.z],base=GREENS[(rnd()*5)|0];for(let i=0;i<4;i++){const ang=i*1.7+rnd();blob(B.x+Math.cos(ang)*r*0.6,y+r*0.6,B.z+Math.sin(ang)*r*0.5,r*(0.65+rnd()*0.3),tc,r*1.4,base,true,y)}}
   const geo=new T3.BufferGeometry();geo.setAttribute('position',new T3.Float32BufferAttribute(P,3));geo.setAttribute('normal',new T3.Float32BufferAttribute(N,3));geo.setAttribute('color',new T3.Float32BufferAttribute(C,3));geo.setAttribute('aSway',new T3.Float32BufferAttribute(S,1));
-  const SWAY=c=>{c.uniforms.uTime=W.UT;c.uniforms.uSw=W.SW;c.vertexShader='uniform float uTime;uniform float uSw;attribute float aSway;\n'+c.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nfloat ph=position.x*0.35+position.z*0.27;transformed.x+=uSw*aSway*(sin(uTime*1.3+ph)+0.35*sin(uTime*2.9+ph*1.7));transformed.z+=uSw*aSway*0.5*sin(uTime*1.1+ph*1.3);')};
+  const SWAY=c=>{c.uniforms.uTime=W.UT;c.uniforms.uSw=W.SW;c.uniforms.uHole=W.HOLE;c.vertexShader='uniform float uTime;uniform float uSw;attribute float aSway;varying float vHz;\n'+c.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nfloat ph=position.x*0.35+position.z*0.27;transformed.x+=uSw*aSway*(sin(uTime*1.3+ph)+0.35*sin(uTime*2.9+ph*1.7));transformed.z+=uSw*aSway*0.5*sin(uTime*1.1+ph*1.3);').replace('#include <project_vertex>','#include <project_vertex>\nvHz=-mvPosition.z;');
+    c.fragmentShader='uniform vec4 uHole[6];varying float vHz;\n'+c.fragmentShader.replace('void main() {','void main() {\nfor(int i=0;i<6;i++){vec4 H=uHole[i];if(H.z>0.&&vHz<H.w-0.4){float dd=distance(gl_FragCoord.xy,H.xy)/H.z;if(dd<1.){vec2 q=mod(floor(gl_FragCoord.xy),4.);float b=(mod(q.x,2.)*2.+mod(q.y,2.)+(q.x>=2.?0.5:0.)+(q.y>=2.?0.25:0.))/4.;if(b<0.9*(1.-smoothstep(0.55,1.,dd)))discard;}}}')};/* 109.3：樹冠在角色／怪物前面時挖網點 */
   const leafMat=new T3.MeshLambertMaterial({vertexColors:true});leafMat.onBeforeCompile=SWAY;
   const leaves=new T3.Mesh(geo,leafMat);leaves.castShadow=true;leaves.receiveShadow=true;W.G3.add(leaves);
   const cm=new T3.MeshLambertMaterial({vertexColors:true,map:LEAF(),alphaTest:0.5,side:T3.DoubleSide});cm.onBeforeCompile=SWAY;
@@ -310,7 +313,7 @@ function mushRing(x,z,s,rnd){const g=new T3.Group(),R=0.62*s,cap=lam('#D2493B'),
 function w3dEnter(bk,id){ensureR();if(W)w3dLeave(true);
   const M=W3D_HOST.map();if(!M||!M._raw)throw new Error('沒有 3D 用的地圖資料');
   const rnd=mkRnd(hsh('w3d|'+bk+'|'+id));
-  W={bk,id,M,rnd,scene:new T3.Scene(),BBS:[],G3:new T3.Group(),UT:{value:0},SW:{value:1},UN:{value:30},UF:{value:62},dirty:true,mons:new Map(),plants:new Map(),others:new Map(),inUse:new Set(),me:{x:400,y:600,face:2,svg:null},sig:0,lodT:0,lastMs:0,tgt:null,eco:null};
+  W={HOLE:{value:[0,1,2,3,4,5].map(()=>new T3.Vector4(0,0,0,0))},fys:new Map(),glows:[],bk,id,M,rnd,scene:new T3.Scene(),BBS:[],G3:new T3.Group(),UT:{value:0},SW:{value:1},UN:{value:30},UF:{value:62},dirty:true,mons:new Map(),plants:new Map(),others:new Map(),inUse:new Set(),me:{x:400,y:600,face:2,svg:null},sig:0,lodT:0,lastMs:0,tgt:null,eco:null};
   BBGEO=BBGEO||(()=>{const g=new T3.PlaneGeometry(1,1);g.translate(0,0.5,0);return g})();
   const fogC=hex('#D6E8CF');W.FOGS=new T3.Vector3(Math.pow(fogC.r,1/2.2),Math.pow(fogC.g,1/2.2),Math.pow(fogC.b,1/2.2));
   W.scene.background=hex('#CFE3C8');W.scene.fog=new T3.Fog('#D6E8CF',30,62);W.scene.add(W.G3);
@@ -322,13 +325,17 @@ function w3dEnter(bk,id){ensureR();if(W)w3dLeave(true);
    W.ground=new T3.Mesh(geo,new T3.MeshLambertMaterial({map:buildGroundTex(M,HF,rnd)}));W.ground.receiveShadow=true;W.scene.add(W.ground)}
   buildBridges(M);buildObjects(M);buildWater(M);
   W.me.bb=null;sizeR();applyEco(true);
-  R.cv.style.display='block';placeCam(true);
+  R.cv.style.display='block';placeCam(true);try{W3D_HOST.pump()}catch(e){}holes();R.rd.render(W.scene,W.cam);R.draws++;
   if(!R.raf)R.raf=requestAnimationFrame(loop);
   return true}
 function buildObjects(M){const bk=M.bk,ART=REGION_ART[bk],FLAT=REGION_FLAT[bk]||{},dir=(REGION_CFG[bk]||{}).dir||bk,rnd=W.rnd,trees=[],rocks=[],bushes=[],fences=[];
   const url=f=>`assets/${dir}/${f}.png?v=${BUILD}`;
   const add=(k,px,py,txt,op)=>{op=op&&typeof op==='object'?op:{};const a=ART[k];if(!a)return;const s=op.s||1,x=px*U,z=py*U,h=a[1]*s*U;
-    if(k==='round_tree'||k==='oak'){trees.push({x,z,h:h*TREE_K,k,br:op.br||1});return}
+    if(k==='round_tree'||k==='oak'){
+      if(py>M.H-170){if(rnd()<0.6)bushes.push({x,z,h:1.25+rnd()*0.4});return}/* 下緣（靠鏡頭那側）不放樹，只放矮灌木 */
+      if(op.edge){if(rnd()<0.6)trees.push({x,z,h:h*TREE_K,k,br:op.br||1});return}/* 邊界的樹留六成 */
+      if(op.hero){trees.push({x,z,h:h*TREE_K,k,br:op.br||1});return}/* 地標樹（大橡樹） */
+      bushes.push({x,z,h:1.35+rnd()*0.35});return}/* 可走範圍裡的樹換成矮灌木（2D 碰撞還在，所以要看得到東西） */
     if(k==='flower_bush'){bushes.push({x,z,h:h*1.15});return}
     if(k==='boulder'){const sz=h*0.55;rocks.push({x,y:hAt(W.HF,x,z)+sz*0.2,z,sx:sz*(1+rnd()*0.4),sy:sz*(0.7+rnd()*0.3),sz:sz*(0.9+rnd()*0.3),ry:rnd()*6,c:[0x9c9d8d,0xa9a996,0x8f9183][(rnd()*3)|0]});if(s>0.9&&rnd()<0.6)rocks.push({x:x+sz*0.9,y:hAt(W.HF,x,z)+sz*0.05,z:z+sz*0.4,sx:sz*0.45,sy:sz*0.32,sz:sz*0.4,ry:rnd()*6,c:0x9a9b8a});return}
     if(k==='haystack'){haystack(x,z,h*1.05);return}
@@ -346,8 +353,9 @@ function buildObjects(M){const bk=M.bk,ART=REGION_ART[bk],FLAT=REGION_FLAT[bk]||
   /* 地圖外面再種一圈樹，鏡頭靠邊時不會空空的（不擋路、只是背景） */
   {const MW=W.HF.MW,MD=W.HF.MD,ex=(M.exits||[]).filter(e=>e.side);
    const gapAt=(x,z)=>ex.some(e=>{const c=e.c*U,h=e.w*U/2+1.4;return e.side==='n'?(z<0.5&&Math.abs(x-c)<h):e.side==='s'?(z>MD-0.5&&Math.abs(x-c)<h):e.side==='w'?(x<0.5&&Math.abs(z-c)<h):(x>MW-0.5&&Math.abs(z-c)<h)});
-   for(let i=0;i<70;i++){let x,z;const side=i%4;if(side===0){x=-1.5-rnd()*8;z=-4+rnd()*(MD+8)}else if(side===1){x=MW+1.5+rnd()*8;z=-4+rnd()*(MD+8)}else if(side===2){x=-6+rnd()*(MW+12);z=-1.2-rnd()*7}else{x=-6+rnd()*(MW+12);z=MD+3+rnd()*6}
-     if(gapAt(x,z))continue;trees.push({x,z,h:(3.2+rnd()*1.6)*TREE_K,k:rnd()<0.4?'oak':'round_tree',br:0.88})}}
+   for(let i=0;i<48;i++){let x,z;const side=i%3;/* 地圖外面只種上、左、右（下緣不種） */if(side===0){x=-1.5-rnd()*8;z=-4+rnd()*(MD+8)}else if(side===1){x=MW+1.5+rnd()*8;z=-4+rnd()*(MD+8)}else if(side===2){x=-6+rnd()*(MW+12);z=-1.2-rnd()*7}else{x=-6+rnd()*(MW+12);z=MD+3+rnd()*6}
+     if(gapAt(x,z))continue;trees.push({x,z,h:(3.2+rnd()*1.6)*TREE_K,k:rnd()<0.4?'oak':'round_tree',br:0.88})}
+   for(let i=0;i<18;i++){const x=-4+rnd()*(MW+8),z=MD+1.2+rnd()*5;if(gapAt(x,z))continue;bushes.push({x,z,h:1.1+rnd()*0.5})}}
   /* 崖腳、崖邊的岩塊，打破一整面牆的感覺 */
   for(const T of M._T||[])for(let px=20;px<M.W-10;px+=30+rnd()*34){if(px>T.gap[0]-70&&px<T.gap[1]+70)continue;for(const [py,top] of [[T.Bt(px)+6,false],[T.E(px)+2,true]]){if(rnd()<0.35)continue;const x=px*U,z=py*U,sz=(top?0.25:0.38)+rnd()*0.4;rocks.push({x,y:hAt(W.HF,x,z)+sz*0.1,z,sx:sz*(1.1+rnd()*0.6),sy:sz*(0.7+rnd()*0.5),sz:sz,ry:rnd()*6,c:[0x9a8d74,0x8b7f69,0xa79a80,0x8f907f][(rnd()*4)|0]})}}
   /* 河邊、池邊的石頭 */
@@ -362,9 +370,10 @@ function w3dLeave(quick){if(!W)return;const w=W;W=null;
 
 /* ---------- 遊戲狀態 → 立牌 ---------- */
 function w3dSetPlayer(x,y,face,svg){if(!W)return;W.me.x=x;W.me.y=y;W.me.face=face;if(svg)W.me.svg=svg}
-function avatarBB(o,S){/* S：{key,svg}；角色的 SVG 以腳底為原點，畫在 -32 -64 64 68 */
-  const tex=svgTex(S.key,S.svg,'-32 -64 64 68',192,204);
-  if(!o.bb){if(!tex)return;const h=68*1.15*CK*U;o.bb=billboard(tex,o.x*U,o.y*U,{w:h*64/68,h,tint:false,flip:false,shLen:0.5,sink:0.02});o.tex=tex}
+const AVB='-36 -80 72 84',AVW=216,AVH=252;/* 角色的 SVG 以腳底為原點；上方多留 16（帽子、頭髮） */
+function avatarBB(o,S){/* S：{key,svg} */
+  const tex=svgTex(S.key,S.svg,AVB,AVW,AVH,o===W.me);
+  if(!o.bb){if(!tex)return;const h=84*1.15*CK*U;o.bb=billboard(tex,o.x*U,o.y*U,{w:h*72/84,h,tint:false,flip:false,shLen:0.42,sink:0.02});o.tex=tex}
   else if(tex&&tex!==o.tex){o.bb.m.material.uniforms.map.value=tex;o.tex=tex}
   if(o.tex)W.inUse.add(o.tex)}
 function w3dSetOthers(list){if(!W)return;const seen=new Set();for(const p of list){seen.add(p.id);let o=W.others.get(p.id);if(!o){o={x:p.x,y:p.y,bb:null};W.others.set(p.id,o)}o.x=p.x;o.y=p.y;avatarBB(o,p);if(o.bb)placeBB(o.bb,o.x*U,o.y*U,0)}
@@ -387,18 +396,58 @@ function w3dSetPlants(list){if(!W)return;const seen=new Set();
   for(const p of list){seen.add(p.key);let o=W.plants.get(p.key);const tex=svgTex(p.tk,p.svg,p.vb,p.pw,p.ph);
     if(!o){if(!tex)continue;const h=p.vh*CK*U;o={bb:billboard(tex,p.x*U,p.y*U,{w:h*p.pw/p.ph,h,tint:false,flip:false,shLen:0.45,sink:0}),tex};o.bb.m.userData.pick={kind:p.kind,key:p.key};W.plants.set(p.key,o)}
     else if(tex&&tex!==o.tex){o.bb.m.material.uniforms.map.value=tex;o.tex=tex}
-    W.inUse.add(o.tex);placeBB(o.bb,p.x*U,p.y*U,p.bob||0)}
-  for(const [k,o] of W.plants)if(!seen.has(k)){dropBB(o.bb);W.plants.delete(k)}}
+    W.inUse.add(o.tex);placeBB(o.bb,p.x*U,p.y*U,p.bob||0);o.p=p;if(o.ph==null)o.ph=Math.random()}
+  /* 109.1：夢幻色的光層只給離角色最近的 16 株 */
+  const gl=[...W.plants.values()].filter(o=>o.p&&o.p.glow).sort((a,b)=>Math.hypot(a.p.x-W.me.x,a.p.y-W.me.y)-Math.hypot(b.p.x-W.me.x,b.p.y-W.me.y));const t=performance.now()/1000;
+  for(const o of W.plants.values())o.near=false;gl.slice(0,16).forEach(o=>o.near=true);for(const o of W.plants.values())glowFor(o,o.p||{},t);
+  for(const [k,o] of W.plants)if(!seen.has(k)){glowFor(o,{},t);dropBB(o.bb);W.plants.delete(k)}}
+/* 發光、閃點：加亮混合的立牌（不畫進植株的貼圖） */
+let GLOWT=null,START=null;
+function glowTex(){if(GLOWT)return GLOWT;const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d'),gr=g.createRadialGradient(64,64,0,64,64,64);gr.addColorStop(0,'rgba(255,255,255,1)');gr.addColorStop(0.35,'rgba(255,255,255,.45)');gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.fillRect(0,0,128,128);GLOWT=new T3.CanvasTexture(c);return GLOWT}
+function starTex(){if(START)return START;const c=document.createElement('canvas');c.width=c.height=64;const g=c.getContext('2d');g.translate(32,32);g.fillStyle='#fff';for(const [r,w] of [[30,4],[20,3]]){g.beginPath();g.moveTo(0,-r);g.lineTo(w,-w);g.lineTo(r,0);g.lineTo(w,w);g.lineTo(0,r);g.lineTo(-w,w);g.lineTo(-r,0);g.lineTo(-w,-w);g.closePath();g.fill();g.rotate(Math.PI/4)}START=new T3.CanvasTexture(c);return START}
+function addSpr(tex,col){const m=new T3.Sprite(new T3.SpriteMaterial({map:tex,color:new T3.Color(col),blending:T3.AdditiveBlending,transparent:true,depthWrite:false,fog:true}));m.renderOrder=6;W.scene.add(m);return m}
+function dropSpr(m){if(!m)return;W.scene.remove(m);m.material.dispose()}
+/* 植株的夢幻色光：最多 16 株（離角色最近的，照 48.4） */
+function glowFor(o,p,t){const G=p.glow;if(!G||!o.near){if(o.gl){dropSpr(o.gl);dropSpr(o.st);o.gl=o.st=null}return}
+  if(!o.gl){o.gl=addSpr(glowTex(),G.col);o.st=addSpr(starTex(),'#ffffff')}
+  const ph=(t/G.per+o.ph)%1,k=0.5+0.5*Math.sin(ph*6.283),sz=G.size*U*CK*(G.s>=1?1.25:0.9),x=(p.x+G.dx)*U,z=p.y*U+0.05,y=gY(p.x*U,p.y*U)+G.up*U*CK;
+  o.gl.position.set(x,y,z);o.gl.scale.setScalar(sz*(1.6+0.25*k));o.gl.material.opacity=(G.s>=1?0.55:0.3)*(0.6+0.4*k);
+  const a=ph*6.283,r=sz*0.35;o.st.position.set(x+Math.cos(a)*r,y+Math.sin(a*1.3)*r*0.7,z+0.02);o.st.scale.setScalar(sz*0.55*(0.4+0.6*Math.abs(Math.sin(a*2))));o.st.material.opacity=(G.s>=1?0.9:0.5)*Math.abs(Math.sin(a*2));o.st.material.rotation=a}
+/* 109.5：精靈。立牌、跟在主人旁邊、飄在半空中（離地約 1 個角色高）、上下浮動、影子在地上；進化的有翅膀色的加亮光暈；說話時頭上一個對話框 */
+function bubbleTex(name,text){const c=document.createElement('canvas');c.width=384;c.height=128;const g=c.getContext('2d');g.fillStyle='rgba(255,252,240,.96)';g.strokeStyle='#6B4A2B';g.lineWidth=5;const r=22;g.beginPath();g.moveTo(r,4);g.arcTo(380,4,380,104,r);g.arcTo(380,104,4,104,r);g.arcTo(4,104,4,4,r);g.arcTo(4,4,380,4,r);g.closePath();g.fill();g.stroke();
+  g.fillStyle='#4A3020';g.font='bold 24px "PingFang TC","Noto Sans TC",sans-serif';g.textAlign='center';g.fillText(String(name||'').slice(0,8),192,40);g.font='26px "PingFang TC","Noto Sans TC",sans-serif';const t=String(text||'');g.fillText(t.length>14?t.slice(0,14)+'…':t,192,82);const tx=new T3.CanvasTexture(c);tx.encoding=T3.sRGBEncoding;return tx}
+function w3dSetFairies(list){if(!W)return;const seen=new Set(),now=performance.now()/1000;
+  for(const f of list){seen.add(f.id);let o=W.fys.get(f.id);const tex=svgTex(f.key,f.svg,f.vb,f.pw,f.ph,f.id==='me');
+    if(!o){if(!tex)continue;const h=f.vh*CK*U;o={bb:billboard(tex,f.x*U,f.y*U,{w:h*f.pw/f.ph,h,tint:false,flip:false,shLen:0.35,sink:0}),tex,cx:f.x,cy:f.y,ph:Math.random()*6};o.bb.m.userData.pick={kind:'fy',key:f.id};W.fys.set(f.id,o);if(f.glow){o.gl=addSpr(glowTex(),f.glow)}}
+    else if(tex&&tex!==o.tex){o.bb.m.material.uniforms.map.value=tex;o.tex=tex}
+    W.inUse.add(o.tex);
+    /* 跟隨：延遲追上（約 0.15 秒追一半），在主人背對的那一側 */
+    const tx=f.x+(f.flip?1:-1)*24*1.15*CK,ty=f.y-6,k=1-Math.pow(0.5,(W.dt||0.016)/0.15);if(Math.hypot(tx-o.cx,ty-o.cy)>220){o.cx=tx;o.cy=ty}else{o.cx+=(tx-o.cx)*k;o.cy+=(ty-o.cy)*k}
+    o.bb.lift=1.75+0.12*Math.sin(now*2.4+o.ph);o.bb.m.material.uniforms.uFlip.value=f.flip?1:0;placeBB(o.bb,o.cx*U,o.cy*U,0);
+    if(o.gl){o.gl.position.set(o.cx*U,o.bb.m.position.y+o.bb.h*0.45,o.cy*U-0.02);o.gl.scale.setScalar(o.bb.h*1.5);o.gl.material.opacity=0.35+0.15*Math.sin(now*2.1+o.ph)}
+    const bk=f.talk?f.talk.name+'|'+f.talk.text:'';if(bk!==o.bk){o.bk=bk;if(o.bub){dropSpr(o.bub);o.bub=null}if(bk){o.bub=new T3.Sprite(new T3.SpriteMaterial({map:bubbleTex(f.talk.name,f.talk.text),transparent:true,depthTest:false}));o.bub.renderOrder=9;W.scene.add(o.bub)}}
+    if(o.bub){o.bub.position.set(o.cx*U,o.bb.m.position.y+o.bb.h+0.55,o.cy*U);o.bub.scale.set(2.7,0.9,1)}}
+  for(const [k,o] of W.fys)if(!seen.has(k)){dropBB(o.bb);dropSpr(o.gl);if(o.bub){o.bub.material.map.dispose();dropSpr(o.bub)}W.fys.delete(k)}}
+/* 進地圖前先把角色所有方向、走路影格的貼圖畫好（109.4）；全部好了才回傳 true */
+function w3dPreload(list){let ok=true;for(const S of list){const t=svgTex(S.key,S.svg,AVB,AVW,AVH,true);if(!t)ok=false}return ok}
 function w3dDirty(){if(W)W.dirty=true}
 /* 螢幕座標 → 地圖座標（先看有沒有點到植株、道具，再打地面） */
 let RAY=null,MV=null;
 function w3dPick(sx,sy){if(!W)return null;if(!RAY){RAY=new T3.Raycaster();MV=new T3.Vector2()}MV.set(sx/innerWidth*2-1,-(sy/innerHeight)*2+1);RAY.setFromCamera(MV,W.cam);
-  const pk=[...W.plants.values()].map(o=>o.bb.m);const h=RAY.intersectObjects(pk)[0];if(h&&h.object.userData.pick)return {...h.object.userData.pick,x:h.object.position.x/U,y:h.object.position.z/U};
+  const pk=[...W.plants.values(),...W.fys.values()].map(o=>o.bb.m);const h=RAY.intersectObjects(pk)[0];if(h&&h.object.userData.pick)return {...h.object.userData.pick,x:h.object.position.x/U,y:h.object.position.z/U};
   const g=RAY.intersectObject(W.ground)[0];if(!g)return null;return {kind:'ground',x:g.point.x/U,y:g.point.z/U}}
 /* 測試用：地圖座標 ↔ 3D 座標 */
 function w3dToWorld(px,py){return W?[px*U,hAt(W.HF,px*U,py*U),py*U]:[px*U,0,py*U]}
 function w3dToMap(x,z){return [x/U,z/U]}
 
+/* 109.3：要透視的對象（角色、正在打的怪物、附近的怪物）→ 著色器的 uHole（畫面上的 px、半徑、深度） */
+const HV=[];
+function holes(){const L=[];if(W.me.bb)L.push([W.me.x,W.me.y,1.75]);
+  const ms=[...W.mons.values()].filter(o=>o.bb&&!o.dieAt).map(o=>({o,d:Math.hypot(o.bb.x/U-W.me.x,o.bb.z/U-W.me.y)})).filter(a=>a.d<320).sort((a,b)=>a.d-b.d).slice(0,5);for(const a of ms)L.push([a.o.bb.x/U,a.o.bb.z/U,Math.max(1.1,a.o.bb.h)]);
+  W.cam.updateMatrixWorld();const pr=R.rd.getPixelRatio(),Wd=innerWidth*pr,Ht=innerHeight*pr;if(!HV.length)for(let i=0;i<3;i++)HV.push(new T3.Vector3());
+  for(let i=0;i<6;i++){const H=W.HOLE.value[i];if(i>=L.length){H.set(0,0,0,0);continue}const [px,py,hh]=L[i],x=px*U,z=py*U,y=gY(x,z);
+    HV[0].set(x,y+hh*0.5,z).project(W.cam);HV[1].set(x,y,z).project(W.cam);HV[2].set(x,y+hh,z).project(W.cam);
+    const sx=(HV[0].x+1)/2*Wd,sy=(HV[0].y+1)/2*Ht,r=Math.abs(HV[2].y-HV[1].y)/2*Ht*1.5,dz=-HV[0].set(x,y+hh*0.5,z).applyMatrix4(W.cam.matrixWorldInverse).z;H.set(sx,sy,r,dz)}}
 /* ---------- 鏡頭 ---------- */
 function placeCam(snap){const [,p,d]=VIEWS3[vi],pr=p*Math.PI/180,MW=W.HF.MW,MD=W.HF.MD;
   const tx=Math.max(Math.min(MW/2,5.4),Math.min(Math.max(MW/2,MW-5.4),W.me.x*U)),tz=Math.max(2.6,Math.min(MD-1.4,W.me.y*U+0.4));
@@ -425,7 +474,7 @@ function loop(ts){R.raf=0;if(!W)return;
   try{W3D_HOST.pump()}catch(e){console.error(e)}
   /* 玩家 */
   if(W.me.svg)avatarBB(W.me,W.me.svg);if(W.me.bb)placeBB(W.me.bb,W.me.x*U,W.me.y*U,W.me.bob||0);
-  placeCam(false);
+  placeCam(false);holes();
   W.lodT+=dt;if(W.lodT>0.25){W.lodT=0;for(const L of W.LOD){const near=Math.hypot(L.x-W.ct.x,(L.z-W.ct.z)*0.8)<12;if(near!==L.near){L.near=near;L.md.visible=near;L.ms.visible=!near;W.dirty=true;if(W.eco)R.rd.shadowMap.needsUpdate=true}}}
   if(!W.eco){W.sun.position.set(W.ct.x-12,W.ct.y+22,W.ct.z-10);W.sun.target.position.copy(W.ct)}
   let sig=W.me.x*7.1+W.me.y*3.3+(W.me.bob||0)*11+W.cam.position.x*5.7+W.cam.position.z*2.9+W.cam.position.y;
@@ -435,7 +484,7 @@ function loop(ts){R.raf=0;if(!W)return;
   const idleOK=!W.eco&&ts-R.lastDraw>50;
   if(W.dirty||idleOK){R.rd.render(W.scene,W.cam);R.lastDraw=ts;W.dirty=false;R.draws++;try{if(window.PF)window.PF.d3=(window.PF.d3||0)+1}catch(e){}}}
 
-window.w3dEnter=w3dEnter;window.w3dLeave=w3dLeave;window.w3dSetPlayer=w3dSetPlayer;window.w3dSetOthers=w3dSetOthers;window.w3dSetMonsters=w3dSetMonsters;window.w3dSetPlants=w3dSetPlants;window.w3dPick=w3dPick;window.w3dDirty=w3dDirty;
+window.w3dEnter=w3dEnter;window.w3dLeave=w3dLeave;window.w3dSetPlayer=w3dSetPlayer;window.w3dSetOthers=w3dSetOthers;window.w3dSetMonsters=w3dSetMonsters;window.w3dSetPlants=w3dSetPlants;window.w3dPick=w3dPick;window.w3dSetFairies=w3dSetFairies;window.w3dPreload=w3dPreload;window.w3dDirty=w3dDirty;
 window.w3dView=w3dView;window.w3dViewName=w3dViewName;window.w3dToWorld=w3dToWorld;window.w3dToMap=w3dToMap;window.W3D_U=U;
 window.w3dHeightOf=(M)=>{const HF=buildHeight(M,mkRnd(hsh('w3d|'+M.bk+'|'+M.id)));return (px,py)=>hAt(HF,px*U,py*U)};
 window.w3dInfo=()=>W?{draws:R.draws,bbs:W.BBS.length,tris:R.rd.info.render.triangles,calls:R.rd.info.render.calls,view:VIEWS3[vi][0],eco:W.eco}:null;

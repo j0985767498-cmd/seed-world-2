@@ -917,6 +917,7 @@ details.gfold .gfb{margin-top:8px}
 @keyframes monin{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.mon .ms.hit{animation:none}.mon .mb.die{animation:monfade .5s forwards}#monSw .swg{animation:none}}
 /* 108（17x）：3D 畫面 */
+#fadeOv .w3dmsg{position:absolute;left:0;right:0;top:46%;text-align:center;color:#FFF6E0;font:600 16px var(--uifont,sans-serif)}
 #w3dc{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;display:none;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 body.w3d #scene{visibility:hidden}
 #w3dViewBtn{position:fixed;right:8px;top:calc(env(safe-area-inset-top,0px) + 420px);z-index:6;background:rgba(255,250,235,.94);border:2px solid #6b4a2b;border-radius:10px;padding:5px 10px;font:600 13px var(--uifont,sans-serif);color:#4a3020;box-shadow:0 2px 0 rgba(0,0,0,.18)}
@@ -1669,7 +1670,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-17y';
+const BUILD='2026-11-17z';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -4007,7 +4008,7 @@ function stallSVG(i,hl){/* 15b：攤位用 assets/town/ 的圖，紅綠交錯；
   return s+'</g>';
 }
 function renderWorld(){
-  if(!state)return;if(W3D_ON&&scene==='explore'){try{w3dDirty()}catch(e){}return}/* 108：3D 畫面開著時不重建 SVG 地圖 */const L=document.getElementById('worldLayer');
+  if(!state)return;if(scene==='explore'&&(W3D_ON||w3dWant())){try{w3dDirty()}catch(e){}return}/* 108、109.2：3D 開著或正在載入時不畫 SVG 地圖 */const L=document.getElementById('worldLayer');
   if(scene==='market'){L._fk=null;L.innerHTML=marketWorld(hoverStall);return}
   {const F=document.getElementById('fgLayer');if(F&&(regFg||townFgOn)&&!regIn()&&scene!=='market'){F.innerHTML='';regFg='';townFgOn=false}}
   if(scene==='explore'){L._fk=null;L.innerHTML=exploreWorld();if(regHas(exBiome)){const F=document.getElementById('fgLayer');if(F)F.innerHTML=regFg}return}
@@ -6990,21 +6991,28 @@ var W3D_SVG=(()=>{try{return localStorage.getItem('sw_3dsvg')==='1'}catch(e){ret
 const W3D_MAPS={grass:{entry:1,meadow:1,river:1,hill:1,old_well:1}};/* 108：草原 5 張（秘境之後再做） */
 var W3D_ST=0,W3D_ON=false,W3D_N=0;/* W3D_ST：0 還沒載、1 載入中、2 好了、-1 不能用 */
 function w3dGL(){try{const c=document.createElement('canvas');return !!(window.WebGLRenderingContext&&(c.getContext('webgl')||c.getContext('experimental-webgl')))}catch(e){return false}}
-function w3dWant(){return !!(state&&scene==='explore'&&regIn()&&!regBusy&&W3D_USER&&!(isTestMode()&&W3D_SVG)&&W3D_ST!==-1&&(W3D_MAPS[exBiome]||{})[regMap])}
+function w3dWant(){return !!(state&&scene==='explore'&&regIn()&&W3D_USER&&!(isTestMode()&&W3D_SVG)&&W3D_ST!==-1&&(W3D_MAPS[exBiome]||{})[regMap])}/* 109.2：換地圖中（regBusy）也算，不要先退回 SVG */
 function w3dLoad(cb){if(W3D_ST===2)return cb();w3dLoad.q.push(cb);if(W3D_ST===1)return;if(!w3dGL()){W3D_ST=-1;w3dLoad.q=[];return}W3D_ST=1;
-  const add=(src,ok)=>{const sc=document.createElement('script');sc.src=src+'?v='+BUILD;sc.onload=ok;sc.onerror=()=>{W3D_ST=-1;w3dLoad.q=[];w3dSync.k='';w3dSync()};document.head.appendChild(sc)};
+  const add=(src,ok)=>{const sc=document.createElement('script');sc.src=src+'?v='+BUILD;sc.onload=ok;sc.onerror=()=>{W3D_ST=-1;w3dLoad.q=[];w3dSync.k='';w3dCover(false);w3dSync()};document.head.appendChild(sc)};
   add('lib/three.min.js',()=>add('js/w3d.js',()=>{W3D_ST=2;const q=w3dLoad.q;w3dLoad.q=[];q.forEach(f=>{try{f()}catch(e){console.error(e)}})}))}
 w3dLoad.q=[];
-function w3dOff(){if(!W3D_ON)return;W3D_ON=false;try{w3dLeave()}catch(e){}try{document.body.classList.remove('w3d')}catch(e){}if(state&&scene==='explore'){renderWorld();renderChars();updateCam()}w3dBtn()}
+function w3dOff(){try{document.body.classList.remove('w3d')}catch(e){}if(W3D_ST===-1)try{w3dCover(false)}catch(e){}if(!W3D_ON){if(state&&scene==='explore'){renderWorld();renderChars()}return}W3D_ON=false;try{w3dLeave()}catch(e){}if(state&&scene==='explore'){renderWorld();renderChars();updateCam()}w3dBtn()}
+function w3dCover(on,msg){const ov=document.getElementById('fadeOv');if(!ov)return;let t=ov.querySelector('.w3dmsg');if(on&&msg&&!t){t=document.createElement('div');t.className='w3dmsg';ov.appendChild(t)}if(t){t.textContent=msg||'';t.hidden=!on||!msg}ov.style.opacity=on?'1':'0'}
 function w3dSync(){const want=w3dWant(),key=want?exBiome+'|'+regMap:'';if(key===w3dSync.k)return;w3dSync.k=key;
   if(!want){w3dOff();return}
-  w3dLoad(()=>{if(w3dSync.k!==key)return;try{w3dEnter(exBiome,regMap);W3D_ON=true;document.body.classList.add('w3d')}catch(e){console.error(e);try{crumb('3D 失敗 '+e.message)}catch(x){}W3D_ST=-1;w3dSync.k='';w3dOff()}w3dBtn()})}
+  try{document.body.classList.add('w3d')}catch(e){}/* 載入中也先把 SVG 藏起來（109.2） */
+  const slow=W3D_ST!==2;if(slow)w3dCover(true,'載入中…');
+  w3dLoad(()=>{if(w3dSync.k!==key)return;try{w3dEnter(exBiome,regMap);setTimeout(()=>{try{if(W3D_ON)w3dPreload(w3dMePoses())}catch(e){}},700);/* 109.4：先畫現在的樣子，其他方向、走路影格隨後全部先畫好（畫好才換） */W3D_ON=true;document.body.classList.add('w3d')}catch(e){console.error(e);try{crumb('3D 失敗 '+e.message)}catch(x){}W3D_ST=-1;w3dSync.k='';w3dOff()}w3dBtn();if(slow&&!regBusy)setTimeout(()=>w3dCover(false),60)})}
 w3dSync.k='';
 function w3dBtn(){const b=document.getElementById('w3dViewBtn');if(!b)return;b.hidden=!W3D_ON;if(W3D_ON){try{b.textContent='視角：'+w3dViewName()}catch(e){}try{const r=document.getElementById('mapBtn').getBoundingClientRect();if(r.height)b.style.top=Math.round(r.bottom+30)+'px'}catch(e){}}}/* 放在右邊「地圖」按鈕下面 */
 try{document.getElementById('w3dViewBtn').addEventListener('click',()=>{try{w3dView();w3dBtn()}catch(e){}})}catch(e){}
 /* 立牌用的姿勢只分幾格（走路四格、動作六格），同一個樣子共用同一張貼圖 */
+/* 109.1：夢幻色的光（加亮的立牌）：顏色、週期、果實在植株上的位置 */
+function w3dGlow(w){try{const ph=phen(wpGeno(w),w.crop),Ls=dreamLayers(ph);if(!Ls.length)return null;const L=Ls[0],c=RGBC[L.n]||[255,240,200],im=plantImgSVG(w.crop,'ripe',0,0,1),A=FRUIT_AT[w.crop]||{x:0.5,y:0.55,s:0.7};if(!im)return null;
+  return {col:`rgb(${c[0]},${c[1]},${c[2]})`,per:DREAM_PERIOD[L.n]||3,s:L.s,dx:(A.x-0.5)*im.w,up:im.h*(1-A.y),size:im.w*A.s*0.55}}catch(e){return null}}
 function w3dPose(isMe,o,t,moving,ph,face){const ps=poseFor(isMe,o,t);let q=-1;if(moving){q=Math.floor((((ph%6.2832)+6.2832)%6.2832)/1.5708);ps.ph=q*1.5708+0.4}else if(!ps.act)ps.t=0;if(ps.act)ps.actP=Math.floor(ps.actP*6)/6;ps.blink=false;ps.view=VIEWS[face];
   return {ps,k:ps.view+'|'+(faceFlip(face)?1:0)+'|'+q+'|'+(ps.act?ps.act+Math.round(ps.actP*6):'')}}
+function w3dMePoses(){const out=[],t=0;for(let f=0;f<8;f++)for(const mv of [false,true])for(let q=0;q<(mv?4:1);q++){const P=w3dPose(true,null,t,mv,q*1.5708+0.1,f);P.ps.act=null;out.push({key:'me|'+JSON.stringify(avPack(state.avatar))+'|'+P.k,svg:avatarSVG(state.avatar,faceFlip(f),P.ps)})}return out}
 const W3D_HOST={
   map:()=>regCur(),eco:()=>ecoOn(),cap:()=>frameCap(),
   pump(){const t=performance.now()/1000,m=curMe();
@@ -7013,16 +7021,21 @@ const W3D_HOST={
       L.push({id,x:A.x,y:A.y,key:'o|'+JSON.stringify(o.av)+'|'+P.k,svg:avatarSVG(o.av,faceFlip(of),P.ps)})}w3dSetOthers(L)}
     {const L=[],now=Date.now();if(MON_RT)for(const mm of MON_RT.list){if(!mm)continue;const I=MON_IMG[mm.k];if(!I)continue;
       L.push({id:mm._w3||(mm._w3=++W3D_N),x:mm.x,y:mm.y,face:mm.face,moving:mm.moving,wph:mm.ph,lastHit:mm.lastHit,dead:mm.dead,born:mm.born,hit:now-mm.lastHit<250&&!!MON_IMG[mm.k+'_hit'],src:monSrc(mm.k),srcHit:monSrc(mm.k+'_hit'),pxh:I[1]*monScale(mm.k,mm.boss),asp:I[0]/I[1],fly:(MON_DEF[mm.k]||{}).fly||0})}w3dSetMonsters(L)}
-    {const L=[];for(const w of exVisiblePlants()){const hl=w.key===hoverWp,x=Math.round(w.x),y=Math.round(w.y);L.push({key:'wp|'+w.key,kind:'wp',x,y,tk:w.key+'|'+(hl?1:0)+'|'+FRUIT_VER,svg:wpSVG(w,hl),vb:`${x-60} ${y-114} 120 120`,pw:192,ph:192,vh:120})}
+    {const L=[];for(const w of exVisiblePlants()){const hl=w.key===hoverWp,x=Math.round(w.x),y=Math.round(w.y);FRUIT_ANIM=false;const svg=wpSVG(w,hl);FRUIT_ANIM=false;L.push({key:'wp|'+w.key,kind:'wp',x,y,tk:w.key+'|'+(hl?1:0)+'|'+FRUIT_VER,svg,vb:`${x-60} ${y-114} 120 120`,pw:192,ph:192,vh:120,glow:w3dGlow(w)})}
       for(const it of exVisibleItems()){const hl=it.key===hoverItem,x=Math.round(it.x),y=Math.round(it.y);L.push({key:'it|'+it.key,kind:'item',x,y,tk:it.key+'|'+(hl?1:0)+'|'+FRUIT_VER,svg:itemSVG(it,hl),vb:`${x-28} ${y-50} 56 56`,pw:112,ph:112,vh:56,bob:Math.sin(t*2.4)*0.05})}
       {const d=roamHere();if(d){const x=Math.round(d.x),y=Math.round(d.y);L.push({key:'roam',kind:'roam',x,y,tk:'roam|'+d.spawnAt+'|'+FRUIT_VER,svg:roamSVG(d),vb:`${x-70} ${y-130} 140 140`,pw:200,ph:200,vh:140})}}
       {const Rn=rdHere();if(Rn){const x=Math.round(Rn.x),y=Math.round(Rn.y);L.push({key:'rnpc',kind:'rnpc',x,y,tk:'rnpc|'+exBiome+'|'+(rdSay&&rdSay.t||''),svg:riddleSVG(Rn),vb:`${x-120} ${y-176} 240 180`,pw:360,ph:270,vh:180})}}/* 對話泡泡也畫在同一張圖裡 */
-      w3dSetPlants(L)}},
+      w3dSetPlants(L)}
+    {const L=[];const add=(id,f,x,y,flip)=>{if(!f)return;const H=FY_FH,svg=fyArt(f.k,f,H,0);if(!svg)return;const tk='fy|'+f.k+'|'+f.col+'|'+(f.sb||'')+'|'+f.evo+'|'+FRUIT_VER;const T=fyTalk&&fyTalk.who===id&&Date.now()<fyTalk.until?{name:fyTalk.name,text:fyTalk.text}:null;
+      L.push({id,key:tk,svg,vb:`${-H*0.75} ${-H*0.7} ${H*1.5} ${H*1.4}`,pw:180,ph:168,vh:H*1.9,x,y,flip,talk:T,glow:f.evo?(FY_WING[f.k]||'#FFE6A0'):null})};
+      add('me',fyMe(),m.x,m.y,faceFlip(meFace));for(const [id,o] of Object.entries(others)){if(!o||typeof o.x!=='number')continue;const A=animO[id]||o;add(id,fyUnpack(o.fy),A.x,A.y,faceFlip(o.f!=null?o.f:(o.d<0?3:1)))}
+      w3dSetFairies(L)}},
   /* 點到植株、道具：和 SVG 畫面點到時一樣（近就打開、遠就先走過去）；點到地面就走過去 */
   tap(p){if(!state||curPanel||regBusy||!regIn())return;const m=curMe();
     if(p.kind==='wp'){const w=exVisiblePlants().find(x=>'wp|'+x.key===p.key);if(w){if(Math.hypot(w.x-m.x,w.y-m.y)<90)openWp(w);else walkTo(w.x,w.y+10,()=>openWp(w))}return}
     if(p.kind==='item'){const it=exVisibleItems().find(x=>'it|'+x.key===p.key);if(it){if(Math.hypot(it.x-m.x,it.y-m.y)<80)pickItem(it);else walkTo(it.x,it.y+6,()=>pickItem(it))}return}
     if(p.kind==='roam'||p.kind==='rnpc'){regTap(p.kind);return}
+    if(p.kind==='fy'){fyTap(p.key);return}/* 109.5：點精靈照舊說一句 */
     const M=regCur();walkTo(clamp(p.x,M.B.x0,M.B.x1),clamp(p.y,M.B.y0,M.B.y1))}
 };
 

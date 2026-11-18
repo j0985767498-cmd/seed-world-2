@@ -1669,7 +1669,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-17x';
+const BUILD='2026-11-17y';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -3120,7 +3120,7 @@ function renderSpeed(){
   const el=document.getElementById('testBox');if(!el)return;
   if(!TEST_MODE){el.innerHTML='';return}
   const on=isTestMode();testTagUpd();
-  let h=`<h3 style="margin-top:0">回報問題</h3>${crashHTML()}<h3>音效</h3><button class="btn${SFX_ON?' primary':''}" data-tool="sfx">音效：${SFX_ON?'開':'關'}（按一下切換）</button><h3>省電模式</h3><button class="btn${ecoOn()?' primary':''}" data-tool="eco">省電模式：${ecoOn()?'開':'關'}（按一下切換）</button><p class="note">減少動畫，手機比較不會熱、比較省電${RMQ.matches?'（手機設定了「減少動態效果」，已經自動開啟）':''}</p><h3>3D 畫面</h3><button class="btn${W3D_USER?' primary':''}" data-tool="w3d">3D 畫面：${W3D_USER?'開':'關'}（按一下切換）</button><p class="note">目前只有草原入口是 3D${W3D_ST===-1?'（這台裝置不能用 3D，已經用原本的畫法）':''}</p>${isTestMode()?`<button class="btn${W3D_SVG?' primary':''}" data-tool="w3dsvg">測試：強制 SVG：${W3D_SVG?'開':'關'}</button>`:''}${isStandalone()?'':`<h3>加到主畫面</h3><p class="note">把遊戲加到主畫面，打開就是全螢幕。${qh('iPhone：用 Safari 開，按下方的分享 → 加入主畫面。Android：Chrome 右上角選單 → 安裝應用程式（或加到主畫面）。')}</p>`}<h3>遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'標出機關和秘境，可以傳送。'+qh('只存在這台裝置，別人看不到。'):'和正式玩家看到的一樣。'}</p>`;
+  let h=`<h3 style="margin-top:0">回報問題</h3>${crashHTML()}<h3>音效</h3><button class="btn${SFX_ON?' primary':''}" data-tool="sfx">音效：${SFX_ON?'開':'關'}（按一下切換）</button><h3>省電模式</h3><button class="btn${ecoOn()?' primary':''}" data-tool="eco">省電模式：${ecoOn()?'開':'關'}（按一下切換）</button><p class="note">減少動畫，手機比較不會熱、比較省電${RMQ.matches?'（手機設定了「減少動態效果」，已經自動開啟）':''}</p><h3>3D 畫面</h3><button class="btn${W3D_USER?' primary':''}" data-tool="w3d">3D 畫面：${W3D_USER?'開':'關'}（按一下切換）</button><p class="note">目前只有草原是 3D${W3D_ST===-1?'（這台裝置不能用 3D，已經用原本的畫法）':''}</p>${isTestMode()?`<button class="btn${W3D_SVG?' primary':''}" data-tool="w3dsvg">測試：強制 SVG：${W3D_SVG?'開':'關'}</button>`:''}${isStandalone()?'':`<h3>加到主畫面</h3><p class="note">把遊戲加到主畫面，打開就是全螢幕。${qh('iPhone：用 Safari 開，按下方的分享 → 加入主畫面。Android：Chrome 右上角選單 → 安裝應用程式（或加到主畫面）。')}</p>`}<h3>遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'標出機關和秘境，可以傳送。'+qh('只存在這台裝置，別人看不到。'):'和正式玩家看到的一樣。'}</p>`;
   if(on)h+=`<h3>遠緣雜交</h3><button class="btn" data-tool="xc">跨界機率 100%：${(()=>{try{return localStorage.getItem('sw_xc')==='1'}catch(e){return false}})()?'開啟':'關閉'}（按一下切換）</button>`;
   if(on)h+=`<h3>櫻花之丘</h3><button class="btn" data-tool="sklook">花季外觀：${sakuraLook()?'櫻花（花季）':'綠葉（花季外）'}（按一下切換，只換畫面）</button><p class="note">測試模式沒有季節限制。<button type="button" class="qh" aria-expanded="false" aria-label="說明">？</button><span class="qhx" hidden>今天實際${sakuraBloom()?'是':'不是'}花季（每年 ${SAKURA_SEASON.from.join('/')}～${SAKURA_SEASON.to.join('/')}）。</span></p>`;
   if(on)h+=`<h3>會影響存檔的測試工具</h3><p class="note">用了存檔會和一般玩家不一樣。${qh('切回一般模式時，時間加速當 ×1、探索上限當開啟。')}</p><p class="note" style="margin:6px 0 2px">時間加速</p><div class="row2" style="grid-template-columns:repeat(4,1fr)">${SPEEDS.map(v=>`<button class="btn${state.speed===v?' primary':''}" data-spd="${v}">×${v}</button>`).join('')}</div>
@@ -6987,7 +6987,7 @@ function monTestRespawn(){if(!monHere())return;const S=monSlots();for(let i=0;i<
    載入失敗、不支援 WebGL、建場景出錯 → 照舊用 SVG 畫法。 */
 var W3D_USER=(()=>{try{return localStorage.getItem('sw_3d')!=='0'}catch(e){return true}})();
 var W3D_SVG=(()=>{try{return localStorage.getItem('sw_3dsvg')==='1'}catch(e){return false}})();
-const W3D_MAPS={grass:{entry:1}};
+const W3D_MAPS={grass:{entry:1,meadow:1,river:1,hill:1,old_well:1}};/* 108：草原 5 張（秘境之後再做） */
 var W3D_ST=0,W3D_ON=false,W3D_N=0;/* W3D_ST：0 還沒載、1 載入中、2 好了、-1 不能用 */
 function w3dGL(){try{const c=document.createElement('canvas');return !!(window.WebGLRenderingContext&&(c.getContext('webgl')||c.getContext('experimental-webgl')))}catch(e){return false}}
 function w3dWant(){return !!(state&&scene==='explore'&&regIn()&&!regBusy&&W3D_USER&&!(isTestMode()&&W3D_SVG)&&W3D_ST!==-1&&(W3D_MAPS[exBiome]||{})[regMap])}
@@ -7016,7 +7016,7 @@ const W3D_HOST={
     {const L=[];for(const w of exVisiblePlants()){const hl=w.key===hoverWp,x=Math.round(w.x),y=Math.round(w.y);L.push({key:'wp|'+w.key,kind:'wp',x,y,tk:w.key+'|'+(hl?1:0)+'|'+FRUIT_VER,svg:wpSVG(w,hl),vb:`${x-60} ${y-114} 120 120`,pw:192,ph:192,vh:120})}
       for(const it of exVisibleItems()){const hl=it.key===hoverItem,x=Math.round(it.x),y=Math.round(it.y);L.push({key:'it|'+it.key,kind:'item',x,y,tk:it.key+'|'+(hl?1:0)+'|'+FRUIT_VER,svg:itemSVG(it,hl),vb:`${x-28} ${y-50} 56 56`,pw:112,ph:112,vh:56,bob:Math.sin(t*2.4)*0.05})}
       {const d=roamHere();if(d){const x=Math.round(d.x),y=Math.round(d.y);L.push({key:'roam',kind:'roam',x,y,tk:'roam|'+d.spawnAt+'|'+FRUIT_VER,svg:roamSVG(d),vb:`${x-70} ${y-130} 140 140`,pw:200,ph:200,vh:140})}}
-      {const Rn=rdHere();if(Rn){const x=Math.round(Rn.x),y=Math.round(Rn.y);L.push({key:'rnpc',kind:'rnpc',x,y,tk:'rnpc|'+exBiome,svg:riddleSVG(Rn),vb:`${x-50} ${y-100} 100 104`,pw:160,ph:166,vh:104})}}
+      {const Rn=rdHere();if(Rn){const x=Math.round(Rn.x),y=Math.round(Rn.y);L.push({key:'rnpc',kind:'rnpc',x,y,tk:'rnpc|'+exBiome+'|'+(rdSay&&rdSay.t||''),svg:riddleSVG(Rn),vb:`${x-120} ${y-176} 240 180`,pw:360,ph:270,vh:180})}}/* 對話泡泡也畫在同一張圖裡 */
       w3dSetPlants(L)}},
   /* 點到植株、道具：和 SVG 畫面點到時一樣（近就打開、遠就先走過去）；點到地面就走過去 */
   tap(p){if(!state||curPanel||regBusy||!regIn())return;const m=curMe();

@@ -39,18 +39,36 @@ function extPaths(M){const B=M.B,out=[];for(const p of M._P||[]){const P=p.rb.pt
   for(const [i,j] of [[0,6],[n-1,n-7]]){const [x,y]=P[i];if(x>B.x0&&x<B.x1&&y>B.y0&&y<B.y1)continue;const dx=x-P[j][0],dy=y-P[j][1],d=Math.hypot(dx,dy)||1;out.push({a:[x,y],b:[x+dx/d*400,y+dy/d*400],hw:p.rb.hw[i]})}}
   return out}
 /* ---------- 高度網格 ---------- */
-function buildHeight(M,rnd){const MW=M.W*U,MD=M.H*U,x0=-PAD,z0=-PAD,w=MW+PAD*2,d=MD+PAD*2,st=0.5,nx=Math.ceil(w/st)+1,nz=Math.ceil(d/st)+1,G=new Float32Array(nx*nz);
+function buildHeight(M,rnd){const MW=M.W*U,MD=M.H*U,x0=-PAD,z0=-PAD,w=MW+PAD*2,d=MD+PAD*2,st=(M._T&&M._T.length)||(M._LG&&M._LG.length)||(M._RV&&M._RV.length)?0.35:0.5,nx=Math.ceil(w/st)+1,nz=Math.ceil(d/st)+1,G=new Float32Array(nx*nz);
   const pts=[];for(const p of M._P||[]){const rb=p.rb;for(let i=0;i<rb.pts.length;i+=2)pts.push([rb.pts[i][0]*U,rb.pts[i][1]*U,rb.hw[i]*U])}
   for(const e of extPaths(M))for(let t=0;t<=1;t+=0.05)pts.push([(e.a[0]+(e.b[0]-e.a[0])*t)*U,(e.a[1]+(e.b[1]-e.a[1])*t)*U,e.hw*U]);
   const B=M.B,bx0=B.x0*U,bx1=B.x1*U,bz0=B.y0*U,bz1=B.y1*U,ph=rnd()*6,ph2=rnd()*6;
+  const WP=waterPolys(M),wbb=WP.bb;
   for(let j=0;j<nz;j++)for(let i=0;i<nx;i++){const x=x0+i*st,z=z0+j*st;
     let h=0.22*Math.sin(x*0.55+ph)*Math.cos(z*0.45-0.4)+0.1*Math.sin(x*0.9+z*0.7+ph2)+0.035*Math.cos(x*1.6-z*1.2);
     let pd=1e9;for(const [px,pz,hw] of pts){const dd=Math.hypot(x-px,z-pz)-hw;if(dd<pd)pd=dd}
-    const fl=1-sstep(0,1.4,pd);h*=1-0.85*fl;
+    const fl=1-sstep(0,1.4,pd);h*=1-0.85*fl;h+=0.3;/* 墊高 0.3：沒有水的地方不會低於水面 */
     /* 地圖外面慢慢隆起成小丘，把場景圍起來（路經過的地方壓平） */
     const out=Math.max(bx0-x-0.8,x-bx1-0.8,bz0-z-1.8,z-bz1-2.5,0);h+=Math.min(3.2,0.32*out*out*0.5+0.25*out)*(1-fl*0.9);
+    /* 108.2：高台（崖頂一整片抬高）＋石階改成草地緩坡 */
+    if(M._T&&M._T.length){const px=x/U,py=z/U;let add=0;for(const T of M._T){const E=T.E(px),Bt=T.Bt(px);let hp=PLAT*sstep(Bt-8,E+(Bt-E)*0.45,py);/* 崖面集中在崖壁那一段的下半部，看起來是陡的 */
+      const dx=px-T.top[0],dy=py-T.top[1],sa=dx*T.u[0]+dy*T.u[1],wl=Math.abs(dx*T.u[1]-dy*T.u[0]),core=(T.gap[1]-T.gap[0])/2;
+      const hr=PLAT*sstep(0,1,1+sa*U/RAMP_L)*(1-sstep(core,core+RAMP_SH/U,wl));add=Math.max(add,hp,hr)}h+=add}
+    /* 108.4：河、池只能往下挖 */
+    if(WP.list.length&&x>wbb[0]-1.5&&x<wbb[2]+1.5&&z>wbb[1]-1.5&&z<wbb[3]+1.5){const r=waterDist(WP,x/U,z/U);
+      if(r.inside)h=Math.min(h,WSURF+0.02-0.64*sstep(6,52,r.d));else if(r.d<60)h=Math.min(h,WSURF+0.02+r.d*U*0.3)}/* 碰撞讓水邊往內 6px 還能走，那一圈留乾的 */
     G[j*nx+i]=h}
   return {G,nx,nz,x0,z0,st,w,d,MW,MD}}
+/* 水域：湖（v2lakeGroups 的外輪廓）＋河（帶狀多邊形），全部用地圖 px */
+const WSURF=-0.15,PLAT=2.8,RAMP_L=PLAT/0.3,RAMP_SH=4.5;
+function waterPolys(M){const list=[];if(!M.ice)for(const G of M._LG||[])list.push({poly:G.poly(0),lake:1});for(const r of M._RV||[])list.push({poly:r.rb.poly,lake:0});
+  const bb=[1e9,1e9,-1e9,-1e9];for(const L of list){let b=[1e9,1e9,-1e9,-1e9];for(const [x,y] of L.poly){b[0]=Math.min(b[0],x);b[1]=Math.min(b[1],y);b[2]=Math.max(b[2],x);b[3]=Math.max(b[3],y)}L.bb=b;bb[0]=Math.min(bb[0],b[0]*U);bb[1]=Math.min(bb[1],b[1]*U);bb[2]=Math.max(bb[2],b[2]*U);bb[3]=Math.max(bb[3],b[3]*U)}
+  return {list,bb}}
+function pip(poly,x,y){let c=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const a=poly[i],b=poly[j];if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])c=!c}return c}
+function edgeD(poly,x,y){let d=1e9;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const a=poly[j],b=poly[i],vx=b[0]-a[0],vy=b[1]-a[1],L=vx*vx+vy*vy||1;let t=((x-a[0])*vx+(y-a[1])*vy)/L;t=t<0?0:t>1?1:t;const ex=a[0]+vx*t-x,ey=a[1]+vy*t-y,e=ex*ex+ey*ey;if(e<d)d=e}return Math.sqrt(d)}
+/* 回傳 {inside, d}：在水裡時 d＝離岸多遠（取最深的那片），在岸上時 d＝離最近的水多遠（px） */
+function waterDist(WP,x,y){let din=-1,dout=1e9;for(const L of WP.list){const b=L.bb;if(x<b[0]-50||x>b[2]+50||y<b[1]-50||y>b[3]+50)continue;const e=edgeD(L.poly,x,y);if(pip(L.poly,x,y))din=Math.max(din,e);else dout=Math.min(dout,e)}
+  return din>=0?{inside:true,d:din}:{inside:false,d:dout}}
 function hAt(HF,x,z){const fx=(x-HF.x0)/HF.st,fz=(z-HF.z0)/HF.st;let i=Math.floor(fx),j=Math.floor(fz);i=Math.max(0,Math.min(HF.nx-2,i));j=Math.max(0,Math.min(HF.nz-2,j));const tx=Math.max(0,Math.min(1,fx-i)),tz=Math.max(0,Math.min(1,fz-j)),G=HF.G,n=HF.nx;
   return (G[j*n+i]*(1-tx)+G[j*n+i+1]*tx)*(1-tz)+(G[(j+1)*n+i]*(1-tx)+G[(j+1)*n+i+1]*tx)*tz}
 
@@ -83,6 +101,17 @@ function buildGroundTex(M,HF,rnd){const C=REGION_CFG[M.bk],V=REG_V2[M.bk]||{};co
   for(const e of extPaths(M)){const a=toC(e.a[0],e.a[1]),b=toC(e.b[0],e.b[1]);g.lineCap='round';
     g.save();g.filter='blur(14px)';g.strokeStyle=PC[0];g.globalAlpha=0.55;g.lineWidth=e.hw*2*K*1.15;g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.stroke();g.restore();
     g.save();g.filter='blur(3px)';g.strokeStyle=PC[1];g.globalAlpha=0.95;g.lineWidth=e.hw*2*K;g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.stroke();g.restore()}
+  /* 108.2：崖面畫岩石色塊（照坡度） */
+  if(M._T&&M._T.length){const CC=(REGION_CFG[M.bk]||{}).cliff||['#9C8A6A','#857458'],st=0.11;let z0=1e9,z1=-1e9;for(const T of M._T)for(let px=0;px<=M.W;px+=40){z0=Math.min(z0,T.E(px)*U-1);z1=Math.max(z1,T.Bt(px)*U+1)}
+    for(let x=-1;x<HF.MW+1;x+=st)for(let z=z0;z<z1;z+=st){const gr=Math.hypot(hAt(HF,x+0.12,z)-hAt(HF,x-0.12,z),hAt(HF,x,z+0.12)-hAt(HF,x,z-0.12))/0.24;if(gr<0.85)continue;
+      const cx=(x-HF.x0)*sx,cz=(z-HF.z0)*sx,nz=Math.sin(x*3.1)*Math.cos(z*2.3)+Math.sin(x*7.3+z*3.0)*0.5,band=nz>0.4?2:(nz<-0.4?1:0);g.globalAlpha=Math.min(1,(gr-0.85)*2.2);g.fillStyle=[CC[0],CC[1],'#B3A383'][band];g.fillRect(cx-st*sx*0.62,cz-st*sx*0.62,st*sx*1.24,st*sx*1.24);
+      if(rnd()<0.05){g.fillStyle='rgba(60,50,35,.45)';g.fillRect(cx-4,cz,8,1.5)}g.globalAlpha=1}}
+  /* 108.4：濕泥岸、卵石、水底（水是半透明的，看得到底） */
+  {const WP=waterPolys(M);if(WP.list.length){const V2=REG_V2[M.bk]||{},WC=V2.water||{},path=poly=>{g.beginPath();poly.forEach(([x,y],i)=>{const q=toC(x,y);i?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1])});g.closePath()};
+    for(const L of WP.list){path(L.poly);g.save();g.filter='blur(10px)';g.strokeStyle=WC.wet||'#8FAC66';g.globalAlpha=0.9;g.lineWidth=36*K;g.stroke();g.restore()}
+    for(const L of WP.list){path(L.poly);g.save();g.filter='blur(3px)';g.strokeStyle='#B8A678';g.globalAlpha=0.85;g.lineWidth=12*K;g.stroke();g.restore()}
+    for(const L of WP.list){path(L.poly);g.save();g.filter='blur(6px)';g.fillStyle='#55704A';g.fill();g.restore()}
+    for(let i=0;i<1600;i++){const L=WP.list[i%WP.list.length],k=Math.floor(rnd()*L.poly.length),[x,y]=L.poly[k],a=rnd()*6.28,r=rnd()*16,q=toC(x+Math.cos(a)*r,y+Math.sin(a)*r);g.fillStyle=['#9c9480','#b9b29c','#7f7a6a'][(rnd()*3)|0];g.beginPath();g.ellipse(q[0],q[1],1.4+rnd()*2.4,1+rnd()*1.6,rnd()*3,0,7);g.fill()}}}
   /* 花點（53.2-2 的小花點） */
   for(const [x,y,r,c] of M._drift||[]){const [cx,cy]=toC(x,y);g.fillStyle=c;g.beginPath();g.arc(cx,cy,r*K*0.75,0,7);g.fill()}
   for(let i=0;i<900;i++){const x=HF.x0+rnd()*HF.w,z=HF.z0+rnd()*HF.d,cx=(x-HF.x0)*sx,cz=(z-HF.z0)*sx;g.fillStyle=['#fffaf0','#ffe066','#f7d6e0','#ffffff'][(rnd()*4)|0];g.globalAlpha=0.7;g.beginPath();g.arc(cx,cz,1+rnd()*1.2,0,7);g.fill();g.globalAlpha=1}
@@ -108,10 +137,13 @@ function billboard(tex,x,z,opt){const r=W.rnd,v=opt.tint===false?1:(0.97+r()*0.0
   const o={m,x,z,w:opt.w,h:opt.h,sink:(opt.sink==null?0.05:opt.sink)*opt.h,lift:opt.lift||0,sil:null,shLen:opt.shLen||0.5};
   if(opt.shadow!==false){const sm=new T3.Mesh(BBGEO,shMat(m.material));sm.rotation.order='YXZ';sm.rotation.set(-Math.PI/2,SH_DIR,0);sm.renderOrder=1;W.scene.add(sm);o.sil=sm}
   orientOne(o);placeBB(o,x,z,0);W.BBS.push(o);return o}
-function placeBB(o,x,z,bob){o.x=x;o.z=z;const y=hAt(W.HF,x,z);o.m.position.set(x,y-o.sink+bob+o.lift,z);if(o.sil)o.sil.position.set(x,y+0.06,z+0.02)}
+function placeBB(o,x,z,bob){o.x=x;o.z=z;const y=gY(x,z);o.m.position.set(x,y-o.sink+bob+o.lift,z);if(o.sil)o.sil.position.set(x,y+0.06,z+0.02)}
 function orientOne(o){const pr=VIEWS3[vi][1]*Math.PI/180,a=pr*0.55,comp=1/Math.cos(pr-a);o.m.rotation.x=-a;o.m.scale.set(o.w,o.h*comp,1);if(o.sil)o.sil.scale.set(o.w,o.h*o.shLen,1)}
 function dropBB(o){if(!o)return;W.scene.remove(o.m);o.m.material.dispose();if(o.sil){W.scene.remove(o.sil);o.sil.material.dispose()}const i=W.BBS.indexOf(o);if(i>=0)W.BBS.splice(i,1)}
 
+/* 地面高度（橋上用橋面的高度） */
+function gY(x,z){if(W.BR)for(const b of W.BR){const dx=x-b.c[0],dz=z-b.c[1],a=dx*b.d[0]+dz*b.d[1],c=-dx*b.d[1]+dz*b.d[0];if(Math.abs(a)<b.L/2&&Math.abs(c)<b.Wd/2)return brY(b,a)}return hAt(W.HF,x,z)}
+function brY(b,a){const t=a/b.L+0.5;return b.y0+(b.y1-b.y0)*t+b.arch*(1-(2*t-1)**2)+0.12}
 /* ---------- 圖片與 SVG 貼圖 ---------- */
 const TEXL=new Map();/* 素材圖 */
 function imgTex(url){let t=TEXL.get(url);if(t)return t;t=new T3.TextureLoader().load(url,()=>{if(W)W.dirty=true});t.encoding=T3.sRGBEncoding;t.anisotropy=4;TEXL.set(url,t);return t}
@@ -211,6 +243,69 @@ function signMesh(x,z,text,lv){const y=hAt(W.HF,x,z),g=new T3.Group(),wood=lam('
   const board=new T3.Mesh(new T3.BoxGeometry(1.25,0.5,0.07),[wood,wood,wood,wood,new T3.MeshLambertMaterial({map:tx}),wood]);board.position.y=1.05;g.add(board);
   g.position.set(x,y,z);g.rotation.y=(Math.random()-.5)*0.2;g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});W.G3.add(g)}
 
+/* ---------- 水（108.4：相連的水是同一片；樣子只看深度） ---------- */
+const NOISE=`float hsh(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float vn(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hsh(i),hsh(i+vec2(1,0)),f.x),mix(hsh(i+vec2(0,1)),hsh(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){return vn(p)*.55+vn(p*2.07+1.7)*.3+vn(p*4.3+3.1)*.15;}`;
+const W_VS=`varying vec2 vUv;varying vec3 vW;varying float vFog;void main(){vUv=uv;vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;vec4 mv=viewMatrix*w;vFog=-mv.z;gl_Position=projectionMatrix*mv;}`;
+const W_FS=`uniform float uTime,uNear,uFar,uMode,uSpeed;uniform sampler2D uDepth;uniform vec4 uDR;uniform vec3 uFogC;varying vec2 vUv;varying vec3 vW;varying float vFog;`+NOISE+`
+void main(){float dep=texture2D(uDepth,(vW.xz-uDR.xy)/uDR.zw).r;if(dep<0.004)discard;
+ vec2 wq=vW.xz*.45+vec2(uTime*.05,uTime*.035);vec2 q=uMode<0.5?vec2(vUv.x*3.5,vUv.y*.8-uTime*uSpeed):wq;
+ float n=fbm(q),n2=fbm(q*vec2(2.,1.7)+vec2(5.,-uTime*uSpeed*.6));float edge=smoothstep(0.,.3,dep);
+ vec3 sh=vec3(.60,.86,.83),dp=vec3(.24,.55,.70);vec3 c=mix(sh,dp,smoothstep(.03,.4,dep));c+=vec3(.07,.09,.09)*(n-.5);
+ float ln=smoothstep(.64,.68,n2)*(1.-smoothstep(.68,.74,n2));c=mix(c,vec3(.92,.98,1.),ln*.45*smoothstep(.08,.35,dep));
+ float sp=step(.93,vn(q*9.+vec2(0.,uTime*1.3)))*smoothstep(.15,.5,dep);c+=sp*.35;
+ float foam=1.-smoothstep(.0,.05+.05*n,dep);c=mix(c,vec3(.96,.99,1.),foam*.8);
+ float a=smoothstep(.0,.04,dep)*mix(.8,.95,edge);c=mix(c,uFogC,smoothstep(uNear,uFar,vFog));gl_FragColor=vec4(c,a);}`;
+function buildWater(M){const WP=waterPolys(M);if(!WP.list.length)return;const HF=W.HF,N=512,NZ=Math.round(512*HF.d/HF.w),data=new Uint8Array(N*NZ*4),bb=WP.bb;
+  for(let iz=0;iz<NZ;iz++){const z=HF.z0+(iz+0.5)/NZ*HF.d;if(z<bb[1]-1.2||z>bb[3]+1.2)continue;for(let ix=0;ix<N;ix++){const x=HF.x0+(ix+0.5)/N*HF.w;if(x<bb[0]-1.2||x>bb[2]+1.2)continue;const d=Math.max(0,Math.min(1,WSURF-hAt(HF,x,z)));const o=(iz*N+ix)*4;data[o]=data[o+1]=data[o+2]=Math.round(d*255);data[o+3]=255}}
+  const tex=new T3.DataTexture(data,N,NZ,T3.RGBAFormat);tex.magFilter=T3.LinearFilter;tex.minFilter=T3.LinearFilter;tex.needsUpdate=true;
+  const mat=(mode,speed)=>new T3.ShaderMaterial({uniforms:{uTime:W.UT,uNear:W.UN,uFar:W.UF,uFogC:{value:W.FOGS},uMode:{value:mode},uSpeed:{value:speed},uDepth:{value:tex},uDR:{value:new T3.Vector4(HF.x0,HF.z0,HF.w,HF.d)}},vertexShader:W_VS,fragmentShader:W_FS,transparent:true,depthWrite:true});
+  /* 湖、池：一片水平面（比水域大，邊緣藏在岸裡）。先畫，寫入深度 */
+  for(const L of WP.list.filter(l=>l.lake)){const b=L.bb,cx=(b[0]+b[2])/2*U,cz=(b[1]+b[3])/2*U,rx=(b[2]-b[0])/2*U+0.8,rz=(b[3]-b[1])/2*U+0.8,g=new T3.CircleGeometry(1,48);g.rotateX(-Math.PI/2);g.scale(rx,1,rz);const m=new T3.Mesh(g,mat(1,0));m.position.set(cx,WSURF,cz);m.renderOrder=3;W.scene.add(m)}
+  /* 河：沿河道的帶狀面，水紋沿流向移動；和湖重疊的地方被湖擋掉（往後推一點） */
+  for(const r of M._RV||[]){const P=r.rb.pts,HW=r.rb.hw,V=[],UV=[],I=[];let cum=0;
+    for(let i=0;i<P.length;i++){if(i)cum+=Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1])*U;const a=P[Math.min(P.length-1,i+1)],b=P[Math.max(0,i-1)];let tx=a[0]-b[0],tz=a[1]-b[1];const l=Math.hypot(tx,tz)||1;tx/=l;tz/=l;const hw=(HW[i]+14)*U,x=P[i][0]*U,z=P[i][1]*U;
+      V.push(x-tz*hw,WSURF,z+tx*hw,x+tz*hw,WSURF,z-tx*hw);UV.push(0,cum,1,cum);if(i){const o=(i-1)*2;I.push(o,o+2,o+1,o+1,o+2,o+3)}}
+    const g=new T3.BufferGeometry();g.setAttribute('position',new T3.Float32BufferAttribute(V,3));g.setAttribute('uv',new T3.Float32BufferAttribute(UV,2));g.setIndex(I);
+    const m=new T3.Mesh(g,mat(0,0.9));m.material.polygonOffset=true;m.material.polygonOffsetFactor=2;m.material.polygonOffsetUnits=2;m.renderOrder=4;W.scene.add(m)}
+  W.hasWater=true}
+/* 木橋（拱起來的木板橋＋欄杆），可以走在橋上 */
+function buildBridges(M){W.BR=[];const wood=lam('#B07C4C'),wood2=lam('#8B5E37');
+  for(const G of M._BR||[]){const A=[G.A[0]*U,G.A[1]*U],B=[G.B[0]*U,G.B[1]*U],dx0=B[0]-A[0],dz0=B[1]-A[1],L0=Math.hypot(dx0,dz0),dx=dx0/L0,dz=dz0/L0,L=L0+0.9,c=[(A[0]+B[0])/2,(A[1]+B[1])/2],Wd=Math.max(1.4,G.hw*2*U*1.1);
+    const e0=[c[0]-dx*L/2,c[1]-dz*L/2],e1=[c[0]+dx*L/2,c[1]+dz*L/2],b={c,d:[dx,dz],L,Wd,y0:hAt(W.HF,e0[0],e0[1])+0.04,y1:hAt(W.HF,e1[0],e1[1])+0.04,arch:0.42};W.BR.push(b);
+    const grp=new T3.Group(),ang=Math.atan2(-dz,dx),n=Math.max(9,Math.round(L/0.42));
+    for(let k=0;k<n;k++){const a=((k+0.5)/n-0.5)*L,x=c[0]+dx*a,z=c[1]+dz*a,pl=new T3.Mesh(new T3.BoxGeometry(L/n*0.9,0.12,Wd*(0.96+((k*7)%3)*0.02)),wood);pl.position.set(x,brY(b,a)-0.18,z);pl.rotation.y=ang;grp.add(pl)}
+    for(const sd of [-1,1]){const nx=-dz*sd*Wd/2,nz=dx*sd*Wd/2,pts=[];for(let k=0;k<=4;k++){const a=(k/4-0.5)*L,x=c[0]+dx*a+nx,z=c[1]+dz*a+nz,y=brY(b,a)-0.15;const post=new T3.Mesh(new T3.CylinderGeometry(0.07,0.09,0.75,6),wood2);post.position.set(x,y+0.37,z);grp.add(post);pts.push([x,y+0.68,z])}
+      for(let k=0;k<4;k++){const [x1,y1,z1]=pts[k],[x2,y2,z2]=pts[k+1],len=Math.hypot(x2-x1,y2-y1,z2-z1),rail=new T3.Mesh(new T3.CylinderGeometry(0.05,0.05,len,6),wood2);rail.position.set((x1+x2)/2,(y1+y2)/2,(z1+z2)/2);rail.lookAt(x2,y2,z2);rail.rotateX(Math.PI/2);grp.add(rail)}}
+    grp.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});W.G3.add(grp)}}
+/* 石砌圓井＋木頂＋轆轤 */
+function wellMesh(x,z,h,fl){const y=hAt(W.HF,x,z),g=new T3.Group(),r=h*0.3,stone=lam('#A39E92'),wood=lam('#8E6440'),roof=lam('#9A5A3A');
+  const cv=document.createElement('canvas');cv.width=256;cv.height=64;const c=cv.getContext('2d');c.fillStyle='#8F8A7E';c.fillRect(0,0,256,64);for(let row=0;row<3;row++)for(let k=0;k<8;k++){c.fillStyle=['#B3AE9F','#A5A092','#C0BAA9'][(row+k)%3];c.fillRect(k*32+(row%2)*16+2,row*21+2,28,17)}
+  const tx=new T3.CanvasTexture(cv);tx.encoding=T3.sRGBEncoding;tx.wrapS=T3.RepeatWrapping;tx.repeat.set(2,1);
+  const ring=new T3.Mesh(new T3.CylinderGeometry(r,r*1.05,h*0.26,20,1,true),new T3.MeshLambertMaterial({map:tx,side:T3.DoubleSide}));ring.position.y=h*0.13;g.add(ring);
+  const rim=new T3.Mesh(new T3.TorusGeometry(r,0.08,6,24),stone);rim.rotation.x=Math.PI/2;rim.position.y=h*0.26;g.add(rim);
+  const wat=new T3.Mesh(new T3.CircleGeometry(r*0.92,20),lam('#2E5560'));wat.rotation.x=-Math.PI/2;wat.position.y=h*0.12;g.add(wat);
+  for(const sx of [-1,1]){const p=new T3.Mesh(new T3.BoxGeometry(0.12,h*0.72,0.12),wood);p.position.set(sx*r*0.95,h*0.36,0);g.add(p)}
+  const ax=new T3.Mesh(new T3.CylinderGeometry(0.06,0.06,r*2.1,8),wood);ax.rotation.z=Math.PI/2;ax.position.y=h*0.5;g.add(ax);
+  const rope=new T3.Mesh(new T3.CylinderGeometry(0.012,0.012,h*0.22,4),lam('#D8C79A'));rope.position.y=h*0.38;g.add(rope);
+  const bk=new T3.Mesh(new T3.CylinderGeometry(0.1,0.08,0.16,10),wood);bk.position.y=h*0.26;g.add(bk);
+  const rf=new T3.Mesh(new T3.ConeGeometry(r*1.5,h*0.3,4),roof);rf.rotation.y=Math.PI/4;rf.position.y=h*0.86;g.add(rf);
+  g.position.set(x,y,z);g.rotation.y=fl?0.2:-0.2;g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});W.G3.add(g)}
+/* 石塊疊成的拱門（可以穿過） */
+function archMesh(x,z,h,rnd){const y=hAt(W.HF,x,z),g=new T3.Group(),half=h*0.38,leg=h*0.5,R=half,cols=['#A9A28F','#9B9483','#B7B09C'],ms=cols.map(lam);
+  for(const sx of [-1,1])for(let k=0;k<4;k++){const b=new T3.Mesh(new T3.BoxGeometry(0.42+rnd()*0.06,leg/4*0.94,0.46),ms[(k+(sx>0?1:0))%3]);b.position.set(sx*half,leg/8+k*leg/4,0);b.rotation.y=(rnd()-0.5)*0.12;g.add(b)}
+  const n=9;for(let k=0;k<n;k++){const a=Math.PI*(k+0.5)/n,b=new T3.Mesh(new T3.BoxGeometry(0.44,0.4,0.46),ms[k%3]);b.position.set(-Math.cos(a)*R,leg+Math.sin(a)*R,0);b.rotation.z=a-Math.PI/2;g.add(b)}
+  const moss=lam('#7FA05A');for(let k=0;k<5;k++){const m=new T3.Mesh(new T3.SphereGeometry(0.14+rnd()*0.08,8,6),moss);const a=Math.PI*(0.2+rnd()*0.6);m.position.set(-Math.cos(a)*R,leg+Math.sin(a)*R+0.2,0.1);m.scale.y=0.5;g.add(m)}
+  g.position.set(x,y,z);g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});W.G3.add(g)}
+/* 一圈小蘑菇 */
+function mushRing(x,z,s,rnd){const g=new T3.Group(),R=0.62*s,cap=lam('#D2493B'),capB=lam('#C9A27A'),stem=lam('#F2E9D6'),dot=lam('#FFF8EC');
+  for(let k=0;k<11;k++){const a=k/11*6.28+rnd()*0.3,r=R*(0.9+rnd()*0.2),px=x+Math.cos(a)*r,pz=z+Math.sin(a)*r*0.8,sz=0.11+rnd()*0.07,y=hAt(W.HF,px,pz),m=new T3.Group();
+    const st=new T3.Mesh(new T3.CylinderGeometry(sz*0.35,sz*0.45,sz*1.5,7),stem);st.position.y=sz*0.75;m.add(st);
+    const cp=new T3.Mesh(new T3.SphereGeometry(sz,12,8,0,6.29,0,Math.PI/2),k%4===3?capB:cap);cp.position.y=sz*1.4;cp.scale.y=0.75;m.add(cp);
+    if(k%4!==3)for(let d=0;d<3;d++){const dd=new T3.Mesh(new T3.SphereGeometry(sz*0.16,5,4),dot);const aa=d*2.1+k;dd.position.set(Math.cos(aa)*sz*0.55,sz*1.4+sz*0.55,Math.sin(aa)*sz*0.55);m.add(dd)}
+    m.position.set(px,y,pz);m.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});g.add(m)}
+  W.G3.add(g)}
 /* ---------- 進入／離開 ---------- */
 function w3dEnter(bk,id){ensureR();if(W)w3dLeave(true);
   const M=W3D_HOST.map();if(!M||!M._raw)throw new Error('沒有 3D 用的地圖資料');
@@ -225,7 +320,7 @@ function w3dEnter(bk,id){ensureR();if(W)w3dLeave(true);
   W.HF=buildHeight(M,rnd);
   {const HF=W.HF,geo=new T3.PlaneGeometry(HF.w,HF.d,HF.nx-1,HF.nz-1);geo.rotateX(-Math.PI/2);geo.translate(HF.x0+HF.w/2,0,HF.z0+HF.d/2);const p=geo.attributes.position;for(let i=0;i<p.count;i++)p.setY(i,hAt(HF,p.getX(i),p.getZ(i)));geo.computeVertexNormals();
    W.ground=new T3.Mesh(geo,new T3.MeshLambertMaterial({map:buildGroundTex(M,HF,rnd)}));W.ground.receiveShadow=true;W.scene.add(W.ground)}
-  buildObjects(M);
+  buildBridges(M);buildObjects(M);buildWater(M);
   W.me.bb=null;sizeR();applyEco(true);
   R.cv.style.display='block';placeCam(true);
   if(!R.raf)R.raf=requestAnimationFrame(loop);
@@ -240,7 +335,10 @@ function buildObjects(M){const bk=M.bk,ART=REGION_ART[bk],FLAT=REGION_FLAT[bk]||
     if(k==='log'){logMesh(x,z,(a[2]||70)*s*U*1.05,!!op.fl);return}
     if(k==='fence'&&op.belt){fences.push([x,z]);return}
     if(k==='sign'){signMesh(x,z,txt||'',op.lv);return}
-    if(FLAT[k])return;/* 橋、石階、蘑菇圈：之後的地圖再做 */
+    if(k==='well'){wellMesh(x,z,h*0.95,!!op.fl);return}
+    if(k==='arch'){archMesh(x,z,h,rnd);return}
+    if(k==='mushroom'){mushRing(x,z,s,rnd);return}
+    if(FLAT[k]||k==='cliff')return;/* 橋另外做（buildBridges）；石階、崖壁由地形處理（108.2） */
     /* 其他（高草、野花、向日葵、樹屋…）：2D 立牌 */
     const tex=imgTex(url(a[0])),I=(REGION_IMG[bk]||{})[a[0]];const asp=I?I[0]/I[1]:1;const soft=k==='tallgrass'||k==='flowers'||k==='sunflowers'||k==='reed';
     billboard(tex,x,z,{w:h*asp*1.1,h:h*1.1,sway:soft?0.07:0,flip:!!op.fl,shadow:!soft||h>1.2,shLen:0.45})};
@@ -250,6 +348,10 @@ function buildObjects(M){const bk=M.bk,ART=REGION_ART[bk],FLAT=REGION_FLAT[bk]||
    const gapAt=(x,z)=>ex.some(e=>{const c=e.c*U,h=e.w*U/2+1.4;return e.side==='n'?(z<0.5&&Math.abs(x-c)<h):e.side==='s'?(z>MD-0.5&&Math.abs(x-c)<h):e.side==='w'?(x<0.5&&Math.abs(z-c)<h):(x>MW-0.5&&Math.abs(z-c)<h)});
    for(let i=0;i<70;i++){let x,z;const side=i%4;if(side===0){x=-1.5-rnd()*8;z=-4+rnd()*(MD+8)}else if(side===1){x=MW+1.5+rnd()*8;z=-4+rnd()*(MD+8)}else if(side===2){x=-6+rnd()*(MW+12);z=-1.2-rnd()*7}else{x=-6+rnd()*(MW+12);z=MD+3+rnd()*6}
      if(gapAt(x,z))continue;trees.push({x,z,h:(3.2+rnd()*1.6)*TREE_K,k:rnd()<0.4?'oak':'round_tree',br:0.88})}}
+  /* 崖腳、崖邊的岩塊，打破一整面牆的感覺 */
+  for(const T of M._T||[])for(let px=20;px<M.W-10;px+=30+rnd()*34){if(px>T.gap[0]-70&&px<T.gap[1]+70)continue;for(const [py,top] of [[T.Bt(px)+6,false],[T.E(px)+2,true]]){if(rnd()<0.35)continue;const x=px*U,z=py*U,sz=(top?0.25:0.38)+rnd()*0.4;rocks.push({x,y:hAt(W.HF,x,z)+sz*0.1,z,sx:sz*(1.1+rnd()*0.6),sy:sz*(0.7+rnd()*0.5),sz:sz,ry:rnd()*6,c:[0x9a8d74,0x8b7f69,0xa79a80,0x8f907f][(rnd()*4)|0]})}}
+  /* 河邊、池邊的石頭 */
+  {const WP=waterPolys(M);for(const L of WP.list)for(let i=0;i<Math.min(16,Math.round(L.poly.length/14));i++){const q=L.poly[Math.floor(rnd()*L.poly.length)],x=q[0]*U+(rnd()-0.5)*0.5,z=q[1]*U+(rnd()-0.5)*0.5;if(W.BR&&W.BR.some(b=>Math.hypot(x-b.c[0],z-b.c[1])<b.L/2+0.6))continue;const sz=0.12+rnd()*0.2;rocks.push({x,y:hAt(W.HF,x,z)+sz*0.12,z,sx:sz*(1+rnd()*0.5),sy:sz*0.6,sz:sz,ry:rnd()*6,c:[0x8f907f,0xa0a08c,0x7e7f70][(rnd()*3)|0]})}}
   /* 圍籬：沿著擺放的順序連起來 */
   if(fences.length)fenceLine(fences);
   buildFlora(trees,rocks,bushes)}

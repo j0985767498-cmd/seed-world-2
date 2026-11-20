@@ -1685,7 +1685,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-18k';
+const BUILD='2026-11-18l';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2898,6 +2898,7 @@ function renderSheet(){
   if(sheet.mat){sb.innerHTML=matHTML();return}/* 115.3 */
   if(sheet.mqgo){sb.innerHTML=mqGoHTML();return}/* 116.5 */
   if(sheet.give){sb.innerHTML=giveHTML();return}/* 117.2 */
+  if(sheet.rnpc){sb.innerHTML=rnpcHTML();return}/* 121 */
   if(sheet.me){sb.innerHTML=meSheetHTML();return}
   if(sheet.sellOld){sb.innerHTML=sellOldHTML();return}
   if(sheet.m96){sb.innerHTML=mu96HTML();return}
@@ -2983,6 +2984,7 @@ sb.addEventListener('click',e=>{
   if(sheet.fruit)return fruitAction(b);
   if(sheet.mat)return;
   if(sheet.give)return giveAction(b);
+  if(sheet.rnpc){if(orderAction(b)&&sheet&&sheet.rnpc)renderSheet();return}/* 121 */
   if(sheet.mqgo){if(b.dataset.act==='mqgo'){const id=sheet.mqgo;closeSheet();goMarket();if(scene==='market')setTimeout(()=>townArrowSet(id),400)}return}
   if(sheet.me)return meAction(b);
   if(sheet.sellOld){if(b.dataset.act==='sellold')sellOldGo();return}
@@ -3198,6 +3200,7 @@ function tick(){
   try{fixTick()}catch(e){}/* 115.5 */
   try{mq2Tick()}catch(e){}/* 116 */
   try{fsCheck('tomato');rsTick()}catch(e){}/* 118 */
+  try{mq2KidTick()}catch(e){}/* 121 */
   try{roamWatch()}catch(e){}/* 91 */
   try{if(!tick._wd||Date.now()-tick._wd>8000){tick._wd=Date.now();wardCheck(!tick._wf);tick._wf=1}}catch(e){}/* 86.5：衣櫃條件每 8 秒看一次 */
   try{mqPoll();noteFlush();if(scene==='explore'&&exBiome==='snow'&&regMap==='cave2'&&Math.hypot(exMe.x-400,exMe.y-290)<95)mqEv('vault');vdDoorTick()}catch(e){}
@@ -5502,6 +5505,10 @@ const TOWN_BLD=[{id:'appraisal',k:'appraisal',x:150,y:365,n:'品種鑑定所',do
   {id:'item',k:'itemshop',x:140,y:1150,n:'道具行',door:0.33,sg:0.42},{id:'dessert',k:'dessert',x:660,y:1150,n:'甜點店',door:0.47,sg:0.40},{id:'notice',k:'notice',x:540,y:1112,n:'公布欄',door:0.5,sg:0},{id:'spring',k:'fountain',x:400,y:520,n:'穗光教會的祭壇',door:0.5,sg:0.98}];/* 93：噴水池＝精靈之泉；113：改稱穗光教會的祭壇（場景之後再做） */
 /* NPC：外觀用現有換裝系統組；第 29、30 節做好前只打招呼 */
 const TOWN_NPC=[
+  /* 121.2：站在銀霧白樺林「獵人小屋」的兩位（cond 永遠 false＝不在城鎮出現；畫在野外地圖 REG_NPCS） */
+  {id:'yue',n:'岳哥',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:3,face:6,hair:6,hairC:0,hat:0,top:19,topC:12,bottom:3,bottomC:7,shoe:0,shoeC:12},line:'樹不砍，冬天燒什麼？'},
+  {id:'jin',n:'槿姨',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:1,face:4,hair:14,hairC:1,hat:12,hatC:2,top:11,topC:2,bottom:7,bottomC:2,shoe:1,shoeC:12},line:'霧裡的東西，比你想的多。'},
+  {id:'kid',n:'採菇的孩子',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:0,face:5,hair:2,hairC:2,hat:0,top:0,topC:3,bottom:1,bottomC:0,shoe:1,shoeC:5},line:'我剛剛看不到路，看到白白的就一直跟著走。這是你掛的嗎？'},
   {id:'theo',n:'提歐神父',x:478,y:560,at:'spring',av:{...AV_DEF,skin:1,face:1,hair:10,hairC:2,hat:0,top:20,topC:6,bottom:7,bottomC:11,shoe:1,shoeC:12},/* 116.2：白色斗篷代替長袍（換裝沒有長袍）、寬褲、布鞋、棕色旁分 */line:'祭壇隨時都開著。累了就來坐坐。'},
   {id:'wien',n:'所長維恩',x:318,y:1124,glasses:1,cond:()=>!!(state&&state.mq2&&(state.mq2.i>=3)),av:{...AV_DEF,skin:0,face:4,hair:19,hairC:0,hat:0,top:3,topC:7,bottom:0,bottomC:7,shoe:6,shoeC:12,acc:2,accC:7},/* 116.2：深灰外套代替長外套、眼鏡、中分黑髮、皮鞋；序章第 4 步才出現 */line:'這裡的作物有個地方我一直想不通。改天說給你聽。'},
   {id:'tu',n:'阿土伯',x:470,y:410,at:'hall',av:{...AV_DEF,skin:2,face:1,hair:6,hairC:6,hat:1,hatC:12,top:2,topC:13,bottom:0,bottomC:10,shoe:0,shoeC:12},/* 40.1：老農夫：平頭、草帽、條紋 T＋深藍吊帶褲、靴子、灰白頭髮 */line:'年輕人，來啦！田裡的事有不懂的就來問我。'},
@@ -5633,7 +5640,7 @@ function townAction(b){
   orderAction(b);
 }
 function npcExtraHTML(n){const m=mqCur(),got=(state.favGot&&state.favGot[n])||0;let h='';
-  {const s=mq2Cur();if(s&&s.npc===n)h+=`<h3>主線</h3>`+mq2CardHTML(true)}/* 116 */
+  {const s=mq2Cur();if(s&&mq2Has(s,n))h+=`<h3>主線</h3>`+mq2CardHTML(n)}/* 116、121 */
   if(n==='tu')h+=rsCardHTML(true);if(n==='theo')h+=rsTheoHTML();/* 118.4 */
   if(m&&m.npc===n)h+=`<h3>支線：阿凱的委託：失落的種子庫</h3>`+mqCardHTML();
   if(myLv()>=LV_COMM&&FAV_GIFT[n]){h+=favHTML(n)+nsCardHTML(n)+`<h3>${NPCN[n]}的委託</h3>`+cmListHTML(n)}
@@ -6411,7 +6418,7 @@ function regTestHTML(M){
   if(M._stn&&M._stn.length)tag(M._stn[0][0],M._stn[0][1]-30,'機關：踏腳石漣漪');
   if(M.ped)tag(M.ped[0],M.ped[1]-70,'種子台座');
   return L.join('')}
-function regTap(k){if(k==='rnpc'){riddleTap();return}/* 66 */if(k==='roam'){roamTap();return}/* 91 */
+function regTap(k){if(k==='rnpc'){riddleTap();return}/* 66 */if(String(k).startsWith('npc:')){regNpcTap(String(k).slice(4));return}/* 121 */if(k==='roam'){roamTap();return}/* 91 */
   if(k==='shrine'){const M=regCur(),T=M.secTrig;if(!T||!T.shrine)return;const m=curMe(),[x,y]=T.shrine,go=()=>{sheet={shr:1};renderSheet();openSheetUI()};
     if(Math.hypot(m.x-x,m.y-(y+30))<90)go();else walkTo(x,y+34,go)}
 }
@@ -6509,6 +6516,7 @@ function regWorld(){
   for(const it of exVisibleItems())bg.push({y:it.y,h:itemSVG(it,it.key===hoverItem)});
   for(const w of exVisiblePlants())bg.push({y:w.y,h:wpSVG(w,w.key===hoverWp)});
   {const R=rdHere();if(R){if(R.y<=me.y)bg.push({y:R.y,h:riddleSVG(R)});else fg+=riddleSVG(R)}}/* 66 */
+  for(const o of regNpcObjs()){if(o.y<=me.y)bg.push(o);else fg+=o.h}/* 121 */
   {const d=roamHere();if(d){if(d.y<=me.y)bg.push({y:d.y,h:roamSVG(d)});else fg+=roamSVG(d)}}/* 91 */
   bg.sort((a,b)=>a.y-b.y);regFg=fg+(M.cave&&M.v2?regTopV2(M):(M._top||''))+regTestHTML(M);return (M.v2?M._ground.replace('%%GI%%',()=>regGroundEl(M))+regDynHTML(M):M._ground)+bg.map(o=>o.h).join('');
 }
@@ -6829,7 +6837,7 @@ function fySpringHTML(){const t=isTestMode();
   for(const k of FY_KEYS){const has=fyHas(k),f=fyMine()[k],nL=fyQual(k,4).length,nM=fyQual(k,5).length,cr=CROPS[k].n;
     const B=[];let st='';
     if(!has){const L=ALT_LIST[k],ex=fyExSlots(k),exn=`${WAKE_EX_N} 顆${EXN[EX_OF[k]]}${cr}`;
-      if(L){const A=altObj(k);st=`清單 ${L.filter((_,j)=>(A.n[j]||0)>=ALT_N).length}／${L.length}・或 ${exn}`;B.push(['fyalt','清單',1])}else st=`清單還沒開放・可以用 ${exn}`;
+      if(L&&altDark(k))st=`永生的果實還沒回來・或 ${exn}`;/* 121.3 */else if(L){const A=altObj(k);st=`清單 ${L.filter((_,j)=>(A.n[j]||0)>=ALT_N).length}／${L.length}・或 ${exn}`;B.push(['fyalt','清單',1])}else st=`清單還沒開放・可以用 ${exn}`;
       if(ex.length)B.push(['fyex','獻上專屬造型',!L])}
     else{if(!f.evo&&nM)B.push(['evo','進化',1]);if(nL)B.push(['col',FY_RECOLOR?'換色':'換色（之後開放）',0]);st=!f.evo?(nM?`神話標本 ${nM} 個`:`進化要${cr}的神話標本`):'已進化'}
     h+=`<div class="fyrow"><span class="fyth">${has?fyArtHTML(k,f,72,false):fySil(k)}</span><div class="fyrc"><b>${fyN(k)}（${cr}）</b>${has?`<span class="meta">已喚醒${f.evo?'・已進化':''}</span>`:''}<span class="meta">${st}</span></div>
@@ -6839,7 +6847,14 @@ function fySpringHTML(){const t=isTestMode();
    A：清單（這一節只有蘿瑪）每項 ALT_N 顆該作物的果實，從果實袋獻上、不能拿回；進度 state.fairy.altar[鍵]={n:[每項顆數],cols:[獻過的果皮],warned,seed}。
    B：果實袋同一格 WAKE_EX_N 顆該作物的專屬造型果實。走 A 喚醒蘿瑪的人得到一包皇冠番茄（只有一次）；走 B 不給。 */
 const WAKE_EX_N=9,ALT_N=3;
-const ALT_LIST={tomato:[
+const ALT_LIST={pumpkin:[/* 121.3 */
+  {t:()=>'黑色南瓜',key:'b0|black|-',ok:a=>a.skin==='black',hint:''},
+  {t:()=>'白色南瓜',key:'b0|white|-',ok:a=>a.skin==='white',hint:'野外沒有全白的。找帶白的，讓它自己結種子。'},
+  {t:()=>`${cnOf(mixOf('white','black'))}南瓜`,key:'b0|'+mixOf('white','black')+'|-',ok:a=>a.skin===mixOf('white','black'),hint:''},
+  {t:()=>'星點花紋的南瓜',key:'b0|yellow|white/2',ok:a=>!!a.pat&&(a.pat.f===2||a.pat.f2===2),hint:''},
+  {t:()=>'特別造型的南瓜',key:'p1|yellow|-',ok:a=>a.sp>=1&&a.sp<=6,hint:''},
+  {t:()=>'長得漂亮的南瓜',key:'b0|yellow|-',ok:()=>true,q:(s,p)=>p>=2,hint:'完美度「良好」以上'}],
+ tomato:[
   {t:()=>'紅色的番茄',key:'b0|red|-',ok:a=>a.skin==='red',hint:''},
   {t:()=>'黃色的番茄',key:'b0|yellow|-',ok:a=>a.skin==='yellow',hint:'翠風草原上黃色的番茄比較多'},
   {t:()=>`${cnOf(mixOf('red','yellow'))}的番茄`,key:'b0|'+mixOf('red','yellow')+'|-',ok:a=>a.skin===mixOf('red','yellow'),hint:'把紅色和黃色的番茄配在一起'},
@@ -6848,25 +6863,27 @@ const ALT_LIST={tomato:[
 function altObj(k){const F=state.fairy||(state.fairy={}),A=F.altar&&typeof F.altar==='object'?F.altar:(F.altar={});const o=A[k]||(A[k]={n:[],cols:[]});if(!Array.isArray(o.n))o.n=[];if(!Array.isArray(o.cols))o.cols=[];return o}
 const altFull=k=>!!ALT_LIST[k]&&ALT_LIST[k].every((_,j)=>(altObj(k).n[j]||0)>=ALT_N);
 const keyApp=k=>{try{return appFromKey(k)}catch(e){return {}}};
-function altMatches(k,j){const it=ALT_LIST[k]&&ALT_LIST[k][j];if(!it)return [];return fruitsArr().map((f,i)=>({f,i})).filter(x=>x.f.c===k&&!x.f.b&&fCount(x.f)>0&&it.ok(keyApp(x.f.k)))}/* 117.3：買來的不能獻 */
+const altQ=(it,f)=>{if(!it.q)return fCount(f);let n=0;for(const k in f.q||{}){const [s,p]=fqSplit(k);if(it.q(s,p))n+=f.q[k]||0}return n};/* 121：有大小、完美度條件的項目只算符合的那幾顆 */
+function altMatches(k,j){const it=ALT_LIST[k]&&ALT_LIST[k][j];if(!it)return [];return fruitsArr().map((f,i)=>({f,i})).filter(x=>x.f.c===k&&!x.f.b&&it.ok(keyApp(x.f.k))&&altQ(it,x.f)>0).map(x=>({...x,n:altQ(it,x.f)}))}/* 117.3：買來的不能獻 */
 function altBought(k,j){const it=ALT_LIST[k]&&ALT_LIST[k][j];if(!it)return [];return fruitsArr().filter(f=>f.c===k&&f.b&&fCount(f)>0&&it.ok(keyApp(f.k)))}
 function fruitTake(f,n){let m=0;for(const x of fruitSellPlan(f,n)){f.q[x.k]-=x.m;if(f.q[x.k]<=0)delete f.q[x.k];m+=x.m}return m}/* 先拿完美度低、再拿小的 */
-function altGive(k,j,fi,n){if(fyHas(k))return 0;const it=ALT_LIST[k]&&ALT_LIST[k][j],F=fruitsArr(),f=F[fi];if(!it||!f||f.c!==k||f.b||!it.ok(keyApp(f.k)))return 0;
-  const A=altObj(k),need=ALT_N-(A.n[j]||0);n=Math.min(n|0,need,fCount(f));if(n<=0)return 0;
-  const m=fruitTake(f,n);A.n[j]=(A.n[j]||0)+m;const sk=keyApp(f.k).skin;if(sk&&!A.cols.includes(sk))A.cols.push(sk);A.warned=1;if(!fCount(f))F.splice(fi,1);save();return m}
+function altGive(k,j,fi,n){if(fyHas(k))return 0;const it=ALT_LIST[k]&&ALT_LIST[k][j],F=fruitsArr(),f=F[fi];if(!it||!f||f.c!==k||f.b||altDark(k)||!it.ok(keyApp(f.k)))return 0;
+  const A=altObj(k),need=ALT_N-(A.n[j]||0);n=Math.min(n|0,need,altQ(it,f));if(n<=0)return 0;
+  let m=0;if(it.q){const ks=Object.keys(f.q).filter(q=>{const [s,p]=fqSplit(q);return it.q(s,p)&&f.q[q]>0}).sort((a,b)=>{const A2=fqSplit(a),B2=fqSplit(b);return A2[1]-B2[1]||A2[0]-B2[0]});for(const q of ks){if(m>=n)break;const t=Math.min(n-m,f.q[q]);f.q[q]-=t;if(f.q[q]<=0)delete f.q[q];m+=t}}else m=fruitTake(f,n);A.n[j]=(A.n[j]||0)+m;const sk=keyApp(f.k).skin;if(sk&&!A.cols.includes(sk))A.cols.push(sk);A.warned=1;if(!fCount(f))F.splice(fi,1);save();return m}
 function fyExSlots(k){return fruitsArr().map((f,i)=>({f,i})).filter(x=>x.f.c===k&&!x.f.b&&fCount(x.f)>=WAKE_EX_N&&keyApp(x.f.k).sp===EX_OF[k])}
 const colFruit=(k,col)=>fruitSVG(fruitPh({c:k,k:'b0|'+col+'|-',t:0}),k,96,1,'',true);
 function fyWakeAlt(k,col){if(fyHas(k)||!altFull(k))return false;const A=altObj(k);if(!A.cols.includes(col))return false;A.via=1;
   fyApply(k,'wake',{col,sid:null,fruit:colFruit(k,col)});
-  if(k==='tomato'&&!A.seed){A.seed=1;crownGift();save();setTimeout(()=>{try{toast(`${fyN(k)}交給你一包「皇冠番茄」的種子，放進種子袋了`,5000)}catch(e){}},3600)}
+  if(!A.seed){A.seed=1;const l=exGift(k);save();setTimeout(()=>{try{toast(`${fyN(k)}交給你一包「${l.name}」的種子，放進種子袋了`,5000)}catch(e){}},3600)}/* 121.3：照蘿瑪 */
   return true}
 function fyWakeEx(k,i){if(fyHas(k))return false;const F=fruitsArr(),f=F[i];if(!f||f.c!==k||f.b||fCount(f)<WAKE_EX_N||keyApp(f.k).sp!==EX_OF[k])return false;
   const col=keyApp(f.k).skin,fr=fruitSVG(fruitPh(f),k,96,1,'',true);fruitTake(f,WAKE_EX_N);if(!fCount(f))F.splice(i,1);
   fyApply(k,'wake',{col,sid:null,fruit:fr});return true}
 /* 113.5：皇冠番茄 10 顆（兩份專屬造型因子、純紅，其他照原始品種的預設）。直接給種子包，不經過 exAnnounce，所以沒有全服公告 */
-function crownGift(){const ex=EX_OF.tomato,g=makeOriginal({bt:0,color:'red',pf:0});g.b=[0,0];g.pw=[0,0];g.sp=[ex,ex];g.c=['red','red'];g.pc=['red','red'];g.n.size=numLoci(0.5,0.05);g.n.perf=numLoci(0.6,0.05);
-  const ph=phen(g,'tomato');state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop:'tomato',name:'皇冠番茄',source:'蘿瑪交給你的種子',m:g,f:clone(g),count:10,gen:0,germ:GERM[ph.tier],ptier:ph.tier});lotNew(state.lots[0],'q');return state.lots[0]}
-function fyAltHTML(k){const L=ALT_LIST[k];if(!L)return `<p class="note">${fyN(k)}的清單還沒開放。</p><button class="btn" data-act="fyback">返回</button>`;
+function exGift(k){const ex=EX_OF[k],col=k==='tomato'?'red':(WILD[k]||'red'),g=makeOriginal({bt:0,color:col,pf:0});g.b=[0,0];g.pw=[0,0];g.sp=[ex,ex];g.c=[col,col];g.pc=[col,col];g.n.size=numLoci(0.5,0.05);g.n.perf=numLoci(0.6,0.05);
+  const ph=phen(g,k),en=EXN[ex]||'',sh=CROPS[k].short,name=en.endsWith(sh)?en:en+sh;state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop:k,name,source:`${fyN(k)}交給你的種子`,m:g,f:clone(g),count:10,gen:0,germ:GERM[ph.tier],ptier:ph.tier});lotNew(state.lots[0],'q');return state.lots[0]}/* 121.3：九位通用（直接給種子包、不經過 exAnnounce，沒有全服公告） */
+const crownGift=()=>exGift('tomato');
+function fyAltHTML(k){const L=ALT_LIST[k];if(L&&altDark(k))return `<p class="note">${fyN(k)}的祭壇是暗的：永生的果實還沒回來。</p><button class="btn" data-act="fyback">返回</button>`;if(!L)return `<p class="note">${fyN(k)}的清單還沒開放。</p><button class="btn" data-act="fyback">返回</button>`;
   const A=altObj(k),full=altFull(k);
   let h=`<h2>${fyN(k)}的清單</h2><p class="note">每一項獻上 ${ALT_N} 顆${CROPS[k].n}的果實（從果實袋）。${qh('一顆果實只算一項，由你決定獻到哪一項。獻上的果實不能拿回。')}</p>`;
   h+=L.map((it,j)=>{const n=Math.min(ALT_N,A.n[j]||0),ok=n>=ALT_N;let ic='';try{ic=fruitSVG(fruitPh({c:k,k:it.key,t:0}),k,44)}catch(e){}
@@ -6877,9 +6894,9 @@ function fyAltPickHTML(s){const k=s.k,it=ALT_LIST[k][s.j],A=altObj(k),need=ALT_N
   let h=`<h2>${esc(it.t())}</h2><p class="note">還要 ${need} 顆，從果實袋選一格。</p>`;
   if(!M.length)h+=`<p class="note">果實袋裡沒有符合的果實。${it.hint?esc(it.hint)+'。':''}</p>`;
   h+=altBought(k,s.j).map(f=>{const ph=fruitPh(f);return `<button class="pick" disabled aria-disabled="true" style="opacity:.5"><span class="seedic">${fruitSVG(ph,k,44)}</span><span><b>${esc(shortApp(ph))}（買來的）</b><span class="meta">要用自己種出來的</span></span></button>`}).join('');/* 117.3 */
-  h+=M.map(x=>{const ph=fruitPh(x.f);return `<button class="pick${s.fi===x.i?' sel':''}" data-act="fyaltf" data-k="${k}" data-i="${x.i}"><span class="seedic">${fruitSVG(ph,k,44)}</span><span><b>${esc(shortApp(ph))}</b><span class="meta">${fCount(x.f)} 顆</span></span></button>`}).join('');
+  h+=M.map(x=>{const ph=fruitPh(x.f);return `<button class="pick${s.fi===x.i?' sel':''}" data-act="fyaltf" data-k="${k}" data-i="${x.i}"><span class="seedic">${fruitSVG(ph,k,44)}</span><span><b>${esc(shortApp(ph))}</b><span class="meta">${x.n} 顆</span></span></button>`}).join('');
   const sel=s.fi!=null&&M.some(x=>x.i===s.fi)?F[s.fi]:null;
-  if(sel){const mx=Math.min(need,fCount(sel));s.n=clamp(s.n||mx,1,mx);
+  if(sel){const mx=Math.min(need,altQ(it,sel));s.n=clamp(s.n||mx,1,mx);
     h+=`<div class="regbox"><div class="fqsel"><button class="btn" data-act="fyaltm" data-k="${k}" aria-label="少一顆">－</button><b>${s.n} 顆</b><button class="btn" data-act="fyaltp" data-k="${k}" aria-label="多一顆">＋</button><button class="btn" data-act="fyalta" data-k="${k}">${mx} 顆</button></div>${A.warned?'':'<p class="note" style="color:var(--danger);font-weight:700">獻上的果實會從果實袋扣掉，不能拿回。</p>'}<button class="btn primary" data-act="fyaltgo" data-k="${k}">獻上 ${s.n} 顆</button></div>`}
   return h+`<button class="btn" data-act="fyalt" data-k="${k}">返回清單</button>`}
 function fyAltColHTML(k){const A=altObj(k);
@@ -8702,7 +8719,7 @@ function mqCardHTML(){
    state.mq2={i:第幾步（MQ2 的索引，9＝做完）,st:0 還沒接／1 進行中,f:{trade},alt:看過祭壇,yw:草原第一包黃番茄已經藏了花紋}。接下要找那個 NPC（城鎮的 NPC 面板）；
    完成條件用實際狀態判斷（ok），已經達成的一接下就完成。接下 10 經驗、完成 100。舊的主線第 5–11 章變成支線「阿凱的委託：失落的種子庫」（state.mq 照舊，第 1–4 章拿掉）。
    0-2 給的紅番茄、草原第一包黃番茄各藏一份花紋（pw=[1,0]）；0-2 那包的第一株 3 分鐘成熟（lot.qf→plot.qf）。 */
-const MQ2_CH=['序章　醒來','第一章　蘿瑪的清單'];
+const MQ2_CH=['序章　醒來','第一章　蘿瑪的清單','第二章　銀霧白樺林'];
 const altN=j=>{try{return (altObj('tomato').n[j]||0)>=ALT_N}catch(e){return false}};
 const MQ2=[
  {id:'0-1',ch:0,npc:'theo',t:'醒來',tgt:'spring',hint:'和提歐神父說話 → 看看祭壇',open:'你醒了。別急，慢慢坐起來。｜這裡是穗光教會。是我們把你請過來的，對不起，沒能先問過你。｜這個世界的魔獸愈來愈多。能壓住牠們的九位神之子，幾百年前全都變回果實，睡著了。｜我們試了幾百年，叫不醒任何一位。所以才想請別的世界的人來試試。｜祭壇上那顆番茄，就是其中一位。你去看看吧。',done:'上面寫的東西，我們一樣都種不出來。｜農場的阿土伯會教你怎麼種。先從最簡單的開始。',rw:{},ok:()=>!!state.mq2.alt},
@@ -8713,7 +8730,21 @@ const MQ2=[
  {id:'1-2',ch:1,npc:'tu',t:'黃加紅',tgt:'farm',hint:'把黃番茄的花粉拍到紅番茄上 → 種出它們的孩子 → 獻上 3 顆',open:'黃加紅？我種了一輩子，都是收什麼種什麼。｜沒想過可以挑兩株來配。你試給我看。',done:'全部都是同一個顏色，一株不差。｜有意思。',rw:{c:150},ok:()=>altN(2)||fyHas('tomato')},
  {id:'1-3',ch:1,npc:'mei',t:'形狀不一樣',tgt:'npc',hint:'拿 3 顆番茄和小莓姊換種子 → 種出來 → 獻上 3 顆',open:'哈囉～你是教會的客人對吧？｜我家後院的番茄形狀跟別人不一樣喔。拿 3 顆你種的來，我跟你換種子！',done:'以後想要什麼特別的，也可以來找我換～',rw:{c:100,fav:['mei',3]},ok:()=>altN(3)||fyHas('tomato')},
  {id:'1-4',ch:1,npc:'tu',t:'藏起來的花紋',tgt:'farm',hint:'讓黃＋紅的番茄自己結種子 → 種出下一代 → 找到有花紋的，獻上 3 顆',open:'有花紋的番茄？我沒看過。｜不過你那個黃加紅的，讓它自己結種子看看。我有個感覺。',done:'這哪來的？爸媽明明都沒有花紋。｜原來是藏在種子裡，隔了一代才跑出來。',rw:{c:200,acc:3},ok:()=>altN(4)||fyHas('tomato')},
- {id:'1-5',ch:1,npc:'theo',t:'喚醒蘿瑪',tgt:'spring',hint:'到祭壇，選一個顏色，喚醒她',open:'五項都亮了。｜選一個你獻過的顏色。她會帶著那個顏色醒來。',done:'',roma:'哈啊——睡得好飽！｜現在是什麼時候？……幾百年？｜……哈哈，那還真是睡過頭了。｜是你把我叫醒的吧？這個給你，我的番茄。別人種不出這個形狀。',theo2:'蘿瑪大人……歡迎回來。｜還有八位。不急，照你的步調來。',rw:{c:300,deco:'sign',title:'見習育種家'},ok:()=>fyHas('tomato')}];
+ {id:'1-5',ch:1,npc:'theo',t:'喚醒蘿瑪',tgt:'spring',hint:'到祭壇，選一個顏色，喚醒她',open:'五項都亮了。｜選一個你獻過的顏色。她會帶著那個顏色醒來。',done:'',roma:'哈啊——睡得好飽！｜現在是什麼時候？……幾百年？｜……哈哈，那還真是睡過頭了。｜是你把我叫醒的吧？這個給你，我的番茄。別人種不出這個形狀。',theo2:'蘿瑪大人……歡迎回來。｜還有八位。不急，照你的步調來。',rw:{c:300,deco:'sign',title:'見習育種家'},ok:()=>fyHas('tomato')},
+ /* 121（18l）：第二章「銀霧白樺林」。2-2、2-3 是同一步裡的兩件事（subs），可以同時接、先後不拘；兩件都做完才到 2-4。已經喚醒傑柯的人每一步一接下就完成 */
+ {id:'2-1',ch:2,npc:'theo',lv:10,t:'獵人聚落',tgt:'explore',hint:'去銀霧白樺林的獵人聚落，找兩位領頭人',open:'第二位是南瓜。教會的紀錄說，他的果實在白樺林的獵人聚落。｜那是他們代代傳下來的東西。肯不肯借，我沒有把握。｜麻煩你跑一趟。別提教會的名字比較好談。',narr:'兩邊都說果實歸自己管，誰也不肯先鬆口。',rw:{},ok:()=>{const t=state.mq2.f.t1||{};return !!(t.yue&&t.jin)||fyHas('pumpkin')}},
+ {id:'2-2+3',ch:2,t:'兩邊各做一件事',subs:[
+   {id:'2-2',npc:'yue',t:'過冬的南瓜',hint:'種出大顆的南瓜，交 6 顆給岳哥',open:'你會種東西？那正好。｜今年樹砍得少，換不到糧。我要大顆的南瓜，能放整個冬天的那種。｜六顆。種得出來，果實的事我這邊不擋你。',done:'這麼大顆……你怎麼弄的？挑大的留種？｜就這樣？我們怎麼沒想過。｜行，我說話算話。',rw:{c:300,acc:3},give:{c:{crop:'pumpkin',minSize:3},need:6}},
+   {id:'2-3',npc:'jin',t:'霧裡的路標',hint:'育出白色的南瓜，交 3 顆給槿姨 → 沿著路標走到底',open:'霧季快到了。每年這時候都有人在林子裡迷路。｜去年有個孩子差點回不來。｜白色的南瓜掛在路口，霧裡遠遠就看得到。給我三顆。｜林子裡沒有全白的。帶白的那種，讓它自己結種子，下一代就有。',after:'掛上去了。你沿著走一趟，看看霧裡認不認得出來。',kid:'我剛剛看不到路，看到白白的就一直跟著走。這是你掛的嗎？',done:'……真的有用。｜你種的東西，比我們的火把管用。｜果實的事，我不擋你。伐木的那邊你自己去說。',rw:{c:300,acc:3},give:{c:{crop:'pumpkin',skin:'white'},need:3}}]},
+ {id:'2-4',ch:2,npc:'yue',npc2:'jin',t:'借來的果實',tgt:'explore',hint:'回聚落 → 把果實帶回教會的祭壇',hint2:'把永生的果實帶回教會的祭壇',open:'她點頭了？……真的假的。',jinL:'他也點頭了？哼。',give2:'拿去吧。不是給教會，是借給你。',doneNpc:'theo',done:'……回來了。幾百年沒有離開過那片林子的東西。｜祭壇亮了。清單在上面。',rw:{c:200},ok:()=>altLitOk('pumpkin')||fyHas('pumpkin')},
+ {id:'2-5',ch:2,npc:'theo',t:'傑柯的清單',tgt:'spring',hint:'照祭壇上的清單，獻上南瓜',hintF:()=>`照祭壇上的清單，獻上南瓜（還差 ${ALT_LIST.pumpkin.filter((_,j)=>(altObj('pumpkin').n[j]||0)<ALT_N).length} 項）`,open:'六項。比蘿瑪大人的多一項，也難一些。｜黑色的南瓜只有白樺林有。慢慢來。',done:'',rw:{c:400},ok:()=>altFull('pumpkin')||fyHas('pumpkin')},
+ {id:'2-6',ch:2,npc:'theo',t:'喚醒傑柯',tgt:'spring',hint:'到祭壇，選一個顏色，喚醒他',open:'六項都亮了。｜選一個你獻過的顏色。他會帶著那個顏色醒來。',jack:'……｜嗯。醒了。｜是你？……知道了。｜這個給你。',theo2:'傑柯大人。歡迎回來。',romaAdd:'他以前就這樣啦，三句話講不完一件事。',rw:{c:500,title:'調停的人'},ok:()=>fyHas('pumpkin')}];
+const altLitOk=k=>!!(state&&state.altLit&&state.altLit[k]);
+const altDark=k=>k==='pumpkin'&&!altLitOk(k)&&!fyHas(k);/* 121.3：2-4 之前傑柯的祭壇是暗的（捷徑不受影響） */
+const MQ2_REGN=['yue','jin','kid'];/* 站在野外地圖上的 NPC */
+const mq2Has=(s,n)=>!!s&&(s.npc===n||s.npc2===n||!!(s.subs&&s.subs.some(u=>u.npc===n)));
+const mq2Sub=(s,id)=>s&&s.subs?s.subs.find(x=>x.id===id):null;
+const mq2SF=id=>{const f=mq2Obj().f;return f['s'+id]||(f['s'+id]={})};
 const mq2Obj=()=>{if(!state.mq2||typeof state.mq2!=='object')state.mq2={i:0,st:0,f:{}};if(!state.mq2.f)state.mq2.f={};return state.mq2};
 const mq2Cur=()=>state&&state.mq2?MQ2[state.mq2.i]||null:null;
 /* 0-2 的紅番茄：藏一份花紋、不再藏愛心；第一株 3 分鐘成熟 */
@@ -8730,10 +8761,30 @@ function mq2Trade(){const M=mq2Obj(),s=mq2Cur();if(!s||s.id!=='1-3'||M.st!==1||M
   let left=3;const F=fruitsArr(),slots=F.filter(f=>f.c==='tomato'&&!f.b).sort((a,b)=>fCount(a)-fCount(b));for(const f of slots){if(left<=0)break;left-=fruitTake(f,Math.min(left,fCount(f)))}for(let i=F.length-1;i>=0;i--)if(!fCount(F[i]))F.splice(i,1);
   const g=mq2TradeGeno(),ph=phen(g,'tomato');state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop:'tomato',name:`小莓姊的${CROPS.tomato.shapes[1]}番茄`,source:'小莓姊換給你的種子',m:g,f:clone(g),count:SEED_N,gen:0,germ:GERM[ph.tier],ptier:ph.tier});lotNew(state.lots[0],'q');
   M.f.trade=1;save();toast(`換到一包「${state.lots[0].name}」${SEED_N} 顆，放進種子袋了`,4000);return true}
-function mq2Accept(){const M=mq2Obj(),s=mq2Cur();if(!s||M.st!==0)return false;M.st=1;M.f={};addXp(10,true);try{if(s.acc)s.acc()}catch(e){logErr(e,'mq2acc')}
+function mq2Accept(sub){const M=mq2Obj(),s=mq2Cur();if(!s)return false;if(s.lv&&myLv()<s.lv&&M.st===0){toast(`Lv ${s.lv} 開放`);return false}
+  if(s.subs){const u=mq2Sub(s,sub);if(!u)return false;const F=mq2SF(sub);if(F.a)return false;M.st=1;F.a=1;addXp(10,true);save();toast(`接下：${u.t}，+10 經驗`,3000);mq2Tick();try{renderAll();renderOrdersBtn();renderMqLine()}catch(e){}return true}
+  if(M.st!==0)return false;M.st=1;M.f={};addXp(10,true);try{if(s.acc)s.acc()}catch(e){logErr(e,'mq2acc')}
   save();toast(`接下：${s.t}，+10 經驗`,3000);mq2Tick();try{renderAll();renderOrdersBtn();renderMqLine();tutRender()}catch(e){}return true}
-function mq2Ev(t){if(!state)return;const M=mq2Obj();if(t==='altar')M.alt=1;const s=mq2Cur();if(s&&M.st===1&&t==='hv')M.f.hv=1;mq2Tick()}
-function mq2Tick(){if(!state||!state.mq2)return;const M=state.mq2,s=mq2Cur();if(!s||M.st!==1)return;let ok=false;try{ok=s.ok()}catch(e){}if(ok)mq2Done()}
+function mq2Ev(t){if(!state)return;const M=mq2Obj();if(t==='altar')M.alt=1;const s=mq2Cur();if(s&&M.st===1&&t==='hv')M.f.hv=1;
+  if(t==='altar'&&s&&s.id==='2-4'&&M.st===1&&M.f.fruit){(state.altLit||(state.altLit={})).pumpkin=1;save()}/* 121：永生的果實放回祭壇 */
+  mq2Tick()}
+/* 121：和野外的 NPC 說話（2-1 兩位領頭人、2-4 借果實） */
+function mq2Talk(id){const M=mq2Obj(),s=mq2Cur();if(!s||M.st!==1)return null;
+  if(s.id==='2-1'&&(id==='yue'||id==='jin')){(M.f.t1||(M.f.t1={}))[id]=1;save();setTimeout(mq2Tick,0);return id==='yue'?'果實？那是我們伐木這邊的祖先撿回來的。｜要借可以，守林的那群人先點頭。……他們不會點頭的。':'果實是守林的人在供的。伐木的只會砍。｜外人想拿走？先問問霧答不答應。'}
+  if(s.id==='2-4'&&(id==='yue'||id==='jin')){const t=M.f.t4||(M.f.t4={});t[id]=1;let line=id==='yue'?s.open:s.jinL;
+    if(t.yue&&t.jin&&!M.f.fruit){M.f.fruit=1;line+='｜'+(id==='yue'?'':'（岳哥）')+s.give2;setTimeout(()=>{try{toast('拿到「永生的果實（南瓜）」，帶回教會的祭壇',5000)}catch(e){}},300)}
+    save();return line}
+  return null}
+function mq2SubDone(u){const F=mq2SF(u.id);if(F.d)return;F.d=1;const got=[];fsReward(u.rw||{},got);got.push('100 經驗');
+  noteOpen(`<h2>完成：${esc(u.t)}</h2>`+npcTalk(u.npc,u.done)+`<p class="note">得到：${got.join('、')}</p>`);addXp(100,true);save()}
+function mq2Tick(){if(!state||!state.mq2)return;const M=state.mq2,s=mq2Cur();if(!s||M.st!==1)return;
+  if(s.subs){for(const u of s.subs){const F=mq2SF(u.id);if(F.a&&!F.d&&(F.ok||fyHas('pumpkin')))mq2SubDone(u)}
+    if(s.subs.every(u=>mq2SF(u.id).d)){M.i++;M.st=0;M.f={};const nx=mq2Cur();if(nx)noteOpen(`<p class="note">兩邊都答應了。下一步「${esc(nx.t)}」：${esc(nx.hint)}</p>`);save();try{renderAll();renderOrdersBtn();renderMqLine()}catch(e){}}return}
+  let ok=false;try{ok=s.ok()}catch(e){}if(ok)mq2Done()}
+/* 交付畫面交完之後：2-2 直接完成；2-3 先掛上路標，找到孩子才完成 */
+function mq2GiveFin(id){const s=mq2Cur(),u=mq2Sub(s,id),F=mq2SF(id);if(!u)return;
+  if(id==='2-3'){F.lamp=1;noteOpen(npcTalk('jin',u.after));save();try{renderWorld()}catch(e){}return}
+  F.ok=1;mq2Tick()}
 function mq2Done(){const M=mq2Obj(),s=mq2Cur();if(!s)return;const r=s.rw||{},got=[];
   if(r.c){state.coins+=r.c;got.push(`${r.c} 金幣`)}
   if(r.acc){state.items.acc=(state.items.acc||0)+r.acc;got.push(`生長加速劑 ${r.acc} 次`)}
@@ -8742,28 +8793,42 @@ function mq2Done(){const M=mq2Obj(),s=mq2Cur();if(!s)return;const r=s.rw||{},got
   if(r.fav){favAdd(r.fav[0],r.fav[1]);got.push(`${NPCN[r.fav[0]]}好感度 +${r.fav[1]}`)}
   got.push('100 經驗');
   let body='';
-  if(s.roma){const f=fyMine().tomato;body=`<div class="npctalk pgw" data-pg style="display:flex;gap:12px;align-items:center;margin:6px 0">${f?fyArtHTML('tomato',f,84,false):''}<p style="flex:1;margin:0"><b>${fyN('tomato')}</b><br>${pgHTML(s.roma.split('｜').map(x=>'「'+esc(x)+'」').join('｜'))}</p></div>`+npcTalk('theo',s.theo2)}
+  if(s.jack){const fr=fyMine();body=fyTalkHTML('pumpkin',s.jack)+npcTalk('theo',s.theo2)+(fr.follow==='tomato'&&fyHas('tomato')?fyTalkHTML('tomato',s.romaAdd):'')}/* 121 */
+  else if(s.narr)body=`<p class="note"><b>${esc(s.narr)}</b></p>`;
+  else if(s.doneNpc)body=npcTalk(s.doneNpc,s.done);
+  else if(s.roma){const f=fyMine().tomato;body=`<div class="npctalk pgw" data-pg style="display:flex;gap:12px;align-items:center;margin:6px 0">${f?fyArtHTML('tomato',f,84,false):''}<p style="flex:1;margin:0"><b>${fyN('tomato')}</b><br>${pgHTML(s.roma.split('｜').map(x=>'「'+esc(x)+'」').join('｜'))}</p></div>`+npcTalk('theo',s.theo2)}
   else if(s.done)body=npcTalk(s.npc,s.done);
   if(s.tip){body+=`<p class="note"><b>${esc(s.tip)}</b></p>`;try{(state.tips||(state.tips={})).acc=1}catch(e){}}
   M.i++;M.st=0;M.f={};
   if(s.id==='0-2'&&state.tut){state.tut.done=true}
   if(M.i>=1&&M.i<8&&fyHas('tomato')){M.i=8;M.st=1}/* 116.4：已經用第 113 節喚醒蘿瑪的人，0-1 之後直接到 1-5 完成 */
   const nx=mq2Cur();
-  noteOpen(`<h2>完成：${esc(s.t)}</h2>`+body+`<p class="note">得到：${got.join('、')}</p>`+(nx?(M.st===1?'':`<p class="note">下一步「${esc(nx.t)}」：${esc(nx.hint)}</p>`):`<p class="note">${MQ2_CH[1]}完成了！下一章「第二章　銀霧白樺林」之後開放。</p>`));
+  noteOpen(`<h2>完成：${esc(s.t)}</h2>`+body+`<p class="note">得到：${got.join('、')}</p>`+(nx?(M.st===1?'':`<p class="note">下一步「${esc(nx.t)}」：${esc(nx.hint)}${nx.lv&&myLv()<nx.lv?`（Lv ${nx.lv} 開放）`:''}</p>`):`<p class="note">${MQ2_CH[2]}完成了！下一章「第三章　珍珠潟湖」之後開放。</p>`));
   addXp(100,true);save();try{renderAll();renderOrdersBtn();renderMqLine();tutRender()}catch(e){}
   if(M.st===1)setTimeout(mq2Tick,0)}
-function mq2CardHTML(inNpc){const M=state.mq2||{},s=mq2Cur();
-  if(!s)return `<div class="lot"><div class="lot-name">${MQ2_CH[1]}（完成）</div><p class="note">第二章　銀霧白樺林（之後開放）</p></div>`;
-  const head=`<div class="lot-name">${MQ2_CH[s.ch]}・${esc(s.t)}${M.st===1?'（進行中）':''}</div>`;
-  if(M.st===0)return `<div class="lot">${head}${inNpc?npcTalk(s.npc,s.open)+`<button class="btn primary" data-act="mq2acc">接下（+10 經驗）</button>`:`<p class="note">到城鎮找${esc(NPCN[s.npc]||'')}說話。</p>`}</div>`;
-  let h=`<div class="lot">${head}<p>${esc(s.hint)}</p>`;
+function mq2CardHTML(np){const M=state.mq2||{},s=mq2Cur();
+  if(!s)return `<div class="lot"><div class="lot-name">${MQ2_CH[2]}（完成）</div><p class="note">第三章　珍珠潟湖（之後開放）</p></div>`;
+  const head=`<div class="lot-name">${MQ2_CH[s.ch]}・${esc(s.t)}${M.st===1?'（進行中）':''}</div>`,where=n=>MQ2_REGN.includes(n)?`到銀霧白樺林的獵人小屋找${esc(NPCN[n]||'')}說話。`:`到城鎮找${esc(NPCN[n]||'')}說話。`;
+  if(s.lv&&myLv()<s.lv&&M.st===0)return `<div class="lot">${head}<p class="note">Lv ${s.lv} 開放（你現在 Lv ${myLv()}）。</p></div>`;
+  if(s.subs){let h=`<div class="lot">${head}<p class="note">兩件事可以一起做，先後都可以。</p>`;
+    for(const u of s.subs){const F=(M.f||{})['s'+u.id]||{};h+=`<p><b>${F.d?'✔ ':''}${esc(u.t)}</b>（${esc(NPCN[u.npc])}）</p>`;if(F.d)continue;
+      if(!F.a){h+=np===u.npc?npcTalk(u.npc,u.open)+`<button class="btn primary" data-act="mq2acc" data-sub="${u.id}">接下（+10 經驗）</button>`:`<p class="note">${where(u.npc)}</p>`;continue}
+      h+=`<p class="note">${esc(u.hint)}</p>`;
+      if(u.id==='2-3'&&F.lamp)h+='<p class="note">白南瓜掛在銀霧白樺林前三張地圖的路邊，走到青苔谷那一顆旁邊。</p>';else if(u.give)h+=giveBtnHTML('mq2',u.id)}
+    return h+'<p class="note">每一件完成得到 100 經驗。</p></div>'}
+  const mine=np&&(np===s.npc||np===s.npc2);
+  if(M.st===0)return `<div class="lot">${head}${mine&&s.open?npcTalk(np===s.npc2?s.npc2:s.npc,np===s.npc2&&s.jinL?s.jinL:s.open)+`<button class="btn primary" data-act="mq2acc">接下（+10 經驗）</button>`:`<p class="note">${where(s.npc)}</p>`}</div>`;
+  let h=`<div class="lot">${head}<p>${esc(mq2HintOf(s))}</p>`;
   if(s.id==='1-3'&&!M.f.trade)h+=`<button class="btn primary" data-act="mq2trade"${tomFruits()>=3?'':' disabled'}>交 3 顆番茄給小莓姊換種子（果實袋裡有 ${tomFruits()} 顆）</button>`;
+  if(s.id==='2-1'){const t=M.f.t1||{};h+=`<p class="note">${t.yue?'✔':'・'} 岳哥　${t.jin?'✔':'・'} 槿姨</p>`}
+  if(s.id==='2-4'){const t=M.f.t4||{};h+=`<p class="note">${t.yue?'✔':'・'} 岳哥　${t.jin?'✔':'・'} 槿姨　${M.f.fruit?'✔ 拿到永生的果實（南瓜）':''}</p>`}
   return h+`<p class="note">完成後得到 100 經驗${s.rw&&s.rw.c?`和 ${s.rw.c} 金幣`:''}。</p></div>`}
+const mq2HintOf=s=>{const M=state.mq2||{};if(s.hintF)return s.hintF();if(s.id==='2-4'&&M.f&&M.f.fruit)return s.hint2;return s.hint};
 /* 116.5：目前任務那一行。點了：城鎮的人或祭壇 → 在城鎮就畫箭頭，不在就問要不要去；農場 → 綠色按鈕閃一下；探索 → 打開探索 */
 let townArrow=null,townArrowT=0;
 function renderMqLine(){try{const el=document.getElementById('mqLine');if(!el)return;const s=mq2Cur(),M=state&&state.mq2;
-  if(!state||!s||viewing){el.hidden=true;return}const t=M.st===0?`主線：找${NPCN[s.npc]||''}說話（${s.t}）`:`主線：${s.hint}`;if(el.textContent!==t)el.textContent=t;el.hidden=false}catch(e){}}
-function mq2Target(){const s=mq2Cur(),M=state.mq2;if(!s)return null;if(M.st===0)return {town:'npc:'+s.npc};if(s.tgt==='spring')return {town:'spring'};if(s.tgt==='npc')return {town:'npc:'+s.npc};return {where:s.tgt}}
+  if(!state||!s||viewing){el.hidden=true;return}let t;if(s.lv&&myLv()<s.lv&&M.st===0)t=`主線：${MQ2_CH[s.ch]}（Lv ${s.lv} 開放）`;else if(s.subs){const u=s.subs.find(x=>{const F=(M.f||{})['s'+x.id]||{};return F.a&&!F.d});t=u?`主線：${u.hint}`:'主線：去銀霧白樺林的獵人小屋，找岳哥、槿姨'}else t=M.st===0?`主線：找${NPCN[s.npc]||''}說話（${s.t}）`:`主線：${mq2HintOf(s)}`;if(el.textContent!==t)el.textContent=t;el.hidden=false}catch(e){}}
+function mq2Target(){const s=mq2Cur(),M=state.mq2;if(!s)return null;if(s.subs)return {where:'explore'};if(M.st===0)return MQ2_REGN.includes(s.npc)?{where:'explore'}:{town:'npc:'+s.npc};if(s.id==='2-4')return M.f.fruit?{town:'spring'}:{where:'explore'};if(s.tgt==='spring')return {town:'spring'};if(s.tgt==='npc')return {town:'npc:'+s.npc};return {where:s.tgt}}
 function townArrowSet(id){townArrow=id;townArrowT=Date.now()+6000;try{renderWorld()}catch(e){}setTimeout(()=>{if(Date.now()>=townArrowT){townArrow=null;try{if(scene==='market')renderWorld()}catch(e){}}},6100)}
 function townArrowSVG(){if(!townArrow||Date.now()>townArrowT)return '';let x,y;
   if(townArrow.startsWith('npc:')){const p=TOWN_NPC.find(q=>'npc:'+q.id===townArrow);if(!p)return '';x=p.x;y=p.y-92}
@@ -8771,7 +8836,7 @@ function townArrowSVG(){if(!townArrow||Date.now()>townArrowT)return '';let x,y;
   return `<g transform="translate(${x} ${y})" pointer-events="none"><g class="tarrow"><path d="M-10 -22 h20 v10 h8 l-18 18 l-18 -18 h8z" fill="#E8553A" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></g></g>`}
 function mqLineTap(){const T=mq2Target();if(!T)return;
   if(T.town){if(scene==='market'){townArrowSet(T.town);return}sheet={mqgo:T.town};renderSheet();openSheetUI();return}
-  if(T.where==='explore'){if(scene!=='explore')openPanel('explore');else toast('到翠風草原找黃色的番茄，採種子帶回農場');return}
+  if(T.where==='explore'){if(scene!=='explore')openPanel('explore');else{const s=mq2Cur();toast(s?mq2HintOf(s):'')}return}
   if(T.where==='farm'){if(scene!=='farm'||viewing){toast('回農場就能做這一步');return}const rb=document.getElementById('ringBtn');if(rb){rb.classList.remove('flash');void rb.offsetWidth;rb.classList.add('flash');setTimeout(()=>rb.classList.remove('flash'),2200)}}}
 function mqGoHTML(){const id=sheet.mqgo,p=String(id).startsWith('npc:')?TOWN_NPC.find(q=>'npc:'+q.id===id):null,b=!p&&TOWN_BLD.find(q=>q.id===id);
   return `<h2>要去城鎮嗎？</h2><p class="note">${p?`${esc(p.n)}在城鎮等你。`:b?`${esc(b.n)}在城鎮的噴水池。`:''}到了會用箭頭指給你看。</p><div class="row2"><button class="btn primary" data-act="mqgo">去城鎮</button><button class="btn" data-act="close">先不要</button></div>`}
@@ -8842,8 +8907,28 @@ function rsCardHTML(inNpc){if(!rsOpen())return '';const s=rsObj(),S=rsStage();le
   if(S.theo)h+=s.f.theo?(inNpc?`<button class="btn primary" data-act="rsdone">把神父的話告訴阿土伯</button>`:'<p class="note">回去告訴阿土伯。</p>'):'<p class="note">✔ 還沒和提歐神父說話。</p>'.replace('✔','・');
   return h+`<p class="note">每一步得到 ${RS_XP} 經驗。</p></div>`}
 function rsTheoHTML(){const s=rsObj(),S=rsStage();if(!S||!S.theo||!s.a)return '';if(!s.f.theo)return `<h3>割早的田</h3><button class="btn primary" data-act="rstheo">問神父「裂風」的事</button>`;return `<h3>割早的田</h3>`+npcTalk('theo',S.theo)+'<p class="note">回去告訴阿土伯。</p>'}
+/* ===== 121（18l）：銀霧白樺林的野外 NPC、霧裡的白南瓜路標 =====
+   REG_NPCS：岳哥、槿姨站在獵人小屋；交完白南瓜之後，前三張地圖（入口、松林小徑、青苔谷）的路邊各掛一顆白南瓜（程式畫的果實），青苔谷那顆旁邊有採菇的孩子，走到旁邊就完成 2-3。 */
+const REG_NPCS=[{id:'yue',bk:'forest',map:'cabin',x:470,y:520},{id:'jin',bk:'forest',map:'cabin',x:330,y:540}];
+const LAMP_MAPS=['entry','pine_path','glen'];
+function lampPos(id){const M=REGION_MAPS.forest[id];if(!M)return null;const p=M.paths&&M.paths[0]&&M.paths[0].p;if(p&&p.length){const q=p[Math.floor(p.length/2)];return [q[0]+46,q[1]]}return [400,600]}
+const lampOn=()=>{try{const s=mq2Cur();if(s&&s.subs){const F=(state.mq2.f||{})['s2-3']||{};return !!F.lamp}return !!(state.mq2&&state.mq2.i>10)}catch(e){return false}};
+const kidOn=()=>{try{const s=mq2Cur();if(!s||!s.subs)return false;const F=(state.mq2.f||{})['s2-3']||{};return !!F.lamp&&!F.ok&&!F.d}catch(e){return false}};
+function regNpcBang(id){const s=mq2Cur(),M=state.mq2||{};if(!s)return false;if((s.id==='2-1'||s.id==='2-4')&&M.st===1&&(id==='yue'||id==='jin')){const t=(s.id==='2-1'?M.f.t1:M.f.t4)||{};return !t[id]}if(s.subs){const u=s.subs.find(x=>x.npc===id);const F=u&&(M.f||{})['s'+u.id]||{};return !!u&&!F.a}if(s.id==='2-4'&&M.st===0&&id==='yue')return true;return false}
+function regNpcObjs(){if(scene!=='explore'||exBiome!=='forest')return [];const out=[];
+  for(const R0 of REG_NPCS){if(R0.map!==regMap)continue;const p=TOWN_NPC.find(q=>q.id===R0.id);if(!p)continue;out.push({y:R0.y,h:regNpcSVG(p,R0.x,R0.y,regNpcBang(R0.id))})}
+  if(lampOn()&&LAMP_MAPS.includes(regMap)){const L=lampPos(regMap);if(L){let fr='';try{fr=fruitInner(fruitPh({c:'pumpkin',k:'b0|white|-',t:0}),1,'pumpkin')}catch(e){}
+    out.push({y:L[1],h:`<g transform="translate(${L[0]} ${L[1]})" pointer-events="none"><ellipse cx="0" cy="0" rx="9" ry="3" fill="rgba(40,30,20,.22)"/><rect x="-1.6" y="-52" width="3.2" height="52" rx="1" fill="#7A5530" stroke="#3B2A18" stroke-width=".8"/><path d="M0 -50 h13 v4" fill="none" stroke="#3B2A18" stroke-width="1.2"/><svg x="1" y="-50" width="24" height="26" viewBox="-1.5 -1.6 3 3.2" stroke="none">${fr}</svg></g>`});
+    if(regMap==='glen'&&kidOn()){const p=TOWN_NPC.find(q=>q.id==='kid');out.push({y:L[1]+4,h:regNpcSVG(p,L[0]-34,L[1]+4,false)})}}}
+  return out}
+function regNpcSVG(p,x,y,bang){return `<g transform="translate(${x} ${y}) scale(1.15)" pointer-events="none">${npcBodySVG(p)}${nameTag(p.n)}${bang?'<g><circle cx="0" cy="-80" r="8" fill="#FFF6DE" stroke="#C0392B" stroke-width="1.6"/><text x="0" y="-75.5" text-anchor="middle" font-size="12" font-weight="700" fill="#C0392B">!</text></g>':''}</g><rect data-reg="npc:${p.id}" x="${x-18}" y="${y-82}" width="36" height="86" fill="transparent" style="cursor:pointer"/>`}
+function regNpcTap(id){const R0=REG_NPCS.find(r=>r.id===id),L=id==='kid'?lampPos('glen'):null,x=R0?R0.x:L?L[0]-34:0,y=R0?R0.y:L?L[1]:0;const go=()=>{const line=mq2Talk(id);sheet={rnpc:id,line};renderSheet();openSheetUI()};const m=curMe();if(Math.hypot(m.x-x,m.y-y)<80)go();else walkTo(x,y+16,go)}
+function rnpcHTML(){const id=sheet.rnpc,p=TOWN_NPC.find(q=>q.id===id);if(!p)return '<button class="btn" data-act="close">關閉</button>';const s=mq2Cur();
+  return `<h2>${esc(p.n)}</h2>`+npcTalk(id,sheet.line||p.line)+(s&&mq2Has(s,id)?'<h3>主線</h3>'+mq2CardHTML(id):'')+'<button class="btn" data-act="close">關閉</button>'}
+function mq2KidTick(){try{if(scene!=='explore'||exBiome!=='forest'||regMap!=='glen'||!kidOn())return;const L=lampPos('glen');if(!L||Math.hypot(exMe.x-(L[0]-34),exMe.y-L[1])>90)return;const s=mq2Cur(),u=mq2Sub(s,'2-3'),F=mq2SF('2-3');F.ok=1;save();
+  noteOpen(npcTalk('kid',u.kid));setTimeout(mq2Tick,0);try{renderWorld()}catch(e){}}catch(e){}}
 /* --- 30 NPC 委託 --- */
-const NPCN={tu:'阿土伯',mei:'小莓姊',mo:'墨先生',kai:'阿凱',theo:'提歐神父',wien:'所長維恩'};
+const NPCN={tu:'阿土伯',mei:'小莓姊',mo:'墨先生',kai:'阿凱',theo:'提歐神父',wien:'所長維恩',yue:'岳哥',jin:'槿姨',kid:'採菇的孩子'};
 const FAV_STEP=[5,15,30,50,80];
 const FAV_GIFT={tu:['hay_bales','wheelbarrow','water_trough','compost','tool_shed'],mei:['flower_pots','lavender','flower_shelf','table_chairs','cherry_tree'],mo:['birdhouse','stone_lantern','notice_board','seed_chest','koi_pond'],kai:['crates','barrel','firefly_jar','hammock','dock']};
 const CM_R=[0,120,300,700],CM_X=[0,20,40,60];
@@ -8924,7 +9009,7 @@ function orderAction(b){
   const a=b.dataset.act;
   if(a==='claim'){const x=ORDERS.find(o=>o.k===b.dataset.k);if(!x||state.orders[x.k]!==1)return;state.orders[x.k]=2;state.coins+=x.r;save();renderCoins();renderOrdersBtn();renderSheet();toast(`領取了 ${x.r} 金幣`);return true}
   if(a==='mqacc'){mqAccept();if(sheet)renderSheet();return true}
-  if(a==='mq2acc'){mq2Accept();if(sheet&&!sheet.note)renderSheet();return true}
+  if(a==='mq2acc'){mq2Accept(b.dataset.sub);if(sheet&&!sheet.note)renderSheet();return true}
   if(a==='mq2trade'){mq2Trade();if(sheet)renderSheet();return true}/* 116 */
   if(a==='rsacc'){rsAccept();if(sheet&&!sheet.note)renderSheet();return true}
   if(a==='rstheo'){const s=rsObj();if(s.a&&rsStage()&&rsStage().theo){s.f.theo=1;save()}if(sheet)renderSheet();return true}
@@ -8942,7 +9027,7 @@ function orderAction(b){
   if(a==='givego'){sheet={give:{kind:b.dataset.k,id:b.dataset.id,n:0}};renderSheet();openSheetUI();return true}/* 117.2 */
   return false;
 }
-function renderOrdersBtn(){try{const m=mqCur();let n=ORDERS.filter(o=>(state.orders||{})[o.k]===1).length;if(m&&state.mq.st===0&&myLv()>=m.lv)n++;if(mq2Cur()&&state.mq2.st===0)n++;document.getElementById('ordersBtn').hidden=false;const bg=document.getElementById('ordersBadge');bg.hidden=!n;bg.textContent=n}catch(e){}}
+function renderOrdersBtn(){try{const m=mqCur();let n=ORDERS.filter(o=>(state.orders||{})[o.k]===1).length;if(m&&state.mq.st===0&&myLv()>=m.lv)n++;if(mq2Cur()&&state.mq2.st===0&&!(mq2Cur().lv>myLv()))n++;document.getElementById('ordersBtn').hidden=false;const bg=document.getElementById('ordersBadge');bg.hidden=!n;bg.textContent=n}catch(e){}}
 /* ===== 117（18h）：委託改從果實袋交（不再從田裡的植株交）=====
    每日 ★ 3 顆、★★ 6 顆（金幣 ×2）、★★★ 3 顆；每週照舊（整齊供應 24 顆、其他 3 顆）；NPC 故事、支線 3 顆。可以分次交，進度記在那張委託上（got），
    每日、每週換新就作廢。買來的果實（f.b）可以交每日、每週，不能交 NPC 故事和支線（61.1）。預設先拿完美度低、再拿個頭小的。 */
@@ -8954,6 +9039,7 @@ function giveSpec(kind,id){ensureComm();
   if(kind==='ns'){const s=nsOf(id),S=nsStage(id);if(!S||!s.a||!S.fruit)return null;return {c:S.fruit,need:3,got:s.got||0,buy:false,set:v=>{s.got=v},title:`${NPCN[id]}：${S.t}`,fin:()=>{delete s.got;nsDone(id)}}}
   if(kind==='fs'){const s=fsObj(id),S=fsStage(id);if(!S||!s.a||!S.give||(s.d===0&&!s.f.deep))return null;return {c:S.give,need:3,got:s.f.got||0,buy:false,set:v=>{s.f.got=v},title:`${fyN(id)}：${S.t}`,fin:()=>fsDone(id)}}/* 118.3 */
   if(kind==='rs'){const s=rsObj(),S=rsStage();if(!S||!s.a||!S.give)return null;return {c:S.give,need:S.need||3,got:s.f.got||0,buy:true,set:v=>{s.f.got=v},title:`阿土伯：${S.goal}`,fin:()=>rsDone()}}/* 118.4 */
+  if(kind==='mq2'){const s=mq2Cur(),u=mq2Sub(s,id);if(!u||!u.give)return null;const F=mq2SF(id);if(!F.a||F.d||F.ok||(id==='2-3'&&F.lamp))return null;return {c:u.give.c,need:u.give.need,got:F.got||0,buy:false,set:v=>{F.got=v},title:`${NPCN[u.npc]}：${u.t}`,fin:()=>mq2GiveFin(id)}}/* 121 */
   if(kind==='mq'){const m=mqCur();if(!m||!m.cond||state.mq.st!==1)return null;const f=state.mq.f||(state.mq.f={});return {c:m.cond,need:3,got:f.got||0,buy:false,set:v=>{f.got=v},title:condTxt(m.cond),fin:()=>mqDone()}}
   return null}
 function fruitOkFor(c,f,s,p){try{const ph={...fruitPh(f),sizeCls:s,perfCls:p};return condOk(c,{crop:f.c,bt:f.b?1:0},ph)}catch(e){return false}}

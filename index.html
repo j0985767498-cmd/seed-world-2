@@ -7317,13 +7317,13 @@ function fixWhy(p){if(!p||p.obs)return '這株不能定型';if(!(p.stage==='frui
   return ''}
 function fixBlock(p){const w=fixWhy(p);if(w)return w;if(!(((state.items||{}).fix||0)>0))return '沒有定型劑（到城鎮的道具行製作）';if(fixQ().length>=FIX_MAX)return `同時最多 ${FIX_MAX} 個在定型，等一個好了再來`;return ''}
 /* 外觀的每一組因子設成兩份相同＝顯示出來的樣子；大小、完美度照原本的。遠緣來源（g.o）跟著選到的那一份 */
-function fixGeno(g0){const g=clone(g0),a=appParts(g0),pick=(k,v)=>{const i=g0[k].indexOf(v);if(g.o&&g.o[k]){const o=g.o[k][i>=0?i:0]||null;g.o[k]=[o,o]}g[k]=[v,v]};
+function fixToGeno(g0){const g=clone(g0),a=appParts(g0),pick=(k,v)=>{const i=g0[k].indexOf(v);if(g.o&&g.o[k]){const o=g.o[k][i>=0?i:0]||null;g.o[k]=[o,o]}g[k]=[v,v]};
   pick('sp',a.sp||0);g.b=[a.level,a.level];pick('c',a.skin);
   if(a.pat){g.pw=[1,1];pick('pc',a.pat.c);pick('pf',a.pat.f)}else{g.pw=[0,0];pick('pc',g0.pc[0]);pick('pf',g0.pf[0])}
   return g}
 function fixStart(i){const p=state.plots[i],w=fixBlock(p);if(w){toast(w,3500);return false}
   state.items.fix--;const now=Date.now();
-  fixQ().push({g:fixGeno(p.g),crop:p.crop,lid:p.lid,gen:p.gen,bt:p.bt?1:0,par:p.par||[],at:now,due:now+FIX_MIN*60e3});
+  fixQ().push({g:fixToGeno(p.g),crop:p.crop,lid:p.lid,gen:p.gen,bt:p.bt?1:0,par:p.par||[],at:now,due:now+FIX_MIN*60e3});
   save();toast(`開始定型，${FIX_MIN} 分鐘後得到 ${SEED_N} 顆成品種子`,3500);return true}
 function fixTick(){const q=Array.isArray(state&&state.fixq)?state.fixq:null;if(!q||!q.length)return;const now=Date.now();let got=[];
   for(let j=0;j<q.length;j++){const e=q[j];if(e.due>now)continue;if(bagFull()){e.wait=1;continue}

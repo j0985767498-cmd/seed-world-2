@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-18s'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-18t'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-18t`。第 111～125、127、128 節（18c～18s）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；第 117 節的 Firestore 規則（`tools/firestore_rules_117.txt`）要貼到主控台；第 114 節等使用者決定供奉的速度。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-18u`。第 111～125、127～129 節（18c～18t）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；第 117 節的 Firestore 規則（`tools/firestore_rules_117.txt`）要貼到主控台；第 114 節等使用者決定供奉的速度。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -218,6 +218,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - **3D 畫面（108）**：`js/w3d.js`（`w3dEnter`、`w3dLeave`、`w3dSetPlayer`／`Others`／`Monsters`／`Plants`、`w3dPick`、`w3dView`）＋`lib/three.min.js`，用到才載入；地形 `buildHeight`（高台 `PLAT`、緩坡 `RAMP_L`、水往下挖 `waterDist`）、水 `buildWater`（深度圖＋湖面＋河帶）、橋 `buildBridges`／`gY`、景物 `wellMesh`／`archMesh`／`mushRing`、夢幻色光 `glowFor`、精靈 `w3dSetFairies`、樹冠透視 `holes`（`uHole`）、角色影格 `w3dPreload`；index.html 的「108（17x）」區塊：`W3D_MAPS`（目前草原 5 張）、`w3dSync`、`w3dLoad`、`W3D_HOST`（`pump`、`tap`）、`w3dBtn`。
 
 **城鎮、任務、角色**
+- 朋友名單（129）：`state.friends`（`myFr`，同步到 profiles 的 `fr`）、`isFriendU`（兩邊都有）、`frStatus`／`frInvite`／`frRespond`／`frDelete`／`frSync`、代碼 `frCode`、`FRIEND_MAX`、`FR_DAYS`；私訊 kind `frinv`／`frok`／`frno`（`frMsg`，欄位 `t`）；朋友頁分頁 `socTab`、名片按鈕 `frBtnHTML`。
 - 偷菜（125）：`STEAL_HR`／`STEAL_P`／`STEAL_N`、`isFriendU`、`ripeAtOf`（植株成熟時間 `p.rt`）、`stealRipe`、`stealInfo`／`stealDo`／`stealBoxHTML`（朋友植株資訊頁 `fplotHTML`）、`state.stole`、`state.stealSeen`；手套 `RECIPES` 的 glove、`state.items.glove`。
 - 委託交果實、果實市集（117）：`giveSpec`／`giveAvail`／`giveDo`／`giveHTML`（`sheet.give`）、`cmNorm`；果實袋 `b`（買來的）；果實上架 `fruitListHTML`／`fruitListSave`、`fruitCardHTML`、`fruitBuy`、`fruitCollect`（`state.fcol`）、`fruitCancel`、`fruitAddQ`。
 - 城鎮：`TOWN_MAPS.plaza`、`TOWN_BLD`、`TOWN_NPC`（圖片 `npcReady`）、`marketWorld`、`townMove`、`openTown`／`townSheetHTML`／`townAction`、攤位 `stallHTML`、標本交易 `spBuy`。
@@ -374,10 +375,10 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 122 | 主線第三章「珍珠潟湖」：追查、蜜露的清單、喚醒蜜露、第一季收尾 | 已完成 | docs/規格存檔.md；18m（9.119）；估計 3～4 天（第 3 項約 1.5～2 天）；沒有截圖、沒測 iPhone |
 | 123 | 花紋改版：三種形式、顏色自動配 | 已完成 | docs/規格存檔.md；18n（9.120）；櫻花瓣保留成第四種（使用者）；自動配色對照圖 `tools/pattern_auto_123.html` 等使用者定；順便修定型函式同名的錯；沒測 iPhone |
 | 124 | 稀有度改版：最稀有的一項決定等級 | 已完成 | docs/規格存檔.md；18o（9.121）；跨界照舊是神話（規格沒提）；rights 各等級數量讀不到；沒測 iPhone |
-| 125 | 偷菜與偷偷手套 | 已完成 | docs/規格存檔.md；18p（9.122）；沒有朋友名單＝所有其他玩家；通知用私訊、不用改規則；沒有截圖、沒測 iPhone |
+| 125 | 偷菜與偷偷手套 | 已完成 | docs/規格存檔.md；18p（9.122）；第 129 節起只限朋友；通知用私訊、不用改規則；沒有截圖、沒測 iPhone |
 | 126 | 傑柯與蜜露的台詞、故事；銀霧白樺林與珍珠潟湖的地區故事 | 未做 | docs/待實作/第126節.md；兩位的第二段等第 114 節 |
 | 127 | 種子袋整理：還會變的種子換圖示；標本名額照「作物＋夢幻色」算 | 已完成 | docs/規格存檔.md；18q（9.123）；自動合併不做（使用者）；不用改規則；沒測 iPhone |
 | 128 | 每日自動備份與自己還原 | 已完成 | docs/規格存檔.md；18r（9.124）；不用改規則；沒測 iPhone |
-| 129 | 朋友名單（補第 125 節：偷菜只能偷朋友） | 未做 | docs/待實作/第129節.md；排在第 128 節之後、推上線給更多人玩之前 |
+| 129 | 朋友名單（補第 125 節：偷菜只能偷朋友） | 已完成 | docs/規格存檔.md；18t（9.126）；不用改規則；沒有截圖、沒測 iPhone |
 | 130 | 筆記頁：主的傳說、第一批的遺物 | 未做 | docs/待實作/第130節.md；排在第 126 節之後（要用到岳哥、槿姨、老舵和兩條地區故事） |
 | 131 | 戰鬥改版第一步：血量、怪物會還手、小補血藥、打怪經驗、白樺林與潟湖的素材 | 未做 | docs/待實作/第131節.md；排在最後（114、129、126、130 之後）；131.1 回報後停下來等使用者 |

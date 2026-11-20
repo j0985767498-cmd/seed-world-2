@@ -991,7 +991,7 @@ body{font-variant-numeric:tabular-nums}
 </div>
 <div id="iconbar" class="iconbar">
   <button id="ibMarket" data-do="market"><img class="ibimg" src="assets/icons/s/town.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l2-6h14l2 6"/><path d="M3 10c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3"/><path d="M5 13v8h14v-8"/></svg><span>城鎮</span></button>
-  <button id="ibHome" data-do="home" hidden><img class="ibimg" src="assets/icons/s/home.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>回家</span></button>
+  <button id="ibHelp" data-do="help" hidden><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.5A4 4 0 0 1 12 8a4 4 0 0 1 7 2.5C19 15.6 12 20 12 20z"/></svg><span>幫忙照顧</span></button><button id="ibHome" data-do="home" hidden><img class="ibimg" src="assets/icons/s/home.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>回家</span></button>
   <button id="ibExplore" data-open="explore"><img class="ibimg" src="assets/icons/s/explore.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z" fill="currentColor" stroke-width="1.2"/></svg><span>探索</span></button>
   <button id="ibDecor" data-do="decor"><img class="ibimg" src="assets/icons/s/decor.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-3 2-5 5-5 8a5 5 0 0 0 10 0c0-3-2-6-5-8z"/><path d="M12 16v5M9 21h6"/></svg><span>裝飾</span></button>
   <button data-open="settings"><img class="ibimg" src="assets/icons/s/settings.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span>設定</span></button>
@@ -1699,7 +1699,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-18s';
+const BUILD='2026-11-18t';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -3036,7 +3036,7 @@ sb.addEventListener('click',e=>{
   if(sheet.fplot){if(b.dataset.act==='steal'&&sheet.fi>=0){const r=stealDo(sheet.fi);if(r){closeSheet();renderWorld()}}return}
   if(sheet.vlot!=null)return vaultSheetAction(b.dataset.act,b);
   if(sheet.lot!=null)return lotAction(b.dataset.act,b);
-  if(sheet.dm){if(b.dataset.act==='dmsend')sendDM();return}
+  if(sheet.dm){if(b.dataset.act==='dmsend')sendDM();else if(b.dataset.act==='frok'||b.dataset.act==='frno'){frRespond(b.dataset.u,b.dataset.act==='frok');renderSheet();renderSocial()}return}
   if(sheet.visit)return;
   const i=sheet.i,p=state.plots[i],act=b.dataset.act;
   if(act==='close')return closeSheet();
@@ -3287,13 +3287,21 @@ function renderSocial(scroll){
   if(!state)return;
   const fr=profiles.filter(p=>p.id!==uid);if(curPanel==='social')statusWatch(fr.map(p=>p.id));
   fr.sort((a,b)=>(stIsOn(b.id)-stIsOn(a.id))||(((stData[b.id]||{}).at||0)-((stData[a.id]||{}).at||0)));/* 62.1：上線中在前，其餘照最後上線時間 */
-  document.getElementById('friends').innerHTML=fr.length?fr.map(p=>`<div class="friend"><span class="fnm"><b>${esc(p.name||'玩家')}</b>${statusHTML(p.id)}</span>${stIsOn(p.id)&&(stData[p.id].place||'farm')==='farm'?`<button class="mini" data-visit="${p.id}">去找他</button>`:''}<button class="mini" data-card="${p.id}">名片</button><button class="mini" data-visit="${p.id}">參觀農場</button><button class="mini" data-dm="${p.id}">私訊${dmUnread.has(p.id)?'（新訊息）':''}</button></div>`).join(''):'<p class="note">朋友登入遊戲後，就會出現在這裡。</p>';
+  const frow=(p,isF)=>`<div class="friend"><span class="fnm"><b>${esc(p.name||'玩家')}</b>${statusHTML(p.id)}</span>${stIsOn(p.id)&&(stData[p.id].place||'farm')==='farm'?`<button class="mini" data-visit="${p.id}">去找他</button>`:''}<button class="mini" data-card="${p.id}">名片</button><button class="mini" data-visit="${p.id}">參觀農場</button><button class="mini" data-dm="${p.id}">私訊${dmUnread.has(p.id)?'（新訊息）':''}</button>${isF?`${helpedToday(p.id)?'<span class="meta" title="今天幫過了">✓ 幫過了</span>':'<span class="meta">還沒幫</span>'}<button class="mini" data-frdel="${p.id}">${frDelArm.has(p.id)?'確定刪除':'刪除'}</button>`:(()=>{const s=frStatus(p.id);return s==='none'?`<button class="mini" data-frinv="${p.id}">加朋友</button>`:s==='in'?`<button class="mini" data-frinv="${p.id}">接受邀請</button>`:s==='out'?'<span class="meta">已邀請</span>':''})()}</div>`;
+  {const F=fr.filter(p=>isFriendU(p.id)).sort((a,b)=>helpedToday(a.id)-helpedToday(b.id)),tip=!(state.tips||{}).frtip;if(curPanel==='social'&&tip){(state.tips||(state.tips={})).frtip=1;save()}
+    const tabs=`<div class="row2"><button class="btn${socTab==='fr'?' primary':''}" data-soctab="fr">朋友（${F.length}）</button><button class="btn${socTab==='all'?' primary':''}" data-soctab="all">其他玩家</button></div>`;
+    document.getElementById('friends').innerHTML=tabs+(socTab==='fr'?`${tip?'<p class="note">加了朋友，才能去對方的農場偷摘種子。</p>':''}<p class="note">我的朋友代碼：<b>${frCode(uid)}</b></p><div class="chatbar"><input id="frCodeIn" maxlength="6" placeholder="輸入對方的代碼" aria-label="朋友代碼"><button class="mini big" data-frcode="1">邀請</button></div>`+(F.length?F.map(p=>frow(p,true)).join(''):'<p class="note">還沒有朋友。到「其他玩家」或對方的名片按「加朋友」。</p>'):(fr.length?fr.map(p=>frow(p,false)).join(''):'<p class="note">其他玩家登入遊戲後，就會出現在這裡。</p>'))}
   const ch=document.getElementById('chat'),atBottom=ch.scrollTop+ch.clientHeight>=ch.scrollHeight-20;
   const list=msgPub.slice().sort((a,b)=>mtime(a)-mtime(b)).slice(-80);
   ch.innerHTML=list.length?list.map(m=>`<div class="msg${m.from===uid?' me':''}"><span class="who">${m.from===uid?'你':esc(m.fromName)}</span>${esc(m.text)}</div>`).join(''):'<p class="note">還沒有人說話，打個招呼吧。</p>';
   if(scroll||atBottom)ch.scrollTop=ch.scrollHeight;
 }
-document.getElementById('friends').addEventListener('click',e=>{const v=e.target.closest('[data-visit]'),d=e.target.closest('[data-dm]'),cd=e.target.closest('[data-card]');if(cd){openMe(cd.dataset.card);return}if(v)enterVisit(v.dataset.visit);if(d)openDM(d.dataset.dm)});
+document.getElementById('friends').addEventListener('click',e=>{{const t=e.target.closest('[data-soctab],[data-frdel],[data-frinv],[data-frcode]');if(t){/* 129 */
+    if(t.dataset.soctab){socTab=t.dataset.soctab;frDelArm.clear();renderSocial();return}
+    if(t.dataset.frdel){const u=t.dataset.frdel;if(!frDelArm.has(u)){frDelArm.add(u);renderSocial();return}frDelArm.delete(u);frDelete(u);toast('刪掉了');renderSocial();return}
+    if(t.dataset.frinv){frInvite(t.dataset.frinv);renderSocial();return}
+    if(t.dataset.frcode){const i=document.getElementById('frCodeIn'),c=String(i&&i.value||'').trim().toUpperCase();const P=profiles.find(p=>p.id!==uid&&frCode(p.id)===c);if(!P){toast('找不到這個代碼');return}frInvite(P.id);renderSocial();return}}}
+  const v=e.target.closest('[data-visit]'),d=e.target.closest('[data-dm]'),cd=e.target.closest('[data-card]');if(cd){openMe(cd.dataset.card);return}if(v)enterVisit(v.dataset.visit);if(d)openDM(d.dataset.dm)});
 async function sendPub(){
   const inp=document.getElementById('chatIn'),t=inp.value.trim(),er=document.getElementById('chatErr');er.textContent='';
   if(!t){er.textContent='請先輸入訊息';return}if(glen(t)>300){er.textContent='訊息最多 300 個字';return}
@@ -3307,7 +3315,7 @@ function openDM(fu){sheet={dm:fu,draft:'',err:''};dmUnread.delete(fu);renderShee
 function dmHTML(){
   const p=profiles.find(x=>x.id===sheet.dm);
   const conv=[...msgTo,...msgFrom].filter(m=>(m.from===sheet.dm&&m.to===uid)||(m.from===uid&&m.to===sheet.dm)).sort((a,b)=>mtime(a)-mtime(b)).slice(-80);
-  return `<h2>和 ${esc(p?p.name:'朋友')} 私訊</h2><div class="chatbox" id="dmList">${conv.length?conv.map(m=>`<div class="msg${m.from===uid?' me':''}">${esc(m.text)}</div>`).join(''):'<p class="note">還沒有訊息。</p>'}</div><div class="chatbar"><input id="dmIn" maxlength="300" value="${esc(sheet.draft)}" placeholder="輸入訊息" aria-label="私訊內容"><button class="mini big" data-act="dmsend">傳送</button></div><div class="err" id="dmErr">${sheet.err}</div><button class="btn" data-act="close">關閉</button>`;
+  return `<h2>和 ${esc(p?p.name:'朋友')} 私訊</h2><div class="chatbox" id="dmList">${conv.length?conv.map(m=>`<div class="msg${m.from===uid?' me':''}">${esc(m.text)}${m.kind==='frinv'&&m.to===uid?(frStatus(m.from)==='in'&&frLast(msgTo,x=>x.kind==='frinv'&&x.from===m.from)===m?`<div><button class="mini" data-act="frok" data-u="${esc(m.from)}">接受</button><button class="mini" data-act="frno" data-u="${esc(m.from)}">不要</button></div>`:'<span class="meta">（已回覆或已失效）</span>'):''}</div>`).join(''):'<p class="note">還沒有訊息。</p>'}</div><div class="chatbar"><input id="dmIn" maxlength="300" value="${esc(sheet.draft)}" placeholder="輸入訊息" aria-label="私訊內容"><button class="mini big" data-act="dmsend">傳送</button></div><div class="err" id="dmErr">${sheet.err}</div><button class="btn" data-act="close">關閉</button>`;
 }
 function bindDM(){const i=document.getElementById('dmIn'),l=document.getElementById('dmList');if(l)l.scrollTop=l.scrollHeight;if(i){i.addEventListener('input',()=>{sheet.draft=i.value;if(sheet.err){sheet.err='';document.getElementById('dmErr').textContent=''}});i.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing)sendDM()})}}
 async function sendDM(){
@@ -3329,12 +3337,13 @@ function visitHTML(){
   return h+'<button class="btn" data-act="close">關閉</button>';
 }
 function startSocial(){
-  unsubs.push(db.collection('profiles').onSnapshot(s=>{profiles=s.docs.map(d=>({id:d.id,...d.data()}));renderSocial()},()=>{}));
+  unsubs.push(db.collection('profiles').onSnapshot(s=>{profiles=s.docs.map(d=>({id:d.id,...d.data()}));try{frSync();helpApply()}catch(e){}renderSocial()},()=>{}));
   const onMsg=(arr,kind)=>s=>{
     const docs=s.docs.map(d=>({id:d.id,...d.data()}));
-    if(kind==='to'&&msgReady){for(const ch of s.docChanges())if(ch.type==='added'){const m=ch.doc.data();if(!(sheet&&sheet.dm===m.from)){dmUnread.add(m.from);toast(/^🧤 /.test(m.text||'')?m.text.slice(3):`${m.fromName} 傳了私訊給你`,5000)}}}
+    if(kind==='to'&&msgReady){for(const ch of s.docChanges())if(ch.type==='added'){const m=ch.doc.data();if(!(sheet&&sheet.dm===m.from)){dmUnread.add(m.from);if(m.kind!=='help')toast(/^🧤 /.test(m.text||'')?m.text.slice(3):/^fr(inv|ok|no)$/.test(m.kind||'')?m.text:`${m.fromName} 傳了私訊給你`,5000);if(m.kind==='frok'||m.kind==='frno')setTimeout(()=>{try{frSync();renderSocial()}catch(e){}},50)}}}
     if(kind==='to'&&!msgReady&&state){try{const seen=state.stealSeen||0,L=docs.filter(m=>/^🧤 /.test(m.text||'')&&mtime(m)>seen);if(L.length){state.stealSeen=Math.max(...L.map(mtime));L.forEach(m=>dmUnread.add(m.from));setTimeout(()=>toast(L.length===1?L[0].text.slice(3):`你不在的時候，有 ${L.length} 次有人來偷種子（看私訊）`,6000),3000)}}catch(e){}}/* 125 */
     if(kind==='pub')msgPub=docs;else if(kind==='to')msgTo=docs;else msgFrom=docs;
+    if(kind==='to'){try{helpApply()}catch(e){}}/* 132 */
     renderSocial();if(sheet&&sheet.dm&&kind!=='pub')renderSheet();
   };
   unsubs.push(db.collection('messages').where('to','==',null).onSnapshot(onMsg(null,'pub'),()=>{}));
@@ -4116,7 +4125,7 @@ function plotSVG(st,i,hov,part){/* 88.1：part='soil' 只畫田（平鋪在最�
     if(gd>=0){const G=XG[gd];s+=`<g pointer-events="none"><polygon points="${x-41},${y} ${x},${y-23} ${x+41},${y} ${x},${y+23}" fill="${G.c}" fill-opacity="${gd===XC?.3:.16}" stroke="${G.c}" stroke-width="${gd===XC?3.5:2.5}"/>${badge(G.c,'父')}</g>`}
     if(gm>=0){const G=XG[gm],fp=posOf(st,G.d);s+=`<g pointer-events="none">${fp?`<line x1="${fp[0]}" y1="${fp[1]-6}" x2="${x}" y2="${y-6}" stroke="${G.c}" stroke-width="2.6" stroke-dasharray="5 6" stroke-linecap="round" opacity=".9"/>`:''}<polygon points="${x-41},${y} ${x},${y-23} ${x+41},${y} ${x},${y+23}" fill="none" stroke="${G.c}" stroke-width="3"/>${badge(G.c,'母')}</g>`}}
   if(p){const k=tfxKind(phen(p.g,p.crop));if(k)s+=tfxRingSVG(k,x,y)}/* 34.3 */
-  if(p&&st!==state&&viewing&&stealRipe(p,st)&&!(state.stole||{})[stealKey(viewing.uid,p)])s+=`<g pointer-events="none"><circle cx="${x+22}" cy="${y-58}" r="11" fill="#FFF6C2" stroke="#3B2A18" stroke-width="1.5"/><g transform="translate(${x+22} ${y-47}) scale(.55)">${itemArt(0,0,'glove')}</g></g>`;/* 125：可以偷的記號 */
+  if(p&&st!==state&&viewing&&isFriendU(viewing.uid)&&stealRipe(p,st)&&!(state.stole||{})[stealKey(viewing.uid,p)])s+=`<g pointer-events="none"><circle cx="${x+22}" cy="${y-58}" r="11" fill="#FFF6C2" stroke="#3B2A18" stroke-width="1.5"/><g transform="translate(${x+22} ${y-47}) scale(.55)">${itemArt(0,0,'glove')}</g></g>`;/* 125：可以偷的記號 */
   if(p&&p.stage==='fruit'&&p.pollen&&!p.pollen.failed&&!p.rsv){/* 88.1 授粉倒數圈：剛授粉是完整一圈，順時針變短，可以收成時剛好消失；分 24 段，不用每格重畫 */
     let f=1;try{f=1-(p.prog||0)/stageDur(p,phen(p.g,p.crop))}catch(e){}const seg=Math.ceil(Math.max(0,Math.min(1,f))*24);
     if(seg>0){const d=`M${x} ${y+20}A38 20 0 1 1 ${x} ${y-20}A38 20 0 1 1 ${x} ${y+20}`;/* 從正前方（6 點鐘）開始順時針，快成熟時剩下的那一小段在植株前面看得到 */s+=`<g pointer-events="none" class="polring" data-seg="${seg}"><path d="${d}" pathLength="24" fill="none" stroke="#5A3A12" stroke-width="5.2" stroke-linecap="round" stroke-dasharray="${seg} 24" opacity=".55"/><path d="${d}" pathLength="24" fill="none" stroke="#FFD54A" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="${seg} 24"/></g>`}}
@@ -4394,6 +4403,7 @@ const iconbarClick=e=>{
   closePanel();
   if(a==='market')return scene==='market'?goFarm():goMarket();
   if(a==='home')return goFarm();
+  if(a==='help'){if(viewing)helpDo(viewing.uid);renderHUD();return}/* 132 */
   if(a==='avatar')return openAvatar();
   if(a==='build')return openBuild();
   if(a==='decor'){if(!wasDeco)openDecor();return}
@@ -4409,6 +4419,7 @@ function renderHUD(){
   document.getElementById('sceneName').textContent=scene==='market'?'城鎮':scene==='explore'?(regHas(exBiome)?`${REGION_CFG[exBiome].name}・${REGION_MAPS[exBiome][regMap].n}`:`探索：${BIOMES[exBiome].n}`):viewing?`${viewing.name} 的農場`:'我的農場';
   const mb=document.getElementById('ibMarket');mb.querySelector('span').textContent=scene==='market'?'回農場':'城鎮';{const mi=mb.querySelector('img.ibimg'),f='assets/icons/s/'+(scene==='market'?'home':'town')+'.png';if(mi&&mi.getAttribute('src')!==f)mi.setAttribute('src',f)}/* 45：回農場用小屋圖示 */
   document.getElementById('ibHome').hidden=!(viewing||scene==='explore');
+  {const hb=document.getElementById('ibHelp');if(hb){const on=!!viewing&&scene==='farm'&&isFriendU(viewing.uid);hb.hidden=!on;if(on){const d=helpedToday(viewing.uid);hb.classList.toggle('done',d);const sp=hb.querySelector('span');if(sp)sp.textContent=d?'今天幫過了':'幫忙照顧'}}}/* 132 */
   const own=scene==='farm'&&!viewing;
   layoutSbtns();
   setWeather(scene==='explore'?(regHas(exBiome)&&REGION_MAPS[exBiome][regMap].cave?'cave':exBiome):null);exHintUpd();
@@ -6779,11 +6790,67 @@ function openFriendPlot(p){sheet={fplot:p,fi:viewing&&viewing.st?viewing.st.plot
    同一株每人一次（state.stole，鍵＝主人｜品系｜編號）；成功率看稀有度；成功得 3 顆（母本＝那一株、父本＝隨機的同作物野生植株），比照買來的（bt）。
    被偷的人什麼都不少；結果用私訊告訴主人（欄位和一般私訊一樣，不用改規則） ===== */
 const STEAL_HR=6,STEAL_P=[0.8,0.8,0.5,0.25,0.1,0.1],STEAL_N=3;
-const isFriendU=u=>!!u&&u!==uid&&profiles.some(x=>x.id===u);
+/* ===== 129（18t）：朋友名單。朋友是互相的：自己的名單 state.friends（同步到 profiles 的 fr），兩邊的名單都有對方才算。
+   邀請、接受、不要都是私訊（messages，kind：frinv／frok／frno，t＝送出的時間），不用改規則。邀請 7 天沒回應失效；被拒絕後 7 天內不能再邀；最多 FRIEND_MAX 位。
+   邀請時先把對方放進自己的名單（只有一邊不算朋友）；被拒絕或失效時自己拿掉（frSync）。 ===== */
+const FRIEND_MAX=50,FR_DAYS=7*864e5;
+const myFr=()=>Array.isArray(state.friends)?state.friends:(state.friends=[]);
+const profOf=u=>profiles.find(p=>p.id===u);
+const isFriendU=u=>!!u&&u!==uid&&!!state&&myFr().includes(u)&&((profOf(u)||{}).fr||[]).includes(uid);
+const frCode=u=>{const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let x=hashStr('fr|'+u)>>>0,y=hashStr('fr2|'+u)>>>0,s='';for(let i=0;i<3;i++){s+=A[x%32]+A[y%32];x=Math.floor(x/32);y=Math.floor(y/32)}return s};/* 6 碼，從 uid 算，固定不變 */
+const frT=m=>m.t||mtime(m);
+const frLast=(L,f)=>L.filter(f).sort((a,b)=>frT(b)-frT(a))[0]||null;
+/* 狀態：friend／out（我邀了、還在等）／in（對方邀我、還在等）／blocked（對方 7 天內拒絕過我）／none */
+function frStatus(u){if(isFriendU(u))return 'friend';const now=Date.now();
+  const no=frLast(msgTo,m=>m.kind==='frno'&&m.from===u);const outI=frLast(msgFrom,m=>m.kind==='frinv'&&m.to===u);
+  if(no&&now-frT(no)<FR_DAYS&&(!outI||frT(outI)<=frT(no)))return 'blocked';
+  if(outI&&now-frT(outI)<FR_DAYS&&!msgTo.some(m=>(m.kind==='frok'||m.kind==='frno')&&m.from===u&&frT(m)>=frT(outI)))return 'out';
+  const inI=frLast(msgTo,m=>m.kind==='frinv'&&m.from===u);if(inI&&now-frT(inI)<FR_DAYS&&!msgFrom.some(m=>(m.kind==='frok'||m.kind==='frno')&&m.to===u&&frT(m)>=frT(inI)))return 'in';
+  return 'none'}
+function frMsg(to,kind,text){const m={from:uid,fromName:myName(),to,text,kind,t:Date.now()};msgFrom.push({...m,id:'local'+m.t+kind});try{db.collection('messages').add({...m,at:TS()}).catch(()=>{})}catch(e){}}
+function frPush(){save();try{pushProfile()}catch(e){}}
+function frInvite(u){const P=profOf(u),nm=(P&&P.name)||'玩家';if(!u||u===uid||!P){toast('找不到這位玩家');return false}const st=frStatus(u);
+  if(st==='friend'){toast(`你們已經是朋友了`);return false}if(st==='out'){toast(`已經邀請 ${nm} 了。`);return false}if(st==='blocked'){toast('對方最近沒有接受，7 天後再試');return false}
+  if(st==='in')return frRespond(u,true);
+  if(!myFr().includes(u)&&myFr().length>=FRIEND_MAX){toast(`朋友最多 ${FRIEND_MAX} 位。`);return false}
+  if(!myFr().includes(u))myFr().push(u);frMsg(u,'frinv',`${myName()} 想加你為朋友`);frPush();toast(`已經邀請 ${nm} 了。`);return true}
+function frRespond(u,yes){if(frStatus(u)!=='in'){toast('這個邀請已經失效了');return false}const P=profOf(u),nm=(P&&P.name)||'玩家';
+  if(yes){if(!myFr().includes(u)){if(myFr().length>=FRIEND_MAX){toast(`朋友最多 ${FRIEND_MAX} 位。`);return false}myFr().push(u)}frMsg(u,'frok',`${myName()} 接受了，你們現在是朋友。`);frPush();toast(`你和 ${nm} 現在是朋友了。`)}
+  else{frMsg(u,'frno',`${myName()} 沒有接受朋友邀請。`);toast('已經回覆了')}return true}
+function frDelete(u){const L=myFr(),i=L.indexOf(u);if(i<0)return false;L.splice(i,1);frPush();return true}
+/* 名單整理：只有一邊、自己的邀請失效或被拒絕、對方的名單也沒有我 → 從自己的名單拿掉 */
+function frSync(){if(!state)return;const L=myFr();let ch=false;for(const u of [...L]){if(isFriendU(u))continue;const st=frStatus(u);if(st==='out'||st==='in')continue;const P=profOf(u);if(P&&(P.fr||[]).includes(uid))continue;
+  const outI=frLast(msgFrom,m=>m.kind==='frinv'&&m.to===u);if(!P&&!outI)continue;/* 名片還沒讀到就先不動 */L.splice(L.indexOf(u),1);ch=true}if(ch)frPush()}
+function frBtnHTML(u){const s=frStatus(u);return s==='friend'?'<button class="btn" disabled>朋友</button>':s==='out'?'<button class="btn" disabled>已邀請</button>':s==='in'?`<button class="btn primary" data-act="frinv" data-u="${esc(u)}">接受朋友邀請</button>`:s==='blocked'?'<button class="btn" disabled>加朋友</button>':`<button class="btn primary" data-act="frinv" data-u="${esc(u)}">加朋友</button>`}
+let socTab='fr';const frDelArm=new Set();
+/* ===== 132（18u）：互助。每天（本地日期）對每位朋友各一次「幫忙照顧」：自己 +HELP_COIN 金幣、+HELP_XP 經驗（每天最多 XP_CAP.f）；
+   對方田裡還在計時的植株（幼苗、結果中）各少等 HELP_MIN 分、定型中的也少 HELP_MIN 分。開花等授粉的不計時，不受影響。
+   送法：私訊 kind:'help'（t、day＝幫忙那天），不用改規則。收的人讀到私訊時套用（在線上立刻、離線就下次上線，只套在那時候還沒成熟的）；
+   檢查發送的人是朋友（兩邊名單都有）、同一人同一天只算一次（state.helpGot 記「uid|day」）、超過 7 天作廢；不符合的記下來直接丟掉。 ===== */
+const HELP_MIN=10,HELP_COIN=5,HELP_XP=3,HELP_DAYS=7;
+const helpedToday=u=>{const H=state&&state.helped;return !!(H&&H.day===dayKey()&&Array.isArray(H.u)&&H.u.includes(u))};
+function helpDo(u){if(!isFriendU(u)){toast('互相加了朋友才能幫忙照顧');return false}if(helpedToday(u)){toast('今天已經幫過這位朋友了');return false}
+  const H=state.helped&&state.helped.day===dayKey()?state.helped:(state.helped={day:dayKey(),u:[]});H.u.push(u);
+  state.coins+=HELP_COIN;try{addXpCap('f',HELP_XP)}catch(e){}
+  const P=profOf(u),nm=(P&&P.name)||'朋友';try{const m={from:uid,fromName:myName(),to:u,text:`${myName()} 來幫忙照顧，作物長快了一點。`,kind:'help',day:dayKey(),t:Date.now()};msgFrom.push({...m,id:'local'+m.t});db.collection('messages').add({...m,at:TS()}).catch(()=>{})}catch(e){}
+  save();toast(`幫 ${nm} 照顧了作物：+${HELP_COIN} 金幣、+${HELP_XP} 經驗`,3500);try{renderSocial()}catch(e){}return true}
+/* 套用收到的幫忙；回傳套用了幾位 */
+function helpApply(){if(!state||!uid)return 0;const G=state.helpGot&&typeof state.helpGot==='object'?state.helpGot:(state.helpGot={}),now=Date.now(),names=[];let n=0;
+  if(!profiles.length)return 0;/* 名片還沒讀到，等下一次（profiles 監聽也會呼叫） */
+  for(const m of msgTo){if(m.kind!=='help'||m.to!==uid||!m.from)continue;const key=m.from+'|'+(m.day||'');if(G[key])continue;const t=m.t||mtime(m);
+    if(now-t>HELP_DAYS*864e5||!isFriendU(m.from)){G[key]=-t||-1;continue}/* 作廢或不是朋友：丟掉 */
+    G[key]=t;n++;if(!names.includes(m.fromName||'朋友'))names.push(m.fromName||'朋友')}
+  for(const k of Object.keys(G))if(now-Math.abs(G[k])>(HELP_DAYS+1)*864e5)delete G[k];
+  if(!n){return 0}
+  const add=n*HELP_MIN*60e3;
+  for(const p of state.plots||[]){if(!p||p.obs||!(p.stage==='seedling'||p.stage==='fruit'))continue;const dur=stageDur(p,phen(p.g,p.crop));p.prog=Math.min(dur,(+p.prog||0)+add)}
+  for(const q of Array.isArray(state.fixq)?state.fixq:[]){if(q&&q.due>now)q.due=Math.max(now,q.due-add)}
+  save();toast(n===1?`${names[0]} 來幫忙照顧，作物長快了一點。`:`${names.slice(0,2).join('、')} 等 ${n} 位朋友來幫過忙。`,6000);try{renderWorld()}catch(e){}return n}
+
 const ripeAtOf=(p,st)=>!p||p.stage!=='ripe'?null:(p.rt||(st&&(st.savedAt||st.last))||null);
 const stealRipe=(p,st)=>{const t=ripeAtOf(p,st);return !!t&&!p.obs&&Date.now()-t>=STEAL_HR*3600e3};
 const stealKey=(fu,p)=>fu+'|'+p.lid+'|'+p.no;
-function stealInfo(p){if(!viewing||!viewing.st||!p||!stealRipe(p,viewing.st))return null;const fu=viewing.uid,ph=phen(p.g,p.crop),pr=STEAL_P[ph.tier]??0.1;
+function stealInfo(p){if(!viewing||!viewing.st||!p||!stealRipe(p,viewing.st)||!isFriendU(viewing.uid))return null;/* 129：不是朋友就什麼都不顯示 */const fu=viewing.uid,ph=phen(p.g,p.crop),pr=STEAL_P[ph.tier]??0.1;
   let why='';if(!isFriendU(fu))why='只能偷朋友的農場';else if((state.stole||{})[stealKey(fu,p)])why='這株你已經偷過了';else if(!(((state.items||{}).glove||0)>0))why='沒有偷偷手套（到城鎮的道具行製作）';else if(bagFull())why='種子袋滿了';
   return {pr,why,ph}}
 function stealFather(crop){const rs=Object.keys(BIOMES).filter(k=>(BIOMES[k].crops||[]).some(c=>c[0]===crop));return makeWild(crop,rs.length?pk(rs):'grass',false)}
@@ -8725,7 +8792,7 @@ const regLv=bk=>{const k=state&&state.lvKeep&&state.lvKeep.reg&&state.lvKeep.reg
 const cropKept=c=>!!(state&&state.lvKeep&&state.lvKeep.crop&&state.lvKeep.crop[c]);
 function lvKeepMigrate(o){if(o.lvKeepV)return;o.lvKeepV=1;const lv=o.lv||1,K={reg:{},crop:{}};for(const k in LV_REG_119)if(lv>=LV_REG_119[k]&&LV_REG[k]>LV_REG_119[k])K.reg[k]=LV_REG_119[k];for(const c in LV_CROP_119)if(lv>=LV_CROP_119[c]&&LV_CROP[c]>LV_CROP_119[c])K.crop[c]=1;o.lvKeep=K}
 const LV_TITLES=[[1,'見習育種家'],[5,'育種家'],[10,'資深育種家'],[15,'育種專家'],[20,'育種大師'],[25,'傳奇育種家']];
-const XP_MUL=[1,2,3,5,8,12],XP_CAP={c:60,h:100,o:40,k:40};/* 119.3：o 供奉（第 114 節接上）、k 製作，每日上限 */
+const XP_MUL=[1,2,3,5,8,12],XP_CAP={c:60,h:100,o:40,k:40,f:30};/* 132：f 幫朋友照顧（HELP_XP_CAP） *//* 119.3：o 供奉（第 114 節接上）、k 製作，每日上限 */
 const XP_WAKE=200,XP_EVO=500,XP_GOD=1000,XP_OFFER=2,XP_CRAFT=2;/* 119.3：喚醒、進化、神化各一次；進化、神化、供奉等第 114 節接上 */
 const LV_GIFT=['lavender','birdhouse','stone_lantern','hammock','beehives','koi_pond','windmill'];/* 每 5 級送一件裝飾（放進裝飾倉庫） */
 const REG_DEEP={grass:'old_well',forest:'hollow',marsh:'tunnel',desert:'temple2',snow:'cave2',sakura:'ancient'};/* 43.3：各地區最深處 */
@@ -9295,7 +9362,7 @@ function renderMe(){try{const el=document.getElementById('meChip');if(!el||!stat
 function meStats(){const seen=state.seen||{};let ns=0;for(const c in seen)ns+=(seen[c]||[]).length;const sp=[0,0,0,0,0,0];(state.specs||[]).forEach(s=>sp[s.tier||0]++);
   return {seen:ns,fin:Object.keys(state.fin||{}).length,specs:(state.specs||[]).length,sp,named:regList.filter(r=>r.inventorUid===uid).length,hv:(state.st&&state.st.hv)||0,cr:(state.st&&state.st.cr)||0,since:(state.st&&state.st.since)||0}}
 let profT=0;
-function pushProfile(){try{if(!uid||!state)return;const s=meStats();db.collection('profiles').doc(uid).set({name:myName(),lv:myLv(),title:lvTitle(myLv()),titles:state.titles||[],st:{seen:s.seen,fin:s.fin,specs:s.specs,named:s.named,hv:s.hv,cr:s.cr,since:s.since}},{merge:true}).catch(()=>{})}catch(e){}}
+function pushProfile(){try{if(!uid||!state)return;const s=meStats();db.collection('profiles').doc(uid).set({name:myName(),lv:myLv(),title:lvTitle(myLv()),titles:state.titles||[],fr:myFr().slice(0,FRIEND_MAX),st:{seen:s.seen,fin:s.fin,specs:s.specs,named:s.named,hv:s.hv,cr:s.cr,since:s.since}},{merge:true}).catch(()=>{})}catch(e){}}
 function openMe(pid){if(pid&&pid!==uid)statusWatch([pid]);sheet={me:pid||uid,dir:2};renderSheet();openSheetUI()}
 function meSheetHTML(){
   const own=sheet.me===uid,P=own?null:profiles.find(p=>p.id===sheet.me);if(!own&&!P)return '<p class="note">找不到這位玩家。</p><button class="btn" data-act="close">關閉</button>';
@@ -9305,6 +9372,7 @@ function meSheetHTML(){
   let h=`<h2>${own?'我的名片':esc(nm)+' 的名片'}</h2><div class="mecard"><div class="meav"><div class="avspin" data-spin="me"><svg viewBox="-30 -66 60 70" width="120" height="140" role="img" aria-label="角色">${spinSVG('me')}</svg></div></div><div class="meinf"><div class="lot-name">${esc(nm)}</div><div class="meta">Lv ${lv}　${lvTitle(lv)}</div>${own?`<span class="xpbar big"><i style="width:${Math.round((state.xp||0)/xpNeed(lv)*100)}%"></i></span><div class="meta">離下一級還差 ${xpNeed(lv)-(state.xp||0)} 經驗</div><div class="row2" style="margin-top:6px"><button class="btn" data-act="meren">改名字</button><button class="btn" data-act="medress">${uiIcon('dress',18)}打扮</button></div>`:`${statusHTML(sheet.me)}<button class="btn" data-act="mevisit">參觀農場</button>`}</div></div>`;
   if(own){const m=mqCur(),done=state.cm?state.cm.list.filter(o=>o.done).length:0;
     h+=`<h3>目前的任務</h3><div class="lot"><div class="meta">${m?(state.mq.st?`主線第 ${state.mq.ch} 章：${m.hint}`:myLv()>=m.lv?`主線第 ${state.mq.ch} 章「${m.t}」可以接了`:`主線第 ${state.mq.ch} 章 Lv ${m.lv} 開放`):'主線任務全部完成'}</div>${state.cm?`<div class="meta">今天的委託完成 ${done}／${state.cm.list.length} 張</div>`:''}</div>`}
+  if(!own)h+=frBtnHTML(sheet.me);/* 129 */
   if(tl.length)h+=`<h3>徽章</h3><div class="badges" style="justify-content:flex-start">${tl.map(t=>`<span class="badge r3">${esc(t)}</span>`).join('')}</div>`;
   h+=`<h3>育種紀錄</h3><div class="scores"><div class="score"><b>${S.seen||0}</b><span>種出過的樣子</span></div><div class="score"><b>${S.fin||0}</b><span>育成的成品</span></div><div class="score"><b>${S.specs||0}</b><span>標本</span></div><div class="score"><b>${S.named||0}</b><span>命名的品種</span></div></div><p class="note">累計收成 ${S.hv||0} 次・雜交 ${S.cr||0} 次${own&&vdOpen()?'・種子箱 '+vdCount()+'／'+BASE_CROPS.length*VD_N:''}${S.since?'・'+new Date(S.since).toLocaleDateString('zh-TW')+' 開始':''}${own&&S.sp?'<br>標本：'+TIERS.map((t,i)=>S.sp[i]?`${t} ${S.sp[i]}`:'').filter(Boolean).join('・'):''}</p>`;
   if(own){h+=`<details class="dist"><summary>育種家分數與紀錄</summary>${meHTML()}</details>`;
@@ -9318,7 +9386,7 @@ async function renameMe(v){
   const first=!state.pname;if(v===myName()&&!first)return '';
   state.pname=v;if(!first)state.pnameAt=Date.now();save();meKey='';renderMe();pushProfile();try{pushPos(true);renderChars();renderWorld()}catch(e){}return '';
 }
-function meAction(b){
+function meAction(b){if(b.dataset.act==='frinv'){frInvite(b.dataset.u);renderSheet();return}/* 129 */
   const a=b.dataset.act;
   if(a==='meturn'){sheet.dir=((sheet.dir||0)+1)%VIEWS.length;renderSheet();return}
   if(a==='meren'){sheet.ren=1;sheet.err='';sheet.d=null;renderSheet();return}

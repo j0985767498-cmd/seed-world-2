@@ -1,0 +1,135 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /rights/{id} {
+      allow read, create, update: if request.auth != null;
+    }
+    function signedIn() { return request.auth != null; }
+    function me() { return request.auth.uid; }
+    function isAdmin() { return signedIn() && request.auth.token.email in ['j0985767498@gmail.com']; }
+    function onlyChanged(keys) { return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys); }
+
+    match /players/{uid} {
+      allow read: if signedIn();
+      allow write: if signedIn() && me() == uid;
+    }
+    match /profiles/{uid} {
+      allow read: if signedIn();
+      allow write: if signedIn() && me() == uid;
+    }
+    match /registry/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && (request.resource.data.inventorUid == me() || request.resource.data.inventorUid == 'system');
+      allow update: if signedIn() && onlyChanged(['rec']);
+      allow delete: if isAdmin();
+    }
+    match /listings/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.sellerUid == me()
+        && request.resource.data.sold == false;
+      allow update: if signedIn()
+        && resource.data.sellerUid != me()
+        && resource.data.sold == false
+        && request.resource.data.buyerUid == me()
+        && (
+          (onlyChanged(['sold', 'buyerUid', 'buyerName', 'soldAt'])
+            && request.resource.data.sold == true)
+          ||
+          (resource.data.get('kind', '') == 'fruit'
+            && onlyChanged(['left', 'q', 'paid', 'sold', 'buyerUid', 'buyerName', 'soldAt'])
+            && request.resource.data.left is int
+            && request.resource.data.left >= 0
+            && request.resource.data.left < resource.data.left
+            && request.resource.data.paid == resource.data.get('paid', 0) + (resource.data.left - request.resource.data.left) * resource.data.up
+            && request.resource.data.sold == (request.resource.data.left == 0))
+        );
+      allow delete: if signedIn() && (resource.data.sellerUid == me() || isAdmin());
+    }
+    match /rights/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.ownerUid == me();
+      allow update: if signedIn() && (
+        (resource.data.status == 'pending'
+          && resource.data.expiresAt < request.time.toMillis()
+          && request.resource.data.ownerUid == me())
+        || (resource.data.ownerUid == me()
+          && onlyChanged(['name', 'price', 'status', 'publishedAt']))
+        || (resource.data.price != null
+          && resource.data.ownerUid != me()
+          && request.resource.data.ownerUid == me()
+          && onlyChanged(['ownerUid', 'ownerName', 'name', 'price', 'payouts', 'history']))
+        || (onlyChanged(['payouts'])
+          && request.resource.data.payouts.diff(resource.data.payouts).affectedKeys().hasOnly([me()])
+          && request.resource.data.payouts[me()] == 0)
+      );
+      allow delete: if isAdmin();
+    }
+    match /discoveries/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == me();
+      allow delete: if isAdmin();
+    }
+    match /backups/{id} {
+      allow read: if signedIn()
+        && (resource == null || resource.data.uid == me() || id.matches(me() + '_.*'));
+      allow create: if signedIn()
+        && request.resource.data.uid == me()
+        && id.matches(me() + '_.*');
+      allow update: if signedIn()
+        && resource.data.uid == me()
+        && request.resource.data.uid == me();
+      allow delete: if false;
+    }
+    match /boards/{id} {
+      allow read: if signedIn();
+      allow write: if signedIn() && id.matches('.*_' + me()) && request.resource.data.uid == me();
+      allow delete: if isAdmin();
+    }
+    match /news/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == me()
+        && request.resource.data.text is string && request.resource.data.text.size() <= 120;
+      allow delete: if isAdmin();
+    }
+    match /messages/{id} {
+      allow read: if signedIn()
+        && (resource.data.to == null || resource.data.to == me() || resource.data.from == me());
+      allow create: if signedIn()
+        && request.resource.data.from == me()
+        && request.resource.data.text is string
+        && request.resource.data.text.size() <= 300;
+    }
+
+    // ---- 91：發光的植株（每個地區一份文件 roamers/<地區>）----
+    function roamFresh(d) {
+      return d.keys().hasAll(['map', 'x', 'y', 'crop', 'spawnAt', 'takenBy'])
+        && d.takenBy == null
+        && d.spawnAt is int
+        && math.abs(d.spawnAt - request.time.toMillis()) < 600000;
+    }
+    function roamExpired(d) {
+      return (d.takenBy != null && request.time.toMillis() - d.takenAt > 14400000 - 600000)
+        || (d.takenBy == null && request.time.toMillis() - d.spawnAt > 14400000 - 600000);
+    }
+    function roamTakeOk() {
+      return resource.data.takenBy == null
+        && request.resource.data.takenBy == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['takenBy', 'takenName', 'takenAt'])
+        && request.time.toMillis() - resource.data.spawnAt < 14400000 + 600000
+        && request.resource.data.takenAt is int
+        && math.abs(request.resource.data.takenAt - request.time.toMillis()) < 600000;
+    }
+    match /roamers/{bk} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && roamFresh(request.resource.data);
+      allow update: if request.auth != null
+        && (roamTakeOk() || (roamExpired(resource.data) && roamFresh(request.resource.data)));
+      allow delete: if false;
+    }
+    match /roamers_test/{bk} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

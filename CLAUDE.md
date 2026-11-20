@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-18m'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-18p'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-18n`。第 111～113、115～122 節（18c～18m）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；第 117 節的 Firestore 規則（`tools/firestore_rules_117.txt`）要貼到主控台；第 114 節等使用者決定供奉的速度。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-18q`。第 111～113、115～125 節（18c～18p）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；第 117 節的 Firestore 規則（`tools/firestore_rules_117.txt`）要貼到主控台；第 114 節等使用者決定供奉的速度。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -90,7 +90,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
   - Auth：Google 登入；
   - Firestore 集合：`players`（每人一份存檔，欄位 `save` 為字串）、`listings`、`registry`、`rights`、`news`、`discoveries`、`boards`、`profiles`、`messages`、`backups`；
   - Realtime Database：線上狀態與角色位置。
-- Firestore 安全規則在 Firebase 主控台，不在檔案內。
+- Firestore 安全規則在 Firebase 主控台。主控台上目前完整的一份是 `tools/firestore_rules_console_117.txt`（使用者 2026-11-21 提供）；**之後要改規則，一律以最新的這份為底，產出完整的一份新檔案**（例 `tools/firestore_rules_console_<節>.txt`），不要只給片段。舊的 `firestore_rules_91／93／95／98／117.txt` 是片段，只當紀錄。
 - `ADMIN_EMAILS = []`，管理員功能目前無法使用。
 - **每位玩家的存檔上限 1 MB**，用 `byteLen()`（`TextEncoder`）計算，不能用字串長度。
 
@@ -190,9 +190,10 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 **遺傳與外觀**（「v0.5 遺傳引擎」區塊）
 - 基因型 v3：`genc3`／`gdec3`、`gFlat`／`gUnflat`、`gamete`／`fuse`、`isGeno`、`fixGeno`、`geno3`（新增欄位要同步改這四處）。
 - `phen(g,crop)`（外觀、`stab` 穩定度、`ab.size`）、`appParts`／`appKey`、`colKey`／`cnOf`／`MIX15`／`ALL_SKINS`、`spExpr`、`offspringDist`／`lotDist`（預覽，精確計算）。
+- 花紋（123）：`patOf`（形式、顏色怎麼顯示）、`PF_OK`、`patN`（文字）、`keyV4`（舊鍵值換算）、`pNormG`（基因整理）、`patTone`／`patToneRGB`（一般花紋自動配色）；遷移 `m123`（旗標 `patV`）；定型的函式是 `fixToGeno`（讀檔修補才是 `fixGeno`，不要再同名）。
 - 中間色顯示（111.4）：`cnOf` 對中間色回「A＋B」（`MIX_ORD` 照 `BASIC` 排）、`cnSe` 不加「色」。
 - 突變：`mutRound`（`MUT_P`）、`mutateX`（`MUTX`）、`takeSeeds`（取種、`mseeds` 突變種子、跨界彩蛋 `crossPollen`／`P_CROSS_EX`）、`muOf`／`muReveal`／`mu96*`。
-- 稀有度：`rarityScore`／`rarityOf`（`TIER_MIN`）、`rarityHint`、徽章 `rbHTML`／`rbT`／`rbE`、名品 `MEIHIN`／`mhOf`、專屬造型 `EX_OF`／`exRoll`／`EX_P`。
+- 稀有度（124 起）：等級 `rarityTier`（最稀有的一項）、原因 `rarityWhy`→`rarityHint`、排序 `rarityRank`；`rarityScore`／`TIER_MIN`／`tierOfScore` 只剩排序與對照；`rarityOf`、徽章 `rbHTML`／`rbT`／`rbE`、名品 `MEIHIN`／`mhOf`、專屬造型 `EX_OF`／`exRoll`／`EX_P`。
 - 果實畫法：`fruitSVG`／`fruitInner`→`fruitImgSVG`（素模 `fruitBase`／`fruitPrep`／`fruitPaint`、快取 `FRUIT_CACHE`、`FRUIT_VER`）；夢幻色 `dreamPx`、光層 `dreamLightSVG`／`dreamLightHTML`、`DREAM_PERIOD`；造型特效 `tfxWrap`。
 - 植株：`plantSVG`、`plantImg`／`plantImgSVG`（`assets/crops/`）、`plantFruitsSVG`（`FRUIT_AT`、`PLANT_H`）。
 
@@ -215,6 +216,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - **3D 畫面（108）**：`js/w3d.js`（`w3dEnter`、`w3dLeave`、`w3dSetPlayer`／`Others`／`Monsters`／`Plants`、`w3dPick`、`w3dView`）＋`lib/three.min.js`，用到才載入；地形 `buildHeight`（高台 `PLAT`、緩坡 `RAMP_L`、水往下挖 `waterDist`）、水 `buildWater`（深度圖＋湖面＋河帶）、橋 `buildBridges`／`gY`、景物 `wellMesh`／`archMesh`／`mushRing`、夢幻色光 `glowFor`、精靈 `w3dSetFairies`、樹冠透視 `holes`（`uHole`）、角色影格 `w3dPreload`；index.html 的「108（17x）」區塊：`W3D_MAPS`（目前草原 5 張）、`w3dSync`、`w3dLoad`、`W3D_HOST`（`pump`、`tap`）、`w3dBtn`。
 
 **城鎮、任務、角色**
+- 偷菜（125）：`STEAL_HR`／`STEAL_P`／`STEAL_N`、`isFriendU`、`ripeAtOf`（植株成熟時間 `p.rt`）、`stealRipe`、`stealInfo`／`stealDo`／`stealBoxHTML`（朋友植株資訊頁 `fplotHTML`）、`state.stole`、`state.stealSeen`；手套 `RECIPES` 的 glove、`state.items.glove`。
 - 委託交果實、果實市集（117）：`giveSpec`／`giveAvail`／`giveDo`／`giveHTML`（`sheet.give`）、`cmNorm`；果實袋 `b`（買來的）；果實上架 `fruitListHTML`／`fruitListSave`、`fruitCardHTML`、`fruitBuy`、`fruitCollect`（`state.fcol`）、`fruitCancel`、`fruitAddQ`。
 - 城鎮：`TOWN_MAPS.plaza`、`TOWN_BLD`、`TOWN_NPC`（圖片 `npcReady`）、`marketWorld`、`townMove`、`openTown`／`townSheetHTML`／`townAction`、攤位 `stallHTML`、標本交易 `spBuy`。
 - 第三章（122）：`MQ2` 的 3-1～3-7、`CLUES`／`DOCK`／`HIDE`／`MARK_SVG`、`marshObjs`／`mq2MarshTick`、所長 `wienAway`、蜜露跑掉 `state.fyRun`（`fyRunning`）；`altNeed`（每一項的顆數）、`ALT_LIST.melon`。
@@ -366,6 +368,8 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 120 | 修正：十級一區、支線「失落的種子庫」的結尾、新手前三株加速 | 已完成 | docs/規格存檔.md；18k（9.117）；探險家大衣之後補發（`coatDue`）；沒測 iPhone |
 | 121 | 主線第二章「銀霧白樺林」：調停、傑柯的清單、喚醒傑柯 | 已完成 | docs/規格存檔.md；18l（9.118）；照使用者三點修改；沒有截圖、沒測 iPhone |
 | 122 | 主線第三章「珍珠潟湖」：追查、蜜露的清單、喚醒蜜露、第一季收尾 | 已完成 | docs/規格存檔.md；18m（9.119）；估計 3～4 天（第 3 項約 1.5～2 天）；沒有截圖、沒測 iPhone |
-| 123 | 花紋改版：三種形式、顏色自動配 | 未做 | docs/待實作/第123節.md；排在第 124 節之前；123.1 已回報 |
-| 124 | 稀有度改版：最稀有的一項決定等級 | 未做 | docs/待實作/第124節.md |
-| 125 | 偷菜與偷偷手套 | 未做 | docs/待實作/第125節.md |
+| 123 | 花紋改版：三種形式、顏色自動配 | 已完成 | docs/規格存檔.md；18n（9.120）；櫻花瓣保留成第四種（使用者）；自動配色對照圖 `tools/pattern_auto_123.html` 等使用者定；順便修定型函式同名的錯；沒測 iPhone |
+| 124 | 稀有度改版：最稀有的一項決定等級 | 已完成 | docs/規格存檔.md；18o（9.121）；跨界照舊是神話（規格沒提）；rights 各等級數量讀不到；沒測 iPhone |
+| 125 | 偷菜與偷偷手套 | 已完成 | docs/規格存檔.md；18p（9.122）；沒有朋友名單＝所有其他玩家；通知用私訊、不用改規則；沒有截圖、沒測 iPhone |
+| 126 | 傑柯與蜜露的台詞、故事；銀霧白樺林與珍珠潟湖的地區故事 | 未做 | docs/待實作/第126節.md；兩位的第二段等第 114 節 |
+| 127 | 種子袋整理：還會變的種子換圖示；標本名額照「作物＋夢幻色」算 | 未做 | docs/待實作/第127節.md；127.1 已回報；自動合併不做（使用者 2026-11-21，照第 12 節）；等存檔還原處理完才開始 |

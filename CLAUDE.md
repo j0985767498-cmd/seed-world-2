@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-18p'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-18r'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-18q`。第 111～113、115～125 節（18c～18p）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；第 117 節的 Firestore 規則（`tools/firestore_rules_117.txt`）要貼到主控台；第 114 節等使用者決定供奉的速度。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-18s`。第 111～113、115～125、127、128 節（18c～18r）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；第 117 節的 Firestore 規則（`tools/firestore_rules_117.txt`）要貼到主控台；第 114 節等使用者決定供奉的速度。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -27,6 +27,7 @@
 8. 測試者都用 **iPhone（Safari）**。
 9. 測試需要 Node.js。若電腦沒有安裝，先告訴使用者，請他到 nodejs.org 安裝 LTS 版，不要跳過測試。
 10. 使用者的電腦是 Windows；測試者用 iPhone（Safari）。
+11. **每一節做完都要跑 `node tools/tload.js`**（帶異質基因的種子包和植株，載入 → 存檔 → 再載入，基因、數量不變；也檢查沒有同名的 function）。**新函式取名前先全文搜尋有沒有同名的**（18f 的 `fixGeno` 同名把讀檔修補蓋掉，見規格存檔 9.120）。（第 128 節）
 
 ### 0.3 工作規則（2026-11-18）
 
@@ -183,6 +184,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 `index.html` 只能有一個 `<script>` 區塊（工具都用「`</style>` 之後第一個 `<script>` 到最後一個 `</script>`」取程式）。程式裡大部分新功能都包在 `/* ===== 節號（BUILD）：名稱 ===== */` 這種註解區塊裡，用節號或 BUILD 搜尋就找得到。
 
 **存檔與載入**
+- 每日備份與還原（128）：`bkDaily`（`bootLoad` 讀到原始存檔、`migrate` 之前）、`bkWrite`／`bkRead`（`backups/<uid>_day<0-6>`、分段 `stamp`、`BK_CH`）、失敗計數 `sw_bkf_<uid>`、設定頁 `bkBox`／`renderBk`、還原 `openBk`／`bkHTML`／`bkAction`／`bkSum`／`bkRestore`（`_prerestore`）。
 - 存檔：`packState`／`unpack`（`gReplacer`／`gReviver`，基因型自動編碼成 `K:`）、`save()`（重要變動立刻存）、`saveLite()`／`liteRun`（輕量：本機 5 秒、雲端 60 秒）、`saveNow()`、`flush()`。上限 1 MB（`byteLen`）。
 - 遷移：`migrate(o)`（旗標 `shapeV`、`cleanV`、`tutV`、`resV`、`specV`、`geneV`、`exV`、`farmV`、`lvV`、`rv98`…，`newGame()` 同步）；`geneMigrate`、`exMigrate`、`lvMigrate`、`recover98`。
 - 讀取：`bootLoad`→`bootStart`、`loadSave`、`saveSanitize`（壞資料略過）、`backupSaveStrict`、`repairState`、`isGeno`；載入畫面 `#boot`（`bootHide`）；版本檢查 `verCheck`（`version.json`）、`checkBuild`。
@@ -203,7 +205,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 操作：綠色按鈕 `#ringBtn`（點＝`openTray`；長按圓盤 `openRing`／`RING`）、多選與模式 `openPick`（收成、自交、雜交 `crossCommit`）、加速 `openAccel`、剷除 `openShovel`、開墾 `openBuild`（`buildAt`、`dragPlot`）、裝飾模式 `openDecor`（`decoPaintAt`、`decoTake`、`state.decoStore`）、`exitAllModes`。
 - 收成與果實袋（112）：`harvestPlant`（`FRUIT_N`、`SEED_N`、`takeSeeds`、`afterHarvest` 只清田）、`fruitAdd`／`fruitFit`／`fruitPrice`（`SIZE_REP`）、`state.fruits`（`FRUIT_SLOTS`、`FRUIT_MAX`）、種子袋「果實」分頁 `fruitBagHTML`、`openFruit`／`fruitHTML`／`fruitAction`；遷移 `m112`（旗標 `hvV`）。
 - 育苗盤：`TRAY_LV`／`trayOn()`（111.5，未開放時綠色按鈕是「種植」）、`trayObj`、`traySow`、`trayHTML`／`trayAction`（分區、目標、穩定度 `trayStab`）、移植 `openSow(null,true)`。收成總表 `openHarvest`／`harvestHTML`／`harvestAction`、`harvestFly`。授粉 `polCard`、`pollinate`、預約 `rsvTick`。
-- 種子袋：`renderBag`／`bagGridHTML`／`slotCell`、`lotCat`、`bagCap`、`LOT_MAX`、`lotNew`（「新」）、`sellOldGo`；種原庫 `zipLot`、`vault`。
+- 種子袋：還會變的種子畫布袋 `seedBagSVG`（127）；`renderBag`／`bagGridHTML`／`slotCell`、`lotCat`、`bagCap`、`LOT_MAX`、`lotNew`（「新」）、`sellOldGo`；種原庫 `zipLot`、`vault`。
 
 **探索（各地區固定地圖）**
 - 地區名（111.3）：`BIOMES[k].n`／`REGION_CFG[k].name`，舊名在 `BIOMES[k].on`；種子包血統顯示用 `srcName()`，`lotWild` 新舊名都認。
@@ -226,6 +228,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 等級與任務（15y）：`addXp`、`levelUp`、`LV_CROP`／`LV_REG`、主線 `MQ`／`mqEv`、委託 `commGen`／`ensureComm`、每週 `wkTxt`／`wkFits`、NPC 故事 `NS`／`nsAccept`、種子庫館藏 `vdHTML`、主題榜 `wkTheme`／`wkSettle`。
 - 神之子（113）：名字 `FY_NM`→`fyN`；祭壇清單 `ALT_LIST`（`ALT_N`）、`altObj`／`altGive`／`altFull`、`fyWakeAlt`（皇冠番茄 `crownGift`）、專屬造型捷徑 `fyExSlots`／`fyWakeEx`（`WAKE_EX_N`）；進度 `state.fairy.altar`。
 - 蘿瑪與地區故事（118）：台詞 `fyLinesFor`（`ROMA_L`、`fyGod`）；`FY_STORY`／`fsObj`／`fsAccept`／`fsDone`／`fsMap`／`fsCheck`／`fsCardHTML`（`state.fyst`）；地區故事 `RS_GRASS`／`rsObj`／`rsTick`／`rsCardHTML`／`rsTheoHTML`（`state.rs`）；交付 `giveSpec` 的 kind `fs`、`rs`。
+- 標本名額照組（127）：`specGroup`／`specGid`、`sgTally`／`sgFetch`／`sgCounts`／`sgN`、`sgFullTxt`。
 - 標本與精靈：`claimSpec`、`rightsTx`、`specUse`、收藏櫃 `cabListHTML`；精靈 `fyWake`／`fyEvolve`、`fySpringHTML`、跟隨 `fyLoop`、演出 `fyShow`、圖 `fyArt`／`fyArtHTML`（新畫布 `FY_CV`、上色開關 `FY_RECOLOR`）。
 - 角色：`avatarSVG`→`avV3SVG`（`av3.js`、`av3_heads.js`、衣服 `avOutfitParts`）、`avNorm`／`avPack`、打扮頁 `avatarEditorHTML`、衣櫃 `WARD`／`wardCheck`；`renderChars`、`updateMe`、`charG`、`poseFor`、`walkLoop`、`walkTo`。
 - 個人介面 `openMe`／`meSheetHTML`、通知 `noteOpen`、慶祝卡 `celShow`、提示 `toast`、「？」小說明 `qh`。
@@ -359,7 +362,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 111 | 種植節奏第一步：生長時間、加速劑、地區改名、中間色不取名、育苗盤 10 等解鎖 | 已完成 | docs/規格存檔.md；18c（9.109）；沒有截圖、沒測 iPhone |
 | 112 | 一株只收一次、果實袋 | 已完成 | docs/規格存檔.md；18d（9.110）；沒有截圖、沒測 iPhone |
 | 113 | 神之子：改稱呼與名字、祭壇清單喚醒、專屬造型捷徑 | 已完成 | docs/規格存檔.md；18e（9.111）；「精靈之翼」照舊不改名（使用者 2026-11-20）；沒有截圖、沒測 iPhone |
-| 114 | 神之子的供奉：進化、神化、換色 | 未做 | docs/待實作/第114節.md；排在第 113 節之後；114.1 已回報，等使用者回覆 |
+| 114 | 神之子的供奉：進化、神化、換色 | 未做 | docs/待實作/第114節.md；114.9 修訂（顆數 1,000、1,500）；114.1 回報已通過；排在第 128 節之後 |
 | 115 | 怪物素材、背包、製作、定型 | 已完成 | docs/規格存檔.md；18f（9.112）；素材圖示暫用怪物縮圖；沒有截圖、沒測 iPhone |
 | 116 | 主線改寫第一步：序章「醒來」、第一章「蘿瑪的清單」、操作引導 | 已完成 | docs/規格存檔.md；18g（9.113）；花紋兩邊各藏一份（使用者決定）；沒有截圖、沒測 iPhone |
 | 117 | 果實的去處：委託改從果實袋交、果實上架市集 | 已完成 | docs/規格存檔.md；18h（9.114）；Firestore 規則要貼主控台；沒有 9 顆的那一類委託；沒有截圖、沒測 iPhone |
@@ -372,4 +375,5 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 124 | 稀有度改版：最稀有的一項決定等級 | 已完成 | docs/規格存檔.md；18o（9.121）；跨界照舊是神話（規格沒提）；rights 各等級數量讀不到；沒測 iPhone |
 | 125 | 偷菜與偷偷手套 | 已完成 | docs/規格存檔.md；18p（9.122）；沒有朋友名單＝所有其他玩家；通知用私訊、不用改規則；沒有截圖、沒測 iPhone |
 | 126 | 傑柯與蜜露的台詞、故事；銀霧白樺林與珍珠潟湖的地區故事 | 未做 | docs/待實作/第126節.md；兩位的第二段等第 114 節 |
-| 127 | 種子袋整理：還會變的種子換圖示；標本名額照「作物＋夢幻色」算 | 未做 | docs/待實作/第127節.md；127.1 已回報；自動合併不做（使用者 2026-11-21，照第 12 節）；等存檔還原處理完才開始 |
+| 127 | 種子袋整理：還會變的種子換圖示；標本名額照「作物＋夢幻色」算 | 已完成 | docs/規格存檔.md；18q（9.123）；自動合併不做（使用者）；不用改規則；沒測 iPhone |
+| 128 | 每日自動備份與自己還原 | 已完成 | docs/規格存檔.md；18r（9.124）；不用改規則；沒測 iPhone |

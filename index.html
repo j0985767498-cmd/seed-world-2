@@ -875,6 +875,8 @@ details.gfold .gfb{margin-top:8px}
 @keyframes fysspin{0%{transform:translate(-50%,-50%) scaleX(1)}20%{transform:translate(-50%,-62%) scaleX(-1)}40%{transform:translate(-50%,-66%) scaleX(1)}55%{transform:translate(-50%,-68%) scaleX(-1)}68%{transform:translate(-50%,-69%) scaleX(1)}78%{transform:translate(-50%,-70%) scaleX(-1)}88%{transform:translate(-50%,-70%) scaleX(1)}100%{transform:translate(-50%,-70%) scaleX(1)}}
 .fy-evo .fys-new{position:absolute;inset:0;opacity:0;animation:fysgray .1s 2.1s forwards}
 .fy-evo .fys-old{animation:fysout .1s 2.1s forwards}@keyframes fysout{to{opacity:0}}
+.fy-god .fys-pillar{width:150px!important;background:linear-gradient(90deg,rgba(255,240,180,0),rgba(255,255,235,1),rgba(255,240,180,0))!important}.fy-god .fys-flash{animation-duration:.7s!important}.fys-ring2{border-width:6px;animation:fysring .9s 2.45s ease-out forwards}/* 114：神化的光柱、白光加強，最後多一圈擴散的光環 */
+.offfx{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);z-index:60;display:flex;gap:14px;pointer-events:auto;animation:offfx .9s ease-out forwards}.offfx b{font-size:30px;text-shadow:0 0 8px #fff}.offok{color:#E8B400}.offbad{color:#8A8A8A}.offfx .offbad::before{content:'✕ '}@keyframes offfx{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-80%) scale(1)}}/* 114 */
 .fy-evo .fys-pillar{position:absolute;left:50%;top:-40px;bottom:-20px;width:90px;transform:translateX(-50%);background:linear-gradient(90deg,rgba(255,240,180,0),rgba(255,248,210,.85),rgba(255,240,180,0));opacity:0;animation:fyspillar 1s 1.5s ease forwards}
 @keyframes fyspillar{0%{opacity:0;transform:translateX(-50%) scaleX(.2)}50%{opacity:1;transform:translateX(-50%) scaleX(1)}100%{opacity:0}}
 .fy-evo .fys-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;animation:fysflash .5s 1.95s ease forwards}
@@ -1457,7 +1459,7 @@ function packKeys(l){
 }
 let DRAW_MU=null;/* 96：剛抽到的那顆是不是新突變（{k,v}），發芽判定時用 */
 function drawSeed(l){if(l.zs)unzipLot(l);DRAW_MU=null;{const m=lcMu(l);if(m&&rnd()*lc(l)<m){const k=Math.floor(rnd()*m),g=l.mseeds.splice(k,1)[0],md=(l.mmd||[]).splice(k,1)[0];DRAW_MU=md||{k:'?'};if(!l.mseeds.length){delete l.mseeds;delete l.mmd}return g}}if(l.seeds&&l.seeds.length)return l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0];l.count--;return child(l.m,l.f).g}
-function newGame(){state={rv98:1,patV:1,fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
+function newGame(){state={rv98:1,patV:1,fyopV:1,fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
 const WILD={tomato:'red',strawberry:'red',zucchini:'green',corn:'yellow',broccoli:'white',melon:'yellow',chili:'red',pumpkin:'yellow',eggplant:'purple'};
 function originalFor(crop){
   const wild=rnd()<0.7,col=wild?WILD[crop]:pk(['red','yellow','green','white','purple'].filter(c=>c!==WILD[crop]));
@@ -1587,6 +1589,7 @@ function migrate(o){if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fair
   lvMigrate(o);/* 28.4（15y）：舊玩家回推等級、主線標記完成（只做一次，旗標 lvV） */
   m111(o);/* 111（18c）：生長時間換算、加速劑獎勵調整（只做一次，旗標 growV） */
   m112(o);/* 112（18d）：果實袋、每週整齊供應改成顆數（旗標 hvV） */
+  if(!o.fyopV){o.fyopV=1;try{for(const k of Object.keys(o.fairy||{})){const f=o.fairy[k];if(FY[k]&&f&&typeof f==='object'&&f.no){f.evo=f.evo?1:0;f.op={n:0,cols:[]}}}}catch(e){}}/* 114（18s）：每一位已喚醒的神之子建立進度；舊規則進化的保留進化、神化從 0 開始 */
   m123(o);/* 123（18n）：花紋改版（旗標 patV；遷移前整份備份，載入時存到 backups） */
   if(!o.mats||typeof o.mats!=='object'||Array.isArray(o.mats))o.mats={};if(!Array.isArray(o.fixq))o.fixq=[];/* 115：素材、定型中的清單 */
   if(!o.mqV){o.mqV=1;if(!o.mq||!(o.mq.ch>=5))o.mq={ch:5,st:0,f:{}};o.mq2={i:0,st:0,f:{}}}/* 116.4：舊的第 1–4 章拿掉（做到一半不補償）、第 5–11 章原樣變成支線；新的序章從 0-1 開始 */
@@ -1696,7 +1699,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-18r';
+const BUILD='2026-11-18s';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -6856,12 +6859,12 @@ function fyFollowSVG(f,flip,who){if(!f||!FY[f.k])return '';const [cx,cy]=fyPos(f
   s+='</g>';
   return s+'</g>'}
 /* 位置同步：[鍵, 衣服顏色, 另一半, 是否進化, 名字] */
-function fyMe(){const F=fyMine(),k=F.follow;if(!k||!fyHas(k))return null;const f=F[k];return {k,col:f.col,sb:f.sb,evo:f.evo?1:0}}
+function fyMe(){const F=fyMine(),k=F.follow;if(!k||!fyHas(k))return null;const f=F[k];return {k,col:f.col,sb:f.sb,evo:f.evo|0}}
 function fyBubbleSVG(flip,who){if(!(fyTalk&&fyTalk.who===who&&Date.now()<fyTalk.until))return '';const [cx]=fyPos(flip),H=FY_FH;{const t=fyTalk.text,nm=fyTalk.name||'',L=Math.max([...t].length,[...nm].length+1),tw=Math.min(150,L*6.6+14),bx=-tw/2,by=-112;
     return `<g pointer-events="none" class="fybub" transform="translate(${cx} 0)"><rect x="${f1(bx)}" y="${by}" width="${f1(tw)}" height="25" rx="8" fill="#FFFDF6" stroke="#B07CC6" stroke-width="1.2"/><path d="M-4 ${by+24.5} L0 ${by+30} L4 ${by+24.5}Z" fill="#FFFDF6" stroke="#B07CC6" stroke-width="1.2" stroke-linejoin="round"/><rect x="-4.5" y="${by+23}" width="9" height="2.4" fill="#FFFDF6"/><text x="0" y="${by+9.5}" text-anchor="middle" font-size="6" font-weight="700" fill="#8A4FA8" font-family="Noto Sans TC,sans-serif">${esc(nm)}</text><text x="0" y="${by+19.5}" text-anchor="middle" font-size="6.4" fill="#3A2614" font-family="Noto Sans TC,sans-serif">${esc(t)}</text></g>`}}/* 93.4：對話泡泡畫在名牌上面 */
-const fyPack=f=>f?[f.k,f.col||'',f.sb||'',f.evo?1:0]:null;/* 113.2：名字改用常數表，不再送 */
-const fyUnpack=a=>Array.isArray(a)&&FY[a[0]]?{k:a[0],col:a[1]||'white',sb:a[2]||undefined,evo:a[3]?1:0,name:String(a[4]||'')}:null;
-function fySay(who,f,text){if(!f)return;fyTalk={who,name:fyN(f.k),text,until:Date.now()+4200};try{renderChars()}catch(e){}}
+const fyPack=f=>f?[f.k,f.col||'',f.sb||'',f.evo|0]:null;/* 114：0 喚醒、1 進化、2 神化（字數不變） *//* 113.2：名字改用常數表，不再送 */
+const fyUnpack=a=>Array.isArray(a)&&FY[a[0]]?{k:a[0],col:a[1]||'white',sb:a[2]||undefined,evo:Math.min(2,a[3]|0),name:String(a[4]||'')}:null;
+function fySay(who,f,text){if(!f)return;fyTalk={who,name:fyN(f.k)+(f.evo>=2?'・神化':f.evo?'・進化':''),text,until:Date.now()+4200};try{renderChars()}catch(e){}}
 function fyTap(who){const f=who==='me'?fyMe():who==='home'?(fyHome&&fyHome.f):fyUnpack(others[who]&&others[who].fy);if(!f)return;const L=fyLinesFor(f),k=who+'|'+f.k,i=fyLineI[k]=((fyLineI[k]==null?Math.floor(Math.random()*L.length):fyLineI[k]+1))%L.length;fySay(who,f,L[i])}
 function fyFollow(k){if(fyRunning(k)){toast(`${fyN(k)}跑出去了，先去漁村找她`);return}const F=state.fairy||(state.fairy={});const prev=F.follow;
   if(prev===k)F.follow=null;else{if(prev==='melon')F.mj=1;F.follow=k;if(k==='melon'&&F.mj){F.mj=0;setTimeout(()=>fySay('me',fyMe(),FY_JEALOUS[Math.floor(Math.random()*FY_JEALOUS.length)]),300)}}
@@ -6886,7 +6889,8 @@ async function specUse(e){let out=null;
 async function fyFirst(k){try{const ref=db.collection('fairyFirst').doc(k);let first=false;await db.runTransaction(async tx=>{const d=await tx.get(ref);if(d.exists)return;tx.set(ref,{u:uid,name:myName(),at:Date.now()});first=true});if(first)postNews('fairy',`${myName()} 是第一個喚醒${fyN(k)}的人！`,4)}catch(e){}}
 function fyDo(k,act,test,specId){const f=fyMine()[k],A=FY_ACT[act];if(!A)return;
   if(act==='wake'&&fyHas(k)){toast('你已經有'+fyN(k)+'了');return}
-  if(act!=='wake'&&!fyHas(k))return;if(act==='evo'&&f.evo)return;
+  if(act!=='wake'&&!fyHas(k))return;if(act==='evo'&&fyStage(f)>=2)return;
+  if(test&&act==='evo'){const st=fyStage(f),op=fyOp(f),c=st?'d-gold-starry':'gold';op.n=fyNeed(f);if(!op.cols.includes(c))op.cols.push(c);fyStageUp(k,c);return}/* 114：測試按鈕直接把進度填滿 */
   if(test){let col=FY_TESTCOL[Math.floor(Math.random()*FY_TESTCOL.length)],sb=col.startsWith('l-')?'red':undefined;if(!fruitColSpecOk(col)){col='gold';sb=undefined}fyApply(k,act,{col,sb,sid:null});return}
   sheet={fy:{m:'pick',k,act,sel:specId||null}};renderSheet();openSheetUI()}
 async function fyUseGo(k,act,id){const e=(state.specs||[]).find(x=>x.id===id);if(!e||e.used||e.listed){toast('這個標本不能用了');return}
@@ -6902,19 +6906,89 @@ function fyApply(k,act,c){const F=state.fairy||(state.fairy={});
   sheet={fy:{m:'one',k}};renderSheet();openSheetUI();
   if(act==='evo'){fyShow('evo',k,f,{oldCol,oldSb});return}
   celShow({th:'dream',kicker:'換色',title:`${fyN(k)}換了新顏色！`,sub:'',fruit:fyArtHTML(k,f,200,true),chips:[colorName(c.col,c.sb)]})}
+/* ===== 114（18s）：神之子的供奉（進化、神化、換色）。標本不再用在神之子身上（95.2 作廢）。
+   階段放在 f.evo：0 喚醒、1 進化、2 神化（118 的 fyGod 本來就看 evo>=2）。進度 f.op={n:這一階段成功的顆數, cols:[這一階段成功過的果皮]}。
+   供品：那一位作物的專屬造型＋完整夢幻色（進化）／雙夢幻色（神化）；花紋、大小不影響；買來的果實也可以（114 沒有限制，和祭壇清單不同）。
+   每顆判定一次：成功 +1、失敗只是果實沒了；成功率＝基本＋完美度加減（OFFER_PERF），限制在 5%～95%；滿了不再收。 ===== */
+const EVO_NEED=1000,GOD_NEED=1500,EVO_P=0.6,GOD_P=0.3,RECOLOR_N=3;/* 114.9（使用者 2026-11-21）：30 → 1,000、1,500 */
+const OFFER_PERF=[-0.1,0,0.05,0.1],OFFER_MIN=0.05,OFFER_MAX=0.95;/* 完美度：奇異造型、歪斜、良好、完美 */
+const FY_STAGE=['喚醒','進化','神化'];
+/* 114.9：進度到 25／50／75% 各說一次（每一階段各一輪）；其他六位先用共用句 */
+const FY_MS={tomato:['身體暖起來了！','一半了一半了！再來！','我感覺得到……就差一點點。'],pumpkin:['……有感覺了。','一半。','快了。'],melon:['咦？手指會發光了耶！','一半了！可以先放一個小的慶祝嗎？','快好了快好了快好了！']},FY_MS0=['……有一點力氣了。','……一半了。','……快了。'];
+const numC=n=>String(n|0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+const fyPct=(n,need)=>`${Math.floor(n/need*100)}%（${numC(n)}／${numC(need)}）`;
+const fyStage=f=>f&&f.evo>=2?2:f&&f.evo?1:0;
+const fyNeed=f=>fyStage(f)===0?EVO_NEED:GOD_NEED;
+const fyOp=f=>{if(!f.op||typeof f.op!=='object')f.op={n:0,cols:[]};if(!Array.isArray(f.op.cols))f.op.cols=[];f.op.n=Math.max(0,f.op.n|0);return f.op};
+/* 這顆果實能不能當這一位在這個階段的供品 */
+function offerOk(k,a,stage){if(!a||a.legacy||a.sp!==EX_OF[k])return false;const t=colParts(a.skin).t;return stage===0?t==='s':stage===1?t==='d':false}
+const offerRate=(stage,perf)=>Math.min(OFFER_MAX,Math.max(OFFER_MIN,(stage===0?EVO_P:GOD_P)+(OFFER_PERF[perf]||0)));
+function offerSlots(k){const f=fyMine()[k];if(!f||fyStage(f)>=2)return [];const st=fyStage(f);return fruitsArr().map((x,i)=>({x,i})).filter(o=>o.x.c===k&&fCount(o.x)>0&&offerOk(k,keyApp(o.x.k),st))}
+const offerWant=k=>{const f=fyMine()[k],st=fyStage(f),ex=`${EXN[EX_OF[k]]}${CROPS[k].n}`;return st===0?`完整夢幻色的${ex}（專屬造型，果皮兩份是同一種夢幻色）`:`雙夢幻色的${ex}（專屬造型，果皮是兩種不同的夢幻色）`};
+/* 獻上：pick={qk:顆數}，fi＝果實袋第幾格。回傳 {ok,bad,n,need} */
+function offerDo(k,fi,pick,rng){rng=rng||Math.random;const f=fyMine()[k];if(!fyHas(k)||!f)return null;const st=fyStage(f);if(st>=2)return null;const F=fruitsArr(),x=F[fi];if(!x||x.c!==k||!offerOk(k,keyApp(x.k),st))return null;
+  const op=fyOp(f),need=fyNeed(f);let ok=0,bad=0;
+  for(const qk of Object.keys(pick||{})){let m=Math.min(pick[qk]|0,x.q[qk]||0);const perf=fqSplit(qk)[1],r=offerRate(st,perf);
+    while(m>0&&op.n<need){m--;x.q[qk]--;if(rng()<r){ok++;op.n++}else bad++}
+    if(x.q[qk]<=0)delete x.q[qk]}
+  if(ok&&!op.cols.includes(x.k.split('|')[1]))op.cols.push(x.k.split('|')[1]);
+  const lines=[];{if(!Array.isArray(op.ms))op.ms=[];const L=FY_MS[k]||FY_MS0;[0.25,0.5,0.75].forEach((t,j)=>{if(op.n>=need*t&&!op.ms.includes(j)){op.ms.push(j);lines.push(L[j])}})}/* 114.9：跨過兩個門檻時依序都說 */
+  if(!fCount(x))F.splice(fi,1);
+  try{if(ok+bad)addXpCap('o',XP_OFFER*(ok+bad))}catch(e){}
+  if(!(state.tips||(state.tips={})).fyoff)state.tips.fyoff=1;save();return {ok,bad,n:op.n,need,lines}}
+/* 進化／神化：進度滿了、選一個這一階段成功過的顏色 */
+function fyStageUp(k,col){const f=fyMine()[k];if(!fyHas(k)||!f)return false;const st=fyStage(f);if(st>=2)return false;const op=fyOp(f);if(op.n<fyNeed(f)||!op.cols.includes(col))return false;
+  const oldCol=f.col,oldSb=f.sb;f.col=col;f.sb=undefined;f.evo=st+1;f.op={n:0,cols:[]};
+  try{const X=state.fyXp||(state.fyXp={}),key=k+(st?'_god':'_evo');if(!X[key]){X[key]=1;addXp(st?XP_GOD:XP_EVO,true)}}catch(e){}
+  save();try{pushPos(true)}catch(e){}fyFirstAct(k,st?'god':'evo');
+  sheet={fy:{m:'one',k}};try{renderSheet();openSheetUI()}catch(e){}try{fyShow(st?'god':'evo',k,f,{oldCol,oldSb})}catch(e){}return true}
+async function fyFirstAct(k,act){try{const ref=db.collection('fairyFirst').doc(k+'_'+act);let first=false;await db.runTransaction(async tx=>{const d=await tx.get(ref);if(d.exists)return;tx.set(ref,{u:uid,name:myName(),at:Date.now()});first=true});if(first)postNews('fairy',`${myName()} 是第一個讓${fyN(k)}${act==='god'?'神化':'進化'}的人`,4)}catch(e){}}
+/* 換色：同一格 3 顆那一位作物的專屬造型果實，果皮要符合目前的階段（喚醒：任何顏色；進化：完整夢幻色；神化：雙夢幻色）。不會失敗 */
+function recolorOk(k,a,stage){if(!a||a.legacy||a.sp!==EX_OF[k])return false;const t=colParts(a.skin).t;return stage===0?true:stage===1?t==='s':t==='d'}
+function recolorSlots(k){const f=fyMine()[k];if(!f)return [];const st=fyStage(f);return fruitsArr().map((x,i)=>({x,i})).filter(o=>o.x.c===k&&fCount(o.x)>=RECOLOR_N&&recolorOk(k,keyApp(o.x.k),st))}
+function fyRecolor(k,fi){const f=fyMine()[k];if(!fyHas(k)||!f)return false;const F=fruitsArr(),x=F[fi];if(!x||x.c!==k||fCount(x)<RECOLOR_N||!recolorOk(k,keyApp(x.k),fyStage(f)))return false;
+  let left=RECOLOR_N;for(const qk of Object.keys(x.q).sort((a,b)=>fqSplit(a)[1]-fqSplit(b)[1]||fqSplit(a)[0]-fqSplit(b)[0])){const m=Math.min(left,x.q[qk]);x.q[qk]-=m;left-=m;if(x.q[qk]<=0)delete x.q[qk];if(!left)break}
+  if(!fCount(x))F.splice(fi,1);const col=x.k.split('|')[1];f.col=col;f.sb=col.startsWith('l-')?HALF_DEF:undefined;save();try{pushPos(true)}catch(e){}
+  try{celShow({th:'dream',kicker:'換色',title:`${fyN(k)}換了新顏色！`,sub:'',fruit:fyArtHTML(k,f,200,true),chips:[colorName(f.col,f.sb)]})}catch(e){}return true}
+/* 供奉的畫面 */
+function fyOffHTML(s){const k=s.k,f=fyMine()[k],st=fyStage(f),op=fyOp(f),need=fyNeed(f);
+  let h=`<h2>${fyN(k)}・${FY_STAGE[st]}</h2><div class="fybig">${fyArtHTML(k,f,170,true)}</div>`;
+  if(st>=2)return h+'<p class="note" style="text-align:center">已經神化了。</p><button class="btn" data-act="fyback">返回</button>';
+  const pct=Math.min(100,op.n/need*100);
+  h+=`<p class="note">${st?'神化':'進化'}的進度 <b>${fyPct(op.n,need)}</b></p><div class="bar"><i style="width:${pct.toFixed(1)}%"></i></div><p class="note">要${offerWant(k)}。${qh(`每一顆都判定一次：成功進度 +1，沒成功果實就沒了，進度不會倒退。完美度越好越容易成功（${st?'神化':'進化'}基本 ${Math.round((st?GOD_P:EVO_P)*100)}%）。`)}</p>`;
+  if(s.res)h+=`<div class="regbox offres"><b>成功 ${numC(s.res.ok)} 顆、失敗 ${numC(s.res.bad)} 顆，進度 ${fyPct(s.res.n,s.res.need)}</b></div>`+(s.res.lines||[]).map(t=>fyTalkHTML(k,t)).join('');
+  if(op.n>=need)return h+`<button class="btn primary" data-act="fyupc" data-k="${k}">${st?'神化':'進化'}${fyN(k)}</button><button class="btn" data-act="fyback">返回</button>`;
+  const L=offerSlots(k);
+  if(!L.length)return h+`<p class="note">果實袋裡沒有可以獻上的果實。需要${offerWant(k)}。</p><button class="btn" data-act="fyback">返回</button>`;
+  h+=L.map(o=>{const on=s.fi===o.i;let ic='';try{ic=fruitSVG(fruitPh(o.x),k,44)}catch(e){}
+    let r=`<button class="pick${on?' sel':''}" data-act="fyoffs" data-k="${k}" data-i="${o.i}"><span class="seedic">${ic}</span><span><b>${esc(colorName(o.x.k.split('|')[1]))}</b><span class="meta">${fCount(o.x)} 顆${o.x.b?'・買來的':''}</span></span></button>`;
+    if(on){r+=`<button class="btn small" data-act="fyoffall">整格全部（${fCount(o.x)} 顆）</button>`+'<div class="fqsel">'+Object.keys(o.x.q).filter(qk=>o.x.q[qk]>0).sort((a,b)=>fqSplit(b)[1]-fqSplit(a)[1]).map(qk=>{const [sz,pf]=fqSplit(qk),n=o.x.q[qk],c=Math.min(n,(s.pick||{})[qk]||0);
+      return `<div class="fqrow"><span>${PERF_N[pf]||''}・${SIZE_N[sz]||''}<span class="meta">　${n} 顆・成功率 ${Math.round(offerRate(st,pf)*100)}%</span></span><button class="mini" data-act="fyoffm" data-q="${qk}">−</button><span><b>${c}</b><button class="mini" data-act="fyoffp" data-q="${qk}">＋</button><button class="mini" data-act="fyoffa" data-q="${qk}">全部</button></span></div>`}).join('')+'</div>'}
+    return r}).join('');
+  const tot=Object.values(s.pick||{}).reduce((a,b)=>a+(b|0),0);
+  if(!(state.tips||{}).fyoff&&s.arm)h+='<p class="note"><b>獻上的果實不會還回來。沒有成功的那幾顆也一樣。</b></p>';
+  h+=`<button class="btn primary" data-act="fyoffgo" data-k="${k}"${tot?'':' disabled'}>獻上果實${tot?`（${tot} 顆）`:''}</button>`;
+  const RC=recolorSlots(k);if(RC.length)h+=`<button class="btn" data-act="fycol" data-k="${k}">換色（${RECOLOR_N} 顆專屬造型果實）</button>`;
+  return h+'<button class="btn" data-act="fyback">返回</button>'}
+function fyUpColHTML(k){const f=fyMine()[k],op=fyOp(f),st=fyStage(f);let h=`<h2>${st?'神化':'進化'}${fyN(k)}</h2><p class="note">選一種顏色（${st?'這次神化':'這次進化'}獻上成功過的）。</p>`;
+  h+=op.cols.map(c=>{let ic='';try{ic=fruitSVG({level:0,sp:EX_OF[k],skin:c,pat:null,perfCls:2,seed:7},k,44,1,'',true)}catch(e){}return `<button class="pick" data-act="fyup" data-k="${k}" data-c="${esc(c)}"><span class="seedic">${ic}</span><span><b>${esc(colorName(c))}</b></span></button>`}).join('');
+  return h+`<button class="btn" data-act="fyoff" data-k="${k}">返回</button>`}
+function fyColHTML(k){const L=recolorSlots(k),st=fyStage(fyMine()[k]);let h=`<h2>${fyN(k)}換色</h2><p class="note">獻上同一格 ${RECOLOR_N} 顆${EXN[EX_OF[k]]}${CROPS[k].n}，顏色換成那一格的果皮顏色，不會失敗。${st===1?'進化之後要完整的夢幻色。':st===2?'神化之後要雙夢幻色。':''}</p>`;
+  h+=L.length?L.map(o=>{let ic='';try{ic=fruitSVG(fruitPh(o.x),k,44)}catch(e){}return `<button class="pick" data-act="fycolgo" data-k="${k}" data-i="${o.i}"><span class="seedic">${ic}</span><span><b>${esc(colorName(o.x.k.split('|')[1]))}</b><span class="meta">${fCount(o.x)} 顆</span></span></button>`}).join(''):'<p class="note">果實袋裡沒有符合的果實。</p>';
+  return h+`<button class="btn" data-act="fyoff" data-k="${k}">返回</button>`}
 /* ---- 畫面 ---- */
 const fySil=k=>`<img class="fysil" src="assets/fairy/${fyImgName(k,1)}.png?v=${BUILD}" alt="" aria-hidden="true">`;
 const fyNoTxt=f=>f&&f.sid&&f.sno?`${esc(f.sname||'')} #${f.sno}／${f.scap}`:'';
 function fySpringHTML(){const t=isTestMode();
-  let h=`<h2>穗光教會的祭壇</h2><p class="note">把指定的果實獻上祭壇，喚醒神之子。${qh('兩條路：把那一位的清單獻滿；或獻上果實袋同一格的 '+WAKE_EX_N+' 顆專屬造型果實。每人每位只能喚醒一次。進化要神話標本、換色要傳說以上的標本（用掉就只能欣賞）。')}</p>`;
+  let h=`<h2>穗光教會的祭壇</h2><p class="note">把指定的果實獻上祭壇，喚醒神之子。${qh('兩條路：把那一位的清單獻滿；或獻上果實袋同一格的 '+WAKE_EX_N+' 顆專屬造型果實。每人每位只能喚醒一次。喚醒之後在這裡獻上果實讓他們進化、神化。')}</p>`;
   for(const k of FY_KEYS){const has=fyHas(k),f=fyMine()[k],nL=fyQual(k,4).length,nM=fyQual(k,5).length,cr=CROPS[k].n;
     const B=[];let st='';
     if(!has){const L=ALT_LIST[k],ex=fyExSlots(k),exn=`${WAKE_EX_N} 顆${EXN[EX_OF[k]]}${cr}`;
       if(L&&altDark(k))st=`永生的果實還沒回來・或 ${exn}`;/* 121.3 */else if(L){const A=altObj(k);st=`清單 ${L.filter((_,j)=>(A.n[j]||0)>=altNeed(k,j)).length}／${L.length}・或 ${exn}`;B.push(['fyalt','清單',1])}else st=`清單還沒開放・可以用 ${exn}`;
       if(ex.length)B.push(['fyex','獻上專屬造型',!L])}
-    else{if(!f.evo&&nM)B.push(['evo','進化',1]);if(nL)B.push(['col',FY_RECOLOR?'換色':'換色（之後開放）',0]);st=!f.evo?(nM?`神話標本 ${nM} 個`:`進化要${cr}的神話標本`):'已進化'}
-    h+=`<div class="fyrow"><span class="fyth">${has?fyArtHTML(k,f,72,false):fySil(k)}</span><div class="fyrc"><b>${fyN(k)}（${cr}）</b>${has?`<span class="meta">已喚醒${f.evo?'・已進化':''}</span>`:''}<span class="meta">${st}</span></div>
-      <div class="fyrb">${B.map(([a,n,pri])=>a==='col'&&!FY_RECOLOR?`<button class="btn" disabled aria-disabled="true">${n}</button>`:a==='fyalt'||a==='fyex'?`<button class="btn${pri?' primary':''}" data-act="${a}" data-k="${k}">${n}</button>`:`<button class="btn${pri?' primary':''}" data-act="fyuse" data-a="${a}" data-k="${k}">${n}</button>`).join('')}${t&&!(has&&f.evo)?`<button class="btn small" data-act="fytest" data-a="${has?'evo':'wake'}" data-k="${k}">測試：直接${has?'進化':'喚醒'}</button>`:''}${t&&has?`<button class="btn small" data-act="fytest" data-a="col" data-k="${k}">測試：換色</button>`:''}</div></div>`}/* 110.3：用 FY_TESTCOL 的顏色檢查上色 */
+    else{const sg=fyStage(f);if(sg<2){const op=fyOp(f);B.push(['fyoff',op.n>=fyNeed(f)?(sg?'神化':'進化'):'獻上果實',1]);st=`${sg?'神化':'進化'} ${fyPct(op.n,fyNeed(f))}`}else{B.push(['fyoff','換色',0]);st='已神化'}}/* 114：標本不再用在神之子身上 */
+    h+=`<div class="fyrow"><span class="fyth">${has?fyArtHTML(k,f,72,false):fySil(k)}</span><div class="fyrc"><b>${fyN(k)}（${cr}）</b>${has?`<span class="meta">${FY_STAGE[fyStage(f)]}</span>`:''}<span class="meta">${st}</span></div>
+      <div class="fyrb">${B.map(([a,n,pri])=>a==='col'&&!FY_RECOLOR?`<button class="btn" disabled aria-disabled="true">${n}</button>`:a==='fyalt'||a==='fyex'||a==='fyoff'?`<button class="btn${pri?' primary':''}" data-act="${a}" data-k="${k}">${n}</button>`:`<button class="btn${pri?' primary':''}" data-act="fyuse" data-a="${a}" data-k="${k}">${n}</button>`).join('')}${t&&!(has&&fyStage(f)>=2)?`<button class="btn small" data-act="fytest" data-a="${has?'evo':'wake'}" data-k="${k}">測試：直接${has?(f.evo?'神化':'進化'):'喚醒'}</button>`:''}${t&&has?`<button class="btn small" data-act="fytest" data-a="col" data-k="${k}">測試：換色</button>`:''}</div></div>`}/* 110.3：用 FY_TESTCOL 的顏色檢查上色 */
   return h+`<button class="btn" data-act="fygrid">看我的神之子</button>`}
 /* ===== 113（18e）：祭壇清單喚醒、專屬造型捷徑 =====
    A：清單（這一節只有蘿瑪）每項 ALT_N 顆該作物的果實，從果實袋獻上、不能拿回；進度 state.fairy.altar[鍵]={n:[每項顆數],cols:[獻過的果皮],warned,seed}。
@@ -6989,20 +7063,29 @@ function fyExPickHTML(k){const L=fyExSlots(k);
   h+=L.length?L.map(x=>{const ph=fruitPh(x.f);return `<button class="pick" data-act="fyexgo" data-k="${k}" data-i="${x.i}"><span class="seedic">${fruitSVG(ph,k,44)}</span><span><b>${esc(shortApp(ph))}</b><span class="meta">${fCount(x.f)} 顆・獻上 ${WAKE_EX_N} 顆（不能拿回）</span></span></button>`}).join(''):`<p class="note">果實袋裡沒有一格滿 ${WAKE_EX_N} 顆的${EXN[EX_OF[k]]}${CROPS[k].n}。</p>`;
   return h+`<button class="btn" data-act="fyback">返回</button>`}
 function fyOneHTML(k){const f=fyMine()[k];if(!fyHas(k))return `<p class="note">還沒有${fyN(k)}。</p>`;const F=fyMine(),fol=F.follow===k,no=fyNoTxt(f);
-  return `<h2>${esc(fyN(k))}</h2><div class="fybig">${fyArtHTML(k,f,240,true)}</div>${f.evo||no?`<p class="note" style="text-align:center">${f.evo?'已進化':''}${f.evo&&no?'<br>':''}${no}</p>`:''}
+  return `<h2>${esc(fyN(k))}</h2><div class="fybig">${fyArtHTML(k,f,240,true)}</div><p class="note" style="text-align:center">${FY_STAGE[fyStage(f)]}${no?'<br>'+no:''}</p>
     ${fyRunning(k)?`<p class="note" style="text-align:center">${fyPron(k)}跑出去了。</p>`:`<button class="btn primary" data-act="fyfol" data-k="${k}">${fol?'不要跟隨':'讓'+fyPron(k)+'跟隨'}</button>`}
-    ${fsCardHTML(k)}<p class="note">換色、進化到穗光教會的祭壇（城鎮的噴水池）。</p><button class="btn" data-act="fygrid">返回</button>`}
+    ${fsCardHTML(k)}<p class="note">供奉、換色到穗光教會的祭壇（城鎮的噴水池）。</p><button class="btn" data-act="fygrid">返回</button>`}
 function fyPickHTML(k,act,sel){const A=FY_ACT[act],L=fyQual(k,A.t),e=sel&&L.find(x=>x.id===sel);
   let h=`<h2>${A.n}${fyN(k)}</h2><p class="note">選一個${A.t>=5?'神話':'傳說以上'}的標本。</p>`;
   h+=L.length?L.map(x=>{const a=specApp(x);return `<button class="pick${sel===x.id?' sel':''}" data-act="fysel" data-k="${k}" data-id="${esc(x.id)}">${fruitSVG(a,x.crop,44,1,'',true)}<span><b>${esc(x.auto||CROPS[x.crop].n)}</b><span class="meta">${rbE(x)}</span></span></button>`}).join(''):'<p class="note">沒有可以用的標本。</p>';
   if(e)h+=`<div class="regbox"><b>這個標本用掉後就只能欣賞，不能賣。</b><button class="btn primary" data-act="fygo" data-k="${k}" data-id="${esc(e.id)}">確定${A.n}</button></div>`;
   return h+`<button class="btn" data-act="fyback" data-k="${k}">返回</button>`}
 function colorName(c,sb){try{return cnOf(c,sb)}catch(e){return c}}
-function fyHTML(){const s=sheet.fy;if(s.m==='spring')return fySpringHTML();if(s.m==='one')return fyOneHTML(s.k);if(s.m==='pick')return fyPickHTML(s.k,s.act,s.sel);if(s.m==='alt')return fyAltHTML(s.k);if(s.m==='altpick')return fyAltPickHTML(s);if(s.m==='altcol')return fyAltColHTML(s.k);if(s.m==='expick')return fyExPickHTML(s.k);if(s.m==='name')return fyOneHTML(s.k);return fyGridHTML(true)}
+function fyHTML(){const s=sheet.fy;if(s.m==='spring')return fySpringHTML();if(s.m==='one')return fyOneHTML(s.k);if(s.m==='pick')return fyPickHTML(s.k,s.act,s.sel);if(s.m==='alt')return fyAltHTML(s.k);if(s.m==='altpick')return fyAltPickHTML(s);if(s.m==='altcol')return fyAltColHTML(s.k);if(s.m==='expick')return fyExPickHTML(s.k);if(s.m==='off')return fyOffHTML(s);if(s.m==='upc')return fyUpColHTML(s.k);if(s.m==='col')return fyColHTML(s.k);if(s.m==='name')return fyOneHTML(s.k);return fyGridHTML(true)}
 function bindFy(){const i=document.getElementById('fyname');if(i)i.addEventListener('input',()=>{sheet.fy.draft=i.value;sheet.fy.err=''})}
 function fyAction(b){const a=b.dataset.act,k=b.dataset.k,s=sheet.fy;
   if(a==='close'){closeSheet();return}
-  if(a==='fyuse'){if(b.dataset.a==='col'&&!FY_RECOLOR){toast('換色之後開放');return}/* 110：不能讓玩家用掉標本卻換不了色 */fyDo(k,b.dataset.a,false);return}
+  if(a==='fyuse'||a==='fygo'){toast('標本不再用在神之子身上，請到祭壇獻上果實');return}/* 114 */
+  if(a==='fyoff'){sheet={fy:{m:'off',k,fi:null,pick:{}}};renderSheet();return}
+  if(a==='fyoffs'){s.fi=+b.dataset.i;s.pick={};s.res=null;renderSheet();return}
+  if(a==='fyoffall'){const x=fruitsArr()[s.fi];if(x){s.pick={};for(const q in x.q)s.pick[q]=x.q[q]}renderSheet();return}
+  if(a==='fyoffm'||a==='fyoffp'||a==='fyoffa'){const x=fruitsArr()[s.fi],q=b.dataset.q;if(!x)return;const n=x.q[q]||0,c=s.pick[q]||0;s.pick[q]=a==='fyoffa'?n:Math.max(0,Math.min(n,c+(a==='fyoffp'?1:-1)));renderSheet();return}
+  if(a==='fyoffgo'){if(!(state.tips||{}).fyoff&&!s.arm){s.arm=1;renderSheet();return}const r=offerDo(s.k,s.fi,s.pick);if(r){s.res=r;s.pick={};s.fi=null;s.arm=0;try{fyOfferFx(r)}catch(e){}}renderSheet();try{renderBag()}catch(e){}return}
+  if(a==='fyupc'){sheet={fy:{m:'upc',k}};renderSheet();return}
+  if(a==='fyup'){if(!fyStageUp(k,b.dataset.c))renderSheet();return}
+  if(a==='fycol'){sheet={fy:{m:'col',k}};renderSheet();return}
+  if(a==='fycolgo'){if(fyRecolor(k,+b.dataset.i))sheet={fy:{m:'off',k,fi:null,pick:{}}};renderSheet();try{renderBag()}catch(e){}return}
   if(a==='fytest'){fyDo(k,b.dataset.a,true);return}
   if(a==='fysel'){s.sel=b.dataset.id;renderSheet();return}
   if(a==='fygo'){const act=s.act;b.disabled=true;fyUseGo(k,act,b.dataset.id);return}
@@ -7077,11 +7160,13 @@ const fyRM=()=>typeof RMQ!=='undefined'&&RMQ.matches;
 /* renderChars 每次都會把這一輪看得到的精靈登記進來 */
 function fyRegister(who,f,getPos){if(f&&FY[f.k])fyOwners.set(who,{f,getPos,gen:fyGen})}
 function fyLayers(){return [document.getElementById('fyBack'),document.getElementById('fyFront')]}
-function fyArtKey(f){return f.k+'|'+(f.col||'')+'|'+(f.sb||'')+'|'+(f.evo?1:0)+'|'+FRUIT_VER}
+function fyArtKey(f){return f.k+'|'+(f.col||'')+'|'+(f.sb||'')+'|'+(f.evo|0)+'|'+FRUIT_VER}
 function fyBodySVG(f){const H=FY_FH,ev=f.evo,w=FY_WING[f.k]||'#FFE6A0';
   let s='';
   if(ev&&!FAIRY_BASE_READY)s+=`<defs><radialGradient id="fyblg-${f.k}"><stop offset="0" stop-color="${w}" stop-opacity="1"/><stop offset=".55" stop-color="${w}" stop-opacity=".55"/><stop offset="1" stop-color="${w}" stop-opacity="0"/></radialGradient></defs><ellipse class="fybl" cx="0" cy="${f3(-H*0.1)}" rx="${f3(H*0.42)}" ry="${f3(H*0.5)}" fill="url(#fyblg-${f.k})"/>`;/* 97.4 背光：翅膀主色 */
+  if(ev>=2)s+=`<defs><radialGradient id="fygd-${f.k}"><stop offset="0" stop-color="${w}" stop-opacity="1"/><stop offset=".55" stop-color="${w}" stop-opacity=".75"/><stop offset="1" stop-color="${w}" stop-opacity="0"/></radialGradient></defs><ellipse class="fybl" cx="0" cy="${f3(-H*0.1)}" rx="${f3(H*0.5)}" ry="${f3(H*0.6)}" fill="url(#fygd-${f.k})"/>`;/* 114：神化的背光（比 97.4 大一圈、亮一級） */
   s+=fyArt(f.k,f,H,0.7);
+  if(ev>=2)s+=`<g transform="translate(0 ${f3(-H*0.53)}) scale(1 .3)"><circle r="${f3(H*0.12)}" fill="none" stroke="#FFD54A" stroke-width="2.2"/><circle r="${f3(H*0.17)}" fill="none" stroke="#FFF0A0" stroke-width="1.6" opacity=".85"/><g class="fyorb">${[0,72,144,216,288].map(a=>`<circle cx="${f3(H*0.17*Math.cos(a*Math.PI/180))}" cy="${f3(H*0.17*Math.sin(a*Math.PI/180))}" r="1.9" fill="#FFF8D0"/>`).join('')}</g></g>`;/* 114：兩圈光環、五顆亮點 */
   if(ev&&!FAIRY_BASE_READY)s+=`<g transform="translate(0 ${f3(-H*0.53)}) scale(1 .3)"><circle r="${f3(H*0.12)}" fill="none" stroke="#FFD54A" stroke-width="2.2"/><g class="fyorb">${[0,120,240].map(a=>`<circle cx="${f3(H*0.12*Math.cos(a*Math.PI/180))}" cy="${f3(H*0.12*Math.sin(a*Math.PI/180))}" r="1.9" fill="#FFF8D0"/>`).join('')}</g></g>`;/* 97.4 光環：細金環＋三顆繞圈的亮點 */
   return s+`<rect x="${-H*0.28}" y="${-H*0.5}" width="${H*0.56}" height="${H}" fill="transparent"/>`}
 function fyNode(who,o){const [B]=fyLayers();if(!B)return null;let S=FYO.get(who);
@@ -7136,9 +7221,9 @@ function fyLoop(ts){if(!fyOwners.size){fyRaf=0;fyLastT=0;return}/* 106.4：畫�
     if(rm)continue;
     /* 移動時的光點（進化型更多、帶翅膀主色） */
     const sp=Math.hypot(vx,(S.y-py)/dt);S.trail-=dt;
-    if(sp>25&&S.trail<=0){S.trail=o.f.evo?0.11:0.24;fyPuff('fyp-fade',S.x-Math.sign(vx||1)*5+(Math.random()-.5)*4,S.y+fl+4,`<circle r="${o.f.evo?1.3:1}" fill="${o.f.evo?FY_WING[o.f.k]:'#FFFFFF'}" opacity=".85"/>`,600,0)}
+    if(sp>25&&S.trail<=0){S.trail=o.f.evo>=2?0.07:o.f.evo?0.11:0.24;fyPuff('fyp-fade',S.x-Math.sign(vx||1)*5+(Math.random()-.5)*4,S.y+fl+4,`<circle r="${o.f.evo>=2?1.6:o.f.evo?1.3:1}" fill="${o.f.evo?FY_WING[o.f.k]:'#FFFFFF'}" opacity=".85"/>`,600,0)}
     /* 97.4 專屬粒子：約每 1.5 秒一個（同時最多 3 個）；玉米、甜瓜移動時多一些 */
-    if(o.f.evo){const P=FY_PART[o.f.k];if(P){S.part-=dt;const fast=(o.f.k==='corn'&&moving)||o.f.k==='melon';if(S.part<=0){S.part=fast?0.35:1.5;const B=FB['fy:'+fyImgName(o.f.k,1)],ar=B&&B.st===1&&!(B.w===FY_CV.w&&B.h===FY_CV.h)?B.w/B.h:0.42,H=FY_FH,W=H*ar,A=P[1][Math.floor(Math.random()*P[1].length)];
+    if(o.f.evo){const P=FY_PART[o.f.k];if(P){S.part-=dt;const fast=(o.f.k==='corn'&&moving)||o.f.k==='melon';if(S.part<=0){S.part=o.f.evo>=2?(fast?0.25:0.9):(fast?0.35:1.5);const B=FB['fy:'+fyImgName(o.f.k,1)],ar=B&&B.st===1&&!(B.w===FY_CV.w&&B.h===FY_CV.h)?B.w/B.h:0.42,H=FY_FH,W=H*ar,A=P[1][Math.floor(Math.random()*P[1].length)];
       const lx=(A[0]-0.5)*W,ly=(A[1]-0.5)*H,c=Math.cos(rot*Math.PI/180),s2=Math.sin(rot*Math.PI/180),wx=lx*sxx*FY_S,wy=ly*FY_S;
       if(S.parts<3||fast){S.parts++;setTimeout(()=>{S.parts=Math.max(0,S.parts-1)},1400);fyEmit(S,P[0],S.x+wx*c-wy*s2,S.y+fl+wx*s2+wy*c,moving)}}}}
     /* 說話泡泡跟著精靈 */
@@ -7173,13 +7258,14 @@ function fyHomePos(){const H=fyHome;if(!H)return null;const t=performance.now()/
 function fyStart(){for(const [w,o] of [...fyOwners])if(o.gen!==fyGen){fyOwners.delete(w);fyDrop(w)}fyGen++;if(!fyRaf&&typeof requestAnimationFrame==='function')fyRaf=requestAnimationFrame(fyLoop)}
 /* ---- 97.2 喚醒演出、97.3 進化演出（約 3 秒，點一下可以跳過） ---- */
 let fyShowOn=false;
-function fyShow(kind,k,f,opt,done){opt=opt||{};const el=document.createElement('div');el.className='fyshow fy-'+kind;el.setAttribute('role','dialog');el.setAttribute('aria-label',kind==='wake'?`${fyN(k)}醒來了`:`${fyN(k)}進化了`);fyShowOn=true;
+function fyOfferFx(r){if(fyRM())return;const el=document.createElement('div');el.className='offfx';el.innerHTML=`${r.ok?`<b class="offok">✦ ${r.ok}</b>`:''}${r.bad?`<b class="offbad">${r.bad}</b>`:''}`;el.addEventListener('click',()=>el.remove());document.body.appendChild(el);setTimeout(()=>{try{el.remove()}catch(e){}},900)}
+function fyShow(kind,k,f,opt,done){opt=opt||{};const el=document.createElement('div');el.className='fyshow fy-'+(kind==='god'?'evo fy-god':kind);el.setAttribute('role','dialog');el.setAttribute('aria-label',kind==='wake'?`${fyN(k)}醒來了`:kind==='god'?`${fyN(k)}神化了`:`${fyN(k)}進化了`);fyShowOn=true;
   const art=x=>fyArtHTML(k,x,230,false),w=FY_WING[k]||'#FFE6A0';
   const dots=Array.from({length:10},(_,i)=>{const a=i/10*Math.PI*2;return `<i style="--x:${(Math.cos(a)*140).toFixed(0)}px;--y:${(Math.sin(a)*110).toFixed(0)}px;animation-delay:${(0.55+i*0.03).toFixed(2)}s"></i>`}).join('');
   const P=FY_PART[k]?FY_PART[k][0]:'star',burst=Array.from({length:12},(_,i)=>{const a=i/12*Math.PI*2,d=90+(i%3)*25;return `<i class="fyb-${P}" style="--x:${(Math.cos(a)*d).toFixed(0)}px;--y:${(Math.sin(a)*d).toFixed(0)}px;background:${P==='note'?'none':w}">${P==='note'?'♪':''}</i>`}).join('');
   if(kind==='wake')el.innerHTML=`<div class="fys-bg"></div><div class="fys-stage"><div class="fys-pool"></div><div class="fys-fruit">${opt.fruit||''}</div><div class="fys-dots">${dots}</div>
       <div class="fys-fairy"><div class="fys-gray">${art(f)}</div><div class="fys-color">${art(f)}</div></div><div class="fys-ring"></div></div><h2 class="fys-title">${esc(fyN(k))}醒來了！</h2><p class="fys-skip">點一下跳過</p>`;
-  else el.innerHTML=`<div class="fys-bg"></div><div class="fys-stage"><div class="fys-pillar"></div><div class="fys-fairy fys-spin"><div class="fys-old">${art({...f,evo:0,col:opt.oldCol||f.col,sb:opt.oldSb})}</div><div class="fys-new">${art(f)}</div></div><div class="fys-burst">${burst}</div></div><div class="fys-flash"></div><h2 class="fys-title">${esc(fyN(k))}進化了！</h2><p class="fys-skip">點一下跳過</p>`;
+  else el.innerHTML=`<div class="fys-bg"></div><div class="fys-stage"><div class="fys-pillar"></div><div class="fys-fairy fys-spin"><div class="fys-old">${art({...f,evo:kind==='god'?1:0,col:opt.oldCol||f.col,sb:opt.oldSb})}</div><div class="fys-new">${art(f)}</div></div><div class="fys-burst">${burst}</div>${kind==='god'?'<div class="fys-ring fys-ring2"></div>':''}</div><div class="fys-flash"></div><h2 class="fys-title">${esc(fyN(k))}${kind==='god'?'神化':'進化'}了！</h2><p class="fys-skip">點一下跳過</p>`;
   let closed=false;const close=()=>{if(closed)return;closed=true;el.classList.add('out');setTimeout(()=>{el.remove();fyShowOn=false;try{done&&done()}catch(e){}},fyRM()?0:220)};
   el.addEventListener('click',close);document.body.appendChild(el);setTimeout(close,fyRM()?600:3400)}
 

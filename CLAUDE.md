@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-18r'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-18s'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-18s`。第 111～113、115～125、127、128 節（18c～18r）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；第 117 節的 Firestore 規則（`tools/firestore_rules_117.txt`）要貼到主控台；第 114 節等使用者決定供奉的速度。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-18t`。第 111～125、127、128 節（18c～18s）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；第 117 節的 Firestore 規則（`tools/firestore_rules_117.txt`）要貼到主控台；第 114 節等使用者決定供奉的速度。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -226,6 +226,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 新主線（116）：`MQ2`（序章、第一章）、`state.mq2`、`mq2Accept`／`mq2Tick`／`mq2Done`／`mq2CardHTML`、`mq2Seed`（`qf` 快速株）、`mq2Wild`（草原第一包黃番茄藏花紋）、`mq2Trade`；NPC 提歐神父、所長維恩（`townNpcs`）；目前任務 `#mqLine`（`renderMqLine`、`mqLineTap`、`townArrowSVG`）；第一次提示 `tipOnce`（`state.tips`）。舊 `MQ` 第 5–11 章＝支線「失落的種子庫」。
 - 等級（119、120）：`regLv`／`cropKept`（舊玩家 `state.lvKeep`，`lvKeepMigrate`）；`LV_REG`／`LV_CROP`／`LV_TOWN` 前三區重排；新經驗 `XP_WAKE`、`XP_EVO`、`XP_GOD`、`XP_OFFER`、`XP_CRAFT`（`XP_CAP.o`／`.k`）。
 - 等級與任務（15y）：`addXp`、`levelUp`、`LV_CROP`／`LV_REG`、主線 `MQ`／`mqEv`、委託 `commGen`／`ensureComm`、每週 `wkTxt`／`wkFits`、NPC 故事 `NS`／`nsAccept`、種子庫館藏 `vdHTML`、主題榜 `wkTheme`／`wkSettle`。
+- 供奉（114）：`EVO_NEED`／`GOD_NEED`／`EVO_P`／`GOD_P`／`OFFER_PERF`、階段 `f.evo` 0／1／2（`fyStage`、`FY_STAGE`）、進度 `f.op`（`fyOp`）、`offerOk`／`offerRate`／`offerSlots`／`offerDo`、`fyStageUp`（`fyFirstAct`）、換色 `RECOLOR_N`／`recolorOk`／`fyRecolor`；114.9 進度百分比 `fyPct`／`numC`、門檻台詞 `FY_MS`（`f.op.ms`）；畫面 `fyOffHTML`／`fyUpColHTML`／`fyColHTML`、`fyOfferFx`、神化演出 `fyShow('god')`；遷移旗標 `fyopV`。
 - 神之子（113）：名字 `FY_NM`→`fyN`；祭壇清單 `ALT_LIST`（`ALT_N`）、`altObj`／`altGive`／`altFull`、`fyWakeAlt`（皇冠番茄 `crownGift`）、專屬造型捷徑 `fyExSlots`／`fyWakeEx`（`WAKE_EX_N`）；進度 `state.fairy.altar`。
 - 蘿瑪與地區故事（118）：台詞 `fyLinesFor`（`ROMA_L`、`fyGod`）；`FY_STORY`／`fsObj`／`fsAccept`／`fsDone`／`fsMap`／`fsCheck`／`fsCardHTML`（`state.fyst`）；地區故事 `RS_GRASS`／`rsObj`／`rsTick`／`rsCardHTML`／`rsTheoHTML`（`state.rs`）；交付 `giveSpec` 的 kind `fs`、`rs`。
 - 標本名額照組（127）：`specGroup`／`specGid`、`sgTally`／`sgFetch`／`sgCounts`／`sgN`、`sgFullTxt`。
@@ -362,7 +363,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 111 | 種植節奏第一步：生長時間、加速劑、地區改名、中間色不取名、育苗盤 10 等解鎖 | 已完成 | docs/規格存檔.md；18c（9.109）；沒有截圖、沒測 iPhone |
 | 112 | 一株只收一次、果實袋 | 已完成 | docs/規格存檔.md；18d（9.110）；沒有截圖、沒測 iPhone |
 | 113 | 神之子：改稱呼與名字、祭壇清單喚醒、專屬造型捷徑 | 已完成 | docs/規格存檔.md；18e（9.111）；「精靈之翼」照舊不改名（使用者 2026-11-20）；沒有截圖、沒測 iPhone |
-| 114 | 神之子的供奉：進化、神化、換色 | 未做 | docs/待實作/第114節.md；114.9 修訂（顆數 1,000、1,500）；114.1 回報已通過；排在第 128 節之後 |
+| 114 | 神之子的供奉：進化、神化、換色 | 已完成 | docs/規格存檔.md；18s（9.125）；照 114.9（1,000／1,500、百分比、25／50／75% 的話）；買來的果實可以供奉；公告寫不進去（沒有 fairyFirst 規則）；沒有截圖、沒測 iPhone |
 | 115 | 怪物素材、背包、製作、定型 | 已完成 | docs/規格存檔.md；18f（9.112）；素材圖示暫用怪物縮圖；沒有截圖、沒測 iPhone |
 | 116 | 主線改寫第一步：序章「醒來」、第一章「蘿瑪的清單」、操作引導 | 已完成 | docs/規格存檔.md；18g（9.113）；花紋兩邊各藏一份（使用者決定）；沒有截圖、沒測 iPhone |
 | 117 | 果實的去處：委託改從果實袋交、果實上架市集 | 已完成 | docs/規格存檔.md；18h（9.114）；Firestore 規則要貼主控台；沒有 9 顆的那一類委託；沒有截圖、沒測 iPhone |
@@ -377,3 +378,6 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 126 | 傑柯與蜜露的台詞、故事；銀霧白樺林與珍珠潟湖的地區故事 | 未做 | docs/待實作/第126節.md；兩位的第二段等第 114 節 |
 | 127 | 種子袋整理：還會變的種子換圖示；標本名額照「作物＋夢幻色」算 | 已完成 | docs/規格存檔.md；18q（9.123）；自動合併不做（使用者）；不用改規則；沒測 iPhone |
 | 128 | 每日自動備份與自己還原 | 已完成 | docs/規格存檔.md；18r（9.124）；不用改規則；沒測 iPhone |
+| 129 | 朋友名單（補第 125 節：偷菜只能偷朋友） | 未做 | docs/待實作/第129節.md；排在第 128 節之後、推上線給更多人玩之前 |
+| 130 | 筆記頁：主的傳說、第一批的遺物 | 未做 | docs/待實作/第130節.md；排在第 126 節之後（要用到岳哥、槿姨、老舵和兩條地區故事） |
+| 131 | 戰鬥改版第一步：血量、怪物會還手、小補血藥、打怪經驗、白樺林與潟湖的素材 | 未做 | docs/待實作/第131節.md；排在最後（114、129、126、130 之後）；131.1 回報後停下來等使用者 |

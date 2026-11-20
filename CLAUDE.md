@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-18l'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-18m'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-18m`。第 111～113、115～121 節（18c～18l）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；第 117 節的 Firestore 規則（`tools/firestore_rules_117.txt`）要貼到主控台；第 114 節等使用者決定供奉的速度。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-18n`。第 111～113、115～122 節（18c～18m）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；第 117 節的 Firestore 規則（`tools/firestore_rules_117.txt`）要貼到主控台；第 114 節等使用者決定供奉的速度。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -217,6 +217,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 **城鎮、任務、角色**
 - 委託交果實、果實市集（117）：`giveSpec`／`giveAvail`／`giveDo`／`giveHTML`（`sheet.give`）、`cmNorm`；果實袋 `b`（買來的）；果實上架 `fruitListHTML`／`fruitListSave`、`fruitCardHTML`、`fruitBuy`、`fruitCollect`（`state.fcol`）、`fruitCancel`、`fruitAddQ`。
 - 城鎮：`TOWN_MAPS.plaza`、`TOWN_BLD`、`TOWN_NPC`（圖片 `npcReady`）、`marketWorld`、`townMove`、`openTown`／`townSheetHTML`／`townAction`、攤位 `stallHTML`、標本交易 `spBuy`。
+- 第三章（122）：`MQ2` 的 3-1～3-7、`CLUES`／`DOCK`／`HIDE`／`MARK_SVG`、`marshObjs`／`mq2MarshTick`、所長 `wienAway`、蜜露跑掉 `state.fyRun`（`fyRunning`）；`altNeed`（每一項的顆數）、`ALT_LIST.melon`。
 - 第二章（121）：`MQ2` 的 2-1～2-6、同一步兩件事 `subs`（`mq2SF`、`mq2SubDone`）、`mq2Talk`、`mq2GiveFin`；`ALT_LIST.pumpkin`（`altQ`、`altDark`、`state.altLit`）；`exGift`（九位通用的專屬造型種子）；野外 NPC `REG_NPCS`／`regNpcObjs`／`regNpcTap`／`rnpcHTML`、白南瓜路標 `lampPos`、`mq2KidTick`。
 - 新主線（116）：`MQ2`（序章、第一章）、`state.mq2`、`mq2Accept`／`mq2Tick`／`mq2Done`／`mq2CardHTML`、`mq2Seed`（`qf` 快速株）、`mq2Wild`（草原第一包黃番茄藏花紋）、`mq2Trade`；NPC 提歐神父、所長維恩（`townNpcs`）；目前任務 `#mqLine`（`renderMqLine`、`mqLineTap`、`townArrowSVG`）；第一次提示 `tipOnce`（`state.tips`）。舊 `MQ` 第 5–11 章＝支線「失落的種子庫」。
 - 等級（119、120）：`regLv`／`cropKept`（舊玩家 `state.lvKeep`，`lvKeepMigrate`）；`LV_REG`／`LV_CROP`／`LV_TOWN` 前三區重排；新經驗 `XP_WAKE`、`XP_EVO`、`XP_GOD`、`XP_OFFER`、`XP_CRAFT`（`XP_CAP.o`／`.k`）。
@@ -364,4 +365,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 119 | 等級與解鎖：配合新主線重排前三區、新動作的經驗、節奏試算 | 已完成 | docs/規格存檔.md；18i（9.115）；進化、神化、供奉的經驗等第 114 節接上；沒測 iPhone |
 | 120 | 修正：十級一區、支線「失落的種子庫」的結尾、新手前三株加速 | 已完成 | docs/規格存檔.md；18k（9.117）；探險家大衣之後補發（`coatDue`）；沒測 iPhone |
 | 121 | 主線第二章「銀霧白樺林」：調停、傑柯的清單、喚醒傑柯 | 已完成 | docs/規格存檔.md；18l（9.118）；照使用者三點修改；沒有截圖、沒測 iPhone |
-| 122 | 主線第三章「珍珠潟湖」：追查、蜜露的清單、喚醒蜜露、第一季收尾 | 未做 | docs/待實作/第122節.md；排在第 121 節之後；122.1 已回報 |
+| 122 | 主線第三章「珍珠潟湖」：追查、蜜露的清單、喚醒蜜露、第一季收尾 | 已完成 | docs/規格存檔.md；18m（9.119）；估計 3～4 天（第 3 項約 1.5～2 天）；沒有截圖、沒測 iPhone |
+| 123 | 花紋改版：三種形式、顏色自動配 | 未做 | docs/待實作/第123節.md；排在第 124 節之前；123.1 已回報 |
+| 124 | 稀有度改版：最稀有的一項決定等級 | 未做 | docs/待實作/第124節.md |
+| 125 | 偷菜與偷偷手套 | 未做 | docs/待實作/第125節.md |

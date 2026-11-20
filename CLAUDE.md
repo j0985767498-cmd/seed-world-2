@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-18i'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-18k'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-18j`。第 111～113、115～117、119 節（18c～18i）已做，都還沒在 iPhone 實測；第 117 節的 Firestore 規則（`tools/firestore_rules_117.txt`）要貼到主控台；第 114 節等使用者決定供奉的速度。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-18l`。第 111～113、115～120 節（18c～18k）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；第 117 節的 Firestore 規則（`tools/firestore_rules_117.txt`）要貼到主控台；第 114 節等使用者決定供奉的速度。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -218,9 +218,10 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 委託交果實、果實市集（117）：`giveSpec`／`giveAvail`／`giveDo`／`giveHTML`（`sheet.give`）、`cmNorm`；果實袋 `b`（買來的）；果實上架 `fruitListHTML`／`fruitListSave`、`fruitCardHTML`、`fruitBuy`、`fruitCollect`（`state.fcol`）、`fruitCancel`、`fruitAddQ`。
 - 城鎮：`TOWN_MAPS.plaza`、`TOWN_BLD`、`TOWN_NPC`（圖片 `npcReady`）、`marketWorld`、`townMove`、`openTown`／`townSheetHTML`／`townAction`、攤位 `stallHTML`、標本交易 `spBuy`。
 - 新主線（116）：`MQ2`（序章、第一章）、`state.mq2`、`mq2Accept`／`mq2Tick`／`mq2Done`／`mq2CardHTML`、`mq2Seed`（`qf` 快速株）、`mq2Wild`（草原第一包黃番茄藏花紋）、`mq2Trade`；NPC 提歐神父、所長維恩（`townNpcs`）；目前任務 `#mqLine`（`renderMqLine`、`mqLineTap`、`townArrowSVG`）；第一次提示 `tipOnce`（`state.tips`）。舊 `MQ` 第 5–11 章＝支線「失落的種子庫」。
-- 等級（119）：`LV_REG`／`LV_CROP`／`LV_TOWN` 前三區重排；新經驗 `XP_WAKE`、`XP_EVO`、`XP_GOD`、`XP_OFFER`、`XP_CRAFT`（`XP_CAP.o`／`.k`）。
+- 等級（119、120）：`regLv`／`cropKept`（舊玩家 `state.lvKeep`，`lvKeepMigrate`）；`LV_REG`／`LV_CROP`／`LV_TOWN` 前三區重排；新經驗 `XP_WAKE`、`XP_EVO`、`XP_GOD`、`XP_OFFER`、`XP_CRAFT`（`XP_CAP.o`／`.k`）。
 - 等級與任務（15y）：`addXp`、`levelUp`、`LV_CROP`／`LV_REG`、主線 `MQ`／`mqEv`、委託 `commGen`／`ensureComm`、每週 `wkTxt`／`wkFits`、NPC 故事 `NS`／`nsAccept`、種子庫館藏 `vdHTML`、主題榜 `wkTheme`／`wkSettle`。
 - 神之子（113）：名字 `FY_NM`→`fyN`；祭壇清單 `ALT_LIST`（`ALT_N`）、`altObj`／`altGive`／`altFull`、`fyWakeAlt`（皇冠番茄 `crownGift`）、專屬造型捷徑 `fyExSlots`／`fyWakeEx`（`WAKE_EX_N`）；進度 `state.fairy.altar`。
+- 蘿瑪與地區故事（118）：台詞 `fyLinesFor`（`ROMA_L`、`fyGod`）；`FY_STORY`／`fsObj`／`fsAccept`／`fsDone`／`fsMap`／`fsCheck`／`fsCardHTML`（`state.fyst`）；地區故事 `RS_GRASS`／`rsObj`／`rsTick`／`rsCardHTML`／`rsTheoHTML`（`state.rs`）；交付 `giveSpec` 的 kind `fs`、`rs`。
 - 標本與精靈：`claimSpec`、`rightsTx`、`specUse`、收藏櫃 `cabListHTML`；精靈 `fyWake`／`fyEvolve`、`fySpringHTML`、跟隨 `fyLoop`、演出 `fyShow`、圖 `fyArt`／`fyArtHTML`（新畫布 `FY_CV`、上色開關 `FY_RECOLOR`）。
 - 角色：`avatarSVG`→`avV3SVG`（`av3.js`、`av3_heads.js`、衣服 `avOutfitParts`）、`avNorm`／`avPack`、打扮頁 `avatarEditorHTML`、衣櫃 `WARD`／`wardCheck`；`renderChars`、`updateMe`、`charG`、`poseFor`、`walkLoop`、`walkTo`。
 - 個人介面 `openMe`／`meSheetHTML`、通知 `noteOpen`、慶祝卡 `celShow`、提示 `toast`、「？」小說明 `qh`。
@@ -358,5 +359,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 115 | 怪物素材、背包、製作、定型 | 已完成 | docs/規格存檔.md；18f（9.112）；素材圖示暫用怪物縮圖；沒有截圖、沒測 iPhone |
 | 116 | 主線改寫第一步：序章「醒來」、第一章「蘿瑪的清單」、操作引導 | 已完成 | docs/規格存檔.md；18g（9.113）；花紋兩邊各藏一份（使用者決定）；沒有截圖、沒測 iPhone |
 | 117 | 果實的去處：委託改從果實袋交、果實上架市集 | 已完成 | docs/規格存檔.md；18h（9.114）；Firestore 規則要貼主控台；沒有 9 顆的那一類委託；沒有截圖、沒測 iPhone |
-| 118 | 蘿瑪的故事、蘿瑪的台詞、翠風草原的地區故事 | 未做 | docs/待實作/第118節.md；排在第 116、117 節之後；118.3 第二、三段要等第 114 節 |
+| 118 | 蘿瑪的故事、蘿瑪的台詞、翠風草原的地區故事 | 已完成 | docs/規格存檔.md；18j（9.116）；第二、三段等第 114 節；可以調查的田改成乾草堆、筆記頁沒做；沒有截圖、沒測 iPhone |
 | 119 | 等級與解鎖：配合新主線重排前三區、新動作的經驗、節奏試算 | 已完成 | docs/規格存檔.md；18i（9.115）；進化、神化、供奉的經驗等第 114 節接上；沒測 iPhone |
+| 120 | 修正：十級一區、支線「失落的種子庫」的結尾、新手前三株加速 | 已完成 | docs/規格存檔.md；18k（9.117）；探險家大衣之後補發（`coatDue`）；沒測 iPhone |
+| 121 | 主線第二章「銀霧白樺林」：調停、傑柯的清單、喚醒傑柯 | 未做 | docs/待實作/第121節.md；排在第 120 節之後 |

@@ -1,0 +1,35 @@
+// 第 117 節「果實上架市集、可以只買幾顆」要用的 Firestore 安全規則（18h 版）。
+// 貼到 Firebase 主控台 → Firestore Database → 規則，放在 match /databases/{database}/documents { … } 裡面：
+//   ・下面的 match /listings/{id} 整段「取代」主控台上原本的同名區塊（第 95 節那段）。其他區塊不動。
+//
+// listings（攤位）：
+//   ・建立：sellerUid 一定是自己，sold 是 false。（和第 95 節一樣）
+//   ・整筆購買（種子、道具、標本）：只能改 sold（false → true）和 buyerUid（自己），賣家不能買自己的。（和第 95 節一樣）
+//   ・果實只買幾顆（kind:'fruit'）：只能改 left、q、paid、sold、buyerUid；
+//       left 要變少、不能小於 0；paid 一定剛好多「買走的顆數 × 每顆價格 up」；left 變成 0 時 sold 才是 true；buyerUid 是自己；賣家不能買自己的。
+//   ・刪除：只有賣家（收錢、收回）。（和第 95 節一樣）
+
+    // ---- 117：攤位（listings）----
+    match /listings/{id} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+        && request.resource.data.sellerUid == request.auth.uid
+        && request.resource.data.sold == false;
+      allow update: if request.auth != null
+        && resource.data.sellerUid != request.auth.uid
+        && resource.data.sold == false
+        && request.resource.data.buyerUid == request.auth.uid
+        && (
+          (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sold', 'buyerUid'])
+            && request.resource.data.sold == true)
+          ||
+          (resource.data.get('kind', '') == 'fruit'
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['left', 'q', 'paid', 'sold', 'buyerUid'])
+            && request.resource.data.left is int
+            && request.resource.data.left >= 0
+            && request.resource.data.left < resource.data.left
+            && request.resource.data.paid == resource.data.get('paid', 0) + (resource.data.left - request.resource.data.left) * resource.data.up
+            && request.resource.data.sold == (request.resource.data.left == 0))
+        );
+      allow delete: if request.auth != null && resource.data.sellerUid == request.auth.uid;
+    }

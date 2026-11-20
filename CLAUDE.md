@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-18b'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-18i'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-18c`。目前進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-18j`。第 111～113、115～117、119 節（18c～18i）已做，都還沒在 iPhone 實測；第 117 節的 Firestore 規則（`tools/firestore_rules_117.txt`）要貼到主控台；第 114 節等使用者決定供奉的速度。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -190,6 +190,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 **遺傳與外觀**（「v0.5 遺傳引擎」區塊）
 - 基因型 v3：`genc3`／`gdec3`、`gFlat`／`gUnflat`、`gamete`／`fuse`、`isGeno`、`fixGeno`、`geno3`（新增欄位要同步改這四處）。
 - `phen(g,crop)`（外觀、`stab` 穩定度、`ab.size`）、`appParts`／`appKey`、`colKey`／`cnOf`／`MIX15`／`ALL_SKINS`、`spExpr`、`offspringDist`／`lotDist`（預覽，精確計算）。
+- 中間色顯示（111.4）：`cnOf` 對中間色回「A＋B」（`MIX_ORD` 照 `BASIC` 排）、`cnSe` 不加「色」。
 - 突變：`mutRound`（`MUT_P`）、`mutateX`（`MUTX`）、`takeSeeds`（取種、`mseeds` 突變種子、跨界彩蛋 `crossPollen`／`P_CROSS_EX`）、`muOf`／`muReveal`／`mu96*`。
 - 稀有度：`rarityScore`／`rarityOf`（`TIER_MIN`）、`rarityHint`、徽章 `rbHTML`／`rbT`／`rbE`、名品 `MEIHIN`／`mhOf`、專屬造型 `EX_OF`／`exRoll`／`EX_P`。
 - 果實畫法：`fruitSVG`／`fruitInner`→`fruitImgSVG`（素模 `fruitBase`／`fruitPrep`／`fruitPaint`、快取 `FRUIT_CACHE`、`FRUIT_VER`）；夢幻色 `dreamPx`、光層 `dreamLightSVG`／`dreamLightHTML`、`DREAM_PERIOD`；造型特效 `tfxWrap`。
@@ -197,21 +198,29 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 
 **農場**
 - 畫面：`renderWorld`→`farmWorld`（內容沒變不重建，`L._fk`）、`plotSVG`（田地圖 `soilReady`、授粉倒數圈）、`decorSVG`（`DECO_IMG`／`DECO_NEW`、斜向圍籬 `isoSVG`／`ISO_META`）。`WORLD.farm` 2200×2200。
+- 生長時間（111）：`GROW_SEED_MIN`／`GROW_FRUIT_MIN`→`stageDur`、加速劑 `ACC_MIN`→`useAccel`、舊植株換算 `m111`（旗標 `growV`）；`ACC_PACK`、`NPC_BUY`。
 - 操作：綠色按鈕 `#ringBtn`（點＝`openTray`；長按圓盤 `openRing`／`RING`）、多選與模式 `openPick`（收成、自交、雜交 `crossCommit`）、加速 `openAccel`、剷除 `openShovel`、開墾 `openBuild`（`buildAt`、`dragPlot`）、裝飾模式 `openDecor`（`decoPaintAt`、`decoTake`、`state.decoStore`）、`exitAllModes`。
-- 育苗盤：`trayObj`、`traySow`、`trayHTML`／`trayAction`（分區、目標、穩定度 `trayStab`）、移植 `openSow(null,true)`。收成總表 `openHarvest`／`harvestHTML`／`harvestAction`、`harvestFly`。授粉 `polCard`、`pollinate`、預約 `rsvTick`。
+- 收成與果實袋（112）：`harvestPlant`（`FRUIT_N`、`SEED_N`、`takeSeeds`、`afterHarvest` 只清田）、`fruitAdd`／`fruitFit`／`fruitPrice`（`SIZE_REP`）、`state.fruits`（`FRUIT_SLOTS`、`FRUIT_MAX`）、種子袋「果實」分頁 `fruitBagHTML`、`openFruit`／`fruitHTML`／`fruitAction`；遷移 `m112`（旗標 `hvV`）。
+- 育苗盤：`TRAY_LV`／`trayOn()`（111.5，未開放時綠色按鈕是「種植」）、`trayObj`、`traySow`、`trayHTML`／`trayAction`（分區、目標、穩定度 `trayStab`）、移植 `openSow(null,true)`。收成總表 `openHarvest`／`harvestHTML`／`harvestAction`、`harvestFly`。授粉 `polCard`、`pollinate`、預約 `rsvTick`。
 - 種子袋：`renderBag`／`bagGridHTML`／`slotCell`、`lotCat`、`bagCap`、`LOT_MAX`、`lotNew`（「新」）、`sellOldGo`；種原庫 `zipLot`、`vault`。
 
 **探索（各地區固定地圖）**
+- 地區名（111.3）：`BIOMES[k].n`／`REGION_CFG[k].name`，舊名在 `BIOMES[k].on`；種子包血統顯示用 `srcName()`，`lotWild` 新舊名都認。
 - 資料：`SNOW_MAPS`、`GRASS_MAPS`、`FOREST_MAPS`、`DESERT_MAPS`、`MARSH_MAPS`、`SAKURA_MAPS`（`*_ART`／`*_IMG`／`*_FLAT`／`*_SWAY`）→ `REGION_MAPS`、`REGION_CFG`、`REG_V2`。
 - 準備與畫：`regPrep`→`regPrepV2`（產生 `M._raw` 物件清單、`M._objs`、`M.blk`／`M.wlk` 碰撞、`M._P` 小路、`M._LG` 湖、`M._RV` 河、`M._T` 階地、`M._BR` 橋）、`regGroundSVG`／`regGroundEl`（地面轉 PNG，`REG_GLRU`）、`regWaterHTML`、`regTerraceHTML`、`regDynHTML`、`regTopV2`、`regWorld`、`regCam`。
 - 移動與事件：`regBlocked`、`regMove`、`regExitAt`、`regGo`、`regEnter`、`regArrival`、`regPlants`（`wpGeno`、`makeWild`、`wpDepth`）、`regItems`、`regFxStep`（機關）、`secEnter`（秘境）、`regStandTick`、`mapLv`／`gateStop`（等級）、地圖面板 `renderRegMap`。
+- 素材、製作、定型（115）：`MATS`／`MON_MAT`、`matDrop`（`MAT_P`、`MAT_GOLD_P`）、`matIcon`（`MAT_ICON`）、`state.mats`、種子袋「素材」分頁 `matBagHTML`／`matHTML`；道具行「製作」`RECIPES`、`craftEntries`／`craftPlan`／`craftDo`／`craftHTML`；定型 `fixWhy`／`fixBlock`／`fixGeno`／`fixStart`／`fixTick`（`FIX_MIN`、`FIX_MAX`、`state.fixq`）。
 - 怪物（105）：`MON_DEF`／`MON_IMG`／`MON_MAP`、`monEnter`、`monLoop`、`monHit`、`monKill`、`monDrop`、`monSwing`、`monReach`／`monSpotFar`；圖層 `#monBack`／`#monFront`／`#monSw`。
 - 發光的植株 `roam*`（`ROAM_PTS`）、謎語 NPC `RIDDLE`／`rdHere`、櫻花花季 `sakuraBloom`。
 - **3D 畫面（108）**：`js/w3d.js`（`w3dEnter`、`w3dLeave`、`w3dSetPlayer`／`Others`／`Monsters`／`Plants`、`w3dPick`、`w3dView`）＋`lib/three.min.js`，用到才載入；地形 `buildHeight`（高台 `PLAT`、緩坡 `RAMP_L`、水往下挖 `waterDist`）、水 `buildWater`（深度圖＋湖面＋河帶）、橋 `buildBridges`／`gY`、景物 `wellMesh`／`archMesh`／`mushRing`、夢幻色光 `glowFor`、精靈 `w3dSetFairies`、樹冠透視 `holes`（`uHole`）、角色影格 `w3dPreload`；index.html 的「108（17x）」區塊：`W3D_MAPS`（目前草原 5 張）、`w3dSync`、`w3dLoad`、`W3D_HOST`（`pump`、`tap`）、`w3dBtn`。
 
 **城鎮、任務、角色**
+- 委託交果實、果實市集（117）：`giveSpec`／`giveAvail`／`giveDo`／`giveHTML`（`sheet.give`）、`cmNorm`；果實袋 `b`（買來的）；果實上架 `fruitListHTML`／`fruitListSave`、`fruitCardHTML`、`fruitBuy`、`fruitCollect`（`state.fcol`）、`fruitCancel`、`fruitAddQ`。
 - 城鎮：`TOWN_MAPS.plaza`、`TOWN_BLD`、`TOWN_NPC`（圖片 `npcReady`）、`marketWorld`、`townMove`、`openTown`／`townSheetHTML`／`townAction`、攤位 `stallHTML`、標本交易 `spBuy`。
+- 新主線（116）：`MQ2`（序章、第一章）、`state.mq2`、`mq2Accept`／`mq2Tick`／`mq2Done`／`mq2CardHTML`、`mq2Seed`（`qf` 快速株）、`mq2Wild`（草原第一包黃番茄藏花紋）、`mq2Trade`；NPC 提歐神父、所長維恩（`townNpcs`）；目前任務 `#mqLine`（`renderMqLine`、`mqLineTap`、`townArrowSVG`）；第一次提示 `tipOnce`（`state.tips`）。舊 `MQ` 第 5–11 章＝支線「失落的種子庫」。
+- 等級（119）：`LV_REG`／`LV_CROP`／`LV_TOWN` 前三區重排；新經驗 `XP_WAKE`、`XP_EVO`、`XP_GOD`、`XP_OFFER`、`XP_CRAFT`（`XP_CAP.o`／`.k`）。
 - 等級與任務（15y）：`addXp`、`levelUp`、`LV_CROP`／`LV_REG`、主線 `MQ`／`mqEv`、委託 `commGen`／`ensureComm`、每週 `wkTxt`／`wkFits`、NPC 故事 `NS`／`nsAccept`、種子庫館藏 `vdHTML`、主題榜 `wkTheme`／`wkSettle`。
+- 神之子（113）：名字 `FY_NM`→`fyN`；祭壇清單 `ALT_LIST`（`ALT_N`）、`altObj`／`altGive`／`altFull`、`fyWakeAlt`（皇冠番茄 `crownGift`）、專屬造型捷徑 `fyExSlots`／`fyWakeEx`（`WAKE_EX_N`）；進度 `state.fairy.altar`。
 - 標本與精靈：`claimSpec`、`rightsTx`、`specUse`、收藏櫃 `cabListHTML`；精靈 `fyWake`／`fyEvolve`、`fySpringHTML`、跟隨 `fyLoop`、演出 `fyShow`、圖 `fyArt`／`fyArtHTML`（新畫布 `FY_CV`、上色開關 `FY_RECOLOR`）。
 - 角色：`avatarSVG`→`avV3SVG`（`av3.js`、`av3_heads.js`、衣服 `avOutfitParts`）、`avNorm`／`avPack`、打扮頁 `avatarEditorHTML`、衣櫃 `WARD`／`wardCheck`；`renderChars`、`updateMe`、`charG`、`poseFor`、`walkLoop`、`walkTo`。
 - 個人介面 `openMe`／`meSheetHTML`、通知 `noteOpen`、慶祝卡 `celShow`、提示 `toast`、「？」小說明 `qh`。
@@ -342,3 +351,12 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 108 | 立體化改版 | 未做 | docs/待實作/第108節.md；草原 5 張已做（17x、17y，見規格存檔 9.104、9.105）；其他地區、農場、城鎮還沒做 |
 | 109 | 3D 草原試玩回報修正 | 已完成 | docs/規格存檔.md；17z（9.106）；黑塊、頭閃的原因是推測，等 iPhone 確認 |
 | 110 | 花精靈新圖上線 | 已完成 | docs/規格存檔.md；18a（9.107）、修訂版 18b（9.108：348×445 畫布、恢復上色） |
+| 111 | 種植節奏第一步：生長時間、加速劑、地區改名、中間色不取名、育苗盤 10 等解鎖 | 已完成 | docs/規格存檔.md；18c（9.109）；沒有截圖、沒測 iPhone |
+| 112 | 一株只收一次、果實袋 | 已完成 | docs/規格存檔.md；18d（9.110）；沒有截圖、沒測 iPhone |
+| 113 | 神之子：改稱呼與名字、祭壇清單喚醒、專屬造型捷徑 | 已完成 | docs/規格存檔.md；18e（9.111）；「精靈之翼」照舊不改名（使用者 2026-11-20）；沒有截圖、沒測 iPhone |
+| 114 | 神之子的供奉：進化、神化、換色 | 未做 | docs/待實作/第114節.md；排在第 113 節之後；114.1 已回報，等使用者回覆 |
+| 115 | 怪物素材、背包、製作、定型 | 已完成 | docs/規格存檔.md；18f（9.112）；素材圖示暫用怪物縮圖；沒有截圖、沒測 iPhone |
+| 116 | 主線改寫第一步：序章「醒來」、第一章「蘿瑪的清單」、操作引導 | 已完成 | docs/規格存檔.md；18g（9.113）；花紋兩邊各藏一份（使用者決定）；沒有截圖、沒測 iPhone |
+| 117 | 果實的去處：委託改從果實袋交、果實上架市集 | 已完成 | docs/規格存檔.md；18h（9.114）；Firestore 規則要貼主控台；沒有 9 顆的那一類委託；沒有截圖、沒測 iPhone |
+| 118 | 蘿瑪的故事、蘿瑪的台詞、翠風草原的地區故事 | 未做 | docs/待實作/第118節.md；排在第 116、117 節之後；118.3 第二、三段要等第 114 節 |
+| 119 | 等級與解鎖：配合新主線重排前三區、新動作的經驗、節奏試算 | 已完成 | docs/規格存檔.md；18i（9.115）；進化、神化、供奉的經驗等第 114 節接上；沒測 iPhone |

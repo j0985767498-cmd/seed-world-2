@@ -1018,7 +1018,7 @@ body.pnlOpen .hudTop,body.pnlOpen #mqLine,body.pnlOpen #rbar,body.pnlOpen #mapBt
 /* 選單：從下方滑出 */
 .panel.pmenu{top:auto;max-height:70vh;border-radius:22px 22px 0 0}
 .panel.pmenu .ph{border-radius:20px 20px 0 0}
-.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .mcell{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;min-height:76px;border-radius:16px;background:var(--card);border:2.5px solid var(--ol);box-shadow:0 3px 0 var(--ol);color:var(--ol);font:inherit;font-weight:700;font-size:13px}
 .mcell img{width:34px;height:34px}
 .mpgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
@@ -1095,6 +1095,8 @@ details.par summary{font-weight:700;cursor:pointer}
 .qpin{flex:none;width:44px;height:44px;border-radius:50%;border:2px solid var(--ln);background:transparent;color:var(--ln);display:flex;align-items:center;justify-content:center;padding:0}
 .qpin.on{border:2.5px solid var(--ol);background:var(--ol);color:#FFF3D6}
 .qpin.qgive{border:3px solid var(--ol);background:var(--go1);color:#fff;font-weight:900;font-size:15px;box-shadow:0 3px 0 var(--gosh)}
+/* 139 */.seam{animation:seamC 6s linear infinite}@keyframes seamC{0%{stroke:#FF6B6B}16%{stroke:#FFB347}33%{stroke:#FFE66D}50%{stroke:#7BE495}66%{stroke:#5BC0EB}83%{stroke:#9B8CFF}100%{stroke:#FF6B6B}}.seamhub{animation:seamH 2.4s ease-in-out infinite alternate}@keyframes seamH{from{opacity:.45}to{opacity:.95}}.smoke{animation:smk 4s ease-out infinite;opacity:0}@keyframes smk{0%{transform:translateY(0) scale(.6);opacity:.55}100%{transform:translateY(-70px) scale(1.6);opacity:0}}.vent{animation:vnt 6s linear infinite;opacity:0;transform-origin:center bottom}@keyframes vnt{0%{opacity:.9;transform:scale(1)}25%{opacity:.8;transform:scale(1.1)}26%,100%{opacity:0;transform:scale(.6)}}.lavaglow{animation:lvg 3s ease-in-out infinite alternate}@keyframes lvg{from{opacity:.45}to{opacity:.9}}.twk{animation:twk 3.5s ease-in-out infinite alternate}@keyframes twk{from{opacity:.15}to{opacity:.95}}.wx-volcano i{background:var(--c)!important;box-shadow:none!important}.wx-canyon i,.wx-ruins i{background:var(--c)!important;box-shadow:0 0 6px 2px var(--c)!important;width:3px!important;height:3px!important}@keyframes wxRise{0%{transform:translate(var(--x),100vh);opacity:0}10%{opacity:.9}100%{transform:translate(calc(var(--x) + var(--dx)),-10vh);opacity:0}}.meteor{position:absolute;top:8vh;left:-20vw;width:120px;height:2px;background:linear-gradient(90deg,transparent,#fff);transform:rotate(18deg);animation:meteor 30s linear infinite}@keyframes meteor{0%,94%{left:-20vw;top:6vh;opacity:0}95%{opacity:1}100%{left:110vw;top:40vh;opacity:0}}
+/* 140（19f）：右上一排小圖示、右下三顆大按鈕從育苗盤往上排 */#tbar{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:10px;left:auto;z-index:10;display:flex;flex-direction:row;gap:4px}#tbar button,#tbar #mapBtn{position:relative!important;top:auto!important;right:auto!important;width:44px;height:44px;border-radius:50%;background:#FFF9EC;border:2.5px solid var(--ol);box-shadow:0 2px 0 var(--ol);padding:0;display:flex;align-items:center;justify-content:center;color:var(--ol)}#tbar .ibimg{width:30px;height:30px}#tbar svg{width:22px;height:22px}#tbar span{display:none}#tbar button[hidden]{display:none}#tbar #ibLay.on{background:var(--tabon)}#frDot{position:absolute;right:-2px;top:-2px;width:12px;height:12px;border-radius:50%;background:var(--dg);border:2px solid #fff}#rbar{top:auto!important;right:calc(16px + 19px);bottom:calc(16px + 92px + 12px + 16px + env(safe-area-inset-bottom,0px));flex-direction:column-reverse;gap:28px}#ringBtn{right:16px!important;bottom:calc(16px + env(safe-area-inset-bottom,0px))!important}#meChip{max-width:calc(100vw - 268px);min-width:0!important}#meChip .mcn{overflow:hidden;min-width:0}#meChip .mcn b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}@media (max-width:560px){.hudRow{flex-direction:column;align-items:flex-start}.hudRow .coins{margin-left:0}}body.pnlOpen #tbar,body.shFull #tbar{visibility:hidden}#layBar{display:flex;gap:6px;justify-content:center}#layBar[hidden]{display:none}#layBar button{min-height:44px;padding:0 14px;border-radius:12px;border:2.5px solid var(--ol);background:#FFF9EC;color:var(--ol);font:inherit;font-weight:700;box-shadow:0 3px 0 var(--ol)}#layBar button.primary{background:linear-gradient(180deg,var(--go1),var(--go2));color:#fff;box-shadow:0 3px 0 var(--gosh)}
 </style>
 </head>
 <body class="game">
@@ -1110,7 +1112,7 @@ details.par summary{font-weight:700;cursor:pointer}
 <div id="wx" aria-hidden="true" hidden></div>
 <div id="exHint" hidden></div>
 <div id="mapBanner" hidden></div><div id="testTag" hidden>測試模式</div><div id="testNote" hidden></div>
-<button id="w3dViewBtn" hidden aria-label="切換 3D 視角">視角：低</button><button id="mapBtn" aria-label="地圖"><img class="ibimg" src="assets/icons/s/map.png" alt="" aria-hidden="true" onerror="this.remove()"><span>地圖</span></button>
+<button id="w3dViewBtn" hidden aria-label="切換 3D 視角">視角：低</button>
 <div id="mapPanel" hidden role="dialog" aria-label="探索地圖"></div>
 <div id="fadeOv" aria-hidden="true"></div>
 <div class="hudTop"><div class="hudRow"><button id="meChip" aria-label="我的名片"></button><div class="coins" aria-label="金幣"><span class="coin" aria-hidden="true"></span><span id="coins">0</span><i id="syncDot" class="sd-ok" aria-hidden="true"></i></div></div><div class="sceneName" id="sceneName">我的農場</div><div class="sync" id="sync" role="status"></div></div>
@@ -1128,19 +1130,25 @@ details.par summary{font-weight:700;cursor:pointer}
   <button data-open="settings"><img class="ibimg" src="assets/icons/s/settings.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span>設定</span></button>
 </div>
 <div id="rbar" class="iconbar rbar">
-  <button id="ibHelp" data-do="help" hidden><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.5A4 4 0 0 1 12 8a4 4 0 0 1 7 2.5C19 15.6 12 20 12 20z"/></svg><span>幫忙照顧</span></button><button id="ibHome" data-do="home" hidden><img class="ibimg" src="assets/icons/s/home.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>回家</span></button>
+  <button id="ibHelp" data-do="help" hidden><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"<div id="tbar" class="iconbar tbar">
+  <button data-open="social" id="ibFr" aria-label="朋友"><img class="ibimg" src="assets/icons/s/friends.png" alt="" aria-hidden="true" onerror="this.remove()"><i id="frDot" hidden></i></button>
+  <button data-open="dex" id="ibDex" aria-label="圖鑑"><img class="ibimg" src="assets/icons/s/codex.png" alt="" aria-hidden="true" onerror="this.remove()"></button>
+  <button data-do="lay" id="ibLay" aria-label="布置"><img class="ibimg" src="assets/icons/s/decor.png" alt="" aria-hidden="true" onerror="this.remove()"></button>
+  <button id="mapBtn" aria-label="地圖"><img class="ibimg" src="assets/icons/s/map.png" alt="" aria-hidden="true" onerror="this.remove()"><span>地圖</span></button>
+  <button data-do="menu" id="ibMenu" aria-label="選單"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#5A3416" stroke-width="2.6" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg><span>選單</span></button>
+</div>
+<div id="rbar" class="iconbar rbar">
   <button data-open="bag" id="ibBag"><img class="ibimg" src="assets/icons/s/seed_bag.png" alt="" aria-hidden="true"><span>背包</span><i id="bagBadge" hidden></i></button>
   <button id="ordersBtn"><img class="ibimg" src="assets/icons/s/quest.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v18l-5-3-5 3z"/><path d="M10 8h4M10 12h4"/></svg><span>任務</span><i id="ordersBadge" hidden></i></button>
   <button data-do="fy" id="ibFy"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#5A3416" stroke-width="1.8" stroke-linejoin="round"><path d="M12 13C9 6 4 4 2 6c0 5 4 8 10 7z" fill="#FFF3C4"/><path d="M12 13c3-7 8-9 10-7 0 5-4 8-10 7z" fill="#FFF3C4"/><path d="M12 13c-2 3-6 5-8 4 1-3 4-4 8-4zM12 13c2 3 6 5 8 4-1-3-4-4-8-4z" fill="#FDE6F2"/><circle cx="12" cy="13" r="1.6" fill="#5A3416"/></svg><span>神之子</span></button>
-  <button data-do="menu" id="ibMenu"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#5A3416" stroke-width="2.6" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg><span>選單</span></button>
-</div>
-<div id="joy" aria-label="移動搖桿" hidden><div id="joyKnob"></div></div>
-<div id="ringOv" hidden></div><div id="ringMenu" hidden role="menu" aria-label="功能"></div><button id="ringBtn" hidden aria-label="育苗盤（長按打開更多功能）"></button><div id="decoPop" hidden></div><div id="fxH" aria-hidden="true"></div>
+  <button id="ibHome" data-do="home" hidden><img class="ibimg" src="assets/icons/s/home.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>回家</span></button>
+  <button id="ibHelp" data-do="help" hidden><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.5A4 4 0 0 1 12 8a4 4 0 0 1 7 2.5C19 15.6 12 20 12 20z"/></svg><span>幫忙照顧</span></button>功能"></div><button id="ringBtn" hidden aria-label="育苗盤（長按打開更多功能）"></button><div id="decoPop" hidden></div><div id="fxH" aria-hidden="true"></div>
 <div id="buildBar" hidden></div>
 <div id="shovelBar" class="toolbar2" hidden></div>
 <div id="accelBar" class="toolbar2" hidden></div>
 <div id="pickBar" class="toolbar2" hidden></div>
 <div id="decoBar" class="toolbar2" hidden></div>
+<div id="layBar" class="toolbar2" hidden><button type="button" data-lay="build">開墾</button><button type="button" data-lay="deco">擺裝飾</button><button type="button" data-lay="theme">主題</button><button type="button" data-lay="done" class="primary">完成</button></div>
 <div id="sowBar" class="toolbar2" hidden></div>
 <div id="pdim" hidden></div>
 <div class="panel" id="p-bag" hidden role="dialog" aria-label="背包"><div class="ph"><h2>背包</h2><button class="hbtn" id="bagSearch" type="button" aria-label="查詢"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg></button><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div class="filters" id="bagTabs" role="tablist"></div><div id="bag"></div></div></div>
@@ -1843,7 +1851,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-19d';
+const BUILD='2026-11-19f';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2569,7 +2577,7 @@ let vq={mh:'any',crop:'all',shape:'any',skin:'any',pat:'any',pc:'any',by:'m',siz
 const vaultCabs=()=>state.vault||(state.vault=[]);
 const cabOf=lotId=>vaultCabs().find(c=>c.lots.some(l=>l.id===lotId));
 function findLotAny(id){const b=state.lots.find(l=>l.id===id);if(b)return {l:b,cab:null};for(const c of vaultCabs()){const l=c.lots.find(x=>x.id===id);if(l)return {l,cab:c}}return null}
-function bagTabsHTML(){if(bagTab==='vault')return '';const n={bag:state.lots.length,fruit:fruitsArr().reduce((s,f)=>s+fCount(f),0),mat:Object.values(matsObj()).reduce((s,v)=>s+(v||0),0),item:itemCount()};return `<div class="btabs">${[['bag','種子'],['fruit','果實'],['mat','素材'],['item','道具']].map(([k,t])=>`<button class="btab" data-btab="${k}" aria-pressed="${bagTab===k}">${t} <b>${n[k]}</b></button>`).join('')}</div>`}/* 138.5：種子｜果實｜素材｜道具；種原庫從選單進、查詢在標題列 */
+function bagTabsHTML(){if(bagTab==='item')bagTab='mat';const n={bag:state.lots.length,fruit:fruitsArr().reduce((s,f)=>s+fCount(f),0),mat:Object.values(matsObj()).reduce((s,v)=>s+(v||0),0)+itemCount(),vault:vaultCabs().reduce((s,c)=>s+c.lots.length,0)};return `<div class="btabs">${[['bag','種子'],['fruit','果實'],['mat','素材'],['vault','種原庫']].map(([k,t])=>`<button class="btab" data-btab="${k}" aria-pressed="${bagTab===k}">${t} <b>${n[k]}</b></button>`).join('')}</div>`}/* 138.5：種子｜果實｜素材｜道具；種原庫從選單進、查詢在標題列 */
 // ===== 種原庫批次丟棄 =====
 let vSelMode=false,vSelConfirm=false,vLastRes=[];const vSel=new Set();
 const lotKB=l=>Math.max(1,Math.round(byteLen(packState(l))/1024));
@@ -2775,11 +2783,10 @@ document.addEventListener('input',e=>{if(e.target&&e.target.id==='seedName'&&she
 function renderBag(){try{renderBag_()}catch(e){logErr(e,'bag');const el=document.getElementById('bag');if(el)el.innerHTML='<p class="note">背包讀取出錯，請重新整理；還是不行就到「設定 → 錯誤紀錄」截圖。</p>'}}
 function renderBag_(){
   if(!state)return;
-  document.getElementById('bagTabs').innerHTML=bagTabsHTML();{const t=document.querySelector('#p-bag .ph h2');if(t)t.textContent=bagTab==='vault'?'種原庫':'背包';const s=document.getElementById('bagSearch');if(s)s.hidden=bagTab==='vault'}
-  if(bagTab==='item'){document.getElementById('bag').innerHTML=itemBagHTML();return}
+  document.getElementById('bagTabs').innerHTML=bagTabsHTML();{const t=document.querySelector('#p-bag .ph h2');if(t)t.textContent='背包'}
   try{fixTick()}catch(e){}
   if(bagTab==='fruit'){document.getElementById('bag').innerHTML=fruitBagHTML();return}/* 112.5 */
-  if(bagTab==='mat'){document.getElementById('bag').innerHTML=matBagHTML();return}/* 115.3 */
+  if(bagTab==='mat'){document.getElementById('bag').innerHTML='<h3 style="margin-top:0">道具</h3>'+itemBagHTML()+'<h3>素材</h3>'+matBagHTML();return}/* 140.2：道具、精魄、神寵放在素材分頁上面 *//* 115.3 */
   if(bagTab!=='bag'){document.getElementById('bag').innerHTML=bagTab==='vault'?vaultHTML():searchHTML();return}
   if(mergeIdentical())save();
   ensureSlots();renderBagBadge();document.getElementById('bag').innerHTML=fixStatusHTML()+(state.lots.length?bagGridHTML():'<p class="note">還沒有種子，收成就會拿到。</p>');
@@ -3423,7 +3430,7 @@ function tick(){
   try{rsvTick()}catch(e){}
   try{fixTick()}catch(e){}/* 115.5 */
   try{mq2Tick()}catch(e){}/* 116 */
-  try{fsTickAll();rsTick();noteTick();hatchTick();nestTick();qArrowCheck();qScan();pRegen();renderHP()}catch(e){}/* 118 */
+  try{fsTickAll();rsTick();noteTick();reg139Step();hatchTick();nestTick();qArrowCheck();qScan();pRegen();renderHP()}catch(e){}/* 118 */
   try{mq2KidTick()}catch(e){}/* 121 */
   try{mq2MarshTick()}catch(e){}/* 122 */
   try{roamWatch()}catch(e){}/* 91 */
@@ -3467,7 +3474,7 @@ function sbtnNeed(st){
   return {ripe:has(p=>p.stage==='ripe'),flower:has(p=>p.stage==='flower'),accel:acc>0&&has(p=>p.stage==='seedling'||p.stage==='fruit')};
 }
 function layoutSbtns(){
-  if(!state)return;
+  if(!state)return;try{renderLay()}catch(e){}
   const ok=scene==='farm'&&!viewing&&!buildMode&&!shovelMode&&!sowMode&&!accelMode&&!decoMode&&!pickMode,rb=document.getElementById('ringBtn');
   if(rb){rb.hidden=!ok;const on=trayOn(),h=on?sbtnInner('tray','育苗盤',trayObj().cells.length):sbtnInner('seed_bag','種植');if(rb.innerHTML!==h){rb.innerHTML=h;rb.setAttribute('aria-label',(on?'育苗盤':'種植')+'（長按打開更多功能）')}}/* 111.5 */
   if(!ok&&ringOpen)closeRing();
@@ -4577,7 +4584,7 @@ async function stallAction(b){
 function openSheetUI(){sheetEl.classList.add('open');bd.style.display='block';sheetMode()}
 /* 37.1（15l）：打開其他頁面、切到背景時結束目前的模式（裝飾模式裡打開裝飾面板除外） */
 function exitAllModes(keepDeco){if(pickMode==='cross'&&crossMarkN()&&!document.hidden&&!confirm(`還有 ${crossMarkN()} 筆還沒完成，要放棄嗎？`))return;/* 88.2 */try{if(typeof closeRing==='function'&&ringOpen)closeRing();if(sowMode)exitSow();if(shovelMode){shoveling=false;exitShovel()}if(accelMode)exitAccel();if(pickMode)exitPick();if(buildMode)exitBuild();if(decoMode&&!keepDeco)exitDecor();if(typeof closeDecoPop==='function')closeDecoPop()}catch(e){}}
-function openPanel(name){if(name==='explore')name='map';/* 138.4 */exitAllModes(name==='decor');if(name==='bag'){uiCrop='all';bagSel=null;bagTab=bagVaultReq?'vault':bagTab==='vault'?'bag':bagTab;bagVaultReq=false}document.body.classList.add('pnlOpen');
+function openPanel(name){if(name==='explore')name='map';/* 138.4 */exitAllModes(name==='decor');if(name==='bag'){uiCrop='all';bagSel=null;if(bagTab==='search'||bagTab==='item')bagTab='bag';bagVaultReq=false}document.body.classList.add('pnlOpen');
   closeSheet();curPanel=name;
   for(const p of document.querySelectorAll('.panel'))p.hidden=p.id!=='p-'+name;
   document.getElementById('pdim').hidden=false;
@@ -4592,7 +4599,7 @@ document.getElementById('sheetX').onclick=()=>{const onP=document.body.classList
 const iconbarClick=e=>{
   const b=e.target.closest('button');if(!b||!state)return;const wasDeco=decoMode;if(buildMode)exitBuild();if(shovelMode)exitShovel();if(sowMode)exitSow();if(accelMode)exitAccel();if(decoMode)exitDecor();if(pickMode)exitPick();
   const o=b.dataset.open,a=b.dataset.do;
-  if(o==='bag'&&curPanel==='bag'&&bagTab==='vault')return openPanel('bag');
+  if(o==='dex'&&dexTab==='fy'){dexTab='dex';return openPanel('dex')}
   if(o)return curPanel===o?closePanel():openPanel(o);
   closePanel();
   if(a==='market')return scene==='market'?goFarm():goMarket();
@@ -4604,6 +4611,7 @@ const iconbarClick=e=>{
   if(a==='orders'){sheet={orders:true};renderSheet();openSheetUI()}
   if(a==='fy')return openFyPage();/* 138.4 */
   if(a==='menu')return curPanel==='menu'?closePanel():openPanel('menu');
+  if(a==='lay'){layMode=true;renderLay();return}/* 140.2：布置模式 */
 };
 document.querySelectorAll('.iconbar').forEach(el=>el.addEventListener('click',iconbarClick));
 /* 17d：探索的「地圖」按鈕排在右邊選單最後一顆的下面（16t 加大按鈕間距後，固定的 top:252px 剛好被「設定」蓋住） */
@@ -4620,7 +4628,7 @@ function renderHUD(){
   layoutSbtns();
   setWeather(scene==='explore'?(regHas(exBiome)&&REGION_MAPS[exBiome][regMap].cave?'cave':exBiome):null);exHintUpd();
   {const sn=regIn(),mb=document.getElementById('mapBtn');if(mb&&mb.hidden)mb.hidden=false;if(!sn){const mp=document.getElementById('mapPanel');if(mp&&!mp.hidden)mp.hidden=true;regFxClear()}}
-  document.getElementById('ibDecor').hidden=!own;{const hm=document.getElementById('ibHome');if(hm)hm.hidden=!viewing}/* 138.4：回家只在拜訪朋友時（野外從地圖回農場） *//* 39.1：開墾只在圓盤 */
+  document.getElementById('ibDecor').hidden=!own;try{renderFrDot()}catch(e){}{const hm=document.getElementById('ibHome');if(hm)hm.hidden=!viewing}/* 138.4：回家只在拜訪朋友時（野外從地圖回農場） *//* 39.1：開墾只在圓盤 */
 }
 
 
@@ -4653,14 +4661,14 @@ function renderMapPanel(){const el=document.getElementById('mapBody');if(!el||!s
   const here=k=>(k==='farm'&&scene==='farm'&&!viewing)||(k==='town'&&scene==='market');
   h+=`<div class="mpgrid"><button class="mpc" data-mp="farm"${here('farm')?' aria-current="true"':''}><img src="assets/icons/s/home.png" alt="" onerror="this.remove()"><b>我的農場</b></button><button class="mpc" data-mp="town"${here('town')?' aria-current="true"':''}><img src="assets/icons/s/town.png" alt="" onerror="this.remove()"><b>城鎮</b>${myLv()<LV_TOWN?`<span class="meta">Lv ${LV_TOWN}</span>`:''}</button></div>`;
   h+=`<h3>探索</h3><p class="note">${exRefreshTxt()}${qh(exCapOn()?`每天最多撿 ${EX_LIMIT} 件道具、採 ${EX_PLANT_LIMIT} 株野生植株；今天還能撿 ${Math.max(0,EX_LIMIT-state.ex.picks)} 件、採 ${Math.max(0,EX_PLANT_LIMIT-(state.ex.plants||0))} 株。`:'目前沒有每日上限（測試模式）。')}</p>`;
-  h+=BIOME_KEYS.slice().sort((a,b)=>LV_REG[a]-LV_REG[b]).map(k=>{const B=BIOMES[k],lk=myLv()<regLv(k),cur=scene==='explore'&&exBiome===k;return `<button class="biome" data-mp="${k}"${lk?' style="opacity:.55"':''}${cur?' aria-current="true"':''}>${biomeThumb(k)}<span class="lr"><b>${B.n}${lk?`（Lv ${regLv(k)}）`:''}${cur?'（你在這裡）':''}</b><span class="meta">${B.desc}</span></span></button>`}).join('');
+  h+=BIOME_KEYS.filter(regOpenOk).sort((a,b)=>LV_REG[a]-LV_REG[b]).map(k=>{const B=BIOMES[k],lk=myLv()<regLv(k)&&REG_OPEN[k]!==0,cur=scene==='explore'&&exBiome===k;return `<button class="biome" data-mp="${k}"${lk?' style="opacity:.55"':''}${cur?' aria-current="true"':''}>${biomeThumb(k)}<span class="lr"><b>${B.n}${lk?`（Lv ${regLv(k)}）`:''}${REG_OPEN[k]===0?'（未開放・測試）':''}${cur?'（你在這裡）':''}</b><span class="meta">${B.desc}</span></span></button>`}).join('');
   el.innerHTML=h}
 function mapPanelTap(k){if(!state)return;
   if(k==='region'){closePanel();const el=document.getElementById('mapPanel');if(el){el.hidden=false;renderRegMap()}return}
   if(k==='farm'){closePanel();if(scene!=='farm'||viewing)goFarm();return}
   if(k==='town'){closePanel();if(scene!=='market')goMarket();return}
-  if(myLv()<regLv(k)){toast(`${BIOMES[k].n} Lv ${regLv(k)} 開放（你現在 Lv ${myLv()}）`);return}goExplore(k)}
-const MENU=[['dex','圖鑑','codex'],['social','朋友','friends'],['decor','裝飾','decor'],['rank','排行',null],['settings','設定','settings'],['genes','說明','genes'],['vault','種原庫',null]];
+  if(myLv()<regLv(k)&&REG_OPEN[k]!==0){toast(`${BIOMES[k].n} Lv ${regLv(k)} 開放（你現在 Lv ${myLv()}）`);return}goExplore(k)}
+const MENU=[['rank','排行',null],['settings','設定','settings'],['genes','說明','genes']];/* 140.2：朋友、圖鑑、布置、地圖在右上；種原庫併進背包 */
 const MENU_SVG={rank:'<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true" fill="none" stroke="#5A3416" stroke-width="2" stroke-linejoin="round"><path d="M4 20V12h4v8M10 20V6h4v14M16 20V9h4v11"/></svg>',vault:'<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true" fill="none" stroke="#5A3416" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 14h6"/></svg>'};
 function renderMenu(){const el=document.getElementById('menuGrid');if(!el)return;el.innerHTML=MENU.map(([k,n,ic])=>`<button class="mcell" data-menu="${k}">${ic?`<img src="assets/icons/s/${ic}.png" alt="" onerror="this.remove()">`:MENU_SVG[k]}<span>${n}</span></button>`).join('')}
 function menuTap(k){if(!state)return;
@@ -4707,6 +4715,16 @@ try{
   new MutationObserver(()=>{if(sheet&&sheetEl.classList.contains('open'))sheetMode()}).observe(document.getElementById('sheetBody'),{childList:true});
   renderMenu()}catch(e){}
 /* ===== 138 結束 ===== */
+/* ===== 140（19f）：主畫面按鈕重排。布置模式＝開墾、擺裝飾、主題、完成；朋友的紅點 ===== */
+let layMode=false;
+function renderLay(){const own=scene==='farm'&&!viewing;if(!own)layMode=false;const b=document.getElementById('layBar');if(b)b.hidden=!(layMode&&own&&!decoMode&&!buildMode);const ib=document.getElementById('ibLay');if(ib){ib.hidden=!own;ib.classList.toggle('on',layMode)}}
+function layTap(k){if(k==='done'){layMode=false;if(decoMode)exitDecor();if(buildMode)exitBuild();closeSheet();closePanel();renderLay();return}
+  if(k==='build'){openBuild();return}if(k==='deco'){if(!decoMode)openDecor();return}if(k==='theme'){openPanel('decor');return}}
+/* 朋友的紅點：今天還有朋友可以互助、或有還沒回的好友邀請 */
+function frDotOn(){try{if(!state)return false;if(myFr().some(u=>isFriendU(u)&&!helpedToday(u)))return true;const seen=new Set();for(const m of (typeof msgTo!=='undefined'?msgTo:[])){if(m.kind!=='frinv'||seen.has(m.from))continue;seen.add(m.from);if(frStatus(m.from)==='in')return true}}catch(e){}return false}
+function renderFrDot(){const d=document.getElementById('frDot');if(d)d.hidden=!frDotOn()}
+try{document.getElementById('layBar').addEventListener('click',e=>{const b=e.target.closest('[data-lay]');if(b)layTap(b.dataset.lay)})}catch(e){}
+/* ===== 140 結束 ===== */
 // ===== 建設農地 =====
 function openBuild(){if(scene!=='farm'||viewing){toast('只能在自己的農場建設');return}sheet={build:true};renderSheet();openSheetUI()}
 function buildHTML(){
@@ -5301,7 +5319,14 @@ const BIOMES={
   sakura:{n:'櫻花之丘',ch:'櫻',base:'#B2CB8C',patch:'#A6BF80',patch2:'#C2D79E',dens:11,crops:[['strawberry',4],['tomato',3],['melon',2],['chili',2],['eggplant',1]],cols:['red','white','red'],pf:[0,0,2,3]/*123 斑點→條紋*/,prof:{pr:[.3,.4],py:[.3,.4],pp:[.3,.4]},desc:'日式春天的山丘，常見櫻花瓣花紋。花季 3/15～4/15。',
     objs:[{f:OBJ.tuft,w:5,flat:1},{f:OBJ.flowers,w:4,flat:1},{f:OBJ.bush,w:3},{f:OBJ.boulder,w:1.5}],thumb:[['flowers',30,80],['tuft',96,86],['bush',58,66],['boulder',128,74],['bush',118,46]]},
   marsh:{n:'珍珠潟湖',on:'濕地',ch:'澤',base:'#93C27E',patch:'#7FB06C',patch2:'#A7D08F',dens:11,crops:[['eggplant',4],['zucchini',2],['pumpkin',2],['melon',2]],cols:['purple','green'],pf:[0,2]/*123 斑點→條紋*/,prof:{pr:[.3,.4],py:[.04,.1],pp:[.66,.76]},desc:'常長得巨大，特殊造型最多。',
-    objs:[{f:OBJ.pond,w:2.5,flat:1},{f:OBJ.reeds,w:5},{f:OBJ.mud,w:2,flat:1},{f:OBJ.marshtuft,w:4,flat:1}],thumb:[['pond',96,76],['mud',30,82],['reeds',40,70],['reeds',140,58],['marshtuft',120,90]]}
+    objs:[{f:OBJ.pond,w:2.5,flat:1},{f:OBJ.reeds,w:5},{f:OBJ.mud,w:2,flat:1},{f:OBJ.marshtuft,w:4,flat:1}],thumb:[['pond',96,76],['mud',30,82],['reeds',40,70],['reeds',140,58],['marshtuft',120,90]]},
+  /* 139：後三區（REG_OPEN 為 0 時只有測試模式看得到） */
+  volcano:{n:'赤燼火山',ch:'燼',base:'#7A6A60',patch:'#6C5D54',patch2:'#867569',dens:9,crops:[['broccoli',4],['chili',2],['tomato',2],['eggplant',2]],cols:['red','red','black'],pf:[0,0,2],prof:{pr:[.4,.5],py:[.3,.4],pp:[.1,.2]},desc:'炎熱乾燥，常見紅色和黑色。',
+    objs:[{f:OBJ.sandrock,w:4},{f:OBJ.dryshrub,w:2},{f:OBJ.pebbles,w:3,flat:1}],thumb:[['sandrock',40,82],['pebbles',96,86],['sandrock',128,60],['dryshrub',70,60]]},
+  canyon:{n:'永夜峽谷',ch:'夜',base:'#434A66',patch:'#363C55',patch2:'#4D5574',dens:10,crops:[['eggplant',4],['broccoli',2],['tomato',2],['corn',2]],cols:['purple','purple','black'],pf:[2,2,0],prof:{pr:[.3,.4],py:[.3,.4],pp:[.3,.4]},desc:'沒有白天，常見紫色和星點花紋。',
+    objs:[{f:OBJ.mushroom,w:3},{f:OBJ.boulder,w:2},{f:OBJ.fern,w:3,flat:1}],thumb:[['fern',100,86],['mushroom',40,80],['boulder',128,70],['mushroom',84,60]]},
+  ruins:{n:'虹光遺城',ch:'城',base:'#9DA58E',patch:'#8E9680',patch2:'#AAB29B',dens:11,crops:[['corn',4],['tomato',1],['eggplant',1],['chili',1],['zucchini',1],['pumpkin',1],['melon',1],['strawberry',1],['broccoli',1]],cols:['white','green','yellow','red','purple','black'],pf:[0,2,3],prof:{pr:[.3,.4],py:[.3,.4],pp:[.3,.4]},desc:'什麼都有一點，第一批留下的作物還長在這裡。',
+    objs:[{f:OBJ.bush,w:3},{f:OBJ.boulder,w:2},{f:OBJ.tuft,w:4,flat:1}],thumb:[['tuft',96,86],['bush',40,70],['boulder',128,70],['bush',100,50]]}
 };
 const BIOME_KEYS=Object.keys(BIOMES);
 // 每種作物在各地區都可能出現，非主要作物機率較低
@@ -5906,6 +5931,15 @@ const TOWN_BLD=[{id:'appraisal',k:'appraisal',x:150,y:365,n:'品種鑑定所',do
   {id:'item',k:'itemshop',x:140,y:1150,n:'道具行',door:0.33,sg:0.42},{id:'dessert',k:'dessert',x:660,y:1150,n:'甜點店',door:0.47,sg:0.40},{id:'notice',k:'notice',x:540,y:1112,n:'公布欄',door:0.5,sg:0},{id:'spring',k:'fountain',x:400,y:520,n:'穗光教會的祭壇',door:0.5,sg:0.98}];/* 93：噴水池＝精靈之泉；113：改稱穗光教會的祭壇（場景之後再做） */
 /* NPC：外觀用現有換裝系統組；第 29、30 節做好前只打招呼 */
 const TOWN_NPC=[
+  /* 139：後六區的 NPC，只有位置和一句佔位台詞（劇情等各區章節） */
+  {id:'smith',n:'老鐵匠',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:4,face:1,hair:6,hairC:7,hat:0,top:2,topC:7,bottom:0,bottomC:7,shoe:0,shoeC:12},line:'爐火不能斷。'},
+  {id:'appr',n:'年輕學徒',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:2,face:5,hair:15,hairC:0,hat:0,top:0,topC:7,bottom:1,bottomC:10,shoe:1,shoeC:12},line:'教團的人說，跟著他們就不用再挨餓。'},
+  {id:'cguard',n:'教團守衛',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:1,face:4,hair:10,hairC:0,hat:0,top:3,topC:7,bottom:0,bottomC:7,shoe:6,shoeC:12},line:'外人不准靠近。'},
+  {id:'granny',n:'聚落的老婆婆',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:1,face:1,hair:14,hairC:7,hat:0,top:11,topC:9,bottom:7,bottomC:9,shoe:1,shoeC:12},line:'外面來的人，都說這裡會天亮。'},
+  {id:'pounder',n:'搗藥的人',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:0,face:4,hair:2,hairC:7,hat:0,top:20,topC:9,bottom:7,bottomC:9,shoe:1,shoeC:12},line:'兔子還在搗，我們就還在。'},
+  {id:'miko',n:'神社的巫女',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:0,face:5,hair:14,hairC:0,hat:0,top:20,topC:6,bottom:7,bottomC:2,shoe:1,shoeC:6},line:'這裡不歡迎教會的人。'},
+  {id:'oasisp',n:'綠洲的住民',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:4,face:1,hair:6,hairC:0,hat:5,hatC:6,top:11,topC:6,bottom:7,bottomC:6,shoe:3,shoeC:12},line:'水越來越少了。'},
+  {id:'miner',n:'礦工',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:3,face:6,hair:6,hairC:0,hat:1,hatC:12,top:19,topC:12,bottom:3,bottomC:7,shoe:0,shoeC:12},line:'再往下挖一點就好。'},
   /* 121.2：站在銀霧白樺林「獵人小屋」的兩位（cond 永遠 false＝不在城鎮出現；畫在野外地圖 REG_NPCS） */
   {id:'yue',n:'岳哥',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:3,face:6,hair:6,hairC:0,hat:0,top:19,topC:12,bottom:3,bottomC:7,shoe:0,shoeC:12},line:'樹不砍，冬天燒什麼？'},
   {id:'jin',n:'槿姨',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:1,face:4,hair:14,hairC:1,hat:12,hatC:2,top:11,topC:2,bottom:7,bottomC:2,shoe:1,shoeC:12},line:'霧裡的東西，比你想的多。'},
@@ -6059,7 +6093,7 @@ const SAKURA_IMG={bamboo:[193,230],lanterns:[209,170],pagoda:[161,300],parasol_b
 /* [檔名, 顯示高度, 碰撞寬, 碰撞高]：鳥居、太鼓橋不擋路（鳥居兩根柱子用 blocks）；茶屋、五重塔的門口留空 */
 const SAKURA_ART={sakura_small:['sakura_small',120,20,12],sakura_big:['sakura_big',170,28,14],sakura_weep:['sakura_weep',170,28,14],sakura_ancient:['sakura_ancient',260,80,24],
   torii:['torii',150,0,0],bridge:['taiko_bridge',152,0,0],pagoda:['pagoda',240,120,36],teahouse:['teahouse',160,150,40],bamboo:['bamboo',150,60,16],lanterns:['lanterns',95,96,14],bench:['parasol_bench',105,70,16],
-  lantern:['../wetland/stone_lantern',84,30,12],flower_bush:['../grass/flower_bush',58,54,16],tallgrass:['../grass/tall_grass',46,0,0],flowers:['../grass/wildflowers',42,0,0],boulder:['../grass/boulder',64,58,18],
+  haiden:['teahouse',170,160,42],/* 139.6：拜殿，先借茶屋 */lantern:['../wetland/stone_lantern',84,30,12],flower_bush:['../grass/flower_bush',58,54,16],tallgrass:['../grass/tall_grass',46,0,0],flowers:['../grass/wildflowers',42,0,0],boulder:['../grass/boulder',64,58,18],
   log:['../grass/log',48,70,14],sign:['../grass/signpost',78,16,8],reed:['../wetland/cattails',44,0,0]};
 const SAKURA_FLAT={bridge:1},SAKURA_SWAY={sakura_small:1,sakura_weep:1,bamboo:1};
 const SAKURA_TINT=new Set(['sakura_small','sakura_big','sakura_weep','sakura_ancient']);/* 花季外改成綠葉的櫻花樹 */
@@ -6116,10 +6150,10 @@ const SAKURA_MAPS={
     groves:[[690,320,2,40],[680,1000,2,40],[120,1010,2,40]],
     suns:[[410,600,220,160]],petal:[[680,600],[120,950],[600,200]],
     spawns:[[680,480],[600,950],[110,560],[250,1000]],items:[[720,780]]},
-  pagoda:{n:'古寺',gx:2,gy:-1,v2:1,
-    exits:[{side:'s',c:420,w:120,to:'garden'},{side:'n',c:400,w:120,to:'ancient'}],
-    paths:[{p:[[420,1150],[410,900],[400,700],[400,470]],w:50,end:'dirt'},{p:[[400,700],[580,610],[610,360],[490,200],[400,90],[400,-40]],w:46}],
-    objs:[['pagoda',400,440],['lantern',340,560],['lantern',460,560],['lantern',340,760],['lantern',460,760],['sakura_big',190,420],['sakura_big',640,860,null,{fl:1}],['sakura_big',190,900]],
+  pagoda:{n:'神社',gx:2,gy:-1,v2:1,/* 139.6：古寺改名神社（id 不變）；中央拜殿、五重塔移到旁邊、拜殿後面的小門通狐火庭 */
+    exits:[{side:'s',c:420,w:120,to:'garden'},{side:'n',c:400,w:120,to:'ancient'},{door:[384,300,416,324],arrive:[400,250],to:'secret'}],
+    paths:[{p:[[420,1150],[410,900],[400,700],[400,470]],w:50,end:'dirt'},{p:[[400,700],[580,610],[610,360],[490,200],[400,90],[400,-40]],w:46},{p:[[490,220],[400,250],[400,300]],w:34,end:'dirt'}],
+    objs:[['haiden',400,440],['pagoda',180,470],['lantern',340,560],['lantern',460,560],['lantern',340,760],['lantern',460,760],['sakura_big',120,760],['sakura_big',640,860,null,{fl:1}],['sakura_big',190,940]],
     groves:[[690,230,2,40]],
     meadows:[[220,640,6,55,22,1]],
     suns:[[400,640,220,160]],petal:[[180,620],[660,500],[250,1040]],
@@ -6133,8 +6167,223 @@ const SAKURA_MAPS={
     suns:[[400,620,260,180]],petal:[[150,600],[650,600],[400,1000]],
     spawns:[[200,700],[600,700],[250,950],[560,950]],items:[[130,420]]}
 };
-const REGION_MAPS={snow:SNOW_MAPS,grass:GRASS_MAPS,forest:FOREST_MAPS,desert:DESERT_MAPS,marsh:MARSH_MAPS,sakura:SAKURA_MAPS,town:TOWN_MAPS};/* town 沒有 entry，所以 regHas('town') 是 false，探索流程不會用到 */
-const REGION_ART={snow:SNOW_ART,grass:GRASS_ART,forest:FOREST_ART,desert:DESERT_ART,marsh:MARSH_ART,sakura:SAKURA_ART,town:TOWN_ART},REGION_IMG={snow:SNOW_IMG,grass:GRASS_IMG,forest:FOREST_IMG,desert:DESERT_IMG,marsh:MARSH_IMG,sakura:SAKURA_IMG,town:TOWN_IMG},REGION_FLAT={snow:SNOW_FLAT,grass:GRASS_FLAT,forest:FOREST_FLAT,desert:DESERT_FLAT,marsh:MARSH_FLAT,sakura:SAKURA_FLAT,town:TOWN_FLAT},REGION_SWAY={snow:SNOW_SWAY,grass:GRASS_SWAY,forest:FOREST_SWAY,desert:DESERT_SWAY,marsh:MARSH_SWAY,sakura:SAKURA_SWAY,town:TOWN_SWAY},REGION_GLOW={sakura:{lantern:1,lanterns:0.7},snow:{glow:1,ped:0.8},grass:{glowflower:0.6,ped:0.8},forest:{glowmush:1,spirit:0.62,ped:0.8,campfire:0.5},desert:{altar:0.8,ped:0.8,torch:0.86},marsh:{lantern:1,glowmush:1,glotus:0.5,ped:0.8,fireflyjar:0.5},town:TOWN_GLOW};
+/* 139 */
+// ===== 139（19e）：後六區的地圖模板：赤燼火山 volcano、永夜峽谷 canyon、虹光遺城 ruins（各 8 張＋秘境）。沒有新圖：物件全部借別區的素材（路徑 '../<資料夾>/<檔名>'），載入時照 REGION_CFG.tint 調色（regSrc） =====
+/* borrowArt({鍵:[來源資料夾, 檔名, 顯示高度, 碰撞寬, 碰撞高]}) → [ART, IMG]；來源的尺寸從那一區的 *_IMG 拿 */
+const SRC_IMG={snow:SNOW_IMG,grass:GRASS_IMG,forest:FOREST_IMG,desert:DESERT_IMG,wetland:MARSH_IMG,sakura:SAKURA_IMG,town:TOWN_IMG};
+function borrowArt(spec){const A={},I={};for(const k in spec){const [d,f,h,cw,ch]=spec[k],src=SRC_IMG[d]||{},p=f.startsWith('../')?f:'../'+d+'/'+f,sz=src[f];if(!sz)continue;A[k]=[p,h,cw||0,ch||0];I[p]=sz}return [A,I]}
+const LAVA_W={edge:'#3A1206',sh:'#F59E0B',deep:'#B8410E',glint:'#FFE27A',wet:'#4A2418'},SULFUR_W={edge:'#7A7A2A',sh:'#E3DC7A',deep:'#C9C24A',glint:'#FFFBD0',wet:'#9A9460'};
+/* ---- 赤燼火山：玄武岩、灰燼、熔岩、硫磺。借：雪原的枯樹與小木屋、沙漠的砂岩、遺跡、帳篷、石階、懸崖，城鎮的木箱、木桶、旗串（全部調成焦黑、暗紅） ---- */
+const [VOLCANO_ART,VOLCANO_IMG]=borrowArt({bare:['snow','bare_tree',130,22,14],bigbare:['snow','bare_tree',170,26,14],rock:['desert','sandstone_rock',60,56,18],bigrock:['desert','sandstone_rock',96,86,26],
+  pillar:['desert','ruins',120,90,26],cliff:['desert','sand_cliff',96,0,0],stairs:['desert','sand_stairs',92,0,0],tent:['desert','tent',110,120,36],house:['snow','cabin',150,140,40],
+  crates:['town','crates',54,56,14],barrel:['town','barrel',50,38,14],banner:['town','bunting',80,0,0],sign:['desert','signpost',78,16,8],cave:['snow','ice_cave',150,0,0],
+  stalag:['snow','stalagmites',90,50,16],bridge:['grass','bridge',92,0,0],fence:['grass','fence',50,60,10],stump:['wetland','mossy_stump',50,40,14],tuft:['desert','succulents',40,0,0]});
+const VOLCANO_FLAT={bridge:1,stairs:1,tuft:1},VOLCANO_SWAY={banner:1};
+const VOLCANO_MAPS={
+  entry:{n:'山腳',gx:1,gy:2,v2:1,smokes:[[640,180,1]],
+    exits:[{side:'s',c:400,w:120,to:'farm'},{side:'n',c:400,w:120,to:'forge'},{side:'e',c:640,w:120,to:'basalt'}],
+    paths:[{p:[[400,1150],[392,980],[430,820],[408,660],[380,500],[400,320],[400,-40]],w:54},{p:[[418,690],[560,660],[700,640],[840,640]],w:48}],
+    objs:[['sign',330,960],['bare',180,520],['bare',230,560,null,{s:0.8,fl:1}],['bare',620,900],['rock',260,700,null,{s:0.8}],['rock',560,520,null,{s:0.7,fl:1}],['bigrock',150,860],['rock',640,820,null,{s:0.6}],['stump',520,980]],
+    groves:[[150,300,3,50],[650,320,2,46,1],[690,900,2,40]],outcrops:[[640,470],[150,700]],suns:[[420,760,230,150]],
+    spawns:[[290,450],[560,560],[300,940],[620,760]],items:[[110,650]]},
+  forge:{n:'鍛造村',gx:1,gy:1,v2:1,safe:1,smokes:[[214,300,1],[606,300,1],[226,660,1]],winGlow:[[190,380],[600,380],[200,740]],
+    exits:[{side:'s',c:400,w:120,to:'entry'},{side:'n',c:400,w:120,to:'lava_river'},{side:'e',c:640,w:120,to:'sulfur'}],
+    paths:[{p:[[400,1150],[400,900],[400,640],[400,400],[400,-40]],w:60},{p:[[400,640],[560,640],[840,640]],w:50},{p:[[400,470],[260,470]],w:40,end:'dirt'},{p:[[400,470],[540,470]],w:40,end:'dirt'},{p:[[400,830],[270,830]],w:40,end:'dirt'}],
+    objs:[['house',190,440],['house',600,440,null,{fl:1}],['house',200,800],['crates',300,500],['crates',512,512,null,{s:0.8,fl:1}],['barrel',300,860],['barrel',330,880,null,{s:0.8}],['crates',640,860],['banner',520,700]],
+    groves:[[690,260,2,40],[110,260,2,40]],suns:[[400,640,260,180]],
+    spawns:[[600,920],[130,600]],items:[]},
+  basalt:{n:'玄武岩坡',gx:2,gy:2,v2:1,
+    exits:[{side:'w',c:640,w:120,to:'entry'},{side:'n',c:400,w:120,to:'sulfur'}],
+    terraces:[{e:460,amp:16,ph:1.1,amp2:8,ph2:2.4,H:120,gap:[380,470],lipBush:[0.2,0.82],foot:[0.12,0.34,0.72,0.9]}],
+    paths:[{p:[[-40,640],[120,650],[300,640],[420,600],[430,560]],w:50,toStairs:0},{p:[[420,330],[410,200],[400,-40]],w:46}],
+    objs:[['pillar',160,780],['pillar',230,820,null,{s:0.8,fl:1}],['pillar',600,780,null,{s:0.9}],['pillar',660,860,null,{s:0.75,fl:1}],['pillar',160,300,null,{s:0.85}],['pillar',640,280,null,{s:0.9,fl:1}],['rock',540,940],['rock',300,980,null,{s:0.7}]],
+    groves:[[690,1000,2,40]],outcrops:[[130,960]],suns:[[400,800,230,150]],
+    spawns:[[260,280],[560,300],[300,900],[620,640]],items:[[520,220]]},
+  sulfur:{n:'硫磺泉',gx:2,gy:1,v2:1,water:SULFUR_W,smokes:[[250,560,0],[540,470,0],[520,760,0]],vents:[[400,400],[300,700],[600,620]],
+    exits:[{side:'s',c:400,w:120,to:'basalt'},{side:'w',c:640,w:120,to:'forge'},{side:'n',c:400,w:120,to:'cult_camp'}],
+    lakes:[[230,560,100,64],[560,470,92,58],[520,780,110,66]],
+    paths:[{p:[[400,1150],[410,960],[380,820],[360,660],[420,520],[400,320],[400,-40]],w:50},{p:[[-40,640],[140,650],[300,670],[362,668]],w:46}],
+    objs:[['rock',120,460,null,{s:0.7}],['rock',690,580,null,{s:0.8}],['bigrock',660,960],['rock',160,880,null,{s:0.6}],['tuft',260,940],['tuft',600,300]],
+    groves:[[150,250,2,44],[660,230,2,44]],suns:[[400,640,240,160]],
+    spawns:[[160,320],[620,320],[250,980],[680,860]],items:[[120,760]]},
+  lava_river:{n:'熔岩河',gx:1,gy:0,v2:1,water:LAVA_W,smokes:[[200,690,0],[620,430,0]],
+    exits:[{side:'s',c:400,w:120,to:'forge'},{side:'e',c:300,w:120,to:'cult_camp'},{side:'n',c:400,w:120,to:'crater'}],
+    rivers2:[{p:[[-60,800],[120,740],[260,668],[330,628],[372,606],[414,584],[456,562],[540,520],[680,450],[860,380]],w:80}],bridges:[{at:[414,584],fl:1}],
+    paths:[{p:[[400,1150],[430,960],[460,800],[480,700]],w:52,br:[0,0]},{p:[[340,470],[380,340],[400,200],[400,-40]],w:48,br0:[0,1]},{p:[[440,340],[600,310],[840,300]],w:44}],
+    objs:[['rock',150,600,null,{s:0.8}],['rock',640,640,null,{s:0.7,fl:1}],['bare',160,950],['rock',600,980,null,{s:0.6}],['bigrock',650,200],['bare',200,250,null,{fl:1}]],
+    groves:[[690,940,2,40],[120,320,2,40]],suns:[[400,860,220,140]],
+    spawns:[[230,920],[600,860],[200,380],[600,220]],items:[[690,700]]},
+  cult_camp:{n:'教團營地',gx:2,gy:0,v2:1,smokes:[[400,560,0]],
+    exits:[{side:'w',c:300,w:120,to:'lava_river'},{side:'s',c:400,w:120,to:'sulfur'}],
+    belts:[{k:'fence',p:[[180,420],[300,400],[420,404],[540,420],[620,500],[626,640],[600,760]],step:46,w:22},{k:'fence',p:[[180,420],[160,560],[170,700],[230,790],[330,800]],step:46,w:22}],
+    paths:[{p:[[-40,300],[120,320],[250,340],[400,330],[600,280],[690,240]],w:48},{p:[[400,1150],[400,980],[430,860],[480,800]],w:48},{p:[[480,800],[420,680],[400,560]],w:40,end:'dirt'}],
+    objs:[['tent',300,540],['tent',500,520,null,{fl:1}],['tent',330,700,null,{s:0.9}],['banner',400,460],['crates',520,640],['crates',560,660,null,{s:0.8,fl:1}],['rock',560,900,null,{s:0.7}],['rock',586,922,null,{s:0.5}],['bigrock',150,960],['bare',660,980]],
+    groves:[[120,1000,2,40],[690,960,2,40]],suns:[[400,600,230,160]],
+    spawns:[[160,900],[620,900],[700,420]],items:[[420,620]]},
+  crater:{n:'火口邊',gx:1,gy:-1,v2:1,water:LAVA_W,smokes:[[300,240,0],[560,220,0]],
+    exits:[{side:'s',c:400,w:120,to:'lava_river'},{door:[628,452,668,480],arrive:[648,540],to:'lava_tube'}],
+    lakes:[[400,250,360,140],[160,330,120,70]],
+    paths:[{p:[[400,1150],[410,960],[360,800],[260,620],[300,500],[460,470],[640,500],[648,500]],w:44}],
+    objs:[['cave',648,470,null,{ns:1}],['rock',200,700,null,{s:0.8}],['rock',560,700,null,{s:0.7,fl:1}],['bigrock',660,860],['bare',150,950],['rock',480,600,null,{s:0.6}]],
+    groves:[[690,1000,2,40]],suns:[[400,820,220,140]],
+    spawns:[[180,880],[560,900],[600,620]],items:[[150,560]]},
+  lava_tube:{n:'熔岩洞',gx:2,gy:-1,cave:1,rare:0.15,v2:1,tiles:'#5A3A30',darkA:0.55,chains:[[360,1080,380,180],[440,1080,430,190]],cracks:[[150,300,150,900],[650,260,650,880]],
+    exits:[{side:'s',c:400,w:120,to:'crater'},{door:[370,150,430,176],arrive:[400,250],to:'secret'}],
+    floor:[{rect:[140,140,660,1130],j:3}],
+    paths:[{p:[[400,1130],[400,800],[410,500],[400,200]],w:60,end:'dirt'}],
+    objs:[['stalag',200,400],['stalag',600,460,null,{fl:1}],['stalag',220,760,null,{s:0.85}],['stalag',590,820,null,{s:0.9,fl:1}],['rock',260,1000,null,{s:0.6}],['rock',560,580,null,{s:0.5}]],
+    spawns:[[250,560],[560,680],[300,880],[540,300]],items:[[230,240]]},
+  secret:{n:'爐心窟',gx:2,gy:-2,cave:1,v2:1,secret:1,rare:0.25,water:LAVA_W,tiles:'#5A3A30',darkA:0.45,ironRings:[[400,180],[180,560],[620,560],[400,960]],
+    chains:[[400,190,400,470],[190,560,320,560],[610,560,480,560],[400,950,400,640]],
+    exits:[{side:'s',c:400,w:120,to:'lava_tube'}],
+    floor:[{round:[400,560,300,420]},{rib:{p:[[400,1130],[400,900]],w:180,v:0.04}}],lakes:[[400,560,90,64]],
+    paths:[{p:[[400,1130],[400,900],[400,760]],w:50,end:'dirt'}],
+    objs:[['rock',230,360,null,{s:0.7}],['rock',570,350,null,{s:0.6,fl:1}],['stalag',190,780,null,{s:0.8}],['stalag',610,780,null,{s:0.8,fl:1}]],
+    spawns:[[270,420],[530,420],[280,720]],items:[[200,640],[600,640]]}
+};
+/* ---- 永夜峽谷：永遠是夜晚。借：森林的發光蘑菇、松樹、苔石、灌木、小屋，濕地的石燈籠、踏腳石，雪原的冰晶、石牆、巨石，沙漠的吊橋、石階、遺跡（調成藍紫） ---- */
+const [CANYON_ART,CANYON_IMG]=borrowArt({pine:['forest','pine',130,22,14],bigpine:['forest','pine',170,28,14],glowtree:['forest','glow_mushrooms',120,40,16],glowmush:['forest','glow_mushrooms',60,0,0],bush:['forest','mossy_bush',58,54,16],
+  rocks:['forest','mossy_rocks',60,56,18],boulder:['snow','boulder',64,58,18],house:['forest','cabin',140,130,40],lantern:['wetland','stone_lantern',84,30,12],stones:['wetland','stepping_stones',40,0,0],
+  crystal:['snow','ice_crystals',60,40,14],gcrystal:['snow','glow_crystal',70,40,14],rockwall:['snow','rock_wall',96,0,0],stairs:['snow','stairs',92,0,0],bridge:['desert','rope_bridge',130,0,0],
+  pillar:['desert','ruins',100,80,24],dstairs:['desert','sand_stairs',92,0,0],sign:['forest','signpost',78,16,8],fern:['forest','fern',46,0,0],cave:['snow','ice_cave',150,0,0],stalag:['snow','stalagmites',90,50,16],reed:['wetland','cattails',44,0,0]});
+const CANYON_FLAT={bridge:1,stairs:1,dstairs:1,stones:1,glowmush:1,fern:1},CANYON_SWAY={fern:1,reed:1};
+const CANYON_MAPS={
+  entry:{n:'峽谷口',gx:1,gy:2,v2:1,night:1,lstrings:[[250,900,330,700],[470,700,560,500],[300,460,380,300]],
+    exits:[{side:'s',c:400,w:120,to:'farm'},{side:'n',c:400,w:120,to:'village'},{side:'e',c:640,w:120,to:'beach'}],
+    belts:[{k:'boulder',k2:'rocks',p:[[60,1000],[120,800],[150,600],[130,400],[150,200]],step:56,w:26},{k:'boulder',k2:'rocks',p:[[700,300],[680,460],[660,520]],step:56,w:26}],
+    paths:[{p:[[400,1150],[392,980],[420,820],[400,660],[380,500],[400,320],[400,-40]],w:52},{p:[[410,700],[560,660],[700,640],[840,640]],w:48}],
+    objs:[['sign',330,960],['lantern',300,820],['lantern',500,560],['gcrystal',600,900,null,{s:0.8}],['glowmush',260,600],['glowmush',540,860],['bush',620,980]],
+    groves:[[650,950,2,40]],suns:[[400,700,200,140]],
+    spawns:[[280,450],[560,500],[300,940],[620,780]],items:[[230,700]]},
+  village:{n:'燈籠聚落',gx:1,gy:1,v2:1,night:1,safe:1,lstrings:[[190,380,610,380],[200,720,600,720],[260,560,540,560]],winGlow:[[150,330],[650,330],[150,680],[650,680]],
+    exits:[{side:'s',c:400,w:120,to:'entry'},{side:'n',c:400,w:120,to:'bridge'},{side:'e',c:640,w:120,to:'glow_wood'}],
+    paths:[{p:[[400,1150],[400,900],[400,640],[400,400],[400,-40]],w:58},{p:[[400,640],[580,640],[840,640]],w:48}],
+    objs:[['house',150,420],['house',650,420,null,{fl:1}],['house',150,780],['house',650,780,null,{fl:1}],['lantern',300,460],['lantern',500,460],['lantern',300,820],['lantern',500,820],['glowmush',240,960],['glowmush',560,980]],
+    spawns:[[600,1000],[200,1000]],items:[]},
+  beach:{n:'星砂河灘',gx:2,gy:2,v2:1,night:1,sparkle:1,
+    exits:[{side:'w',c:640,w:120,to:'entry'},{side:'n',c:400,w:120,to:'glow_wood'}],
+    rivers2:[{p:[[-60,420],[120,470],[280,540],[400,600],[520,660],[680,740],[860,800]],w:90}],
+    walks:[[372,560,428,648]],
+    paths:[{p:[[-40,640],[120,650],[260,700],[360,720],[392,660]],w:46},{p:[[408,560],[420,460],[400,300],[400,-40]],w:46}],
+    objs:[['stones',384,588],['stones',414,614,null,{fl:1}],['stones',392,640],['reed',300,600],['reed',520,700],['gcrystal',150,300,null,{s:0.7}],['rocks',620,320],['glowmush',650,980],['rocks',180,960,null,{s:0.8}]],
+    groves:[[690,250,2,40],[120,940,2,40]],suns:[[400,880,220,140]],
+    spawns:[[200,300],[600,260],[300,920],[600,960]],items:[[700,500]]},
+  glow_wood:{n:'螢光林',gx:2,gy:1,v2:1,night:1,
+    exits:[{side:'s',c:400,w:120,to:'beach'},{side:'w',c:640,w:120,to:'village'},{side:'n',c:400,w:120,to:'echo'}],
+    belts:[{k:'glowtree',k2:'bush',p:[[60,860],[200,880],[320,860]],step:54,w:24},{k:'glowtree',k2:'bush',p:[[480,860],[600,880],[740,860]],step:54,w:24},
+      {k:'glowtree',k2:'bush',p:[[60,440],[220,420],[380,440],[500,420]],step:54,w:24},{k:'glowtree',k2:'bush',p:[[520,560],[560,660],[700,700]],step:54,w:24}],
+    paths:[{p:[[400,1150],[400,960],[400,860],[420,720],[400,560],[620,500],[700,360],[560,260],[400,200],[400,-40]],w:46},{p:[[-40,640],[140,650],[300,640],[410,650]],w:44}],
+    objs:[['glowmush',160,560],['glowmush',650,980],['fern',280,980],['fern',560,1000],['glowmush',600,620]],
+    groves:[[150,250,2,40],[690,1000,2,40]],suns:[[400,640,200,140]],
+    spawns:[[200,980],[600,980],[200,300],[640,600]],items:[[660,620]]},
+  bridge:{n:'吊橋',gx:1,gy:0,v2:1,night:1,
+    exits:[{side:'s',c:400,w:120,to:'village'},{side:'e',c:300,w:120,to:'echo'},{side:'n',c:400,w:120,to:'plateau'}],
+    chasm2:{p:[[-50,690],[150,686],[300,680],[360,666],[382,636],[400,600],[418,564],[440,540],[560,530],[850,526]],w:100,pinch:[[400,600,0.7]]},bridges:[{at:[400,600],fl:1}],
+    paths:[{p:[[400,1150],[440,950],[480,780]],w:48,br:[0,0]},{p:[[330,440],[380,300],[400,-40]],w:48,br0:[0,1]},{p:[[400,300],[600,300],[840,300]],w:44}],
+    objs:[['rocks',200,800],['rocks',600,820,null,{fl:1}],['boulder',160,400],['boulder',640,420,null,{s:0.8}],['lantern',340,780],['lantern',460,420],['gcrystal',180,980,null,{s:0.7}]],
+    groves:[[150,950,2,40],[650,960,2,40],[150,200,2,40]],
+    spawns:[[220,900],[600,940],[220,320],[620,200]],items:[[680,780]]},
+  echo:{n:'回音岩壁',gx:2,gy:0,v2:1,night:1,mural:[220,300,360],echo:[400,420],
+    exits:[{side:'w',c:300,w:120,to:'bridge'},{side:'s',c:400,w:120,to:'glow_wood'},{door:[620,190,660,214],arrive:[640,300],to:'star_cave'}],
+    terraces:[{e:560,amp:14,ph:0.7,H:120,gap:[300,390],lipBush:[0.15,0.85],foot:[0.12,0.34,0.72,0.9]}],
+    paths:[{p:[[400,1150],[400,960],[360,800],[346,700]],w:48,toStairs:0},{p:[[-40,300],[140,320],[300,360],[400,420],[560,330],[640,240]],w:46},{p:[[346,460],[380,430]],w:40}],
+    objs:[['cave',640,200,null,{ns:1}],['rocks',560,900],['boulder',180,880,null,{s:0.8}],['glowmush',650,1000],['gcrystal',150,1000,null,{s:0.7}]],
+    groves:[[690,880,2,40]],suns:[[400,900,200,130]],
+    spawns:[[240,980],[600,980],[200,420],[520,440]],items:[[150,700]]},
+  plateau:{n:'月光台地',gx:1,gy:-1,v2:1,night:1,stoneRing:[400,620,160],
+    exits:[{side:'s',c:400,w:120,to:'bridge'},{door:[380,150,420,178],arrive:[400,300],to:'secret'}],
+    paths:[{p:[[400,1150],[400,950],[400,800]],w:48},{p:[[400,440],[400,300],[400,200]],w:44}],
+    objs:[['dstairs',400,210,null,{ns:1}],['pillar',260,560,null,{s:0.7}],['pillar',540,560,null,{s:0.75,fl:1}],['pillar',300,720,null,{s:0.65}],['pillar',500,720,null,{s:0.7,fl:1}],['boulder',400,780,null,{s:0.6}],['gcrystal',150,950,null,{s:0.7}],['rocks',650,950]],
+    groves:[[150,320,2,40],[660,320,2,40]],suns:[[400,620,240,180]],
+    spawns:[[200,620],[600,640],[260,960],[560,960]],items:[[680,560]]},
+  star_cave:{n:'星窟',gx:2,gy:-1,cave:1,rare:0.15,v2:1,tiles:'#2E3350',darkA:0.5,ceilStars:1,
+    exits:[{side:'s',c:400,w:120,to:'echo'}],
+    floor:[{rect:[140,140,660,1130],j:3}],
+    paths:[{p:[[400,1130],[400,800],[410,500],[400,260]],w:60,end:'dirt'}],
+    objs:[['gcrystal',200,400],['gcrystal',600,460,null,{fl:1}],['crystal',230,720],['crystal',580,800,null,{fl:1}],['gcrystal',400,220,null,{s:0.9}],['stalag',190,1000,null,{s:0.8}],['stalag',610,980,null,{s:0.8,fl:1}]],
+    spawns:[[260,560],[560,640],[300,880],[540,320]],items:[[600,220]]},
+  secret:{n:'觀星台',gx:1,gy:-2,cave:1,v2:1,secret:1,rare:0.25,tiles:'#3A3F60',darkA:0.35,ceilStars:1,starMap:[400,560,250],
+    exits:[{side:'s',c:400,w:120,to:'plateau'}],
+    floor:[{round:[400,560,310,330]},{rib:{p:[[400,1130],[400,860]],w:160,v:0.04}}],
+    paths:[{p:[[400,1130],[400,900],[400,800]],w:46,end:'dirt'}],
+    objs:[['gcrystal',200,560,null,{s:0.7}],['gcrystal',600,560,null,{s:0.7,fl:1}]],
+    spawns:[[280,450],[520,450],[400,700]],items:[[240,700],[560,700]]}
+};
+/* ---- 虹光遺城：被植物吞掉的現代城市＋更古老的石造遺跡。借：城鎮的建築、噴水池、長椅、公布欄、木箱，草原的圓樹、巨石，森林的苔叢，沙漠的方尖碑、神殿、象形石牆、祭壇（調成灰綠） ---- */
+const [RUINS_ART,RUINS_IMG]=borrowArt({tree:['grass','round_tree',125,22,14],oak:['grass','oak',170,30,16],bush:['forest','mossy_bush',58,54,16],boulder:['grass','boulder',64,58,18],tall:['grass','tall_grass',46,0,0],
+  hall:['town','farm_hall',210,170,60],shop:['town','item_shop',190,150,56],lounge:['town','lounge',200,190,60],dessert:['town','dessert_shop',190,168,56],appraisal:['town','appraisal',200,160,56],
+  fountain:['town','fountain',110,92,30],bench:['town','bench',52,62,12],notice:['town','notice_board',80,60,12],crates:['town','crates',54,56,14],lamp:['town','lamp_post',100,12,8],
+  obelisk:['desert','obelisk',150,48,16],temple:['desert','temple',170,0,0],hiero:['desert','hiero_wall',110,100,16],pillar:['desert','ruins',110,90,26],altar:['desert','../secret/seed_altar',150,120,40],
+  cliff:['grass','cliff',96,0,0],stairs:['grass','stairs',92,0,0],sign:['grass','signpost',78,16,8],roots:['forest','roots',90,0,0],stalag:['snow','stalagmites',80,40,14],flowers:['grass','wildflowers',42,0,0]});
+const RUINS_FLAT={stairs:1,tall:1,flowers:1,roots:1},RUINS_SWAY={tree:1,oak:1,tall:1};
+const RUINS_MAPS={
+  entry:{n:'城外公路',gx:1,gy:2,v2:1,
+    exits:[{side:'s',c:400,w:120,to:'farm'},{side:'n',c:400,w:120,to:'plaza'},{side:'e',c:640,w:120,to:'houses'}],
+    paths:[{p:[[400,1150],[400,900],[400,640],[400,400],[400,-40]],w:84},{p:[[400,660],[560,650],[840,640]],w:52}],
+    objs:[['sign',300,960],['lamp',280,760,null,{s:0.9}],['lamp',520,520,null,{s:0.9,fl:1}],['bush',260,560],['boulder',540,860],['bush',560,880,null,{s:0.8}],['tree',180,420],['tree',640,980,null,{fl:1}],['tall',300,620],['tall',520,420]],
+    groves:[[150,300,3,50],[650,300,2,46,1],[140,850,2,40]],suns:[[400,760,230,150]],seams:[[340,1000,380,920,350,860]],
+    spawns:[[220,520],[600,520],[240,960],[640,800]],items:[[120,660]]},
+  plaza:{n:'噴泉廣場',gx:1,gy:1,v2:1,seams:[[320,820,360,760,330,700]],
+    exits:[{side:'s',c:400,w:120,to:'entry'},{side:'e',c:640,w:120,to:'greenhouse'},{side:'n',c:400,w:120,to:'avenue'}],
+    paths:[{p:[[400,1150],[400,900],[300,640],[400,420],[400,-40]],w:60},{p:[[300,640],[520,620],[840,640]],w:52}],
+    objs:[['fountain',560,860],['obelisk',200,400],['notice',600,420],['bench',470,900],['bench',650,900,null,{fl:1}],['bench',560,500,null,{fl:1}],['bush',150,900],['tree',650,960],['tall',250,880]],
+    groves:[[150,260,2,40],[660,240,2,40]],suns:[[400,640,260,180]],
+    spawns:[[200,600],[640,860],[220,1000],[600,300]],items:[[700,560]]},
+  houses:{n:'住宅區',gx:2,gy:2,v2:1,
+    exits:[{side:'w',c:640,w:120,to:'entry'},{side:'n',c:400,w:120,to:'greenhouse'}],
+    paths:[{p:[[-40,640],[160,650],[400,640],[410,400],[400,-40]],w:54},{p:[[400,640],[400,900],[400,1040]],w:44,end:'dirt'}],
+    objs:[['shop',200,470],['dessert',600,470,null,{fl:1}],['appraisal',200,880],['lounge',620,900,null,{s:0.9}],['bush',300,560],['bush',500,560,null,{fl:1}],['tall',320,980],['tall',480,980],['flowers',300,700],['flowers',520,720]],
+    groves:[[690,240,2,40],[110,240,2,40]],suns:[[400,700,200,160]],
+    spawns:[[300,300],[520,300],[320,760],[500,780],[400,1010]],items:[[680,640]]},
+  greenhouse:{n:'溫室',gx:2,gy:1,v2:1,seams:[[600,1000,640,930,610,860]],
+    exits:[{side:'s',c:400,w:120,to:'houses'},{side:'w',c:640,w:120,to:'plaza'},{side:'n',c:400,w:120,to:'station'}],
+    paths:[{p:[[400,1150],[400,900],[400,780],[250,700],[230,460],[400,300],[400,-40]],w:52},{p:[[-40,640],[180,650],[245,650]],w:48}],
+    objs:[['lounge',420,560,null,{s:1.25,ns:1}],['tree',190,300],['oak',640,320,null,{fl:1}],['bush',200,820],['bush',600,860],['flowers',260,700],['flowers',560,700],['tall',320,960]],
+    groves:[[150,1000,2,40],[690,1000,2,40]],suns:[[400,560,260,180]],
+    spawns:[[300,400],[500,400],[400,720],[200,960]],items:[[620,640]]},
+  station:{n:'地鐵站',gx:2,gy:0,v2:1,seams:[[200,900,260,800,230,700]],
+    exits:[{side:'s',c:400,w:120,to:'greenhouse'},{side:'w',c:300,w:120,to:'avenue'},{door:[380,300,420,326],arrive:[400,420],to:'metro'}],
+    blocks:[[140,600,560,640]],
+    paths:[{p:[[400,1150],[400,900],[620,760],[640,620],[560,480],[400,420],[400,330]],w:50},{p:[[-40,300],[140,320],[300,360],[400,400]],w:46}],
+    objs:[['hiero',400,320,null,{s:0.8}],['pillar',190,620,null,{s:0.85}],['pillar',300,630,null,{s:0.8,fl:1}],['pillar',420,620,null,{s:0.85}],['pillar',520,630,null,{s:0.75,fl:1}],['bush',650,960],['lamp',600,880],['tree',160,920]],
+    groves:[[690,250,2,40]],suns:[[400,800,220,150]],
+    spawns:[[200,800],[640,1000],[200,420],[620,320]],items:[[160,1000]]},
+  metro:{n:'地下月台',gx:3,gy:0,cave:1,rare:0.1,v2:1,tiles:'#5A5C5E',darkA:0.52,rails:[560,140,1130],seams:[[200,300,260,520,220,760],[460,900,500,700,470,500]],
+    exits:[{side:'s',c:400,w:120,to:'station'}],
+    floor:[{rect:[140,140,660,1130],j:2}],blocks:[[536,140,620,1130]],
+    paths:[{p:[[400,1130],[380,800],[400,500],[380,220]],w:60,end:'dirt'}],
+    objs:[['roots',260,300],['roots',300,700,null,{fl:1}],['stalag',200,1000,null,{s:0.7}],['pillar',230,500,null,{s:0.6}],['pillar',230,860,null,{s:0.6,fl:1}]],
+    spawns:[[260,620],[460,400],[300,980]],items:[[460,980]]},
+  avenue:{n:'中央大道',gx:1,gy:0,v2:1,seams:[[300,1000,340,900,320,800],[480,960,450,860,470,760],[360,640,400,560,380,480],[260,520,300,440,280,360],[520,520,480,440,500,360]],
+    exits:[{side:'s',c:400,w:120,to:'plaza'},{side:'e',c:300,w:120,to:'station'},{side:'n',c:400,w:120,to:'core'}],
+    paths:[{p:[[400,1150],[400,800],[400,400],[400,-40]],w:96},{p:[[400,320],[600,300],[840,300]],w:50}],
+    objs:[['hall',170,560],['shop',640,560,null,{fl:1}],['lounge',160,900,null,{s:0.9}],['appraisal',640,900,null,{fl:1}],['hiero',300,150,null,{s:0.9}],['hiero',500,150,null,{s:0.9,fl:1}],['lamp',300,760],['lamp',500,760,null,{fl:1}],['bush',280,1020],['bush',520,1020]],
+    suns:[[400,640,200,160]],
+    spawns:[[300,300],[520,700],[280,700],[500,1000]],items:[[700,400]]},
+  core:{n:'核心',gx:1,gy:-1,v2:1,rare:0.15,seamHub:[400,300],seams:[[120,1000,250,700,400,320],[680,1000,560,700,400,320],[400,1100,400,700,400,320],[200,600,300,450,400,320],[600,600,500,450,400,320],[60,400,220,360,400,320],[740,400,580,360,400,320],[280,900,340,600,400,320],[520,900,460,600,400,320]],
+    exits:[{side:'s',c:400,w:120,to:'avenue'},{door:[380,300,420,328],arrive:[400,420],to:'secret'}],
+    paths:[{p:[[400,1150],[400,800],[400,500],[400,340]],w:60}],
+    objs:[['hiero',160,260],['hiero',270,250,null,{fl:1}],['temple',400,300,null,{ns:1}],['hiero',530,250],['hiero',640,260,null,{fl:1}],['pillar',200,560],['pillar',600,560,null,{fl:1}],['pillar',240,860,null,{s:0.85}],['pillar',560,860,null,{s:0.85,fl:1}],['boulder',640,1000]],
+    blocks:[[100,180,360,290],[440,180,700,290]],
+    groves:[[120,980,2,40]],suns:[[400,500,260,180]],
+    spawns:[[240,700],[560,700],[300,1000],[500,1000]],items:[[150,700]]},
+  secret:{n:'控制台',gx:1,gy:-2,cave:1,v2:1,secret:1,rare:0.25,tiles:'#8A8A80',darkA:0.32,seamHub:[400,460],seams:[[180,900,300,700,400,480],[620,900,500,700,400,480],[400,1100,400,800,400,480]],
+    exits:[{side:'s',c:400,w:120,to:'core'}],
+    floor:[{rect:[120,150,680,1130],j:2}],
+    paths:[{p:[[400,1130],[400,800],[400,560]],w:56,end:'dirt'}],
+    objs:[['altar',400,460],['pillar',200,600],['pillar',600,620,null,{fl:1}],['pillar',230,880,null,{s:0.9}],['pillar',570,900,null,{s:0.9,fl:1}],['hiero',220,240],['hiero',580,240,null,{fl:1}]],
+    spawns:[[260,420],[540,420],[300,720]],items:[[180,760],[620,760]]}
+};
+/* ---- 櫻花之丘：狐火庭（神社後院，第 139.5 節） ---- */
+const SAKURA_SECRET={n:'狐火庭',gx:3,gy:-1,v2:1,secret:1,rare:0.25,ground:'#8FAE72',foxLanterns:[400,560,170],grave:[400,250],
+  exits:[{side:'s',c:400,w:120,to:'pagoda'}],
+  paths:[{p:[[400,1150],[400,900],[400,720]],w:44}],
+  objs:[['lantern',230,560],['lantern',280,430],['lantern',400,390],['lantern',520,430],['lantern',570,560],['sakura_weep',140,320],['sakura_weep',660,320,null,{fl:1}],['sakura_big',150,900],['sakura_big',650,900,null,{fl:1}],['boulder',260,760,null,{s:0.6}],['boulder',560,780,null,{s:0.55}]],
+  groves:[[150,600,2,40],[660,620,2,40]],meadows:[[400,560,8,160,80,1]],suns:[[400,560,260,180]],
+  spawns:[[260,680],[540,680],[400,820]],items:[[200,960],[600,960]]};
+SAKURA_MAPS.secret=SAKURA_SECRET;
+const REGION_MAPS={volcano:VOLCANO_MAPS,canyon:CANYON_MAPS,ruins:RUINS_MAPS,snow:SNOW_MAPS,grass:GRASS_MAPS,forest:FOREST_MAPS,desert:DESERT_MAPS,marsh:MARSH_MAPS,sakura:SAKURA_MAPS,town:TOWN_MAPS};/* town 沒有 entry，所以 regHas('town') 是 false，探索流程不會用到 */
+const REGION_ART={volcano:VOLCANO_ART,canyon:CANYON_ART,ruins:RUINS_ART,snow:SNOW_ART,grass:GRASS_ART,forest:FOREST_ART,desert:DESERT_ART,marsh:MARSH_ART,sakura:SAKURA_ART,town:TOWN_ART},REGION_IMG={volcano:VOLCANO_IMG,canyon:CANYON_IMG,ruins:RUINS_IMG,snow:SNOW_IMG,grass:GRASS_IMG,forest:FOREST_IMG,desert:DESERT_IMG,marsh:MARSH_IMG,sakura:SAKURA_IMG,town:TOWN_IMG},REGION_FLAT={volcano:VOLCANO_FLAT,canyon:CANYON_FLAT,ruins:RUINS_FLAT,snow:SNOW_FLAT,grass:GRASS_FLAT,forest:FOREST_FLAT,desert:DESERT_FLAT,marsh:MARSH_FLAT,sakura:SAKURA_FLAT,town:TOWN_FLAT},REGION_SWAY={volcano:VOLCANO_SWAY,canyon:CANYON_SWAY,ruins:RUINS_SWAY,snow:SNOW_SWAY,grass:GRASS_SWAY,forest:FOREST_SWAY,desert:DESERT_SWAY,marsh:MARSH_SWAY,sakura:SAKURA_SWAY,town:TOWN_SWAY},REGION_GLOW={canyon:{lantern:1,glowtree:0.5,glowmush:1,gcrystal:0.6,crystal:0.5},volcano:{},ruins:{altar:0.8,lamp:0.86},sakura:{lantern:1,lanterns:0.7},snow:{glow:1,ped:0.8},grass:{glowflower:0.6,ped:0.8},forest:{glowmush:1,spirit:0.62,ped:0.8,campfire:0.5},desert:{altar:0.8,ped:0.8,torch:0.86},marsh:{lantern:1,glowmush:1,glotus:0.5,ped:0.8,fireflyjar:0.5},town:TOWN_GLOW};
 const REGION_CFG={
   snow:{name:'晶霜雪原',ground:'#E9EFF4',outer:'#E3EAF0',spots:['#DDE6ED','#F3F7F9'],path:['#D3DDE6','#DEE7EE'],water:['#9DBCCD','#C7E0EC'],cliff:['#8D9299','#767B83','#FFFFFF'],
     edgeTree:'pine',edgeBush:'bush',weather:'snow',shadow:'rgba(70,95,120,.2)',glow:'#C8F4FF',footprints:true,
@@ -6154,6 +6403,15 @@ const REGION_CFG={
   sakura:{name:'櫻花之丘',ground:'#B2CB8C',outer:'#A6BF80',spots:['#ABC484','#BFD49A'],path:['#CFC6B6','#DCD4C6'],water:['#6F9A92','#8FB8B0'],cliff:['#8E8476','#766D60','#B2CB8C'],/* 82.3：比草原再柔和、偏暖的春草綠；小路是淺石板色 */
     edgeTree:'sakura_small',edgeBush:'flower_bush',weather:'sakura',shadow:'rgba(60,72,40,.22)',glow:'#FFE6EE',footprints:false,
     caveGround:'#5E4A34',caveOuter:'#291F14',caveSpots:['#55432E','#6A553C'],cavePath:['#6E5940','#79644A'],caveWall:'#4A3A26',caveEdge:'#927858'},
+  volcano:{name:'赤燼火山',ground:'#7A6A60',outer:'#6C5D54',spots:['#6F6057','#867569'],path:['#9A8574','#A8927F'],water:['#B8410E','#F59E0B'],cliff:['#3F3A3A','#2E2A2A','#7A6A60'],/* 139.2 */
+    edgeTree:'bare',edgeBush:'rock',weather:'ash',shadow:'rgba(20,10,8,.3)',glow:'#FF9A4D',footprints:true,tint:{desat:0.55,mul:[0.66,0.5,0.46],add:[16,6,2]},
+    caveGround:'#3A2A26',caveOuter:'#1E1412',caveSpots:['#33241F','#4A332C'],cavePath:['#4E3830','#5A4238'],caveWall:'#1E1412',caveEdge:'#E0703A'},
+  canyon:{name:'永夜峽谷',ground:'#434A66',outer:'#363C55',spots:['#3C4360','#4D5574'],path:['#6E7590','#7C839E'],water:['#25356A','#4F6BB5'],cliff:['#2A2F45','#1F2336','#434A66'],/* 139.3 */
+    edgeTree:'pine',edgeBush:'bush',weather:'stars',shadow:'rgba(5,8,25,.35)',glow:'#BFD4FF',footprints:false,tint:{desat:0.45,mul:[0.5,0.56,0.86],add:[8,10,30],skip:['../wetland/stone_lantern','../forest/glow_mushrooms','../snow/glow_crystal']},
+    caveGround:'#22253A',caveOuter:'#121423',caveSpots:['#1E2034','#2C304A'],cavePath:['#33374F','#3C405A'],caveWall:'#121423',caveEdge:'#8FA8FF'},
+  ruins:{name:'虹光遺城',ground:'#9DA58E',outer:'#8E9680',spots:['#939B84','#AAB29B'],path:['#7F8285','#8C8F92'],water:['#6E8C8A','#93B2AE'],cliff:['#9A9A94','#7E7E78','#9DA58E'],/* 139.4 */
+    edgeTree:'tree',edgeBush:'bush',weather:'pollen',shadow:'rgba(30,40,30,.25)',glow:'#FFFFFF',footprints:false,tint:{desat:0.5,mul:[0.88,0.94,0.86],add:[10,12,8]},
+    caveGround:'#4A4C4E',caveOuter:'#2A2B2D',caveSpots:['#444648','#55585A'],cavePath:['#5A5D60','#64676A'],caveWall:'#2A2B2D',caveEdge:'#B8C4C8'},
   /* 15b 城鎮：暖灰米色石板（tiles＝石板細格線），外圍草地；不畫程式大門（noGate，用 gate 素材當入口拱門） */
   town:{name:'城鎮',ground:'#E6DCC6',outer:'#A8C478',spots:['#DED3BC','#ECE3CF'],path:['#D6C6A4','#DED0B2'],water:['#9DBCCD','#C7E0EC'],cliff:['#9C8A6A','#857458','#E6DCC6'],tiles:'#D3C6AA',noGate:true,
     edgeTree:'shrub',edgeBush:'planter',edgeFn:(M,R,inExit,objs)=>townEdge(M,R,inExit,objs),weather:null,shadow:'rgba(90,70,40,.22)',glow:'#FFE6A8',footprints:false,
@@ -6233,7 +6491,7 @@ function regObjHTML(o,M,R){
   const bk=M.bk,cave=M.cave,a=REGION_ART[bk][o[0]];if(!a)return '';const im=REGION_IMG[bk][a[0]];if(!im)return '';const op=o[4]&&typeof o[4]==='object'?o[4]:{},sk=op.s||1;const [iw,ih]=im,dh=a[1]*sk,w=dh*iw/ih,x=o[1],y=o[2]+(op.dy||0);/* dy：畫的位置上下移，前後排序仍用 o[2]（64.6：棺材疊在石台上） */
   let s=op.ns?'':`<ellipse cx="${f1(x)}" cy="${f1(y-1)}" rx="${f1(w*0.34)}" ry="${f1(Math.max(4,w*0.08))}" fill="${cave?'rgba(0,0,0,.3)':REGION_CFG[bk].shadow}"/>`;
   {const gv=(REGION_GLOW[bk]||{})[o[0]];if(gv&&!M.lightPuzzle)s+=`<circle class="glw" cx="${f1(x)}" cy="${f1(y-dh*(gv<1?gv:0.45))}" r="58" fill="url(#sglow)"/>`}
-  const href=bk==='sakura'&&SAKURA_TINT.has(a[0])&&!sakuraLook()?(sakuraGreen(a[0])||`assets/${regDir(bk)}/${a[0]}.png`):`assets/${regDir(bk)}/${a[0]}.png`;/* 82.2 */
+  const href=bk==='sakura'&&SAKURA_TINT.has(a[0])&&!sakuraLook()?(sakuraGreen(a[0])||`${regSrc(bk,a[0])}`):`${regSrc(bk,a[0])}`;/* 82.2 */
   let img=`<image href="${href}" x="${f1(x-w/2)}" y="${f1(y-dh)}" width="${f1(w)}" height="${sk===1?dh:f1(dh)}"/>`;
   if(op.fl&&o[0]!=='sign')img=`<g transform="translate(${f1(2*x)} 0) scale(-1 1)">${img}</g>`;
   if(op.stn!=null)img=`<g class="stn" data-k="${op.stn}">${img}</g>`;if(op.cls)img=`<g class="${op.cls}">${img}</g>`;
@@ -6318,6 +6576,22 @@ const REG_V2={
     terr:{art:'rockwall',stairs:'stairs',sa:[0.38,0.62],rock:'#8F8690',rockD:'#5E5862',shade:'#7C8CA8',drip:['#FFFFFF','#E8F0F6']},
     water:{edge:'#7FA0B4',sh:'#CBE3EE',deep:'#A9CCDD',glint:'#FFFFFF',wet:'#F4F8FB'},shore:null,pal:[['#FFFFFF','#E6F4FF','#D2ECFF']]}
 };
+/* 139：新三區的 v2 畫法設定（借來的鍵都在 *_ART 裡） */
+REG_V2.volcano={tree:'bare',big:'bigbare',hero:'bigbare',bush:'rock',tuft:'tuft',flower:null,fs:0.8,rock:'rock',log:'stump',
+  path:['#8A7666','#9A8574','#A8927F','#927E6E','#6E5E52'],tufts:['#6A5A50','#74645A','#5E4E46'],spots:['#6F6057','#867569','#7A6A60'],
+  shade:'#2A1A14',vig:'#2A0E06',hi:'#8A7A6E',lip:'#7E6E64',lipLine:'#3F3A3A',
+  terr:{art:'cliff',stairs:'stairs',sa:[0.30,0.60],rock:'#4A4040',rockD:'#2E2A2A',shade:'#1E1412',drip:['#5A4A44','#6A5A52']},
+  water:LAVA_W,shore:['rock','tuft'],pal:[['#FF9A4D','#FFD27A']],bridge:{k:'bridge',s:1.42,a:[0.30,0.74],b:[0.74,0.37],hw:0.2,n:[0.9,0.44]}};
+REG_V2.canyon={tree:'pine',big:'bigpine',hero:'glowtree',bush:'bush',tuft:'fern',flower:'glowmush',fs:0.6,rock:'rocks',log:'rocks',
+  path:['#5E6580','#6E7590','#7C839E','#666D88','#4E5470'],tufts:['#3E4E6A','#465676','#36465E'],spots:['#3C4360','#4D5574','#434A66'],
+  shade:'#141830',vig:'#05061A',hi:'#5A6284',lip:'#525A7A',lipLine:'#2A2F45',
+  terr:{art:'rockwall',stairs:'stairs',sa:[0.38,0.62],rock:'#3A3F5A',rockD:'#242840',shade:'#141830',drip:['#4A5070','#5A6084']},
+  water:{edge:'#1A2450',sh:'#4F6BB5',deep:'#25356A',glint:'#E8F0FF',wet:'#3A4262'},shore:['reed','rocks'],pal:[['#BFD4FF','#E8F0FF','#9FB4FF']],bridge:{k:'bridge',s:1,a:[0.24,0.80],b:[0.90,0.40],hw:0.16,n:[0.56,0.83]}};
+REG_V2.ruins={tree:'tree',big:'oak',hero:'oak',bush:'bush',tuft:'tall',flower:'flowers',rock:'boulder',log:'crates',
+  path:['#76797C','#7F8285','#8C8F92','#84878A','#6A6D70'],tufts:['#86965E','#8FA066','#7E8E58'],spots:['#939B84','#AAB29B','#9DA58E'],
+  shade:'#3A4632',vig:'#1E2A1E',hi:'#B4BCA4',lip:'#AAB29B',lipLine:'#7E7E78',
+  terr:{art:'cliff',stairs:'stairs',sh:92,sa:[0.40,0.60],say:[0.2,0.9],rock:'#9A9A94',rockD:'#7E7E78',shade:'#3A4632',drip:['#86965E','#9AAA70']},
+  water:{edge:'#4A6462',sh:'#93B2AE',deep:'#6E8C8A',glint:'#EEF6F4',wet:'#8A9680'},shore:['boulder','tall'],pal:[['#FFFFFF','#F7E68A','#F6C9DA']],bridge:{k:'bridge',s:1.42,a:[0.30,0.74],b:[0.74,0.37],hw:0.2,n:[0.9,0.44]}};
 const v2f=v=>Math.round(v*10)/10;
 /* Catmull-Rom 平滑曲線 */
 function v2spline(P,step){step=step||6;const out=[];const Q=[P[0],...P,P[P.length-1]];
@@ -6499,7 +6773,7 @@ function regGroundSVG(M){
     for(const [rx,ry,k] of RK)for(let i=1;i<=4;i++)s+=`<ellipse cx="${rx}" cy="${ry-4}" rx="${v2f(36*k+i*11)}" ry="${v2f((36*k+i*11)/1.5)}" stroke="#CFC8B8" stroke-width="1.6" fill="none"/>`;
     s+='</g>'}
   /* 水：外框（深色）→ 淺水帶 → 深水（多個橢圓合成一個輪廓） */
-  const lakes=M.lakes||[],ice=M.ice,WC=V.water;
+  const lakes=M.lakes||[],ice=M.ice,WC=M.water||V.water;/* 139：熔岩、硫磺池 */
   /* 79（16l）：水邊由外往內四層，不描外框：濕沙帶（岸上，往外漸淡、寬度沿岸變化）→ 浪花線（細、粗細不均）→ 淺水 → 深水（用離岸距離做漸層，不是同心圓）。
      湖和河當成同一塊（湖、河接起來的地方沒有線）；水中的小島挖空（小島的岸也有濕沙帶）。全部用 SVG 濾鏡，地面圖只畫一次 */
   const wLG=ice?[]:M._LG,wid=M.bk+M.id;
@@ -6595,7 +6869,7 @@ function regTerraceHTML(M){
       for(const [p,q] of [[-40,t.gap[0]+10],[t.gap[1]-10,W+40]]){const n=Math.max(1,Math.round((q-p)/(aw*0.6)));for(let i=0;i<n;i++){const k=0.9+R()*0.24,cx=p+(i+.5)*(q-p)/n+(R()-.5)*12;tiles.push([Bt(cx)+(R()-.5)*8,cx,k,R()<.5])}}
       /* 64.2：崖壁收低的地方，岩壁圖的上半部剪掉（不壓扁），所以整排用「邊緣以下」的範圍當剪裁 */
       if(fixS)s+=`<defs><clipPath id="tcl${M.bk+M.id+ti}"><path d="M${xs.map(x=>x+' '+v2f(E(x)-3)).join(' L')} L${W+40} ${v2f(Bt(W+40)+60)} L-40 ${v2f(Bt(-40)+60)}Z"/></clipPath></defs><g clip-path="url(#tcl${M.bk+M.id+ti})">`;
-      tiles.sort((p,q)=>p[0]-q[0]);for(const [by,cx,k,fl] of tiles){const hh=a.dh*th*k,ww=a.w*th*k;s+=`<g transform="translate(${v2f(cx)} ${v2f(by)}) scale(${fl?-1:1} 1)"><image href="assets/${regDir(bk)}/${a.f}.png" x="${v2f(-ww/2)}" y="${v2f(-hh)}" width="${v2f(ww)}" height="${v2f(hh)}"/></g>`}
+      tiles.sort((p,q)=>p[0]-q[0]);for(const [by,cx,k,fl] of tiles){const hh=a.dh*th*k,ww=a.w*th*k;s+=`<g transform="translate(${v2f(cx)} ${v2f(by)}) scale(${fl?-1:1} 1)"><image href="${regSrc(bk,a.f)}" x="${v2f(-ww/2)}" y="${v2f(-hh)}" width="${v2f(ww)}" height="${v2f(hh)}"/></g>`}
       if(fixS)s+='</g>'}
     /* 高地的草蓋過邊緣（54.1） */
     const ph=R()*6,bot=xs.map(x=>[x,E(x)+7+5*Math.abs(Math.sin(x*0.085+ph))+3*Math.sin(x*0.23+ph)]);
@@ -6609,13 +6883,13 @@ function regTerraceHTML(M){
       if(t.topPath){const cx=t.top[0]+t.u[0]*30,cy=t.top[1]+t.u[1]*30,ang=v2f(Math.atan2(t.u[1],t.u[0])*180/Math.PI);/* 64.2：台地上有路通到石階頂端時，把路接過蓋住邊緣的草帶 */
         s+=`<ellipse cx="${v2f(cx)}" cy="${v2f(cy)}" rx="44" ry="27" transform="rotate(${ang} ${v2f(cx)} ${v2f(cy)})" fill="${V.path[0]}" opacity=".8"/><ellipse cx="${v2f(cx)}" cy="${v2f(cy)}" rx="40" ry="23" transform="rotate(${ang} ${v2f(cx)} ${v2f(cy)})" fill="${V.path[1]}"/>`}
       if(fixS)s+=`<ellipse cx="${v2f(sx+(t.flip?-4:4))}" cy="${v2f(y0+sh-3)}" rx="${v2f(sw*0.5)}" ry="9" fill="${TC.shade}" opacity=".3"/>`;
-      s+=`<g transform="translate(${v2f(sx)} 0) scale(${t.flip?-1:1} 1) translate(${v2f(-sx)} 0)"><image href="assets/${regDir(bk)}/${st.f}.png" x="${v2f(x0)}" y="${v2f(y0)}" width="${v2f(sw)}" height="${v2f(sh)}"/></g>`}}
+      s+=`<g transform="translate(${v2f(sx)} 0) scale(${t.flip?-1:1} 1) translate(${v2f(-sx)} 0)"><image href="${regSrc(bk,st.f)}" x="${v2f(x0)}" y="${v2f(y0)}" width="${v2f(sw)}" height="${v2f(sh)}"/></g>`}}
     else{/* 沒有石階素材的地區：缺口畫成土坡＋幾根橫木當台階 */const g0=t.gap[0],g1=t.gap[1],yb=ey+TH+14;
       s+=`<path d="M${g0+6} ${v2f(ey+4)} Q${v2f(sx)} ${v2f(ey-6)} ${g1-6} ${v2f(ey+4)} L${g1+8} ${v2f(yb)} Q${v2f(sx)} ${v2f(yb+12)} ${g0-8} ${v2f(yb)}Z" fill="${V.path[1]}" stroke="${V.path[0]}" stroke-width="5" stroke-linejoin="round"/>`;
       s+=`<path d="M${g0+2} ${v2f(ey+TH*0.5)} L${g1-2} ${v2f(ey+TH*0.5)} L${g1+8} ${v2f(yb)} Q${v2f(sx)} ${v2f(yb+12)} ${g0-8} ${v2f(yb)}Z" fill="${TC.shade}" opacity=".12"/>`;
       for(let k=0;k<5;k++){const f=(k+0.5)/5,y=ey+10+f*(TH-4),x0=g0+8-f*12,x1=g1-8+f*12;s+=`<rect x="${v2f(x0)}" y="${v2f(y)}" width="${v2f(x1-x0)}" height="8" rx="4" fill="#8A6A44" stroke="#4A3020" stroke-width="1.6"/><rect x="${v2f(x0+3)}" y="${v2f(y+1.5)}" width="${v2f(x1-x0-6)}" height="2.4" rx="1.2" fill="#B08E62" opacity=".8"/>`}
       s+=`<ellipse cx="${v2f(sx)}" cy="${v2f(ey-8)}" rx="40" ry="20" fill="url(#worn${ti})"/>`}
-    if(t.fall){const wf=v2artDim(bk,'waterfall');if(wf){const fh=TH+70,fw=fh*wf.iw/wf.ih,fx=t.fall,fy=Bt(fx)+26;s+=`<image href="assets/${regDir(bk)}/${wf.f}.png" x="${v2f(fx-fw/2)}" y="${v2f(fy-fh)}" width="${v2f(fw)}" height="${v2f(fh)}"/>`+wfFxHTML(fx-fw/2,fy-fh,fw,fh)}}
+    if(t.fall){const wf=v2artDim(bk,'waterfall');if(wf){const fh=TH+70,fw=fh*wf.iw/wf.ih,fx=t.fall,fy=Bt(fx)+26;s+=`<image href="${regSrc(bk,wf.f)}" x="${v2f(fx-fw/2)}" y="${v2f(fy-fh)}" width="${v2f(fw)}" height="${v2f(fh)}"/>`+wfFxHTML(fx-fw/2,fy-fh,fw,fh)}}
   }
   return s;
 }
@@ -6624,7 +6898,7 @@ function regChasmHTML(M){if(!M._CH)return '';const a=v2artDim(M.bk,'cliff');if(!
   const mean=A=>A.reduce((t,p)=>t+p[1],0)/A.length,up=mean(rb.L)<mean(rb.R)?rb.L:rb.R,lo=up===rb.L?rb.R:rb.L,n=up.length;
   const wk=(M.walks||[]).map(w=>[(w[0]+w[2])/2,(w[1]+w[3])/2]);
   const tiles=[];for(let i=0;i<n;i+=6){const [x,y]=up[i];if(wk.some(c=>Math.hypot(c[0]-x,c[1]-y)<46))continue;const w=rb.hw[i]*2,k=0.85+R()*0.25,hh=Math.min(a.dh*0.8,w*0.78)*k,ww=hh*a.w/a.dh;tiles.push([y+hh*0.9,x,ww,hh,R()<.5])}
-  tiles.sort((p,q)=>p[0]-q[0]);for(const [by,x,ww,hh,fl] of tiles)s+=`<g transform="translate(${v2f(x)} ${v2f(by)}) scale(${fl?-1:1} 1)"><image href="assets/${regDir(M.bk)}/${a.f}.png" x="${v2f(-ww/2)}" y="${v2f(-hh)}" width="${v2f(ww)}" height="${v2f(hh)}"/></g>`;
+  tiles.sort((p,q)=>p[0]-q[0]);for(const [by,x,ww,hh,fl] of tiles)s+=`<g transform="translate(${v2f(x)} ${v2f(by)}) scale(${fl?-1:1} 1)"><image href="${regSrc(M.bk,a.f)}" x="${v2f(-ww/2)}" y="${v2f(-hh)}" width="${v2f(ww)}" height="${v2f(hh)}"/></g>`;
   /* 沙地蓋過上岸的邊緣 */
   const ph=R()*6,edge=up.map(([x,y],i)=>[x,y+5+3*Math.abs(Math.sin(i*0.5+ph))]),out=up.map(([x,y],i)=>{const c=rb.pts[i],dx=x-c[0],dy=y-c[1],d=Math.hypot(dx,dy)||1;return [x+dx/d*30,y+dy/d*30]});
   s+=`<path d="M${out.map(p=>v2f(p[0])+' '+v2f(p[1])).join(' L')} L${edge.slice().reverse().map(p=>v2f(p[0])+' '+v2f(p[1])).join(' L')}Z" fill="${V.lip}"/><path d="M${edge.map(p=>v2f(p[0])+' '+v2f(p[1])).join(' L')}" stroke="${V.lipLine}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
@@ -6640,10 +6914,10 @@ function regWaterHTML(M){
     const an=!ice&&mv<2;if(an)mv++;
     s+=`<clipPath id="${id}"><path d="${d}" clip-rule="evenodd"/></clipPath><g clip-path="url(#${id})" pointer-events="none"><rect class="${an?'wdrift':''}" x="${v2f(x0-200)}" y="${v2f(y0-400)}" width="${v2f(x1-x0+400)}" height="${v2f(y1-y0+800)}" fill="url(#wfx)" opacity="${ice?0.7:0.6}"/>${ice||ambOff()?'':M._LG.map((G,gi)=>{const [cx,cy,rx,ry]=G.ell.slice().sort((a,b)=>b[2]*b[3]-a[2]*a[3])[0],r=Math.min(rx,ry)*0.46;if(rx<40)return '';/* 56：魚影、漣漪 */
       let f='';const koi=M.koi;for(let j=0;j<(koi?3:rx>150?2:1);j++)f+=`<g class="fishO" style="transform-origin:${cx}px ${cy}px;animation-delay:-${gi*5+j*13}s;animation-duration:${28+j*9}s">${koi?`<ellipse cx="${cx+r*[1,0.7,0.45][j]}" cy="${cy}" rx="3.4" ry="9" fill="${['#F08A3C','#FFFFFF','#E9643A'][j]}" opacity=".85"/><ellipse cx="${cx+r*[1,0.7,0.45][j]}" cy="${cy-3}" rx="2" ry="3" fill="${['#FFFFFF','#F08A3C','#FFFFFF'][j]}" opacity=".85"/>`:`<ellipse cx="${cx+r*(j?0.7:1)}" cy="${cy}" rx="2.8" ry="8" fill="#16343A" opacity=".26"/>`}</g>`;/* 82.3 錦鯉池：橘白的錦鯉 */
-      for(let j=0;j<3;j++){const gx=cx+[-0.34,0.12,0.3][j]*rx,gy=cy+[-0.18,0.2,-0.02][j]*ry;f+=`<path class="wgl" style="animation-delay:-${j*2.3+gi}s" d="M${v2f(gx-11)} ${v2f(gy)} q11 -3.5 22 0" stroke="${REG_V2[M.bk].water.glint}" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".7"/>`}/* 79.2：波光，慢慢左右飄 */
+      for(let j=0;j<3;j++){const gx=cx+[-0.34,0.12,0.3][j]*rx,gy=cy+[-0.18,0.2,-0.02][j]*ry;f+=`<path class="wgl" style="animation-delay:-${j*2.3+gi}s" d="M${v2f(gx-11)} ${v2f(gy)} q11 -3.5 22 0" stroke="${(M.water||REG_V2[M.bk].water).glint}" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".7"/>`}/* 79.2：波光，慢慢左右飄 */
       for(let j=0;j<1;j++)f+=`<ellipse class="ripA" cx="${v2f(cx+(j?rx*0.34:-rx*0.3))}" cy="${v2f(cy+(j?-ry*0.22:ry*0.28))}" rx="15" ry="6.5" fill="none" stroke="#FFFFFF" stroke-width="1.5" style="animation-delay:-${j*4.5+gi*2}s"/>`;return f}).join('')}</g>`}
   for(const [k,[cx,cy,rx,ry]] of (M.isles||[]).entries()){const IR=()=>seededRnd(hashStr('isle'+M.id+k)),C=REGION_CFG[M.bk],V=REG_V2[M.bk];/* 水中的小島 */
-    if(M.ice)s+=`<path d="${v2d(v2wob(cx,cy,rx+12,ry+11,IR(),0.03))}" fill="${V.water.sh}"/><path d="${v2d(v2wob(cx,cy,rx+3,ry+3,IR(),0.03))}" fill="${V.water.edge}"/>`;/* 79：不結冰的小島由地面圖挖空（岸邊有濕沙帶），這裡只補一點亮面 */
+    if(M.ice)s+=`<path d="${v2d(v2wob(cx,cy,rx+12,ry+11,IR(),0.03))}" fill="${(M.water||V.water).sh}"/><path d="${v2d(v2wob(cx,cy,rx+3,ry+3,IR(),0.03))}" fill="${(M.water||V.water).edge}"/>`;/* 79：不結冰的小島由地面圖挖空（岸邊有濕沙帶），這裡只補一點亮面 */
     s+=`${M.ice?`<path d="${v2d(v2wob(cx,cy,rx,ry,IR(),0.03))}" fill="${M.ground||C.ground}"/>`:''}<ellipse cx="${cx-rx*0.2}" cy="${cy-ry*0.15}" rx="${rx*0.6}" ry="${ry*0.5}" fill="${V.spots[1]}" opacity=".5"/>`}
   if(M.slick){const [x,y,r]=M.slick;s+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#A9D2EA" opacity=".42" pointer-events="none"/><circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="3 9" opacity=".7" pointer-events="none"/><path d="M${x-r*0.6} ${y-r*0.5} q${r*0.3} ${-r*0.2} ${r*0.6} ${-r*0.05}" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" fill="none" opacity=".6"/>`}
   if(M.island){const [x,y,rx,ry]=M.island,C=REGION_CFG[M.bk];/* 湖心小島：雪堤圍一圈，只有東邊留一個缺口 */
@@ -6673,16 +6947,56 @@ function regGroundV2(M,flat){const C=REGION_CFG[M.bk],R=seededRnd(hashStr('fl|'+
   return s}
 /* 最上層：室外暗角；洞內昏暗（角色周圍與發光物件各亮一圈） */
 function regTopV2(M){const V=REG_V2[M.bk],W=M.W,H=M.H;
-  if(!M.cave)return `<defs><radialGradient id="vig" cx=".5" cy=".48" r=".72"><stop offset=".55" stop-color="${V.vig}" stop-opacity="0"/><stop offset="1" stop-color="${V.vig}" stop-opacity=".30"/></radialGradient></defs><rect x="0" y="0" width="${W}" height="${H}" fill="url(#vig)" pointer-events="none"/>`+(M.topX||'')+regAmbHTML(M);
+  if(!M.cave&&!M.night)return `<defs><radialGradient id="vig" cx=".5" cy=".48" r=".72"><stop offset=".55" stop-color="${V.vig}" stop-opacity="0"/><stop offset="1" stop-color="${V.vig}" stop-opacity=".30"/></radialGradient></defs><rect x="0" y="0" width="${W}" height="${H}" fill="url(#vig)" pointer-events="none"/>`+(M.topX||'')+regAmbHTML(M);
   /* 洞內昏暗（51.1E）：整個畫面蓋一層暗色，角色周圍一圈亮的，發光物件各照亮一小圈。51.3 森林：樹洞裡的發光蘑菇要走到旁邊才亮 */
   const GL=REGION_GLOW[M.bk]||{},glows=[];let me={x:W/2,y:H/2};try{if(typeof curMe==='function'&&scene==='explore')me=curMe()}catch(e){}
   (M.objs||[]).forEach((o,i)=>{if(!GL[o[0]])return;if(M.lightPuzzle&&!(regLit[M.bk+'|'+M.id]||{})[i])return;const a=REGION_ART[M.bk][o[0]];glows.push([o[1],o[2]-a[1]*0.4])});
   let halo='';if(M.lightPuzzle)for(const [x,y] of glows)halo+=`<circle class="glw" cx="${x}" cy="${y}" r="58" fill="url(#sglow)" pointer-events="none"/>`;
   /* 99.8（17k）：原本是整張地圖的 SVG <mask>，角色每走一步光圈就移動、底下任何動畫（發光呼吸、角色呼吸眨眼）也都讓 Safari 每幀重算整張遮罩，洞裡一直卡。
      改成一塊以角色為中心的大漸層（中心透明、外面暗），走路只改它的 transform；發光物件改成疊在暗場上面的一圈光。 */
-  const A=M.darkA||0.62,LR=M.lightR||150,BR=1700,dk=M.dark||'#06080F',gc=(REGION_CFG[M.bk]||{}).glow||'#FFE6A8';
+  const A=M.darkA||(M.night?0.42:0.62),LR=M.lightR||(M.night?260:150),BR=1700,dk=M.dark||'#06080F',gc=(REGION_CFG[M.bk]||{}).glow||'#FFE6A8';
   return halo+`<defs><radialGradient id="cvg" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="${BR}"><stop offset="0" stop-color="${dk}" stop-opacity="0"/><stop offset="${(LR*0.55/BR).toFixed(4)}" stop-color="${dk}" stop-opacity="${(A*0.08).toFixed(3)}"/><stop offset="${(LR/BR).toFixed(4)}" stop-color="${dk}" stop-opacity="${A}"/><stop offset="1" stop-color="${dk}" stop-opacity="${A}"/></radialGradient><radialGradient id="cvl"><stop offset="0" stop-color="${gc}" stop-opacity="${(A*0.55).toFixed(3)}"/><stop offset=".5" stop-color="${gc}" stop-opacity="${(A*0.22).toFixed(3)}"/><stop offset="1" stop-color="${gc}" stop-opacity="0"/></radialGradient></defs><rect id="cvme" x="${-BR}" y="${-BR}" width="${BR*2}" height="${BR*2}" fill="url(#cvg)" transform="translate(${v2f(me.x)} ${v2f(me.y-24)})" pointer-events="none"/>${glows.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="84" fill="url(#cvl)" pointer-events="none"/>`).join('')}`}
 var regLit={};
+/* 139 */
+/* ===== 139（19e）：後六區的地圖：開放、調色、程式畫的東西（熔岩、彩虹裂縫、鐵鏈、白煙、噴氣孔、燈籠串、壁畫、回音、鐵軌、星空） ===== */
+const REG_OPEN={volcano:0,canyon:0,ruins:0};/* 0＝還沒開放：只有測試模式看得到、進得去；各區章節做好改成 1 */
+const regOpenOk=bk=>REG_OPEN[bk]!==0||(typeof isTestMode==='function'&&isTestMode());
+/* 調色：借來的圖載入時照每區的參數改像素（變暗、降彩度、偏色），結果存成 blob 網址；還沒好時先用原圖 */
+const RT_CACHE={};let rtPend=0,rtTimer=0;
+function regSrc(bk,f){const plain=`assets/${regDir(bk)}/${f}.png`,T=(REGION_CFG[bk]||{}).tint;if(!T||(T.skip&&T.skip.includes(f)))return plain;const k=bk+'|'+f,c=RT_CACHE[k];if(c&&c!==1&&c!==-1)return c;if(c===-1||c===1)return plain;
+  if(typeof document==='undefined'||typeof Image==='undefined')return plain;RT_CACHE[k]=1;rtPend++;
+  try{const im=new Image();im.onload=()=>{try{const cv=document.createElement('canvas');cv.width=im.naturalWidth;cv.height=im.naturalHeight;const cx=cv.getContext('2d');cx.drawImage(im,0,0);const D=cx.getImageData(0,0,cv.width,cv.height),d=D.data,[mr,mg,mb]=T.mul,[ar,ag,ab]=T.add,ds=T.desat;
+      for(let i=0;i<d.length;i+=4){if(d[i+3]<4)continue;const L=0.3*d[i]+0.59*d[i+1]+0.11*d[i+2];d[i]=Math.min(255,(d[i]+(L-d[i])*ds)*mr+ar);d[i+1]=Math.min(255,(d[i+1]+(L-d[i+1])*ds)*mg+ag);d[i+2]=Math.min(255,(d[i+2]+(L-d[i+2])*ds)*mb+ab)}
+      cx.putImageData(D,0,0);cv.toBlob(bl=>{RT_CACHE[k]=bl?URL.createObjectURL(bl):-1;rtDone(bk)})}catch(e){RT_CACHE[k]=-1;rtDone(bk)}};im.onerror=()=>{RT_CACHE[k]=-1;rtDone(bk)};im.src=plain}catch(e){RT_CACHE[k]=-1;rtPend--}
+  return plain}
+function rtDone(bk){rtPend--;clearTimeout(rtTimer);rtTimer=setTimeout(()=>{try{for(const M of Object.values(REGION_MAPS[bk]||{}))M._p=0;if(scene==='explore'&&exBiome===bk)renderWorld()}catch(e){}},rtPend>0?600:60)}
+function regTintPreload(bk){const T=(REGION_CFG[bk]||{}).tint;if(!T||!REGION_IMG[bk])return;for(const f of Object.keys(REGION_IMG[bk]))regSrc(bk,f)}
+/* 地圖上程式畫的東西（每次重畫地圖都會畫；動畫只用 CSS） */
+const SEAM_C=['#FF6B6B','#FFB347','#FFE66D','#7BE495','#5BC0EB','#9B8CFF','#F78FD8'];
+function regX139(M){let s='';const f=v2f;
+  for(const [i,q] of (M.seams||[]).entries()){const d='M'+q.map((v,j)=>j%2?'':`${q[j]} ${q[j+1]}`).filter(Boolean).join(' L');s+=`<path d="${d}" stroke="#3A3030" stroke-width="7" fill="none" stroke-linecap="round" opacity=".35"/><path class="seam" style="animation-delay:-${(i*0.7).toFixed(1)}s" d="${d}" stroke="${SEAM_C[i%SEAM_C.length]}" stroke-width="3.2" fill="none" stroke-linecap="round"/>`}
+  if(M.seamHub){const [x,y]=M.seamHub;s+=`<circle class="seamhub" cx="${x}" cy="${y}" r="16" fill="#FFFFFF" opacity=".8"/>`}
+  for(const [x0,y0,x1,y1] of M.chains||[]){const L=Math.hypot(x1-x0,y1-y0),n=Math.floor(L/18);let r='';for(let i=0;i<=n;i++){const t=i/n,x=x0+(x1-x0)*t,y=y0+(y1-y0)*t;r+=`<ellipse cx="${f(x)}" cy="${f(y)}" rx="${i%2?5:8}" ry="${i%2?8:5}" fill="none" stroke="#2E2A28" stroke-width="3"/>`}s+=`<g opacity=".9">${r}</g>`}
+  for(const [x,y] of M.ironRings||[])s+=`<circle cx="${x}" cy="${y}" r="13" fill="none" stroke="#3A3430" stroke-width="5"/>`;
+  for(const [x0,y0,x1,y1] of M.cracks||[])s+=`<path d="M${x0} ${y0} Q${x0+30} ${(y0+y1)/2} ${x1} ${y1}" stroke="#FF7A3A" stroke-width="3" fill="none" opacity=".75" class="lavaglow"/>`;
+  for(const [x,y] of M.winGlow||[])s+=`<circle class="glw" cx="${x}" cy="${y}" r="40" fill="url(#sglow)"/>`;
+  for(const [x,y,big] of M.smokes||[])for(let k=0;k<3;k++)s+=`<circle class="smoke" style="animation-delay:-${k*1.3}s" cx="${x+(k-1)*6}" cy="${y}" r="${big?16:11}" fill="#EDEBE6"/>`;
+  for(const [x,y] of M.vents||[])s+=`<ellipse cx="${x}" cy="${y}" rx="16" ry="7" fill="#5A5640" stroke="#8A8458" stroke-width="2"/><g class="vent"><ellipse cx="${x}" cy="${y-18}" rx="20" ry="26" fill="#F4F4EE" opacity=".85"/></g>`;
+  for(const [x0,y0,x1,y1] of M.lstrings||[]){const mx=(x0+x1)/2,my=Math.max(y0,y1)+24;s+=`<path d="M${x0} ${y0-60} Q${mx} ${my-60} ${x1} ${y1-60}" stroke="#3A2A20" stroke-width="1.6" fill="none"/>`;for(let i=1;i<8;i++){const t=i/8,x=(1-t)*(1-t)*x0+2*(1-t)*t*mx+t*t*x1,y=(1-t)*(1-t)*(y0-60)+2*(1-t)*t*(my-60)+t*t*(y1-60);s+=`<circle cx="${f(x)}" cy="${f(y+4)}" r="5" fill="#FFB85A" stroke="#8A3A1A" stroke-width="1"/><circle class="glw" cx="${f(x)}" cy="${f(y+4)}" r="16" fill="url(#sglow)"/>`}}
+  if(M.mural){const [x,y,w]=M.mural;s+=`<g opacity=".8" stroke="#B0603A" stroke-width="3" fill="none" stroke-linecap="round"><path d="M${x} ${y} q20 -30 40 0 t40 0"/><circle cx="${x+120}" cy="${y-14}" r="16"/><path d="M${x+170} ${y+10} l20 -40 l20 40z"/><path d="M${x+230} ${y} h${w-240}"/><path d="M${x+260} ${y-30} q15 -20 30 0 M${x+300} ${y-30} q15 -20 30 0"/></g>`}
+  if(M.rails){const [x,y0,y1]=M.rails;s+=`<rect x="${x-26}" y="${y0}" width="52" height="${y1-y0}" fill="#3A3634"/>`;for(let y=y0;y<y1;y+=24)s+=`<rect x="${x-24}" y="${y}" width="48" height="7" fill="#5A4A3A"/>`;s+=`<path d="M${x-14} ${y0} V${y1} M${x+14} ${y0} V${y1}" stroke="#9A9A9A" stroke-width="3"/>`}
+  if(M.stoneRing){const [cx,cy,r]=M.stoneRing;s+=`<ellipse cx="${cx}" cy="${cy}" rx="${r}" ry="${r*0.62}" fill="none" stroke="#9AA0C0" stroke-width="3" opacity=".35"/>`}
+  if(M.starMap){const [cx,cy,r]=M.starMap,R=seededRnd(hashStr('stm'+M.id));s+=`<ellipse cx="${cx}" cy="${cy}" rx="${r}" ry="${r*0.75}" fill="none" stroke="#BFD4FF" stroke-width="2" opacity=".5"/><ellipse cx="${cx}" cy="${cy}" rx="${r*0.6}" ry="${r*0.45}" fill="none" stroke="#BFD4FF" stroke-width="1.5" opacity=".4"/>`;
+    let pv=null;for(let i=0;i<14;i++){const a=R()*6.28,d=R()*r*0.9,x=cx+Math.cos(a)*d,y=cy+Math.sin(a)*d*0.75;s+=`<circle cx="${f(x)}" cy="${f(y)}" r="3" fill="#E8F0FF"/>`;if(pv&&i%3)s+=`<path d="M${f(pv[0])} ${f(pv[1])} L${f(x)} ${f(y)}" stroke="#BFD4FF" stroke-width="1" opacity=".5"/>`;pv=[x,y]}}
+  if(M.ceilStars||M.sparkle||M.night){const R=seededRnd(hashStr('sk'+M.bk+M.id)),n=M.ceilStars?60:M.sparkle?70:28;for(let i=0;i<n;i++){const x=60+R()*680,y=110+R()*940;s+=`<circle class="twk" style="animation-delay:-${(R()*4).toFixed(1)}s" cx="${f(x)}" cy="${f(y)}" r="${(1+R()*1.6).toFixed(1)}" fill="${M.ceilStars?'#CFE0FF':M.sparkle?'#FFF6C8':'#DCE6FF'}"/>`}}
+  if(M.foxLanterns){for(const o of M.objs||[])if(o[0]==='lantern')s+=`<circle class="glw" cx="${o[1]}" cy="${o[2]-40}" r="26" fill="url(#sglow)"/>`}
+  if(M.grave){const [x,y]=M.grave;s+=`<g><ellipse cx="${x}" cy="${y+4}" rx="26" ry="8" fill="rgba(30,40,20,.25)"/><path d="M${x-16} ${y} V${y-34} q16 -14 32 0 V${y}z" fill="#9A9890" stroke="#5A5650" stroke-width="2"/><path d="M${x-8} ${y-24} h16" stroke="#6A6660" stroke-width="2"/></g>`}
+  return s}
+/* 機關：噴氣孔（每 6 秒噴 1.5 秒，站在上面被推開，不扣血）；回音岩壁（站在壁畫前 3 秒，浮出一句話） */
+const ECHO_L=['……還沒天亮。','……月亮在看。','……把燈點著。','……我們在等。','……往上走。'];let echoT=0,echoI=0,echoAt=null;
+function reg139Step(){try{if(scene!=='explore')return;const M=regCur();if(!M)return;const m=curMe(),now=Date.now();
+  if(M.vents&&now%6000<1500)for(const [x,y] of M.vents){const d=Math.hypot(m.x-x,m.y-y);if(d<26){const k=(40-d)/(d||1),nx=m.x+(m.x-x||1)*k,ny=m.y+(m.y-y||0.5)*k;if(!regBlocked(M,nx,ny)){m.x=nx;m.y=ny;try{updateMe();updateCam()}catch(e){}}}}
+  if(M.echo){const [x,y]=M.echo;if(Math.hypot(m.x-x,m.y-y)<60){if(!echoAt||Math.hypot(m.x-echoAt[0],m.y-echoAt[1])>4){echoAt=[m.x,m.y];echoT=now}else if(echoT&&now-echoT>=3000){echoT=0;try{fxAdd('gain',x,y-140,ECHO_L[echoI++%ECHO_L.length],3200)}catch(e){}}}else echoAt=null}}catch(e){}}
 /* ===== 51.3 機關、33＋51.4＋55.1 秘境（15t）=====
    機關：雪原＝湖心小島四周是特別滑的冰（進去就照進去的方向一路滑，撞到東西才停）；草原＝高草叢裡每天藏一株；
         森林＝樹洞裡的發光蘑菇走到旁邊才亮，都亮了正中央長出一株；沙漠＝流沙（速度減半、腳印變深）；濕地＝踩踏腳石有漣漪、石頭微微下沉。
@@ -6708,7 +7022,7 @@ function slickStep(dt){const M=regCur(),m=curMe(),ox=m.x,oy=m.y;regMove(m,slickV
 /* 流沙 */
 function quickAt(x,y){if(!regIn())return false;const M=regCur();if(!M.quick)return false;for(const [cx,cy,rx,ry] of M.quick){const a=(x-cx)/rx,b=(y-cy)/ry;if(a*a+b*b<1)return true}return false}
 /* 每走一步檢查一次的機關與秘境觸發；slide＝這一步是不是在冰上滑（放開搖桿後的滑行，或特別滑的冰） */
-function regFxStep(slide){
+function regFxStep(slide){reg139Step();
   if(!regIn()||regBusy)return;const M=regCur(),m=curMe(),bk=exBiome;if(!M.v2)return;
   sakuraStep(M,m);
   if(M.tg){let k=-1;M.tg.forEach(([x,y],i)=>{if(Math.hypot(m.x-x,(m.y-y)*1.3)<34)k=i});
@@ -6784,7 +7098,7 @@ function sakuraStep(M,m){if(M.bk!=='sakura'||!M.petal)return;const w=regPlants('
 async function sakuraNews(){if(!uid||!sakuraBloom())return;const yr=new Date(Date.now()+8*3600e3).getUTCFullYear();try{const ref=db.collection('news').doc('sakura_'+yr),s=await ref.get();if(s.exists)return;await ref.set({v:4,uid,name:'櫻花之丘',kind:'season',text:'櫻花之丘的櫻花開了',tier:0,at:Date.now()})}catch(e){logErr(e,'news')}}
 /* 每次重畫都要重新算的東西（畫在地面之上、物件之下） */
 function regDynHTML(M){
-  let s=sakuraDynHTML(M);const bk=M.bk,T=M.secTrig;
+  let s=sakuraDynHTML(M)+regX139(M);/* 139 */const bk=M.bk,T=M.secTrig;
   if(bk==='forest'&&M.cave)for(const o of M.objs||[]){if(o[0]!=='roots')continue;const sc=(o[4]&&o[4].s)||1,fl=o[4]&&o[4].fl?-1:1;/* 89：樹根裡的藍色小蘑菇加柔和光暈 */
     for(const [dx,dy] of [[-27,-33],[20,-42],[4,-18]])s+=`<circle class="glw" cx="${v2f(o[1]+dx*sc*fl)}" cy="${v2f(o[2]+dy*sc)}" r="${v2f(13*sc)}" fill="url(#sglow)" pointer-events="none"/>`}
   if(M.quick){/* 78.2（16k）：流沙用 assets/common/quicksand_disc.png（圓形、邊緣已羽化，不另外裁切）。外層壓扁成橢圓（寬＝流沙寬、高＝寬×0.55），
@@ -6922,7 +7236,7 @@ function regWorld(){
   for(const o of regNpcObjs()){if(o.y<=me.y)bg.push(o);else fg+=o.h}/* 121 */
   for(const o of lordObjs())bg.push(o);/* 135 */
   {const d=roamHere();if(d){if(d.y<=me.y)bg.push({y:d.y,h:roamSVG(d)});else fg+=roamSVG(d)}}/* 91 */
-  bg.sort((a,b)=>a.y-b.y);regFg=fg+(M.cave&&M.v2?regTopV2(M):(M._top||''))+regTestHTML(M);return (M.v2?M._ground.replace('%%GI%%',()=>regGroundEl(M))+regDynHTML(M):M._ground)+bg.map(o=>o.h).join('');
+  bg.sort((a,b)=>a.y-b.y);regFg=fg+((M.cave||M.night)&&M.v2?regTopV2(M):(M._top||''))+regTestHTML(M);return (M.v2?M._ground.replace('%%GI%%',()=>regGroundEl(M))+regDynHTML(M):M._ground)+bg.map(o=>o.h).join('');
 }
 function regBlocked(M,x,y){
   const B=M.B;if(x<B.x0||x>B.x1||y<B.y0||y>B.y1)return true;
@@ -7007,7 +7321,7 @@ function regCam(){
   const M=regCur(),vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zk(),w=vw/k,h=vh/k,m=curMe();
   let x=m.x-w/2,y=m.y-h*0.55;x=M.W<=w?(M.W-w)/2:clamp(x,0,M.W-w);y=M.H<=h?(M.H-h)/2:clamp(y,0,M.H-h);
   sceneEl.setAttribute('viewBox',`${x.toFixed(1)} ${y.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
-  if(M.cave&&M.v2){try{const c=document.getElementById('cvme');if(c)c.setAttribute('transform',`translate(${m.x.toFixed(0)} ${(m.y-24).toFixed(0)})`)}catch(e){}}
+  if((M.cave||M.night)&&M.v2){try{const c=document.getElementById('cvme');if(c)c.setAttribute('transform',`translate(${m.x.toFixed(0)} ${(m.y-24).toFixed(0)})`)}catch(e){}}
   if(regSplitN()!==regSplitLast)renderWorld();/* 角色走過物件的 y：重新分前景、背景（被樹冠遮住） */
 }
 const regGatePos=()=>{const M=regCur(),e=M.exits.find(x=>x.to==='farm');return e?[e.c,M.B.y1-10]:[-1e5,-1e5]};
@@ -7055,8 +7369,8 @@ function fitMapPanel(){try{const el=document.getElementById('mapPanel');if(!el||
   if(h>avail&&avail>80){sv.style.height=Math.floor(avail)+'px';sv.style.width='auto'}}catch(e){}}
 try{vvhSet();addEventListener('resize',()=>{vvhSet();fitMapPanel()});if(window.visualViewport)visualViewport.addEventListener('resize',()=>{vvhSet();fitMapPanel()})}catch(e){}
 const regLoaded={};
-function regPreload(bk){if(regLoaded[bk]||typeof Image==='undefined'||!REGION_IMG[bk])return;regLoaded[bk]=true;for(const f of Object.keys(REGION_IMG[bk])){try{const i=new Image();i.src='assets/'+regDir(bk)+'/'+f+'.png'}catch(e){}}}
-try{document.getElementById('mapBtn').addEventListener('click',()=>{const el=document.getElementById('mapPanel');if(el&&!el.hidden){el.hidden=true;return}curPanel==='map'?closePanel():openPanel('map')});/* 138.4：農場、城鎮、各地區都從這裡去 */document.getElementById('mapPanel').addEventListener('click',e=>{if(isTestMode()&&e.target.closest('[data-monre]')){monTestRespawn();testNote('這張地圖的怪物全部重生了');return}if(isTestMode()&&e.target.closest('[data-monboss]')){monForceBoss=!monForceBoss;renderRegMap();return}if(e.target.closest('[data-roamspawn]')){if(isTestMode()){roamRespawn(exBiome,true);testNote('已在這張地圖生出一株（roamers_test）')}return}const tp=e.target.closest('[data-tp]');if(tp&&isTestMode()&&regIn()&&!regBusy){const id=tp.dataset.tp,M=REGION_MAPS[exBiome][id],ex=M.exits.find(x=>!x.need&&!x.trig&&!x.hid)||M.exits[0];regEnter(id,ex.to);testNote('已傳送到 '+M.n);return}if(e.target.closest('[data-mp]'))document.getElementById('mapPanel').hidden=true})}catch(e){}
+function regPreload(bk){if(regLoaded[bk]||typeof Image==='undefined'||!REGION_IMG[bk])return;regLoaded[bk]=true;try{regTintPreload(bk)}catch(e){}for(const f of Object.keys(REGION_IMG[bk])){try{const i=new Image();i.src='assets/'+regDir(bk)+'/'+f+'.png'}catch(e){}}}
+try{document.getElementById('mapBtn').addEventListener('click',e=>{e.stopPropagation();const el=document.getElementById('mapPanel');if(el&&!el.hidden){el.hidden=true;return}curPanel==='map'?closePanel():openPanel('map')});/* 138.4：農場、城鎮、各地區都從這裡去 */document.getElementById('mapPanel').addEventListener('click',e=>{if(isTestMode()&&e.target.closest('[data-monre]')){monTestRespawn();testNote('這張地圖的怪物全部重生了');return}if(isTestMode()&&e.target.closest('[data-monboss]')){monForceBoss=!monForceBoss;renderRegMap();return}if(e.target.closest('[data-roamspawn]')){if(isTestMode()){roamRespawn(exBiome,true);testNote('已在這張地圖生出一株（roamers_test）')}return}const tp=e.target.closest('[data-tp]');if(tp&&isTestMode()&&regIn()&&!regBusy){const id=tp.dataset.tp,M=REGION_MAPS[exBiome][id],ex=M.exits.find(x=>!x.need&&!x.trig&&!x.hid)||M.exits[0];regEnter(id,ex.to);testNote('已傳送到 '+M.n);return}if(e.target.closest('[data-mp]'))document.getElementById('mapPanel').hidden=true})}catch(e){}
 
 function biomeThumb(k){
   const B=BIOMES[k],R=seededRnd(hashStr('thumb|'+k));
@@ -7067,7 +7381,8 @@ function biomeThumb(k){
   return `<svg viewBox="0 0 160 96" width="116" height="70" aria-hidden="true">${s}</svg>`;
 }
 function goExplore(bk){
-  if(myLv()<regLv(bk)){toast(`${BIOMES[bk].n} Lv ${regLv(bk)} 開放（你現在 Lv ${myLv()}）`);return}
+  if(!regOpenOk(bk)){toast('這個地方還去不了');return}/* 139.1 */
+  if(myLv()<regLv(bk)&&REG_OPEN[bk]!==0){toast(`${BIOMES[bk].n} Lv ${regLv(bk)} 開放（你現在 Lv ${myLv()}）`);return}
   closePanel();closeSheet();
   if(viewing){if(viewing.unsub)viewing.unsub();viewing=null}
   selDecor=null;renderDecoBar();ensureEx();
@@ -7092,11 +7407,11 @@ function renderExplore(){
   const el=document.getElementById('exploreBody'),left=EX_LIMIT-state.ex.picks;
   let h=`<p class="note">選一個地區出發。<button type="button" class="qh" aria-expanded="false" aria-label="說明">？</button><span class="qhx" hidden>${exRefreshTxt()}。${exCapOn()?`每天最多撿 ${EX_LIMIT} 件道具、採 ${EX_PLANT_LIMIT} 株野生植株；今天還能撿 ${Math.max(0,left)} 件、採 ${Math.max(0,EX_PLANT_LIMIT-(state.ex.plants||0))} 株。`:'目前沒有每日上限（測試模式）。'}</span></p>`;
   if(scene==='explore')h+=`<button class="btn" data-ex="home" style="margin:0 0 12px">回農場</button>`;
-  h+=BIOME_KEYS.slice().sort((a,b)=>LV_REG[a]-LV_REG[b]).map(k=>{const B=BIOMES[k],lk=myLv()<regLv(k);return `<button class="biome" data-ex="${k}"${lk?' style="opacity:.55"':''}${scene==='explore'&&exBiome===k?' aria-current="true"':''}>${biomeThumb(k)}<span class="lr"><b>${B.n}${lk?`（Lv ${regLv(k)} 開放）`:''}${scene==='explore'&&exBiome===k?'（你在這裡）':''}</b><span class="meta">${B.desc}${k==='snow'?'（新版：7 張相連的小地圖，有冰洞）':''}</span><span class="meta">可能遇到：常見 ${B.crops.filter(c=>c[1]>=2).map(c=>CROPS[c[0]].n+(cropOpen(c[0])?'':`（Lv ${LV_CROP[c[0]]}）`)).join('、')}；其他作物也可能出現，但機率較低</span></span></button>`}).join('');
+  h+=BIOME_KEYS.filter(regOpenOk).sort((a,b)=>LV_REG[a]-LV_REG[b]).map(k=>{const B=BIOMES[k],lk=myLv()<regLv(k);return `<button class="biome" data-ex="${k}"${lk?' style="opacity:.55"':''}${scene==='explore'&&exBiome===k?' aria-current="true"':''}>${biomeThumb(k)}<span class="lr"><b>${B.n}${lk?`（Lv ${regLv(k)} 開放）`:''}${scene==='explore'&&exBiome===k?'（你在這裡）':''}</b><span class="meta">${B.desc}${k==='snow'?'（新版：7 張相連的小地圖，有冰洞）':''}</span><span class="meta">可能遇到：常見 ${B.crops.filter(c=>c[1]>=2).map(c=>CROPS[c[0]].n+(cropOpen(c[0])?'':`（Lv ${LV_CROP[c[0]]}）`)).join('、')}；其他作物也可能出現，但機率較低</span></span></button>`}).join('');
   h+=`<h3>我的道具</h3><div class="items">${IKEYS.map(k=>`<div class="itm">${itemIcon(k)}<span class="lr"><b>${itemName(k)}</b><span class="meta">${itemEff(k)}</span><span class="meta">持有 ${state.items[k]||0} ${itemUnit(k)}</span></span></div>`).join('')}</div><p class="note">加速劑在植株上用，誘變劑在育苗盤勾選。${qh('加速劑只能用在幼苗和結果中；長按綠色按鈕選「加速」可以連續用。')}</p>`;
   el.innerHTML=h;
 }
-document.getElementById('exploreBody').addEventListener('click',e=>{const b=e.target.closest('[data-ex]');if(!b||!state)return;if(b.dataset.ex==='home'){closePanel();goFarm();return}if(myLv()<regLv(b.dataset.ex)){toast(`${BIOMES[b.dataset.ex].n} Lv ${regLv(b.dataset.ex)} 開放（你現在 Lv ${myLv()}）`);return}goExplore(b.dataset.ex)});
+document.getElementById('exploreBody').addEventListener('click',e=>{const b=e.target.closest('[data-ex]');if(!b||!state)return;if(b.dataset.ex==='home'){closePanel();goFarm();return}if(myLv()<regLv(b.dataset.ex)&&REG_OPEN[b.dataset.ex]!==0){toast(`${BIOMES[b.dataset.ex].n} Lv ${regLv(b.dataset.ex)} 開放（你現在 Lv ${myLv()}）`);return}goExplore(b.dataset.ex)});
 
 // ===== 點擊場景 =====
 
@@ -9175,7 +9490,7 @@ function exRefreshLeft(now){now=now||new Date();const nx=new Date(now.getFullYea
 function exRefreshTxt(now){const h=exRefreshLeft(now);return `野外植株每天 0 點換一批，還有${h<1?'不到 1 小時':`約 ${Math.round(h)} 小時`}`}
 function exHintUpd(){const el=document.getElementById('exHint');if(!el)return;const on=false;/* 40.2（17f）：探索選地區的畫面已經寫了，進地圖後不再重複 */if(el.hidden===on)el.hidden=!on;if(on){const t=exRefreshTxt();if(el.textContent!==t)el.textContent=t}}
 let wxCur=null;
-const WXN={snow:34,desert:26,marsh:14,forest:16,grass:7,cave:8,sakura:18,sakuraoff:8};/* 粒子數量控制在 40 個以內 */
+const WXN={volcano:30,canyon:22,ruins:16,snow:34,desert:26,marsh:14,forest:16,grass:7,cave:8,sakura:18,sakuraoff:8};/* 粒子數量控制在 40 個以內 */
 function wxReduced(){try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}}
 function setWeather(bk){
   const el=document.getElementById('wx');if(!el)return;if(bk==='sakura'&&!sakuraLook())bk='sakuraoff';/* 82.2：花季外是落葉 */if(wxReduced()||!WXN[bk])bk=null;if(bk===wxCur)return;wxCur=bk;
@@ -9183,6 +9498,10 @@ function setWeather(bk){
   const r=Math.random,f=(v,d)=>v.toFixed(d==null?1:d);let h='';
   if(bk==='desert')for(let k=0;k<4;k++)h+=`<div class="sv" style="top:${f(52+k*11+r()*6)}vh;height:${f(7+r()*6)}vh;animation-duration:${f(6+r()*4)}s;animation-delay:${f(-r()*8)}s"></div>`;/* 貼地的沙幕 */
   if(bk==='marsh')h+='<div class="fog" style="top:8%"></div><div class="fog" style="top:55%;animation-duration:34s;animation-delay:-9s"></div>';
+  if(bk==='volcano'||bk==='canyon'||bk==='ruins'){for(let k=0;k<WXN[bk];k++){let st;/* 139：灰燼往下飄、偶爾火星往上；星星閃、流星；花粉、彩虹光點 */
+    if(bk==='volcano')st=k<4?`--x:${f(r()*100)}vw;--s:3px;--o:.9;--dx:${f(r()*10-5)}vw;--sw:0vw;--d:${f(5+r()*3)}s;--l:${f(-r()*8)}s;--a:wxRise;--c:#FF9A4D`:`--x:${f(r()*100)}vw;--s:${f(2+r()*2.5)}px;--o:.75;--dx:${f(r()*14-7)}vw;--sw:${f(r()*8-4)}vw;--d:${f(7+r()*5)}s;--l:${f(-r()*12)}s;--a:wxFall;--c:#5A5250`;
+    else st=`--x:${f(r()*100)}vw;--y:${f(5+r()*85)}vh;--dx:${f(r()*60-30,0)}px;--dy:${f(r()*50-25,0)}px;--d:${f(3+r()*4)}s;--l:${f(-r()*6)}s;--c:${bk==='canyon'?'#E8F0FF':k%3?'#C8E89A':['#FF9AA2','#FFD27A','#9AE6FF','#C9A0FF'][k%4]}`;
+    h+=`<i style="${st}"></i>`}if(bk==='canyon')h+='<b class="meteor"></b>';el.className='wx-'+(bk==='volcano'?'snow':'marsh')+' wx-'+bk;el.innerHTML=h;el.hidden=false;return}
   for(let k=0;k<WXN[bk];k++){let st;
     if(bk==='snow'){const near=k<12;st=near?`--x:${f(r()*100)}vw;--s:${f(5+r()*3)}px;--o:.95;--dx:${f(r()*14-7)}vw;--sw:${f(r()*8-4)}vw;--d:${f(5+r()*3)}s;--l:${f(-r()*8)}s;--a:wxFall`:`--x:${f(r()*100)}vw;--s:${f(2+r()*1.5)}px;--o:.55;--dx:${f(r()*10-5)}vw;--sw:${f(r()*6-3)}vw;--d:${f(10+r()*6)}s;--l:${f(-r()*16)}s;--a:wxFall`}
     else if(bk==='cave')st=`--x:${f(r()*100)}vw;--y:${f(5+r()*55)}vh;--d:${f(3+r()*3)}s;--l:${f(-r()*6)}s`;
@@ -9467,7 +9786,7 @@ document.getElementById('ordersBtn').onclick=()=>{sheet={orders:true};renderShee
    存檔欄位：lv、xp、xd（每日經驗上限）、fin（育成過的成品外觀）、st（累計收成、雜交、開始日期）、mq（主線）、cm（今日委託）、weekly（每週大委託）、
    fav／favGot（好感度與領過的階段）、titles（稱號徽章）、pname／pnameAt（自訂名字）。旗標 lvV（lvMigrate，newGame 同步）。 */
 const LV_CROP={tomato:1,chili:4,strawberry:6,eggplant:8,corn:10,pumpkin:10,zucchini:14,melon:20,broccoli:20};/* 120.2：南瓜跟銀霧白樺林 Lv 10、甜瓜跟珍珠潟湖 Lv 20 */
-const LV_REG={grass:2,forest:10,marsh:20,sakura:30,desert:40,snow:50},LV_TOWN=1,LV_COMM=6;/* 120.2：十級一區；城鎮 Lv 1、翠風草原 Lv 2 */
+const LV_REG={grass:2,forest:10,marsh:20,sakura:30,desert:40,snow:50,volcano:60,canyon:70,ruins:80},LV_TOWN=1,LV_COMM=6;/* 120.2：十級一區；城鎮 Lv 1、翠風草原 Lv 2 */
 /* 120.2：改版前（119）的表；舊玩家當時進得去的地區、解鎖的作物記在 state.lvKeep，之後一律算已解鎖（地區照舊的等級算裡面的地圖） */
 const LV_REG_119={grass:2,forest:8,marsh:12,sakura:15,desert:16,snow:20},LV_CROP_119={pumpkin:8,melon:12};
 const regLv=bk=>{const k=state&&state.lvKeep&&state.lvKeep.reg&&state.lvKeep.reg[bk];return k!=null?Math.min(LV_REG[bk],k):LV_REG[bk]};
@@ -9477,7 +9796,7 @@ const LV_TITLES=[[1,'見習育種家'],[5,'育種家'],[10,'資深育種家'],[1
 const XP_MUL=[1,2,3,5,8,12],XP_CAP={c:60,h:100,o:40,k:40,f:30};/* 132：f 幫朋友照顧（HELP_XP_CAP） *//* 119.3：o 供奉（第 114 節接上）、k 製作，每日上限 */
 const XP_WAKE=200,XP_EVO=500,XP_GOD=1000,XP_OFFER=2,XP_CRAFT=2;/* 119.3：喚醒、進化、神化各一次；進化、神化、供奉等第 114 節接上 */
 const LV_GIFT=['lavender','birdhouse','stone_lantern','hammock','beehives','koi_pond','windmill'];/* 每 5 級送一件裝飾（放進裝飾倉庫） */
-const REG_DEEP={grass:'old_well',forest:'hollow',marsh:'tunnel',desert:'temple2',snow:'cave2',sakura:'ancient'};/* 43.3：各地區最深處 */
+const REG_DEEP={grass:'old_well',forest:'hollow',marsh:'tunnel',desert:'temple2',snow:'cave2',sakura:'ancient',volcano:'lava_tube',canyon:'star_cave',ruins:'core'};/* 43.3：各地區最深處 */
 const myLv=()=>(state&&state.lv)||1;
 const xpNeed=lv=>50+25*lv;
 const lvTitle=lv=>LV_TITLES.filter(t=>lv>=t[0]).pop()[1];
@@ -9493,7 +9812,7 @@ function mapLv(bk,id){
 }
 function regGuide(bk){const m=state.mq||{ch:1,st:0},at=bk==='desert'?10:bk==='snow'?11:99;return m.ch>at||(m.ch===at&&m.st===1)}
 let gateT=0;
-function gateStop(bk,id){const n=mapLv(bk,id);if(myLv()>=n||regGuide(bk))return false;const t=Date.now();if(t-gateT>2500){gateT=t;toast(`前面的「${REGION_MAPS[bk][id].n}」需要 Lv ${n}`)}return true}
+function gateStop(bk,id){if(REG_OPEN[bk]===0)return false;/* 139.1：未開放的區（只有測試模式進得來）不擋等級 */const n=mapLv(bk,id);if(myLv()>=n||regGuide(bk))return false;const t=Date.now();if(t-gateT>2500){gateT=t;toast(`前面的「${REGION_MAPS[bk][id].n}」需要 Lv ${n}`)}return true}
 /* 還沒解鎖的作物在野外換成已經解鎖的（每個人看到的作物可能不同，位置相同） */
 const wpAlt=new Map();
 function wpView(w){
@@ -10060,7 +10379,7 @@ function mq2MarshTick(){try{if(scene!=='explore'||exBiome!=='marsh'||!state.mq2)
 }catch(e){}}
 /* ===== 121（18l）：銀霧白樺林的野外 NPC、霧裡的白南瓜路標 =====
    REG_NPCS：岳哥、槿姨站在獵人小屋；交完白南瓜之後，前三張地圖（入口、松林小徑、青苔谷）的路邊各掛一顆白南瓜（程式畫的果實），青苔谷那顆旁邊有採菇的孩子，走到旁邊就完成 2-3。 */
-const REG_NPCS=[{id:'yue',bk:'forest',map:'cabin',x:470,y:520},{id:'jin',bk:'forest',map:'cabin',x:330,y:540},{id:'duo',bk:'marsh',map:'frog',x:540,y:560},{id:'wien',bk:'marsh',map:'frog',x:690,y:580,show:()=>wienAway()}];
+const REG_NPCS=[{id:'smith',bk:'volcano',map:'forge',x:300,y:560},{id:'appr',bk:'volcano',map:'forge',x:500,y:580},{id:'cguard',bk:'volcano',map:'cult_camp',x:470,y:800},{id:'granny',bk:'canyon',map:'village',x:300,y:600},{id:'pounder',bk:'canyon',map:'village',x:500,y:600},{id:'miko',bk:'sakura',map:'pagoda',x:460,y:510},{id:'oasisp',bk:'desert',map:'oasis',x:230,y:420},{id:'miner',bk:'snow',map:'cabin',x:520,y:560},{id:'yue',bk:'forest',map:'cabin',x:470,y:520},{id:'jin',bk:'forest',map:'cabin',x:330,y:540},{id:'duo',bk:'marsh',map:'frog',x:540,y:560},{id:'wien',bk:'marsh',map:'frog',x:690,y:580,show:()=>wienAway()}];
 /* 122.2：所長在 3-3、3-4 期間站在漁村（城鎮暫時看不到他） */
 const wienAway=()=>{try{const s=mq2Cur();return !!s&&(s.id==='3-3'||s.id==='3-4')}catch(e){return false}};
 const MIERU_AT={map:'frog',x:600,y:650};

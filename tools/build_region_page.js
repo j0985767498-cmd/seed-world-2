@@ -9,7 +9,7 @@ const root=path.join(__dirname,'..');
 const h=fs.readFileSync(path.join(root,'index.html'),'utf8');
 let js=h.slice(h.indexOf('<script>',h.indexOf('</style>'))+8,h.lastIndexOf('</script>'));
 const P=new Proxy(function(){},{get:(t,k)=>k===Symbol.toPrimitive?()=>'':(k==='then'?undefined:P),apply:()=>P,construct:()=>P,set:()=>true});
-js+=';globalThis.T={newGame,REGION_MAPS,REGION_CFG,regPrep,regBlocked,regArrival,regPlants,regItems,wpSVG,itemSVG,avatarSVG,AV_DEF,BUILD,BIOMES};';
+js+=';globalThis.T={newGame,REGION_MAPS,REGION_CFG,regPrep,regBlocked,regArrival,regPlants,regItems,wpSVG,itemSVG,avatarSVG,AV_DEF,BUILD,BIOMES,regDynHTML};';
 const ctx={document:P,window:P,firebase:P,navigator:P,location:{pathname:'/',search:'',hash:''},localStorage:P,console,setTimeout:()=>0,setInterval:()=>0,clearTimeout(){},clearInterval(){},requestAnimationFrame:()=>0,fetch:()=>new Promise(()=>{}),btoa:s=>Buffer.from(s,'binary').toString('base64'),atob:s=>Buffer.from(s,'base64').toString('binary'),TextEncoder,Math,Date,JSON,addEventListener(){},matchMedia:()=>({matches:false,addEventListener(){}}),performance:{now:()=>0},innerWidth:400,innerHeight:800,devicePixelRatio:1,screen:P,history:P,alert(){},confirm:()=>true,URLSearchParams,Image:function(){return {}}};
 ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
 try{vm.runInContext(fs.readFileSync(path.join(root,'assets','char','av3.js'),'utf8'),ctx)}catch(e){}
@@ -34,7 +34,7 @@ for(const [id,M0] of Object.entries(MS)){const M=T.regPrep(bk,id);maxX=Math.max(
   for(const [x,y] of M.items)ov+=`<path d="M${x} ${y-18} L${x+14} ${y} L${x} ${y+18} L${x-14} ${y}Z" fill="#F2C230" stroke="#7A5A00" stroke-width="3"/>`;
   const objs=M._objs.map(o=>o.h).join('');
   cards+=`<div class="card" style="grid-column:${M0.gx};grid-row:${M0.gy+oy+1}"><b>${M0.n}</b>${M0.cave?'（洞內）':''}<small> ${id}・植株 ${M.spawns.length}・道具 ${M.items.length}</small>
-  <svg viewBox="-20 -20 ${M.W+40} ${M.H+40}" width="260">${fix(M._ground)}${objs.replace(/href="assets\//g,'href="../assets/')}${M.cave?'':fix(M._top||'')}<g class="ov">${un}${ov}</g></svg></div>`;
+  <svg viewBox="-20 -20 ${M.W+40} ${M.H+40}" width="260">${fix(M._ground)}${T.regDynHTML?fix(T.regDynHTML(M)):''}${objs.replace(/href="assets\//g,'href="../assets/')}${M.cave?'':fix(M._top||'')}${M.night?'<rect x="0" y="0" width="800" height="1100" fill="#06080F" opacity=".32"/>':''}<g class="ov">${un}${ov}</g></svg></div>`;
 }
 /* 實際比例：入口那張圖的一角＋角色＋野生植株 */
 const E=T.regPrep(bk,'entry'),pl=T.regPlants(bk,'entry',day);let scale='';
@@ -50,6 +50,6 @@ const page=`<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><met
 <label><input type="checkbox" onchange="document.body.classList.toggle('hideov',this.checked)"> 隱藏標記，只看畫面</label>
 <div class="grid">${cards}</div>
 <h2>實際比例（角色、野生植株、物件；遊戲中人物放大 1.15 倍）</h2>${scale}
-</body></html>`;
+${C.tint?`<script>/* 139：照遊戲的 REGION_CFG.tint 把借來的圖調色（要用 http 開，file:// 不能讀像素） */const T=${JSON.stringify(C.tint)};const cache={};for(const el of document.querySelectorAll('image')){const u=el.getAttribute('href');if(!u||T.skip&&T.skip.some(f=>u.includes(f.replace('../',''))))continue;const go=(src)=>{const im=new Image();im.onload=()=>{try{const cv=document.createElement('canvas');cv.width=im.naturalWidth;cv.height=im.naturalHeight;const cx=cv.getContext('2d');cx.drawImage(im,0,0);const D=cx.getImageData(0,0,cv.width,cv.height),d=D.data;for(let i=0;i<d.length;i+=4){if(d[i+3]<4)continue;const L=0.3*d[i]+0.59*d[i+1]+0.11*d[i+2];for(let c=0;c<3;c++)d[i+c]=Math.min(255,(d[i+c]+(L-d[i+c])*T.desat)*T.mul[c]+T.add[c])}cx.putImageData(D,0,0);cache[src]=cv.toDataURL();el.setAttribute('href',cache[src])}catch(e){}};im.src=src};cache[u]?el.setAttribute('href',cache[u]):go(u)}</script>`:''}</body></html>`;
 fs.writeFileSync(path.join(__dirname,`region_${bk}.html`),page);
 console.log('ok',`region_${bk}.html`,(page.length/1024).toFixed(0)+' KB');

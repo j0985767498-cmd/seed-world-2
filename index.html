@@ -877,6 +877,7 @@ details.gfold .gfb{margin-top:8px}
 .fy-evo .fys-old{animation:fysout .1s 2.1s forwards}@keyframes fysout{to{opacity:0}}
 .fy-god .fys-pillar{width:150px!important;background:linear-gradient(90deg,rgba(255,240,180,0),rgba(255,255,235,1),rgba(255,240,180,0))!important}.fy-god .fys-flash{animation-duration:.7s!important}.fys-ring2{border-width:6px;animation:fysring .9s 2.45s ease-out forwards}/* 114：神化的光柱、白光加強，最後多一圈擴散的光環 */
 .offfx{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);z-index:60;display:flex;gap:14px;pointer-events:auto;animation:offfx .9s ease-out forwards}.offfx b{font-size:30px;text-shadow:0 0 8px #fff}.offok{color:#E8B400}.offbad{color:#8A8A8A}.offfx .offbad::before{content:'✕ '}@keyframes offfx{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-80%) scale(1)}}/* 114 */
+.qst{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-style:normal;font-weight:700;font-size:12px;margin-right:4px;vertical-align:-3px}.qst-done{background:#E8F8E0;color:#2E9B43;border:1.5px solid #2E9B43}.qst-acc{background:#FFF6C8;color:#B07D00;border:1.5px solid #D9A200}.qst-run,.qst-wait{background:#EEE;color:#888;border:1.5px solid #BBB}.qcard.qtr{outline:2px solid #2E9B43}#mqLine.qdone{background:#2E9B43!important;color:#fff!important}.qgreen{background:#2E9B43!important}.qnote{position:fixed;left:50%;top:64px;transform:translateX(-50%);z-index:65;background:#2E9B43;color:#fff;padding:8px 14px;border-radius:14px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;max-width:88vw}.fybang.ok{background:#2E9B43!important;color:#fff!important}/* 133 */
 .notedot{position:absolute;right:4px;top:3px;width:9px;height:9px;border-radius:50%;background:#E0453A;box-shadow:0 0 0 2px #fff;pointer-events:none}[data-open="dex"]{position:relative}/* 130 */
 .fwshow{position:fixed;inset:0;z-index:70;overflow:hidden}.fw-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 110%,#1B2A4A,#05070F)}.fw{position:absolute;width:0;height:0}.fw i{position:absolute;width:7px;height:7px;margin:-3px;border-radius:50%;opacity:0;animation:fwb 1.6s ease-out forwards}@keyframes fwb{0%{opacity:1;transform:translate(0,0) scale(.4)}70%{opacity:1}100%{opacity:0;transform:translate(var(--x),calc(var(--y) + 30px)) scale(1)}}/* 126 煙火 */
 .fy-evo .fys-pillar{position:absolute;left:50%;top:-40px;bottom:-20px;width:90px;transform:translateX(-50%);background:linear-gradient(90deg,rgba(255,240,180,0),rgba(255,248,210,.85),rgba(255,240,180,0));opacity:0;animation:fyspillar 1s 1.5s ease forwards}
@@ -1067,7 +1068,7 @@ try{if(localStorage.getItem('sw_alive')==='1'){const c=crashGet('sw_crumb');if(c
 {const clean=()=>{try{localStorage.setItem('sw_alive','0')}catch(e){}},live=()=>{try{localStorage.setItem('sw_alive','1')}catch(e){}};
   window.addEventListener('pagehide',clean);document.addEventListener('visibilitychange',()=>{document.hidden?clean():live()})}
 document.addEventListener('click',e=>{try{const t=e.target,c=t&&t.closest&&t.closest('[data-wp],[data-npc],[data-bld],[data-item],[data-stall],[data-plot],[data-decor],[data-act],[data-ply],[data-fy],button');if(!c)return;
-  const d=c.dataset||{};crumb(d.wp?('點野外植株'+(String(d.wp).endsWith('|ped')?'（種子台座）':'')):d.npc?'點 NPC '+d.npc:d.bld?'點建築 '+d.bld:d.item?'撿道具':d.stall!=null?'點攤位':d.plot!=null?'點田地':d.decor!=null?'點裝飾':d.ply?'點玩家':d.fy?'點神之子':d.act?'按 '+d.act:'按「'+(c.textContent||'').trim().slice(0,12)+'」')}catch(x){}},true);
+  const d=c.dataset||{};crumb(d.wp?'點野外植株':d.npc?'點 NPC '+d.npc:d.bld?'點建築 '+d.bld:d.item?'撿道具':d.stall!=null?'點攤位':d.plot!=null?'點田地':d.decor!=null?'點裝飾':d.ply?'點玩家':d.fy?'點神之子':d.act?'按 '+d.act:'按「'+(c.textContent||'').trim().slice(0,12)+'」')}catch(x){}},true);
 function crashHTML(){const e=crashGet('sw_err'),c=crashGet('sw_crash');if(!e&&!c)return '<p class="note">目前沒有問題紀錄。</p>';
   const tm=t=>{const d=new Date(t);return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`};let h='';
   if(c)h+=`<p class="note"><b>上次異常結束</b>（${tm(c.t)}，${esc(c.b)}）<br>在：${esc(c.at)}<br>最後的動作：${esc(c.act||'不知道')}</p>`;
@@ -1235,8 +1236,8 @@ const MUT_P={spec:0.002,spsh:0.0005};/* 67（16f）：每顆種子的突變只�
 const MUTX={mult:25,spec:7.5,germ:0.7};/* 誘變劑：特殊造型與其他 ×25、夢幻色 ×7.5、發芽率 ×0.7 */
 /* 60（16b）：專屬造型只在各地區最深處的野生植株（deep）與秘境的種子台座（ped），而且每個人各自抽（exRoll，種子＝uid＋植株鍵，鍵裡有日期、地區、地圖、植株點）。
    carry＝帶一份、on＝直接是專屬造型。一般地圖、秘境的其他植株點都不會有。 */
-const EX_P={deep:{carry:0.001,on:0.0001},ped:{carry:0.003,on:0.0003}};
-function exRoll(u,w){const P=w.ped?EX_P.ped:w.deep?EX_P.deep:null;if(!P||!EX_OF[w.crop])return 0;const r=seededRnd(hashStr('ex|'+u+'|'+w.key))();return r<P.on?2:r<P.on+P.carry?1:0}
+const EX_P={deep:{carry:0.001,on:0.0001}};/* 134：種子台座拿掉，只剩最深處 */
+function exRoll(u,w){const P=w.deep?EX_P.deep:null;if(!P||!EX_OF[w.crop])return 0;const r=seededRnd(hashStr('ex|'+u+'|'+w.key))();return r<P.on?2:r<P.on+P.carry?1:0}
 const WILD_HET=0.3;/* 43.3：野生植株的果皮顏色、花紋顏色、基本造型各有這個機率是兩份不同的 */
 let MU_LAST=null;/* 96：最後一次突變的細節 {k:'c'|'pc'|'sp',v} */
 function mutRound(g,mult,keepEx,specMult){
@@ -1461,7 +1462,7 @@ function packKeys(l){
 }
 let DRAW_MU=null;/* 96：剛抽到的那顆是不是新突變（{k,v}），發芽判定時用 */
 function drawSeed(l){if(l.zs)unzipLot(l);DRAW_MU=null;{const m=lcMu(l);if(m&&rnd()*lc(l)<m){const k=Math.floor(rnd()*m),g=l.mseeds.splice(k,1)[0],md=(l.mmd||[]).splice(k,1)[0];DRAW_MU=md||{k:'?'};if(!l.mseeds.length){delete l.mseeds;delete l.mmd}return g}}if(l.seeds&&l.seeds.length)return l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0];l.count--;return child(l.m,l.f).g}
-function newGame(){state={rv98:1,patV:1,fyopV:1,notes:{},fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
+function newGame(){state={rv98:1,patV:1,fyopV:1,notes:{},rs134V:1,fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
 const WILD={tomato:'red',strawberry:'red',zucchini:'green',corn:'yellow',broccoli:'white',melon:'yellow',chili:'red',pumpkin:'yellow',eggplant:'purple'};
 function originalFor(crop){
   const wild=rnd()<0.7,col=wild?WILD[crop]:pk(['red','yellow','green','white','purple'].filter(c=>c!==WILD[crop]));
@@ -1591,6 +1592,7 @@ function migrate(o){if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fair
   lvMigrate(o);/* 28.4（15y）：舊玩家回推等級、主線標記完成（只做一次，旗標 lvV） */
   m111(o);/* 111（18c）：生長時間換算、加速劑獎勵調整（只做一次，旗標 growV） */
   m112(o);/* 112（18d）：果實袋、每週整齊供應改成顆數（旗標 hvV） */
+  if(!o.rs134V){o.rs134V=1;try{for(const k of Object.keys(o.rs||{})){const r=o.rs[k];if(r&&r.d>=3){r.paid=1;r.t=0}}}catch(e){}}/* 134：舊玩家第 3 步的 rw 已經給過，第 4 步不重複；第 4 步不用等 */
   try{if(o.rs&&o.rs.grass&&o.rs.grass.d>=3){if(!o.notes||typeof o.notes!=='object')o.notes={};if(!o.notes.L_grass){o.notes.L_grass=Date.now();o.noteNew=1}}}catch(e){}/* 130：割早的田已經完成的人補上「裂風」 */
   if(!o.fyopV){o.fyopV=1;try{for(const k of Object.keys(o.fairy||{})){const f=o.fairy[k];if(FY[k]&&f&&typeof f==='object'&&f.no){f.evo=f.evo?1:0;f.op={n:0,cols:[]}}}}catch(e){}}/* 114（18s）：每一位已喚醒的神之子建立進度；舊規則進化的保留進化、神化從 0 開始 */
   m123(o);/* 123（18n）：花紋改版（旗標 patV；遷移前整份備份，載入時存到 backups） */
@@ -1702,7 +1704,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-18w';
+const BUILD='2026-11-18x';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2792,12 +2794,12 @@ function noteTick(){try{if(scene!=='explore')return;for(const id in NOTE_SPOTS){
 function noteNpcHTML(n){let h='';for(const L of NOTE_LEG)if(L.npc===n)h+=`<button class="btn" data-act="notetalk" data-id="${L.id}">聽${n==='jin'?'她':'他'}說當地的事</button>`;
   for(const r of NOTE_REL)if(r.npc===n&&(!r.need||r.need()))h+=`<button class="btn" data-act="notetalk" data-id="${r.id}">${esc(r.btn)}</button>`;return h}
 function noteTalk(id){const d=noteDef(id);if(!d||!d.npc)return false;
-  if(d.bk){const done=RS[d.bk]&&rsObj(d.bk).d>=RS[d.bk].steps.length;if(!done){noteOpen(npcTalk(d.npc,d.not));return false}noteOpen(npcTalk(d.npc,d.line)+(noteGet(id)?'<p class="note">記進「圖鑑 → 筆記」了。</p>':''));return true}
+  if(d.bk){const done=RS[d.bk]&&rsObj(d.bk).d>=RS_DONE3;/* 134：第 3 步完成就算 */if(!done){noteOpen(npcTalk(d.npc,d.not));return false}noteOpen(npcTalk(d.npc,d.line)+(noteGet(id)?'<p class="note">記進「圖鑑 → 筆記」了。</p>':''));return true}
   if(d.need&&!d.need())return false;const got=noteGet(id);noteOpen(npcTalk(d.npc,d.line)+(got?relCardHTML(d)+'<p class="note">記進「圖鑑 → 筆記」了。</p>':''));return true}
 /* 圖鑑的筆記分頁 */
 function noteHTML(){if(state.noteNew){state.noteNew=0;save();try{noteDot()}catch(e){}}const N=notesObj();
   const unk=hint=>`<div class="lot"><div class="lot-name">？？？</div><p class="note">${esc(hint)}</p></div>`;
-  let h=`<h3>傳說（${NOTE_LEG.filter(x=>N[x.id]).length}／${NOTE_LEG.length}）</h3>`+NOTE_LEG.map(L=>N[L.id]?`<div class="lot"><div class="lot-name">${esc(L.t)}</div><p>${esc(L.body)}</p><div class="meta">${esc(L.where)}</div></div>`:unk(L.hint)).join('');
+  let h=`<h3>傳說（${NOTE_LEG.filter(x=>N[x.id]).length}／${NOTE_LEG.length}）</h3>`+NOTE_LEG.map(L=>N[L.id]?`<div class="lot"><div class="lot-name">${esc(L.t)}</div><p>${esc(L.body)}</p>${(state.legSeen||{})[L.id]?`<p class="note">你親眼看到：${esc(state.legSeen[L.id])}</p>`:''}<div class="meta">${esc(L.where)}</div></div>`:unk(L.hint)).join('');
   h+=`<h3>撿到的東西（${NOTE_REL.filter(x=>N[x.id]).length}／${NOTE_REL.length}）</h3>`+NOTE_REL.map(r=>N[r.id]?relCardHTML(r):unk(r.hint)).join('');
   return h}
 function noteDot(){const b=document.querySelector('[data-open="dex"]');if(!b)return;let d=b.querySelector('.notedot');if(!d){d=document.createElement('i');d.className='notedot';b.appendChild(d)}d.hidden=!(state&&state.noteNew)}
@@ -2968,6 +2970,7 @@ function renderSheet(){
   if(sheet.note){sb.innerHTML=sheet.note+(sheet.brag?'<div class="row2"><button class="btn primary" data-act="close">太好了</button><button class="btn" data-act="brag">炫耀一下</button></div>':'<button class="btn primary" data-act="close">好</button>');return}
   if(sheet.fruit){sb.innerHTML=fruitHTML();return}/* 112.5 */
   if(sheet.mat){sb.innerHTML=matHTML();return}/* 115.3 */
+  if(sheet.qd){sb.innerHTML=qDetailHTML();return}if(sheet.qgo){sb.innerHTML=qGoHTML();return}/* 133 */
   if(sheet.mqgo){sb.innerHTML=mqGoHTML();return}/* 116.5 */
   if(sheet.give){sb.innerHTML=giveHTML();return}/* 117.2 */
   if(sheet.rnpc){sb.innerHTML=rnpcHTML();return}/* 121 */
@@ -3059,6 +3062,7 @@ sb.addEventListener('click',e=>{
   if(sheet.mat)return;
   if(sheet.give)return giveAction(b);
   if(sheet.rnpc){if(orderAction(b)&&sheet&&sheet.rnpc)renderSheet();return}/* 121 */
+  if(sheet.qd||sheet.qgo){if(b.dataset.act==='close'){closeSheet();return}orderAction(b);return}/* 133 */
   if(sheet.mqgo){if(b.dataset.act==='mqgo'){const id=sheet.mqgo;closeSheet();goMarket();if(scene==='market')setTimeout(()=>townArrowSet(id),400)}return}
   if(sheet.me)return meAction(b);
   if(sheet.sellOld){if(b.dataset.act==='sellold')sellOldGo();return}
@@ -3274,7 +3278,7 @@ function tick(){
   try{rsvTick()}catch(e){}
   try{fixTick()}catch(e){}/* 115.5 */
   try{mq2Tick()}catch(e){}/* 116 */
-  try{fsTickAll();rsTick();noteTick()}catch(e){}/* 118 */
+  try{fsTickAll();rsTick();noteTick();qArrowCheck();qScan()}catch(e){}/* 118 */
   try{mq2KidTick()}catch(e){}/* 121 */
   try{mq2MarshTick()}catch(e){}/* 122 */
   try{roamWatch()}catch(e){}/* 91 */
@@ -5250,11 +5254,11 @@ const SNOW_MAPS={/* 53（15s）：照 53.2 重擺；結冰湖改成一個輪廓�
     paths:[{p:[[400,1130],[392,960],[330,800],[400,620],[400,300]],w:44,end:'dirt'}],
     objs:[['istalag',480,425,null,{s:0.8}],['istalag',690,630,null,{s:0.85,fl:1}],['istalag',112,600,null,{s:0.9}],/* 89 */['vault',400,250],['glow',250,296],['glow',550,296],['glow',150,720],['glow',650,760],['stalag',236,620],['stalag',566,580,null,{fl:1}],['iceboulder',470,880,null,{s:0.85}],['crystals',660,460],['crystals',140,470],['stalag',300,900,null,{s:0.8}]],
     spawns:[[200,450],[600,450],[420,680],[250,800],[560,880]],items:[[400,380]]},
-  secret:{n:'冰下溫泉',gx:1,gy:0,cave:1,v2:1,secret:1,rare:0.25,darkA:0.36,cground:'#5A7084',ped:[400,730],/* 33：秘境。冰層底下的溫泉 */
+  secret:{n:'冰下溫泉',gx:1,gy:0,cave:1,v2:1,secret:1,rare:0.25,darkA:0.36,cground:'#5A7084',/* 33：秘境。冰層底下的溫泉 */
     exits:[{side:'s',c:400,w:120,to:'lake'}],
     floor:[{round:[400,540,290,362]},{rib:{p:[[400,1130],[400,850]],w:180,v:0.04}}],
     paths:[{p:[[400,1130],[404,940],[396,790]],w:44,end:'dirt'}],
-    objs:[['spring',400,510,null,{fx:'steam'}],['ped',400,730],['crystals',226,470],['crystals',584,480],['stones',296,650,null,{s:0.9}],['stones',524,660],['pine',186,620,null,{s:0.7}],['pine',622,640,null,{s:0.65}],['glow',262,330],['glow',540,330]],
+    objs:[['spring',400,510,null,{fx:'steam'}],['crystals',226,470],['crystals',584,480],['stones',296,650,null,{s:0.9}],['stones',524,660],['pine',186,620,null,{s:0.7}],['pine',622,640,null,{s:0.65}],['glow',262,330],['glow',540,330]],
     spawns:[[250,570],[560,580],[300,810],[510,810]],items:[[330,330],[470,330]]}
 };
 // ===== 草原地圖（14q，第 27 節 27.2）：5 張相連小地圖，沒有洞穴；素材 assets/grass/ =====
@@ -5315,10 +5319,10 @@ const GRASS_MAPS={/* 53（15o）：照 53.2 重新擺。v2:1＝新畫法；grove
     meadows:[[560,580,9,70,30,0],[240,650,8,60,30,1],[690,990,8,50,22,0]],
     outcrops:[[690,660]],suns:[[400,560,220,140]],
     tg:[[130,460],[620,800],[300,960]],spawns:[[200,700],[600,650],[350,900],[680,300]],items:[[700,1010],[150,200]]},
-  secret:{n:'仙境花園',gx:1,gy:0,v2:1,secret:1,rare:0.25,ground:'#B7D48E',ped:[400,650],/* 33：秘境。中央發光的大花、種子台座 */
+  secret:{n:'仙境花園',gx:1,gy:0,v2:1,secret:1,rare:0.25,ground:'#B7D48E',cutRing:[400,650,60],/* 33：秘境。中央發光的大花、種子台座 */
     exits:[{side:'s',c:400,w:120,to:'meadow'}],
     paths:[{p:[[400,1150],[392,960],[410,820],[400,700]],w:46,end:'dirt'}],
-    objs:[['glowflower',400,480],['ped',400,650],['mushroom',236,570],['mushroom',574,610]],
+    objs:[['glowflower',400,480],['mushroom',236,570],['mushroom',574,610]],
     groves:[[150,300,3,50],[660,280,3,50],[150,920,2,40],[680,920,2,40]],
     meadows:[[400,540,14,150,70,1],[250,770,10,90,40,0],[580,790,10,90,40,1],[400,300,8,100,36,0]],
     suns:[[400,520,300,200]],
@@ -5399,10 +5403,10 @@ const FOREST_MAPS={/* 53（15o）：照 53.2 重擺；樹洞內（洞內）最�
     objs:[['roots',305,365,null,{s:1}],['roots',505,358,null,{s:0.95,fl:1}],['roots',170,420,null,{s:0.85}],['roots',632,428,null,{s:0.85,fl:1}],/* 89 盤根錯節的樹根，貼著洞壁上緣 */['glowmush',176,470],['glowmush',624,476,null,{fl:1}],['glowmush',256,806],['glowmush',556,800,null,{fl:1}],['glowmush',210,492,null,{s:0.6}],['glowmush',590,496,null,{s:0.6}],
       ['redmush',330,300],['redmush',480,290,null,{s:0.8}],['fern',150,600],['fern',650,610],['rocks',400,262,null,{s:0.7}],['fern',300,840],['redmush',640,700,null,{s:0.7}]],
     spawns:[[300,700],[520,420],[600,640],[400,340]],items:[[210,620]]},
-  secret:{n:'神隱之森',gx:2,gy:2,v2:1,secret:1,rare:0.25,ground:'#6C9A7E',beams:1,ped:[400,660],/* 33：秘境。中央發光的大樹、斜射的光束 */
+  secret:{n:'神隱之森',gx:2,gy:2,v2:1,secret:1,rare:0.25,ground:'#6C9A7E',beams:1,/* 33：秘境。中央發光的大樹、斜射的光束 */
     exits:[{side:'s',c:400,w:120,to:'shrine'}],
     paths:[{p:[[400,1150],[410,960],[384,820],[400,710]],w:44,end:'dirt'}],
-    objs:[['spirit',400,510],['ped',400,660],['glowmush',250,570],['glowmush',560,610,null,{fl:1}],['glowmush',200,850,null,{s:0.8}],['glowmush',620,870,null,{s:0.8,fl:1}],['rocks',296,430,null,{s:0.7}],['rocks',524,410,null,{s:0.6,fl:1}]],
+    objs:[['spirit',400,510],['glowmush',250,570],['glowmush',560,610,null,{fl:1}],['glowmush',200,850,null,{s:0.8}],['glowmush',620,870,null,{s:0.8,fl:1}],['rocks',296,430,null,{s:0.7}],['rocks',524,410,null,{s:0.6,fl:1}]],
     groves:[[150,300,3,50,1],[660,280,3,50],[150,940,2,40],[690,960,2,40]],
     meadows:[[400,570,8,150,60,0],[260,760,6,70,30,1]],
     suns:[[400,500,260,180]],
@@ -5499,11 +5503,11 @@ const DESERT_MAPS={/* 53、54.4（15r）：照 53.2 重擺；峽谷改成彎曲�
       ['jars',176,236],['treasure',622,240],['treasure',174,1050,null,{s:0.9,fl:1}],['jars',630,1056,null,{fl:1}],['jars',214,262,null,{s:0.7,fl:1}],
       ['ruins',200,640],['ruins',600,640,null,{fl:1}],['ruins',200,880,null,{s:0.9}],['ruins',600,880,null,{s:0.9,fl:1}]],
     spawns:[[400,520],[250,760],[550,760],[300,990],[520,1000]],items:[[400,214],[620,960]]},
-  secret:{n:'沙中遺跡',gx:2,gy:0,cave:1,v2:1,secret:1,rare:0.25,tiles:'#B8955E',darkA:0.42,ped:[400,700],/* 33：秘境。中央的砂岩祭壇 */
+  secret:{n:'沙中遺跡',gx:2,gy:0,cave:1,v2:1,secret:1,rare:0.25,tiles:'#B8955E',darkA:0.42,/* 33：秘境。中央的砂岩祭壇 */
     exits:[{side:'s',c:400,w:120,to:'dunes'}],
     floor:[{round:[400,540,300,372]},{rib:{p:[[400,1130],[400,860]],w:180,v:0.04}}],
     paths:[{p:[[400,1130],[400,910],[400,750]],w:50,end:'dirt'}],
-    objs:[['altar',400,480],['ped',400,700],['ruins',214,530],['ruins',586,530,null,{fl:1}],['ruins',250,770,null,{s:0.85}],['ruins',550,770,null,{s:0.85,fl:1}],['rock',300,300,null,{s:0.6}],['rock',510,290,null,{s:0.55,fl:1}]],
+    objs:[['altar',400,480],['ruins',214,530],['ruins',586,530,null,{fl:1}],['ruins',250,770,null,{s:0.85}],['ruins',550,770,null,{s:0.85,fl:1}],['rock',300,300,null,{s:0.6}],['rock',510,290,null,{s:0.55,fl:1}]],
     spawns:[[280,420],[530,420],[310,650],[500,650]],items:[[170,640],[630,640]]}
 };
 // ===== 濕地地圖（14t，第 27 節 27.5）：6 張相連小地圖＋倒木隧道（洞內）；素材 assets/wetland/（程式鍵 marsh）=====
@@ -5592,11 +5596,11 @@ const MARSH_MAPS={/* 53（15q）：照 53.2 重擺；水面不畫到邊界樹上
     paths:[{p:[[-30,600],[160,596],[380,612],[560,592],[660,600]],w:44,end:'taper'}],
     objs:[['fungus',335,468,null,{s:0.9}],['fungus',78,478,null,{s:0.85,fl:1}],['fungus',96,748,null,{s:0.9,fl:1}],['fungus',612,758,null,{s:0.85}],/* 89 木耳菇＋青苔木頭 */['glowmush',150,480],['glowmush',330,744,null,{fl:1}],['glowmush',520,470],['glowmush',704,700,null,{fl:1}],['stump',250,500,null,{s:0.9}],['boulder',430,480,null,{s:0.8}],['mossylog',560,730],['boulder',180,720,null,{s:0.7,fl:1}],['boulder',640,490,null,{s:0.6}],['stump',470,734,null,{s:0.7}]],
     spawns:[[690,560],[300,690],[520,660],[400,520],[700,640]],items:[[600,520]]},
-  secret:{n:'蓮花島',gx:3,gy:1,v2:1,secret:1,rare:0.25,ped:[400,548],/* 33：秘境。四周是水的小島，金色蓮花在水面上 */
+  secret:{n:'蓮花島',gx:3,gy:1,v2:1,secret:1,rare:0.25,/* 33：秘境。四周是水的小島，金色蓮花在水面上 */
     exits:[{side:'s',c:400,w:120,to:'frog'}],
     lakes:[[400,540,340,400]],isles:[[400,520,190,150]],walks:regLineWalk(150,930,486,624,22),
     paths:[{p:[[400,1150],[380,1034],[240,1004],[112,992],[150,934]],w:44},{p:[[486,626],[450,596],[412,572]],w:36,end:'dirt'}],
-    objs:[...regChain('boardwalk',172,974,56,-51,6),['glotus',400,372,null,{ns:1}],['ped',400,548],['lantern',340,512],['lantern',460,512],['lily',250,330],['lily',560,300],['lily',630,700],['lily',190,650],
+    objs:[...regChain('boardwalk',172,974,56,-51,6),['glotus',400,372,null,{ns:1}],['lantern',340,512],['lantern',460,512],['lily',250,330],['lily',560,300],['lily',630,700],['lily',190,650],
       ['cattails',300,646,null,{s:0.8}],['cattails',524,470,null,{s:0.8,fl:1}],['cattails',250,490,null,{s:0.7}],['elephant',540,620,null,{s:0.8}]],
     suns:[[400,520,260,190]],
     spawns:[[300,470],[500,560],[320,560],[470,440]],items:[[270,540],[540,500]]}
@@ -5665,7 +5669,7 @@ function npcReady(id){if(!NPC_IMG[id])return false;const st=npcSt[id];if(st===1)
 function npcBodySVG(p){if(!npcReady(p.id))return `<g class="brth">${avatarSVG(p.av,false,{view:'front'})}${p.glasses&&avUseV3(avNorm(p.av))?NPC_GLASSES:''}</g>`;
   const [w,h]=NPC_IMG[p.id],H=NPC_H/1.15,W=H*w/h;return `<ellipse cx="0" cy="0" rx="${f1(W*0.36)}" ry="3.4" fill="rgba(60,40,20,.22)"/><g class="npcb"><image href="${npcSrc(p.id)}" x="${f1(-W/2)}" y="${f1(-H)}" width="${f1(W)}" height="${f1(H)}"/></g>`}
 const townNpcs=()=>TOWN_NPC.filter(p=>!p.cond||p.cond());/* 116.2：有出現條件的 NPC */
-function townNpcSVG(p){return `<g transform="translate(${p.x} ${p.y}) scale(1.15)" pointer-events="none">${npcBodySVG(p)}${nameTag(p.n)}${FAV_GIFT[p.id]&&nsBang(p.id)?'<g><circle cx="0" cy="-80" r="8" fill="#FFF6DE" stroke="#C0392B" stroke-width="1.6"/><text x="0" y="-75.5" text-anchor="middle" font-size="12" font-weight="700" fill="#C0392B">!</text></g>':''}</g>`}/* 43.1：有故事可以接時頭上有「！」 */
+function townNpcSVG(p){return `<g transform="translate(${p.x} ${p.y}) scale(1.15)" pointer-events="none">${npcBodySVG(p)}${nameTag(p.n)}${qMarkSVG(qMarkFor(p.id))}${false?'<g><circle cx="0" cy="-80" r="8" fill="#FFF6DE" stroke="#C0392B" stroke-width="1.6"/><text x="0" y="-75.5" text-anchor="middle" font-size="12" font-weight="700" fill="#C0392B">!</text></g>':''}</g>`}/* 43.1：有故事可以接時頭上有「！」 */
 /* 40.1：墨先生的眼鏡（正面，眼睛約在 (-3.6,-37.7)、(4,-37.7)） */
 const NPC_GLASSES='<g fill="rgba(255,255,255,.18)" stroke="#4A3020" stroke-width=".75"><circle cx="-3.6" cy="-37.6" r="2.7"/><circle cx="4" cy="-37.6" r="2.7"/><path d="M-0.9 -37.9 Q0.2 -38.6 1.3 -37.9" fill="none"/></g>';
 const townRing=(x,y)=>`<ellipse cx="${x}" cy="${y}" rx="30" ry="9" fill="none" stroke="var(--mustard)" stroke-width="3" stroke-dasharray="6 4" pointer-events="none"/>`;
@@ -6192,6 +6196,8 @@ function regGroundSVG(M){
     for(let i=0;i<9;i++){const y=110+i*(H-190)/8+(R()-.5)*50,x=-60+R()*(W*0.45),len=380+R()*300,amp=(i%2?1:-1)*(14+R()*20);
       s+=`<path d="M${x|0} ${y|0} q${len/2|0} ${amp|0} ${len|0} ${(amp*0.2)|0}" stroke="${V.wind[0]}" stroke-width="${(4+R()*3).toFixed(1)}" stroke-linecap="round" fill="none" opacity=".5"/><path d="M${(x+14)|0} ${(y+6)|0} q${len/2|0} ${amp|0} ${(len-30)|0} ${(amp*0.2)|0}" stroke="${V.wind[1]}" stroke-width="2" stroke-linecap="round" fill="none" opacity=".2"/>`}}
   if(M.tiles)s+=`<defs><pattern id="ttile" patternUnits="userSpaceOnUse" width="48" height="32"><path d="M0 0H48M0 16H48M0 0V16M24 16V32" stroke="${M.tiles}" stroke-width="1.3" fill="none"/></pattern></defs><rect x="${B.x0-20}" y="${B.y0-20}" width="${B.x1-B.x0+40}" height="${B.y1-B.y0+40}" fill="url(#ttile)" opacity=".8"/>`;
+  if(M.cutRing){const [cx,cy,r]=M.cutRing;/* 134：仙境花園原本台座的位置，一圈割得整整齊齊的草（淺色、邊緣俐落） */
+    s+=`<ellipse cx="${cx}" cy="${cy+3}" rx="${r+4}" ry="${(r+4)*0.62}" fill="#7FA54E" opacity=".35"/><ellipse cx="${cx}" cy="${cy}" rx="${r}" ry="${r*0.62}" fill="#DCEDA8" stroke="#94B85F" stroke-width="2"/>`+Array.from({length:22},(_,i)=>{const a=i/22*Math.PI*2,x1=cx+Math.cos(a)*r*0.55,y1=cy+Math.sin(a)*r*0.62*0.55,x2=cx+Math.cos(a)*r*0.92,y2=cy+Math.sin(a)*r*0.62*0.92;return `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)}" stroke="#B9D47E" stroke-width="1.6"/>`}).join('')}
   if(M.rings){const [cx,cy,n]=M.rings;for(let i=1;i<=n;i++)s+=`<ellipse cx="${cx}" cy="${cy}" rx="${i*44}" ry="${i*36}" fill="none" stroke="${C.caveSpots[1]}" stroke-width="3" opacity=".45"/>`}
   if(M.plat){const [cx,cy]=M.plat,cs=C.caveSpots;/* 神殿深處：正中央三層石台 */
     for(const [k,w,h,c] of [[0,260,150,cs[0]],[1,190,104,C.caveGround],[2,120,62,cs[1]]]){const y=cy-k*12;s+=`<rect x="${cx-w/2}" y="${y-h/2+10}" width="${w}" height="${h}" rx="10" fill="#6E5230" opacity=".35"/><rect x="${cx-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx="10" fill="${c}" stroke="#7A5A30" stroke-width="2.5"/><path d="M${cx-w/2+8} ${y+h/2-9} H${cx+w/2-8}" stroke="#7A5A30" stroke-width="1.5" opacity=".5"/>`}}
@@ -6526,7 +6532,6 @@ function regTestHTML(M){
   if(M.quick)M.quick.forEach(([x,y])=>tag(x,y-30,'機關：流沙'));
   if(M.slick){tag(M.slick[0],M.slick[1]-M.slick[2]-6,'機關：特別滑的冰（從南邊往北滑，停在冰岩下，再往西）');tag(M.island[0],M.island[1]-34,'小島（缺口在東邊）')}
   if(M._stn&&M._stn.length)tag(M._stn[0][0],M._stn[0][1]-30,'機關：踏腳石漣漪');
-  if(M.ped)tag(M.ped[0],M.ped[1]-70,'種子台座');
   return L.join('')}
 function regTap(k){if(k==='rnpc'){riddleTap();return}/* 66 */if(String(k).startsWith('npc:')){regNpcTap(String(k).slice(4));return}/* 121 */if(k==='roam'){roamTap();return}/* 91 */
   if(k==='shrine'){const M=regCur(),T=M.secTrig;if(!T||!T.shrine)return;const m=curMe(),[x,y]=T.shrine,go=()=>{sheet={shr:1};renderSheet();openSheetUI()};
@@ -6680,7 +6685,7 @@ function regGo(e){
 }
 function regEnter(id,from){
   const bk=exBiome;regMap=id;const p=regArrival(bk,id,from);exMe.x=p[0];exMe.y=p[1];moveTo=null;
-  regSeen(bk)[id]=1;mqEv('map',{bk,id});try{fsMap(bk,id)}catch(e){}/* 118.3 */
+  regSeen(bk)[id]=1;mqEv('map',{bk,id});try{fsMap(bk,id)}catch(e){}try{rsEnter(bk,id)}catch(e){}/* 118.3、134 */
   regFxClear();regSplitLast=-1;hoverItem=null;hoverWp=null;regLit={};thinN=0;thinIn=false;frogA=null;ringT=0;tgIn=-1;stnLast=-1;slickV=null;
   joinFarm('ex_'+bk+'_'+id);/* 多人同步：每張小地圖各自一個頻道，只看得到同一張圖的玩家（雪原仍是 ex_snow_<id>） */
   renderHUD();renderWorld();renderChars();updateCam();refreshAct();
@@ -6694,7 +6699,6 @@ function regPlants(bk,id,day){
   const M=REGION_MAPS[bk][id],R=seededRnd(hashStr(key)),out=[];
   M.spawns.forEach(([x,y],k)=>{const on=R()<0.55,crop=wpickR(BIOMES[bk].crops,R)[0],rel=R()<(M.rare||0.08),seed=Math.floor(R()*1e9);if(on)out.push({key:key+'|'+k,x,y,crop,rel,seed,bk})});
   /* 33.1 發光種子台座：每天一株，30% 帶一份專屬造型、5% 直接是專屬造型（見 wpGeno）。51.3：高草叢裡、樹洞正中央藏的那一株（hid，找到才看得到） */
-  if(M.ped){const R2=seededRnd(hashStr('ped|'+key));out.push({key:key+'|ped',x:M.ped[0],y:M.ped[1]-26,crop:wpickR(BIOMES[bk].crops,R2)[0],rel:false,seed:Math.floor(R2()*1e9),bk,ped:1})}
   if(M.tg&&M.tg.length){const R3=seededRnd(hashStr('hid|'+key)),k=Math.floor(R3()*M.tg.length);out.push({key:key+'|h',x:M.tg[k][0],y:M.tg[k][1],crop:wpickR(BIOMES[bk].crops,R3)[0],rel:R3()<(M.rare||0.08),seed:Math.floor(R3()*1e9),bk,hid:1})}
   if(M.lightPuzzle&&M.rings){const R3=seededRnd(hashStr('hid|'+key));out.push({key:key+'|h',x:M.rings[0],y:M.rings[1],crop:wpickR(BIOMES[bk].crops,R3)[0],rel:R3()<0.15,seed:Math.floor(R3()*1e9),bk,hid:1})}
   if(M.petal&&M.petal.length){const R3=seededRnd(hashStr('pw|'+key)),k=Math.floor(R3()*M.petal.length);out.push({key:key+'|pw',x:M.petal[k][0],y:M.petal[k][1],crop:wpickR(BIOMES[bk].crops,R3)[0],rel:R3()<(M.rare||0.08),seed:Math.floor(R3()*1e9),bk,hid:1,pw:1})}/* 82.4 花瓣風 */
@@ -7021,7 +7025,7 @@ function fyApply(k,act,c){const F=state.fairy||(state.fairy={});
    階段放在 f.evo：0 喚醒、1 進化、2 神化（118 的 fyGod 本來就看 evo>=2）。進度 f.op={n:這一階段成功的顆數, cols:[這一階段成功過的果皮]}。
    供品：那一位作物的專屬造型＋完整夢幻色（進化）／雙夢幻色（神化）；花紋、大小不影響；買來的果實也可以（114 沒有限制，和祭壇清單不同）。
    每顆判定一次：成功 +1、失敗只是果實沒了；成功率＝基本＋完美度加減（OFFER_PERF），限制在 5%～95%；滿了不再收。 ===== */
-const EVO_NEED=1000,GOD_NEED=1500,EVO_P=0.6,GOD_P=0.3,RECOLOR_N=3;/* 114.9（使用者 2026-11-21）：30 → 1,000、1,500 */
+const EVO_NEED=1000,GOD_NEED=2000,/* 134.5（114.10）：1,500 → 2,000 */EVO_P=0.6,GOD_P=0.3,RECOLOR_N=3;/* 114.9（使用者 2026-11-21）：30 → 1,000、1,500 */
 const OFFER_PERF=[-0.1,0,0.05,0.1],OFFER_MIN=0.05,OFFER_MAX=0.95;/* 完美度：奇異造型、歪斜、良好、完美 */
 const FY_STAGE=['喚醒','進化','神化'];
 /* 114.9：進度到 25／50／75% 各說一次（每一階段各一輪）；其他六位先用共用句 */
@@ -7222,7 +7226,7 @@ function fyAction(b){const a=b.dataset.act,k=b.dataset.k,s=sheet.fy;
 function fyGridHTML(inSheet){const A=inSheet?'data-act':'data-ract',F=fyMine(),n=FY_KEYS.filter(fyHas).length;
   let h=`<p class="note">已經有 <b>${n}</b>／9 位。${qh('到城鎮的穗光教會祭壇（噴水池），獻上清單上的果實，或 '+WAKE_EX_N+' 顆同一格的專屬造型果實就能喚醒；神話標本可以進化。')}</p><div class="fygrid">`;
   for(const k of FY_KEYS){const f=F[k];
-    if(fyHas(k))h+=`<div class="fycell on${f.evo?' evo tcard':''}"><button class="fycb" ${A}="fyone" data-k="${k}" aria-label="${esc(fyN(k))}${fsAvail(k)?'，有事找你':''}">${fsAvail(k)?'<i class="fybang">！</i>':''}${fyArtHTML(k,f,96,false)}<b>${esc(fyN(k))}</b><small>${f.evo?'已進化':'&nbsp;'}</small></button><button class="btn small${F.follow===k?' primary':''}" ${A}="fyfol" data-k="${k}">${F.follow===k?'跟隨中':'跟隨'}</button></div>`;
+    if(fyHas(k))h+=`<div class="fycell on${f.evo?' evo tcard':''}"><button class="fycb" ${A}="fyone" data-k="${k}" aria-label="${esc(fyN(k))}${fsAvail(k)?'，有事找你':''}">${(()=>{const q=qList().find(x=>x.id==='fs:'+k);return q&&(q.st==='done'||q.st==='acc')?`<i class="fybang${q.st==='done'?' ok':''}">${q.st==='done'?'✓':'！'}</i>`:''})()}${fyArtHTML(k,f,96,false)}<b>${esc(fyN(k))}</b><small>${f.evo?'已進化':'&nbsp;'}</small></button><button class="btn small${F.follow===k?' primary':''}" ${A}="fyfol" data-k="${k}">${F.follow===k?'跟隨中':'跟隨'}</button></div>`;
     else h+=`<div class="fycell">${fySil(k)}<b>${fyN(k)}</b><small>${fyExSlots(k).length||altFull(k)?'可以喚醒':'還沒喚醒'}</small></div>`}
   return h+'</div>'}
 /* 舊的精靈上架（16u）：賣家的遊戲讀到自己還在上架中的，刪掉上架、精靈退回 */
@@ -9126,17 +9130,129 @@ function mq2CardHTML(np){const M=state.mq2||{},s=mq2Cur();
   if(s.id==='2-4'){const t=M.f.t4||{};h+=`<p class="note">${t.yue?'✔':'・'} 岳哥　${t.jin?'✔':'・'} 槿姨　${M.f.fruit?'✔ 拿到永生的果實（南瓜）':''}</p>`}
   return h+`<p class="note">完成後得到 100 經驗${s.rw&&s.rw.c?`和 ${s.rw.c} 金幣`:''}。</p></div>`}
 const mq2HintOf=s=>{const M=state.mq2||{},f=M.f||{};if(s.hintF)return s.hintF();if(s.id==='2-4'&&f.fruit)return s.hint2;if(s.id==='3-4'&&f.fruit)return f.back?s.hint3:s.hint2;if(s.id==='3-6'&&fyHas('melon')&&fyRunning('melon'))return s.hint2;return s.hint};
+/* 133：見下面 qList 的說明 */
+/* ===== 133（18y）：任務的指引、「可以完成了」的提示、提醒。七種任務（主線 MQ2、支線 MQ、每日委託、每週大委託、NPC 故事 NS、神之子的故事 FY_STORY、地區故事 RS）
+   統一成 qList()：每一張 {id,kind,t,npc,where,st,prog,hint,rw,give}；st＝acc 可以接／run 進行中／wait 等時間／done 可以完成。
+   where：{town:'npc:x'|'spring'}、{bk,map?,x?,y?}、{farm:1}、{fy:k}（神之子頁）或 null（沒有地點，看說明）。
+   「可以完成」只用程式裡已經有的檢查：交付＝giveAvail 夠、祭壇＝altMatches 夠（清單整份是每一項各自夠，同一顆可能被算進兩項）、種子包＝nsLots／野生包、標本＝S.spec()、問過話／看過秘境＝f.theo／f.seen。
+   其他（事件一發生就自動完成的步驟：說話、收成、走到某處）只會是「進行中」。 ===== */
+const Q_ORD={done:0,acc:1,run:2,wait:3};
+function openOrders(){sheet={orders:true};renderSheet();openSheetUI()}
+const qRemindOn=()=>!(state&&state.qRemind===false);
+function giveReady(kind,id){try{const G=giveSpec(kind,id);if(!G)return false;return giveAvail(G).reduce((s,e)=>s+e.n,0)>=G.need-G.got}catch(e){return false}}
+function giveProg(kind,id){try{const G=giveSpec(kind,id);if(!G)return '';return `${Math.min(G.need,G.got+giveAvail(G).reduce((s,e)=>s+e.n,0))}／${G.need}`}catch(e){return ''}}
+function altItemReady(k,j){try{if(altDark(k))return false;const A=altObj(k),left=altNeed(k,j)-(A.n[j]||0);return left<=0||altMatches(k,j).reduce((s,x)=>s+x.n,0)>=left}catch(e){return false}}
+const altListReady=k=>!!ALT_LIST[k]&&ALT_LIST[k].every((_,j)=>altItemReady(k,j));
+/* NPC 在哪裡：野外的（有 show 的照 show）優先，否則城鎮 */
+function qNpcWhere(n){const R0=REG_NPCS.find(r=>r.id===n&&(!r.show||r.show()));if(R0)return {bk:R0.bk,map:R0.map,x:R0.x,y:R0.y,npc:n};return {town:'npc:'+n}}
+const MQ2_ALT={'0-3':['tomato',0],'1-1':['tomato',1],'1-2':['tomato',2],'1-3':['tomato',3],'1-4':['tomato',4]};
+const MQ_WHERE={5:{bk:'grass'},7:{bk:'forest'},9:{bk:'marsh'},10:{bk:'desert',map:'temple2'},11:{bk:'snow',map:'cave2'}};
+const RS_TRIG={grass:{map:'meadow'},forest:{map:'shrine'},marsh:{map:'frog'}};/* 134 第 4 步：秘境的入口在哪張圖 */
+function qList(){const out=[];if(!state)return out;const add=q=>{q.key=q.id+'|'+(q.step||'');out.push(q)};
+  /* 主線 */
+  try{const s=mq2Cur(),M=state.mq2||{};if(s){const lock=s.lv&&myLv()<s.lv&&M.st===0;
+    if(s.subs){for(const u of s.subs){const F=mq2SF(u.id);if(F.d)continue;const g=u.give&&!(u.id==='2-3'&&F.lamp);add({id:'mq2:'+u.id,step:u.id,kind:'mq2',t:u.t,npc:u.npc,where:qNpcWhere(u.npc),st:!F.a?'acc':g&&giveReady('mq2',u.id)?'done':'run',prog:g&&F.a?giveProg('mq2',u.id):'',hint:F.a?u.hint:`找${NPCN[u.npc]}說話`,give:g&&F.a?['mq2',u.id]:null})}}
+    else{let st='run',give=null,prog='',where=null;const T=mq2Target(),npc=s.npc;
+      if(lock)st='run';else if(M.st===0)st='acc';
+      else if(MQ2_ALT[s.id]){const [k,j]=MQ2_ALT[s.id];if(altItemReady(k,j))st='done'}
+      else if(s.id==='1-5'&&altFull('tomato'))st='done';else if(s.id==='2-5'&&altListReady('pumpkin'))st='done';else if(s.id==='2-6'&&altFull('pumpkin'))st='done';else if(s.id==='3-5'&&altListReady('melon'))st='done';else if(s.id==='3-6'&&altFull('melon')&&!fyHas('melon'))st='done';
+      else if(s.id==='1-3'&&!M.f.trade&&tomFruits()>=3)st='done';else if(s.id==='3-3'&&!M.f.ok){give=['mq2','3-3'];prog=giveProg('mq2','3-3');if(giveReady('mq2','3-3'))st='done'}
+      if(T&&T.town)where={town:T.town};else if(M.st===0||s.reg)where=qNpcWhere(npc);else if(T&&T.where==='farm')where={farm:1};else if(T&&T.where==='explore')where=(s.id==='3-2'||s.id==='3-4')?{bk:'marsh'}:(s.ch===2?{bk:'forest'}:s.ch===3?{bk:'marsh'}:{bk:'grass'});
+      if(st==='done'&&(MQ2_ALT[s.id]||/^(1-5|2-5|2-6|3-5|3-6)$/.test(s.id)))where={town:'spring'};
+      add({id:'mq2',step:s.id+'|'+M.st,kind:'mq2',main:1,t:`${MQ2_CH[s.ch]}・${s.t}`,npc:st==='acc'?npc:(where&&where.town&&where.town.startsWith('npc:')?where.town.slice(4):npc),where,st,prog,hint:lock?`Lv ${s.lv} 開放`:M.st===0?`找${NPCN[npc]||''}說話`:mq2HintOf(s),give,rw:s.rw&&s.rw.c?`${s.rw.c} 金幣`:''})}}}catch(e){}
+  /* 支線：失落的種子庫 */
+  try{const m=mqCur(),S=state.mq;if(m&&S){const lock=myLv()<m.lv;let st=lock?'run':S.st===0?'acc':'run',give=null,prog='';
+    if(S.st===1&&m.cond){give=['mq',0];prog=giveProg('mq',0);if(giveReady('mq',0))st='done'}
+    add({id:'mq',step:S.ch+'|'+S.st,kind:'mq',t:`失落的種子庫・${m.t}`,npc:m.npc,where:S.st===1&&!m.cond&&MQ_WHERE[S.ch]?MQ_WHERE[S.ch]:qNpcWhere(m.npc),st,prog,hint:lock?`Lv ${m.lv} 開放`:S.st===0?`找${NPCN[m.npc]}說話`:m.hint,give})}}catch(e){}
+  /* 每日委託、每週大委託 */
+  try{ensureComm();if(state.cm&&myLv()>=LV_COMM)for(const o of state.cm.list){if(o.done||o.gone)continue;let st='run',give=null,prog='';
+    if(o.c.wild){const ok=state.lots.some(l=>{const w=lotWild(l);return w&&w.bk===o.c.wild&&(!o.c.rel||w.rel)});if(ok)st='done'}else{give=['cm',o.id];prog=giveProg('cm',o.id);if(giveReady('cm',o.id))st='done'}
+    add({id:'cm:'+o.id,step:state.cm.day,kind:'cm',t:`${NPCN[o.n]}的委託：${cmTxt(o.c)}`,npc:o.n,where:qNpcWhere(o.n),st,prog,hint:o.c.wild?`帶「${REGION_CFG[o.c.wild]?REGION_CFG[o.c.wild].name:o.c.wild}」的野生種子給${NPCN[o.n]}`:cmTxt(o.c),give,rw:`${o.r} 金幣`})}
+    const w=state.weekly;if(w&&!w.done&&myLv()>=LV_COMM){const st=giveReady('w',0)?'done':'run';add({id:'wk',step:w.wk,kind:'w',t:`每週大委託：${wkTxt(w)}`,npc:w.n,where:qNpcWhere(w.n),st,prog:giveProg('w',0),hint:wkTxt(w),give:['w',0],rw:`${w.r} 金幣`})}}catch(e){}
+  /* NPC 故事 */
+  try{if(myLv()>=LV_COMM)for(const n of Object.keys(NS)){const s=nsOf(n),S=nsStage(n);if(!S)continue;if(!s.a){if(nsBang(n))add({id:'ns:'+n,step:s.d+'|0',kind:'ns',t:`${NPCN[n]}的故事・${S.t}`,npc:n,where:qNpcWhere(n),st:'acc',hint:`找${NPCN[n]}說話`});continue}
+    let st='run',give=null,prog='';if(S.fruit){give=['ns',n];prog=giveProg('ns',n);if(giveReady('ns',n))st='done'}else if(S.spec){try{if(S.spec())st='done'}catch(e){}}else if(nsLots(n).length)st='done';
+    add({id:'ns:'+n,step:s.d+'|1',kind:'ns',t:`${NPCN[n]}的故事・${S.t}`,npc:n,where:qNpcWhere(n),st,prog,hint:nsHint(S),give})}}catch(e){}
+  /* 神之子的故事 */
+  try{for(const k of Object.keys(FY_STORY)){if(!fyHas(k))continue;const s=fsObj(k),S=fsStage(k);if(!S)continue;const t=`${fyN(k)}的故事・${S.t}`;
+    if(!s.a){if(S.cond())add({id:'fs:'+k,step:s.d+'|0',kind:'fs',t,where:{fy:k},st:'acc',hint:`到神之子頁找${fyN(k)}`});continue}
+    const st0=S.steps[s.f.i];if(!st0)continue;let st='run',give=null,prog='',where=null,hint=S.goals[s.f.i]||S.goals[0];
+    if(st0.k==='give'){give=['fs',k];prog=giveProg('fs',k);if(giveReady('fs',k))st='done'}
+    else if(st0.k==='gives'){const gg=s.f.gg||{};const left=st0.list.map((c,j)=>j).filter(j=>(gg[j]||0)<st0.n);if(left.length&&left.every(j=>giveReady('fs',k+'|'+j)))st='done';prog=`${st0.list.filter((_,j)=>(gg[j]||0)>=st0.n).length}／${st0.list.length} 色`;where={fy:k}}
+    else if(st0.k==='talk')where={farm:1};else if(st0.k==='deep'||st0.k==='show')where={bk:st0.bk,map:REG_DEEP[st0.bk]};else if(st0.k==='altar')where={town:'spring'};else if(st0.k==='regions')where={explore:1};
+    if(give)where={fy:k};add({id:'fs:'+k,step:s.d+'|'+s.f.i,kind:'fs',t,where,st,prog,hint,give})}}catch(e){}
+  /* 地區故事 */
+  try{for(const bk of Object.keys(RS)){if(!rsOpen(bk))continue;const s=rsObj(bk),S=rsStage(bk);if(!S)continue;const owner=rsNpcOf(bk,S),t=`${RS[bk].n}・${S.t}`;
+    if(!s.a){const w=rsWaitLeft(bk);add({id:'rs:'+bk,step:s.d+'|0',kind:'rs',t,npc:owner,where:qNpcWhere(owner),st:w>0?'wait':'acc',left:w,hint:w>0?`再過 ${Math.ceil(w/60e3)} 分鐘再來找${NPCN[owner]}`:`找${NPCN[owner]}說話`});continue}
+    let st='run',give=null,prog='',where=qNpcWhere(owner),npc=owner;
+    if(S.give){give=['rs',bk];prog=giveProg('rs',bk);if(giveReady('rs',bk))st='done'}
+    else if(S.ask){if(s.f.theo)st='done';else{npc=S.ask.npc;where=qNpcWhere(npc)}}
+    else if(S.enter){if(s.f.seen)st='done';else{npc=null;where={bk,map:RS_TRIG[bk]?RS_TRIG[bk].map:null}}}
+    else if(S.spot){npc=null;where={bk,map:S.spot.map,x:S.spot.x,y:S.spot.y}}
+    add({id:'rs:'+bk,step:s.d+'|1',kind:'rs',t,npc,where,st,prog,hint:S.goal,give,rw:S.rw&&S.rw.c?`${S.rw.c} 金幣`:''})}}catch(e){}
+  return out}
+const qSorted=()=>qList().sort((a,b)=>(Q_ORD[a.st]-Q_ORD[b.st])||((b.main?1:0)-(a.main?1:0)));
+/* 追蹤：state.qTrack；沒有指定或那張不在了 → 主線（有的話）→ 最近接的那一張 */
+function qTracked(L){L=L||qList();const id=state.qTrack;let q=id&&L.find(x=>x.id===id);if(q)return q;q=L.find(x=>x.kind==='mq2'&&x.main);if(q&&q.hint)return q;
+  const A=state.qAcc||{};return L.filter(x=>x.st!=='acc').sort((a,b)=>(A[b.id]||0)-(A[a.id]||0))[0]||L[0]||null}
+const qWhoTxt=q=>q.npc?`去找${NPCN[q.npc]||''}`:q.where&&q.where.town==='spring'?'去祭壇':q.where&&q.where.fy?`到神之子頁找${fyN(q.where.fy)}`:'';
+function qLineText(q){if(!q)return '';if(q.st==='done')return `可以完成了：${q.give&&!q.npc?'去交':qWhoTxt(q)||'去交'}`;return `${q.hint||q.t}${q.prog?`（${q.prog}）`:''}`}
+/* 記號 */
+const qMarkSVG=st=>st==='done'?'<g><circle cx="0" cy="-80" r="8.5" fill="#E8F8E0" stroke="#2E9B43" stroke-width="1.8"/><path d="M-4 -80 l3 3 l5 -6" fill="none" stroke="#2E9B43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g>':st==='acc'?'<g><circle cx="0" cy="-80" r="8.5" fill="#FFF6C8" stroke="#D9A200" stroke-width="1.8"/><text x="0" y="-75.5" text-anchor="middle" font-size="12" font-weight="700" fill="#B07D00">!</text></g>':'';
+function qMarkFor(n,L){L=L||qList();let best=null;for(const q of L){if(q.npc!==n)continue;if(q.st==='done')return 'done';if(q.st==='acc')best='acc'}return best}
+const qChip=st=>`<i class="qst qst-${st}">${st==='done'?'✓':st==='acc'?'!':st==='wait'?'◷':'…'}</i>`;
+/* 帶路 */
+let qArrow=null;/* {town:id} 或 {bk,map,x,y}：一直留到走到為止 */
+function regNextExit(bk,from,to){const MS=REGION_MAPS[bk];if(!MS||!MS[from]||!MS[to])return null;const prev={[from]:null},Q=[from];
+  while(Q.length){const c=Q.shift();if(c===to)break;for(const e of MS[c].exits||[]){if(!e.to||!MS[e.to]||e.to in prev)continue;if(e.hid&&!secOpen(bk))continue;prev[e.to]=[c,e];Q.push(e.to)}}
+  if(!(to in prev))return null;let c=to,step=prev[c];while(step&&step[0]!==from){c=step[0];step=prev[c]}return step?step[1]:null}
+function exitPos(M,e){if(e.door){const d=e.door;return [(d[0]+d[2])/2,(d[1]+d[3])/2-30]}const B=M.B||{x0:0,y0:0,x1:800,y1:1200};return e.side==='w'?[B.x0+40,e.c]:e.side==='e'?[B.x1-40,e.c]:[e.c,e.side==='n'?B.y0+40:B.y1-40]}
+const arrowSVG=(x,y)=>`<g transform="translate(${Math.round(x)} ${Math.round(y)})" pointer-events="none"><g class="tarrow"><path d="M-10 -22 h20 v10 h8 l-18 18 l-18 -18 h8z" fill="#2E9B43" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></g></g>`;
+function qArrowExplore(){const A=qArrow;if(!A||!A.bk||scene!=='explore'||exBiome!==A.bk)return null;const M=regCur();if(!M)return null;
+  if(!A.map||regMap===A.map){if(A.x==null)return null;return [A.x,A.y-60]}const e=regNextExit(A.bk,regMap,A.map);if(!e)return null;return exitPos(M,e)}
+function qArrowCheck(){try{const A=qArrow;if(!A)return;if(A.town&&scene==='market'){let x,y;if(A.town.startsWith('npc:')){const p=TOWN_NPC.find(q=>'npc:'+q.id===A.town);if(!p)return;x=p.x;y=p.y}else{const b=TOWN_BLD.find(q=>q.id===A.town);if(!b)return;[x,y]=townFront(b)}if(Math.hypot(marketMe.x-x,marketMe.y-y)<90){qArrow=null;renderWorld()}}
+  else if(A.bk&&scene==='explore'&&exBiome===A.bk&&(!A.map||regMap===A.map)&&A.x!=null&&Math.hypot(exMe.x-A.x,exMe.y-A.y)<80){qArrow=null;renderWorld()}}catch(e){}}
+function qGo(q){if(!q)return;const W=q.where;
+  if(!W){sheet={qd:q.id};renderSheet();openSheetUI();return}
+  if(W.fy){sheet={fy:{m:'one',k:W.fy}};renderSheet();openSheetUI();return}
+  if(W.town){qArrow={town:W.town};if(scene==='market'){renderWorld();return}sheet={mqgo:W.town};renderSheet();openSheetUI();return}
+  if(W.farm){if(scene!=='farm'||viewing){sheet={qgo:'farm'};renderSheet();openSheetUI();return}const rb=document.getElementById('ringBtn');if(rb){rb.classList.remove('flash');void rb.offsetWidth;rb.classList.add('flash');setTimeout(()=>rb.classList.remove('flash'),2200)}return}
+  if(W.explore){if(scene!=='explore')openPanel('explore');else toast(q.hint||'',4000);return}
+  if(W.bk){qArrow={bk:W.bk,map:W.map||null,x:W.x!=null?W.x:null,y:W.y!=null?W.y:null};if(W.map&&W.x==null){const T=REGION_MAPS[W.bk][W.map];if(T&&W.npc==null&&T.B){qArrow.x=(T.B.x0+T.B.x1)/2;qArrow.y=(T.B.y0+T.B.y1)/2}}
+    if(scene!=='explore'||exBiome!==W.bk){sheet={qgo:W.bk};renderSheet();openSheetUI();return}renderWorld();toast(W.map&&regMap!==W.map?`往箭頭那邊走，去「${REGION_MAPS[W.bk][W.map].n}」`:'箭頭指的地方',3000);return}}
+function qGoHTML(){const g=sheet.qgo;if(g==='farm')return `<h2>要回農場嗎？</h2><div class="row2"><button class="btn primary" data-act="qgofarm">回農場</button><button class="btn" data-act="close">先不要</button></div>`;
+  const n=REGION_CFG[g]?REGION_CFG[g].name:g;return `<h2>要去${esc(n)}嗎？</h2><p class="note">到了會用箭頭指給你看。</p><div class="row2"><button class="btn primary" data-act="qgoreg" data-k="${g}">去${esc(n)}</button><button class="btn" data-act="close">先不要</button></div>`}
+function qDetailHTML(){const q=qList().find(x=>x.id===sheet.qd);if(!q)return '<p class="note">這張任務已經結束了。</p><button class="btn" data-act="close">關閉</button>';
+  return `<h2>${qChip(q.st)} ${esc(q.t)}</h2><p>${esc(q.hint||'')}</p>${q.prog?`<p class="note">進度：${esc(q.prog)}</p>`:''}${q.rw?`<p class="note">獎勵：${esc(q.rw)}</p>`:''}${qBtns(q)}<button class="btn" data-act="close">關閉</button>`}
+function qBtns(q){return `<div class="row2"><button class="btn${state.qTrack===q.id?' primary':''}" data-act="qtrack" data-q="${esc(q.id)}">${state.qTrack===q.id?'追蹤中':'追蹤'}</button><button class="btn" data-act="qgo" data-q="${esc(q.id)}">帶我去</button>${q.give&&q.st==='done'?`<button class="btn primary" data-act="givego" data-k="${q.give[0]}" data-id="${esc(String(q.give[1]))}">交</button>`:''}</div>`}
+function qPanelHTML(){const L=qSorted(),tr=qTracked(L);if(!L.length)return '<p class="note">現在沒有任務。</p>';
+  return L.map(q=>`<div class="lot qcard${tr&&tr.id===q.id?' qtr':''}"><div class="lot-name">${qChip(q.st)} ${esc(q.t)}</div><div class="meta">${q.st==='wait'?esc(q.hint):esc(qWhoTxt(q)||q.hint||'')}${q.prog?`・${esc(q.prog)}`:''}${q.rw?`・獎勵 ${esc(q.rw)}`:''}</div>${q.st!=='wait'&&q.hint&&q.st!=='acc'?`<p class="note">${esc(q.hint)}</p>`:''}${qBtns(q)}</div>`).join('')}
+/* 提醒：可以完成的那一刻、等時間到了、進遊戲一天一次、委託快過期 */
+function qNotify(text,fn){if(!qRemindOn())return false;let el=document.getElementById('qNote');if(!el){el=document.createElement('div');el.id='qNote';el.className='qnote';document.body.appendChild(el)}el.textContent=text;el.hidden=false;el.onclick=()=>{el.hidden=true;try{fn&&fn()}catch(e){}};clearTimeout(el._t);el._t=setTimeout(()=>{el.hidden=true},6000);return true}
+const weekKeyAt=d=>{const j=new Date(d.getFullYear(),0,1);return `${d.getFullYear()}-W${Math.ceil(((d-j)/DAY+j.getDay()+1)/7)}`};
+let qScanT=0,qBoot=false;
+function qScan(force){if(!state)return;const now=Date.now();if(!force&&now-qScanT<2500)return;qScanT=now;const L=qList();
+  const S=state.qSeen||(state.qSeen={}),A=state.qAcc||(state.qAcc={}),W=state.qWait||(state.qWait={});
+  for(const q of L){if(q.st!=='acc'&&!A[q.id])A[q.id]=now;if(q.st==='done'&&!S[q.key]){S[q.key]=now;if(qBoot)qNotify(`可以完成了：${q.t}`,()=>qGo(q))}
+    if(q.st==='wait')W[q.id]=1;else if(W[q.id]){delete W[q.id];if(q.st==='acc')qNotify(`${q.t} 可以繼續了`,()=>qGo(q))}}
+  for(const k of Object.keys(S))if(now-S[k]>14*864e5)delete S[k];
+  const nd=L.filter(q=>q.st==='done').length,d=new Date(now),day=dayKey();
+  if(!qBoot){qBoot=true;if(nd&&state.qLoginDay!==day){state.qLoginDay=day;setTimeout(()=>qNotify(`有 ${nd} 個任務可以完成了`,()=>{try{openOrders()}catch(e){}}),4000)}}
+  if(d.getHours()>=22){if(L.some(q=>q.kind==='cm'&&q.st==='done')&&state.qExpDay!==day){state.qExpDay=day;qNotify('今天的委託還沒交',()=>{try{openOrders()}catch(e){}})}
+    if(weekKeyAt(new Date(now+864e5))!==weekKeyAt(d)&&L.some(q=>q.kind==='w'&&q.st==='done')&&state.qExpWk!==weekKeyAt(d)){state.qExpWk=weekKeyAt(d);qNotify('這週的大委託還沒交',()=>{try{openOrders()}catch(e){}})}}
+  try{renderOrdersBtn();renderMqLine()}catch(e){}}
+
 /* 116.5：目前任務那一行。點了：城鎮的人或祭壇 → 在城鎮就畫箭頭，不在就問要不要去；農場 → 綠色按鈕閃一下；探索 → 打開探索 */
 let townArrow=null,townArrowT=0;
-function renderMqLine(){try{const el=document.getElementById('mqLine');if(!el)return;const s=mq2Cur(),M=state&&state.mq2;
+function renderMqLine(){try{const el=document.getElementById('mqLine');if(!el)return;if(!state||viewing){el.hidden=true;return}{const q=qTracked();if(!q){el.hidden=true;return}const t=qLineText(q);if(el.textContent!==t)el.textContent=t;el.classList.toggle('qdone',q.st==='done');el.hidden=false;return}/* 133 */const s=mq2Cur(),M=state&&state.mq2;
   if(!state||!s||viewing){el.hidden=true;return}let t;if(s.lv&&myLv()<s.lv&&M.st===0)t=`主線：${MQ2_CH[s.ch]}（Lv ${s.lv} 開放）`;else if(s.subs){const u=s.subs.find(x=>{const F=(M.f||{})['s'+x.id]||{};return F.a&&!F.d});t=u?`主線：${u.hint}`:'主線：去銀霧白樺林的獵人小屋，找岳哥、槿姨'}else t=M.st===0?`主線：找${NPCN[s.npc]||''}說話（${s.t}）`:`主線：${mq2HintOf(s)}`;if(el.textContent!==t)el.textContent=t;el.hidden=false}catch(e){}}
 function mq2Target(){const s=mq2Cur(),M=state.mq2;if(!s)return null;if(s.subs)return {where:'explore'};if(M.st===0)return MQ2_REGN.includes(s.npc)||s.reg?{where:'explore'}:{town:'npc:'+s.npc};if(s.id==='2-4')return M.f.fruit?{town:'spring'}:{where:'explore'};if(s.id==='3-4')return M.f.fruit&&M.f.back?{town:'spring'}:{where:'explore'};if(s.id==='3-6'&&fyHas('melon')&&fyRunning('melon'))return {where:'explore'};if(s.tgt==='spring')return {town:'spring'};if(s.tgt==='npc')return {town:'npc:'+s.npc};return {where:s.tgt}}
 function townArrowSet(id){townArrow=id;townArrowT=Date.now()+6000;try{renderWorld()}catch(e){}setTimeout(()=>{if(Date.now()>=townArrowT){townArrow=null;try{if(scene==='market')renderWorld()}catch(e){}}},6100)}
-function townArrowSVG(){if(!townArrow||Date.now()>townArrowT)return '';let x,y;
+function townArrowSVG(){const qa=qArrow&&qArrow.town;if(qa){townArrow=qa;townArrowT=Date.now()+1000}/* 133 */if(!townArrow||Date.now()>townArrowT)return '';let x,y;
   if(townArrow.startsWith('npc:')){const p=TOWN_NPC.find(q=>'npc:'+q.id===townArrow);if(!p)return '';x=p.x;y=p.y-92}
   else{const b=TOWN_BLD.find(q=>q.id===townArrow);if(!b)return '';[x,y]=townFront(b);y-=70}
   return `<g transform="translate(${x} ${y})" pointer-events="none"><g class="tarrow"><path d="M-10 -22 h20 v10 h8 l-18 18 l-18 -18 h8z" fill="#E8553A" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></g></g>`}
-function mqLineTap(){const T=mq2Target();if(!T)return;
+function mqLineTap(){{const q=qTracked();if(q){qGo(q);return}}/* 133 */const T=mq2Target();if(!T)return;
   if(T.town){if(scene==='market'){townArrowSet(T.town);return}sheet={mqgo:T.town};renderSheet();openSheetUI();return}
   if(T.where==='explore'){if(scene!=='explore')openPanel('explore');else{const s=mq2Cur();toast(s?mq2HintOf(s):'')}return}
   if(T.where==='farm'){if(scene!=='farm'||viewing){toast('回農場就能做這一步');return}const rb=document.getElementById('ringBtn');if(rb){rb.classList.remove('flash');void rb.offsetWidth;rb.classList.add('flash');setTimeout(()=>rb.classList.remove('flash'),2200)}}}
@@ -9240,17 +9356,26 @@ function fwShow(done){const cols=['#E8433A','#F6C933','#5DBB3A','#FFFFFF','#2B2B
 const RS_GRASS=[
  {t:'怪事',open:'你去草原的時候，有沒有看到田被割得整整齊齊的？｜還沒熟就被割掉，一刀到底，切口比我磨的鐮刀還平。｜老一輩的說，那是『裂風』。草原上的風神。',goal:'到翠風草原的「野花坡」，看看乾草堆旁邊那塊被割過的地',spot:{map:'meadow',x:384,y:330,r:70},look:'切口很平。不是人割的。',done:'你也看到了吧。｜以前牠只割熟的，還會留一半給人。村裡每年收割前都會祭牠。｜這幾年不一樣了。牠連青的都割。'},
  {t:'兩種意見',open:'村裡吵翻了。有人說照舊祭牠，有人說乾脆把牠趕走。｜我是老派的。你幫我準備祭品，試一次看看。｜要熟透的、黃澄澄的，九顆。什麼作物都行。',goal:'交 9 顆黃色的果實（任何作物、任何造型，要純黃色）',give:{skin:'yellow'},need:9,buy:1,done:'夠了。我今晚拿去山丘上擺。'},
- {t:'隔天',wait:RS_WAIT,open:'祭品不見了。九顆都不見。｜可是田還是被割了。只是這次……割的是熟的那一半。',goal:'和提歐神父說話，再回來告訴阿土伯',ask:{npc:'theo',btn:'問神父「裂風」的事',line:'裂風啊。教會的紀錄裡，牠是替草原收割的。人收不完的，牠來收。｜牠不壞。至少以前不壞。｜為什麼變了，我也不知道。對不起，幫不上忙。'},done:'神父也不知道？……算了。｜至少牠還認得祭品。這樣就還有得談。',rw:{c:400,fav:['tu',3]}}];
+ {t:'隔天',wait:RS_WAIT,open:'祭品不見了。九顆都不見。｜可是田還是被割了。只是這次……割的是熟的那一半。',goal:'和提歐神父說話，再回來告訴阿土伯',ask:{npc:'theo',btn:'問神父「裂風」的事',line:'裂風啊。教會的紀錄裡，牠是替草原收割的。人收不完的，牠來收。｜牠不壞。至少以前不壞。｜為什麼變了，我也不知道。對不起，幫不上忙。'},done:'神父也不知道？……算了。｜至少牠還認得祭品。這樣就還有得談。'},
+ {t:'牠住的地方',open:'你幫了這麼多，我跟你說一件村裡只有老人家知道的事。｜野花坡那圈蘑菇，羊都不肯踩進去。站到正中間，別動。等蘑菇一朵一朵亮起來。｜我年輕時進去過一次。裡面……你自己去看。',goal:'到「野花坡」的蘑菇圈中央站著不動，進入仙境花園',enter:'secret',look:'花園中央有一圈草被割得整整齊齊，切口和田裡的一模一樣。｜這裡沒有人種田。',done:'你也看到那一圈了吧。｜那是牠的家。牠在自己家門口也割。',rw:{c:400,fav:['tu',3]}}];/* 134：rw 從第 3 步移到第 4 步 */
 const RS={
  grass:{n:'割早的田',npc:'tu',open:()=>!!(state&&state.mq2&&state.mq2.i>4),steps:RS_GRASS},
  forest:{n:'界線',npc:'jin',open:()=>mq2Past('2-6'),steps:[
   {t:'老樺樹',open:'果實借出去了，可是事情沒完。伐木的要砍到老樺樹那邊去。｜那棵不能動。為什麼不能動，我講了他們也不信。你自己去看。',goal:'到銀霧白樺林的「神木」，走到老樺樹旁邊',spot:{map:'giant_tree',x:417,y:470,r:80},look:'樹幹上有四道很深的舊痕，比手臂還長，已經被樹皮包住一半。｜不是斧頭砍的。',done:'我祖母的祖母就看過那些痕跡。有東西把這棵樹當成自己的。｜樹倒了，它會去哪裡？我不想知道。'},
   {t:'界線',npc:'yue',open:'爪痕？……我沒看過那麼高的地方。｜行，老樺樹那邊不砍。可是我們要柴，東邊那片得給我們。｜界線要有記號，不然霧一來又吵。有星點的南瓜，誰都認得出不是野生的。六顆，我沿線擺。',goal:'交 6 顆星點花紋的南瓜給岳哥',give:{crop:'pumpkin',pf:2},need:6,buy:1,done:'擺好了。這條線以西，我的人不過去。'},
-  {t:'還是看不順眼',wait:RS_WAIT,open:'線是劃了。昨晚有人越線撿柴，被我趕回去。｜……至少現在吵的是一條線，不是一整片林子。｜東邊砍一棵，要補種三棵。你去跟他講，我不想跟他講話。',goal:'和岳哥說話，再回來告訴槿姨',ask:{npc:'yue',btn:'轉告「砍一棵補三棵」',line:'三棵？她怎麼不乾脆叫我種一片。｜……兩棵。算了，三棵就三棵。別跟她說我答應得這麼快。'},done:'他答應了？哼。',rw:{c:400,acc:3}}]},
+  {t:'還是看不順眼',wait:RS_WAIT,open:'線是劃了。昨晚有人越線撿柴，被我趕回去。｜……至少現在吵的是一條線，不是一整片林子。｜東邊砍一棵，要補種三棵。你去跟他講，我不想跟他講話。',goal:'和岳哥說話，再回來告訴槿姨',ask:{npc:'yue',btn:'轉告「砍一棵補三棵」',line:'三棵？她怎麼不乾脆叫我種一片。｜……兩棵。算了，三棵就三棵。別跟她說我答應得這麼快。'},done:'他答應了？哼。'},
+  {t:'牠住的地方',open:'那些爪痕的主人住在哪裡，守林的人都知道，只是不說。｜石祠的盤子，放一顆黑色果皮的種子。夜晚的顏色。｜我只送你到這裡。',goal:'在石祠的盤子放一顆黑色果皮的種子，走進神隱之森',enter:'secret',look:'樹根上掛著一根銀白色的長羽毛，比你的手臂還長。｜四周安靜得聽不到自己的腳步聲。',done:'羽毛？……別帶出來。留在那裡。',rw:{c:400,acc:3}}]},
  marsh:{n:'水裡的光',npc:'duo',open:()=>mq2Past('3-7'),steps:[
   {t:'暗掉的水',open:'果實的事是我錯怪研究所。可是魚變少是真的。｜以前晚上划船，槳一下去水就會亮。這兩年不亮了。你去水池那邊看。',goal:'到珍珠潟湖的「蓮花池」，走到水邊',spot:{map:'lotus',x:430,y:625,r:80},look:'水很清，也很暗。你攪了一下，只亮了一兩點，很快就滅了。',done:'你也看到了。以前是一整片的。'},
   {t:'先撐過去',open:'魚少，村子就沒收入。你那種大得嚇人的甜瓜，城裡應該有人要。｜給我六顆，我讓年輕人挑去賣。先把這一季撐過去。',goal:'交 6 顆巨大的甜瓜',give:{crop:'melon',minSize:4},need:6,buy:1,done:'這麼大一顆……夠了，夠換一個月的米。'},
-  {t:'不是船',wait:RS_WAIT,open:'我去找了所長。他二話不說，把採樣船停了。｜停了七天。水還是不亮。',goal:'和所長維恩說話（城鎮），再回來告訴老舵',ask:{npc:'wien',btn:'問所長水的事',line:'我也想知道原因。水樣我每一瓶都留著，數字是一年比一年低，從我們開始採樣以前就在降了。｜船可以繼續停，停到村長安心為止。但我不認為是船。｜對不起，我只能告訴你這麼多。'},done:'不是船……那是什麼？｜算了。你幫得夠多了。魚的事，我們自己再想辦法。',rw:{c:400,acc:3}}]}};
+  {t:'不是船',wait:RS_WAIT,open:'我去找了所長。他二話不說，把採樣船停了。｜停了七天。水還是不亮。',goal:'和所長維恩說話（城鎮），再回來告訴老舵',ask:{npc:'wien',btn:'問所長水的事',line:'我也想知道原因。水樣我每一瓶都留著，數字是一年比一年低，從我們開始採樣以前就在降了。｜船可以繼續停，停到村長安心為止。但我不認為是船。｜對不起，我只能告訴你這麼多。'},done:'不是船……那是什麼？｜算了。你幫得夠多了。魚的事，我們自己再想辦法。'},
+  {t:'牠住的地方',open:'水不亮的事，我想了很久。我爺爺說，白鹿是從湖心那邊來的。｜青蛙石像，繞著牠走一圈，小溪下游的睡蓮會浮起來。｜回來告訴我你看到什麼。',goal:'繞青蛙石像一圈，踩小溪下游的睡蓮進入蓮花島',enter:'secret',look:'水面上有一串蹄印，一圈一圈的漣漪還沒有散。｜可是水上什麼都沒有。',done:'蹄印……那牠還在。｜還在就好。',rw:{c:400,acc:3}}]}};
+const RS_DONE3=3;/* 134：「地區故事完成」（130 的傳說、舊進度）一律指第 3 步完成 */
+const RS_LEG={grass:'L_grass',forest:'L_forest',marsh:'L_marsh'};
+/* 134：走進秘境＝第 4 步看到痕跡（之後回去找原 NPC 交步驟） */
+function rsEnter(bk,id){try{const R=RS[bk];if(!R)return;const s=rsObj(bk),S=rsStage(bk);if(!S||!s.a||!S.enter||S.enter!==id||s.f.seen)return;s.f.seen=1;save();
+  noteOpen(`<h2>${esc(R.n)}：${esc(S.t)}</h2><p>${String(S.look).split('｜').map(esc).join('<br>')}</p><p class="note">回去告訴${NPCN[rsNpcOf(bk,S)]}。</p>`)}catch(e){}}
+const rsReady=bk=>{const s=rsObj(bk),S=rsStage(bk);return !!(S&&s.a&&((S.ask&&s.f.theo)||(S.enter&&s.f.seen)))};
 const RS_SPOT=RS_GRASS[0].spot;
 function rsObj(bk){bk=bk||'grass';const S=state.rs||(state.rs={});const o=S[bk]||(S[bk]={d:0,a:0,f:{},t:0});if(!o.f)o.f={};return o}
 const rsOpen=bk=>{const R=RS[bk||'grass'];return !!(R&&state&&R.open())};
@@ -9258,8 +9383,8 @@ const rsStage=bk=>{bk=bk||'grass';return RS[bk].steps[rsObj(bk).d]||null};
 const rsNpcOf=(bk,S)=>(S&&S.npc)||RS[bk].npc;
 const rsWaitLeft=bk=>{const S=rsStage(bk),s=rsObj(bk);return S&&S.wait?Math.max(0,(s.t||0)+S.wait-Date.now()):0};
 function rsAccept(bk){bk=bk||'grass';const S=rsStage(bk),s=rsObj(bk);if(!S||s.a||!rsOpen(bk)||rsWaitLeft(bk)>0)return false;s.a=1;s.f={};save();toast(`答應了${NPCN[rsNpcOf(bk,S)]}：${S.t}`);return true}
-function rsDone(bk){bk=bk||'grass';const R=RS[bk],S=rsStage(bk),s=rsObj(bk);if(!S||!s.a)return;const got=[];fsReward(S.rw||{},got);got.push(`${RS_XP} 經驗`);s.d++;s.a=0;s.f={};s.t=Date.now();const nx=R.steps[s.d];
-  noteOpen(`<h2>${esc(R.n)}：${esc(S.t)}</h2>`+npcTalk(rsNpcOf(bk,S),S.done)+`<p class="note">得到：${got.join('、')}</p>`+(nx&&nx.wait?`<p class="note">過一陣子再來找${NPCN[rsNpcOf(bk,nx)]}。</p>`:''));addXp(RS_XP,true);if(bk==='grass'&&s.d>=R.steps.length)noteGet('L_grass');/* 130 */save();try{renderAll();if(sheet&&(sheet.town||sheet.orders||sheet.rnpc))renderSheet()}catch(e){}}
+function rsDone(bk){bk=bk||'grass';const R=RS[bk],S=rsStage(bk),s=rsObj(bk);if(!S||!s.a)return;const got=[];if(!(S.enter&&s.paid))fsReward(S.rw||{},got);if(S.enter){const ns=state.legSeen||(state.legSeen={});ns[RS_LEG[bk]]=String(S.look).split('｜')[0]}/* 134 */got.push(`${RS_XP} 經驗`);s.d++;s.a=0;s.f={};s.t=Date.now();const nx=R.steps[s.d];
+  noteOpen(`<h2>${esc(R.n)}：${esc(S.t)}</h2>`+npcTalk(rsNpcOf(bk,S),S.done)+`<p class="note">得到：${got.join('、')}</p>`+(nx&&nx.wait?`<p class="note">過一陣子再來找${NPCN[rsNpcOf(bk,nx)]}。</p>`:''));addXp(RS_XP,true);if(bk==='grass'&&s.d===RS_DONE3)noteGet('L_grass');/* 130、134：第 3 步完成 */save();try{renderAll();if(sheet&&(sheet.town||sheet.orders||sheet.rnpc))renderSheet()}catch(e){}}
 function rsTick(){try{if(scene!=='explore')return;for(const bk of Object.keys(RS)){const s=rsObj(bk),S=rsStage(bk);if(!S||!s.a||!S.spot||exBiome!==bk||regMap!==S.spot.map)continue;if(Math.hypot(exMe.x-S.spot.x,exMe.y-S.spot.y)>S.spot.r)continue;
   if(!s.f.look){s.f.look=1;toast(S.look.replace(/｜/g,''),5000);save();setTimeout(()=>rsDone(bk),1200)}}}catch(e){}}
 /* 一區的卡：inNpc＝在那位 NPC 的面板裡（可以答應、交付、回報） */
@@ -9270,6 +9395,7 @@ function rsCardHTML(inNpc,bk,who){bk=bk||'grass';if(!rsOpen(bk))return '';const 
   h+=`<div class="lot"><div class="lot-name">第 ${s.d+1} 步　${S.t}（進行中）</div><p>${esc(S.goal)}</p>`;
   if(S.give)h+=giveBtnHTML('rs',bk);
   if(S.ask)h+=s.f.theo?(here?`<button class="btn primary" data-act="rsdone" data-r="${bk}">回報${NPCN[owner]}</button>`:`<p class="note">回去告訴${NPCN[owner]}。</p>`):`<p class="note">・還沒和${NPCN[S.ask.npc]}說話。</p>`;
+  if(S.enter)h+=s.f.seen?(here?`<button class="btn primary" data-act="rsdone" data-r="${bk}">告訴${NPCN[owner]}你看到的</button>`:`<p class="note">回去告訴${NPCN[owner]}。</p>`):'<p class="note">・還沒走進去。</p>';/* 134 */
   return h+`<p class="note">每一步得到 ${RS_XP} 經驗。</p></div>`}
 /* 被問的那一位（神父、岳哥、所長） */
 function rsAskHTML(n){let h='';for(const bk of Object.keys(RS)){const s=rsObj(bk),S=rsStage(bk);if(!S||!S.ask||!s.a||S.ask.npc!==n)continue;
@@ -9311,13 +9437,14 @@ const lampOn=()=>{try{const s=mq2Cur();if(s&&s.subs){const F=(state.mq2.f||{})['
 const kidOn=()=>{try{const s=mq2Cur();if(!s||!s.subs)return false;const F=(state.mq2.f||{})['s2-3']||{};return !!F.lamp&&!F.ok&&!F.d}catch(e){return false}};
 function regNpcBang(id){const s=mq2Cur(),M=state.mq2||{};if(!s)return false;if(id==='duo'){if(s.id==='3-1'&&M.st===1)return !(M.f.t1||{}).duo;if(s.id==='3-2'&&M.st===0)return true;if(s.id==='3-4'&&M.f.fruit&&!M.f.back)return true;return false}if(id==='wien')return (s.id==='3-3'||s.id==='3-4')&&M.st===0;if((s.id==='2-1'||s.id==='2-4')&&M.st===1&&(id==='yue'||id==='jin')){const t=(s.id==='2-1'?M.f.t1:M.f.t4)||{};return !t[id]}if(s.subs){const u=s.subs.find(x=>x.npc===id);const F=u&&(M.f||{})['s'+u.id]||{};return !!u&&!F.a}if(s.id==='2-4'&&M.st===0&&id==='yue')return true;return false}
 function regNpcObjs(){if(scene!=='explore')return [];const out=[];
-  for(const R0 of REG_NPCS){if(R0.bk!==exBiome||R0.map!==regMap||(R0.show&&!R0.show()))continue;const p=TOWN_NPC.find(q=>q.id===R0.id);if(!p)continue;out.push({y:R0.y,h:regNpcSVG(p,R0.x,R0.y,regNpcBang(R0.id))})}
+  for(const R0 of REG_NPCS){if(R0.bk!==exBiome||R0.map!==regMap||(R0.show&&!R0.show()))continue;const p=TOWN_NPC.find(q=>q.id===R0.id);if(!p)continue;out.push({y:R0.y,h:regNpcSVG(p,R0.x,R0.y,qMarkFor(R0.id)||false)})/* 133 */}
   if(exBiome==='marsh')out.push(...marshObjs());/* 122 */
+  {const a=qArrowExplore();if(a)out.push({y:1e6,h:arrowSVG(a[0],a[1])})}/* 133 */
   if(exBiome==='forest'&&lampOn()&&LAMP_MAPS.includes(regMap)){const L=lampPos(regMap);if(L){let fr='';try{fr=fruitInner(fruitPh({c:'pumpkin',k:'b0|white|-',t:0}),1,'pumpkin')}catch(e){}
     out.push({y:L[1],h:`<g transform="translate(${L[0]} ${L[1]})" pointer-events="none"><ellipse cx="0" cy="0" rx="9" ry="3" fill="rgba(40,30,20,.22)"/><rect x="-1.6" y="-52" width="3.2" height="52" rx="1" fill="#7A5530" stroke="#3B2A18" stroke-width=".8"/><path d="M0 -50 h13 v4" fill="none" stroke="#3B2A18" stroke-width="1.2"/><svg x="1" y="-50" width="24" height="26" viewBox="-1.5 -1.6 3 3.2" stroke="none">${fr}</svg></g>`});
     if(regMap==='glen'&&kidOn()){const p=TOWN_NPC.find(q=>q.id==='kid');out.push({y:L[1]+4,h:regNpcSVG(p,L[0]-34,L[1]+4,false)})}}}
   return out}
-function regNpcSVG(p,x,y,bang){return `<g transform="translate(${x} ${y}) scale(1.15)" pointer-events="none">${npcBodySVG(p)}${nameTag(p.n)}${bang?'<g><circle cx="0" cy="-80" r="8" fill="#FFF6DE" stroke="#C0392B" stroke-width="1.6"/><text x="0" y="-75.5" text-anchor="middle" font-size="12" font-weight="700" fill="#C0392B">!</text></g>':''}</g><rect data-reg="npc:${p.id}" x="${x-18}" y="${y-82}" width="36" height="86" fill="transparent" style="cursor:pointer"/>`}
+function regNpcSVG(p,x,y,bang){return `<g transform="translate(${x} ${y}) scale(1.15)" pointer-events="none">${npcBodySVG(p)}${nameTag(p.n)}${bang==='done'||bang==='acc'?qMarkSVG(bang):bang?qMarkSVG('acc'):''}</g><rect data-reg="npc:${p.id}" x="${x-18}" y="${y-82}" width="36" height="86" fill="transparent" style="cursor:pointer"/>`}
 function regNpcTap(id){const R0=REG_NPCS.find(r=>r.id===id&&r.bk===exBiome),L=id==='kid'?lampPos('glen'):null,x=R0?R0.x:L?L[0]-34:0,y=R0?R0.y:L?L[1]:0;const go=()=>{const line=mq2Talk(id);sheet={rnpc:id,line};renderSheet();openSheetUI()};const m=curMe();if(Math.hypot(m.x-x,m.y-y)<80)go();else walkTo(x,y+16,go)}
 function rnpcHTML(){const id=sheet.rnpc,p=TOWN_NPC.find(q=>q.id===id);if(!p)return '<button class="btn" data-act="close">關閉</button>';const s=mq2Cur();
   return `<h2>${esc(p.n)}</h2>`+npcTalk(id,sheet.line||p.line)+(s&&mq2Has(s,id)?'<h3>主線</h3>'+mq2CardHTML(id):'')+rsNpcHTML(id)+noteNpcHTML(id)+'<button class="btn" data-act="close">關閉</button>'}
@@ -9397,12 +9524,16 @@ function favHTML(n){const v=favOf(n),t=favTier(n),nx=FAV_STEP[t],got=(state.favG
 /* 任務面板（原本的「訂單」） */
 function ordersHTML(){
   ensureComm();const o=state.orders||{};
-  let h=`<h2>任務</h2><h3>主線</h3>`+mq2CardHTML(false)+`<h3>支線：阿凱的委託：失落的種子庫</h3>`+mqCardHTML()+rsAllCardsHTML()+`<h3>今日委託</h3>`+(myLv()>=LV_COMM?`<p class="note">每天 0 點換新，不用先接。</p>`:'')+cmListHTML()+weeklyHTML();
+  let h=`<h2>任務</h2>`+qPanelHTML()+`<details class="dist"><summary>各任務的詳細</summary><h3>主線</h3>`+mq2CardHTML(false)+`<h3>支線：阿凱的委託：失落的種子庫</h3>`+mqCardHTML()+rsAllCardsHTML()+`</details><h3>今日委託</h3>`+(myLv()>=LV_COMM?`<p class="note">每天 0 點換新，不用先接。</p>`:'')+cmListHTML()+weeklyHTML();
   if(!ORDERS.every(x=>o[x.k]===2))h+=`<h3>入門練習</h3>`+ORDERS.map(x=>`<div class="lot"><div class="lot-name">${x.t}</div><div class="meta">獎勵 ${x.r} 金幣</div>${o[x.k]===2?'<p class="note">已領取</p>':o[x.k]===1?`<button class="btn primary" data-act="claim" data-k="${x.k}">領取 ${x.r} 金幣</button>`:'<p class="note">進行中</p>'}</div>`).join('');
   return h+'<button class="btn" data-act="close">關閉</button>';
 }
 function orderAction(b){
   const a=b.dataset.act;
+  if(a==='qtrack'){state.qTrack=state.qTrack===b.dataset.q?null:b.dataset.q;save();renderMqLine();if(sheet)renderSheet();return true}/* 133 */
+  if(a==='qgo'){const q=qList().find(x=>x.id===b.dataset.q);closeSheet();qGo(q);return true}
+  if(a==='qgoreg'){closeSheet();const k=b.dataset.k;if(myLv()<regLv(k)){toast(`${BIOMES[k].n} Lv ${regLv(k)} 開放`);return true}goExplore(k);return true}
+  if(a==='qgofarm'){closeSheet();goFarm();return true}
   if(a==='claim'){const x=ORDERS.find(o=>o.k===b.dataset.k);if(!x||state.orders[x.k]!==1)return;state.orders[x.k]=2;state.coins+=x.r;save();renderCoins();renderOrdersBtn();renderSheet();toast(`領取了 ${x.r} 金幣`);return true}
   if(a==='mqacc'){mqAccept();if(sheet)renderSheet();return true}
   if(a==='mq2acc'){mq2Accept(b.dataset.sub);if(sheet&&!sheet.note)renderSheet();return true}
@@ -9410,7 +9541,7 @@ function orderAction(b){
   if(a==='notetalk'){noteTalk(b.dataset.id);return true}/* 130 */
   if(a==='rsacc'){rsAccept(b.dataset.r||'grass');if(sheet&&!sheet.note)renderSheet();return true}
   if(a==='rstheo'){const bk=b.dataset.r||'grass',s=rsObj(bk),S=rsStage(bk);if(s.a&&S&&S.ask){s.f.theo=1;save()}if(sheet)renderSheet();return true}
-  if(a==='rsdone'){const bk=b.dataset.r||'grass';if(rsObj(bk).f.theo)rsDone(bk);return true}/* 118.4、126 */
+  if(a==='rsdone'){const bk=b.dataset.r||'grass';if(rsReady(bk))rsDone(bk);return true}/* 118.4、126、134 */
   if(a==='oldc'){oldPick={crop:b.dataset.k,col:oldPick.col,sure:false};renderSheet();return true}
   if(a==='oldk'){oldPick.col=b.dataset.k;oldPick.sure=false;renderSheet();return true}
   if(a==='oldok'){if(!oldPick.sure){oldPick.sure=true;renderSheet();return true}mqOldSeed(oldPick.crop,oldPick.col);if(sheet)renderSheet();return true}
@@ -9424,7 +9555,7 @@ function orderAction(b){
   if(a==='givego'){sheet={give:{kind:b.dataset.k,id:b.dataset.id,n:0}};renderSheet();openSheetUI();return true}/* 117.2 */
   return false;
 }
-function renderOrdersBtn(){try{const m=mqCur();let n=ORDERS.filter(o=>(state.orders||{})[o.k]===1).length;if(m&&state.mq.st===0&&myLv()>=m.lv)n++;if(mq2Cur()&&state.mq2.st===0&&!(mq2Cur().lv>myLv()))n++;document.getElementById('ordersBtn').hidden=false;const bg=document.getElementById('ordersBadge');bg.hidden=!n;bg.textContent=n}catch(e){}}
+function renderOrdersBtn(){try{const L=qList(),nd=L.filter(q=>q.st==='done').length+ORDERS.filter(o=>(state.orders||{})[o.k]===1).length,na=L.filter(q=>q.st==='acc').length,n=nd+na;document.getElementById('ordersBtn').hidden=false;const bg=document.getElementById('ordersBadge');bg.hidden=!n;bg.textContent=n;bg.classList.toggle('qgreen',nd>0)}catch(e){}}/* 133：只算可以完成＋可以接；有可以完成時綠色 */
 /* ===== 117（18h）：委託改從果實袋交（不再從田裡的植株交）=====
    每日 ★ 3 顆、★★ 6 顆（金幣 ×2）、★★★ 3 顆；每週照舊（整齊供應 24 顆、其他 3 顆）；NPC 故事、支線 3 顆。可以分次交，進度記在那張委託上（got），
    每日、每週換新就作廢。買來的果實（f.b）可以交每日、每週，不能交 NPC 故事和支線（61.1）。預設先拿完美度低、再拿個頭小的。 */
@@ -10024,7 +10155,7 @@ async function bkDaily(raw,sbuild){if(!uid||!raw)return 'none';const day=dayKey(
   catch(e){const f=bkFailGet();if(f.d!==day)bkFailSet({n:(f.n||0)+1,d:day});try{logErr(e,'每日備份')}catch(_){}return 'fail'}}
 async function bkList(){const qs=await db.collection('backups').where('uid','==',uid).get();
   return qs.docs.filter(d=>d.id.startsWith(uid+'_')&&/^(day[0-6]|prerestore)$/.test(d.id.slice(uid.length+1))).map(d=>({id:d.id,...d.data(),save:undefined})).sort((a,b)=>(b.at||0)-(a.at||0))}
-function bkBoxHTML(){const f=bkFailGet();return `${(f.n||0)>=3?'<p class="note">備份沒有成功</p>':''}<p class="note" style="margin-top:12px"><a href="#" onclick="openBk();return false">從備份還原</a></p>`}
+function bkBoxHTML(){const f=bkFailGet();return `<label class="note" style="display:flex;gap:8px;align-items:center;margin-top:12px"><input type="checkbox" ${qRemindOn()?'checked':''} onchange="state.qRemind=this.checked?undefined:false;save()">任務提醒（關掉後只留記號和數字）</label>${(f.n||0)>=3?'<p class="note">備份沒有成功</p>':''}<p class="note" style="margin-top:12px"><a href="#" onclick="openBk();return false">從備份還原</a></p>`}
 function renderBk(){const el=document.getElementById('bkBox');if(el)el.innerHTML=bkBoxHTML()}
 const bkT=t=>{const d=new Date(t||0);return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`};
 function bkSum(raw){const r=loadSave(raw);if(!r.state)throw new Error(r.err||'讀不懂這份備份');const o=r.state;return {lv:o.lv||1,coins:o.coins||0,lots:(o.lots||[]).length,plants:(o.plots||[]).filter(Boolean).length}}

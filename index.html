@@ -1865,7 +1865,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-19o';
+const BUILD='2026-11-19p';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -6913,15 +6913,26 @@ const REG_GND_ST={};/* 圖片網址 → 'p' 載入中、'ok'、'x' 載不到 */
 /* 地圖的 ground 欄位：是圖片路徑才算畫好的地面（秘境原本就用 ground 寫地面顏色） */
 function gndImg(M){return M&&typeof M.ground==='string'&&/\.(jpe?g|png|webp)$/i.test(M.ground)?M.ground:null}
 const gndSrc=M=>gndImg(M)+'?v='+BUILD;
-function gndLoad(M){const k=gndImg(M);if(REG_GND_ST[k])return REG_GND_ST[k];REG_GND_ST[k]='p';
-  try{const im=new Image();im.onload=()=>{REG_GND_ST[k]='ok';try{const el=document.getElementById('rgimg');if(el){el.setAttribute('href',gndSrc(M));el.dataset.k='G'}}catch(e){}try{if(regIn()&&regCur()===M)renderWorld()}catch(e){}};
-    im.onerror=()=>{REG_GND_ST[k]='x';try{if(regIn()&&regCur()===M)renderWorld()}catch(e){}};im.src=gndSrc(M)}catch(e){REG_GND_ST[k]='x'}return REG_GND_ST[k]}
+/* 19p 修正：iPhone 上一直停在「載入中」。原本 new Image() 只放在區域變數裡，Safari 會在圖還沒下載完時把它回收，
+   onload／onerror 都不會來，狀態永遠是載入中，所以一直畫格子地面。改成和格子地面同一條路：fetch 成 blob 網址（失敗才用有留住參考的 Image），
+   載入中超過 10 秒、失敗 30 秒後會再試一次 */
+const REG_GND_IM={},REG_GND_URL={},REG_GND_T={};
+const gndHref=M=>REG_GND_URL[gndImg(M)]||gndSrc(M);
+function gndLoad(M){const k=gndImg(M),s=REG_GND_ST[k],now=Date.now();
+  if(s==='ok')return s;if(s&&now-(REG_GND_T[k]||0)<(s==='x'?30000:10000))return s;
+  REG_GND_ST[k]='p';REG_GND_T[k]=now;
+  const redraw=()=>{try{if(regIn()&&regCur()===M)renderWorld()}catch(e){}};
+  const fin=url=>{REG_GND_URL[k]=url;REG_GND_ST[k]='ok';delete REG_GND_IM[k];try{const el=document.getElementById('rgimg');if(el){el.setAttribute('href',url);el.dataset.k='G'}}catch(e){}redraw()};
+  const fail=()=>{REG_GND_ST[k]='x';REG_GND_T[k]=Date.now();delete REG_GND_IM[k];redraw()};
+  const viaImg=()=>{try{const im=new Image();REG_GND_IM[k]=im;/* 留住參考，不讓瀏覽器回收 */im.onload=()=>fin(gndSrc(M));im.onerror=fail;im.src=gndSrc(M)}catch(e){fail()}};
+  try{if(typeof fetch==='function'&&typeof URL!=='undefined'&&URL.createObjectURL){const pr=fetch(gndSrc(M)).then(r=>{if(!r.ok)throw new Error('http '+r.status);return r.blob()}).then(b=>{if(!b||!b.size)throw new Error('empty');fin(URL.createObjectURL(b))}).catch(()=>viaImg());REG_GND_IM[k]=pr}else viaImg()}catch(e){viaImg()}
+  return REG_GND_ST[k]}
 /* 物件腳下的接地陰影：扁橢圓、黑 18%、寬約物件寬的 70% */
 function gndShadowSVG(M,objs){let s='';const FL=REGION_FLAT[M.bk]||{};for(const o of objs){if(FL[o[0]])continue;const a=v2artDim(M.bk,o[0]);if(!a)continue;const sk=(o[4]&&o[4].s)||1,w=a.w*sk*0.7,ry=Math.max(5,Math.min(22,w*0.13));
   s+=`<ellipse cx="${o[1].toFixed(1)}" cy="${(o[2]-2).toFixed(1)}" rx="${(w/2).toFixed(1)}" ry="${ry.toFixed(1)}" fill="#000" opacity=".18"/>`}return s?`<g class="gshadow" pointer-events="none">${s}</g>`:''}
 /* ===== 150 結束 ===== */
 function regGroundEl(M){const key=M.bk+'|'+M.id,W=M.W,H=M.H;
-  if(gndImg(M)){const st=gndLoad(M);if(st==='ok')return `<rect x="0" y="0" width="${W}" height="${H}" fill="${regGroundColor(M)}"/><image id="rgimg" data-k="G" href="${gndSrc(M)}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>`}/* 150：載入中、載不到 → 照舊畫格子地面 */
+  if(gndImg(M)){const st=gndLoad(M);if(st==='ok')return `<rect x="0" y="0" width="${W}" height="${H}" fill="${regGroundColor(M)}"/><image id="rgimg" data-k="G" href="${gndHref(M)}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>`}/* 150：載入中、載不到 → 照舊畫格子地面 */
   if(REG_GIMG[key]==='x'){const was=REG_LITE;REG_LITE=true;try{return REG_GSVG[key]||(REG_GSVG[key]=regGroundInline(M))}finally{REG_LITE=was}}/* 圖片載不到：直接放沒有濾鏡的向量 */
   const ready=REG_GIMG[key]&&REG_GIMG[key]!=='p';
   if(!REG_GIMG[key]){REG_GIMG[key]='p';

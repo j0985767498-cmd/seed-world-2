@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-19e'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-19f'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-19f`。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-19g`。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）、第 140 節（19f）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -244,6 +244,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 標本與精靈：`claimSpec`、`rightsTx`、`specUse`、收藏櫃 `cabListHTML`；精靈 `fyWake`／`fyEvolve`、`fySpringHTML`、跟隨 `fyLoop`、演出 `fyShow`、圖 `fyArt`／`fyArtHTML`（新畫布 `FY_CV`、上色開關 `FY_RECOLOR`）。
 - 角色：`avatarSVG`→`avV3SVG`（`av3.js`、`av3_heads.js`、衣服 `avOutfitParts`）、`avNorm`／`avPack`、打扮頁 `avatarEditorHTML`、衣櫃 `WARD`／`wardCheck`；`renderChars`、`updateMe`、`charG`、`poseFor`、`walkLoop`、`walkTo`。
 - 介面改版（138）：共用樣式 CSS 變數 `--tx`／`--ol`／`--pn`…、稀有度色 `RCOL`（`--r0`～`--r5`）；一套面板 `sheetMode`／`sheetModeOff`（`body.shOnP`、`shFull`、`SHEET_FULL`、`#sheetBack`）、`body.pnlOpen`；主畫面 `#rbar`、`#mapBtn`→`p-map`（`renderMapPanel`／`mapPanelTap`）、選單 `p-menu`（`MENU`／`menuTap`）、神之子 `openFyPage`、`#syncDot`；背包 `bagTabsHTML`（種子／果實／素材／道具 `itemBagHTML`）、`bagCatOf`（野生）、`slotCell`／`lotIc`／`lotTier`、`bagSel`／`bagInfoHTML`、`bagTidy`、`bagVaultReq`；種子詳細 `lotHeroHTML`／`lotParentsTxt`／`rbtn`；任務面板 `ordersHTML`（`qTab`／`qCatOf`／`Q_GRP`／`qCardHTML2`／`qProgHTML`）。
+- 主畫面重排（140）：右上 `#tbar`（`#ibFr`／`#frDot` `frDotOn`、`#ibDex`、`#ibLay`、`#mapBtn`、`#ibMenu`）、右下 `#rbar`（column-reverse：背包、任務、神之子）、布置模式 `layMode`／`renderLay`／`layTap`（`#layBar`）、背包分頁 種子／果實／素材（含道具）／種原庫、`MENU` 三格。
 - 個人介面 `openMe`／`meSheetHTML`、通知 `noteOpen`、慶祝卡 `celShow`、提示 `toast`、「？」小說明 `qh`。
 
 **效能、模式、其他**
@@ -401,4 +402,4 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 137 | 主題布置：一鍵套用、存自己的布置 | 已完成 | docs/規格存檔.md；19a（9.133）；田園小屋是「已擁有」、沒有開局自動擺；**要請使用者 iPhone 看四套套用後的畫面** |
 | 138 | 介面改版第一步：共用樣式、主畫面、背包、種子詳細、任務面板 | 已完成 | docs/規格存檔.md；19c（9.135）；農場上的抽屜照舊是抽屜、野生不含雜交第一代、道具放背包第四分頁（和規格不同的地方列在 9.135）；果實、素材詳細只換樣式；沒有截圖；**要請使用者 iPhone 看主畫面與面板** |
 | 139 | 後六區的地圖模板與怪物 | 進行中 | docs/待實作/第139節.md；**139.1～139.6、139.9 已做（19e，見規格存檔 9.137）**；139.7 怪物、139.8 素材等使用者更新規格；新地圖沒有怪；建議之後產圖的物件列在 9.137 |
-| 140 | 主畫面按鈕重排（第 138 節的修正） | 未做 | docs/待實作/第140節.md；排在第 139 節之後 |
+| 140 | 主畫面按鈕重排（第 138 節的修正） | 已完成 | docs/規格存檔.md；19f（9.138）；金幣在兩種尺寸都放頭像下面、道具併進素材分頁（和規格不同）；有截圖（假存檔）；沒測 iPhone |

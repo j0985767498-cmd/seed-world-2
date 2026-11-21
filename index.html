@@ -1599,7 +1599,7 @@ function packKeys(l){
 }
 let DRAW_MU=null;/* 96：剛抽到的那顆是不是新突變（{k,v}），發芽判定時用 */
 function drawSeed(l){if(l.zs)unzipLot(l);DRAW_MU=null;{const m=lcMu(l);if(m&&rnd()*lc(l)<m){const k=Math.floor(rnd()*m),g=l.mseeds.splice(k,1)[0],md=(l.mmd||[]).splice(k,1)[0];DRAW_MU=md||{k:'?'};if(!l.mseeds.length){delete l.mseeds;delete l.mmd}return g}}if(l.seeds&&l.seeds.length)return l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0];l.count--;return child(l.m,l.f).g}
-function newGame(){state={rv98:1,patV:1,fyopV:1,notes:{},rs134V:1,themeV:1,fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
+function newGame(){state={rv98:1,patV:1,fyopV:1,notes:{},rs134V:1,themeV:1,spV:1,fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
 const WILD={tomato:'red',strawberry:'red',zucchini:'green',corn:'yellow',broccoli:'white',melon:'yellow',chili:'red',pumpkin:'yellow',eggplant:'purple'};
 function originalFor(crop){
   const wild=rnd()<0.7,col=wild?WILD[crop]:pk(['red','yellow','green','white','purple'].filter(c=>c!==WILD[crop]));
@@ -1729,7 +1729,8 @@ function migrate(o){if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fair
   lvMigrate(o);/* 28.4（15y）：舊玩家回推等級、主線標記完成（只做一次，旗標 lvV） */
   m111(o);/* 111（18c）：生長時間換算、加速劑獎勵調整（只做一次，旗標 growV） */
   m112(o);/* 112（18d）：果實袋、每週整齊供應改成顆數（旗標 hvV） */
-  if(!o.themeV){o.themeV=1}/* 137：田園小屋全部是免費裝飾，新舊玩家都直接「已擁有」（不用另外記） */
+  if(!o.themeV){o.themeV=1}
+  if(!o.spV){o.spV=1;if(o.spirits&&typeof o.spirits==='object'){if(!o.items)o.items={};for(const bk in o.spirits)if(o.spirits[bk]>0)o.items['sp_'+bk]=(o.items['sp_'+bk]||0)+o.spirits[bk];delete o.spirits}}/* 135 第二階段：精魄改成道具（可以上架市集） *//* 137：田園小屋全部是免費裝飾，新舊玩家都直接「已擁有」（不用另外記） */
   if(!o.rs134V){o.rs134V=1;try{for(const k of Object.keys(o.rs||{})){const r=o.rs[k];if(r&&r.d>=3){r.paid=1;r.t=0}}}catch(e){}}/* 134：舊玩家第 3 步的 rw 已經給過，第 4 步不重複；第 4 步不用等 */
   try{if(o.rs&&o.rs.grass&&o.rs.grass.d>=3){if(!o.notes||typeof o.notes!=='object')o.notes={};if(!o.notes.L_grass){o.notes.L_grass=Date.now();o.noteNew=1}}}catch(e){}/* 130：割早的田已經完成的人補上「裂風」 */
   if(!o.fyopV){o.fyopV=1;try{for(const k of Object.keys(o.fairy||{})){const f=o.fairy[k];if(FY[k]&&f&&typeof f==='object'&&f.no){f.evo=f.evo?1:0;f.op={n:0,cols:[]}}}}catch(e){}}/* 114（18s）：每一位已喚醒的神之子建立進度；舊規則進化的保留進化、神化從 0 開始 */
@@ -1842,7 +1843,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-19c';
+const BUILD='2026-11-19d';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2915,7 +2916,9 @@ const NOTE_REL=[
  {id:'R2',t:'不會生鏽的罐子',where:'銀霧白樺林・石祠',hint:'白樺林的石祠',a:'供在石祠裡好幾代了。守林的人說它是「天上掉下來的鐵」，從來不生鏽。',b:'一個壓扁的鋁罐。拉環還在。'},
  {id:'R3',t:'橘色的浮球',where:'珍珠潟湖・漁村高腳屋',hint:'潟湖漁村的高腳屋',a:'掛在屋簷下當風鈴。漁村的人說是從很遠的海漂來的，泡了幾百年也不爛。',b:'塑膠浮球。底下有一排數字，是出廠編號。'},
  {id:'R4',t:'黑色的玻璃',where:'城鎮・品種鑑定所',hint:'品種鑑定所的收藏',a:'墨先生說這是他收藏裡最看不懂的一件：一片薄薄的黑玻璃，照得出人影，敲起來不像玻璃。',b:'一支手機。螢幕裂了，按什麼都不會亮。',npc:'mo',btn:'看看他的收藏',line:'你盯著它看很久了。認得？｜……不說也沒關係。我收東西，不問來歷。'},
- {id:'R5',t:'打不開門的鑰匙',where:'城鎮・阿凱',hint:'阿凱身上帶著的東西',a:'阿凱家代代傳下來的「鑰匙」，扁扁的一片，插不進任何鎖。他祖父說總有一天用得上。',b:'一張門禁卡。上面的字磨掉了，只剩一個角落的晶片。',npc:'kai',btn:'問他那把鑰匙',line:'這個？我爸給我的，他爸給他的。｜插不進鎖孔，可是家裡每個人都說它是鑰匙。｜我老覺得它跟那座種子庫有關係。沒有證據啦，就是直覺。',need:()=>!!(state.mq&&state.mq.ch>=6)}];
+ {id:'R5',t:'打不開門的鑰匙',where:'城鎮・阿凱',hint:'阿凱身上帶著的東西',a:'阿凱家代代傳下來的「鑰匙」，扁扁的一片，插不進任何鎖。他祖父說總有一天用得上。',b:'一張門禁卡。上面的字磨掉了，只剩一個角落的晶片。',npc:'kai',btn:'問他那把鑰匙',line:'這個？我爸給我的，他爸給他的。｜插不進鎖孔，可是家裡每個人都說它是鑰匙。｜我老覺得它跟那座種子庫有關係。沒有證據啦，就是直覺。',need:()=>!!(state.mq&&state.mq.ch>=6)},
+ {id:'R6',x:1,t:'生鏽的指南針',where:'銀霧白樺林・神隱之森',hint:'神隱之森的大鳥巢',a:'在神隱之森一個很大的鳥巢裡，和樹枝、羽毛纏在一起。指針已經不會動了。',b:'一個登山用的指南針。背面刻著一行字，磨得看不清楚。'}
+];
 const NOTE_SPOTS={R1:{bk:'grass',map:'old_well',x:420,y:620,r:90},R2:{bk:'forest',map:'shrine',x:300,y:466,r:85},R3:{bk:'marsh',map:'village',x:255,y:575,r:85}};
 const NOTE_ALL={title:'認得舊東西的人',c:300};
 const notesObj=()=>state.notes&&typeof state.notes==='object'?state.notes:(state.notes={});
@@ -2924,7 +2927,7 @@ const noteDef=id=>NOTE_LEG.find(x=>x.id===id)||NOTE_REL.find(x=>x.id===id);
 const relCardHTML=r=>`<div class="lot"><div class="lot-name">${esc(r.t)}</div><p class="note">${esc(r.a)}</p><p>${esc(r.b)}</p><div class="meta">${esc(r.where)}</div></div>`;
 function noteGet(id,quiet){const d=noteDef(id);if(!d||noteHas(id))return false;notesObj()[id]=Date.now();state.noteNew=1;try{addXp(NOTE_XP,true)}catch(e){}
   if(!quiet)toast(`筆記多了一則：${d.t}`,4000);
-  if(NOTE_REL.every(r=>noteHas(r.id))&&!notesObj()._all){notesObj()._all=Date.now();state.coins+=NOTE_ALL.c;if(!state.titles)state.titles=[];if(!state.titles.includes(NOTE_ALL.title))state.titles.push(NOTE_ALL.title);setTimeout(()=>{try{toast(`五件舊東西都找到了：稱號「${NOTE_ALL.title}」、${NOTE_ALL.c} 金幣`,6000)}catch(e){}},quiet?0:1800)}
+  if(NOTE_REL.filter(r=>!r.x).every(r=>noteHas(r.id))&&!notesObj()._all){notesObj()._all=Date.now();state.coins+=NOTE_ALL.c;if(!state.titles)state.titles=[];if(!state.titles.includes(NOTE_ALL.title))state.titles.push(NOTE_ALL.title);setTimeout(()=>{try{toast(`五件舊東西都找到了：稱號「${NOTE_ALL.title}」、${NOTE_ALL.c} 金幣`,6000)}catch(e){}},quiet?0:1800)}
   save();try{noteDot()}catch(e){}return true}
 /* 走到遺物旁邊 */
 function noteTick(){try{if(scene!=='explore')return;for(const id in NOTE_SPOTS){const S=NOTE_SPOTS[id];if(noteHas(id)||exBiome!==S.bk||regMap!==S.map)continue;if(Math.hypot(exMe.x-S.x,exMe.y-S.y)>S.r)continue;const r=noteDef(id);if(noteGet(id))noteOpen(`<h2>撿到的東西</h2>`+relCardHTML(r)+'<p class="note">記進「圖鑑 → 筆記」了。</p>')}}catch(e){}}
@@ -2938,7 +2941,7 @@ function noteTalk(id){const d=noteDef(id);if(!d||!d.npc)return false;
 function noteHTML(){if(state.noteNew){state.noteNew=0;save();try{noteDot()}catch(e){}}const N=notesObj();
   const unk=hint=>`<div class="lot"><div class="lot-name">？？？</div><p class="note">${esc(hint)}</p></div>`;
   let h=`<h3>傳說（${NOTE_LEG.filter(x=>N[x.id]).length}／${NOTE_LEG.length}）</h3>`+NOTE_LEG.map(L=>N[L.id]?`<div class="lot"><div class="lot-name">${esc(L.t)}</div><p>${esc(L.body)}</p>${(state.legSeen||{})[L.id]?`<p class="note">你親眼看到：${esc(state.legSeen[L.id])}</p>`:''}<div class="meta">${esc(L.where)}</div></div>`:unk(L.hint)).join('');
-  h+=`<h3>撿到的東西（${NOTE_REL.filter(x=>N[x.id]).length}／${NOTE_REL.length}）</h3>`+NOTE_REL.map(r=>N[r.id]?relCardHTML(r):unk(r.hint)).join('');
+  h+=`<h3>撿到的東西（${NOTE_REL.filter(x=>N[x.id]).length}／${NOTE_REL.filter(x=>!x.x||N[x.id]).length}）</h3>`+NOTE_REL.filter(r=>!r.x||N[r.id]).map(r=>N[r.id]?relCardHTML(r):unk(r.hint)).join('');
   return h}
 function noteDot(){const b=document.querySelector('[data-open="dex"]');if(!b)return;let d=b.querySelector('.notedot');if(!d){d=document.createElement('i');d.className='notedot';b.appendChild(d)}d.hidden=!(state&&state.noteNew)}
 
@@ -3107,7 +3110,7 @@ function renderSheet(){
   if(sheet.stall!=null){sb.innerHTML=stallHTML();bindStall();return}
   if(sheet.note){sb.innerHTML=sheet.note+(sheet.brag?'<div class="row2"><button class="btn primary" data-act="close">太好了</button><button class="btn" data-act="brag">炫耀一下</button></div>':'<button class="btn primary" data-act="close">好</button>');return}
   if(sheet.fruit){sb.innerHTML=fruitHTML();return}/* 112.5 */
-  if(sheet.mat){sb.innerHTML=matHTML();return}/* 115.3 */
+  if(sheet.mat){sb.innerHTML=matHTML();return}if(sheet.pet){sb.innerHTML=petHTML();return}/* 135 *//* 115.3 */
   if(sheet.theme){sb.innerHTML=themeHTML();return}/* 137 */
   if(sheet.qd){sb.innerHTML=qDetailHTML();return}if(sheet.qgo){sb.innerHTML=qGoHTML();return}/* 133 */
   if(sheet.mqgo){sb.innerHTML=mqGoHTML();return}/* 116.5 */
@@ -3199,7 +3202,7 @@ sb.addEventListener('click',e=>{
   if(sheet.stall!=null)return stallAction(b);
   if(sheet.note){if(b.dataset.act==='brag'){postNews('mut',sheet.brag,0);toast('貼到城鎮的公布欄了');closeSheet()}return}
   if(sheet.fruit)return fruitAction(b);
-  if(sheet.mat)return;
+  if(sheet.mat)return;if(sheet.pet)return petAction(b);
   if(sheet.give)return giveAction(b);
   if(sheet.rnpc){if(orderAction(b)&&sheet&&sheet.rnpc)renderSheet();return}/* 121 */
   if(sheet.hatsuho)return hatsuhoAction(b);/* 135 */
@@ -3420,7 +3423,7 @@ function tick(){
   try{rsvTick()}catch(e){}
   try{fixTick()}catch(e){}/* 115.5 */
   try{mq2Tick()}catch(e){}/* 116 */
-  try{fsTickAll();rsTick();noteTick();qArrowCheck();qScan();pRegen();renderHP()}catch(e){}/* 118 */
+  try{fsTickAll();rsTick();noteTick();hatchTick();nestTick();qArrowCheck();qScan();pRegen();renderHP()}catch(e){}/* 118 */
   try{mq2KidTick()}catch(e){}/* 121 */
   try{mq2MarshTick()}catch(e){}/* 122 */
   try{roamWatch()}catch(e){}/* 91 */
@@ -4446,7 +4449,7 @@ function stallHTML(){
   if(sheet.step==='tpick'||sheet.step==='tform')return spStallHTML(h);
   if(sheet.step==='fpick'||sheet.step==='fform')return fruitListHTML(h);/* 117.3 */
   if(sheet.step==='ipick'||sheet.step==='npick'){
-    const it=state.items||{},npc=sheet.step==='npick',have=IKEYS.filter(k=>it[k]>0&&(!npc||NPC_BUY[k]));/* 125：手套不能賣給道具行 */
+    const it=state.items||{},npc=sheet.step==='npick',have=IKEYS.concat(SPK).filter(k=>it[k]>0&&(!npc||NPC_BUY[k]));/* 125：手套不能賣給道具行 */
     h+=npc?`<p class="note">加速劑 ${NPC_BUY.acc}／次・誘變劑 ${NPC_BUY.mut}／瓶</p>`:`<p class="note">選一種道具上架。</p>`;
     h+=have.length?have.map(k=>`<button class="pick" data-act="${npc?'npick':'ipick'}" data-k="${k}">${itemIcon(k)}<span><b>${itemName(k)}</b><span class="meta">持有 ${it[k]} ${itemUnit(k)}・${npc?`每${itemUnit(k)} ${NPC_BUY[k]} 金幣`:itemEff(k)}</span></span></button>`).join(''):`<p class="note">目前沒有可以${npc?'賣':'上架'}的道具。到探索世界撿撿看吧。</p>`;
     return h+`<button class="btn" data-act="sback">返回</button>`;
@@ -4633,7 +4636,7 @@ let bagSel=null,bagTidy=false,bagVaultReq=false;
 const TIDY_IC='<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>';
 function bagInfoHTML(){const l=bagSel!=null&&state.lots.find(x=>x.id===bagSel);if(!l)return '';const t=lotTier(l);
   return `<div class="bagInfo"><span class="biic" style="--rc:${RCOL[t]}">${lotIc(l,40)}</span><span class="bitx"><b>${esc(l.name)}</b>${rbT(t)}<span class="meta">${CROPS[l.crop].n}・${lc(l)} 顆・發芽 ${Math.round(l.germ*100)}%</span></span><span class="bibt"><button class="btn primary" data-bagsow="${l.id}">種下去</button><button class="mini" data-bagmore="${l.id}">詳細 ›</button></span></div>`}
-function itemCount(){return IKEYS.reduce((s,k)=>s+((state.items||{})[k]||0),0)+Object.values(spiritObj()).reduce((s,v)=>s+(v||0),0)}
+function itemCount(){const I=state.items||{};return IKEYS.concat(SPK).reduce((s,k)=>s+(I[k]||0),0)+Object.values(packsObj()).reduce((s,v)=>s+(v||0),0)+petsArr().length+hatchArr().length}
 function itemBagHTML(){const I=state.items||{};let h=spiritLine();
   h+=`<div class="items">${IKEYS.map(k=>`<div class="itm${I[k]?'':' dim'}">${itemIcon(k)}<span class="lr"><b>${itemName(k)}</b><span class="meta">${itemEff(k)}</span><span class="meta">持有 ${I[k]||0} ${itemUnit(k)}</span></span></div>`).join('')}</div><p class="note">加速劑在植株上用，誘變劑在育苗盤勾選。${qh('加速劑只能用在幼苗和結果中；長按綠色按鈕選「加速」可以連續用。')}</p>`;return h}
 /* ---- 一套面板：抽屜疊在面板上時，變成面板裡的下一頁（‹ 上一頁的名字＋一顆 ✕）；任務、任務說明也用面板的樣子 ---- */
@@ -5235,9 +5238,9 @@ const OL='#3B2A18',EXC=360,EX_LIMIT=6,EXGATE=[0,60];
 const f1=v=>v.toFixed(1);
 /* 14g 道具改版：只保留生長加速劑（acc，單位「次」）與誘變劑（mut，單位「瓶」） */
 const IKEYS=['acc','mut','glove','pot'],ACC_PACK=2,NPC_BUY={acc:15,mut:150}/* 111.2：一瓶 10 次 → 2 次；道具行每次 3 → 15 金幣 */;
-const itemName=k=>k==='pot'?'小補血藥':k==='glove'?'偷偷手套':k==='fix'?'定型劑':k==='wild'?'野生種原':k==='rare'?'珍稀種原':k==='acc'?'生長加速劑':k==='mut'?'誘變劑':isOldFert(k)?'舊肥料（已停用）':'道具';
-const itemUnit=k=>k==='pot'?'瓶':k==='fix'?'個':k==='acc'?'次':k==='mut'?'瓶':'個';
-const itemEff=k=>k==='pot'?'在野外喝，回 30% 血量，喝完 5 秒才能再喝':k==='glove'?'到朋友的農場，偷一株放太久沒收的作物。':k==='acc'?`每次讓這株少等 ${ACC_MIN} 分鐘`:k==='mut'?'撒進育苗盤時使用，這次撒的種子更容易突變，發芽率 ×0.7':isOldFert(k)?`已停用，買到會直接換成每個 ${oldFertCoin(k)} 金幣`:'';
+const itemName=k=>isSpK(k)?spiritName(String(k).slice(3)):k==='pot'?'小補血藥':k==='glove'?'偷偷手套':k==='fix'?'定型劑':k==='wild'?'野生種原':k==='rare'?'珍稀種原':k==='acc'?'生長加速劑':k==='mut'?'誘變劑':isOldFert(k)?'舊肥料（已停用）':'道具';
+const itemUnit=k=>isSpK(k)?'個':k==='pot'?'瓶':k==='fix'?'個':k==='acc'?'次':k==='mut'?'瓶':'個';
+const itemEff=k=>isSpK(k)?'在背包用，孵 6 小時孵出神寵':k==='pot'?'在野外喝，回 30% 血量，喝完 5 秒才能再喝':k==='glove'?'到朋友的農場，偷一株放太久沒收的作物。':k==='acc'?`每次讓這株少等 ${ACC_MIN} 分鐘`:k==='mut'?'撒進育苗盤時使用，這次撒的種子更容易突變，發芽率 ×0.7':isOldFert(k)?`已停用，買到會直接換成每個 ${oldFertCoin(k)} 金幣`:'';
 const IW=[['acc',80],['mut',20]];
 const dayKey=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
 function ensureEx(){
@@ -5352,7 +5355,7 @@ function iconReady(n){const v=ICON_OK[n];if(v!==undefined)return v===1;ICON_OK[n
 const uiIcon=(n,h)=>`<img class="uic" src="${iconSrc(n)}" alt="" aria-hidden="true" style="height:${h}px">`;
 const sbtnInner=(n,t,c)=>`<img class="sbi" src="${iconSrc(n)}" alt="" aria-hidden="true"><span class="sbt">${t}</span>${c?`<i class="sbn">${c}</i>`:''}`;
 const ITEM_ICON={acc:'accel',mut:'mutagen',wild:'seed_bag',rare:'seed_bag'};
-function itemArt(x,y,t){
+function itemArt(x,y,t){if(isSpK(t))return spiritArt(x,y,t);
   let s='';
   {const ik=ITEM_ICON[t];if(ik&&iconReady(ik)){const [iw,ih]=ICON_DIM[ik],h=30,w=h*iw/ih;/* 圖示：底部中央對齊 (x,y)，高 30 */
     if(t==='rare')s+=`<circle cx="${x}" cy="${y-14}" r="15" fill="#F2C230" opacity=".45"/>`;
@@ -7245,14 +7248,12 @@ function bossBar(b){let el=document.getElementById('bossBar');if(!b){if(el)el.hi
 /* ---- 贏了、輸了 ---- */
 function bossWin(b){if(b.kind==='lord'){lordEnd(b,'won');return}b.done=true;b.mode='idle';b.shape=null;bossReward(b);(state.servantAt||(state.servantAt={}))[b.bk]=bossNow();save();
   setTimeout(()=>{if(bossRT===b)bossRT={kind:'wait',bk:b.bk,until:(state.servantAt||{})[b.bk]+BOSS_RESPAWN,def:b.def}},1200)}
-const spiritObj=()=>state.spirits&&typeof state.spirits==='object'?state.spirits:(state.spirits={});
 const spiritName=bk=>LORDS[bk]?LORDS[bk].n.replace(/^.*的/,'')+'的精魄':'精魄';
-function spiritLine(){const S=spiritObj(),ks=Object.keys(S).filter(k=>S[k]>0);return ks.length?`<p class="note" style="margin:0 0 6px">精魄：${ks.map(k=>`${esc(spiritName(k))} ×${S[k]}`).join('、')}${qh('主平靜下來後留下的東西。之後可以孵出神寵（還沒開放）。')}</p>`:''}
 function bossReward(b){const bk=b.bk,lord=b.kind==='lord',sv=SERVANTS[bk],got=[];
   if(sv){const n=lord?3+Math.floor(Math.random()*3):2+Math.floor(Math.random()*2);matAdd(sv.mat,n);tripAdd(sv.mat,n);got.push(`${matName(sv.mat)} ×${n}`);if(Math.random()<(lord?0.3:0.15)){matAdd(sv.gold,1);tripAdd(sv.gold,1);got.push(matName(sv.gold))}}
   const cr=(typeof MON_COIN!=='undefined'?MON_COIN[0]:[1,2]),c=(cr[0]+Math.floor(Math.random()*(cr[1]-cr[0]+1)))*(lord?50:10);state.coins+=c;got.push(`${c} 金幣`);
-  if(typeof MON_XP_ON!=='undefined'&&MON_XP_ON){try{addXp(monXp(bk,false)*(lord?100:20),true)}catch(e){}}
-  if(lord){if(Math.random()<0.4){const S=spiritObj();S[bk]=(S[bk]||0)+1;got.push(spiritName(bk))}
+  if(typeof MON_XP_ON!=='undefined'&&MON_XP_ON){try{const x=monXp(bk,false)*(lord?100:20);addXp(x,true);petXp(x)}catch(e){}}
+  if(lord){if(Math.random()<0.4){const I=state.items||(state.items={});I['sp_'+bk]=(I['sp_'+bk]||0)+1;got.push(spiritName(bk))}if(Math.random()<0.2){const P=packsObj();P[bk]=(P[bk]||0)+1;got.push(`夢幻色卡包（${BIOMES[bk]?BIOMES[bk].n:bk}）`)}{const W=state.lordWon||(state.lordWon={});W[b.def.id]=(W[b.def.id]||0)+1}/* 135 第二階段 */
     if(Math.random()<0.01){try{const L=lordSeed(bk);if(L)got.push(`「${L.name}」的種子 ${L.count} 顆`)}catch(e){}}
     if(!b.def.cons)(state.lordCd||(state.lordCd={}))[b.def.id]=bossNow();lordFirst(b)}
   save();try{renderHUD()}catch(e){}
@@ -7289,7 +7290,7 @@ function bossOnPath(x,y,w){const S=lordSum.path;if(!S)return false;const [bx,by]
 /* 荷葉路可以走（regBlocked 會先問這裡） */
 const bossWalkOk=(M,x,y)=>!!lordSum.path&&!!M&&M.bk==='marsh'&&M.id==='secret'&&scene==='explore'&&exBiome==='marsh'&&bossOnPath(x,y,30);
 /* 地圖上的東西：割草圈（點了放初穗）、羽毛、倒影與荷葉 */
-function lordObjs(){const out=[];if(scene!=='explore'||regMap!=='secret')return out;const bk=exBiome,L=LORDS[bk];if(!L)return out;const fight=bossRT&&bossRT.kind==='lord';
+function lordObjs(){const out=[];if(scene!=='explore'||regMap!=='secret')return out;const bk=exBiome,L=LORDS[bk];if(!L)return out;const fight=bossRT&&bossRT.kind==='lord';if(bk==='forest')out.push(nestObj());
   if(bk==='grass'&&!fight){const [x,y]=L.at;out.push({y:y-30,h:`<rect data-reg="lordoffer" x="${x-50}" y="${y-36}" width="100" height="60" fill="transparent" style="cursor:pointer"/>`})}
   if(bk==='forest'&&!fight&&minervaFog()&&lordCdOk(L.id)){const f=MIN_FEATHERS[lordSum.f||0];if(f)out.push({y:f[1],h:`<g transform="translate(${f[0]} ${f[1]})" pointer-events="none" class="feather"><path d="M0 0 C-7 -14 -5 -36 6 -50 C11 -32 8 -14 0 0Z" fill="#F4F6FA" stroke="#9AA6B8" stroke-width="1.2"/><path d="M0 0 L5 -46" stroke="#9AA6B8" stroke-width="1"/></g>`})}
   if(bk==='marsh'&&lordSum.path){const S=lordSum.path,[bx,by]=L.at,n=Math.max(4,Math.round(Math.hypot(bx-S.x0,by-S.y0)/44));let s='';for(let i=1;i<=n;i++){const t=i/(n+1),x=S.x0+(bx-S.x0)*t,y=S.y0+(by-S.y0)*t;s+=`<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="24" ry="10" fill="#5FA04A" stroke="#3E7A2E" stroke-width="1.2"/>`}
@@ -7343,6 +7344,70 @@ function lordNetSync(bk,v){const b=bossRT;if(!v||!v.meta)return;const m=v.meta;
   b.net.host=m.host;if(v.s)b.net.s=v.s;b.hbs=v.hb||{};b.downs=v.down||{};b.dmg=Object.assign({},v.dmg||{});b.dmg[uid]=Math.max(b.myDmg,b.dmg[uid]||0);
   if(m.st!=='on'&&b.res!=='left'){lordSum.gone=m.fid;lordResult(b,m.st)}}
 /* ===== 135 結束 ===== */
+/* ===== 135（19d）第二階段：精魄孵化與神寵、夢幻色卡包（佔位）、米涅瓦的巢 =====
+   精魄＝道具 sp_<地區>（state.items，可以上架市集）；用了 → state.hatch 孵 6 小時（離線也算，hatchTick 在 tick 裡）→ state.pets 多一隻幼獸。
+   神寵綁定不能交易；可以有好幾隻，帶一隻（state.petOn），和神之子一起帶；經驗＝玩家打怪拿到的同額（petXp，現在打怪經驗是 0）。
+   三階段：幼獸 → 成獸（Lv 20＋同一隻主的精魄 ×1）→ 完全體（Lv 40＋精魄 ×2＋那一區僕人的金色素材 ×3）。圖還沒有：幼獸、成獸用程式畫的佔位（成獸＝幼獸 ×1.3），完全體先用主的圖縮小。
+   技能 27 個還沒設計。卡包規則（《精靈_孵育進化神化》第 3 點）不在 repo：先收進 state.packs，打不開。 ===== */
+const SPK=Object.keys(LORDS).map(bk=>'sp_'+bk);
+const isSpK=k=>/^sp_/.test(String(k));
+const HATCH_MS=6*3600e3,PET_LV_ADULT=20,PET_LV_FULL=40,PET_LV_CAP=60;
+const PET_ST=['幼獸','成獸','完全體'];
+const petsArr=()=>Array.isArray(state.pets)?state.pets:(state.pets=[]);
+const hatchArr=()=>Array.isArray(state.hatch)?state.hatch:(state.hatch=[]);
+const packsObj=()=>state.packs&&typeof state.packs==='object'?state.packs:(state.packs={});
+const lordShort=bk=>LORDS[bk]?LORDS[bk].n.replace(/^.*的/,''):'';
+const petName=p=>p.nm||`${lordShort(p.bk)}的${PET_ST[p.st]||'幼獸'}`;
+const petNeed=lv=>(typeof xpNeed==='function'?xpNeed(lv):100*lv);
+const petCur=()=>petsArr().find(p=>p.id===state.petOn)||null;
+/* 精魄圖示（程式畫的佔位：那一區主的光色的光球） */
+function spiritArt(x,y,k){const bk=String(k).slice(3),c=(LORDS[bk]||{}).glow||'#FFE6A8';return `<g transform="translate(${x} ${y})"><circle cy="-14" r="13" fill="${c}" opacity=".35"/><circle cy="-14" r="9" fill="${c}" stroke="#5A3416" stroke-width="1.6"/><path d="M-3 -18 q3 -4 6 0" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="-2" cy="-12" r="1.4" fill="#fff"/></g>`}
+/* 神寵的圖（佔位）：幼獸＝圓圓的小獸；成獸＝×1.3；完全體＝主的圖縮小 */
+function petSVG(p,size){const bk=p.bk,c=(LORDS[bk]||{}).glow||'#FFE6A8';
+  if(p.st>=2&&LORDS[bk]){const I=BOSS_IMG[LORDS[bk].art]||[400,400],H=size,W=H*I[0]/I[1];return `<image href="${bossSrc(LORDS[bk].art,'idle')}" x="${(-W/2).toFixed(1)}" y="${(-H).toFixed(1)}" width="${W.toFixed(1)}" height="${H.toFixed(1)}"/>`}
+  const s=(p.st>=1?1.3:1)*size/34;return `<g transform="scale(${s.toFixed(3)})"><ellipse cy="-1" rx="12" ry="3.5" fill="rgba(40,25,10,.22)"/><path d="M-9 -20 l-3 -10 l8 5z M9 -20 l3 -10 l-8 5z" fill="${c}" stroke="#5A3416" stroke-width="1.5" stroke-linejoin="round"/><ellipse cy="-13" rx="12" ry="11" fill="${c}" stroke="#5A3416" stroke-width="1.8"/><circle cx="-4.5" cy="-14" r="1.9" fill="#3A2414"/><circle cx="4.5" cy="-14" r="1.9" fill="#3A2414"/><path d="M-2 -9.5 q2 1.6 4 0" stroke="#3A2414" stroke-width="1.3" fill="none" stroke-linecap="round"/><circle cx="-8" cy="-10" r="2" fill="#FF9DB0" opacity=".6"/><circle cx="8" cy="-10" r="2" fill="#FF9DB0" opacity=".6"/></g>`}
+/* 跟在角色旁邊 */
+function petCharG(){if(!state||!state.petOn)return '';const p=petCur();if(!p)return '';const m=curMe(),fl=faceFlip(meFace)?1:-1;return `<g id="petG" transform="translate(${Math.round(m.x+fl*34)} ${Math.round(m.y+2)})" pointer-events="none"><g class="brth">${petSVG(p,30)}</g></g>`}
+function petMove(){try{const g=document.getElementById('petG');if(!g)return;const m=curMe(),fl=faceFlip(meFace)?1:-1;g.setAttribute('transform',`translate(${Math.round(m.x+fl*34)} ${Math.round(m.y+2)})`)}catch(e){}}
+/* 使用精魄 → 孵化 */
+function spiritUse(bk){const k='sp_'+bk,I=state.items||(state.items={});if(!(I[k]>0))return false;I[k]--;hatchArr().push({bk,at:Date.now()});save();toast(`${spiritName(bk)}開始孵化了，6 小時後孵出來`,4000);return true}
+function hatchLeft(h){return Math.max(0,h.at+HATCH_MS-Date.now())}
+function hatchTick(){if(!state)return;const H=hatchArr();let got=null;for(let i=H.length-1;i>=0;i--){if(hatchLeft(H[i])>0)continue;const h=H.splice(i,1)[0];const p={id:'P'+Date.now().toString(36)+i,bk:h.bk,st:0,lv:1,xp:0,at:Date.now()};petsArr().push(p);if(!state.petOn)state.petOn=p.id;got=p}
+  if(got){save();setTimeout(()=>{try{noteOpen(`<h2>孵出來了！</h2><div style="text-align:center"><svg viewBox="-40 -60 80 66" width="120" height="100">${petSVG(got,44)}</svg></div><p class="note">${esc(petName(got))}會跟著你，一起打怪變強。</p>`);renderChars()}catch(e){}},300)}}
+/* 經驗：玩家打怪拿到多少，帶著的神寵也拿多少 */
+function petXp(n){const p=petCur();if(!p||!(n>0))return;p.xp=(p.xp||0)+n;while(p.lv<PET_LV_CAP&&p.xp>=petNeed(p.lv)){p.xp-=petNeed(p.lv);p.lv++}}
+/* 進化 */
+function petEvoNeed(p){const sv=SERVANTS[p.bk]||{};if(p.st===0)return {lv:PET_LV_ADULT,sp:1,gold:0,goldK:sv.gold};if(p.st===1)return {lv:PET_LV_FULL,sp:2,gold:3,goldK:sv.gold};return null}
+function petEvoOk(p){const N=petEvoNeed(p);if(!N)return false;const I=state.items||{};return p.lv>=N.lv&&(I['sp_'+p.bk]||0)>=N.sp&&(!N.gold||matCount(N.goldK)>=N.gold)}
+function petEvolve(id){const p=petsArr().find(x=>x.id===id);if(!p||!petEvoOk(p))return false;const N=petEvoNeed(p);state.items['sp_'+p.bk]-=N.sp;if(N.gold){const S=matsObj();S[N.goldK]-=N.gold;if(S[N.goldK]<=0)delete S[N.goldK]}p.st++;save();
+  setTimeout(()=>{try{noteOpen(`<h2>${esc(petName(p))}</h2><div style="text-align:center"><svg viewBox="-50 -76 100 82" width="130" height="108">${petSVG(p,60)}</svg></div><p class="note">長大了！</p>`);renderChars()}catch(e){}},200);return true}
+/* 背包「道具」分頁裡的精魄、孵化中、神寵、卡包 */
+function spiritLine(){const I=state.items||{},sp=SPK.filter(k=>I[k]>0),H=hatchArr(),P=packsObj(),pk=Object.keys(P).filter(k=>P[k]>0);let h='';
+  if(sp.length)h+=`<h3>精魄${qh('主平靜下來後留下的東西。用了就開始孵，6 小時（不在線上也算）孵出神寵。可以上架市集。')}</h3>`+sp.map(k=>`<div class="itm"><svg viewBox="-16 -32 32 36" width="36" height="40" aria-hidden="true">${spiritArt(0,0,k)}</svg><span class="lr"><b>${esc(spiritName(k.slice(3)))}</b><span class="meta">持有 ${I[k]} 個</span></span><button class="mini" data-spuse="${k.slice(3)}">孵化</button></div>`).join('');
+  if(H.length)h+=`<h3>孵化中</h3>`+H.map(x=>{const m=Math.ceil(hatchLeft(x)/60e3);return `<div class="itm"><svg viewBox="-16 -32 32 36" width="36" height="40" aria-hidden="true">${spiritArt(0,0,'sp_'+x.bk)}</svg><span class="lr"><b>${esc(spiritName(x.bk))}</b><span class="meta">還要 ${m>=60?Math.floor(m/60)+' 小時 '+(m%60)+' 分':m+' 分鐘'}</span></span></div>`}).join('');
+  const PS=petsArr();if(PS.length)h+=`<h3>神寵${qh('帶著的那一隻會跟著你，打怪時你拿到多少經驗，牠也拿多少。神寵不能交易。')}</h3>`+PS.map(p=>`<button class="itm pick" data-pet="${p.id}"><svg viewBox="-26 -46 52 50" width="44" height="44" aria-hidden="true">${petSVG(p,34)}</svg><span class="lr"><b>${esc(petName(p))}</b><span class="meta">Lv ${p.lv}・${PET_ST[p.st]}${state.petOn===p.id?'・帶著':''}${petEvoOk(p)?'・可以進化了':''}</span></span></button>`).join('');
+  if(pk.length)h+=`<h3>夢幻色卡包</h3>`+pk.map(k=>`<div class="itm"><span class="pkic" aria-hidden="true">🂠</span><span class="lr"><b>夢幻色卡包（${esc(BIOMES[k]?BIOMES[k].n:k)}）</b><span class="meta">${P[k]} 包・規則還沒定，先收著</span></span></div>`).join('');
+  return h}
+function openPet(id){sheet={pet:id};renderSheet();openSheetUI()}
+function petHTML(){const p=petsArr().find(x=>x.id===sheet.pet);if(!p)return '<p class="note">找不到這隻神寵。</p><button class="btn" data-act="close">關閉</button>';const N=petEvoNeed(p),I=state.items||{};
+  let h=`<div class="sdHero"><span class="sdBig" style="--rc:${(LORDS[p.bk]||{}).glow||'#B5A182'}"><svg viewBox="-50 -76 100 82" width="104" height="86">${petSVG(p,p.st>=2?72:52)}</svg></span><div class="sdTx"><div class="sdName">${esc(petName(p))}</div><div class="sdTags"><span class="ctag">${PET_ST[p.st]}</span><span class="ctag">${esc(LORDS[p.bk]?LORDS[p.bk].n:'')}</span></div><div class="meta">不能交易</div></div></div>`;
+  h+=`<div class="sdNums"><div><b>${p.lv}</b><span>等級</span></div><div><b>${p.lv>=PET_LV_CAP?'—':Math.floor((p.xp||0)/petNeed(p.lv)*100)+'%'}</b><span>經驗</span></div><div><b>${PET_ST[p.st]}</b><span>階段</span></div><div><b>—</b><span>技能</span></div></div>`;
+  h+=`<button class="btn${state.petOn===p.id?'':' primary'}" data-act="peton">${state.petOn===p.id?'不帶著':'帶著牠'}</button>`;
+  if(N){const ok=petEvoOk(p);h+=`<h3>進化成${PET_ST[p.st+1]}</h3><p class="note">${p.lv>=N.lv?'✓':'・'} Lv ${N.lv}（現在 ${p.lv}）<br>${(I['sp_'+p.bk]||0)>=N.sp?'✓':'・'} ${esc(spiritName(p.bk))} ×${N.sp}（有 ${I['sp_'+p.bk]||0}）${N.gold?`<br>${matCount(N.goldK)>=N.gold?'✓':'・'} ${esc(matName(N.goldK))} ×${N.gold}（有 ${matCount(N.goldK)}）`:''}</p><button class="btn primary" data-act="petevo"${ok?'':' disabled'}>進化</button>`}
+  h+=`<p class="note">技能還沒開放。</p>`;
+  if(isTestMode())h+=`<button class="btn" data-act="pettest">測試：+10 級</button>`;
+  return h}
+function petAction(b){const a=b.dataset.act,p=petsArr().find(x=>x.id===sheet.pet);if(!p)return;
+  if(a==='peton'){state.petOn=state.petOn===p.id?null:p.id;save();renderSheet();try{renderChars()}catch(e){}return}
+  if(a==='petevo'){if(petEvolve(p.id))renderSheet();return}
+  if(a==='pettest'&&isTestMode()){p.lv=Math.min(PET_LV_CAP,p.lv+10);save();renderSheet()}}
+try{document.getElementById('bag').addEventListener('click',e=>{const u=e.target.closest('[data-spuse]');if(u){e.stopPropagation();if(spiritUse(u.dataset.spuse))renderBag();return}const q=e.target.closest('[data-pet]');if(q){e.stopPropagation();openPet(q.dataset.pet)}},true)}catch(e){}
+/* 米涅瓦的巢：神隱之森的戰場邊，讓米涅瓦平靜下來之後發光，走過去撿到筆記頁的「撿到的東西」 */
+const NEST_AT=[668,660];
+const nestLit=()=>!!(state.lordWon&&state.lordWon.minerva)&&!noteHas('R6');
+function nestObj(){const [x,y]=NEST_AT,lit=nestLit();return {y,h:`<g transform="translate(${x} ${y})" pointer-events="none">${lit?'<circle cy="-8" r="34" fill="#FFF3B0" opacity=".45" class="feather"/>':''}<ellipse rx="30" ry="11" fill="#6E4B25" stroke="#3E2610" stroke-width="1.6"/><path d="M-28 -2 q14 -12 28 -2 q14 -10 28 2 M-24 3 q12 -8 24 0 q12 -8 24 0" stroke="#A47B45" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M-8 -6 l10 -14 M6 -6 l-4 -16" stroke="#E8EEF4" stroke-width="2" stroke-linecap="round"/>${lit?'<circle cx="2" cy="-4" r="4" fill="#FFE27A" stroke="#B5832A" stroke-width="1.2"/>':''}</g>`}}
+function nestTick(){try{if(scene!=='explore'||exBiome!=='forest'||regMap!=='secret'||!nestLit())return;if(bossRT&&bossRT.kind==='lord'&&!bossRT.done)return;const m=curMe();if(Math.hypot(m.x-NEST_AT[0],m.y-NEST_AT[1])>55)return;const r=noteDef('R6');if(noteGet('R6'))noteOpen(`<h2>撿到的東西</h2>`+relCardHTML(r)+'<p class="note">記進「圖鑑 → 筆記」了。</p>')}catch(e){}}
+/* ===== 135 第二階段結束 ===== */
 function goFarm(){
   try{bossLeave()}catch(e){}/* 135：離開就算放棄 */tripSave();pHP=PHP_MAX;/* 131 */if(viewing){if(viewing.unsub)viewing.unsub();viewing=null}
   scene='farm';hoverPlot=null;hoverStall=null;
@@ -8050,7 +8115,7 @@ function monHit(i){const m=MON_RT&&MON_RT.list[i];if(!m||m.dead)return;const now
   if(hasHit&&s){s.innerHTML=monImgTag(m.k,m.boss,true);clearTimeout(m._ht);if(m.hp>0)m._ht=setTimeout(()=>{if(!m.dead)s.innerHTML=monImgTag(m.k,m.boss,false)},250)}
   monReplay(s,'hit');monBar(m,true);
   if(m.hp<=0)monKill(i,m)}
-function monKill(i,m){m.dead=true;monFightI=-1;const S=monSlots();if(i<MON_N)S[i]=null;else if(MON_RT.xs)MON_RT.xs[i]=null;monWind(m,false);if(MON_XP_ON){try{addXp(monXp(exBiome,m.boss),true)}catch(e){}}/* 131：經驗先不給 */MON_RT.due[i]=Date.now()+560+monDelay();
+function monKill(i,m){m.dead=true;monFightI=-1;const S=monSlots();if(i<MON_N)S[i]=null;else if(MON_RT.xs)MON_RT.xs[i]=null;monWind(m,false);if(MON_XP_ON){try{const x=monXp(exBiome,m.boss);addXp(x,true);petXp(x)}catch(e){}}/* 135：帶著的神寵拿同樣的經驗 *//* 131：經驗先不給 */MON_RT.due[i]=Date.now()+560+monDelay();
   const b=m.el&&m.el.querySelector('.mb');setTimeout(()=>monBar(m,false),120);if(b)monReplay(b,'die');
   const sh=m.el&&m.el.querySelector('.msh');if(sh)sh.style.opacity='0';
   setTimeout(()=>{try{m.el&&m.el.remove()}catch(e){}if(MON_RT&&MON_RT.list[i]===m)MON_RT.list[i]=null},560);
@@ -8279,12 +8344,12 @@ function renderChars(){
   const t=performance.now()/1000,list=[];
   for(const [id,o] of Object.entries(others)){if(!o||typeof o.x!=='number')continue;const A=animO[id]||{x:o.x,y:o.y,ph:0};
     const ps=poseFor(false,{a:o.a,_aStart:A.aStart,_seed:A.seed},t);if(A.moving)ps.ph=A.ph;else if(!ps.act)ps.t=0;/* 99.8：站著不動時姿勢不跟時間變（呼吸交給 CSS .brth），內容不變就不用重建 */const of=o.f!=null?o.f:(o.d<0?3:1);ps.view=VIEWS[of];const ofy=fyUnpack(o.fy);list.push({y:A.y,h:charG('',A.x,A.y,o.av,faceFlip(of),ps,o.name||'朋友',o.lv,ofy,id,!!o.ch)+`<circle cx="${Math.round(A.x)}" cy="${Math.round(A.y-30)}" r="17" fill="transparent" style="pointer-events:auto" data-ply="${esc(id)}"/>`});if(ofy)fyRegister(id,ofy,()=>{const B=animO[id]||o;return {x:B.x,y:B.y,flip:faceFlip(o.f!=null?o.f:(o.d<0?3:1))}})}
-  const m=curMe(),mp=poseFor(true,null,t);if(raf)mp.ph=walkPh;else if(!mp.act)mp.t=0;mp.view=VIEWS[meFace];const mfy=fyMe();/* 97：拜訪朋友、城鎮、各地區都帶著自己的精靈 */list.push({y:m.y,h:charG('meG',m.x,m.y,state.avatar,faceFlip(meFace),mp,'你',myLv(),mfy,'me',champOn())});if(mfy)fyRegister('me',mfy,()=>{const q=curMe();return {x:q.x,y:q.y,flip:faceFlip(meFace)}});{const H=fyHomeSet();if(H)fyRegister('home',H.f,fyHomePos)}fyStart();
+  const m=curMe(),mp=poseFor(true,null,t);if(raf)mp.ph=walkPh;else if(!mp.act)mp.t=0;mp.view=VIEWS[meFace];const mfy=fyMe();/* 97：拜訪朋友、城鎮、各地區都帶著自己的精靈 */list.push({y:m.y-1,h:petCharG()});list.push({y:m.y,h:charG('meG',m.x,m.y,state.avatar,faceFlip(meFace),mp,'你',myLv(),mfy,'me',champOn())});if(mfy)fyRegister('me',mfy,()=>{const q=curMe();return {x:q.x,y:q.y,flip:faceFlip(meFace)}});{const H=fyHomeSet();if(H)fyRegister('home',H.f,fyHomePos)}fyStart();
   list.sort((a,b)=>a.y-b.y);s=list.map(x=>x.h).join('');
   const key=s.replace(/(id="|url\(#|href="#)([A-Za-z_-]*)\d+/g,'$1$2').replace(/animation-delay:-?[\d.]+s/g,'');/* 圖層 id、眨眼的延遲每次都不一樣，比較時拿掉 */
   if(L._s===key)return false;L._s=key;L.innerHTML=s;return true;/* 99.8（17k）：每 80ms 都會叫一次，內容沒變就不重建（原本一直重建角色層、重新對齊所有動畫，站著也一直在重畫） */
 }
-function updateMe(){const g=document.getElementById('meG');if(!g){renderChars();return}const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y)}) scale(1.15)`);const mp=poseFor(true,null,performance.now()/1000);if(raf)mp.ph=walkPh;else if(!mp.act)mp.t=0;mp.view=VIEWS[meFace];const a=document.getElementById('meGAv');if(!a){renderChars();return}const h=avIdle(state.avatar,faceFlip(meFace),mp),k=h.replace(/(id="|url\(#|href="#)([A-Za-z_-]*)\d+/g,'$1$2');if(a._k===k)return;a._k=k;a.innerHTML=h}/* 106.4：內容沒變就不寫（站著、只是位置變時） *//* 71.1：以前這裡每一格都把名牌重畫成只有「你」（沒帶等級），稱號那一行就一閃一閃；現在走路時完全不碰名牌 */
+function updateMe(){petMove();const g=document.getElementById('meG');if(!g){renderChars();return}const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y)}) scale(1.15)`);const mp=poseFor(true,null,performance.now()/1000);if(raf)mp.ph=walkPh;else if(!mp.act)mp.t=0;mp.view=VIEWS[meFace];const a=document.getElementById('meGAv');if(!a){renderChars();return}const h=avIdle(state.avatar,faceFlip(meFace),mp),k=h.replace(/(id="|url\(#|href="#)([A-Za-z_-]*)\d+/g,'$1$2');if(a._k===k)return;a._k=k;a.innerHTML=h}/* 106.4：內容沒變就不寫（站著、只是位置變時） *//* 71.1：以前這裡每一格都把名牌重畫成只有「你」（沒帶等級），稱號那一行就一閃一閃；現在走路時完全不碰名牌 */
 
 // ===== 互動按鈕 =====
 function nearest(){

@@ -1,6 +1,7 @@
 """去背修邊（聊天室 2026-11-22）。用法（在 repo 根目錄）：
   pip install numpy scipy pillow
   python tools/defringe_all.py            # 掃描＋修邊，原檔先備份到 ../seed-world-2_asset_backup/
+  python tools/defringe_all.py --auto-pockets     # 只清純白、沒有明暗的被包住區塊（真正的底色）
   python tools/defringe_all.py --pockets 清單.txt   # 只把清單裡指定的「被包住的白底」清掉
 輸出：tools/_defringe_report/ 裡的對照圖（每張 12 個，修前／修後，放大邊緣）與 report.json。
 """
@@ -76,6 +77,33 @@ def clear_pockets(listfile):
         b=os.path.join(BK,rel.replace('/',os.sep));os.makedirs(os.path.dirname(b),exist_ok=True)
         if not os.path.exists(b):shutil.copy2(p,b)
         Image.fromarray(a.astype(np.uint8)).save(p);print('清白底',rel)
+
+def auto_pockets():
+    """只清「純白、幾乎沒有明暗」的被包住區塊（真正的底色），有明暗的白色（白毛、白花、雪）不動。"""
+    os.makedirs(REP,exist_ok=True);changed=[]
+    for dp,_,fs in os.walk(ASSETS):
+        for f in fs:
+            if not f.lower().endswith('.png'):continue
+            p=os.path.join(dp,f);rel=os.path.relpath(p,ASSETS)
+            if rel.startswith(SKIP) or rel.startswith('fruits'+os.sep):continue
+            im=Image.open(p)
+            if im.mode!='RGBA':continue
+            a=np.array(im).astype(float);A=a[...,3];rgb=a[...,:3];mn=rgb.min(2);sat=rgb.max(2)-mn
+            lab,k=nd.label((A>0)&(mn>244)&(sat<10))
+            if not k:continue
+            hit=False
+            for i in range(1,k+1):
+                m=lab==i;s=int(m.sum())
+                if s<25:continue
+                if mn[m].mean()>=252.5 and mn[m].std()<1.6:
+                    a[...,3][nd.binary_dilation(m,iterations=1)&(mn>236)]=0;hit=True
+            if hit:
+                b=os.path.join(BK,rel);os.makedirs(os.path.dirname(b),exist_ok=True)
+                if not os.path.exists(b):shutil.copy2(p,b)
+                Image.fromarray(a.astype(np.uint8)).save(p);changed.append(rel)
+    sheets(changed,'autopocket');print('清掉純白底',len(changed),'張；對照圖 autopocket_*.png')
+
 if __name__=='__main__':
     if len(sys.argv)>2 and sys.argv[1]=='--pockets':clear_pockets(sys.argv[2])
+    elif len(sys.argv)>1 and sys.argv[1]=='--auto-pockets':auto_pockets()
     else:main()

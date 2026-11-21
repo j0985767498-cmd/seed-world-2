@@ -970,6 +970,131 @@ b .ci,.lot-name .ci{width:11px;height:11px;margin:0 2px -1px 0;fill:#B07A2A}
 @font-face{font-family:"SWNum";font-weight:600 900;src:local("PingFangTC-Semibold"),local("PingFang TC Semibold"),local(".SFUI-Semibold"),local("HelveticaNeue-Bold"),local("Helvetica Neue Bold"),local("Roboto Bold"),local("Segoe UI Bold"),local("Arial Bold"),local("Arial");unicode-range:U+0025,U+002B-002F,U+0030-003A,U+00D7}
 body{font-variant-numeric:tabular-nums}
 .num{font-family:-apple-system,"PingFang TC","Noto Sans TC",sans-serif;font-variant-numeric:tabular-nums}
+
+/* ===== 138（19c）：介面改版第一步。舊的 --accent 等留給還沒換皮的畫面 ===== */
+:root{--tx:#3A2414;--tx2:#6B5A43;--ol:#5A3416;--pn:#FFF6E3;--card:#FFFDF6;--ln:#E3D2B2;--gold:#F2C14E;--go1:#5DAF34;--go2:#4E9F2C;--gosh:#2F6E17;--dg:#D9473A;--dgt:#B4352A;--tabon:#6E4320;--tabtx:#FFF3D6;
+  --r0:#B5A182;--r1:#5DAF34;--r2:#3D86C6;--r3:#8D5BD1;--r4:#E3A21A;--r5:#E0466B}
+.panel,#sheet{color:var(--tx);font-weight:500}
+.panel .note,#sheet .note,.panel .meta,#sheet .meta{color:var(--tx2)}
+.panel h2,#sheet h2,.panel h3,#sheet h3{font-weight:900}
+.ph{background:linear-gradient(180deg,#A86F3A,#8A5528);border-bottom:3px solid var(--ol);box-shadow:none}
+.ph h2{font-weight:900;color:#FFF6E2}
+.xbtn{width:44px;height:44px;background:var(--dg);border:3px solid var(--ol);color:#fff;box-shadow:0 3px 0 var(--ol);text-shadow:none;font-weight:900}
+.btn{color:var(--ol);background:#FFF9EC;border:2.5px solid var(--ol);box-shadow:0 3px 0 var(--ol);font-weight:700;min-height:44px}
+.btn.primary{color:#fff;background:linear-gradient(180deg,var(--go1),var(--go2));border:3px solid var(--ol);box-shadow:0 4px 0 var(--gosh);text-shadow:0 1px 0 var(--gosh)}
+.btn.warn,.btn.danger,.mini.danger{color:var(--dgt);background:transparent;border:2px solid var(--dg);box-shadow:none}
+.fchip{font-weight:700;color:var(--ol);background:var(--card);box-shadow:inset 0 0 0 2px var(--ln)}
+.fchip[aria-pressed="true"]{background:var(--tabon);color:var(--tabtx);box-shadow:inset 0 0 0 2px var(--ol);text-shadow:none}
+.mini{font-weight:700;color:var(--ol);border:2px solid var(--ol);background:#FFF9EC;border-radius:10px;min-height:32px}
+.rb.r0{background:var(--r0)}.rb.r1{background:var(--r1)}.rb.r2{background:var(--r2)}.rb.r3{background:var(--r3)}.rb.r4{background:var(--r4)}.rb.r5{background:var(--r5)}
+.rb{color:#fff;font-weight:700}
+/* 主畫面 */
+#iconbarL,#iconbar{display:none!important}
+#rbar{position:fixed;right:12px;top:calc(300px + env(safe-area-inset-top,0px));left:auto;z-index:10;display:flex;flex-direction:column;gap:26px}
+#rbar button{width:54px;height:54px;border-radius:50%;background:#FFF9EC;border:3px solid var(--ol);box-shadow:0 3px 0 var(--ol);padding:0;position:relative;overflow:visible;color:var(--ol)}
+#rbar button .ibimg{width:36px;height:36px}
+#rbar button svg{width:28px;height:28px}
+#rbar button span{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:3px;white-space:nowrap;color:#fff;font-size:11px;font-weight:700;text-shadow:0 0 2px var(--ol),0 0 2px var(--ol),1px 1px 0 var(--ol),-1px -1px 0 var(--ol),1px -1px 0 var(--ol),-1px 1px 0 var(--ol)}
+#rbar #bagBadge{position:absolute;right:-2px;top:-2px;width:14px;height:14px;min-width:0;padding:0;border-radius:50%;background:var(--dg);border:2px solid #fff;font-size:0;color:transparent}
+#rbar #ordersBadge{position:absolute;right:-4px;top:-4px}
+#rbar #ibHelp.done{opacity:.6}
+#mapBtn{top:calc(14px + env(safe-area-inset-top,0px))!important;right:12px;width:56px;height:56px;border-radius:50%;background:#FFF9EC;border:3px solid var(--ol);box-shadow:0 3px 0 var(--ol)}
+#mapBtn .ibimg{width:38px;height:38px}
+#mapBtn span{display:none}
+.coins{background:var(--pn);border:2.5px solid var(--ol);color:var(--tx);text-shadow:none;box-shadow:0 2px 0 var(--ol)}
+#syncDot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:6px;background:#5DAF34;flex:none}
+#syncDot.sd-saving,#syncDot.sd-loading{background:#E3B21A}#syncDot.sd-err{background:var(--dg)}
+#sync{display:none}
+#meChip .mcav{border:3px solid var(--ol)}
+#meChip .mclv i{background:var(--go1);color:#fff}
+#mqLine{left:12px;transform:none;top:calc(112px + env(safe-area-inset-top,0px));max-width:calc(100vw - 100px);border:2.5px solid var(--ol);background:var(--pn);color:var(--tx);font-weight:700;padding-left:24px;text-align:left}
+#mqLine::before{content:"";position:absolute;left:8px;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:#B5A182}
+#mqLine[data-st="done"]::before{background:#5DAF34}#mqLine[data-st="acc"]::before{background:#E3B21A}
+#testTag{left:0;right:0;top:0;height:20px;line-height:20px;padding:0;border-radius:0;text-align:center;font-size:12px;z-index:60}
+#hpBar{top:calc(150px + env(safe-area-inset-top,0px))}
+#bossBar{top:calc(174px + env(safe-area-inset-top,0px))}
+#ringBtn{width:92px;height:92px;background:linear-gradient(180deg,var(--go1),var(--go2));border:3px solid var(--ol);box-shadow:0 4px 0 var(--gosh)}
+body.pnlOpen .hudTop,body.pnlOpen #mqLine,body.pnlOpen #rbar,body.pnlOpen #mapBtn,body.shFull .hudTop,body.shFull #mqLine,body.shFull #rbar,body.shFull #mapBtn{visibility:hidden}
+/* 選單：從下方滑出 */
+.panel.pmenu{top:auto;max-height:70vh;border-radius:22px 22px 0 0}
+.panel.pmenu .ph{border-radius:20px 20px 0 0}
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.mcell{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;min-height:76px;border-radius:16px;background:var(--card);border:2.5px solid var(--ol);box-shadow:0 3px 0 var(--ol);color:var(--ol);font:inherit;font-weight:700;font-size:13px}
+.mcell img{width:34px;height:34px}
+.mpgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+.mpc{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px;border-radius:16px;background:var(--card);border:2.5px solid var(--ol);box-shadow:0 3px 0 var(--ol);font:inherit;color:var(--ol)}
+.mpc img{width:40px;height:40px}.mpc[aria-current="true"],.biome[aria-current="true"]{outline:3px solid var(--tabon)}
+/* 一套面板：抽屜疊在面板上、任務 → 變成面板的樣子 */
+.shead{display:flex;align-items:center;gap:8px}
+.shead .sback{display:none}
+#sheetTitle{display:none}
+body.shOnP #sheet,body.shFull #sheet{top:calc(6vh + env(safe-area-inset-top,0px));max-height:none;max-width:560px;margin:0 auto;padding:0 16px calc(28px + env(safe-area-inset-bottom,0px));z-index:33}
+body.shOnP .shead,body.shFull .shead{position:sticky;top:0;z-index:2;margin:0 -16px 10px;padding:8px 12px;background:linear-gradient(180deg,#A86F3A,#8A5528);border-bottom:3px solid var(--ol);border-radius:16px 16px 0 0}
+body.shOnP .shead .grip,body.shFull .shead .grip{display:none}
+body.shOnP .shead .sback{display:block;margin-right:auto;min-height:40px;padding:0 12px;border-radius:12px;border:2px solid var(--ol);background:#FFF9EC;color:var(--ol);font:inherit;font-weight:900;font-size:15px}
+body.shFull #sheetTitle{display:block;margin-right:auto;color:#FFF6E2;font-weight:900;font-size:20px}
+body.shOnP .shead #sheetX,body.shFull .shead #sheetX{margin-left:auto}
+/* 背包 */
+.btabs,.qtabs{display:flex;gap:6px;margin:0 0 10px}
+.btab{flex:1;height:44px;border-radius:12px;border:2.5px solid var(--ol);background:#FFF9EC;color:var(--ol);font:inherit;font-weight:900;font-size:15px;box-shadow:0 3px 0 var(--ol);position:relative}
+.btab b{font-weight:700;font-size:13px;opacity:.85}
+.btab[aria-pressed="true"]{background:var(--tabon);color:var(--tabtx)}
+.ph .hbtn{margin-left:auto;margin-right:10px;width:44px;height:44px;border-radius:50%;border:2.5px solid var(--ol);background:#FFF9EC;box-shadow:0 3px 0 var(--ol);padding:0;display:flex;align-items:center;justify-content:center;color:var(--ol)}
+.ph .hbtn[hidden]{display:none}
+.bagcats{display:flex;gap:6px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;margin-bottom:8px;padding-bottom:2px}
+.bagcats .fchip{height:32px;padding:0 12px}
+.slots.s5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.slots.s5 .slot{width:auto;height:auto}
+.slot.rs{box-shadow:inset 0 0 0 3px var(--rc,#B5A182);background:var(--card)}
+.slot.rs::after{content:"";position:absolute;left:35%;right:35%;bottom:3px;height:4px;border-radius:2px;background:var(--rc,#B5A182)}
+.slot.rs .cnt{position:absolute;right:4px;bottom:6px;color:#fff;font-weight:900;font-size:13px;text-shadow:0 0 2px var(--ol),0 0 2px var(--ol),1px 1px 0 var(--ol),-1px -1px 0 var(--ol),1px -1px 0 var(--ol),-1px 1px 0 var(--ol);background:none}
+.slot.rs .nwd{position:absolute;right:2px;top:2px;width:18px;height:18px;border-radius:50%;background:var(--dg);color:#fff;font-size:10px;font-style:normal;font-weight:900;line-height:18px;text-align:center}
+.slot.rs .wildt{position:absolute;left:2px;top:2px;padding:0 4px;border-radius:6px;background:#6E8A3A;color:#fff;font-size:10px;font-style:normal;font-weight:700}
+.slot.rs .lkb{position:absolute;left:3px;bottom:3px;font-size:11px;font-style:normal;color:#E3A21A}
+.slot.rs.sel{box-shadow:inset 0 0 0 3px var(--rc,#B5A182),0 0 0 3px #fff,0 0 0 6px var(--ol)}
+.slot.empty{background:transparent!important;box-shadow:none!important;border:2px dashed var(--ln)!important}
+.tidy{display:inline-flex;align-items:center;gap:4px}
+.tidyrow{display:flex;gap:8px;margin:0 0 8px}
+.bagInfo{position:sticky;bottom:0;margin:10px -4px 0;display:flex;align-items:center;gap:8px;padding:8px;background:var(--pn);border:2.5px solid var(--ol);border-radius:16px;box-shadow:0 -2px 10px rgba(60,30,10,.18)}
+.biic{flex:none;width:48px;height:48px;border-radius:12px;box-shadow:inset 0 0 0 3px var(--rc);display:flex;align-items:center;justify-content:center;background:var(--card)}
+.bitx{flex:1;min-width:0;display:flex;flex-direction:column}.bitx b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bibt{display:flex;flex-direction:column;gap:4px;align-items:stretch}.bibt .btn{margin:0;padding:6px 10px;min-height:38px;width:auto}
+/* 種子詳細 */
+.sdHero{display:flex;gap:12px;align-items:center;margin:4px 0 10px}
+.sdBig{flex:none;width:112px;height:112px;border-radius:20px;box-shadow:inset 0 0 0 4px var(--rc);background:radial-gradient(circle at 50% 45%,#fff,color-mix(in srgb,var(--rc) 18%,#FFFDF6));display:flex;align-items:center;justify-content:center}
+.sdName{font-weight:900;font-size:24px;line-height:1.2}
+.sdTags{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}
+.ctag{padding:1px 8px;border-radius:8px;border:2px solid var(--ln);font-size:12px;font-weight:700;color:var(--tx2)}
+.sdNums{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 12px}
+.sdNums div{background:var(--card);border:2px solid var(--ln);border-radius:12px;padding:6px 2px;text-align:center;display:flex;flex-direction:column}
+.sdNums b{font-weight:900;font-size:17px}.sdNums span{font-size:11px;color:var(--tx2)}
+.btn.sdGo{min-height:56px;font-size:18px}
+.rbrow{display:flex;justify-content:space-between;margin:12px 0}
+.rbtn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;font:inherit;color:var(--ol);padding:0;min-width:64px}
+.rbtn>span{width:52px;height:52px;border-radius:50%;border:2.5px solid var(--ol);background:#FFF9EC;box-shadow:0 3px 0 var(--ol);display:flex;align-items:center;justify-content:center}
+.rbtn.on>span{background:var(--tabon);color:var(--tabtx)}.rbtn b{font-size:12px;font-weight:700}
+details.par{margin:6px 0;border:2px solid var(--ln);border-radius:12px;padding:8px 10px;background:var(--card)}
+details.par summary{font-weight:700;cursor:pointer}
+.sdDanger{border-top:2px dashed var(--ln);margin-top:14px;padding-top:10px;display:flex;flex-direction:column;gap:8px}
+.btn.gold{border-color:#D9A93A;box-shadow:0 3px 0 #B5832A;background:#FFF6DA}
+/* 任務面板 */
+.qtabs .btab{font-size:14px}
+.qn{display:inline-block;min-width:18px;height:18px;line-height:18px;border-radius:9px;margin-left:4px;font-size:11px;font-style:normal;color:#fff;padding:0 4px}
+.qn.g{background:var(--go1)}.qn.y{background:#E3A21A}
+.qgrp{margin:12px 0 4px;font-size:12px;color:var(--tx2);font-weight:700}
+.qc{position:relative;display:flex;align-items:center;gap:10px;padding:10px;margin:0 0 8px;background:var(--card);border:2px solid var(--ln);border-radius:16px;cursor:pointer}
+.qc.qtr{border:3px solid var(--ol)}
+.qtrt{position:absolute;left:10px;top:-9px;font-style:normal;font-size:11px;font-weight:900;color:#FFF3D6;background:var(--ol);border-radius:6px;padding:0 6px}
+.qs{flex:none;width:38px;height:38px;border-radius:50%;border:2.5px solid var(--ol);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;background:#E8E1D2;color:#7A6A55}
+.qs-done{background:var(--go1);color:#fff}.qs-acc{background:#F2C14E;color:var(--ol)}
+.qm{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.qk{font-size:11px;color:var(--tx2)}.qt{font-weight:900;font-size:15px}
+.qw{font-size:12px;color:var(--tx2)}.qw em{font-style:normal;color:#B5832A;font-weight:700}
+.qpr{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tx2)}
+.qbar{flex:1;max-width:140px;height:8px;border-radius:4px;background:#EADFC8;overflow:hidden}.qbar i{display:block;height:100%;background:var(--go1)}
+.qpin{flex:none;width:44px;height:44px;border-radius:50%;border:2px solid var(--ln);background:transparent;color:var(--ln);display:flex;align-items:center;justify-content:center;padding:0}
+.qpin.on{border:2.5px solid var(--ol);background:var(--ol);color:#FFF3D6}
+.qpin.qgive{border:3px solid var(--ol);background:var(--go1);color:#fff;font-weight:900;font-size:15px;box-shadow:0 3px 0 var(--gosh)}
 </style>
 </head>
 <body class="game">
@@ -985,24 +1110,29 @@ body{font-variant-numeric:tabular-nums}
 <div id="wx" aria-hidden="true" hidden></div>
 <div id="exHint" hidden></div>
 <div id="mapBanner" hidden></div><div id="testTag" hidden>測試模式</div><div id="testNote" hidden></div>
-<button id="w3dViewBtn" hidden aria-label="切換 3D 視角">視角：低</button><button id="mapBtn" hidden aria-label="探索地圖"><img class="ibimg" src="assets/icons/s/map.png" alt="" aria-hidden="true" onerror="this.remove()"><span>地圖</span></button>
+<button id="w3dViewBtn" hidden aria-label="切換 3D 視角">視角：低</button><button id="mapBtn" aria-label="地圖"><img class="ibimg" src="assets/icons/s/map.png" alt="" aria-hidden="true" onerror="this.remove()"><span>地圖</span></button>
 <div id="mapPanel" hidden role="dialog" aria-label="探索地圖"></div>
 <div id="fadeOv" aria-hidden="true"></div>
-<div class="hudTop"><div class="hudRow"><button id="meChip" aria-label="我的名片"></button><div class="coins" aria-label="金幣"><span class="coin" aria-hidden="true"></span><span id="coins">0</span></div></div><div class="sceneName" id="sceneName">我的農場</div><div class="sync" id="sync" role="status"></div></div>
+<div class="hudTop"><div class="hudRow"><button id="meChip" aria-label="我的名片"></button><div class="coins" aria-label="金幣"><span class="coin" aria-hidden="true"></span><span id="coins">0</span><i id="syncDot" class="sd-ok" aria-hidden="true"></i></div></div><div class="sceneName" id="sceneName">我的農場</div><div class="sync" id="sync" role="status"></div></div>
 <div id="marquee" hidden role="status" aria-live="polite"><b aria-hidden="true">📢</b><div class="mqwin"><span></span></div></div>
 <div id="iconbarL" class="iconbar">
-  <button data-open="bag"><img class="ibimg" src="assets/icons/s/seed_bag.png" alt="" aria-hidden="true"><span>種子袋</span><i id="bagBadge" hidden></i></button>
   <button data-open="dex"><img class="ibimg" src="assets/icons/s/codex.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6M9 12h6"/></svg><span>圖鑑</span></button>
-  <button id="ordersBtn"><img class="ibimg" src="assets/icons/s/quest.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v18l-5-3-5 3z"/><path d="M10 8h4M10 12h4"/></svg><span>任務</span><i id="ordersBadge" hidden></i></button>
   <button data-open="genes"><img class="ibimg" src="assets/icons/s/genes.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3c0 6 10 6 10 12s-10 6-10 6"/><path d="M17 3c0 6-10 6-10 12s10 6 10 6"/><path d="M8.5 7h7M8.5 17h7M10 12h4"/></svg><span>遺傳</span></button>
   <button data-open="social"><img class="ibimg" src="assets/icons/s/friends.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M15 15.5c2.8-.6 6 1.2 6 4.5"/></svg><span>朋友</span></button>
 </div>
 <div id="iconbar" class="iconbar">
   <button id="ibMarket" data-do="market"><img class="ibimg" src="assets/icons/s/town.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l2-6h14l2 6"/><path d="M3 10c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3"/><path d="M5 13v8h14v-8"/></svg><span>城鎮</span></button>
-  <button id="ibHelp" data-do="help" hidden><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.5A4 4 0 0 1 12 8a4 4 0 0 1 7 2.5C19 15.6 12 20 12 20z"/></svg><span>幫忙照顧</span></button><button id="ibHome" data-do="home" hidden><img class="ibimg" src="assets/icons/s/home.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>回家</span></button>
+  
   <button id="ibExplore" data-open="explore"><img class="ibimg" src="assets/icons/s/explore.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z" fill="currentColor" stroke-width="1.2"/></svg><span>探索</span></button>
   <button id="ibDecor" data-do="decor"><img class="ibimg" src="assets/icons/s/decor.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-3 2-5 5-5 8a5 5 0 0 0 10 0c0-3-2-6-5-8z"/><path d="M12 16v5M9 21h6"/></svg><span>裝飾</span></button>
   <button data-open="settings"><img class="ibimg" src="assets/icons/s/settings.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span>設定</span></button>
+</div>
+<div id="rbar" class="iconbar rbar">
+  <button id="ibHelp" data-do="help" hidden><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.5A4 4 0 0 1 12 8a4 4 0 0 1 7 2.5C19 15.6 12 20 12 20z"/></svg><span>幫忙照顧</span></button><button id="ibHome" data-do="home" hidden><img class="ibimg" src="assets/icons/s/home.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>回家</span></button>
+  <button data-open="bag" id="ibBag"><img class="ibimg" src="assets/icons/s/seed_bag.png" alt="" aria-hidden="true"><span>背包</span><i id="bagBadge" hidden></i></button>
+  <button id="ordersBtn"><img class="ibimg" src="assets/icons/s/quest.png" alt="" aria-hidden="true" onerror="this.remove()"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v18l-5-3-5 3z"/><path d="M10 8h4M10 12h4"/></svg><span>任務</span><i id="ordersBadge" hidden></i></button>
+  <button data-do="fy" id="ibFy"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#5A3416" stroke-width="1.8" stroke-linejoin="round"><path d="M12 13C9 6 4 4 2 6c0 5 4 8 10 7z" fill="#FFF3C4"/><path d="M12 13c3-7 8-9 10-7 0 5-4 8-10 7z" fill="#FFF3C4"/><path d="M12 13c-2 3-6 5-8 4 1-3 4-4 8-4zM12 13c2 3 6 5 8 4-1-3-4-4-8-4z" fill="#FDE6F2"/><circle cx="12" cy="13" r="1.6" fill="#5A3416"/></svg><span>神之子</span></button>
+  <button data-do="menu" id="ibMenu"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#5A3416" stroke-width="2.6" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg><span>選單</span></button>
 </div>
 <div id="joy" aria-label="移動搖桿" hidden><div id="joyKnob"></div></div>
 <div id="ringOv" hidden></div><div id="ringMenu" hidden role="menu" aria-label="功能"></div><button id="ringBtn" hidden aria-label="育苗盤（長按打開更多功能）"></button><div id="decoPop" hidden></div><div id="fxH" aria-hidden="true"></div>
@@ -1013,10 +1143,12 @@ body{font-variant-numeric:tabular-nums}
 <div id="decoBar" class="toolbar2" hidden></div>
 <div id="sowBar" class="toolbar2" hidden></div>
 <div id="pdim" hidden></div>
-<div class="panel" id="p-bag" hidden role="dialog" aria-label="種子袋"><div class="ph"><h2>種子袋</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div class="filters" id="bagTabs" role="tablist"></div><div id="bag"></div></div></div>
+<div class="panel" id="p-bag" hidden role="dialog" aria-label="背包"><div class="ph"><h2>背包</h2><button class="hbtn" id="bagSearch" type="button" aria-label="查詢"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg></button><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div class="filters" id="bagTabs" role="tablist"></div><div id="bag"></div></div></div>
 <div class="panel" id="p-dex" hidden role="dialog" aria-label="品種圖鑑"><div class="ph"><h2>品種圖鑑</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div id="dexTabs"></div><div class="filters" id="dexFilter"></div><div id="dex"></div></div></div>
 <div class="panel" id="p-social" hidden role="dialog" aria-label="朋友"><div class="ph"><h2>朋友</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><h3 style="margin-top:4px">朋友</h3><div id="friends"></div><h3>公共聊天室</h3><div id="chat" aria-live="polite"></div><div class="chatbar"><input id="chatIn" maxlength="300" placeholder="輸入訊息" aria-label="聊天訊息" aria-describedby="chatErr"><button class="mini big" id="chatSend">傳送</button></div><div class="err" id="chatErr"></div></div></div>
 <div class="panel" id="p-decor" hidden role="dialog" aria-label="裝飾農場"><div class="ph"><h2>裝飾農場</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><p class="note">選一種，點空地就放。<button type="button" class="qh" aria-expanded="false" aria-label="說明">？</button><span class="qhx" hidden>標價的裝飾每放一個扣一次（收回不退）。圍籬、地面可以滑著連續鋪。告示牌可以寫 2–8 個字。</span></p><div id="themeBox"></div><div class="filters" id="decorCats"></div><div class="decorItems" id="decorItems"></div></div></div>
+<div class="panel" id="p-map" hidden role="dialog" aria-label="地圖"><div class="ph"><h2>地圖</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb" id="mapBody"></div></div>
+<div class="panel pmenu" id="p-menu" hidden role="dialog" aria-label="選單"><div class="ph"><h2>選單</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div class="mgrid" id="menuGrid"></div></div></div>
 <div class="panel" id="p-explore" hidden role="dialog" aria-label="探索世界"><div class="ph"><h2>探索世界</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb" id="exploreBody"></div></div>
 <div class="panel" id="p-genes" hidden role="dialog" aria-label="遺傳規則"><div class="ph"><h2>遺傳規則</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div id="genes"></div></div></div>
 <div class="panel" id="p-settings" hidden role="dialog" aria-label="設定"><div class="ph"><h2>設定</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div class="settings"><div id="ctrlBox"></div><div id="testBox"></div><details class="dist"><summary>錯誤紀錄（回報問題時截圖給開發者）</summary><pre id="errLog" style="white-space:pre-wrap;font-size:12px;margin:6px 0 0">目前沒有錯誤</pre></details><button class="btn" id="allSeedsBtn">測試：領取全部 8 種原始品種</button><button class="btn warn" id="resetBtn">重新開始</button><button class="btn" id="genesBtn">打開遺傳規則（顯隱性與強弱表）</button>
@@ -1024,7 +1156,7 @@ body{font-variant-numeric:tabular-nums}
 <button id="mqLine" type="button" hidden></button>
 <div id="tut" hidden role="status"><div class="tuth"><img class="gp" src="data:image/jpeg;base64,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" width="44" height="44" alt="">農會阿伯<span class="stp" id="tutStep"></span></div><p id="tutText"></p><div class="tutb"><button id="tutSkip">跳過教學</button><button id="tutNext" hidden></button></div></div>
 <div id="backdrop"></div>
-<div id="sheet" role="dialog" aria-modal="true" aria-label="詳細資料"><div class="shead"><div class="grip"></div><button id="sheetX" class="xbtn" aria-label="關閉">✕</button></div><div class="sheet-wrap" id="sheetBody"></div></div>
+<div id="sheet" role="dialog" aria-modal="true" aria-label="詳細資料"><div class="shead"><div class="grip"></div><button id="sheetBack" class="sback" type="button" hidden>‹</button><b id="sheetTitle"></b><button id="sheetX" class="xbtn" aria-label="關閉">✕</button></div><div class="sheet-wrap" id="sheetBody"></div></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <script>
 /* 104.1（17p）：效能量測面板。網址加 ?perf=1 才會啟動；不改變遊戲行為，只在計時器、rAF、網路外面包一層計數。 */
@@ -1388,7 +1520,7 @@ function tierB(ph){const m=ph.tier<5?mhOf(ph):null;return m?`<span class="badge 
 const descr=(ph,crop)=>{const m=mhOf(ph);return m?`${m[1]}${CROPS[crop].n}`:`${ph.shapeName}、${colorLabel(ph)}的${CROPS[crop].n}`};
 const appOf=ph=>ph.key;
 function lotDist(l){
-  // 後代外觀機率一律依母本 × 父本的遺傳規則計算（理論值），不依包內實際的種子，避免洩漏每顆種子的內容
+  // 後代外觀機率一律依結種株 × 花粉株的遺傳規則計算（理論值），不依包內實際的種子，避免洩漏每顆種子的內容
   const m=new Map();
   for(const [k,p] of offspringDist(l.m,l.f)){const a=appFromKey(k);m.set(k,{key:k,p,app:{...a,perfCls:2,seed:7}})}
   const hs=halfFrom([l.m,l.f],'c'),hp=halfFrom([l.m,l.f],'pc');for(const e of m.values()){if(e.app.skin&&e.app.skin.startsWith('l-')&&hs)e.app.sb=hs;if(e.app.pat&&e.app.pat.c.startsWith('l-')&&hp)e.app.pat={...e.app.pat,cb:hp}}
@@ -1649,7 +1781,7 @@ let rtdb=null;try{rtdb=firebase.database()}catch(e){rtdb=null}
 let uid=null,saveTimer=null,dirty=false,regList=[],listings=[],unsubs=[];
 const myName=()=>(state&&state.pname)||(auth.currentUser&&auth.currentUser.displayName)||'玩家';/* 41.3：自訂名字優先 */
 const lsKey=()=>LS_KEY+'_'+uid;
-function setSync(k){const t={loading:'讀取雲端存檔中…',saving:'儲存中…',ok:'已存到雲端',err:'暫時無法連線，恢復後會自動存檔'}[k]||'';const el=document.getElementById('sync');if(el)el.textContent=t}
+function setSync(k){const t={loading:'讀取雲端存檔中…',saving:'儲存中…',ok:'已存到雲端',err:'暫時無法連線，恢復後會自動存檔'}[k]||'';const el=document.getElementById('sync');if(el)el.textContent=t;const d=document.getElementById('syncDot');if(d){d.className='sd-'+k;d.title=t}}/* 138.4：常駐文字改成金幣旁的小圓點 */
 function save(){if(state)try{ensureSlots()}catch(e){}
   if(state)try{zipPass()}catch(e){}
   if(!state||!uid)return;
@@ -1710,7 +1842,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-19b';
+const BUILD='2026-11-19c';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -1751,10 +1883,10 @@ const repTotal=r=>r.lots.length+r.seeds+r.fathers+r.plants;
 function repNotice(r){
   if(!repTotal(r))return;
   const names=r.lots.map(x=>`「${x.name}」${x.source?'（'+srcName(x.source)+'）':''}`);
-  logErr(`修復存檔：移除 ${r.lots.length} 包種子${names.length?'：'+names.slice(0,8).join('、'):''}；移除壞掉的種子 ${r.seeds} 顆、修正父本 ${r.fathers} 包、移除植株 ${r.plants} 株`,'');
+  logErr(`修復存檔：移除 ${r.lots.length} 包種子${names.length?'：'+names.slice(0,8).join('、'):''}；移除壞掉的種子 ${r.seeds} 顆、修正花粉株 ${r.fathers} 包、移除植株 ${r.plants} 株`,'');
   let el=document.getElementById('repairBox');
   if(!el){el=document.createElement('div');el.id='repairBox';el.setAttribute('role','status');el.style.cssText='position:fixed;left:12px;right:12px;top:calc(12px + env(safe-area-inset-top,0px));z-index:190;background:#FFFBEA;border:3px solid #B9840F;border-radius:14px;padding:12px;font-size:15px;line-height:1.55;color:#4A3208;box-shadow:0 4px 0 #8A6A12;max-height:60vh;overflow:auto';document.body.appendChild(el)}
-  el.innerHTML=`<b>存檔已自動修復</b><br>存檔裡有讀不懂的資料，已先備份到雲端再處理：${r.lots.length?`<br>移除 ${r.lots.length} 包種子：${names.join('、')}`:''}${r.seeds?`<br>移除壞掉的種子 ${r.seeds} 顆`:''}${r.fathers?`<br>修正父本資料 ${r.fathers} 包`:''}${r.plants?`<br>移除植株 ${r.plants} 株`:''}<br>你自己雜交、取種得到的種子都還在。<br><button class="btn primary" style="margin-top:8px" onclick="this.parentNode.remove()">知道了</button>`;
+  el.innerHTML=`<b>存檔已自動修復</b><br>存檔裡有讀不懂的資料，已先備份到雲端再處理：${r.lots.length?`<br>移除 ${r.lots.length} 包種子：${names.join('、')}`:''}${r.seeds?`<br>移除壞掉的種子 ${r.seeds} 顆`:''}${r.fathers?`<br>修正花粉株資料 ${r.fathers} 包`:''}${r.plants?`<br>移除植株 ${r.plants} 株`:''}<br>你自己雜交、取種得到的種子都還在。<br><button class="btn primary" style="margin-top:8px" onclick="this.parentNode.remove()">知道了</button>`;
 }
 // ===== 舊頁面防護：定期確認自己是不是最新版本 =====
 async function checkBuild(){
@@ -1776,10 +1908,10 @@ const byteLen=t=>{try{return new TextEncoder().encode(t).length}catch(e){return 
 function sizeReportHTML(){
   if(!state)return '';
   const kb=x=>Math.round(byteLen(packState(x))/1024),total=byteLen(packState(state));
-  const parts=[['種子袋',state.lots],['種原庫',state.vault],['田裡的植株',state.plots],['垃圾桶',state.trash],['收集紀錄',state.seen],['裝飾',state.decor]].filter(p=>p[1]!=null);
+  const parts=[['背包',state.lots],['種原庫',state.vault],['田裡的植株',state.plots],['垃圾桶',state.trash],['收集紀錄',state.seen],['裝飾',state.decor]].filter(p=>p[1]!=null);
   const rows=parts.map(([n,v])=>[n,kb(v)]);const other=Math.max(0,Math.round(total/1024)-rows.reduce((s,r)=>s+r[1],0));rows.push(['其他',other]);
   const big=[];const add=(l,where)=>{const k=kb(l);if(k>=8)big.push([l.name,where,k,lc(l)])};
-  state.lots.forEach(l=>add(l,'種子袋'));vaultCabs().forEach(c=>c.lots.forEach(l=>add(l,c.name)));big.sort((a,b)=>b[2]-a[2]);
+  state.lots.forEach(l=>add(l,'背包'));vaultCabs().forEach(c=>c.lots.forEach(l=>add(l,c.name)));big.sort((a,b)=>b[2]-a[2]);
   let h=`<p class="note">目前約 <b>${Math.round(total/1024)} KB</b>，雲端上限 1024 KB（${Math.round(total/SAVE_LIMIT*100)}%）。</p><table class="sztab">${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]} KB</td></tr>`).join('')}</table>`;
   if(big.length)h+=`<p class="note">佔空間最多的種子包：</p><table class="sztab">${big.slice(0,8).map(b=>`<tr><td>${esc(b[0])}（${esc(b[1])}，${b[3]} 顆）</td><td>${b[2]} KB</td></tr>`).join('')}</table><p class="note">大包種子存進種原庫最省空間。${qh('放回原包、救回的種子每顆都佔空間；存進種原庫會自動壓縮。')}</p>`;
   return h;
@@ -2429,14 +2561,14 @@ function mergeIdentical(){
   return merged;
 }
 function lotRow(l,inner){try{return lotRow_(l,inner)}catch(e){logErr(e,'lotRow');return `<button class="lotrow" data-lot="${l.id}"><span class="lr"><b>${esc(l.name||'種子')}</b><span class="meta">這包種子的資料讀不到，點開可以丟掉。</span></span></button>`}}
-function lotRow_(l,inner){const ph=phen(l.m,l.crop),lk=likely(l),sel=vSelMode&&vSel.has(l.id);return `<button class="lotrow${inner?' inner':''}${sel?' sel':''}" data-lot="${l.id}"${vSelMode?` aria-pressed="${sel}"`:''}>${sel?'<span class="selmk" aria-hidden="true">✓</span>':''}<span class="seedic">${!l.obs&&lotCat(l).c!=='done'?seedBagSVG(l,inner?44:52):fruitSVG(lk.app,l.crop,inner?44:52)}<i>最可能 ${pctTxt(lk.p)}</i></span><span class="lr"><b>${esc(l.name)}${l.wide?'・遠緣雜種':''}${l.obs?'・已絕版':''}</b><span class="meta">${inner?'':CROPS[l.crop].n+'・'}${lc(l)} 顆${inner?'':'・'+shapeNameOf(lk.app,l.crop)+'・'+colorLabelA(lk.app)}</span><span class="meta">母本：${SIZE_N[ph.sizeCls]}・發芽率 ${Math.round(l.germ*100)}%</span><span class="badges" style="justify-content:flex-start;margin-top:2px">${rbHTML(ph,'s')}${l.ptier!=null&&l.ptier>=3&&l.ptier!==ph.tier?`<span class="badge">親本 ${TIERS[l.ptier]}</span>`:''}</span></span></button>`}
+function lotRow_(l,inner){const ph=phen(l.m,l.crop),lk=likely(l),sel=vSelMode&&vSel.has(l.id);return `<button class="lotrow${inner?' inner':''}${sel?' sel':''}" data-lot="${l.id}"${vSelMode?` aria-pressed="${sel}"`:''}>${sel?'<span class="selmk" aria-hidden="true">✓</span>':''}<span class="seedic">${!l.obs&&lotCat(l).c!=='done'?seedBagSVG(l,inner?44:52):fruitSVG(lk.app,l.crop,inner?44:52)}<i>最可能 ${pctTxt(lk.p)}</i></span><span class="lr"><b>${esc(l.name)}${l.wide?'・遠緣雜種':''}${l.obs?'・已絕版':''}</b><span class="meta">${inner?'':CROPS[l.crop].n+'・'}${lc(l)} 顆${inner?'':'・'+shapeNameOf(lk.app,l.crop)+'・'+colorLabelA(lk.app)}</span><span class="meta">外觀：${SIZE_N[ph.sizeCls]}・發芽率 ${Math.round(l.germ*100)}%</span><span class="badges" style="justify-content:flex-start;margin-top:2px">${rbHTML(ph,'s')}${l.ptier!=null&&l.ptier>=3&&l.ptier!==ph.tier?`<span class="badge">親本 ${TIERS[l.ptier]}</span>`:''}</span></span></button>`}
 // ===== 種原庫 =====
 let bagTab='bag',vaultCrop='all',vaultOpen=new Set(),vDraft={name:'',crop:'',err:''};
 let vq={mh:'any',crop:'all',shape:'any',skin:'any',pat:'any',pc:'any',by:'m',size:'any',perf:'any',tier:'0',stab:'0',speed:'',yield:'',vigor:'',scope:'vault'};
 const vaultCabs=()=>state.vault||(state.vault=[]);
 const cabOf=lotId=>vaultCabs().find(c=>c.lots.some(l=>l.id===lotId));
 function findLotAny(id){const b=state.lots.find(l=>l.id===id);if(b)return {l:b,cab:null};for(const c of vaultCabs()){const l=c.lots.find(x=>x.id===id);if(l)return {l,cab:c}}return null}
-function bagTabsHTML(){const nV=vaultCabs().reduce((s,c)=>s+c.lots.length,0);return [['bag',`種子袋（${state.lots.length}）`],['fruit',`果實（${fruitsArr().reduce((s,f)=>s+fCount(f),0)}）`],['mat',`素材（${Object.values(matsObj()).reduce((s,v)=>s+(v||0),0)}）`],['vault',`種原庫（${nV}）${nwVault()?' ●':''}`],['search','查詢']].map(([k,n])=>`<button class="fchip" data-btab="${k}" aria-pressed="${bagTab===k}">${n}</button>`).join('')}
+function bagTabsHTML(){if(bagTab==='vault')return '';const n={bag:state.lots.length,fruit:fruitsArr().reduce((s,f)=>s+fCount(f),0),mat:Object.values(matsObj()).reduce((s,v)=>s+(v||0),0),item:itemCount()};return `<div class="btabs">${[['bag','種子'],['fruit','果實'],['mat','素材'],['item','道具']].map(([k,t])=>`<button class="btab" data-btab="${k}" aria-pressed="${bagTab===k}">${t} <b>${n[k]}</b></button>`).join('')}</div>`}/* 138.5：種子｜果實｜素材｜道具；種原庫從選單進、查詢在標題列 */
 // ===== 種原庫批次丟棄 =====
 let vSelMode=false,vSelConfirm=false,vLastRes=[];const vSel=new Set();
 const lotKB=l=>Math.max(1,Math.round(byteLen(packState(l))/1024));
@@ -2448,7 +2580,7 @@ function selBarHTML(where){
 }
 function vaultHTML(){
   const cabs=vaultCabs().filter(c=>vaultCrop==='all'||c.crop===vaultCrop);
-  let h=`<p class="note">存放暫時不用的種子，不佔種子袋。${qh('依作物分櫃、數量不限；存放中不會減少，隨時可以取回。')}</p>`;
+  let h=`<p class="note">存放暫時不用的種子，不佔背包。${qh('依作物分櫃、數量不限；存放中不會減少，隨時可以取回。')}</p>`;
   h+=`<div class="filters">${filtersHTML(vaultCrop,'data-vc')}</div>`+selBarHTML('vault');
   h+=`<details class="dist"${vDraft.err||vDraft.name?' open':''}><summary>新增保存櫃</summary><label class="note">名稱（1–10 個字）<input id="vName" maxlength="10" value="${esc(vDraft.name)}" placeholder="例如：南瓜育種素材"></label><label class="note">作物<select id="vCrop">${CROP_KEYS.map(k=>`<option value="${k}"${(vDraft.crop||(vaultCrop!=='all'?vaultCrop:'tomato'))===k?' selected':''}>${CROPS[k].n}</option>`).join('')}</select></label><div class="err">${vDraft.err}</div><button class="btn primary" data-vact="newcab">建立保存櫃</button></details>`;
   if(!cabs.length)return h+'<p class="note">還沒有保存櫃。</p>';
@@ -2456,7 +2588,7 @@ function vaultHTML(){
   for(const k of [...CROP_KEYS,'obs']){if(!byCrop[k])continue;h+=`<h3>${k==='obs'?'已絕版':CROPS[k].n}</h3>`;
     for(const c of byCrop[k]){const open=vaultOpen.has(c.id),seeds=c.lots.reduce((s,l)=>s+lc(l),0);
       h+=`<div class="grp${open?' open':''}"><button class="lotrow grph" data-vcab="${c.id}" aria-expanded="${open}"><span class="lr"><b>${esc(c.name)}</b><span class="meta">${c.lots.length} 包・共 ${seeds} 顆</span></span><span class="chev" aria-hidden="true">${open?'▲':'▼'}</span></button>`;
-      if(open)h+=`<div class="grpin">${vSelMode&&c.lots.length?`<button class="btn" data-vact="selcab" data-c="${c.id}">全選這個保存櫃（${c.lots.length} 包）</button>`:''}${c.lots.length?c.lots.map(l=>lotRow(l,true)).join(''):'<p class="note">這個保存櫃是空的。打開種子袋裡的種子，按「存入種原庫」。</p>'}${c.crop==='obs'?'<p class="note">已絕版的種子只能查看，不能取出使用。</p>':`<div class="row2"><button class="btn" data-vact="rencab" data-c="${c.id}">改名</button><button class="btn warn" data-vact="delcab" data-c="${c.id}">${vDraft.del===c.id?'再按一次確定刪除':'刪除保存櫃'}</button></div><p class="note">刪除保存櫃時，裡面的種子會全部放回種子袋。</p>`}</div>`;
+      if(open)h+=`<div class="grpin">${vSelMode&&c.lots.length?`<button class="btn" data-vact="selcab" data-c="${c.id}">全選這個保存櫃（${c.lots.length} 包）</button>`:''}${c.lots.length?c.lots.map(l=>lotRow(l,true)).join(''):'<p class="note">這個保存櫃是空的。打開背包裡的種子，按「存入種原庫」。</p>'}${c.crop==='obs'?'<p class="note">已絕版的種子只能查看，不能取出使用。</p>':`<div class="row2"><button class="btn" data-vact="rencab" data-c="${c.id}">改名</button><button class="btn warn" data-vact="delcab" data-c="${c.id}">${vDraft.del===c.id?'再按一次確定刪除':'刪除保存櫃'}</button></div><p class="note">刪除保存櫃時，裡面的種子會全部放回背包。</p>`}</div>`;
       h+='</div>'}}
   return h;
 }
@@ -2464,8 +2596,8 @@ function searchHTML(){
   const opt=(k,list)=>list.map(([v,n])=>`<option value="${v}"${vq[k]===v?' selected':''}>${n}</option>`).join('');
   const cropShapes=(vq.crop!=='all'?CROPS[vq.crop]:CROPS.tomato).shapes;
   let h=`<p class="note">不選就是不限。${qh('「依包內實際的種子」會檢查每一顆，混合的包也找得到。')}</p><div class="vq">
-  <label>查詢依據<select data-vq="by">${opt('by',[['m','母本'],['pack','包內實際的種子']])}</select></label>
-  <label>範圍<select data-vq="scope">${opt('scope',[['vault','只查種原庫'],['all','種原庫＋種子袋']])}</select></label>
+  <label>查詢依據<select data-vq="by">${opt('by',[['m','這包的樣子'],['pack','包內實際的種子']])}</select></label>
+  <label>範圍<select data-vq="scope">${opt('scope',[['vault','只查種原庫'],['all','種原庫＋背包']])}</select></label>
   <label>作物<select data-vq="crop">${opt('crop',[['all','全部'],...ACTIVE_CROPS.map(k=>[k,CROPS[k].n])])}</select></label>
   <label>形狀<select data-vq="shape">${opt('shape',[['any','不限'],...cropShapes.map((n,i)=>['B'+i,n]),...SPN.slice(1).map((n,i)=>['S'+(i+1),n+'（特殊）']),...Object.entries(EXN).map(([v,n])=>['S'+v,n+'（專屬）'])])}</select></label>
   <label>果皮顏色<select data-vq="skin">${opt('skin',[['any','不限'],...ALL_SKINS.map(c=>[c,cnOf(c)])])}</select></label>
@@ -2478,7 +2610,7 @@ function searchHTML(){
   <label>最可能外觀機率<select data-vq="stab">${opt('stab',[['0','不限'],['0.5','50% 以上'],['0.8','80% 以上'],['0.95','95% 以上']])}</select></label>
   </div>
   <button class="btn" data-vact="qreset">清除條件</button>`+selBarHTML('search');
-  const pool=[];for(const c of vaultCabs())for(const l of c.lots)pool.push({l,where:c.name});if(vq.scope==='all')for(const l of state.lots)pool.push({l,where:'種子袋'});
+  const pool=[];for(const c of vaultCabs())for(const l of c.lots)pool.push({l,where:c.name});if(vq.scope==='all')for(const l of state.lots)pool.push({l,where:'背包'});
   const num=v=>v===''?null:+v;
   const appOk=a=>{
     if(vq.shape!=='any'){const n=+vq.shape.slice(1);if(vq.shape[0]==='B'){if(a.sp||a.legacy||a.level!==n)return false}else if(a.sp!==n||a.legacy)return false}
@@ -2504,7 +2636,7 @@ function searchHTML(){
       let bad=false;for(const k of ['speed','yield','vigor']){const m=num(vq[k]);if(m!=null&&ph.ab[k]<m)bad=true}if(bad)continue;
       res.push(it);
     }}catch(e){}}
-  vLastRes=res.filter(x=>x.where!=='種子袋').map(x=>x.l.id);
+  vLastRes=res.filter(x=>x.where!=='背包').map(x=>x.l.id);
   h+=`<h3>找到 ${res.length} 包</h3>`+(res.length?res.slice(0,80).map(({l,where,note})=>`<div class="vres">${lotRow(l,false)}<span class="meta">位置：${esc(where)}${note?'・'+note:''}</span></div>`).join('')+(res.length>80?'<p class="note">只列出前 80 包，請再加條件縮小範圍。</p>':''):'<p class="note">沒有符合條件的種子。</p>');
   return h;
 }
@@ -2521,19 +2653,19 @@ function vaultLotHTML(l,cab){
   const ph=phen(l.m,l.crop),others=vaultCabs().filter(c=>c.crop===l.crop&&c!==cab);
   let h=`<h2>${esc(l.name)}</h2><p class="stage">${CROPS[l.crop].n}・${lc(l)} 顆・發芽率 ${Math.round(l.germ*100)}%・存放在「${esc(cab.name)}」</p><p class="note">血統：${esc(srcName(l.source))}</p>${packContentHTML(l)}`;
   if(l.obs){h+=`<p class="note">已絕版，最多可取出 ${RESCUE_N} 顆。${qh('取出的顏色、花紋保留，造型隨機變成現有的基本造型；剩下的仍是絕版。')}</p><button class="btn primary" data-act="vrescue">取出 ${Math.min(RESCUE_N,lc(l))} 顆（保留顏色）</button>`;
-    return h+distHTML(lotDist(l),l.crop,'原本的後代外觀',false)+`<h3>母本</h3>`+infoHTML(ph,3,l.m,l.crop,true,null,{parent:true})+'<button class="btn" data-act="close">關閉</button>'}
-  h+=`<button class="btn primary" data-act="vget">取回種子袋</button>`;
+    return h+distHTML(lotDist(l),l.crop,'原本的後代外觀',false)+`<h3>結出這包種子的那株</h3>`+infoHTML(ph,3,l.m,l.crop,true,null,{parent:true})+'<button class="btn" data-act="close">關閉</button>'}
+  h+=`<button class="btn primary" data-act="vget">取回背包</button>`;
   if(others.length)h+=`<details class="dist"><summary>移到其他保存櫃</summary>${others.map(c=>`<button class="btn" data-act="vmove" data-c="${c.id}">移到「${esc(c.name)}」</button>`).join('')}</details>`;
   h+=`<button class="btn warn" data-act="vdiscard">${sheet.confirm?'再按一次，確定丟掉':'丟掉這包種子'}</button>`;
-  h+=distHTML(lotDist(l),l.crop,'可能出現的後代',false)+lotUniHTML(l)+`<h3>母本</h3>`+infoHTML(ph,3,l.m,l.crop,true,null,{parent:true});
+  h+=distHTML(lotDist(l),l.crop,'可能出現的後代',false)+lotUniHTML(l)+`<h3>結出這包種子的那株</h3>`+infoHTML(ph,3,l.m,l.crop,true,null,{parent:true});
   return h+'<button class="btn" data-act="close">關閉</button>';
 }
 function vaultSheetAction(act,b){
   const f=findLotAny(sheet.vlot);if(!f||!f.cab){closeSheet();return}const {l,cab}=f;
   if(act==='close')return closeSheet();
-  if(l.obs&&act==='vrescue'){const r=rescueLot(l,cab);closeSheet();renderAll();toast(`取出 ${r.n} 顆「${r.name}」，放進種子袋了。顏色保留，外觀已重新生成`,6000);return}
+  if(l.obs&&act==='vrescue'){const r=rescueLot(l,cab);closeSheet();renderAll();toast(`取出 ${r.n} 顆「${r.name}」，放進背包了。顏色保留，外觀已重新生成`,6000);return}
   if(l.obs){toast('已絕版的種子只能查看');return}
-  if(act==='vget'){unzipLot(l);cab.lots=cab.lots.filter(x=>x!==l);state.lots.unshift(l);save();closeSheet();renderBag();toast(`「${l.name}」已取回種子袋`);return}
+  if(act==='vget'){unzipLot(l);cab.lots=cab.lots.filter(x=>x!==l);state.lots.unshift(l);save();closeSheet();renderBag();toast(`「${l.name}」已取回背包`);return}
   if(act==='vmove'){const to=vaultCabs().find(c=>c.id===b.dataset.c);if(!to)return;cab.lots=cab.lots.filter(x=>x!==l);to.lots.unshift(l);save();closeSheet();renderBag();toast(`已移到「${to.name}」`);return}
   if(act==='vdiscard'){if(!sheet.confirm){sheet.confirm=true;renderSheet();return}cab.lots=cab.lots.filter(x=>x!==l);save();closeSheet();renderBag();toast('已丟掉這包種子');return}
 }
@@ -2544,7 +2676,7 @@ function vaultAction(b){
     if(vaultCabs().some(x=>x.crop===c&&norm(x.name)===norm(v))){vDraft.err='這種作物已經有同名的保存櫃了';renderBag();return}
     const cab={id:'V'+Date.now().toString(36),name:v,crop:c,lots:[],at:Date.now()};vaultCabs().push(cab);vaultOpen.add(cab.id);vDraft={name:'',crop:'',err:''};save();renderBag();toast(`建立了保存櫃「${v}」`);return}
   if(a==='rencab'){const c=vaultCabs().find(x=>x.id===b.dataset.c);if(!c)return;const v=prompt('新的保存櫃名稱（1–10 個字）',c.name);if(v==null)return;const t=v.trim();if(!glen(t)||glen(t)>10){toast('名稱需要 1 到 10 個字');return}c.name=t;save();renderBag();return}
-  if(a==='delcab'){const c=vaultCabs().find(x=>x.id===b.dataset.c);if(!c)return;if(vDraft.del!==c.id){vDraft.del=c.id;renderBag();return}vDraft.del=null;c.lots.forEach(unzipLot);state.lots.unshift(...c.lots);state.vault=vaultCabs().filter(x=>x!==c);save();renderBag();toast(`已刪除「${c.name}」，${c.lots.length} 包種子放回種子袋`);return}
+  if(a==='delcab'){const c=vaultCabs().find(x=>x.id===b.dataset.c);if(!c)return;if(vDraft.del!==c.id){vDraft.del=c.id;renderBag();return}vDraft.del=null;c.lots.forEach(unzipLot);state.lots.unshift(...c.lots);state.vault=vaultCabs().filter(x=>x!==c);save();renderBag();toast(`已刪除「${c.name}」，${c.lots.length} 包種子放回背包`);return}
   if(a==='selmode'){vSelMode=true;vSel.clear();vSelConfirm=false;renderBag();return}
   if(a==='selexit'){vSelMode=false;vSel.clear();vSelConfirm=false;renderBag();return}
   if(a==='selnone'){vSel.clear();vSelConfirm=false;renderBag();return}
@@ -2556,7 +2688,7 @@ function vaultAction(b){
   if(a==='qreset'){vq={mh:'any',crop:'all',shape:'any',skin:'any',pat:'any',pc:'any',by:vq.by,size:'any',perf:'any',tier:'0',stab:'0',speed:'',yield:'',vigor:'',scope:vq.scope};renderBag();return}
 }
 
-// ===== 格子式種子袋 =====
+// ===== 格子式背包 =====
 const MY_SLOTS=10;/* 38.5（16d）：格數改用 bagCap()（100＋每 5 級 10） */
 function ensureSlots(){
   if(!state||!Array.isArray(state.lots))return;
@@ -2568,7 +2700,7 @@ function ensureSlots(){
   if(over.length){
     for(const l of over){let c=vaultCabs().find(x=>x.crop===l.crop&&x.name==='暫存櫃');if(!c){c={id:'V'+Date.now().toString(36)+l.crop,name:'暫存櫃',crop:l.crop,lots:[],at:Date.now()};vaultCabs().push(c)}c.lots.unshift(l);delete l.slot}
     state.lots=state.lots.filter(l=>!over.includes(l));for(const l of over){l.nw=1;l.nwAt=Date.now()}
-    setTimeout(()=>toast(`種子袋滿了，${over.length} 包新種子（共 ${over.reduce((s,l)=>s+lc(l),0)} 顆）放進種原庫的「暫存櫃」`,4000),50);
+    setTimeout(()=>toast(`背包滿了，${over.length} 包新種子（共 ${over.reduce((s,l)=>s+lc(l),0)} 顆）放進種原庫的「暫存櫃」`,4000),50);
   }
 }
 function lotCat(l){
@@ -2581,31 +2713,28 @@ function lotCat(l){
     return {c:'breed',r};
   }catch(e){return {c:'breed',r:0}}
 }
-let bagCat='all';const CATN={all:'全部',breed:'育種中',done:'成品',germ:'種原'};
+let bagCat='all';const CATN={all:'全部',new:'新的',breed:'育種中',done:'成品',wild:'野生'};
 /* ===== 127（18q）：還會變的種子（不是成品）畫成布袋，袋口露出「種下去最可能出現」的前三種外觀；成品照舊一顆果實 ===== */
 function seedBagSVG(l,size){const d=lotDist(l).slice(0,3),pos=[[0.62,-0.78,0.95],[-0.62,-0.78,0.95],[0,-0.98,1.1]],ord=d.length===1?[0]:d.length===2?[0,1]:[1,2,0];
   const fr=k=>{const e=d[k];if(!e)return '';const [x,y,s]=d.length===1?[0,-0.9,1.15]:pos[ord.indexOf(k)];return `<svg x="${(x-s*0.75).toFixed(2)}" y="${(y-s*0.8).toFixed(2)}" width="${(s*1.5).toFixed(2)}" height="${(s*1.6).toFixed(2)}" viewBox="-1.5 -1.6 3 3.2">${fruitInner(e.app,1,l.crop)}</svg>`};
   const back=d.length===1?[0]:d.length===2?[1,0]:[1,0,2];/* 後面的先畫，中間那顆（最可能的）畫在最前面 */
   return `<svg viewBox="-1.5 -1.6 3 3.2" width="${size}" height="${Math.round(size*3.2/3)}" aria-hidden="true"><ellipse cx="0" cy="-0.42" rx="1.05" ry="0.28" fill="#6E4B25"/>${back.map(fr).join('')}<path d="M-1.08 -0.45 Q-1.25 -0.1 -0.95 0.25 Q-1.45 0.9 -1.15 1.3 Q-0.6 1.6 0 1.58 Q0.6 1.6 1.15 1.3 Q1.45 0.9 0.95 0.25 Q1.25 -0.1 1.08 -0.45 Q0.55 -0.2 0 -0.22 Q-0.55 -0.2 -1.08 -0.45Z" fill="#C9A06A" stroke="#5E3F1E" stroke-width="0.07" stroke-linejoin="round"/><path d="M-0.98 0.22 Q0 0.42 0.98 0.22" fill="none" stroke="#8A5A2B" stroke-width="0.12" stroke-linecap="round"/><path d="M-0.7 0.75 l0.12 0.05 M-0.2 1.05 l0.12 0.05 M0.45 0.8 l0.12 0.05 M0.2 1.3 l0.12 0.05" stroke="#9C7443" stroke-width="0.05" stroke-linecap="round"/></svg>`}
-function slotCell(k,lot){
+function slotCell(k,lot){/* 138.5：只畫果實圖＋數量；外框是稀有度色；新的右上角紅點；野生的左上角小標籤 */
   if(!lot)return `<div class="slot empty${k<MY_SLOTS?' my':''}" data-slot="${k}"></div>`;
-  const ct=lotCat(lot);
-  let ic='',sz=50;try{sz=phen(lot.m,lot.crop).ab.size;const pct=Math.round(30+32*sizeScale(sz));
-    if(ct.c!=='done'&&!lot.obs)ic=seedBagSVG(lot,44).replace('<svg ','<svg style="width:72%;height:72%" ');/* 127 */
-    else ic=fruitSVG(likely(lot).app,lot.crop,44).replace('<svg ',`<svg style="width:${pct}%;height:${pct}%" `)}catch(e){ic='？'}
-  const szc=sizeCls(sz),lab=ct.c==='breed'?Math.round(ct.r*100)+'%':ct.c==='done'?(ct.t||'成品'):ct.c==='germ'?ct.t:'';
-  const dim=bagCat==='new'?!lot.nw:bagCat!=='all'&&ct.c!==bagCat;
-  return `<button class="slot${k<MY_SLOTS?' my':''}${dim?' dim':''}${lot.nw?' nwg':''}" data-slot="${k}" data-lot="${lot.id}" aria-label="${esc(lot.name)}，${CROPS[lot.crop].n}，${lc(lot)} 顆，${ct.c==='breed'?'育種中，目標外觀 '+lab:CATN[ct.c]||''}">${ic}${szc===0||szc===4?`<i class="szt${szc===4?' big':''}">${SIZE_N[szc]}</i>`:''}<b class="cnt">${lc(lot)}</b>${lot.nw?`<i class="nwb">新${lot.nwn?' +'+lot.nwn:''}</i>`:''}${lot.lk?'<i class="lkb">★</i>':''}${lcMu(lot)&&!lot.mutPack?'<i class="mub">含突變</i>':''}${!lot.nw&&ct.c!=='done'&&lotOld(lot)?'<i class="oldt">舊</i>':''}${lot.obs?'<i class="obs">絕版</i>':''}${lot.gen!=null?`<i class="gen">${lot.gen?lot.gen+'代':'原始'}</i>`:''}${lab?`<i class="cat c-${ct.c}">${lab}</i>`:''}<span class="nm">${esc(lot.name)}</span></button>`;
+  const bc=bagCatOf(lot),t=lotTier(lot),dim=bagCat==='new'?!lot.nw:bagCat!=='all'&&bc!==bagCat;
+  return `<button class="slot rs${k<MY_SLOTS?' my':''}${dim?' dim':''}${bagSel===lot.id?' sel':''}" style="--rc:${RCOL[t]}" data-slot="${k}" data-lot="${lot.id}" aria-label="${esc(lot.name)}，${CROPS[lot.crop].n}，${lc(lot)} 顆，${TIERS[t]}">${lotIc(lot,44)}<b class="cnt">${lc(lot)}</b>${lot.nw?'<i class="nwd">新</i>':''}${bc==='wild'?'<i class="wildt">野生</i>':''}${lot.lk?'<i class="lkb">★</i>':''}</button>`;
 }
 function bagGridHTML(){
   const by={};for(const l of state.lots)if(l.slot!=null)by[l.slot]=l;
-  const cnt={all:state.lots.length,breed:0,done:0,germ:0};for(const l of state.lots){const c=lotCat(l).c;if(cnt[c]!=null)cnt[c]++}
-  const CATNOTE={all:'',breed:'百分比＝長成目標外觀的比例。'+qh('目標外觀＝母本的樣子；到 100% 就是成品。'),done:'種下去全部長一樣。'+qh('可以做標本、販售或當親本。「雜交成品」自交後會分開。'),germ:'野生採集與雜交得到的種子，是育種的材料。'};
-  const nN=nwCount();if(bagCat==='new'&&!nN)bagCat='all';const nOld=lotOldSellable().length;
-  let h=`<div class="bagcats">${nN?`<button class="fchip" data-bagcat="new" aria-pressed="${bagCat==='new'}">新的（${nN}）</button>`:''}${['all','breed','done','germ'].map(c=>`<button class="fchip" data-bagcat="${c}" aria-pressed="${bagCat===c}">${CATN[c]} ${cnt[c]}</button>`).join('')}</div>${CATNOTE[bagCat]?`<p class="note" style="margin:0 0 6px">${CATNOTE[bagCat]}</p>`:''}<h3 class="slh">常用種子</h3><div class="slots">`;for(let k=0;k<MY_SLOTS;k++)h+=slotCell(k,by[k]);h+='</div>';
-  h+=`<div class="slh2"><h3 class="slh">備用種子</h3><span><button class="mini" data-bagsort="1">整理</button> <button class="mini" data-bagold="1">賣掉舊世代${nOld?`（${nOld}）`:''}</button></span></div><p class="note" style="margin:0 0 4px">已用 ${state.lots.length}／${bagCap()} 包，每包最多 ${LOT_MAX} 顆。</p><div class="slots">`;{let last=MY_SLOTS+9;for(const l of state.lots)if(l.slot>last)last=l.slot;last=Math.min(bagCap()-1,Math.ceil((last+6)/5)*5-1);for(let k=MY_SLOTS;k<=last;k++)h+=slotCell(k,by[k])}h+='</div>';
-  h+=`<p class="note">點一下打開，按住拖曳換位置。${qh('「常用種子」播種時排最前面；長期不用的存進種原庫。')}</p>`;
-  return h;
+  const cnt={all:state.lots.length,new:nwCount(),breed:0,done:0,wild:0};for(const l of state.lots){const c=bagCatOf(l);if(cnt[c]!=null)cnt[c]++}
+  if(!CATN[bagCat])bagCat='all';const nOld=lotOldSellable().length;
+  let h=`<div class="bagcats">${['all','new','breed','done','wild'].map(c=>`<button class="fchip" data-bagcat="${c}" aria-pressed="${bagCat===c}">${CATN[c]}${cnt[c]?' '+cnt[c]:''}</button>`).join('')}</div>`;
+  h+=`<div class="slh2"><h3 class="slh">常用種子</h3><button class="mini tidy" data-bagtidy="1" aria-expanded="${bagTidy}">${TIDY_IC}整理</button></div>`;
+  if(bagTidy)h+=`<div class="tidyrow"><button class="mini" data-bagsort="1">排好備用種子</button><button class="mini danger" data-bagold="1">賣掉舊世代${nOld?`（${nOld}）`:''}</button></div>`;
+  h+='<div class="slots s5">';for(let k=0;k<MY_SLOTS;k++)h+=slotCell(k,by[k]);h+='</div>';
+  h+=`<div class="slh2"><h3 class="slh">備用種子</h3><span class="meta">${state.lots.length}／${bagCap()} 包</span></div><div class="slots s5">`;{let last=MY_SLOTS+9;for(const l of state.lots)if(l.slot>last)last=l.slot;last=Math.min(bagCap()-1,Math.ceil((last+6)/5)*5-1);for(let k=MY_SLOTS;k<=last;k++)h+=slotCell(k,by[k])}h+='</div>';
+  h+=`<p class="note">點一下選取，按住拖曳換位置。${qh('「常用種子」播種時排最前面；長期不用的存進種原庫（選單 → 種原庫）。每包最多 '+LOT_MAX+' 顆。')}</p>`;
+  return h+bagInfoHTML();
 }
 document.getElementById('bag').addEventListener('click',e=>{const c=e.target.closest('[data-bagcat]');if(c){bagCat=c.dataset.bagcat;renderBag()}});
 function bagArrange(){
@@ -2642,10 +2771,11 @@ function bagDragEnd(x,y){
 function defaultSeedName(p){const cross=p.pollen&&p.pollen.type==='cross';if(cross)return `品系 ${state.nextLine}`;const base=p.name.replace(/-\d+$/,'');return `${base}-${((state.selfC||{})[base]||0)+1}`}
 
 document.addEventListener('input',e=>{if(e.target&&e.target.id==='seedName'&&sheet){sheet.seedName=e.target.value;sheet.seedErr=''}});
-function renderBag(){try{renderBag_()}catch(e){logErr(e,'bag');const el=document.getElementById('bag');if(el)el.innerHTML='<p class="note">種子袋讀取出錯，請重新整理；還是不行就到「設定 → 錯誤紀錄」截圖。</p>'}}
+function renderBag(){try{renderBag_()}catch(e){logErr(e,'bag');const el=document.getElementById('bag');if(el)el.innerHTML='<p class="note">背包讀取出錯，請重新整理；還是不行就到「設定 → 錯誤紀錄」截圖。</p>'}}
 function renderBag_(){
   if(!state)return;
-  document.getElementById('bagTabs').innerHTML=bagTabsHTML();
+  document.getElementById('bagTabs').innerHTML=bagTabsHTML();{const t=document.querySelector('#p-bag .ph h2');if(t)t.textContent=bagTab==='vault'?'種原庫':'背包';const s=document.getElementById('bagSearch');if(s)s.hidden=bagTab==='vault'}
+  if(bagTab==='item'){document.getElementById('bag').innerHTML=itemBagHTML();return}
   try{fixTick()}catch(e){}
   if(bagTab==='fruit'){document.getElementById('bag').innerHTML=fruitBagHTML();return}/* 112.5 */
   if(bagTab==='mat'){document.getElementById('bag').innerHTML=matBagHTML();return}/* 115.3 */
@@ -2662,24 +2792,26 @@ document.getElementById('bag').addEventListener('click',e=>{
   const mb=e.target.closest('[data-mat]');if(mb){openMat(mb.dataset.mat);return}/* 115.3 */
   const b=e.target.closest('[data-lot]');if(!b)return;const id=+b.dataset.lot;
   if(vSelMode){const f=findLotAny(id);if(f&&f.cab){vSel.has(id)?vSel.delete(id):vSel.add(id);vSelConfirm=false;renderBag();return}}
+  if(bagTab==='bag'&&state.lots.some(l=>l.id===id)){bagSel=bagSel===id?null:id;try{nwSeen(state.lots.find(l=>l.id===id))}catch(e){}renderBag();return}/* 138.5：點一下選取，下方出現資訊列 */
   if(state.lots.some(l=>l.id===id))openLot(id);else{const f=findLotAny(id);if(f&&f.cab){sheet={vlot:id,confirm:false};renderSheet();openSheetUI()}}
 });
 document.getElementById('bag').addEventListener('change',e=>{const t=e.target;if(t.dataset.vq){vq[t.dataset.vq]=t.value;if(t.dataset.vq==='crop')vq.shape='any';renderBag()}});
 document.getElementById('bag').addEventListener('input',e=>{const t=e.target;if(t.dataset.vq&&t.type==='number'){vq[t.dataset.vq]=t.value;clearTimeout(window._vqT);window._vqT=setTimeout(()=>{const id=t.dataset.vq;renderBag();const n=document.querySelector(`[data-vq="${id}"]`);if(n){n.focus();const L=n.value.length;try{n.setSelectionRange(L,L)}catch(_){}}},400)}});
-function openLot(id){nwSeen(state.lots.find(l=>l.id===id));sheet={lot:id,form:null,err:'',d1:'',d2:'',confirm:false};renderSheet();sheetEl.classList.add('open');bd.style.display='block'}
+function openLot(id){nwSeen(state.lots.find(l=>l.id===id));sheet={lot:id,form:null,err:'',d1:'',d2:'',confirm:false};renderSheet();openSheetUI()}
 function seedPrice(l){const ph=phen(l.m,l.crop);return Math.max(1,Math.round(CROPS[l.crop].price*0.3*(1+0.6*ph.tier)*(mhOf(ph)?MH_SELL:1)))}
 function lotSheetHTML(l){
   const ph=phen(l.m,l.crop),n=lc(l),cross=l.cross!=null?l.cross:gdist(l.m,l.f)>0,sp=seedPrice(l),f=sheet.form;
-  let h=`<h2>${esc(l.name)}</h2><p class="stage">${CROPS[l.crop].n}${genTxt(l.gen)}${l.obs?'・已絕版':''}・剩 ${n} 顆・發芽率 ${Math.round(l.germ*100)}%</p>${abilRange(l)}${lotSrcTxt(l)?`<p class="note">${lotSrcTxt(l)}${l.muo?'・突變後代':''}</p>`:l.muo?'<p class="note">突變後代</p>':''}${lcMu(l)&&!l.mutPack?`<p class="note mun">有 ${lcMu(l)} 顆可能突變</p>`:''}<p class="note">血統：${esc(srcName(l.source))}${l.wide?'<br>遠緣雜種：發芽率、取種數減半。'+qh('再和同種作物雜交一次就恢復。'):''}</p>`;
-  if(l.obs)return h+'<p class="note">已絕版，只能查看。</p>'+`<h3>母本</h3>`+infoHTML(ph,3,l.m,l.crop,true,null,{parent:true});
+  let h=lotHeroHTML(l,ph);/* 138.6 */
+  if(l.obs)return h+'<p class="note">已絕版，只能查看。</p>'+`<h3>結出這包種子的那株</h3>`+infoHTML(ph,3,l.m,l.crop,true,null,{parent:true});
   const err=`<div class="err" id="ferr">${sheet.err}</div>`;
   if(f==='rename')h+=`<div class="regbox"><b>改名</b><p class="note">最多 8 個字。${qh('只改這包和它種出的植株。')}</p><input id="f1" maxlength="8" value="${esc(sheet.d1)}" aria-label="新名稱">${err}<div class="row2"><button class="btn primary" data-act="lsave">儲存</button><button class="btn" data-act="lcancel">取消</button></div></div>`;
   else if(f==='sell')h+=`<div class="regbox sellbox"><b>上架到市場</b><label>數量（最多 ${n} 顆）<input id="f1" type="number" inputmode="numeric" min="1" max="${n}" value="${esc(sheet.d1)}"></label><label>價格（金幣）<input id="f2" type="number" inputmode="numeric" min="1" value="${esc(sheet.d2)}"></label>${err}<div class="row2"><button class="btn primary" data-act="lsave">確定上架</button><button class="btn" data-act="lcancel">取消</button></div></div>`;
   else if(f==='npc')h+=`<div class="regbox sellbox"><b>賣給種子行</b><p class="note">每顆 ${sp} 金幣，越稀有收購價越高。</p><label>數量（最多 ${n} 顆）<input id="f1" type="number" inputmode="numeric" min="1" max="${n}" value="${esc(sheet.d1)}"></label><p class="note" id="ftotal">共 ${(parseInt(sheet.d1,10)||0)*sp} 金幣</p>${err}<div class="row2"><button class="btn primary" data-act="lsave">確定賣出</button><button class="btn" data-act="lcancel">取消</button></div></div>`;
   else if(f==='vault')h+=depositHTML(l);
-  else h+=`<p class="note" style="margin:0 0 6px">${trayOn()?'點一塊空田就能種，撒進育苗盤用右下角的綠色按鈕。':'點一塊空田就能種。'}</p><button class="btn" data-act="lform" data-f="vault">存入種原庫</button><button class="btn" data-act="lform" data-f="rename">改名</button><button class="btn" data-act="llock">${l.lk?'解除鎖定（★）':'鎖定（★）：整理時不會被賣掉'}</button><p class="note" style="margin:8px 0 0">想賣給朋友的話，到市集找一個空攤位上架。</p><button class="btn" data-act="lform" data-f="npc">賣給種子行（每顆 ${sp} 金幣）</button><button class="btn warn" data-act="ldiscard">${sheet.confirm?'再按一次，確定丟掉':'丟掉這包種子'}</button>`;
-  h+=lotParentHTML(l,ph,cross)+lotTargetHTML(l,ph);
+  else h+=`<button class="btn primary sdGo" data-act="lsow">去田裡種下</button><div class="rbrow">${rbtn('lform','vault','vault','存進種原庫')}${rbtn('lform','rename','rename','改名')}${rbtn('llock','','lock',l.lk?'已鎖定':'鎖定',l.lk)}${rbtn('lform','sell','sell','上架市集')}</div>`;
+  h+=`<details class="par"><summary>父母：${esc(lotParentsTxt(l,ph,cross))}</summary>${lotParentHTML(l,ph,cross)}<p class="note">血統：${esc(srcName(l.source))}${l.wide?'<br>遠緣雜種：發芽率、取種數減半。'+qh('再和同種作物雜交一次就恢復。'):''}</p>${abilRange(l)}${lotTargetHTML(l,ph)}</details>`;
   h+=distHTML(lotDist(l),l.crop,'可能出現的後代',true)+lotUniHTML(l);
+  if(!f)h+=`<div class="sdDanger"><button class="btn gold" data-act="lform" data-f="npc">賣給種子行・${sp} 金幣/顆</button><button class="btn warn" data-act="ldiscard">${sheet.confirm?'再按一次，確定丟掉':'丟掉'}</button></div>`;
   return h;
 }
 function bindLotForm(l){
@@ -2694,7 +2826,7 @@ async function lotAction(act,b){
   if(l.obs){toast('已絕版的種子只能查看');return}
   if(act==='lmut'){sheet.trayMut=!!b.checked;renderSheet();return}
   if(act==='ltray'){const id=l.id,mx=!!sheet.trayMut;if(scene!=='farm'||viewing){toast('回到自己的農場才能使用育苗盤');return}closeSheet();traySow(id,mx);openTray();return}
-  if(act==='lsow'){const id=l.id;closeSheet();if(scene!=='farm'||viewing){toast('回到自己的農場才能播種');return}openSow(id);return}
+  if(act==='lsow'){const id=l.id;closeSheet();closePanel();if(scene!=='farm'||viewing){toast('回到自己的農場才能播種');return}openSow(id);return}
   if(act==='lform'){sheet.form=b.dataset.f;sheet.err='';sheet.d1=sheet.form==='rename'?l.name:sheet.form==='npc'?String(lc(l)):sheet.form==='vault'?'':'1';sheet.d2='';renderSheet();return}
   if(act==='vdep'){const c=vaultCabs().find(x=>x.id===b.dataset.c);if(!c)return;state.lots=state.lots.filter(x=>x!==l);c.lots.unshift(l);for(const p of state.plots)if(p&&p.lotId===l.id)p.lotId=null;save();renderAll();closeSheet();toast(`「${l.name}」已存入「${c.name}」`);return}
   if(act==='vdepnew'){const v=(sheet.d1||'').trim();if(!glen(v)||glen(v)>10){sheet.err='名稱需要 1 到 10 個字';renderSheet();return}
@@ -2708,7 +2840,7 @@ async function lotAction(act,b){
   if(sheet.form==='rename'){
     const v=sheet.d1.trim(),len=glen(v);
     if(!len)sheet.err='請輸入名稱';else if(len>8)sheet.err='名稱最多 8 個字';
-    else if(state.lots.some(x=>x!==l&&norm(x.name)===norm(v)))sheet.err='種子袋裡已經有這個名稱了，換一個吧';
+    else if(state.lots.some(x=>x!==l&&norm(x.name)===norm(v)))sheet.err='背包裡已經有這個名稱了，換一個吧';
     if(sheet.err){renderSheet();return}
     l.name=v;for(const p of state.plots)if(p&&p.lotId===l.id)p.name=v;
     sheet.form=null;save();renderAll();renderSheet();toast(`已改名為「${v}」`);return;
@@ -2810,8 +2942,8 @@ function noteHTML(){if(state.noteNew){state.noteNew=0;save();try{noteDot()}catch
   return h}
 function noteDot(){const b=document.querySelector('[data-open="dex"]');if(!b)return;let d=b.querySelector('.notedot');if(!d){d=document.createElement('i');d.className='notedot';b.appendChild(d)}d.hidden=!(state&&state.noteNew)}
 
-function dexTabsHTML(){return `<div class="filters" role="tablist">${[['dex','品種圖鑑'],['cab','收藏櫃'],['mh','名品'],['fy','神之子'],['note','筆記'],['boards','紀錄榜'],['rank','育種家排行']].map(([k,n])=>`<button class="fchip" role="tab" data-dtab="${k}" aria-pressed="${dexTab===k}">${k==='cab'?uiIcon('specimen',16):''}${n}</button>`).join('')}</div>`}
-function renderDex(){
+function dexTabsHTML(){return `<div class="filters" role="tablist">${[['dex','品種圖鑑'],['cab','收藏櫃'],['mh','名品'],['note','筆記'],['boards','紀錄榜'],['rank','育種家排行']].map(([k,n])=>`<button class="fchip" role="tab" data-dtab="${k}" aria-pressed="${dexTab===k}">${k==='cab'?uiIcon('specimen',16):''}${n}</button>`).join('')}</div>`}
+function renderDex(){{const t=document.querySelector('#p-dex .ph h2');if(t)t.textContent=dexTab==='fy'?'神之子':'品種圖鑑';const dt=document.getElementById('dexTabs');if(dt)dt.hidden=dexTab==='fy';const df=document.getElementById('dexFilter');if(df&&dexTab==='fy')df.hidden=true;else if(df)df.hidden=false}/* 138.4 */
   if(!state)return;const el=document.getElementById('dex');if(!el)return;
   document.getElementById('dexTabs').innerHTML=dexTabsHTML();
   const fl=document.getElementById('dexFilter');fl.hidden=dexTab!=='dex';
@@ -2905,7 +3037,7 @@ function infoHTML(ph,lvl,g,crop,noSims,p,opt){const mh_=mhOf(ph);/* 90.2 */
     const hs=sizeScale(ph.ab.size);
     const hint=p&&!opt.parent?rarityHint(ph,crop):'';
     h+=`<div class="hero">${fruitSVG(ph,crop,Math.round(130*hs),1,descr(ph,crop))}<div class="rbox">${rbHTML(ph,'b')}${mh_&&ph.tier<5?`<small class="rbsub">稀有度：${TIERS[ph.tier]}</small>`:''}${hint?`<small class="rbhint">💡 ${hint}</small>`:''}</div></div><div class="chips">${chipsHTML(ph)}<span class="chip">${SIZE_N[ph.sizeCls]}</span></div>${g?introHTML(g,crop,ph):''}`;/* 103.2：稀有度徽章在果實圖左上角，特徵標籤那一排不再有稀有度 */
-    h+=`<div class="badges"><span class="badge">${opt.parent?'母本':''}${stabName(ph.stab)}</span></div><p class="note" style="text-align:center">${opt.parent?'母本':''}穩定度 ${pctTxt(ph.stab)}${qh(`自交後，約 ${pctTxt(ph.stab)} 會保留這個外觀。`)}</p>`;
+    h+=`<div class="badges"><span class="badge">${opt.parent?'親株':''}${stabName(ph.stab)}</span></div><p class="note" style="text-align:center">${opt.parent?'親株':''}穩定度 ${pctTxt(ph.stab)}${qh(`自交後，約 ${pctTxt(ph.stab)} 會保留這個外觀。`)}</p>`;
   }else if(lvl<2)h+=`<p class="note">外觀會在開花時揭曉。</p>`;
   const hv=p?`（已採收 ${p.hv||0} 次）`:'';
   h+=clsRow('大小',SIZE_N[ph.sizeCls],lvl>=2,'決定賣價，也有最大、最小紀錄。不影響稀有度與品種權。');
@@ -2954,8 +3086,8 @@ let sheet=null;
 const sb=document.getElementById('sheetBody'),sheetEl=document.getElementById('sheet'),bd=document.getElementById('backdrop');
 var srcHL=null;/* 31.4：植株資訊打開時，同一包種子（同 lotId）的其他植株加淡色外框 */
 const srcSame=(p,i)=>p&&p.lotId!=null?state.plots.reduce((n,q,j)=>n+(q&&j!==i&&q.lotId===p.lotId?1:0),0):0;
-function openPlot(i){const p=state.plots[i];if(!p)uiCrop='all';srcHL=p&&p.lotId!=null&&srcSame(p,i)?p.lotId:null;if(srcHL!=null)try{renderWorld()}catch(e){}sheet={i,stage:p?p.stage:'empty',confirm:false,crossFrom:null};regDraft='';regErr='';renderSheet();sheetEl.classList.add('open');bd.style.display='block'}
-function closeSheet(){if(sheet&&sheet.me&&sheet.me!==uid&&curPanel!=='social')statusUnwatch();const wasNote=sheet&&sheet.note;sheet=null;if(wasNote)setTimeout(noteFlush,250);sheetEl.classList.remove('open');bd.style.display='none';if(srcHL!=null){srcHL=null;try{renderWorld()}catch(e){}}}
+function openPlot(i){const p=state.plots[i];if(!p)uiCrop='all';srcHL=p&&p.lotId!=null&&srcSame(p,i)?p.lotId:null;if(srcHL!=null)try{renderWorld()}catch(e){}sheet={i,stage:p?p.stage:'empty',confirm:false,crossFrom:null};regDraft='';regErr='';renderSheet();openSheetUI()}
+function closeSheet(){if(sheet&&sheet.me&&sheet.me!==uid&&curPanel!=='social')statusUnwatch();const wasNote=sheet&&sheet.note;sheet=null;if(wasNote)setTimeout(noteFlush,250);sheetEl.classList.remove('open');bd.style.display='none';sheetModeOff();if(srcHL!=null){srcHL=null;try{renderWorld()}catch(e){}}}
 bd.addEventListener('click',closeSheet);
 function fmt(ms){ms=Math.max(0,ms);const s=Math.ceil(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;return h?`${h} 小時 ${m} 分`:m?`${m} 分 ${r} 秒`:`${r} 秒`}
 function progInfo(p){
@@ -3028,7 +3160,7 @@ function renderSheet(){
   }else{
     const ph=phen(p.g,p.crop),lvl=p.stage==='seedling'?1:p.stage==='ripe'?3:2;
     const FL=p.stage==='flower'&&!p.pollen;
-    h+=(FL?`<h2>${esc(pname(p))}</h2><p class="stage polhd">${genTxt(p.gen).replace('・','')||CROPS[p.crop].n}<span class="badge polfl">開花中</span>${p.wide?'<span class="badge r2">遠緣雜種</span>':''}${qh(POL_HELP)}</p>`:`<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・第 ${i+1} 塊土地・${stageLabel(p)}${p.pollen?`・${p.pollen.type==='cross'?`與 ${esc(p.pollen.fatherName)} 雜交`:'自交'}`:''}${p.wide?'・遠緣雜種':''}${genTxt(p.gen)}</p>`)+`${p.rsv?(()=>{const j=rsvFather(p);return j<0?`<p class="note" style="color:var(--danger)">預約的父本不見了，請重新選。<button class="mini" data-act="rsvx">取消預約</button></p>`:`<p class="note">預約和「${esc(pname(state.plots[j]))}」雜交（開花時自動進行）。<button class="mini" data-act="rsvx">取消預約</button></p>`})():''}${p.old?'<p class="note">古老的種子：種子庫裡最古老的一包。</p>':''}${p.mu?`<p class="note"><b>${p.mu.lv>=2?'突變：'+p.mu.t:'這株和預期的不一樣（'+p.mu.t+'）'}</b></p>`:''}${srcSame(p,i)?`<p class="note">同一包種子還有 ${srcSame(p,i)} 株（田裡有淡色外框的那些）</p>`:''}${p.pollen&&p.pollen.failed?'<p class="note" style="color:var(--danger)">雜交沒有成功，這次改為自交。</p>':''}<button class="mini warn uptop" data-act="uproot">${sheet.confirm?'再按一次確定拔掉':'拔掉這株'}</button>`;
+    h+=(FL?`<h2>${esc(pname(p))}</h2><p class="stage polhd">${genTxt(p.gen).replace('・','')||CROPS[p.crop].n}<span class="badge polfl">開花中</span>${p.wide?'<span class="badge r2">遠緣雜種</span>':''}${qh(POL_HELP)}</p>`:`<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・第 ${i+1} 塊土地・${stageLabel(p)}${p.pollen?`・${p.pollen.type==='cross'?`與 ${esc(p.pollen.fatherName)} 雜交`:'自交'}`:''}${p.wide?'・遠緣雜種':''}${genTxt(p.gen)}</p>`)+`${p.rsv?(()=>{const j=rsvFather(p);return j<0?`<p class="note" style="color:var(--danger)">預約的花粉株不見了，請重新選。<button class="mini" data-act="rsvx">取消預約</button></p>`:`<p class="note">預約和「${esc(pname(state.plots[j]))}」雜交（開花時自動進行）。<button class="mini" data-act="rsvx">取消預約</button></p>`})():''}${p.old?'<p class="note">古老的種子：種子庫裡最古老的一包。</p>':''}${p.mu?`<p class="note"><b>${p.mu.lv>=2?'突變：'+p.mu.t:'這株和預期的不一樣（'+p.mu.t+'）'}</b></p>`:''}${srcSame(p,i)?`<p class="note">同一包種子還有 ${srcSame(p,i)} 株（田裡有淡色外框的那些）</p>`:''}${p.pollen&&p.pollen.failed?'<p class="note" style="color:var(--danger)">雜交沒有成功，這次改為自交。</p>':''}<button class="mini warn uptop" data-act="uproot">${sheet.confirm?'再按一次確定拔掉':'拔掉這株'}</button>`;
     if(p.stage!=='ripe'){
       const own=p.stage==='fruit'||p.stage==='flower',fl=p.stage==='flower',pm=p.m||(state.lots.find(l=>l.lid===p.lid)||{}).m,ref=own?ph:(pm?phen(pm,p.crop):null);
       if(ref)h+=`<div class="hero${tfxKind(ref)&&(fl||!own||p.stage==='ripe')?' tcard':''}">${fruitSVG(ref,p.crop,Math.round(110*(own&&ref===ph?sizeScale(ph.ab.size):1)),fl?1:own?Math.max(0.15,clamp(p.prog/stageDur(p,ph),0,1)*0.4):1,fl?'這株將結出的果實':own?'這株正在長的果實':'親本的樣子')}</div><p class="note" style="text-align:center">${fl?`開花了！這株會結出：${ph.shapeName}・${colorLabel(ph)}・${SIZE_N[ph.sizeCls]}`:own?'這株正在長大，顏色會在成熟時揭曉。':'這是親本的樣子，開花後才看得到自己的。'}</p>`;
@@ -3047,7 +3179,7 @@ function renderSheet(){
     if(p.stage==='ripe'){
       if(stealRipe(p,state))h+=`<p class="note">放太久了，朋友可以來偷種子。</p>`;/* 125 */
             if(sheet.seedName!=null)h+=`<div class="regbox"><b>替這包種子取名字</b><p class="note">取種 ${seedCount(p)} 顆。取個好記的名字，之後比較不會忘記是哪一包（1–8 個字）。</p><input id="seedName" maxlength="8" value="${esc(sheet.seedName)}" aria-label="種子名稱"><div class="err">${sheet.seedErr||''}</div><div class="row2"><button class="btn primary" data-act="seedok">確定取種</button><button class="btn" data-act="seedcancel">取消</button></div></div>`;
-      else h+=`<button class="btn primary" data-act="hvone">收成：果實 ${FRUIT_N} 顆＋種子 ${seedCount(p)} 顆${canMerge(p)?'<br><small>種子放回原包</small>':''}</button>${canMerge(p)?'<button class="btn" data-act="hvone2">收成，種子另外包一包</button>':''}<p class="note">收成後這株就結束，田會空出來。${qh('果實放進種子袋的「果實」分頁，種子放進種子袋。')}</p>`;/* 112.3 */
+      else h+=`<button class="btn primary" data-act="hvone">收成：果實 ${FRUIT_N} 顆＋種子 ${seedCount(p)} 顆${canMerge(p)?'<br><small>種子放回原包</small>':''}</button>${canMerge(p)?'<button class="btn" data-act="hvone2">收成，種子另外包一包</button>':''}<p class="note">收成後這株就結束，田會空出來。${qh('果實放進背包的「果實」分頁，種子放進背包。')}</p>`;/* 112.3 */
       h+=regHTML(p,ph);
     }
     h+=infoHTML(ph,lvl,p.g,p.crop,false,p);
@@ -3190,7 +3322,7 @@ function fruitAdd(crop,ph,n,quiet,bought){/* 117.3：bought＝買來的，和自
 /* 112.3：收成一次＝果實＋（要的話）種子。opt：seed（預設 true）、merge、name、quiet。種子袋滿又不能放回原包時整株先不收 */
 function harvestPlant(i,opt){
   opt=opt||{};const p=state.plots[i];if(!p||p.obs||p.stage!=='ripe')return false;const ph=phen(p.g,p.crop),wantSeed=opt.seed!==false;
-  if(wantSeed&&bagFull()&&!(opt.merge&&canMerge(p)&&mergeTarget(p))){if(!opt.quiet)toast('種子袋滿了，這株先不收成',3500);return false}
+  if(wantSeed&&bagFull()&&!(opt.merge&&canMerge(p)&&mergeTarget(p))){if(!opt.quiet)toast('背包滿了，這株先不收成',3500);return false}
   const fr=fruitAdd(p.crop,ph,FRUIT_N,true);
   const pre=(fr.keep?`果實 +${fr.keep} 顆、`:'')+(fr.sold?`果實袋滿了，${fr.sold} 顆直接賣掉（+${fr.coins} 金幣）；`:'');
   if(wantSeed)takeSeeds(i,opt.name||'',{merge:!!opt.merge,quiet:opt.quiet,pre});else{harvested(ph);afterHarvest(i);if(!opt.quiet)toast(pre.replace(/[、；]$/,''))}
@@ -3236,7 +3368,7 @@ function mergeTarget(p){
 const canMerge=p=>!!p&&!(p.pollen&&p.pollen.type==='cross')&&phen(p.g,p.crop).stab>=0.9995;
 function takeSeeds(i,custom,opt){
   opt=opt||{};
-  if(bagFull()&&!(opt.merge&&canMerge(state.plots[i])&&mergeTarget(state.plots[i]))){toast('種子袋滿了，這株先不取種',3500);return false}/* 38.5 */
+  if(bagFull()&&!(opt.merge&&canMerge(state.plots[i])&&mergeTarget(state.plots[i]))){toast('背包滿了，這株先不取種',3500);return false}/* 38.5 */
   const p=state.plots[i],ph=phen(p.g,p.crop),cross=p.pollen&&p.pollen.type==='cross',failed=p.pollen&&p.pollen.failed;
   if(!state.selfC)state.selfC={};
   let f=cross?p.pollen.fatherG:p.g;
@@ -3267,7 +3399,7 @@ function takeSeeds(i,custom,opt){
     const source=cross?`${pname(p)}（母本）× ${p.pollen.fatherName}（父本）`:`${pname(p)}（母本）× ${pname(p)}（父本）${failed?'・雜交失敗':''}`;
     const par=[p.lid,cross?p.pollen.fatherLid:p.lid],gpar=[...(p.par||[]),...(cross?p.pollen.fatherPar||[]:[])];
     state.lots.unshift({id:state.nextLot++,lid,crop:p.crop,name,source,m:clone(p.g),f:clone(f),seeds,germ,cross:!!cross,wide,rel,gen,par,gpar,ptier:ph.tier,...(mseeds.length?{mseeds,mmd}:{})});
-    msg=`+${n} 顆種子 → 種子袋`;
+    msg=`+${n} 顆種子 → 背包`;
   }
   if(!opt.quiet)toast((opt.pre||'')+msg);
   if(!nl){nl=state.lots[0];nl.pl=p.lotId;if(p.q)nl.q=1;if(p.bt&&!cross)nl.bt=1;if(p.mu)nl.muo=1;lotNew(nl,'h')}else lotNew(nl,null,n);if(mu)mu96Add(nl,mu);noteFin(nl,p);mqEv('seed',p);
@@ -3369,7 +3501,7 @@ async function sendPub(){
 document.getElementById('chatSend').onclick=sendPub;
 document.getElementById('chatIn').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing)sendPub()});
 document.getElementById('chatIn').addEventListener('input',()=>{document.getElementById('chatErr').textContent=''});
-function openDM(fu){sheet={dm:fu,draft:'',err:''};dmUnread.delete(fu);renderSheet();sheetEl.classList.add('open');bd.style.display='block';renderSocial()}
+function openDM(fu){sheet={dm:fu,draft:'',err:''};dmUnread.delete(fu);renderSheet();openSheetUI();renderSocial()}
 function dmHTML(){
   const p=profiles.find(x=>x.id===sheet.dm);
   const conv=[...msgTo,...msgFrom].filter(m=>(m.from===sheet.dm&&m.to===uid)||(m.from===uid&&m.to===sheet.dm)).sort((a,b)=>mtime(a)-mtime(b)).slice(-80);
@@ -3383,7 +3515,7 @@ async function sendDM(){
   try{await db.collection('messages').add({from:uid,fromName:myName(),to,text:t,at:TS()})}catch(e){if(sheet&&sheet.dm===to){sheet.err='傳送失敗，請檢查網路';sheet.draft=t;renderSheet()}}
 }
 async function openVisit(fu){
-  sheet={visit:fu,data:null,err:''};renderSheet();sheetEl.classList.add('open');bd.style.display='block';
+  sheet={visit:fu,data:null,err:''};renderSheet();openSheetUI();
   try{const s=await db.collection('players').doc(fu).get();if(!sheet||sheet.visit!==fu)return;if(!s.exists||!s.data().save)throw new Error('no');sheet.data=migrate(JSON.parse(s.data().save))}catch(e){if(sheet&&sheet.visit===fu)sheet.err='讀取不到這位朋友的農場。'}
   if(sheet&&sheet.visit===fu)renderSheet();
 }
@@ -3391,7 +3523,7 @@ function visitHTML(){
   const p=profiles.find(x=>x.id===sheet.visit);let h=`<h2>${esc(p?p.name:'朋友')} 的農場</h2>`;
   if(sheet.err)h+=`<p class="note">${sheet.err}</p>`;
   else if(!sheet.data)h+='<p class="note">讀取中…</p>';
-  else{const st=sheet.data;h+=`<p class="note">種了 ${st.plots.filter(Boolean).length} 株作物，種子袋裡有 ${st.lots.length} 包種子。左右滑動可以看整片農場。</p><div class="farmWrap v"><svg viewBox="0 0 ${FW} ${FH}" class="farmsvg" role="img" aria-label="朋友的農場">${farmSVG(st,null)}</svg></div>`}
+  else{const st=sheet.data;h+=`<p class="note">種了 ${st.plots.filter(Boolean).length} 株作物，背包裡有 ${st.lots.length} 包種子。左右滑動可以看整片農場。</p><div class="farmWrap v"><svg viewBox="0 0 ${FW} ${FH}" class="farmsvg" role="img" aria-label="朋友的農場">${farmSVG(st,null)}</svg></div>`}
   return h+'<button class="btn" data-act="close">關閉</button>';
 }
 function startSocial(){
@@ -4251,7 +4383,7 @@ function listingCard_(l){
   if(l.kind==='item'){const mine=l.sellerUid===uid;return `<div class="lot"><div class="lot-top">${itemIcon(l.item)}<div><div class="lot-name">${esc(itemName(l.item))} × ${l.count} ${itemUnit(l.item)}</div><div class="meta">${itemEff(l.item)}</div><div class="meta">賣家：${esc(l.sellerName||'')}</div></div></div>${mine?`<button class="btn" data-act="scancel" data-id="${l.id}">收回（售價 ${l.price} 金幣）</button>`:`<button class="btn primary" data-act="sbuy" data-id="${l.id}">用 ${l.price} 金幣購買</button>`}</div>`}
   if(!cropOpen(l.crop))return '';/* 28.4：還沒解鎖的作物不出現在市集 */
   const lot=lotOf(l),lt={...lot,crop:l.crop},lk=likely(lt),ph=phen(lot.m,l.crop),mine=l.sellerUid===uid;
-  return `<div class="lot"><div class="lot-top">${rbHTML(ph,'s')}<span class="seedic">${fruitSVG(lk.app,l.crop,64)}<i>最可能 ${pctTxt(lk.p)}</i></span><div><div class="lot-name">${esc(l.name)}</div><div class="meta">${CROPS[l.crop].n}・${l.count} 顆・發芽率 ${Math.round(lot.germ*100)}%</div><div class="meta">母本：${ph.shapeName}・${colorLabel(ph)}</div><div class="meta">血統：${esc(srcName(l.source))}</div></div></div>${distHTML(lotDist(lt),l.crop,'可能出現的後代',false)}${mine?`<button class="btn" data-act="scancel" data-id="${l.id}">收回這包（售價 ${l.price} 金幣）</button>`:`<button class="btn primary" data-act="sbuy" data-id="${l.id}">用 ${l.price} 金幣購買</button>`}</div>`;
+  return `<div class="lot"><div class="lot-top">${rbHTML(ph,'s')}<span class="seedic">${fruitSVG(lk.app,l.crop,64)}<i>最可能 ${pctTxt(lk.p)}</i></span><div><div class="lot-name">${esc(l.name)}</div><div class="meta">${CROPS[l.crop].n}・${l.count} 顆・發芽率 ${Math.round(lot.germ*100)}%</div><div class="meta">外觀：${ph.shapeName}・${colorLabel(ph)}</div><div class="meta">血統：${esc(srcName(l.source))}</div></div></div>${distHTML(lotDist(lt),l.crop,'可能出現的後代',false)}${mine?`<button class="btn" data-act="scancel" data-id="${l.id}">收回這包（售價 ${l.price} 金幣）</button>`:`<button class="btn primary" data-act="sbuy" data-id="${l.id}">用 ${l.price} 金幣購買</button>`}</div>`;
 }
 function openStall(i){sheet={stall:i,step:'view',lot:null,d1:'1',d2:'',err:''};renderSheet();openSheetUI()}
 /* ===== 117.3（18h）：果實上架市集 =====
@@ -4405,7 +4537,7 @@ async function stallAction(b){
     if(l.kind==='fruit'){await fruitBuy(l,b);return}/* 117.3 */
     if(l.kind==='spec2'){await spBuy(l,b);return}/* 95.3 */
     if(state.coins<l.price){toast('金幣不夠');return}
-    // 先確認商品資料讀得到，避免付款後才發現無法放進種子袋
+    // 先確認商品資料讀得到，避免付款後才發現無法放進背包
     if(l.kind!=='item'){const o0=lotOf(l);if(!o0||!o0.m){toast('這個商品的資料讀不到，請重新整理遊戲後再試一次');return}}
     b.disabled=true;let paid=false;
     try{
@@ -4414,10 +4546,10 @@ async function stallAction(b){
       if(l.kind==='item'){state.coins-=l.price;if(isOldFert(l.item)){const c=oldFertCoin(l.item)*l.count;state.coins+=c;save();renderAll();toast(`買到的是舊肥料，已直接換成 ${c} 金幣`,6000);return}if(!state.items)state.items={};state.items[l.item]=(state.items[l.item]||0)+l.count;save();renderAll();toast(`買到 ${l.count} ${itemUnit(l.item)}${itemName(l.item)}`);return}
       const lot=lotOf(l);state.coins-=l.price;
       state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop:l.crop,name:l.name,source:`${l.source}（向 ${l.sellerName} 購買）`,bt:1,m:lot.m,f:lot.f,count:lot.seeds?0:lot.count,seeds:lot.seeds||undefined,germ:lot.germ,wide:!!lot.wide,rel:!!lot.rel,gen:lot.gen==null?undefined:lot.gen,par:lot.par,gpar:lot.gpar,ptier:lot.ptier});lotNew(state.lots[0],'m');
-      save();renderAll();toast(`買到 ${l.count} 顆「${l.name}」，已放進種子袋`);
+      save();renderAll();toast(`買到 ${l.count} 顆「${l.name}」，已放進背包`);
     }catch(err){
       b.disabled=false;const code=(err&&(err.code||err.message))||'unknown';logErr(err,'購買');
-      if(paid)toast(`購買已成立，但放進種子袋時出錯（${code}）。請截圖給開發者`,9000);
+      if(paid)toast(`購買已成立，但放進背包時出錯（${code}）。請截圖給開發者`,9000);
       else if(code==='gone')toast('這個商品已經被別人買走了');
       else toast(`購買失敗（${code}），沒有扣金幣。請檢查網路再試；從 LINE 或 IG 開啟請改用 Safari 或 Chrome`,9000);
     }
@@ -4433,30 +4565,31 @@ async function stallAction(b){
       if(l.kind==='item'){if(isOldFert(l.item)){const c=oldFertCoin(l.item)*l.count;state.coins+=c;save();renderAll();toast(`已收回，舊肥料換成 ${c} 金幣`);return}if(!state.items)state.items={};state.items[l.item]=(state.items[l.item]||0)+l.count;save();renderAll();toast('已收回，道具放回背包');return}
       const lot=lotOf(l);
       state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop:l.crop,name:l.name,source:l.source,m:lot.m,f:lot.f,count:lot.seeds?0:lot.count,seeds:lot.seeds||undefined,germ:lot.germ,wide:!!lot.wide,rel:!!lot.rel,gen:lot.gen==null?undefined:lot.gen,par:lot.par,gpar:lot.gpar,ptier:lot.ptier});
-      save();renderAll();toast('已收回，種子放回種子袋');
+      save();renderAll();toast('已收回，種子放回背包');
     }catch(err){toast('收回失敗，可能已經被買走了');b.disabled=false}
   }
 }
 
 // ===== 面板與 HUD =====
-function openSheetUI(){sheetEl.classList.add('open');bd.style.display='block'}
+function openSheetUI(){sheetEl.classList.add('open');bd.style.display='block';sheetMode()}
 /* 37.1（15l）：打開其他頁面、切到背景時結束目前的模式（裝飾模式裡打開裝飾面板除外） */
 function exitAllModes(keepDeco){if(pickMode==='cross'&&crossMarkN()&&!document.hidden&&!confirm(`還有 ${crossMarkN()} 筆還沒完成，要放棄嗎？`))return;/* 88.2 */try{if(typeof closeRing==='function'&&ringOpen)closeRing();if(sowMode)exitSow();if(shovelMode){shoveling=false;exitShovel()}if(accelMode)exitAccel();if(pickMode)exitPick();if(buildMode)exitBuild();if(decoMode&&!keepDeco)exitDecor();if(typeof closeDecoPop==='function')closeDecoPop()}catch(e){}}
-function openPanel(name){exitAllModes(name==='decor');if(name==='bag')uiCrop='all';
+function openPanel(name){if(name==='explore')name='map';/* 138.4 */exitAllModes(name==='decor');if(name==='bag'){uiCrop='all';bagSel=null;bagTab=bagVaultReq?'vault':bagTab==='vault'?'bag':bagTab;bagVaultReq=false}document.body.classList.add('pnlOpen');
   closeSheet();curPanel=name;
   for(const p of document.querySelectorAll('.panel'))p.hidden=p.id!=='p-'+name;
   document.getElementById('pdim').hidden=false;
-  if(name==='bag')renderBag();if(name==='dex')renderDex();if(name==='social')renderSocial(true);if(name==='decor')renderDecorPanel();if(name==='settings')renderSpeed();if(name==='genes')renderGenes();if(name==='explore')renderExplore();
+  if(name==='bag')renderBag();if(name==='dex')renderDex();if(name==='social')renderSocial(true);if(name==='decor')renderDecorPanel();if(name==='settings')renderSpeed();if(name==='genes')renderGenes();if(name==='explore')renderExplore();if(name==='map')renderMapPanel();if(name==='menu')renderMenu();
   const pb=document.querySelector('#p-'+name+' .pb');if(pb)pb.scrollTop=0;
 }
-function closePanel(){if(curPanel==='social')statusUnwatch(sheet&&sheet.me?[sheet.me]:null);curPanel=null;for(const p of document.querySelectorAll('.panel'))p.hidden=true;document.getElementById('pdim').hidden=true}
+function closePanel(){if(curPanel==='social')statusUnwatch(sheet&&sheet.me?[sheet.me]:null);curPanel=null;for(const p of document.querySelectorAll('.panel'))p.hidden=true;document.getElementById('pdim').hidden=true;document.body.classList.remove('pnlOpen')}
 function showTab(w){if(w==='farm')closePanel();else openPanel(w)}
 document.getElementById('pdim').onclick=closePanel;
 for(const b of document.querySelectorAll('.panel [data-close]'))b.onclick=closePanel;
-document.getElementById('sheetX').onclick=()=>closeSheet();
+document.getElementById('sheetX').onclick=()=>{const onP=document.body.classList.contains('shOnP');closeSheet();if(onP)closePanel()};/* 138.3：只有一顆 ✕，按了連面板一起關 */
 const iconbarClick=e=>{
   const b=e.target.closest('button');if(!b||!state)return;const wasDeco=decoMode;if(buildMode)exitBuild();if(shovelMode)exitShovel();if(sowMode)exitSow();if(accelMode)exitAccel();if(decoMode)exitDecor();if(pickMode)exitPick();
   const o=b.dataset.open,a=b.dataset.do;
+  if(o==='bag'&&curPanel==='bag'&&bagTab==='vault')return openPanel('bag');
   if(o)return curPanel===o?closePanel():openPanel(o);
   closePanel();
   if(a==='market')return scene==='market'?goFarm():goMarket();
@@ -4466,6 +4599,8 @@ const iconbarClick=e=>{
   if(a==='build')return openBuild();
   if(a==='decor'){if(!wasDeco)openDecor();return}
   if(a==='orders'){sheet={orders:true};renderSheet();openSheetUI()}
+  if(a==='fy')return openFyPage();/* 138.4 */
+  if(a==='menu')return curPanel==='menu'?closePanel():openPanel('menu');
 };
 document.querySelectorAll('.iconbar').forEach(el=>el.addEventListener('click',iconbarClick));
 /* 17d：探索的「地圖」按鈕排在右邊選單最後一顆的下面（16t 加大按鈕間距後，固定的 top:252px 剛好被「設定」蓋住） */
@@ -4481,11 +4616,94 @@ function renderHUD(){
   const own=scene==='farm'&&!viewing;
   layoutSbtns();
   setWeather(scene==='explore'?(regHas(exBiome)&&REGION_MAPS[exBiome][regMap].cave?'cave':exBiome):null);exHintUpd();
-  {const sn=regIn(),mb=document.getElementById('mapBtn');if(mb&&mb.hidden===sn)mb.hidden=!sn;if(sn&&mb)placeMapBtn(mb);if(!sn){const mp=document.getElementById('mapPanel');if(mp&&!mp.hidden)mp.hidden=true;regFxClear()}}
-  document.getElementById('ibDecor').hidden=!own;/* 39.1：開墾只在圓盤 */
+  {const sn=regIn(),mb=document.getElementById('mapBtn');if(mb&&mb.hidden)mb.hidden=false;if(!sn){const mp=document.getElementById('mapPanel');if(mp&&!mp.hidden)mp.hidden=true;regFxClear()}}
+  document.getElementById('ibDecor').hidden=!own;{const hm=document.getElementById('ibHome');if(hm)hm.hidden=!viewing}/* 138.4：回家只在拜訪朋友時（野外從地圖回農場） *//* 39.1：開墾只在圓盤 */
 }
 
 
+/* 138 */
+/* ===== 138（19c）：介面改版第一步：共用樣式、一套面板、主畫面、背包、種子詳細、任務面板 ===== */
+const RCOL=['#B5A182','#5DAF34','#3D86C6','#8D5BD1','#E3A21A','#E0466B'];/* 稀有度色：普通、少見、稀有、史詩、傳說、神話 */
+const lotTier=l=>{try{return rarityTier(likely(l).app)}catch(e){return 0}};
+const lotWildP=l=>{const s=l.source||'';return /野生種原|珍稀種原|原始品種/.test(s)&&!/（母本）/.test(s)};
+function bagCatOf(l){if(lotWildP(l))return 'wild';const c=lotCat(l).c;return c==='germ'?'breed':c}/* 雜交第一代算「育種中」，「野生」只有野外採的 */
+function lotIc(l,size){const ct=lotCat(l);try{const sz=phen(l.m,l.crop).ab.size,pct=Math.round(30+32*sizeScale(sz));
+  if(ct.c!=='done'&&!l.obs)return seedBagSVG(l,size).replace('<svg ','<svg style="width:72%;height:72%" ');return fruitSVG(likely(l).app,l.crop,size).replace('<svg ',`<svg style="width:${pct}%;height:${pct}%" `)}catch(e){return '？'}}
+let bagSel=null,bagTidy=false,bagVaultReq=false;
+const TIDY_IC='<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>';
+function bagInfoHTML(){const l=bagSel!=null&&state.lots.find(x=>x.id===bagSel);if(!l)return '';const t=lotTier(l);
+  return `<div class="bagInfo"><span class="biic" style="--rc:${RCOL[t]}">${lotIc(l,40)}</span><span class="bitx"><b>${esc(l.name)}</b>${rbT(t)}<span class="meta">${CROPS[l.crop].n}・${lc(l)} 顆・發芽 ${Math.round(l.germ*100)}%</span></span><span class="bibt"><button class="btn primary" data-bagsow="${l.id}">種下去</button><button class="mini" data-bagmore="${l.id}">詳細 ›</button></span></div>`}
+function itemCount(){return IKEYS.reduce((s,k)=>s+((state.items||{})[k]||0),0)+Object.values(spiritObj()).reduce((s,v)=>s+(v||0),0)}
+function itemBagHTML(){const I=state.items||{};let h=spiritLine();
+  h+=`<div class="items">${IKEYS.map(k=>`<div class="itm${I[k]?'':' dim'}">${itemIcon(k)}<span class="lr"><b>${itemName(k)}</b><span class="meta">${itemEff(k)}</span><span class="meta">持有 ${I[k]||0} ${itemUnit(k)}</span></span></div>`).join('')}</div><p class="note">加速劑在植株上用，誘變劑在育苗盤勾選。${qh('加速劑只能用在幼苗和結果中；長按綠色按鈕選「加速」可以連續用。')}</p>`;return h}
+/* ---- 一套面板：抽屜疊在面板上時，變成面板裡的下一頁（‹ 上一頁的名字＋一顆 ✕）；任務、任務說明也用面板的樣子 ---- */
+const SHEET_FULL=['orders','qd'];
+function sheetMode(){try{const p=curPanel&&document.getElementById('p-'+curPanel),onP=!!(p&&!p.hidden),full=!onP&&!!sheet&&SHEET_FULL.some(k=>sheet[k]!=null&&sheet[k]!==false);
+  const B=document.body.classList;B.toggle('shOnP',onP);B.toggle('shFull',full);B.add('shOpen');
+  const bk=document.getElementById('sheetBack'),tt=document.getElementById('sheetTitle');
+  if(bk){bk.hidden=!onP;if(onP){const h=p.querySelector('.ph h2');bk.textContent='‹ '+(h?h.textContent:'返回')}}
+  if(tt)tt.textContent=full?(sheet.orders?'任務':'任務說明'):''}catch(e){}}
+function sheetModeOff(){try{document.body.classList.remove('shOnP','shFull','shOpen')}catch(e){}}
+/* ---- 主畫面：右上角「地圖」、右側四顆、選單 ---- */
+function renderMapPanel(){const el=document.getElementById('mapBody');if(!el||!state)return;ensureEx();for(const bk in REGION_MAPS)regPreload(bk);
+  let h='';if(scene==='explore'&&regHas(exBiome))h+=`<button class="btn" data-mp="region">${esc(REGION_CFG[exBiome].name)}的地圖（你在「${esc(REGION_MAPS[exBiome][regMap].n)}」）</button>`;
+  const here=k=>(k==='farm'&&scene==='farm'&&!viewing)||(k==='town'&&scene==='market');
+  h+=`<div class="mpgrid"><button class="mpc" data-mp="farm"${here('farm')?' aria-current="true"':''}><img src="assets/icons/s/home.png" alt="" onerror="this.remove()"><b>我的農場</b></button><button class="mpc" data-mp="town"${here('town')?' aria-current="true"':''}><img src="assets/icons/s/town.png" alt="" onerror="this.remove()"><b>城鎮</b>${myLv()<LV_TOWN?`<span class="meta">Lv ${LV_TOWN}</span>`:''}</button></div>`;
+  h+=`<h3>探索</h3><p class="note">${exRefreshTxt()}${qh(exCapOn()?`每天最多撿 ${EX_LIMIT} 件道具、採 ${EX_PLANT_LIMIT} 株野生植株；今天還能撿 ${Math.max(0,EX_LIMIT-state.ex.picks)} 件、採 ${Math.max(0,EX_PLANT_LIMIT-(state.ex.plants||0))} 株。`:'目前沒有每日上限（測試模式）。')}</p>`;
+  h+=BIOME_KEYS.slice().sort((a,b)=>LV_REG[a]-LV_REG[b]).map(k=>{const B=BIOMES[k],lk=myLv()<regLv(k),cur=scene==='explore'&&exBiome===k;return `<button class="biome" data-mp="${k}"${lk?' style="opacity:.55"':''}${cur?' aria-current="true"':''}>${biomeThumb(k)}<span class="lr"><b>${B.n}${lk?`（Lv ${regLv(k)}）`:''}${cur?'（你在這裡）':''}</b><span class="meta">${B.desc}</span></span></button>`}).join('');
+  el.innerHTML=h}
+function mapPanelTap(k){if(!state)return;
+  if(k==='region'){closePanel();const el=document.getElementById('mapPanel');if(el){el.hidden=false;renderRegMap()}return}
+  if(k==='farm'){closePanel();if(scene!=='farm'||viewing)goFarm();return}
+  if(k==='town'){closePanel();if(scene!=='market')goMarket();return}
+  if(myLv()<regLv(k)){toast(`${BIOMES[k].n} Lv ${regLv(k)} 開放（你現在 Lv ${myLv()}）`);return}goExplore(k)}
+const MENU=[['dex','圖鑑','codex'],['social','朋友','friends'],['decor','裝飾','decor'],['rank','排行',null],['settings','設定','settings'],['genes','說明','genes'],['vault','種原庫',null]];
+const MENU_SVG={rank:'<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true" fill="none" stroke="#5A3416" stroke-width="2" stroke-linejoin="round"><path d="M4 20V12h4v8M10 20V6h4v14M16 20V9h4v11"/></svg>',vault:'<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true" fill="none" stroke="#5A3416" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 14h6"/></svg>'};
+function renderMenu(){const el=document.getElementById('menuGrid');if(!el)return;el.innerHTML=MENU.map(([k,n,ic])=>`<button class="mcell" data-menu="${k}">${ic?`<img src="assets/icons/s/${ic}.png" alt="" onerror="this.remove()">`:MENU_SVG[k]}<span>${n}</span></button>`).join('')}
+function menuTap(k){if(!state)return;
+  if(k==='dex'){if(dexTab==='fy')dexTab='dex';openPanel('dex');return}
+  if(k==='rank'){dexTab='boards';openPanel('dex');return}
+  if(k==='vault'){bagVaultReq=true;openPanel('bag');return}
+  if(k==='decor'){closePanel();if(scene!=='farm'||viewing){toast('在自己的農場才能裝飾');return}if(!decoMode)openDecor();return}
+  openPanel(k)}
+function openFyPage(){dexTab='fy';openPanel('dex')}
+/* ---- 種子詳細（在背包面板裡換頁） ---- */
+function lotHeroHTML(l,ph){const t=lotTier(l),n=lc(l),gen=l.gen==null?'—':l.gen===0?'原始':`第 ${l.gen} 代`,src=[lotSrcTxt(l),lcMu(l)&&!l.mutPack?'有突變':(l.muo?'突變後代':'')].filter(Boolean).join('・');
+  return `<div class="sdHero"><span class="sdBig" style="--rc:${RCOL[t]}">${lotIc(l,96)}</span><div class="sdTx"><div class="sdName">${esc(l.name)}</div><div class="sdTags">${rbT(t)}<span class="ctag">${CROPS[l.crop].n}</span>${l.obs?'<span class="ctag">已絕版</span>':''}</div>${src?`<div class="meta">${esc(src)}</div>`:''}</div></div>
+  <div class="sdNums"><div><b>${n}</b><span>顆數</span></div><div><b>${Math.round(l.germ*100)}%</b><span>發芽率</span></div><div><b>${SIZE_N[ph.sizeCls]||'—'}</b><span>大小</span></div><div><b>${gen}</b><span>第幾代</span></div></div>`}
+function lotParentsTxt(l,ph,cross){if(lotWildP(l))return '野生採集';let f='';if(cross){try{f=shortApp(phen(l.f,l.crop))}catch(e){f='？'}return `${shortApp(ph)} × ${f}`}return `${shortApp(ph)}（自己結的）`}
+const RB_SVG={vault:'<path d="M4 5h16v14H4z M4 10h16 M10 14h4"/>',rename:'<path d="M4 20h4L19 9l-4-4L4 16z M14 6l4 4"/>',lock:'<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>',sell:'<path d="M3 10l2-6h14l2 6 M5 10v10h14V10 M9 20v-5h6v5"/>'};
+const rbtn=(act,f,ic,txt,on)=>`<button class="rbtn${on?' on':''}" data-act="${act}"${f?` data-f="${f}"`:''}><span><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">${RB_SVG[ic]}</svg></span><b>${txt}</b></button>`;
+/* ---- 任務面板 ---- */
+let qTab='all';
+const qCatOf=q=>q.kind==='mq2'?'main':(q.kind==='cm'||q.kind==='w')?'comm':'story';
+const Q_GRP=[['done','可以完成'],['acc','可以接'],['run','進行中'],['wait','等時間']];
+const Q_KIND={mq2:'主線',mq:'支線',rs:'地區故事',fs:'神之子的故事',ns:'NPC 的故事',cm:'每日委託',w:'每週大委託'};
+const PIN_SVG='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 3h6l-1 6 4 4H6l4-4z M12 13v8" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+const CLOCK_SVG='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>';
+function qSplitT(q){const t=String(q.t||''),i=t.lastIndexOf('・');return i>0?[t.slice(0,i),t.slice(i+1)]:['',t]}
+function qKindTxt(q){const [a]=qSplitT(q);const k=Q_KIND[q.kind]||'任務';return a&&a!==k?`${k}・${a}`:k}
+function qProgHTML(q){if(q.st==='wait'){const m=q.left?Math.ceil(q.left/60e3):null;return `<span class="qpr">${m?`還要 ${m} 分鐘才能繼續`:esc(q.hint||'')}</span>`}
+  const m=String(q.prog||'').match(/(\d+)\s*／\s*(\d+)/);if(!m)return q.prog?`<span class="qpr">${esc(q.prog)}</span>`:'';const a=+m[1],b=+m[2]||1;
+  return `<span class="qpr"><span class="qbar"><i style="width:${Math.min(100,a/b*100).toFixed(0)}%"></i></span>${a}／${b}</span>`}
+function qCardHTML2(q,tr){const can=q.give&&q.st==='done';
+  const pin=can?`<button class="qpin qgive" data-act="givego" data-k="${q.give[0]}" data-id="${esc(String(q.give[1]))}">交</button>`:`<button class="qpin${tr?' on':''}" data-act="qtrack" data-q="${esc(q.id)}" aria-label="${tr?'取消追蹤':'追蹤'}">${PIN_SVG}</button>`;
+  return `<div class="qc${tr?' qtr':''}" data-act="qgo" data-q="${esc(q.id)}" role="button" tabindex="0">${tr?'<i class="qtrt">追蹤中</i>':''}<span class="qs qs-${q.st}">${q.st==='done'?'✓':q.st==='acc'?'！':q.st==='wait'?CLOCK_SVG:'…'}</span><span class="qm"><span class="qk">${esc(qKindTxt(q))}</span><b class="qt">${esc(qSplitT(q)[1])}</b><span class="qw">${esc(q.st==='wait'?'':(qWhoTxt(q)||q.hint||''))}${q.rw?` <em>${esc(q.rw)}</em>`:''}</span>${qProgHTML(q)}</span>${pin}</div>`}
+function qTabsHTML(L){return `<div class="qtabs">${[['all','全部'],['main','主線'],['story','故事'],['comm','委託']].map(([k,n])=>{const S=L.filter(q=>k==='all'||qCatOf(q)===k),c=S.filter(q=>q.st==='done'||q.st==='acc').length,g=S.some(q=>q.st==='done');return `<button class="btab" data-qtab="${k}" aria-pressed="${qTab===k}">${n}${c?`<i class="qn ${g?'g':'y'}">${c}</i>`:''}</button>`}).join('')}</div>`}
+try{document.getElementById('sheetBody').addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-qtab]');if(t&&sheet&&sheet.orders){qTab=t.dataset.qtab;renderSheet()}},true)}catch(e){}
+/* ---- 綁定 ---- */
+try{
+  document.getElementById('mapBody').addEventListener('click',e=>{const b=e.target.closest('[data-mp]');if(b)mapPanelTap(b.dataset.mp)});
+  document.getElementById('menuGrid').addEventListener('click',e=>{const b=e.target.closest('[data-menu]');if(b)menuTap(b.dataset.menu)});
+  document.getElementById('sheetBack').onclick=()=>closeSheet();
+  document.getElementById('bagSearch').onclick=()=>{bagTab=bagTab==='search'?'bag':'search';renderBag()};
+  document.getElementById('bag').addEventListener('click',e=>{if(bagSuppress)return;
+    if(e.target.closest('[data-bagtidy]')){bagTidy=!bagTidy;renderBag();e.stopPropagation();return}
+    const s=e.target.closest('[data-bagsow]');if(s){const id=+s.dataset.bagsow;e.stopPropagation();closePanel();if(scene!=='farm'||viewing){toast('回到自己的農場才能播種');return}openSow(id);return}
+    const m=e.target.closest('[data-bagmore]');if(m){e.stopPropagation();openLot(+m.dataset.bagmore);return}},true);
+  new MutationObserver(()=>{if(sheet&&sheetEl.classList.contains('open'))sheetMode()}).observe(document.getElementById('sheetBody'),{childList:true});
+  renderMenu()}catch(e){}
+/* ===== 138 結束 ===== */
 // ===== 建設農地 =====
 function openBuild(){if(scene!=='farm'||viewing){toast('只能在自己的農場建設');return}sheet={build:true};renderSheet();openSheetUI()}
 function buildHTML(){
@@ -5234,7 +5452,7 @@ function wpAction(b){
   if(state.ex.got.includes(w.key))return;
   if(exCapOn()&&(state.ex.plants||0)>=EX_PLANT_LIMIT){toast('今天的採集次數用完了');return}
   const g=wpGeno(w),ph=phen(g,w.crop);state.ex.got.push(w.key);state.ex.plants=(state.ex.plants||0)+1;
-  if(act==='wpseed'){const r=addWildLot(w.crop,w.bk,mq2Wild(w,clone(g)),w.rel,`${BIOMES[w.bk].n}採到的${w.rel?'珍稀種原':'野生種原'}`);mq2WildFix();playAct('harvest');addXp(3,true);mqEv('wild',{bk:w.bk,g});exAnnounce(w.crop,g);const hid=(g.sp[0]||g.sp[1])&&!spExpr(g.sp);toast(`採到${w.rel?'珍稀種原':'野生種原'}「${r.name}」，放進種子袋了`+(hid?'。這包種子好像藏著特別的東西！打開種子包看看吧':''),6000)}
+  if(act==='wpseed'){const r=addWildLot(w.crop,w.bk,mq2Wild(w,clone(g)),w.rel,`${BIOMES[w.bk].n}採到的${w.rel?'珍稀種原':'野生種原'}`);mq2WildFix();playAct('harvest');addXp(3,true);mqEv('wild',{bk:w.bk,g});exAnnounce(w.crop,g);const hid=(g.sp[0]||g.sp[1])&&!spExpr(g.sp);toast(`採到${w.rel?'珍稀種原':'野生種原'}「${r.name}」，放進背包了`+(hid?'。這包種子好像藏著特別的東西！打開種子包看看吧':''),6000)}
   else{const fr=fruitAdd(w.crop,ph,FRUIT_N,true);renderCoins();playAct('harvest');toast((fr.keep?`摘了 ${fr.keep} 顆野生${CROPS[w.crop].n}，放進果實袋了`:'')+(fr.sold?`${fr.keep?'；':''}果實袋滿了，${fr.sold} 顆直接賣掉，得到 ${fr.coins} 金幣`:''),4000)}/* 112.7 */
   save();closeSheet();hoverWp=null;renderWorld();refreshAct();
 }
@@ -6608,7 +6826,7 @@ function shrineHTML(){
   if(secOpen('forest'))return `<h2>石祠</h2><p class="stage">石祠散發著微光，後面有一條小路。</p><button class="btn" data-act="close">關閉</button>`;
   const lots=state.lots.filter(x=>lc(x)>0&&!x.obs).sort((a,b)=>(a.slot??99)-(b.slot??99));
   let h=`<h2>石祠</h2><p class="stage">空盤子。要放一顆種子嗎？（不會還你）</p>`;
-  if(!lots.length)h+='<p class="note">種子袋是空的。</p>';
+  if(!lots.length)h+='<p class="note">背包是空的。</p>';
   h+=lots.map(x=>{try{const lk=likely(x);return `<button class="pick" data-act="shrput" data-lot="${x.id}"><span class="seedic">${fruitSVG(lk.app,x.crop,44)}</span><span><b>${esc(x.name)}</b><span class="meta">${CROPS[x.crop].n}・剩 ${lc(x)} 顆</span></span></button>`}catch(e){return ''}}).join('');
   return h+`<button class="btn" data-act="close">不放</button>`}
 function shrineAction(b){
@@ -6668,7 +6886,7 @@ function roamReward(bk,d){const cr=roamCrops(bk).filter(c=>typeof cropOpen!=='fu
   state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop,name:'發光的'+CROPS[crop].short,source:'發光的植株',m:gm,f:gf,seeds,gen:0,germ:1,cross:1,rmr:1,ptier:phen(seeds[0],crop).tier});lotNew(state.lots[0],'w:'+bk);
   if(typeof ensureSlots==='function')ensureSlots();save();try{renderAll()}catch(e){}
   const ph=phen(seeds[0],crop);
-  noteOpen({cel:{th:'gold',kicker:'採到了發光的植株',title:`發光的${CROPS[crop].short}`,sub:`收下一包 5 顆種子。每顆都帶著<b>${CN[dream]}</b>和<b>${SPN[sp]}</b>的影子，要自己育出來。`,fruit:fruitSVG(ph,crop,172,1,'',true),chips:[BIOMES[bk].n,'5 顆種子','全服唯一'],go:{label:'看看種子袋',fn:()=>openPanel('bag')}}});
+  noteOpen({cel:{th:'gold',kicker:'採到了發光的植株',title:`發光的${CROPS[crop].short}`,sub:`收下一包 5 顆種子。每顆都帶著<b>${CN[dream]}</b>和<b>${SPN[sp]}</b>的影子，要自己育出來。`,fruit:fruitSVG(ph,crop,172,1,'',true),chips:[BIOMES[bk].n,'5 顆種子','全服唯一'],go:{label:'看看背包',fn:()=>openPanel('bag')}}});
   postNews('roam',`✨ ${myName()} 在${BIOMES[bk].n}採到了發光的植株！`,3);try{renderWorld()}catch(e){}}
 /* 91.6 阿凱的線索：讀 6 份文件一次（快取 10 分鐘），從還沒被拿走的地區裡挑一個，每小時換一次 */
 let roamHintAt=0,roamHintTxt='',roamHintBusy=false;
@@ -6835,7 +7053,7 @@ function fitMapPanel(){try{const el=document.getElementById('mapPanel');if(!el||
 try{vvhSet();addEventListener('resize',()=>{vvhSet();fitMapPanel()});if(window.visualViewport)visualViewport.addEventListener('resize',()=>{vvhSet();fitMapPanel()})}catch(e){}
 const regLoaded={};
 function regPreload(bk){if(regLoaded[bk]||typeof Image==='undefined'||!REGION_IMG[bk])return;regLoaded[bk]=true;for(const f of Object.keys(REGION_IMG[bk])){try{const i=new Image();i.src='assets/'+regDir(bk)+'/'+f+'.png'}catch(e){}}}
-try{document.getElementById('mapBtn').addEventListener('click',()=>{const el=document.getElementById('mapPanel');el.hidden=!el.hidden;if(!el.hidden)renderRegMap()});document.getElementById('mapPanel').addEventListener('click',e=>{if(isTestMode()&&e.target.closest('[data-monre]')){monTestRespawn();testNote('這張地圖的怪物全部重生了');return}if(isTestMode()&&e.target.closest('[data-monboss]')){monForceBoss=!monForceBoss;renderRegMap();return}if(e.target.closest('[data-roamspawn]')){if(isTestMode()){roamRespawn(exBiome,true);testNote('已在這張地圖生出一株（roamers_test）')}return}const tp=e.target.closest('[data-tp]');if(tp&&isTestMode()&&regIn()&&!regBusy){const id=tp.dataset.tp,M=REGION_MAPS[exBiome][id],ex=M.exits.find(x=>!x.need&&!x.trig&&!x.hid)||M.exits[0];regEnter(id,ex.to);testNote('已傳送到 '+M.n);return}if(e.target.closest('[data-mp]'))document.getElementById('mapPanel').hidden=true})}catch(e){}
+try{document.getElementById('mapBtn').addEventListener('click',()=>{const el=document.getElementById('mapPanel');if(el&&!el.hidden){el.hidden=true;return}curPanel==='map'?closePanel():openPanel('map')});/* 138.4：農場、城鎮、各地區都從這裡去 */document.getElementById('mapPanel').addEventListener('click',e=>{if(isTestMode()&&e.target.closest('[data-monre]')){monTestRespawn();testNote('這張地圖的怪物全部重生了');return}if(isTestMode()&&e.target.closest('[data-monboss]')){monForceBoss=!monForceBoss;renderRegMap();return}if(e.target.closest('[data-roamspawn]')){if(isTestMode()){roamRespawn(exBiome,true);testNote('已在這張地圖生出一株（roamers_test）')}return}const tp=e.target.closest('[data-tp]');if(tp&&isTestMode()&&regIn()&&!regBusy){const id=tp.dataset.tp,M=REGION_MAPS[exBiome][id],ex=M.exits.find(x=>!x.need&&!x.trig&&!x.hid)||M.exits[0];regEnter(id,ex.to);testNote('已傳送到 '+M.n);return}if(e.target.closest('[data-mp]'))document.getElementById('mapPanel').hidden=true})}catch(e){}
 
 function biomeThumb(k){
   const B=BIOMES[k],R=seededRnd(hashStr('thumb|'+k));
@@ -6861,7 +7079,7 @@ function pickItem(it){
   if(exCapOn()&&state.ex.picks>=EX_LIMIT){toast(`今天已經撿了 ${EX_LIMIT} 件，明天再來吧`);return}
   state.ex.got.push(it.key);state.ex.picks++;
   let msg;
-  if(it.t==='wild'||it.t==='rare'){const w=giveWild(exBiome,it.t==='rare');msg=`撿到${it.t==='rare'?'珍稀種原':'野生種原'}「${w.name}」（${CROPS[w.crop].n}），放進種子袋了`}
+  if(it.t==='wild'||it.t==='rare'){const w=giveWild(exBiome,it.t==='rare');msg=`撿到${it.t==='rare'?'珍稀種原':'野生種原'}「${w.name}」（${CROPS[w.crop].n}），放進背包了`}
   else{const add=it.t==='acc'?ACC_PACK:1;state.items[it.t]=(state.items[it.t]||0)+add;msg=it.t==='acc'?(tipOnce('acc'),`撿到一瓶生長加速劑（+${add} 次）`):`撿到${itemName(it.t)} 1 瓶`}
   save();hoverItem=null;renderWorld();refreshAct();
   const left=EX_LIMIT-state.ex.picks;toast(msg+(!exCapOn()?'':left>0?`，今天還能撿 ${left} 件`:'，今天的份撿完了'),5000);
@@ -7208,7 +7426,7 @@ const ripeAtOf=(p,st)=>!p||p.stage!=='ripe'?null:(p.rt||(st&&(st.savedAt||st.las
 const stealRipe=(p,st)=>{const t=ripeAtOf(p,st);return !!t&&!p.obs&&Date.now()-t>=STEAL_HR*3600e3};
 const stealKey=(fu,p)=>fu+'|'+p.lid+'|'+p.no;
 function stealInfo(p){if(!viewing||!viewing.st||!p||!stealRipe(p,viewing.st)||!isFriendU(viewing.uid))return null;/* 129：不是朋友就什麼都不顯示 */const fu=viewing.uid,ph=phen(p.g,p.crop),pr=STEAL_P[ph.tier]??0.1;
-  let why='';if(!isFriendU(fu))why='只能偷朋友的農場';else if((state.stole||{})[stealKey(fu,p)])why='這株你已經偷過了';else if(!(((state.items||{}).glove||0)>0))why='沒有偷偷手套（到城鎮的道具行製作）';else if(bagFull())why='種子袋滿了';
+  let why='';if(!isFriendU(fu))why='只能偷朋友的農場';else if((state.stole||{})[stealKey(fu,p)])why='這株你已經偷過了';else if(!(((state.items||{}).glove||0)>0))why='沒有偷偷手套（到城鎮的道具行製作）';else if(bagFull())why='背包滿了';
   return {pr,why,ph}}
 function stealFather(crop){const rs=Object.keys(BIOMES).filter(k=>(BIOMES[k].crops||[]).some(c=>c[0]===crop));return makeWild(crop,rs.length?pk(rs):'grass',false)}
 function stealDo(i){const st=viewing&&viewing.st,p=st&&st.plots[i],I=stealInfo(p);if(!I){toast('這株現在不能偷');return null}if(I.why){toast(I.why);return null}
@@ -7218,7 +7436,7 @@ function stealDo(i){const st=viewing&&viewing.st,p=st&&st.plots[i],I=stealInfo(p
     lot={id:state.nextLot++,lid:'L'+(state.nextLid++),crop:p.crop,name:p.name||CROPS[p.crop].n,source:`從 ${viewing.name||'朋友'} 的農場摘的`,bt:1,m:clone(p.g),f,count:0,seeds,germ:GERM[I.ph.tier],cross:true,gen:1,par:[],ptier:I.ph.tier};
     state.lots.unshift(lot);lotNew(lot,'m')}
   try{db.collection('messages').add({from:uid,fromName:me,to:fu,text:`🧤 ${me} 來偷你的${CROPS[p.crop].n}，${won?'得手了':'失手了'}。`,at:TS()}).catch(()=>{})}catch(e){}
-  save();toast(won?`得手了！摘到 ${STEAL_N} 顆種子，放進種子袋了`:'失手了……手套用掉了',4000);return {won,lot}}
+  save();toast(won?`得手了！摘到 ${STEAL_N} 顆種子，放進背包了`:'失手了……手套用掉了',4000);return {won,lot}}
 function stealBoxHTML(p){const I=stealInfo(p);if(!I)return '';return `<div class="regbox"><b>放太久沒收了</b><p class="note">成功率 ${Math.round(I.pr*100)}%・成功拿到 ${STEAL_N} 顆種子（會跑出不一樣的樣子）。失敗也會用掉手套，朋友不會少任何東西。</p><button class="btn primary" data-act="steal"${I.why?' disabled':''}>偷偷摘種子（用掉 1 個偷偷手套）</button>${I.why?`<p class="note">${I.why}</p>`:''}</div>`}
 function fplotHTML(){const p=sheet.fplot,ph=phen(p.g,p.crop),lvl=p.stage==='seedling'?1:p.stage==='ripe'?3:2;return `<h2>${esc(pname(p))}</h2><p class="stage">${CROPS[p.crop].n}・${stageLabel(p)}・${esc(viewing?viewing.name:'')} 的作物</p>${infoHTML(ph,lvl,p.g,p.crop,true)}${stealBoxHTML(p)}`}
 
@@ -7453,7 +7671,7 @@ const colFruit=(k,col)=>fruitSVG(fruitPh({c:k,k:'b0|'+col+'|-',t:0}),k,96,1,'',t
 function fyWakeAlt(k,col){if(fyHas(k)||!altFull(k))return false;const A=altObj(k);if(!A.cols.includes(col))return false;A.via=1;
   fyApply(k,'wake',{col,sid:null,fruit:colFruit(k,col)});
   if(k==='melon'){const s=mq2Cur();if(s&&s.id==='3-6'&&state.mq2.st===1){(state.fyRun||(state.fyRun={})).melon=1;const F=fyMine();if(F.follow==='melon')F.follow=null}}/* 122：她跑出去了 */
-  if(!A.seed){A.seed=1;const l=exGift(k);save();setTimeout(()=>{try{toast(`${fyN(k)}交給你一包「${l.name}」的種子，放進種子袋了`,5000)}catch(e){}},3600)}/* 121.3：照蘿瑪 */
+  if(!A.seed){A.seed=1;const l=exGift(k);save();setTimeout(()=>{try{toast(`${fyN(k)}交給你一包「${l.name}」的種子，放進背包了`,5000)}catch(e){}},3600)}/* 121.3：照蘿瑪 */
   return true}
 function fyWakeEx(k,i){if(fyHas(k))return false;const F=fruitsArr(),f=F[i];if(!f||f.c!==k||f.b||fCount(f)<WAKE_EX_N||keyApp(f.k).sp!==EX_OF[k])return false;
   const col=keyApp(f.k).skin,fr=fruitSVG(fruitPh(f),k,96,1,'',true);fruitTake(f,WAKE_EX_N);if(!fCount(f))F.splice(i,1);
@@ -7882,7 +8100,7 @@ function matBagHTML(){const S=matsObj(),regs={};for(const b in MATS)(regs[MATS[b
 function openMat(k){if(!MATS[matBase(k)])return;sheet={mat:k};renderSheet();openSheetUI()}
 function matHTML(){const k=sheet.mat,M=MATS[matBase(k)];if(!M)return '<button class="btn" data-act="close">關閉</button>';
   const uses=RECIPES.filter(r=>r.mats.some(([x])=>x===k));
-  return `<div class="lot-top">${matIcon(k,56)}<div><div class="lot-name">${esc(matName(k))}</div><div class="meta">持有 ${matCount(k)} 個</div></div></div><p class="note">從${BIOMES[M.reg]?BIOMES[M.reg].n:''}的「${MON_DEF[M.mon]?MON_DEF[M.mon].n:''}」身上掉下來的${matGold(k)?'，金色的很少見':''}。</p><h3>可以做什麼</h3>${uses.length?uses.map(r=>`<p class="note">・<b>${r.n}</b>：${r.mats.map(([x,c])=>esc(matName(x))+' ×'+c).join('、')}、${fruitReqTxt(r.fruit)}的果實 ×${r.fruit.n}、${r.coins} 金幣（到城鎮的道具行製作）</p>`).join(''):'<p class="note">目前還沒有用到它的配方。</p>'}<p class="note">素材不能賣，也不能上架市集。</p><button class="btn" data-act="close">關閉</button>`}
+  return `<div class="lot-top">${matIcon(k,56)}<div><div class="lot-name">${esc(matName(k))}</div><div class="meta">持有 ${matCount(k)} 個</div></div></div><p class="note">從${BIOMES[M.reg]?BIOMES[M.reg].n:''}的「${M.sv&&SERVANTS[M.reg]?SERVANTS[M.reg].n:MON_DEF[M.mon]?MON_DEF[M.mon].n:''}」身上掉下來的${matGold(k)||M.gold?'，很少見':''}。</p><h3>可以做什麼</h3>${uses.length?uses.map(r=>`<p class="note">・<b>${r.n}</b>：${r.mats.map(([x,c])=>esc(matName(x))+' ×'+c).join('、')}、${fruitReqTxt(r.fruit)}的果實 ×${r.fruit.n}、${r.coins} 金幣（到城鎮的道具行製作）</p>`).join(''):'<p class="note">目前還沒有用到它的配方。</p>'}<p class="note">素材不能賣，也不能上架市集。</p><button class="btn" data-act="close">關閉</button>`}
 /* 115.4：配方 */
 const RECIPES=[
   {id:'fix',n:'定型劑',out:['fix',1],mats:[['bud',3],['shard',2]],fruit:{skin:'white',sp:1,n:2},coins:100,desc:'把一株植物現在的樣子，直接變成一包成品種子'},
@@ -7908,7 +8126,7 @@ function craftDo(id,cnt,pick){const R=RECIPES.find(x=>x.id===id);cnt=cnt|0;if(!R
   for(let i=F.length-1;i>=0;i--)if(!fCount(F[i]))F.splice(i,1);
   const it=state.items||(state.items={});it[R.out[0]]=(it[R.out[0]]||0)+R.out[1]*cnt;try{addXpCap('k',XP_CRAFT*cnt)}catch(e){}/* 119.3 */save();return ''}
 function craftHTML(){const sel=sheet.rcp&&RECIPES.find(x=>x.id===sheet.rcp);
-  if(!sel)return `<p class="note">用怪物的素材和果實做道具。${qh('素材在種子袋的「素材」分頁；果實的條件只看顏色和造型，任何作物都可以。')}</p>`+RECIPES.map(r=>{const mx=craftMax(r);return `<button class="pick" data-act="rcp" data-k="${r.id}">${outIcon(r.out[0])}<span><b>${r.n}</b><span class="meta">${r.mats.map(([x,c])=>esc(matName(x))+' ×'+c).join('、')}、${fruitReqTxt(r.fruit)}果實 ×${r.fruit.n}、${r.coins} 金幣</span><span class="meta">${mx?`現在可以做 ${mx} 個`:'材料還不夠'}</span></span></button>`}).join('');
+  if(!sel)return `<p class="note">用怪物的素材和果實做道具。${qh('素材在背包的「素材」分頁；果實的條件只看顏色和造型，任何作物都可以。')}</p>`+RECIPES.map(r=>{const mx=craftMax(r);return `<button class="pick" data-act="rcp" data-k="${r.id}">${outIcon(r.out[0])}<span><b>${r.n}</b><span class="meta">${r.mats.map(([x,c])=>esc(matName(x))+' ×'+c).join('、')}、${fruitReqTxt(r.fruit)}果實 ×${r.fruit.n}、${r.coins} 金幣</span><span class="meta">${mx?`現在可以做 ${mx} 個`:'材料還不夠'}</span></span></button>`}).join('');
   const R=sel,c=Math.max(1,sheet.cn||1),need=R.fruit.n*c,E=craftEntries(R.fruit),fhave=E.reduce((s,e)=>s+e.n,0),plan=craftPlan(R.fruit,need,sheet.cpick||null);
   const row=(ic,nm,have,want)=>`<div class="crow${have<want?' short':''}">${ic}<span>${nm}</span><b>有 ${have}／要 ${want}</b></div>`;
   let h=`<div class="lot-top">${outIcon(R.out[0])}<div><div class="lot-name">${R.n}</div><div class="meta">${esc(R.desc)}・持有 ${(state.items||{})[R.out[0]]||0} ${itemUnit(R.out[0])}</div></div></div>`;
@@ -7954,10 +8172,10 @@ function fixTick(){const q=Array.isArray(state&&state.fixq)?state.fixq:null;if(!
     const ph=phen(e.g,e.crop),gen=e.gen==null?undefined:(e.gen===0?0:e.gen+1);
     const nl={id:state.nextLot++,lid:e.lid,crop:e.crop,name:`${shortApp(ph)}・定型`,source:'定型',m:clone(e.g),f:clone(e.g),count:SEED_N,germ:GERM[ph.tier],cross:false,wide:false,gen,par:[e.lid,e.lid],gpar:[...(e.par||[])],ptier:ph.tier};
     if(e.bt)nl.bt=1;state.lots.unshift(nl);lotNew(nl,'h');noteFin(nl,{bt:e.bt});got.push(nl);q.splice(j,1);j--}
-  if(got.length){save();try{renderAll()}catch(e){}toast(`定型完成：${got.map(l=>'「'+l.name+'」').join('、')} 各 ${SEED_N} 顆成品種子，放進種子袋了`,5000)}}
+  if(got.length){save();try{renderAll()}catch(e){}toast(`定型完成：${got.map(l=>'「'+l.name+'」').join('、')} 各 ${SEED_N} 顆成品種子，放進背包了`,5000)}}
 function fixStatusHTML(){const q=Array.isArray(state.fixq)?state.fixq:[];if(!q.length)return '';const now=Date.now(),run=q.filter(e=>e.due>now),wait=q.length-run.length;
   const m=run.length?Math.max(1,Math.ceil(Math.min(...run.map(e=>e.due-now))/60e3)):0;
-  return `<p class="note fixst">定型中 ${q.length}／${FIX_MAX}${m?`，最快的還要 ${m} 分鐘`:''}${wait?`；${wait} 包已經好了，種子袋有空位就會放進去`:''}</p>`}
+  return `<p class="note fixst">定型中 ${q.length}／${FIX_MAX}${m?`，最快的還要 ${m} 分鐘`:''}${wait?`；${wait} 包已經好了，背包有空位就會放進去`:''}</p>`}
 function monDrop(m){const b=m.boss?1:0,c=MON_COIN[b],coins=Math.random()<MON_COIN_P[b]?c[0]+Math.floor(Math.random()*(c[1]-c[0]+1)):0,acc=Math.random()<MON_ACC[b];/* 105.10：普通 30% 掉 1–2 金幣、3% 加速劑；王一定掉 10–15、20% 加速劑 */
   state.coins=(state.coins||0)+coins;if(acc){state.items=state.items||{};state.items.acc=(state.items.acc||0)+1}
   const p=worldToScreenPt(m.x,m.y-30);if(coins)monCoinFly(p,coins);if(acc)setTimeout(()=>{try{fxAdd('gain',p.x,p.y-30,'+1 次生長加速劑',1600)}catch(e){}},300);
@@ -8508,7 +8726,7 @@ function renderPickBar(){const el=document.getElementById('pickBar');if(!el)retu
   if(pickMode==='harvest'){const sel=[...pickSet].filter(i=>PICK.harvest.ok(state.plots[i])).length;el.innerHTML=`<div class="bbtip">點或滑過成熟的植株${qh('再點一次取消；拖曳空白處可以移動畫面。')}<br><small>按「完成」打開收成總表</small></div><div class="bbtip"><b>已選 ${sel} 株</b></div><div class="bbrow" style="grid-template-columns:1fr 1fr 1fr"><button data-pk="all">全部</button><button data-pk="cancel">取消</button><button data-pk="fin" class="done"${sel?'':' disabled'}>完成</button></div>`;}}
 document.getElementById('pickBar').addEventListener('click',e=>{const b=e.target.closest('[data-pk]');if(!b||!pickMode)return;const a=b.dataset.pk;
   if(a==='xundo'){crossUndo();return}
-  if(a==='xnew'){XC=-1;crossRefresh();toast('下一次點的植株會成為新的父本');return}/* 88.3 */
+  if(a==='xnew'){XC=-1;crossRefresh();toast('下一次點的植株會成為新的花粉株');return}/* 88.3 */
   if(a==='cancel'){exitPick();return}if(a==='fin'){pickFinish();return}if(a==='sall'){pickSelfAll();return}if(a==='sundo'){pickSelfUndo();return}
   if(a==='all'){state.plots.forEach((q,i)=>{if(PICK[pickMode].ok(q)){if(pickMode==='harvest'&&!pickSet.has(i))plotFx(i,'check');pickSet.add(i)}});renderWorld();renderPickBar();}});
 // ===== 全部收成：依外觀分組，一次決定取種、賣果實或先不收 =====
@@ -8536,7 +8754,7 @@ function harvestHTML(){
   const fit=fruitFit(rows.map(r=>({c:r.p.crop,k:r.ph.key,n:FRUIT_N}))),fitOf=new Map(rows.map((r,k)=>[r.i,fit[k]]));
   const groups=new Map();for(const r of rows){if(!groups.has(r.gk))groups.set(r.gk,[]);groups.get(r.gk).push(r)}
   let nk=0,nsold=0,csold=0,np=0;for(const r of rows){const x=fitOf.get(r.i);nk+=x.keep;nsold+=x.sold;csold+=x.sold*fruitPrice(r.p.crop,r.ph.key,r.ph.tier,r.ph.sizeCls);if(hv.acts[r.i]==='seed')np++}
-  let h=`<h2>全部收成</h2><p class="note" style="font-weight:700">這次會得到：果實 ${nk} 顆、種子 ${np} 包${nsold?`；果實袋放不下的 ${nsold} 顆會直接賣掉（約 ${csold} 金幣）`:''}</p>${bagFull()?'<p class="err">種子袋滿了，留種的只能放回原包。</p>':''}<p class="note">每種外觀預設只留穩定度最高的那株的種子。${qh('果實每一株都收；想多留種子就多勾幾株「留種」。能採標本的，直接在那一列處理。委託到「任務」從果實袋交。')}</p>`;
+  let h=`<h2>全部收成</h2><p class="note" style="font-weight:700">這次會得到：果實 ${nk} 顆、種子 ${np} 包${nsold?`；果實袋放不下的 ${nsold} 顆會直接賣掉（約 ${csold} 金幣）`:''}</p>${bagFull()?'<p class="err">背包滿了，留種的只能放回原包。</p>':''}<p class="note">每種外觀預設只留穩定度最高的那株的種子。${qh('果實每一株都收；想多留種子就多勾幾株「留種」。能採標本的，直接在那一列處理。委託到「任務」從果實袋交。')}</p>`;
   for(const rs of groups.values()){
     const r0=rs[0],ph=r0.ph;let gs=0,gc=0;for(const r of rs){const x=fitOf.get(r.i);gs+=x.sold;gc+=x.sold*fruitPrice(r.p.crop,r.ph.key,r.ph.tier,r.ph.sizeCls)}
     h+=`<div class="hvgrp"><div class="hvhead">${rbHTML(ph,'s')}${fruitSVG(ph,r0.p.crop,40)}<span><b>${CROPS[r0.p.crop].n}・${tagName(ph,r0.p.crop)}・${colorLabel(ph)}</b><span class="meta">${r0.cross?`雜交：${esc(r0.p.name)} × ${esc(r0.p.pollen.fatherName||'')}`:'自交'}・${rs.length} 株・果實 ＋${rs.length*FRUIT_N}</span></span></div>${gs?`<p class="err" style="margin:4px 0">果實袋滿了：這組有 ${gs} 顆果實會直接賣掉（約 ${gc} 金幣）</p>`:''}`;
@@ -8612,7 +8830,7 @@ function trayReturn(){
     if(l.zs)unzipLot(l);if(!l.seeds){l.seeds=Array.from({length:l.count||0},()=>child(l.m,l.f).g);delete l.count}
     for(const c of cs){l.seeds.push(c.g);n++}}
   t.cells=t.cells.filter(c=>!c.sel);trayPrune();ensureSlots();save();renderAll();renderSheet();
-  toast(`${n} 株退回種子袋${made?`（${made} 包已經用完，恢復成原本那包）`:''}`,3000)}
+  toast(`${n} 株退回背包${made?`（${made} 包已經用完，恢復成原本那包）`:''}`,3000)}
 function trayPrune(){const t=trayObj(),used=[...new Set(t.cells.map(c=>c.s))].sort((a,b)=>a-b),map={};t.srcs=used.map((s,k)=>{map[s]=k;return t.srcs[s]});t.cells.forEach(c=>c.s=map[c.s])}
 /* 31.3：移植選位置。按「移植選取的 N 株」後進入連續播種模式（sowTray），點或滑過空田一株一株種下；
    幼苗已經發芽，不再判定發芽率；沒種完的留在育苗盤（離開時才整理 srcs，復原才對得上）。 */
@@ -8641,7 +8859,7 @@ function trayHTML(){
     h+=`<p class="note">${t.cells.length?'':'育苗盤是空的。'}幼苗先看外觀，只移植想要的。</p>`;
     const lots=state.lots.filter(l=>lc(l)>0&&!l.obs),nm=(state.items||{}).mut||0;if(!nm)sheet.trayMut=false;const gm=sheet.trayMut?MUTX.germ:1;
     if(nm)h+=mutChk(nm,'traymut');
-    if(!lots.length)h+='<p class="note">種子袋裡沒有可以撒的種子。</p>';
+    if(!lots.length)h+='<p class="note">背包裡沒有可以撒的種子。</p>';
     h+=lots.map(l=>{try{const lk=likely(l);return `<button class="pick" data-act="traysow" data-lot="${l.id}"${trayFree()?'':' disabled'}><span class="seedic">${fruitSVG(lk.app,l.crop,44)}<i>${pctTxt(lk.p)}</i></span><span><b>${esc(l.name)}</b><span class="meta">${CROPS[l.crop].n}${genTxt(l.gen)}・剩 ${lc(l)} 顆・發芽率 ${Math.round(l.germ*gm*100)}%・可撒 ${Math.min(lc(l),trayFree())} 顆</span></span></button>`}catch(e){return ''}}).join('');
     if(t.cells.length)h+=`<button class="btn" data-act="trayback">回到育苗盤</button>`;
     return h+`<button class="btn" data-act="close">關閉</button>`;
@@ -8672,7 +8890,7 @@ function trayHTML(){
     }
   }
   h+=`<button class="btn primary" data-act="trayplant"${nSel?'':' disabled'}>移植選取的 ${nSel} 株（點空地種下，空地 ${nEmpty} 塊）</button>`;
-  h+=`<button class="btn" data-act="trayret"${nSel?'':' disabled'}>選取的 ${nSel} 株退回種子袋</button>`;/* 37.3 */
+  h+=`<button class="btn" data-act="trayret"${nSel?'':' disabled'}>選取的 ${nSel} 株退回背包</button>`;/* 37.3 */
   h+=`<div class="row2"><button class="btn" data-act="traydrop"${t.cells.length-nSel?'':' disabled'}>丟掉沒選的</button><button class="btn" data-act="traynew">選新的種子</button></div>`;
   h+=`<button class="btn warn" data-act="trayclear">${sheet.confirm?'再按一次，清空育苗盤':'清空育苗盤'}</button><button class="btn" data-act="close">關閉</button>`;
   return h;
@@ -9178,7 +9396,7 @@ const ORDERS=[{k:'harvest',t:'收成任何一種作物一次',r:100},{k:'cross',
 function harvested(ph){try{if(ph&&ph.tier>=5&&state.wardrobe&&!state.wardrobe.t20){state.wardrobe.t20=1;wardNote(['斗篷'])}}catch(e){}/* 86.5：收成過神話 → 斗篷 */stInc('hv');addXpCap('h',1);tutEv('harvest');orderDone('harvest');if(ph&&ph.cname==='黃')orderDone('yellow');if(ph&&ph.pat)orderDone('pattern')}
 function orderDone(k){if(!state.orders)state.orders={};if(!state.orders[k]){state.orders[k]=1;save();toast('完成了一項入門練習，到「任務」領取獎勵');renderOrdersBtn()}}
 document.getElementById('meChip').onclick=()=>{if(!state)return;exitAllModes();openMe()};
-document.getElementById('ordersBtn').onclick=()=>{sheet={orders:true};renderSheet();sheetEl.classList.add('open');bd.style.display='block'};
+document.getElementById('ordersBtn').onclick=()=>{sheet={orders:true};renderSheet();openSheetUI()};
 /* ===== 28.4＋29＋30＋41＋43（15y）：育種家等級、主線任務、NPC 委託、個人介面 =====
    所有解鎖只看等級（28.4）；主線只帶路、給經驗（29）；委託取代每日訂單（30）；個人介面（41）。
    存檔欄位：lv、xp、xd（每日經驗上限）、fin（育成過的成品外觀）、st（累計收成、雜交、開始日期）、mq（主線）、cm（今日委託）、weekly（每週大委託）、
@@ -9302,7 +9520,7 @@ function mqAccept(silent){
   if(state.mq.ch===2)qLot('tomato','阿土伯的黃番茄',qGeno('yellow'),6,1);
   if(m.give&&m.give.mut){state.items.mut=(state.items.mut||0)+m.give.mut}
   addXp(10,true);save();try{renderAll();renderOrdersBtn()}catch(e){}
-  if(!silent)toast(`接下任務「${m.t}」，+10 經驗`+(state.mq.ch<=2?'，種子放進種子袋了':m.give?'，誘變劑 1 瓶放進道具了':''),4500);
+  if(!silent)toast(`接下任務「${m.t}」，+10 經驗`+(state.mq.ch<=2?'，種子放進背包了':m.give?'，誘變劑 1 瓶放進道具了':''),4500);
   mqPoll();return true;
 }
 function mqEv(type,d){
@@ -9399,7 +9617,7 @@ const mq2Obj=()=>{if(!state.mq2||typeof state.mq2!=='object')state.mq2={i:0,st:0
 const mq2Cur=()=>state&&state.mq2?MQ2[state.mq2.i]||null:null;
 /* 0-2 的紅番茄：藏一份花紋、不再藏愛心；第一株 3 分鐘成熟 */
 function mq2SeedGeno(){const g=makeOriginal({bt:0,color:'red',pf:0});g.b=[0,0];g.sp=[0,0];g.pw=[1,0];g.c=['red','red'];g.pc=['red','red'];g.pf=[0,0];g.n.size=numLoci(0.5,0.05);g.n.perf=numLoci(0.6,0.05);return g}
-function mq2Seed(){const g=mq2SeedGeno();state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop:'tomato',name:'阿土伯的紅番茄',source:'任務種子',m:g,f:clone(g),count:0,seeds:Array.from({length:SEED_N},()=>clone(g)),gen:0,germ:1,qf:3,ptier:phen(g,'tomato').tier});lotNew(state.lots[0],'q');toast('收下一包紅番茄種子，放進種子袋了',3500)}
+function mq2Seed(){const g=mq2SeedGeno();state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop:'tomato',name:'阿土伯的紅番茄',source:'任務種子',m:g,f:clone(g),count:0,seeds:Array.from({length:SEED_N},()=>clone(g)),gen:0,germ:1,qf:3,ptier:phen(g,'tomato').tier});lotNew(state.lots[0],'q');toast('收下一包紅番茄種子，放進背包了',3500)}
 /* 草原第一包黃番茄：藏一份花紋（只有第一次） */
 function mq2Wild(w,g){try{const M=mq2Obj();if(M.yw||w.crop!=='tomato'||w.bk!=='grass')return g;const a=appParts(g);if(a.skin!=='yellow'||a.pat)return g;g.pw=[1,0];M.yw=1;M.ywNow=1}catch(e){}return g}
 /* 每一顆都是這個基因型（不是自交的後代），這樣每一株都藏一份花紋 */
@@ -9410,7 +9628,7 @@ const tomFruits=()=>fruitsArr().reduce((s,f)=>s+(f.c==='tomato'&&!f.b?fCount(f):
 function mq2Trade(){const M=mq2Obj(),s=mq2Cur();if(!s||s.id!=='1-3'||M.st!==1||M.f.trade)return false;if(tomFruits()<3){toast('果實袋裡的番茄不夠 3 顆');return false}
   let left=3;const F=fruitsArr(),slots=F.filter(f=>f.c==='tomato'&&!f.b).sort((a,b)=>fCount(a)-fCount(b));for(const f of slots){if(left<=0)break;left-=fruitTake(f,Math.min(left,fCount(f)))}for(let i=F.length-1;i>=0;i--)if(!fCount(F[i]))F.splice(i,1);
   const g=mq2TradeGeno(),ph=phen(g,'tomato');state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop:'tomato',name:`小莓姊的${CROPS.tomato.shapes[1]}番茄`,source:'小莓姊換給你的種子',m:g,f:clone(g),count:SEED_N,gen:0,germ:GERM[ph.tier],ptier:ph.tier});lotNew(state.lots[0],'q');
-  M.f.trade=1;save();toast(`換到一包「${state.lots[0].name}」${SEED_N} 顆，放進種子袋了`,4000);return true}
+  M.f.trade=1;save();toast(`換到一包「${state.lots[0].name}」${SEED_N} 顆，放進背包了`,4000);return true}
 function mq2Accept(sub){const M=mq2Obj(),s=mq2Cur();if(!s)return false;if(s.lv&&myLv()<s.lv&&M.st===0){toast(`Lv ${s.lv} 開放`);return false}
   if(s.subs){const u=mq2Sub(s,sub);if(!u)return false;const F=mq2SF(sub);if(F.a)return false;M.st=1;F.a=1;addXp(10,true);save();toast(`接下：${u.t}，+10 經驗`,3000);mq2Tick();try{renderAll();renderOrdersBtn();renderMqLine()}catch(e){}return true}
   if(M.st!==0)return false;M.st=1;M.f={};addXp(10,true);try{if(s.acc)s.acc()}catch(e){logErr(e,'mq2acc')}
@@ -9594,7 +9812,7 @@ function qScan(force){if(!state)return;const now=Date.now();if(!force&&now-qScan
 
 /* 116.5：目前任務那一行。點了：城鎮的人或祭壇 → 在城鎮就畫箭頭，不在就問要不要去；農場 → 綠色按鈕閃一下；探索 → 打開探索 */
 let townArrow=null,townArrowT=0;
-function renderMqLine(){try{const el=document.getElementById('mqLine');if(!el)return;if(!state||viewing){el.hidden=true;return}{const q=qTracked();if(!q){el.hidden=true;return}const t=qLineText(q);if(el.textContent!==t)el.textContent=t;el.classList.toggle('qdone',q.st==='done');el.hidden=false;return}/* 133 */const s=mq2Cur(),M=state&&state.mq2;
+function renderMqLine(){try{const el=document.getElementById('mqLine');if(!el)return;if(!state||viewing){el.hidden=true;return}{const q=qTracked();if(!q){el.hidden=true;return}const t=qLineText(q);if(el.textContent!==t)el.textContent=t;el.classList.toggle('qdone',q.st==='done');el.dataset.st=q.st;el.hidden=false;return}/* 133 */const s=mq2Cur(),M=state&&state.mq2;
   if(!state||!s||viewing){el.hidden=true;return}let t;if(s.lv&&myLv()<s.lv&&M.st===0)t=`主線：${MQ2_CH[s.ch]}（Lv ${s.lv} 開放）`;else if(s.subs){const u=s.subs.find(x=>{const F=(M.f||{})['s'+x.id]||{};return F.a&&!F.d});t=u?`主線：${u.hint}`:'主線：去銀霧白樺林的獵人小屋，找岳哥、槿姨'}else t=M.st===0?`主線：找${NPCN[s.npc]||''}說話（${s.t}）`:`主線：${mq2HintOf(s)}`;if(el.textContent!==t)el.textContent=t;el.hidden=false}catch(e){}}
 function mq2Target(){const s=mq2Cur(),M=state.mq2;if(!s)return null;if(s.subs)return {where:'explore'};if(M.st===0)return MQ2_REGN.includes(s.npc)||s.reg?{where:'explore'}:{town:'npc:'+s.npc};if(s.id==='2-4')return M.f.fruit?{town:'spring'}:{where:'explore'};if(s.id==='3-4')return M.f.fruit&&M.f.back?{town:'spring'}:{where:'explore'};if(s.id==='3-6'&&fyHas('melon')&&fyRunning('melon'))return {where:'explore'};if(s.tgt==='spring')return {town:'spring'};if(s.tgt==='npc')return {town:'npc:'+s.npc};return {where:s.tgt}}
 function townArrowSet(id){townArrow=id;townArrowT=Date.now()+6000;try{renderWorld()}catch(e){}setTimeout(()=>{if(Date.now()>=townArrowT){townArrow=null;try{if(scene==='market')renderWorld()}catch(e){}}},6100)}
@@ -9609,7 +9827,7 @@ function mqLineTap(){{const q=qTracked();if(q){qGo(q);return}}/* 133 */const T=m
 function mqGoHTML(){const id=sheet.mqgo,p=String(id).startsWith('npc:')?TOWN_NPC.find(q=>'npc:'+q.id===id):null,b=!p&&TOWN_BLD.find(q=>q.id===id);
   return `<h2>要去城鎮嗎？</h2><p class="note">${p?`${esc(p.n)}在城鎮等你。`:b?`${esc(b.n)}在城鎮的噴水池。`:''}到了會用箭頭指給你看。</p><div class="row2"><button class="btn primary" data-act="mqgo">去城鎮</button><button class="btn" data-act="close">先不要</button></div>`}
 /* 116.5：第一次才出現的一句話（state.tips 記住，各只一次） */
-const TIP_TXT={hv:'果實在種子袋的「果實」分頁，可以賣，也可以拿去獻給祭壇。',alt:'每一項要 3 顆。點一項，從果實袋選要獻的。',ex:'點一個地方就能出發。野外的植物可以採種子，也可以摘果實。',fl2:'點開花的植株，選「雜交」，再點另一株。',acc:'生長加速劑：用一次，少等 10 分鐘。',bag:'用不到的種子可以丟掉，或放進種原庫。'};
+const TIP_TXT={hv:'果實在背包的「果實」分頁，可以賣，也可以拿去獻給祭壇。',alt:'每一項要 3 顆。點一項，從果實袋選要獻的。',ex:'點一個地方就能出發。野外的植物可以採種子，也可以摘果實。',fl2:'點開花的植株，選「雜交」，再點另一株。',acc:'生長加速劑：用一次，少等 10 分鐘。',bag:'用不到的種子可以丟掉，或放進種原庫。'};
 function tipOnce(k){try{if(!state)return false;const T=state.tips||(state.tips={});if(T[k]||!TIP_TXT[k])return false;T[k]=1;save();setTimeout(()=>{try{toast(TIP_TXT[k],6000)}catch(e){}},700);return true}catch(e){return false}}
 /* ===== 118（18j）：蘿瑪的台詞、蘿瑪的故事、翠風草原的地區故事 =====
    台詞：fyLinesFor 依地點（農場／翠風草原／其他地區）與階段（進化、神化）挑；只有蘿瑪換，其他八位照 FY_LINES。
@@ -9841,7 +10059,7 @@ function wkFits(w,p,ph){return condOk(w.c,p,ph)&&(!w.need||!w.key||w.key===ph.ke
 function cmTxt(c){if(c.wild)return `交一包在${BIOMES[c.wild].n}採到的${c.rel?'珍稀種原':'野生種子'}（整包、還沒種過的）`;return condTxt(c)}
 /* 111.3（18c）：舊存檔的種子包來源字串不改寫，只在顯示時換成新地名 */
 const SRC_REN={'草原':'翠風草原','沙漠':'流金沙海','雪原':'晶霜雪原','森林':'銀霧白樺林','濕地':'珍珠潟湖'};/* 119.2 加上森林、濕地 */
-const srcName=s=>String(s||'').replace(/翠風草原|流金沙海|晶霜雪原|銀霧白樺林|珍珠潟湖|草原|沙漠|雪原|森林|濕地/g,m=>SRC_REN[m]||m);
+const srcName=s=>String(s||'').replace(/（母本）|（父本）/g,'').replace(/\s*×\s*/g,' × ').replace(/翠風草原|流金沙海|晶霜雪原|銀霧白樺林|珍珠潟湖|草原|沙漠|雪原|森林|濕地/g,m=>SRC_REN[m]||m);
 const cmStar=s=>'★'.repeat(s)+'☆'.repeat(3-s);
 function lotWild(l){const s=l.source||'';if(/（母本）/.test(s)||l.gen)return null;const m=s.match(/^(.+?)(採到|撿到)的(珍稀種原|野生種原)/);if(!m)return null;const bk=l.wb||BIOME_KEYS.find(k=>BIOMES[k].n===m[1]||BIOMES[k].on===m[1])/* 111.3：舊存檔的來源寫舊地名 */;return bk?{bk,rel:m[3]==='珍稀種原'}:null}
 function cmReward(o,who){
@@ -9865,18 +10083,20 @@ function cmListHTML(only){
   ensureComm();if(myLv()<LV_COMM)return `<p class="note">NPC 委託 Lv ${LV_COMM} 開放。</p>`;
   const ls=state.cm.list.filter(o=>!only||o.n===only);
   return ls.map(o=>{const st=o.done?'已完成':o.gone?'已放棄，明天換新':'';const lots=!st&&o.c.wild?state.lots.filter(l=>{const w=lotWild(l);return w&&w.bk===o.c.wild&&(!o.c.rel||w.rel)}):[];
-    return `<div class="lot"><div class="lot-name"><span class="starz">${cmStar(o.s)}</span> ${NPCN[o.n]}：${cmTxt(o.c)}</div><div class="meta">獎勵 ${o.r} 金幣・${o.x} 經驗・好感度 +${o.s}${o.pz?'・'+itemName(o.pz[0])+' '+o.pz[1]+' '+itemUnit(o.pz[0]):''}</div>${st?`<p class="note">${st}</p>`:(o.c.wild?(lots.length?lots.map(l=>`<button class="btn" data-act="cmgive" data-id="${o.id}" data-lot="${l.id}">交出「${esc(l.name)}」（${lc(l)} 顆）</button>`).join(''):'<p class="note">種子袋裡還沒有符合的種子包。</p>'):giveBtnHTML('cm',o.id))+`<button class="mini" data-act="cmdrop" data-id="${o.id}">${sheet&&sheet.drop===o.id?'確定放棄？明天才會換新':'放棄'}</button>`}</div>`}).join('');
+    return `<div class="lot"><div class="lot-name"><span class="starz">${cmStar(o.s)}</span> ${NPCN[o.n]}：${cmTxt(o.c)}</div><div class="meta">獎勵 ${o.r} 金幣・${o.x} 經驗・好感度 +${o.s}${o.pz?'・'+itemName(o.pz[0])+' '+o.pz[1]+' '+itemUnit(o.pz[0]):''}</div>${st?`<p class="note">${st}</p>`:(o.c.wild?(lots.length?lots.map(l=>`<button class="btn" data-act="cmgive" data-id="${o.id}" data-lot="${l.id}">交出「${esc(l.name)}」（${lc(l)} 顆）</button>`).join(''):'<p class="note">背包裡還沒有符合的種子包。</p>'):giveBtnHTML('cm',o.id))+`<button class="mini" data-act="cmdrop" data-id="${o.id}">${sheet&&sheet.drop===o.id?'確定放棄？明天才會換新':'放棄'}</button>`}</div>`}).join('');
 }
 function weeklyHTML(){ensureComm();const w=state.weekly;if(!w||myLv()<LV_COMM)return '';const tip=w.adv==='sup'?'留兩包純色親本，每次配一次。'+qh('混色自己結的種子會變色。'):w.adv==='intro'?'把一種造型和一種夢幻色，湊在同一顆果實上。':'';
   return `<h3>每週大委託</h3><div class="lot"><div class="lot-name"><span class="starz">★★★</span> ${w.adv?'<span class="badge r4">進階</span> ':''}${w.n?NPCN[w.n]+'：':''}${wkTxt(w)}</div><div class="meta">獎勵 ${w.r} 金幣＋${w.pt}${w.x?'・'+w.x+' 經驗':''}</div>${tip?`<p class="note">${tip}</p>`:''}<p class="note">${w.done?'已完成':(w.need?`已經交了 ${w.got||0}／${w.need} 顆。`:'進行中。')}</p>${w.done?'':giveBtnHTML('w','w')}</div>`}
 function favHTML(n){const v=favOf(n),t=favTier(n),nx=FAV_STEP[t],got=(state.favGot&&state.favGot[n])||0,p0=t?FAV_STEP[t-1]:0;
   return `<div class="favrow"><b>${NPCN[n]}</b><span class="xpbar"><i style="width:${nx?Math.round((v-p0)/(nx-p0)*100):100}%"></i></span><span class="meta">${t} 階${nx?`（${v}／${nx}）`:'（最高）'}・故事 ${nsOf(n).d}／5${nsBang(n)?'・有事找你':''}</span></div>`}
 /* 任務面板（原本的「訂單」） */
-function ordersHTML(){
-  ensureComm();const o=state.orders||{};
-  let h=`<h2>任務</h2>`+qPanelHTML()+`<details class="dist"><summary>各任務的詳細</summary><h3>主線</h3>`+mq2CardHTML(false)+`<h3>支線：阿凱的委託：失落的種子庫</h3>`+mqCardHTML()+rsAllCardsHTML()+`</details><h3>今日委託</h3>`+(myLv()>=LV_COMM?`<p class="note">每天 0 點換新，不用先接。</p>`:'')+cmListHTML()+weeklyHTML();
-  if(!ORDERS.every(x=>o[x.k]===2))h+=`<h3>入門練習</h3>`+ORDERS.map(x=>`<div class="lot"><div class="lot-name">${x.t}</div><div class="meta">獎勵 ${x.r} 金幣</div>${o[x.k]===2?'<p class="note">已領取</p>':o[x.k]===1?`<button class="btn primary" data-act="claim" data-k="${x.k}">領取 ${x.r} 金幣</button>`:'<p class="note">進行中</p>'}</div>`).join('');
-  return h+'<button class="btn" data-act="close">關閉</button>';
+function ordersHTML(){/* 138.7：分頁＋照狀態分組的卡片；點卡片帶我去、右邊圖釘追蹤 */
+  ensureComm();const o=state.orders||{},L=qList(),tr=qTracked(L),S=L.filter(q=>qTab==='all'||qCatOf(q)===qTab);
+  let h=qTabsHTML(L);if(!S.length)h+='<p class="note">這裡現在沒有任務。</p>';
+  for(const [st,n] of Q_GRP){const G=S.filter(q=>q.st===st).sort((a,b)=>(b.main?1:0)-(a.main?1:0));if(!G.length)continue;h+=`<p class="qgrp">${n}</p>`+G.map(q=>qCardHTML2(q,!!tr&&tr.id===q.id)).join('')}
+  if((qTab==='all'||qTab==='comm')&&myLv()>=LV_COMM)h+=`<details class="dist"><summary>今日委託、每週大委託的內容</summary><p class="note">每天 0 點換新，不用先接。</p>${cmListHTML()}${weeklyHTML()}</details>`;
+  if(qTab==='all'&&!ORDERS.every(x=>o[x.k]===2))h+=`<h3>入門練習</h3>`+ORDERS.map(x=>`<div class="lot"><div class="lot-name">${x.t}</div><div class="meta">獎勵 ${x.r} 金幣</div>${o[x.k]===2?'<p class="note">已領取</p>':o[x.k]===1?`<button class="btn primary" data-act="claim" data-k="${x.k}">領取 ${x.r} 金幣</button>`:'<p class="note">進行中</p>'}</div>`).join('');
+  return h;
 }
 function orderAction(b){
   const a=b.dataset.act;
@@ -10041,7 +10261,7 @@ function mu96Action(b){const a=b.dataset.act,id=+b.dataset.id,x=(sheet.m96||[]).
   if(a==='m96keep'){x.done='keep';renderSheet();return}
   if(a==='m96split'){const l=state.lots.find(y=>y.id===id);if(l&&lcMu(l)){const nl={...l,id:state.nextLot++,name:l.name+'・突變？',seeds:[],count:0,mseeds:l.mseeds,mmd:l.mmd||[],mutPack:1,slot:null};delete nl.zs;delete nl.zi;delete l.mseeds;delete l.mmd;
       const used=new Set(state.lots.map(y=>y.slot));for(let k=0;k<MY_SLOTS;k++)if(!used.has(k)){nl.slot=k;break}
-      state.lots.unshift(nl);lotNew(nl,'h');if(!lc(l))state.lots=state.lots.filter(y=>y!==l);save();try{renderAll()}catch(e){}toast(`「${nl.name}」放進種子袋了`)}
+      state.lots.unshift(nl);lotNew(nl,'h');if(!lc(l))state.lots=state.lots.filter(y=>y!==l);save();try{renderAll()}catch(e){}toast(`「${nl.name}」放進背包了`)}
     x.done='split';renderSheet();return}}
 const mdSeen=(md,ph)=>{if(!md||!ph)return false;const has=(k,v)=>!!k&&(k===v||String(k).split('-').includes(v));
   if(md.k==='sp')return ph.sp===md.v;if(md.k==='c')return has(ph.skin,md.v);if(md.k==='pc')return !!ph.pat&&has(ph.pat.c,md.v);return false};
@@ -10071,7 +10291,7 @@ let crossDad=null,crossPt=null;const crossHist=[];
 const hasPollen=p=>p&&!p.obs&&p.stage!=='seedling';
 function rsvFather(p){const r=p&&p.rsv;if(!r)return -1;const ok=q=>q&&!q.obs&&q.lotId===r.lotId&&q.no===r.no;if(ok(state.plots[r.i]))return r.i;const j=state.plots.findIndex(ok);if(j>=0)r.i=j;return j}
 function crossWhy(d,m){const P=state.plots[d],M=state.plots[m];
-  if(!P||!M||P.obs||M.obs)return '這裡沒有可以雜交的植株';if(d===m)return '父本和母本要是不同的兩株';
+  if(!P||!M||P.obs||M.obs)return '這裡沒有可以雜交的植株';if(d===m)return '花粉株和結種株要是不同的兩株';
   if(P.crop!==M.crop&&!isWide(M,P))return `${CROPS[P.crop].n}和${CROPS[M.crop].n}不能雜交`;
   if(M.stage!=='seedling'&&M.stage!=='flower')return '這株已經授粉了，等它收成後重新開花再配';return ''}
 /* 88（16p）：雜交模式改成「先標記、按完成才授粉」；一次可以有 5 個父本（每組一個顏色），從父本按住滑過可以一次選好幾株母本 */
@@ -10082,13 +10302,13 @@ function crossSet(){pickSet.clear();if(crossDad!=null)state.plots.forEach((q,i)=
 function crossRefresh(){crossSync();renderWorld();renderPickBar()}
 function crossReset(){XG=[];XC=-1;XH.length=0;crossDad=null}
 function crossFather(i){const p=state.plots[i];if(!p||p.obs)return false;const gd=crossGroupOf(i);if(gd>=0){XC=gd;return true}
-  if(crossMomOf(i)>=0){toast('這株已經標成母本了，不能同時當父本');plotFx(i,'skip');return false}
-  if(XG.length>=XCOL.length){toast('最多 5 個父本，先按「完成」');return false}
+  if(crossMomOf(i)>=0){toast('這株已經標成結種株了，不能同時當花粉株');plotFx(i,'skip');return false}
+  if(XG.length>=XCOL.length){toast('最多 5 株花粉株，先按「完成」');return false}
   const used=new Set(XG.map(G=>G.c));XG.push({d:i,ms:[],c:XCOL.find(c=>!used.has(c))});XC=XG.length-1;return true}
 function crossMark(i,stroke){const G=XG[XC];if(!G||i===G.d)return;const p=state.plots[i];if(!p||p.obs)return;
   if(G.ms.includes(i)){if(stroke)return;G.ms.splice(G.ms.indexOf(i),1);XH.push({t:'rm',G,m:i});return}
-  const why=crossGroupOf(i)>=0?'這株是父本，不能同時當母本':crossWhy(G.d,i);if(why){plotFx(i,'skip');if(!stroke)toast(why);return}
-  const og=crossMomOf(i);if(og>=0){const F=XG[og];F.ms.splice(F.ms.indexOf(i),1);XH.push({t:'mv',G,F,m:i});if(!stroke)toast('改到這一組父本了')}else XH.push({t:'add',G,m:i});
+  const why=crossGroupOf(i)>=0?'這株是花粉株，不能同時當結種株':crossWhy(G.d,i);if(why){plotFx(i,'skip');if(!stroke)toast(why);return}
+  const og=crossMomOf(i);if(og>=0){const F=XG[og];F.ms.splice(F.ms.indexOf(i),1);XH.push({t:'mv',G,F,m:i});if(!stroke)toast('改到這一株花粉株了')}else XH.push({t:'add',G,m:i});
   G.ms.push(i);plotFx(i,'check')}
 function crossTap(i){const p=state.plots[i];if(!p||p.obs)return;const gd=crossGroupOf(i);
   if(gd>=0){if(gd===XC&&!XG[gd].ms.length){XG.splice(gd,1);XC=-1}else XC=gd;crossRefresh();return}
@@ -10110,22 +10330,22 @@ const plotUnder=(x,y)=>{const el=document.elementFromPoint(x,y),g=el&&el.closest
 function crossDown(e){const i=plotUnder(e.clientX,e.clientY);if(i<0||!state.plots[i]){panStart={x:e.clientX,y:e.clientY,cx:buildCam.x,cy:buildCam.y};return}crossPt={i,x:e.clientX,y:e.clientY,drag:false,hit:new Set()}}
 /* 從父本按住滑過：經過的植株都標成這組的母本 */
 function crossMove(e){const c=crossPt;if(!c.drag&&Math.hypot(e.clientX-c.x,e.clientY-c.y)>12){
-    if(crossMomOf(c.i)>=0&&crossGroupOf(c.i)<0){crossPt=null;toast('從父本按住滑過，才會一次選好幾株母本');return}
+    if(crossMomOf(c.i)>=0&&crossGroupOf(c.i)<0){crossPt=null;toast('從花粉株按住滑過，才會一次選好幾株結種株');return}
     if(!crossFather(c.i)){crossPt=null;return}c.drag=true;c.hit.add(c.i);crossRefresh()}
   if(c.drag){const s=plotScreen(c.i)||{x:c.x,y:c.y};crossLine({x:s.x,y:s.y-16},{x:e.clientX,y:e.clientY},XG[XC]&&XG[XC].c);
     const j=plotUnder(e.clientX,e.clientY);if(j>=0&&!c.hit.has(j)){c.hit.add(j);crossMark(j,true);crossRefresh()}}}
 function crossUp(e){const c=crossPt;crossPt=null;crossLine(null);if(!c)return;
-  if(c.drag){if(c.hit.size<2)toast('滑過其他植株，就會把它們標成母本',2500);return}
+  if(c.drag){if(c.hit.size<2)toast('滑過其他植株，就會把它們標成結種株',2500);return}
   crossTap(c.i)}
 function crossBarHTML(){const nr=state.plots.filter(q=>q&&q.rsv).length,N=crossMarkN();
   const ic=i=>{const q=state.plots[i];if(!q)return '';let f='';try{f=fruitSVG(phen(q.g,q.crop),q.crop,18)}catch(e){}return `<span class="xpl">${f}${esc(pname(q))}</span>`};
-  const rows=XG.map((G,k)=>`<div class="xgrp${k===XC?' on':''}" style="border-color:${G.c}"><b style="color:${G.c}">父本</b> ${ic(G.d)} <b style="color:${G.c}">→ 母本</b> ${G.ms.length?G.ms.map(ic).join('、'):'<small>（還沒選）</small>'}</div>`).join('');
+  const rows=XG.map((G,k)=>`<div class="xgrp${k===XC?' on':''}" style="border-color:${G.c}"><b style="color:${G.c}">花粉株</b> ${ic(G.d)} <b style="color:${G.c}">→ 結種株</b> ${G.ms.length?G.ms.map(ic).join('、'):'<small>（還沒選）</small>'}</div>`).join('');
   const P=XC>=0&&XG[XC]?state.plots[XG[XC].d]:null;
-  return `<div class="bbtip">${P?`點黃框植株標成母本${qh('再點一次取消；從父本按住滑過可一次選好幾株；按「完成」才授粉。')}`:'先點一株當父本'}<br><small>兩邊都開花的會立刻雜交，還沒開花的變預約${nr?`・預約中 ${nr} 株`:''}</small></div>${rows?`<div class="xgrps">${rows}</div>`:''}<div class="bbrow" style="grid-template-columns:1fr 1fr 1.3fr"><button data-pk="xnew"${XG.length>=XCOL.length||XC<0?' disabled':''}>換父本</button><button data-pk="xundo"${XH.length?'':' disabled'}>復原上一筆</button><button data-pk="fin" class="done">完成（${N} 筆）</button></div>`}
+  return `<div class="bbtip">${P?`點黃框植株標成結種株${qh('再點一次取消；從花粉株按住滑過可一次選好幾株；按「完成」才授粉。')}`:'先點一株當花粉株'}<br><small>兩邊都開花的會立刻雜交，還沒開花的變預約${nr?`・預約中 ${nr} 株`:''}</small></div>${rows?`<div class="xgrps">${rows}</div>`:''}<div class="bbrow" style="grid-template-columns:1fr 1fr 1.3fr"><button data-pk="xnew"${XG.length>=XCOL.length||XC<0?' disabled':''}>換花粉株</button><button data-pk="xundo"${XH.length?'':' disabled'}>復原上一筆</button><button data-pk="fin" class="done">完成（${N} 筆）</button></div>`}
 /* 每秒：預約到期就雜交；父本不見就標記 */
 function rsvTick(){let ch=false;state.plots.forEach((p,i)=>{if(!p||!p.rsv)return;
   if(p.stage!=='seedling'&&p.stage!=='flower'){delete p.rsv;ch=true;return}
-  const j=rsvFather(p);if(j<0){if(!p.rsv.bad){p.rsv.bad=1;ch=true;toast(`「${pname(p)}」預約的父本不見了，請重新選`,4000)}return}
+  const j=rsvFather(p);if(j<0){if(!p.rsv.bad){p.rsv.bad=1;ch=true;toast(`「${pname(p)}」預約的花粉株不見了，請重新選`,4000)}return}
   if(p.stage==='flower'&&hasPollen(state.plots[j])&&!crossWhy(j,i)){delete p.rsv;pollinate(i,j);plotFx(i,'self');ch=true}});
   if(ch){save();try{renderWorld()}catch(e){}}}
 function rsvMarkSVG(p,x,y,mk){if(!p.rsv)return '';const cx=x-14,cy=y-56-mk;
@@ -10300,7 +10520,7 @@ function vdHTML(){const S=sheet.vd,n=vdCount();
       if(g){try{ic=fruitSVG(appFromKey(g.key),c,40)}catch(e){}}
       h+=`<div class="lot vdslot${g?' vdok':''}"><div class="lot-top"><span class="vdic">${g?ic:'<b>？</b>'}</span><div><div class="lot-name">${i+1}. ${esc(sl.d)}</div><div class="meta">${g?`存入者：${esc(g.n||'')}・${new Date(g.t).toLocaleDateString()}`:`${VD_XP[i]} 經驗・${VD_COIN[i]} 金幣`}</div></div></div>`;
       if(!g&&!lock){const ls=vdLots(c,i);
-        if(S.pick&&S.pick.c===c&&S.pick.i===i){h+=ls.length?`<div class="row2">${ls.map(l=>`<button class="btn primary" data-act="vdgive" data-c="${c}" data-i="${i}" data-id="${l.id}">${esc(l.name)}（${lc(l)} 顆）</button>`).join('')}</div>`:'<p class="note">種子袋裡沒有符合的成品種子</p>'}
+        if(S.pick&&S.pick.c===c&&S.pick.i===i){h+=ls.length?`<div class="row2">${ls.map(l=>`<button class="btn primary" data-act="vdgive" data-c="${c}" data-i="${i}" data-id="${l.id}">${esc(l.name)}（${lc(l)} 顆）</button>`).join('')}</div>`:'<p class="note">背包裡沒有符合的成品種子</p>'}
         else if(ls.length)h+=`<button class="btn" data-act="vdpick" data-c="${c}" data-i="${i}">存入（${ls.length} 包可以交）</button>`}
       h+='</div>'}
     h+='</details>'}
@@ -10322,7 +10542,7 @@ function nsCardHTML(n){
   let h=hd+`<div class="lot"><div class="lot-name">第 ${k} 段　${S.t}（進行中）</div><p>${hintH(nsHint(S))}</p>`;
   if(S.fruit)h+=giveBtnHTML('ns',n);/* 117.2 */
   else if(S.spec)h+=`${S.prog?`<p class="note">${S.prog()}</p>`:''}<button class="btn primary" data-act="nsshow" data-k="${n}">給${NPCN[n]}看收藏櫃</button>`;
-  else{const ls=nsLots(n);h+=ls.length?ls.map(l=>`<button class="btn" data-act="nsgive" data-k="${n}" data-lot="${l.id}">${S.wild?`交出「${esc(l.name)}」（整包 ${lc(l)} 顆）`:`交出「${esc(l.name)}」的 ${NS_SEEDS} 顆（這包有 ${lc(l)} 顆）`}</button>`).join(''):`<p class="note">種子袋裡還沒有符合的種子包${S.lot?`（要是自己育成的${S.lot.cross?'「雜交成品」':'「成品」'}，至少 ${NS_SEEDS} 顆）`:''}。</p>`}
+  else{const ls=nsLots(n);h+=ls.length?ls.map(l=>`<button class="btn" data-act="nsgive" data-k="${n}" data-lot="${l.id}">${S.wild?`交出「${esc(l.name)}」（整包 ${lc(l)} 顆）`:`交出「${esc(l.name)}」的 ${NS_SEEDS} 顆（這包有 ${lc(l)} 顆）`}</button>`).join(''):`<p class="note">背包裡還沒有符合的種子包${S.lot?`（要是自己育成的${S.lot.cross?'「雜交成品」':'「成品」'}，至少 ${NS_SEEDS} 顆）`:''}。</p>`}
   return h+`<p class="note">完成後得到 ${NS_XP} 經驗和${NPCN[n]}的禮物。</p></div>`;
 }
 /* ===== 68（16g）斜向圍籬：格線、畫法、放置 =====
@@ -10517,7 +10737,7 @@ function bkHTML(){const S=sheet;let h='<h2>從備份還原</h2>';
   h+='<p class="note">每天第一次登入時自動備份，留最近 7 天。</p>'+S.list.map(b=>`<button class="pick${S.pick===b.id?' on':''}" data-act="bkpick" data-id="${esc(b.id)}"><span><b>${/_prerestore$/.test(b.id)?'還原前・':''}${bkT(b.at)}</b><span class="meta">版本 ${esc(b.sbuild||b.build||'?')}</span></span></button>`).join('');
   if(S.pick){const b=S.list.find(x=>x.id===S.pick);
     if(S.sum===undefined)h+='<p class="note">讀取這份備份中…</p>';else if(S.sum&&S.sum.err)h+=`<p class="note">${esc(S.sum.err)}</p>`;
-    else{const s=S.sum;h+=`<div class="regbox"><b>${bkT(b.at)} 的備份</b><p class="note">等級 ${s.lv}・金幣 ${s.coins}・種子袋 ${s.lots} 包・田裡 ${s.plants} 株</p>`;
+    else{const s=S.sum;h+=`<div class="regbox"><b>${bkT(b.at)} 的備份</b><p class="note">等級 ${s.lv}・金幣 ${s.coins}・背包 ${s.lots} 包・田裡 ${s.plants} 株</p>`;
       if(S.newer)h+='<p class="note">這份備份是比較新的版本寫的，請先重新整理遊戲。</p>';
       else h+=S.arm?`<p class="note">現在的進度會換成這一份備份的樣子。確定嗎？</p><button class="btn primary" data-act="bkgo">確定還原</button>`:'<button class="btn" data-act="bkarm">還原這一份</button>';
       h+='</div>'}}
@@ -10570,7 +10790,7 @@ async function bootStart(cloud,noLocal){
   startListeners();startSocial();watchOwnSave();checkBuild();specMigrate();
   if(repaired){save();repNotice(repaired)}
   closePanel();scene='farm';viewing=null;renderHUD();renderAll();tick();tutRender();renderOrdersBtn();joinFarm(uid);renderChars();updateCam();refreshAct();
-  if(state.mq&&state.mq.ch===1&&state.mq.st===0){mqAccept(true);noteQ.push(`<h2>第 1 章　${MQ[1].t}</h2>`+npcTalk('tu',MQ[1].open)+'<p class="note">「阿土伯的紅番茄」放進種子袋了，點一塊空田種下去吧！</p>');if(!state.pname){sheet={me:uid,ren:1,first:1};renderSheet();openSheetUI()}else noteFlush()}
+  if(state.mq&&state.mq.ch===1&&state.mq.st===0){mqAccept(true);noteQ.push(`<h2>第 1 章　${MQ[1].t}</h2>`+npcTalk('tu',MQ[1].open)+'<p class="note">「阿土伯的紅番茄」放進背包了，點一塊空田種下去吧！</p>');if(!state.pname){sheet={me:uid,ren:1,first:1};renderSheet();openSheetUI()}else noteFlush()}
   if(!loop)loop=setInterval(tick,1000);
   bootRaw=null;bootHide();/* 71.2：存檔讀完、第一個畫面畫好才把載入畫面拿掉 */
 }

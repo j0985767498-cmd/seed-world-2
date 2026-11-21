@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-19u'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-19v'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-19v`。第 141 節（19g）、第 142 節（19h）、第 143 節（19i）、第 144 節（19j）、第 145 節（19k）、第 144 節修正（19l、19m）、第 147、148 節（19m）、第 149 節（19n）、第 150 節（19o，19p 修 iPhone 地面圖）、第 151～154 節（19q）、第 155 節（19r）、第 156 節（19s）、第 157 節（19t）、第 158 節（19u）已做；第 146 節（色塊圖工具）已做。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）、第 140 節（19f）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-19w`。第 141 節（19g）、第 142 節（19h）、第 143 節（19i）、第 144 節（19j）、第 145 節（19k）、第 144 節修正（19l、19m）、第 147、148 節（19m）、第 149 節（19n）、第 150 節（19o，19p 修 iPhone 地面圖）、第 151～154 節（19q）、第 155 節（19r）、第 156 節（19s）、第 157 節（19t）、第 158 節（19u）、第 159、160 節（19v）已做；第 146 節（色塊圖工具）已做。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）、第 140 節（19f）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -262,6 +262,8 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 新版主角（156）：`state.char2`／`state.char2Sex`（`char2Sex`、`CHAR2_FHAIR`）、`char2SVG`／`char2Paint`（同一個 `<image>` 換格）／`char2Frame`／`char2Geo`／`char2Preload`、名牌 `char2TagDY`、鐮刀 `CHAR2_HAND_DY`、設定 `renderChar2Box`（`#char2Box`）；WebKit 測試 `tools/wk150.js`。
 - 升級獎勵（157）：`LV_PACK`／`lvPackFor`（`ITEM_DOWN`、`lvItemResolve`、`itemExists`）、`lvPackBk`、`lvGiftHTML`；套裝 `OUTFITS`／`OUTFIT_MATS`／`outfitCoins`、`state.outfitRx`／`state.outfits`、`outfitReady`（`OF_READY`，看 `assets/char2/outfit/<套裝>/m_front.png`）、`outfitMake`、製作分頁 `craftTabsHTML`／`outfitCraftHTML`（`sheet.ctab`）、衣櫃 `outfitWardHTML`、遷移 `m157`（旗標 `rx157V`）。
 - 等級成長（158）：`pAtk`／`pHpMax`（`pAtkNow`、`pMax`，取代 `PHP_MAX`；`PHP_BASE` 只當開局值）；野外鏡頭 `exZoom`／`EX_ZOOM`（`state.camZoom`，`zk`、`setZoom`）；影子 `charShadow`、`fyShRx`。
+- 武器（159）：`WEAPONS`／`WP_ORDER`／`WP_DIM`、`state.weapons`／`state.wpn`／`state.wpnPick`、`curWpn`／`wpnTag`／`wpnDmg`／`wpnFire`（`dealT`、`hitMon`、`bossDealt`、`m.stun`、`m.burn`）、子彈 `wpnShot`／`wpnStep`／`wpnLoop`（`WPN_PROJ`）、特效 `fxW`、拿在手上 `wpnHTML`／`wpnPaintMe`／`wpnAnim`（`#meWB`／`#meWF`、`WP_HAND`）、`wpnEquip`／`wpnLock`、新手 `wpickHTML`／`wpickDo`、背包 `wpnBagHTML`、製作 `wpCraftHTML`／`wpMake`（`fruitCropTake`）。
+- 補血藥（160）：`POT_TYPES` 三種（pot／pot_m／pot_l）、配方在 `RECIPES`。
 - 個人介面 `openMe`／`meSheetHTML`、通知 `noteOpen`、慶祝卡 `celShow`、提示 `toast`、「？」小說明 `qh`。
 
 **效能、模式、其他**
@@ -436,7 +438,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 154 | 野外常駐的地區小地圖 | 已完成 | docs/規格存檔.md；19q（9.153）；共用原本的地區地圖；截圖右邊被切（瀏覽器隱藏），量了位置；沒測 iPhone |
 | 155 | 神之子在遊戲裡放大 | 已完成 | docs/規格存檔.md；19r（9.154）；遊戲裡還沒有神之子技能，放招動作 `fyCast` 先做好沒人呼叫；有截圖；沒測 iPhone |
 | 156 | 新版主角素材（測試接入） | 已完成 | docs/規格存檔.md；19s（9.155）；沒有性別設定，開關旁加男生／女生；鐮刀錨點先用固定值等使用者看；舊衣服等不疊；有截圖；沒測 iPhone |
-| 157 | 升級獎勵改版：道具包、地區套裝配方 | 已完成 | docs/規格存檔.md；19t（9.156）；中、大補血藥換成小補血藥，重鑄石跳過；配方素材列在 9.156（19u 使用者改了草原、森林、沙漠）；服裝圖還沒有，先「準備中」；沒有截圖、沒測 iPhone |
+| 157 | 升級獎勵改版：道具包、地區套裝配方 | 已完成 | docs/規格存檔.md；19t（9.156）；中、大補血藥 19v 起直接給（第 160 節），重鑄石跳過；配方素材列在 9.156（19u 使用者改了草原、森林、沙漠）；服裝圖還沒有，先「準備中」；沒有截圖、沒測 iPhone |
 | 158 | 等級成長、野外鏡頭、影子 | 已完成 | docs/規格存檔.md；19u（9.157）；Lv 40 攻擊 3,075／血量 2,856、Lv 80 攻擊 10,030／血量 8,619；有截圖；沒測 iPhone |
-| 159 | 武器接進戰鬥（第一版） | 未做 | docs/待實作/第159節.md |
-| 160 | 中、大補血藥 | 未做 | docs/待實作/第160節.md |
+| 159 | 武器接進戰鬥（第一版） | 已完成 | docs/規格存檔.md；19v（9.158）；素材替代、雙刀一張圖、鐮刀和劍差不多強都列在 9.158 等使用者確認；手的位置固定偏移等看截圖；有截圖；沒測 iPhone |
+| 160 | 中、大補血藥 | 已完成 | docs/規格存檔.md；19v（9.159）；苔殼的怪不在地圖上，中補血藥也收苔岩根；沒有截圖、沒測 iPhone |

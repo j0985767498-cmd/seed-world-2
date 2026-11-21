@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-18v'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-18w'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-18w`。第 111～129、132 節（18c～18v）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；第 117 節的 Firestore 規則（`tools/firestore_rules_117.txt`）要貼到主控台；第 114 節等使用者決定供奉的速度。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-18x`。第 111～130、132 節（18c～18w）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -218,6 +218,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - **3D 畫面（108）**：`js/w3d.js`（`w3dEnter`、`w3dLeave`、`w3dSetPlayer`／`Others`／`Monsters`／`Plants`、`w3dPick`、`w3dView`）＋`lib/three.min.js`，用到才載入；地形 `buildHeight`（高台 `PLAT`、緩坡 `RAMP_L`、水往下挖 `waterDist`）、水 `buildWater`（深度圖＋湖面＋河帶）、橋 `buildBridges`／`gY`、景物 `wellMesh`／`archMesh`／`mushRing`、夢幻色光 `glowFor`、精靈 `w3dSetFairies`、樹冠透視 `holes`（`uHole`）、角色影格 `w3dPreload`；index.html 的「108（17x）」區塊：`W3D_MAPS`（目前草原 5 張）、`w3dSync`、`w3dLoad`、`W3D_HOST`（`pump`、`tap`）、`w3dBtn`。
 
 **城鎮、任務、角色**
+- 筆記頁（130）：`state.notes`／`state.noteNew`、`noteGet`（`NOTE_XP`）、`noteDot`；傳說 `NOTE_LEG`、`noteTalk`；遺物 `NOTE_REL`、`NOTE_SPOTS`、`noteTick`（在 `tick` 裡和 `rsTick` 一起跑）、`relCardHTML`；頁面 `noteHTML`。
 - 互助（132）：`HELP_MIN`／`HELP_COIN`／`HELP_XP`／`HELP_DAYS`、`helpDo`（`state.helped`）、`helpApply`（`state.helpGot`）、`helpedToday`、圖示列 `ibHelp`；私訊 kind `help`；經驗上限 `XP_CAP.f`。
 - 朋友名單（129）：`state.friends`（`myFr`，同步到 profiles 的 `fr`）、`isFriendU`（兩邊都有）、`frStatus`／`frInvite`／`frRespond`／`frDelete`／`frSync`、代碼 `frCode`、`FRIEND_MAX`、`FR_DAYS`；私訊 kind `frinv`／`frok`／`frno`（`frMsg`，欄位 `t`）；朋友頁分頁 `socTab`、名片按鈕 `frBtnHTML`。
 - 偷菜（125）：`STEAL_HR`／`STEAL_P`／`STEAL_N`、`isFriendU`、`ripeAtOf`（植株成熟時間 `p.rt`）、`stealRipe`、`stealInfo`／`stealDo`／`stealBoxHTML`（朋友植株資訊頁 `fplotHTML`）、`state.stole`、`state.stealSeen`；手套 `RECIPES` 的 glove、`state.items.glove`。
@@ -366,7 +367,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 111 | 種植節奏第一步：生長時間、加速劑、地區改名、中間色不取名、育苗盤 10 等解鎖 | 已完成 | docs/規格存檔.md；18c（9.109）；沒有截圖、沒測 iPhone |
 | 112 | 一株只收一次、果實袋 | 已完成 | docs/規格存檔.md；18d（9.110）；沒有截圖、沒測 iPhone |
 | 113 | 神之子：改稱呼與名字、祭壇清單喚醒、專屬造型捷徑 | 已完成 | docs/規格存檔.md；18e（9.111）；「精靈之翼」照舊不改名（使用者 2026-11-20）；沒有截圖、沒測 iPhone |
-| 114 | 神之子的供奉：進化、神化、換色 | 已完成 | docs/規格存檔.md；18s（9.125）；照 114.9（1,000／1,500、百分比、25／50／75% 的話）；買來的果實可以供奉；公告寫不進去（沒有 fairyFirst 規則）；沒有截圖、沒測 iPhone |
+| 114 | 神之子的供奉：進化、神化、換色 | 已完成 | docs/規格存檔.md；18s（9.125）；照 114.9（1,000／1,500、百分比、25／50／75% 的話）；**114.10 神化改 2,000，程式在 134.5 改**；買來的果實可以供奉；公告要貼 `tools/firestore_rules_console_114.txt` 才寫得進去；沒有截圖、沒測 iPhone |
 | 115 | 怪物素材、背包、製作、定型 | 已完成 | docs/規格存檔.md；18f（9.112）；素材圖示暫用怪物縮圖；沒有截圖、沒測 iPhone |
 | 116 | 主線改寫第一步：序章「醒來」、第一章「蘿瑪的清單」、操作引導 | 已完成 | docs/規格存檔.md；18g（9.113）；花紋兩邊各藏一份（使用者決定）；沒有截圖、沒測 iPhone |
 | 117 | 果實的去處：委託改從果實袋交、果實上架市集 | 已完成 | docs/規格存檔.md；18h（9.114）；Firestore 規則要貼主控台；沒有 9 顆的那一類委託；沒有截圖、沒測 iPhone |
@@ -375,14 +376,17 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 120 | 修正：十級一區、支線「失落的種子庫」的結尾、新手前三株加速 | 已完成 | docs/規格存檔.md；18k（9.117）；探險家大衣之後補發（`coatDue`）；沒測 iPhone |
 | 121 | 主線第二章「銀霧白樺林」：調停、傑柯的清單、喚醒傑柯 | 已完成 | docs/規格存檔.md；18l（9.118）；照使用者三點修改；沒有截圖、沒測 iPhone |
 | 122 | 主線第三章「珍珠潟湖」：追查、蜜露的清單、喚醒蜜露、第一季收尾 | 已完成 | docs/規格存檔.md；18m（9.119）；估計 3～4 天（第 3 項約 1.5～2 天）；沒有截圖、沒測 iPhone |
-| 123 | 花紋改版：三種形式、顏色自動配 | 已完成 | docs/規格存檔.md；18n（9.120）；櫻花瓣保留成第四種（使用者）；自動配色對照圖 `tools/pattern_auto_123.html` 等使用者定；順便修定型函式同名的錯；沒測 iPhone |
+| 123 | 花紋改版：三種形式、顏色自動配 | 已完成 | docs/規格存檔.md；18n（9.120）；櫻花瓣保留成第四種（使用者）；自動配色定案（2026-11-21，有問題再改）；順便修定型函式同名的錯；沒測 iPhone |
 | 124 | 稀有度改版：最稀有的一項決定等級 | 已完成 | docs/規格存檔.md；18o（9.121）；跨界照舊是神話（規格沒提）；rights 各等級數量讀不到；沒測 iPhone |
 | 125 | 偷菜與偷偷手套 | 已完成 | docs/規格存檔.md；18p（9.122）；第 129 節起只限朋友；通知用私訊、不用改規則；沒有截圖、沒測 iPhone |
 | 126 | 傑柯與蜜露的台詞、故事；銀霧白樺林與珍珠潟湖的地區故事 | 已完成 | docs/規格存檔.md；18v（9.128）；傑柯第三段之後開放；裝飾給楓樹；沒有截圖、沒測 iPhone |
 | 127 | 種子袋整理：還會變的種子換圖示；標本名額照「作物＋夢幻色」算 | 已完成 | docs/規格存檔.md；18q（9.123）；自動合併不做（使用者）；不用改規則；沒測 iPhone |
 | 128 | 每日自動備份與自己還原 | 已完成 | docs/規格存檔.md；18r（9.124）；不用改規則；沒測 iPhone |
 | 129 | 朋友名單（補第 125 節：偷菜只能偷朋友） | 已完成 | docs/規格存檔.md；18t（9.126）；不用改規則；沒有截圖、沒測 iPhone |
-| 130 | 筆記頁：主的傳說、第一批的遺物 | 未做 | docs/待實作/第130節.md；排在第 126 節之後（要用到岳哥、槿姨、老舵和兩條地區故事） |
+| 130 | 筆記頁：主的傳說、第一批的遺物 | 已完成 | docs/規格存檔.md；18w（9.129）；調查點都用現成物件；沒有截圖、沒測 iPhone |
+| 134 | 秘境公開、當地人帶路（地區故事第 4 步）、拿掉種子台座；順便神化改 2,000 | 未做 | docs/待實作/第134節.md；排在第 130 節之後、133 之前 |
 | 133 | 任務的指引、「可以完成了」的提示、提醒（擴到所有任務） | 未做 | docs/待實作/第133節.md；排在第 126、130 節之後、131 之前 |
 | 131 | 戰鬥改版第一步：血量、怪物會還手、小補血藥、打怪經驗、白樺林與潟湖的素材 | 未做 | docs/待實作/第131節.md；排在最後（114、129、126、130 之後）；131.1 回報後停下來等使用者 |
+| 135 | 主、主的僕人、精魄、神寵：九隻主的現身條件、重生、掉落、神寵三階段 | 未做（設計定案） | docs/待實作/第135節.md；排在第 131 節之後；主的痕跡、秘境帶路在第 134 節 |
+| 136 | 冰封種子庫的由來（門禁卡、館藏重開、古老的種子） | 未做（設計定案） | docs/待實作/第136節.md；跟晶霜雪原那一章一起做 |
 | 132 | 互助：每天幫每位朋友照顧一次 | 已完成 | docs/規格存檔.md；18u（9.127）；開花等授粉的不計時、不受影響；不用改規則；沒有截圖、沒測 iPhone |

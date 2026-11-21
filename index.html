@@ -877,6 +877,7 @@ details.gfold .gfb{margin-top:8px}
 .fy-evo .fys-old{animation:fysout .1s 2.1s forwards}@keyframes fysout{to{opacity:0}}
 .fy-god .fys-pillar{width:150px!important;background:linear-gradient(90deg,rgba(255,240,180,0),rgba(255,255,235,1),rgba(255,240,180,0))!important}.fy-god .fys-flash{animation-duration:.7s!important}.fys-ring2{border-width:6px;animation:fysring .9s 2.45s ease-out forwards}/* 114：神化的光柱、白光加強，最後多一圈擴散的光環 */
 .offfx{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);z-index:60;display:flex;gap:14px;pointer-events:auto;animation:offfx .9s ease-out forwards}.offfx b{font-size:30px;text-shadow:0 0 8px #fff}.offok{color:#E8B400}.offbad{color:#8A8A8A}.offfx .offbad::before{content:'✕ '}@keyframes offfx{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-80%) scale(1)}}/* 114 */
+.notedot{position:absolute;right:4px;top:3px;width:9px;height:9px;border-radius:50%;background:#E0453A;box-shadow:0 0 0 2px #fff;pointer-events:none}[data-open="dex"]{position:relative}/* 130 */
 .fwshow{position:fixed;inset:0;z-index:70;overflow:hidden}.fw-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 110%,#1B2A4A,#05070F)}.fw{position:absolute;width:0;height:0}.fw i{position:absolute;width:7px;height:7px;margin:-3px;border-radius:50%;opacity:0;animation:fwb 1.6s ease-out forwards}@keyframes fwb{0%{opacity:1;transform:translate(0,0) scale(.4)}70%{opacity:1}100%{opacity:0;transform:translate(var(--x),calc(var(--y) + 30px)) scale(1)}}/* 126 煙火 */
 .fy-evo .fys-pillar{position:absolute;left:50%;top:-40px;bottom:-20px;width:90px;transform:translateX(-50%);background:linear-gradient(90deg,rgba(255,240,180,0),rgba(255,248,210,.85),rgba(255,240,180,0));opacity:0;animation:fyspillar 1s 1.5s ease forwards}
 @keyframes fyspillar{0%{opacity:0;transform:translateX(-50%) scaleX(.2)}50%{opacity:1;transform:translateX(-50%) scaleX(1)}100%{opacity:0}}
@@ -1460,7 +1461,7 @@ function packKeys(l){
 }
 let DRAW_MU=null;/* 96：剛抽到的那顆是不是新突變（{k,v}），發芽判定時用 */
 function drawSeed(l){if(l.zs)unzipLot(l);DRAW_MU=null;{const m=lcMu(l);if(m&&rnd()*lc(l)<m){const k=Math.floor(rnd()*m),g=l.mseeds.splice(k,1)[0],md=(l.mmd||[]).splice(k,1)[0];DRAW_MU=md||{k:'?'};if(!l.mseeds.length){delete l.mseeds;delete l.mmd}return g}}if(l.seeds&&l.seeds.length)return l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0];l.count--;return child(l.m,l.f).g}
-function newGame(){state={rv98:1,patV:1,fyopV:1,fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
+function newGame(){state={rv98:1,patV:1,fyopV:1,notes:{},fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
 const WILD={tomato:'red',strawberry:'red',zucchini:'green',corn:'yellow',broccoli:'white',melon:'yellow',chili:'red',pumpkin:'yellow',eggplant:'purple'};
 function originalFor(crop){
   const wild=rnd()<0.7,col=wild?WILD[crop]:pk(['red','yellow','green','white','purple'].filter(c=>c!==WILD[crop]));
@@ -1590,6 +1591,7 @@ function migrate(o){if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fair
   lvMigrate(o);/* 28.4（15y）：舊玩家回推等級、主線標記完成（只做一次，旗標 lvV） */
   m111(o);/* 111（18c）：生長時間換算、加速劑獎勵調整（只做一次，旗標 growV） */
   m112(o);/* 112（18d）：果實袋、每週整齊供應改成顆數（旗標 hvV） */
+  try{if(o.rs&&o.rs.grass&&o.rs.grass.d>=3){if(!o.notes||typeof o.notes!=='object')o.notes={};if(!o.notes.L_grass){o.notes.L_grass=Date.now();o.noteNew=1}}}catch(e){}/* 130：割早的田已經完成的人補上「裂風」 */
   if(!o.fyopV){o.fyopV=1;try{for(const k of Object.keys(o.fairy||{})){const f=o.fairy[k];if(FY[k]&&f&&typeof f==='object'&&f.no){f.evo=f.evo?1:0;f.op={n:0,cols:[]}}}}catch(e){}}/* 114（18s）：每一位已喚醒的神之子建立進度；舊規則進化的保留進化、神化從 0 開始 */
   m123(o);/* 123（18n）：花紋改版（旗標 patV；遷移前整份備份，載入時存到 backups） */
   if(!o.mats||typeof o.mats!=='object'||Array.isArray(o.mats))o.mats={};if(!Array.isArray(o.fixq))o.fixq=[];/* 115：素材、定型中的清單 */
@@ -1700,7 +1702,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-18v';
+const BUILD='2026-11-18w';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2759,14 +2761,55 @@ function boardStats(u){let pts=0;const places=[];for(const c of CROP_KEYS)for(co
 
 // ===== 圖鑑面板：分頁 =====
 let dexTab='dex',dexQ='',dexTier=-1,rdraft={},rerr={},rconfirm=null;
-function dexTabsHTML(){return `<div class="filters" role="tablist">${[['dex','品種圖鑑'],['cab','收藏櫃'],['mh','名品'],['fy','神之子'],['boards','紀錄榜'],['rank','育種家排行']].map(([k,n])=>`<button class="fchip" role="tab" data-dtab="${k}" aria-pressed="${dexTab===k}">${k==='cab'?uiIcon('specimen',16):''}${n}</button>`).join('')}</div>`}
+/* ===== 130（18w）：筆記頁。圖鑑多一個分頁「筆記」：傳說（三則）、撿到的東西（第一批的遺物，五件）。
+   進度 state.notes={id:取得時間}；新的一則 +NOTE_XP 經驗、提示、圖鑑按鈕紅點（state.noteNew）。五件遺物齊了給稱號與金幣（只一次，state.notes._all）。
+   取得：裂風＝草原地區故事完成（舊玩家載入時補上）；梟、白鹿＝白樺林、潟湖的地區故事完成後和槿姨、老舵選「聽他說當地的事」；
+   遺物 1～3 走到那張地圖的物件旁邊（NOTE_SPOTS），4、5 和墨先生、阿凱選那個選項（阿凱要支線第 1 章完成）。 ===== */
+const NOTE_XP=30;
+const NOTE_LEG=[
+ {id:'L_grass',t:'裂風',where:'翠風草原・阿土伯',hint:'草原上的老人知道',body:'草原上的風神。收割前一晚，田裡會出現一圈割得整整齊齊的草。老一輩會在田邊留第一刀給牠。這幾年牠連沒熟的也割。'},
+ {id:'L_forest',t:'霧裡的梟',where:'銀霧白樺林・槿姨',hint:'白樺林守林的人知道',body:'霧最濃的時候才看得見的大鳥，銀白色，飛起來沒有聲音。守林的人說，看見牠的人會在林子裡繞三天。老樺樹上的痕跡，他們說是牠留的。',npc:'jin',bk:'forest',line:'你問那些爪痕是誰的？……霧裡有一隻梟。｜我只看過一次。牠從我頭上飛過去，一點聲音都沒有。我在林子裡繞了三天才出來。',not:'林子的事，等這陣子吵完再說。'},
+ {id:'L_marsh',t:'水上的白鹿',where:'珍珠潟湖・老舵',hint:'漁村的村長知道',body:'清晨站在淺水上的白鹿，角上掛著水珠。漁村的人說，哪一年看見牠，那一年就豐收。已經好幾年沒有人看見了。',npc:'duo',bk:'marsh',line:'我爺爺那一輩，清晨出海常看見一頭白鹿站在水上。｜看見牠的那年，網都是滿的。｜我這輩子只看過一次。那年確實豐收。',not:'等水的事有個著落，我再跟你講古。'}];
+const NOTE_REL=[
+ {id:'R1',t:'井邊的透明板子',where:'翠風草原・古井遺跡',hint:'草原最深處的古井',a:'嵌在井壁上，沒有人知道是誰放的。村裡的人說那是量雨水的。',b:'一把塑膠尺。刻度還很清楚，是公分。'},
+ {id:'R2',t:'不會生鏽的罐子',where:'銀霧白樺林・石祠',hint:'白樺林的石祠',a:'供在石祠裡好幾代了。守林的人說它是「天上掉下來的鐵」，從來不生鏽。',b:'一個壓扁的鋁罐。拉環還在。'},
+ {id:'R3',t:'橘色的浮球',where:'珍珠潟湖・漁村高腳屋',hint:'潟湖漁村的高腳屋',a:'掛在屋簷下當風鈴。漁村的人說是從很遠的海漂來的，泡了幾百年也不爛。',b:'塑膠浮球。底下有一排數字，是出廠編號。'},
+ {id:'R4',t:'黑色的玻璃',where:'城鎮・品種鑑定所',hint:'品種鑑定所的收藏',a:'墨先生說這是他收藏裡最看不懂的一件：一片薄薄的黑玻璃，照得出人影，敲起來不像玻璃。',b:'一支手機。螢幕裂了，按什麼都不會亮。',npc:'mo',btn:'看看他的收藏',line:'你盯著它看很久了。認得？｜……不說也沒關係。我收東西，不問來歷。'},
+ {id:'R5',t:'打不開門的鑰匙',where:'城鎮・阿凱',hint:'阿凱身上帶著的東西',a:'阿凱家代代傳下來的「鑰匙」，扁扁的一片，插不進任何鎖。他祖父說總有一天用得上。',b:'一張門禁卡。上面的字磨掉了，只剩一個角落的晶片。',npc:'kai',btn:'問他那把鑰匙',line:'這個？我爸給我的，他爸給他的。｜插不進鎖孔，可是家裡每個人都說它是鑰匙。｜我老覺得它跟那座種子庫有關係。沒有證據啦，就是直覺。',need:()=>!!(state.mq&&state.mq.ch>=6)}];
+const NOTE_SPOTS={R1:{bk:'grass',map:'old_well',x:420,y:620,r:90},R2:{bk:'forest',map:'shrine',x:300,y:466,r:85},R3:{bk:'marsh',map:'village',x:255,y:575,r:85}};
+const NOTE_ALL={title:'認得舊東西的人',c:300};
+const notesObj=()=>state.notes&&typeof state.notes==='object'?state.notes:(state.notes={});
+const noteHas=id=>!!notesObj()[id];
+const noteDef=id=>NOTE_LEG.find(x=>x.id===id)||NOTE_REL.find(x=>x.id===id);
+const relCardHTML=r=>`<div class="lot"><div class="lot-name">${esc(r.t)}</div><p class="note">${esc(r.a)}</p><p>${esc(r.b)}</p><div class="meta">${esc(r.where)}</div></div>`;
+function noteGet(id,quiet){const d=noteDef(id);if(!d||noteHas(id))return false;notesObj()[id]=Date.now();state.noteNew=1;try{addXp(NOTE_XP,true)}catch(e){}
+  if(!quiet)toast(`筆記多了一則：${d.t}`,4000);
+  if(NOTE_REL.every(r=>noteHas(r.id))&&!notesObj()._all){notesObj()._all=Date.now();state.coins+=NOTE_ALL.c;if(!state.titles)state.titles=[];if(!state.titles.includes(NOTE_ALL.title))state.titles.push(NOTE_ALL.title);setTimeout(()=>{try{toast(`五件舊東西都找到了：稱號「${NOTE_ALL.title}」、${NOTE_ALL.c} 金幣`,6000)}catch(e){}},quiet?0:1800)}
+  save();try{noteDot()}catch(e){}return true}
+/* 走到遺物旁邊 */
+function noteTick(){try{if(scene!=='explore')return;for(const id in NOTE_SPOTS){const S=NOTE_SPOTS[id];if(noteHas(id)||exBiome!==S.bk||regMap!==S.map)continue;if(Math.hypot(exMe.x-S.x,exMe.y-S.y)>S.r)continue;const r=noteDef(id);if(noteGet(id))noteOpen(`<h2>撿到的東西</h2>`+relCardHTML(r)+'<p class="note">記進「圖鑑 → 筆記」了。</p>')}}catch(e){}}
+/* NPC 面板裡的選項 */
+function noteNpcHTML(n){let h='';for(const L of NOTE_LEG)if(L.npc===n)h+=`<button class="btn" data-act="notetalk" data-id="${L.id}">聽${n==='jin'?'她':'他'}說當地的事</button>`;
+  for(const r of NOTE_REL)if(r.npc===n&&(!r.need||r.need()))h+=`<button class="btn" data-act="notetalk" data-id="${r.id}">${esc(r.btn)}</button>`;return h}
+function noteTalk(id){const d=noteDef(id);if(!d||!d.npc)return false;
+  if(d.bk){const done=RS[d.bk]&&rsObj(d.bk).d>=RS[d.bk].steps.length;if(!done){noteOpen(npcTalk(d.npc,d.not));return false}noteOpen(npcTalk(d.npc,d.line)+(noteGet(id)?'<p class="note">記進「圖鑑 → 筆記」了。</p>':''));return true}
+  if(d.need&&!d.need())return false;const got=noteGet(id);noteOpen(npcTalk(d.npc,d.line)+(got?relCardHTML(d)+'<p class="note">記進「圖鑑 → 筆記」了。</p>':''));return true}
+/* 圖鑑的筆記分頁 */
+function noteHTML(){if(state.noteNew){state.noteNew=0;save();try{noteDot()}catch(e){}}const N=notesObj();
+  const unk=hint=>`<div class="lot"><div class="lot-name">？？？</div><p class="note">${esc(hint)}</p></div>`;
+  let h=`<h3>傳說（${NOTE_LEG.filter(x=>N[x.id]).length}／${NOTE_LEG.length}）</h3>`+NOTE_LEG.map(L=>N[L.id]?`<div class="lot"><div class="lot-name">${esc(L.t)}</div><p>${esc(L.body)}</p><div class="meta">${esc(L.where)}</div></div>`:unk(L.hint)).join('');
+  h+=`<h3>撿到的東西（${NOTE_REL.filter(x=>N[x.id]).length}／${NOTE_REL.length}）</h3>`+NOTE_REL.map(r=>N[r.id]?relCardHTML(r):unk(r.hint)).join('');
+  return h}
+function noteDot(){const b=document.querySelector('[data-open="dex"]');if(!b)return;let d=b.querySelector('.notedot');if(!d){d=document.createElement('i');d.className='notedot';b.appendChild(d)}d.hidden=!(state&&state.noteNew)}
+
+function dexTabsHTML(){return `<div class="filters" role="tablist">${[['dex','品種圖鑑'],['cab','收藏櫃'],['mh','名品'],['fy','神之子'],['note','筆記'],['boards','紀錄榜'],['rank','育種家排行']].map(([k,n])=>`<button class="fchip" role="tab" data-dtab="${k}" aria-pressed="${dexTab===k}">${k==='cab'?uiIcon('specimen',16):''}${n}</button>`).join('')}</div>`}
 function renderDex(){
   if(!state)return;const el=document.getElementById('dex');if(!el)return;
   document.getElementById('dexTabs').innerHTML=dexTabsHTML();
   const fl=document.getElementById('dexFilter');fl.hidden=dexTab!=='dex';
   try{
     if(dexTab==='dex'){fl.innerHTML=filtersHTML(dexCrop,'data-dc');const qi=document.getElementById('dexQ'),rs=document.getElementById('dexRes');if(qi&&rs&&el.contains(qi)&&document.activeElement===qi){const t=document.createElement('div');t.innerHTML=dexListHTML();const nr=t.querySelector('#dexRes');if(nr)rs.replaceWith(nr);const sel=document.getElementById('dexTier');if(sel)sel.value=String(dexTier)}else el.innerHTML=dexListHTML()}/* 17h：正在搜尋框打字時只換結果，輸入框不重建 */
-    else if(dexTab==='cab')el.innerHTML=cabHTML();else if(dexTab==='mh')el.innerHTML=mhDexHTML();else if(dexTab==='fy')el.innerHTML=fyGridHTML(false);
+    else if(dexTab==='cab')el.innerHTML=cabHTML();else if(dexTab==='mh')el.innerHTML=mhDexHTML();else if(dexTab==='fy')el.innerHTML=fyGridHTML(false);else if(dexTab==='note')el.innerHTML=noteHTML();/* 130 */
     else if(dexTab==='boards')el.innerHTML=boardsHTML();
     else if(dexTab==='rank')el.innerHTML=rankHTML();
     else el.innerHTML=meHTML();
@@ -3231,7 +3274,7 @@ function tick(){
   try{rsvTick()}catch(e){}
   try{fixTick()}catch(e){}/* 115.5 */
   try{mq2Tick()}catch(e){}/* 116 */
-  try{fsTickAll();rsTick()}catch(e){}/* 118 */
+  try{fsTickAll();rsTick();noteTick()}catch(e){}/* 118 */
   try{mq2KidTick()}catch(e){}/* 121 */
   try{mq2MarshTick()}catch(e){}/* 122 */
   try{roamWatch()}catch(e){}/* 91 */
@@ -5708,7 +5751,7 @@ function townAction(b){
 }
 function npcExtraHTML(n){const m=mqCur(),got=(state.favGot&&state.favGot[n])||0;let h='';
   {const s=mq2Cur();if(s&&mq2Has(s,n))h+=`<h3>主線</h3>`+mq2CardHTML(n)}/* 116、121 */
-  h+=rsNpcHTML(n);/* 118.4、126 */
+  h+=rsNpcHTML(n)+noteNpcHTML(n);/* 118.4、126、130 */
   if(m&&m.npc===n)h+=`<h3>支線：阿凱的委託：失落的種子庫</h3>`+mqCardHTML();
   if(myLv()>=LV_COMM&&FAV_GIFT[n]){h+=favHTML(n)+nsCardHTML(n)+`<h3>${NPCN[n]}的委託</h3>`+cmListHTML(n)}
   if(n==='kai'&&vdOpen())h+=`<h3>阿凱的種子箱</h3><p class="note">「門打開之前，找到的種子先放我這裡。」</p><button class="btn primary" data-act="vdopen">打開種子箱（${vdCount()}／${BASE_CROPS.length*VD_N}）</button>`;/* 42.1 */
@@ -9216,7 +9259,7 @@ const rsNpcOf=(bk,S)=>(S&&S.npc)||RS[bk].npc;
 const rsWaitLeft=bk=>{const S=rsStage(bk),s=rsObj(bk);return S&&S.wait?Math.max(0,(s.t||0)+S.wait-Date.now()):0};
 function rsAccept(bk){bk=bk||'grass';const S=rsStage(bk),s=rsObj(bk);if(!S||s.a||!rsOpen(bk)||rsWaitLeft(bk)>0)return false;s.a=1;s.f={};save();toast(`答應了${NPCN[rsNpcOf(bk,S)]}：${S.t}`);return true}
 function rsDone(bk){bk=bk||'grass';const R=RS[bk],S=rsStage(bk),s=rsObj(bk);if(!S||!s.a)return;const got=[];fsReward(S.rw||{},got);got.push(`${RS_XP} 經驗`);s.d++;s.a=0;s.f={};s.t=Date.now();const nx=R.steps[s.d];
-  noteOpen(`<h2>${esc(R.n)}：${esc(S.t)}</h2>`+npcTalk(rsNpcOf(bk,S),S.done)+`<p class="note">得到：${got.join('、')}</p>`+(nx&&nx.wait?`<p class="note">過一陣子再來找${NPCN[rsNpcOf(bk,nx)]}。</p>`:''));addXp(RS_XP,true);save();try{renderAll();if(sheet&&(sheet.town||sheet.orders||sheet.rnpc))renderSheet()}catch(e){}}
+  noteOpen(`<h2>${esc(R.n)}：${esc(S.t)}</h2>`+npcTalk(rsNpcOf(bk,S),S.done)+`<p class="note">得到：${got.join('、')}</p>`+(nx&&nx.wait?`<p class="note">過一陣子再來找${NPCN[rsNpcOf(bk,nx)]}。</p>`:''));addXp(RS_XP,true);if(bk==='grass'&&s.d>=R.steps.length)noteGet('L_grass');/* 130 */save();try{renderAll();if(sheet&&(sheet.town||sheet.orders||sheet.rnpc))renderSheet()}catch(e){}}
 function rsTick(){try{if(scene!=='explore')return;for(const bk of Object.keys(RS)){const s=rsObj(bk),S=rsStage(bk);if(!S||!s.a||!S.spot||exBiome!==bk||regMap!==S.spot.map)continue;if(Math.hypot(exMe.x-S.spot.x,exMe.y-S.spot.y)>S.spot.r)continue;
   if(!s.f.look){s.f.look=1;toast(S.look.replace(/｜/g,''),5000);save();setTimeout(()=>rsDone(bk),1200)}}}catch(e){}}
 /* 一區的卡：inNpc＝在那位 NPC 的面板裡（可以答應、交付、回報） */
@@ -9277,7 +9320,7 @@ function regNpcObjs(){if(scene!=='explore')return [];const out=[];
 function regNpcSVG(p,x,y,bang){return `<g transform="translate(${x} ${y}) scale(1.15)" pointer-events="none">${npcBodySVG(p)}${nameTag(p.n)}${bang?'<g><circle cx="0" cy="-80" r="8" fill="#FFF6DE" stroke="#C0392B" stroke-width="1.6"/><text x="0" y="-75.5" text-anchor="middle" font-size="12" font-weight="700" fill="#C0392B">!</text></g>':''}</g><rect data-reg="npc:${p.id}" x="${x-18}" y="${y-82}" width="36" height="86" fill="transparent" style="cursor:pointer"/>`}
 function regNpcTap(id){const R0=REG_NPCS.find(r=>r.id===id&&r.bk===exBiome),L=id==='kid'?lampPos('glen'):null,x=R0?R0.x:L?L[0]-34:0,y=R0?R0.y:L?L[1]:0;const go=()=>{const line=mq2Talk(id);sheet={rnpc:id,line};renderSheet();openSheetUI()};const m=curMe();if(Math.hypot(m.x-x,m.y-y)<80)go();else walkTo(x,y+16,go)}
 function rnpcHTML(){const id=sheet.rnpc,p=TOWN_NPC.find(q=>q.id===id);if(!p)return '<button class="btn" data-act="close">關閉</button>';const s=mq2Cur();
-  return `<h2>${esc(p.n)}</h2>`+npcTalk(id,sheet.line||p.line)+(s&&mq2Has(s,id)?'<h3>主線</h3>'+mq2CardHTML(id):'')+rsNpcHTML(id)+'<button class="btn" data-act="close">關閉</button>'}
+  return `<h2>${esc(p.n)}</h2>`+npcTalk(id,sheet.line||p.line)+(s&&mq2Has(s,id)?'<h3>主線</h3>'+mq2CardHTML(id):'')+rsNpcHTML(id)+noteNpcHTML(id)+'<button class="btn" data-act="close">關閉</button>'}
 function mq2KidTick(){try{if(scene!=='explore'||exBiome!=='forest'||regMap!=='glen'||!kidOn())return;const L=lampPos('glen');if(!L||Math.hypot(exMe.x-(L[0]-34),exMe.y-L[1])>90)return;const s=mq2Cur(),u=mq2Sub(s,'2-3'),F=mq2SF('2-3');F.ok=1;save();
   noteOpen(npcTalk('kid',u.kid));setTimeout(mq2Tick,0);try{renderWorld()}catch(e){}}catch(e){}}
 /* --- 30 NPC 委託 --- */
@@ -9364,6 +9407,7 @@ function orderAction(b){
   if(a==='mqacc'){mqAccept();if(sheet)renderSheet();return true}
   if(a==='mq2acc'){mq2Accept(b.dataset.sub);if(sheet&&!sheet.note)renderSheet();return true}
   if(a==='mq2trade'){mq2Trade();if(sheet)renderSheet();return true}/* 116 */
+  if(a==='notetalk'){noteTalk(b.dataset.id);return true}/* 130 */
   if(a==='rsacc'){rsAccept(b.dataset.r||'grass');if(sheet&&!sheet.note)renderSheet();return true}
   if(a==='rstheo'){const bk=b.dataset.r||'grass',s=rsObj(bk),S=rsStage(bk);if(s.a&&S&&S.ask){s.f.theo=1;save()}if(sheet)renderSheet();return true}
   if(a==='rsdone'){const bk=b.dataset.r||'grass';if(rsObj(bk).f.theo)rsDone(bk);return true}/* 118.4、126 */
@@ -9535,7 +9579,7 @@ function nwAll(){const out=[];try{for(const l of state.lots||[])out.push(l);for(
 function nwClean(){const t=Date.now();for(const l of nwAll())if(l.nw&&t-(l.nwAt||0)>DAY){delete l.nw;delete l.nwn;delete l.nwAt}}
 const nwCount=()=>(state.lots||[]).filter(l=>l.nw).length,nwVault=()=>{try{return (state.vault||[]).some(c=>(c.lots||[]).some(l=>l.nw))}catch(e){return false}};
 function nwSeen(l){if(l&&l.nw){delete l.nw;delete l.nwn;delete l.nwAt;save();renderBagBadge()}}
-function renderBagBadge(){try{nwClean();const b=document.getElementById('bagBadge');if(!b)return;const n=nwCount()+(nwVault()?1:0);b.hidden=!n;b.textContent=nwCount()||'!'}catch(e){}}
+function renderBagBadge(){try{noteDot()}catch(e){}try{nwClean();const b=document.getElementById('bagBadge');if(!b)return;const n=nwCount()+(nwVault()?1:0);b.hidden=!n;b.textContent=nwCount()||'!'}catch(e){}}
 function lotSrcTxt(l){if(!l.at||!l.src)return '';const d=Date.now()-l.at,when=d<3600e3?'剛剛':new Date(l.at).toDateString()===new Date().toDateString()?'今天':d<DAY?'昨天':`${Math.floor(d/DAY)} 天前`;
   const s=l.src==='h'?'自己收成':l.src==='m'?'市集買的':l.src==='q'?'任務給的':l.src.startsWith('w:')&&BIOMES[l.src.slice(2)]?BIOMES[l.src.slice(2)].n+'採的':'';return s?`${when}・${s}`:''}
 /* ===== 44（16a）：預約雜交與拖曳授粉 =====

@@ -877,6 +877,7 @@ details.gfold .gfb{margin-top:8px}
 .fy-evo .fys-old{animation:fysout .1s 2.1s forwards}@keyframes fysout{to{opacity:0}}
 .fy-god .fys-pillar{width:150px!important;background:linear-gradient(90deg,rgba(255,240,180,0),rgba(255,255,235,1),rgba(255,240,180,0))!important}.fy-god .fys-flash{animation-duration:.7s!important}.fys-ring2{border-width:6px;animation:fysring .9s 2.45s ease-out forwards}/* 114：神化的光柱、白光加強，最後多一圈擴散的光環 */
 .offfx{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);z-index:60;display:flex;gap:14px;pointer-events:auto;animation:offfx .9s ease-out forwards}.offfx b{font-size:30px;text-shadow:0 0 8px #fff}.offok{color:#E8B400}.offbad{color:#8A8A8A}.offfx .offbad::before{content:'✕ '}@keyframes offfx{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-80%) scale(1)}}/* 114 */
+.fwshow{position:fixed;inset:0;z-index:70;overflow:hidden}.fw-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 110%,#1B2A4A,#05070F)}.fw{position:absolute;width:0;height:0}.fw i{position:absolute;width:7px;height:7px;margin:-3px;border-radius:50%;opacity:0;animation:fwb 1.6s ease-out forwards}@keyframes fwb{0%{opacity:1;transform:translate(0,0) scale(.4)}70%{opacity:1}100%{opacity:0;transform:translate(var(--x),calc(var(--y) + 30px)) scale(1)}}/* 126 煙火 */
 .fy-evo .fys-pillar{position:absolute;left:50%;top:-40px;bottom:-20px;width:90px;transform:translateX(-50%);background:linear-gradient(90deg,rgba(255,240,180,0),rgba(255,248,210,.85),rgba(255,240,180,0));opacity:0;animation:fyspillar 1s 1.5s ease forwards}
 @keyframes fyspillar{0%{opacity:0;transform:translateX(-50%) scaleX(.2)}50%{opacity:1;transform:translateX(-50%) scaleX(1)}100%{opacity:0}}
 .fy-evo .fys-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;animation:fysflash .5s 1.95s ease forwards}
@@ -1699,7 +1700,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-18u';
+const BUILD='2026-11-18v';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -3230,7 +3231,7 @@ function tick(){
   try{rsvTick()}catch(e){}
   try{fixTick()}catch(e){}/* 115.5 */
   try{mq2Tick()}catch(e){}/* 116 */
-  try{fsCheck('tomato');rsTick()}catch(e){}/* 118 */
+  try{fsTickAll();rsTick()}catch(e){}/* 118 */
   try{mq2KidTick()}catch(e){}/* 121 */
   try{mq2MarshTick()}catch(e){}/* 122 */
   try{roamWatch()}catch(e){}/* 91 */
@@ -5707,7 +5708,7 @@ function townAction(b){
 }
 function npcExtraHTML(n){const m=mqCur(),got=(state.favGot&&state.favGot[n])||0;let h='';
   {const s=mq2Cur();if(s&&mq2Has(s,n))h+=`<h3>主線</h3>`+mq2CardHTML(n)}/* 116、121 */
-  if(n==='tu')h+=rsCardHTML(true);if(n==='theo')h+=rsTheoHTML();/* 118.4 */
+  h+=rsNpcHTML(n);/* 118.4、126 */
   if(m&&m.npc===n)h+=`<h3>支線：阿凱的委託：失落的種子庫</h3>`+mqCardHTML();
   if(myLv()>=LV_COMM&&FAV_GIFT[n]){h+=favHTML(n)+nsCardHTML(n)+`<h3>${NPCN[n]}的委託</h3>`+cmListHTML(n)}
   if(n==='kai'&&vdOpen())h+=`<h3>阿凱的種子箱</h3><p class="note">「門打開之前，找到的種子先放我這裡。」</p><button class="btn primary" data-act="vdopen">打開種子箱（${vdCount()}／${BASE_CROPS.length*VD_N}）</button>`;/* 42.1 */
@@ -7160,6 +7161,7 @@ function fyAction(b){const a=b.dataset.act,k=b.dataset.k,s=sheet.fy;
   if(a==='fyone'){sheet={fy:{m:'one',k}};renderSheet();return}
   if(a==='fyfol'){fyFollow(k);renderSheet();return}
   if(a==='fsacc'){fsAccept(k);if(sheet&&sheet.fy)renderSheet();return}/* 118.3 */
+  if(a==='fsans'){fsAnswer(k,+b.dataset.j);if(sheet&&sheet.fy)renderSheet();return}/* 126 */
   if(a==='fyback'){sheet={fy:{m:'spring'}};renderSheet();return}
   /* 113：祭壇清單、專屬造型 */
   if(a==='fyalt'){sheet={fy:{m:'alt',k}};renderSheet();return}
@@ -9108,62 +9110,131 @@ function tipOnce(k){try{if(!state)return false;const T=state.tips||(state.tips={
    可以調查的田：草原沒有「被割過的田」的素材，改成走到野花坡的乾草堆（384,330）旁邊。「草原的傳說」筆記：遊戲沒有筆記頁，先不做。 */
 const ROMA_L={base:['今天種什麼？','欸，那株是不是該收了？','我肚子餓了。神之子也會餓喔！','你走好慢，我先飛了喔。開玩笑的。'],farm:['這塊田的土不錯。','番茄要曬太陽，跟我一樣。'],grass:['風還是一樣大。','這裡以前有一棵很大的樹。'],other:['這裡我不熟，你帶路。'],evo:['身體輕多了！','再多吃一點，我就能幫上忙了。'],god:['好久沒這麼有力氣了。','謝謝你。……沒事，我只是想講。']};
 const fyGod=f=>!!(f&&(f.god||f.evo>=2));
-function fyLinesFor(f){if(!f)return ['……'];if(f.k!=='tomato')return FY_LINES[f.k]||['……'];const R=ROMA_L;let L=[...R.base];
-  if(scene==='farm')L=L.concat(R.farm);else if(scene==='explore')L=L.concat(exBiome==='grass'?R.grass:R.other);
-  if(f.evo)L=L.concat(R.evo);if(fyGod(f))L=L.concat(R.god);return L}
+/* 126：傑柯、蜜露的台詞（home＝自己的地區） */
+const JACK_L={home:'forest',base:['……','嗯。','那株。該收了。','你們那邊，也種這個？'],farm:['土不錯。'],forest:['霧變濃了。','走這邊。'],other:['沒來過。'],evo:['好多了。','……謝了。'],god:[]};
+const MIERU_L={home:'marsh',base:['好無聊喔，有沒有什麼可以炸的？','欸欸，那個熟了那個熟了！','你走路好慢！','今天要去哪？遠一點的好不好？'],farm:['這裡太安靜了啦。','我可以幫你澆……開玩笑的，我不會。'],marsh:['海的味道！','小孩子們今天有沒有來？'],other:['哇，這裡我沒看過！'],evo:['現在的煙火可以放更高了喔！','力氣回來了，好想大叫。'],god:['砰——！開玩笑的。','有你在真好。好了不准笑。']};
+ROMA_L.home='grass';const FY_LTAB={tomato:ROMA_L,pumpkin:JACK_L,melon:MIERU_L};
+function fyLinesFor(f){if(!f)return ['……'];const R=FY_LTAB[f.k];if(!R)return FY_LINES[f.k]||['……'];let L=[...R.base];
+  if(scene==='farm')L=L.concat(R.farm);else if(scene==='explore')L=L.concat(exBiome===R.home?R[R.home]:R.other);
+  if(f.evo)L=L.concat(R.evo);if(fyGod(f))L=L.concat(R.god||[]);return L}
 function fyTalkHTML(k,text){const f=fyMine()[k];return `<div class="npctalk pgw" data-pg style="display:flex;gap:12px;align-items:center;margin:6px 0">${f?fyArtHTML(k,f,84,false):''}<p style="flex:1;margin:0"><b>${fyN(k)}</b><br>${pgHTML(String(text).split('｜').map(x=>'「'+esc(x)+'」').join('｜'))}</p></div>`}
 const FS_XP=80,RS_XP=60,RS_WAIT=60*60e3;
+/* ===== 126（18v）：神之子的故事改成「步驟」：每一段 steps 依序完成，進度 s.f.i（第幾步）。步驟種類：
+   deep（跟著、走到某地區最深那張；first＝進那個地區說一句、talk＝到了顯示）、regions（跟著、走進 n 個不同地區，lines 每進一個說一句）、
+   talk（在農場和他說話 n 題，每題兩個答案、選哪個都一樣，每題要隔一次收成）、give（交 n 顆）、gives（幾種各交 n 顆，可以分次）、
+   altar（跟著、走到城鎮的祭壇旁）、show（跟著、走到某地區最深那張後放煙火）。舊的 s.f.deep 讀進來時換成第幾步。 ===== */
+const mq2Past=id=>{try{const i=MQ2.findIndex(s=>s.id===id);return i>=0&&!!state.mq2&&state.mq2.i>i}catch(e){return false}};
 const FY_STORY={tomato:[
- {t:'走一遍草原',cond:()=>fyHas('tomato'),need:'已喚醒蘿瑪',open:'欸，帶我去草原好不好？｜我想看看大家還在不在。……我是說，那些田啦、樹啦。',goals:['讓蘿瑪跟著，走到翠風草原最深的「古井遺跡」','交 3 顆黃色番茄（任何造型）'],give:{crop:'tomato',skin:'yellow'},hint:'蘿瑪想留幾顆番茄在這裡',first:'哇，草長這麼高了！以前這裡整片都是田。',deep:'這裡以前有個村子。每年收成，他們都會留第一顆番茄給我。｜……房子都不見了耶。｜哈哈，也是啦，幾百年了嘛。',done:'放這裡就好。以前都是他們給我，這次換我。｜好了，回家！今天晚餐吃什麼？',rw:{c:150,acc:3}},
- {t:'醒來那天',cond:()=>{const f=fyMine().tomato;return !!(f&&f.evo)},need:'蘿瑪進化之後',open:'力氣回來了一點，想吃自己的番茄。｜皇冠形的那個。你種得出來了吧？',goals:['交 3 顆皇冠番茄（任何顏色）'],give:{crop:'tomato',sp:7},done:'嗯——就是這個味道。｜……跟你說一件事，你不要笑。｜醒來那天，我其實很怕。｜睡著以前，我只記得力氣一下子全被抽走。醒來的時候，認識的人一個都不在了。｜還好第一個看到的是你。好啦講完了！不准笑！',rw:{c:300,deco:'sunflowers'}},
- {t:'數到九',cond:()=>fyGod(fyMine().tomato),need:'蘿瑪神化之後',open:'陪我去祭壇一下。',goals:['讓蘿瑪跟著，到城鎮的祭壇（噴水池）'],done:'一、二、三……｜我每天都在數。九個位子，回來了幾個。｜我們九個以前常常吵架。誰的地盤比較大、誰的果實比較甜，什麼都能吵。｜現在好想再吵一次。｜你會把他們都叫醒吧？……嗯。我相信你。',rw:{c:500,title:'蘿瑪的朋友'}}]};
-function fsObj(k){const S=state.fyst||(state.fyst={});const o=S[k]||(S[k]={d:0,a:0,f:{}});if(!o.f)o.f={};return o}
+ {t:'走一遍草原',cond:()=>fyHas('tomato'),need:'已喚醒蘿瑪',open:'欸，帶我去草原好不好？｜我想看看大家還在不在。……我是說，那些田啦、樹啦。',goals:['讓蘿瑪跟著，走到翠風草原最深的「古井遺跡」','交 3 顆黃色番茄（任何造型）'],
+  steps:[{k:'deep',bk:'grass',first:'哇，草長這麼高了！以前這裡整片都是田。',talk:'這裡以前有個村子。每年收成，他們都會留第一顆番茄給我。｜……房子都不見了耶。｜哈哈，也是啦，幾百年了嘛。'},{k:'give',c:{crop:'tomato',skin:'yellow'},n:3,hint:'蘿瑪想留幾顆番茄在這裡'}],
+  done:'放這裡就好。以前都是他們給我，這次換我。｜好了，回家！今天晚餐吃什麼？',rw:{c:150,acc:3}},
+ {t:'醒來那天',cond:()=>{const f=fyMine().tomato;return !!(f&&f.evo)},need:'蘿瑪進化之後',open:'力氣回來了一點，想吃自己的番茄。｜皇冠形的那個。你種得出來了吧？',goals:['交 3 顆皇冠番茄（任何顏色）'],steps:[{k:'give',c:{crop:'tomato',sp:7},n:3}],done:'嗯——就是這個味道。｜……跟你說一件事，你不要笑。｜醒來那天，我其實很怕。｜睡著以前，我只記得力氣一下子全被抽走。醒來的時候，認識的人一個都不在了。｜還好第一個看到的是你。好啦講完了！不准笑！',rw:{c:300,deco:'sunflowers'}},
+ {t:'數到九',cond:()=>fyGod(fyMine().tomato),need:'蘿瑪神化之後',open:'陪我去祭壇一下。',goals:['讓蘿瑪跟著，到城鎮的祭壇（噴水池）'],steps:[{k:'altar'}],done:'一、二、三……｜我每天都在數。九個位子，回來了幾個。｜我們九個以前常常吵架。誰的地盤比較大、誰的果實比較甜，什麼都能吵。｜現在好想再吵一次。｜你會把他們都叫醒吧？……嗯。我相信你。',rw:{c:500,title:'蘿瑪的朋友'}}],
+pumpkin:[
+ {t:'你們那邊',cond:()=>fyHas('pumpkin'),need:'已喚醒傑柯',open:'你不是這裡的人。｜你們那邊，是什麼樣子？',goals:['在農場和傑柯說話三次（每次要隔一次收成）','交 3 顆星點花紋的南瓜（任何顏色）'],
+  steps:[{k:'talk',qs:[{q:'你們那邊，晚上也黑嗎？',a:['很亮，到處都是燈','也黑，但看不到星星'],r:'……這樣。'},{q:'吃的東西，都是自己種？',a:['大部分是買的','有人種，我以前也算是'],r:'嗯。'},{q:'想回去嗎？',a:['還沒想過','這裡也不錯'],r:'……知道了。'}]},{k:'give',c:{crop:'pumpkin',pf:2},n:3,hint:'傑柯想看看你種的南瓜'}],
+  done:'有星星的。｜……不錯。',rw:{c:200,acc:3}},
+ {t:'霧裡',cond:()=>{const f=fyMine().pumpkin;return !!(f&&f.evo)},need:'傑柯進化之後',open:'跟我來。',goals:['讓傑柯跟著，走到銀霧白樺林最深的地方'],
+  steps:[{k:'deep',bk:'forest',talk:'（傑柯停下來，看著霧裡的某個方向。很久。）｜……｜走吧。'}],done:'',rw:{c:300,deco:'maple_tree'}}],
+melon:[
+ {t:'不要管我',cond:()=>fyHas('melon')&&mq2Past('3-6'),need:'喚醒蜜露、主線「喚醒蜜露」完成之後',open:'教會好悶！神父人很好啦，可是他一直叫我『大人』。｜帶我出去玩。去哪都好！',goals:['讓蜜露跟著，走進三個不同的地區（農場、城鎮不算）','交 3 顆白色甜瓜'],
+  steps:[{k:'regions',n:3,lines:['哇！','這裡的風不一樣耶。','還有嗎還有嗎？']},{k:'give',c:{crop:'melon',skin:'white'},n:3,hint:'蜜露想帶東西回去給漁村的小孩'}],
+  done:'這個給小孩子們，白的切開最甜。｜……欸，你不要跟別人說我有在想他們喔。',rw:{c:200,acc:3}},
+ {t:'很大的煙火',cond:()=>{const f=fyMine().melon;return !!(f&&f.evo)},need:'蜜露進化之後',open:'我要做一個超——大的煙火。大到睡著的人也看得到的那種。｜顏色愈多愈好！紅的黃的綠的白的黑的紫的，全部都要！',goals:['紅、黃、綠、白、黑、紫的果實（純色，任何作物）各 2 顆','讓蜜露跟著，走到珍珠潟湖最深的地方'],
+  steps:[{k:'gives',n:2,list:['red','yellow','green','white','black','purple']},{k:'show',bk:'marsh'}],
+  done:'……有沒有很大？｜他們還在睡，我知道啦。看不到的。｜可是萬一呢。萬一有人剛好睜開眼睛。',rw:{c:400,title:'放煙火的人'}},
+ {t:'那天',cond:()=>fyGod(fyMine().melon),need:'蜜露神化之後',open:'陪我去祭壇。我有事要講，講完你不准問。',goals:['讓蜜露跟著，到城鎮的祭壇旁'],steps:[{k:'altar'}],
+  done:'我記得那天。大家都說不記得，可是我記得一點點。｜天突然變得好亮。比我放過的任何一個煙火都亮。｜然後力氣就沒了，什麼都不知道了。｜就這樣。我講完了。走吧，我想吃甜瓜。',rw:{c:500,title:'蜜露的朋友'}}]};
+const FY_STORY_LATER={pumpkin:1};/* 126：傑柯的第三段之後開放 */
+function fsObj(k){const S=state.fyst||(state.fyst={});const o=S[k]||(S[k]={d:0,a:0,f:{}});if(!o.f)o.f={};if(o.f.i==null)o.f.i=(o.d===0&&o.f.deep)?1:0;return o}
 const fsStage=k=>{const L=FY_STORY[k];if(!L)return null;const s=fsObj(k);return L[s.d]||null};
+const fsStep=k=>{const S=fsStage(k),s=fsObj(k);return S&&s.a?S.steps[s.f.i]||null:null};
 const fsAvail=k=>{const S=fsStage(k);if(!S)return false;const s=fsObj(k);return !s.a&&S.cond()};
-function fsAccept(k){const S=fsStage(k),s=fsObj(k);if(!S||s.a||!S.cond())return false;s.a=1;s.f={};save();toast(`答應了${fyN(k)}：${S.t}`);fsCheck(k);return true}
+function fsAccept(k){const S=fsStage(k),s=fsObj(k);if(!S||s.a||!S.cond())return false;s.a=1;s.f={i:0};if(S.steps[0]&&S.steps[0].k==='talk')s.f.hv=-1;save();toast(`答應了${fyN(k)}：${S.t}`);fsCheck(k);return true}
 function fsReward(r,got){if(r.c){state.coins+=r.c;got.push(`${r.c} 金幣`)}if(r.acc){state.items.acc=(state.items.acc||0)+r.acc;got.push(`生長加速劑 ${r.acc} 次`)}if(r.deco){decoStorePut(r.deco);got.push(`裝飾「${decoName(r.deco)}」（在裝飾倉庫）`)}if(r.title){if(!state.titles)state.titles=[];if(!state.titles.includes(r.title))state.titles.push(r.title);got.push(`稱號「${r.title}」`)}if(r.fav){favAdd(r.fav[0],r.fav[1]);got.push(`${NPCN[r.fav[0]]}好感度 +${r.fav[1]}`)}}
-function fsDone(k){const S=fsStage(k),s=fsObj(k);if(!S||!s.a)return;const got=[];fsReward(S.rw||{},got);got.push(`${FS_XP} 經驗`);s.d++;s.a=0;s.f={};
-  noteOpen(`<h2>${esc(fyN(k))}的故事：${esc(S.t)}</h2>`+fyTalkHTML(k,S.done)+`<p class="note">得到：${got.join('、')}</p>`);addXp(FS_XP,true);save();try{renderAll();if(sheet&&sheet.fy)renderSheet()}catch(e){}}
-/* 跟隨＋地圖：進草原第一張說一句、到最深那張說村子的事 */
-function fsMap(bk,id){const k='tomato',s=fsObj(k),F=fyMine();if(!s.a||s.d!==0||F.follow!==k||bk!=='grass')return;const S=fsStage(k);
-  if(!s.f.first){s.f.first=1;setTimeout(()=>{try{fySay('me',fyMe(),S.first)}catch(e){}},600)}
-  if(id===REG_DEEP.grass&&!s.f.deep){s.f.deep=1;noteOpen(`<h2>${esc(fyN(k))}的故事：${esc(S.t)}</h2>`+fyTalkHTML(k,S.deep)+`<p class="note">接下來：${esc(S.hint)}（交 3 顆黃色番茄）</p>`)}save()}
-/* 第三段：蘿瑪跟著、站在祭壇旁邊 */
-function fsCheck(k){try{const s=fsObj(k);if(!s.a||s.d!==2||fyMine().follow!==k||scene!=='market')return;const b=TOWN_BLD.find(q=>q.id==='spring');if(!b)return;const [fx,fy]=townFront(b);if(Math.hypot(marketMe.x-fx,marketMe.y-fy)<110)fsDone(k)}catch(e){}}
-function fsCardHTML(k){const L=FY_STORY[k];if(!L)return '';const s=fsObj(k),S=fsStage(k);let h=`<h3>${fyN(k)}的故事（${Math.min(s.d,L.length)}／${L.length}）</h3>`;
-  if(!S)return h+`<p class="note">${fyN(k)}的故事說完了。</p>`;
+function fsDone(k){const S=fsStage(k),s=fsObj(k);if(!S||!s.a)return;const got=[];fsReward(S.rw||{},got);got.push(`${FS_XP} 經驗`);s.d++;s.a=0;s.f={i:0};
+  noteOpen(`<h2>${esc(fyN(k))}的故事：${esc(S.t)}</h2>`+(S.done?fyTalkHTML(k,S.done):'')+`<p class="note">得到：${got.join('、')}</p>`);addXp(FS_XP,true);save();try{renderAll();if(sheet&&sheet.fy)renderSheet()}catch(e){}}
+/* 往下一步；最後一步做完就完成這一段 */
+function fsNext(k){const S=fsStage(k),s=fsObj(k);if(!S||!s.a)return;s.f.i++;const keep={i:s.f.i};if(s.f.deep)keep.deep=1;s.f=keep;const nx=S.steps[s.f.i];if(nx&&nx.k==='talk')s.f.hv=-1;save();if(s.f.i>=S.steps.length)fsDone(k);else{try{if(sheet&&sheet.fy)renderSheet()}catch(e){}fsCheck(k)}}
+const fsFollow=k=>fyMine().follow===k&&!fyRunning(k);
+/* 進地圖：跟著的那一位，deep／regions／show 步驟 */
+function fsMap(bk,id){for(const k of Object.keys(FY_STORY)){const st=fsStep(k);if(!st||!fsFollow(k))continue;const s=fsObj(k),S=fsStage(k);
+  if(st.k==='deep'&&bk===st.bk){if(st.first&&!s.f.first){s.f.first=1;setTimeout(()=>{try{fySay('me',fyMe(),st.first)}catch(e){}},600)}
+    if(id===REG_DEEP[bk]){const nx=S.steps[s.f.i+1];if(st.talk)noteOpen(`<h2>${esc(fyN(k))}的故事：${esc(S.t)}</h2>`+fyTalkHTML(k,st.talk)+(nx&&nx.k==='give'?`<p class="note">接下來：${esc(nx.hint||'')}（${esc(S.goals[s.f.i+1]||'')}）</p>`:''));s.f.deep=1;fsNext(k);continue}save()}
+  if(st.k==='regions'&&REGION_CFG[bk]){const rg=s.f.rg||(s.f.rg={});if(!rg[bk]){rg[bk]=1;const n=Object.keys(rg).length;setTimeout(()=>{try{fySay('me',fyMe(),st.lines[Math.min(n,st.lines.length)-1])}catch(e){}},600);save();if(n>=st.n)fsNext(k)}}
+  if(st.k==='show'&&bk===st.bk&&id===REG_DEEP[bk]){fwShow(()=>fsNext(k))}}}
+/* 祭壇：跟著、站在噴水池旁邊 */
+function fsCheck(k){try{const st=fsStep(k);if(!st||st.k!=='altar'||!fsFollow(k)||scene!=='market')return;const b=TOWN_BLD.find(q=>q.id==='spring');if(!b)return;const [fx,fy]=townFront(b);if(Math.hypot(marketMe.x-fx,marketMe.y-fy)<110)fsNext(k)}catch(e){}}
+const fsTickAll=()=>{for(const k of Object.keys(FY_STORY))fsCheck(k)};
+/* 傑柯的問題：在農場、隔一次收成 */
+const fsHv=()=>(state.st&&state.st.hv)||0;
+function fsTalkOk(k){const st=fsStep(k),s=fsObj(k);if(!st||st.k!=='talk')return false;return scene==='farm'&&!viewing&&(s.f.hv===-1||fsHv()>s.f.hv)}
+function fsAnswer(k,j){const st=fsStep(k),s=fsObj(k);if(!fsTalkOk(k))return false;const q=st.qs[s.f.q||0];if(!q)return false;s.f.q=(s.f.q||0)+1;s.f.hv=fsHv();save();
+  noteOpen(`<h2>${esc(fyN(k))}</h2><p class="note">你：「${esc(q.a[j]||q.a[0])}」</p>`+fyTalkHTML(k,q.r));if(s.f.q>=st.qs.length)fsNext(k);return true}
+/* 交付：give 用 id＝作物；gives 用 id＝作物|第幾種 */
+function fsGiveSpec(id){const [k,jj]=String(id).split('|'),st=fsStep(k),s=fsObj(k),S=fsStage(k);if(!st)return null;
+  if(st.k==='give'&&jj==null)return {c:st.c,need:st.n||3,got:s.f.got||0,buy:false,set:v=>{s.f.got=v},title:`${fyN(k)}：${S.t}`,fin:()=>fsNext(k)};
+  if(st.k==='gives'&&jj!=null){const j=+jj,col=st.list[j];if(!col)return null;const gg=s.f.gg||(s.f.gg={});if((gg[j]||0)>=st.n)return null;
+    return {c:{skin:col},need:st.n,got:gg[j]||0,buy:false,set:v=>{gg[j]=v},title:`${fyN(k)}：${cnSe(col)}的果實`,fin:()=>{save();if(st.list.every((_,q)=>(gg[q]||0)>=st.n))fsNext(k);else try{if(sheet)renderSheet()}catch(e){}}}}
+  return null}
+function fsCardHTML(k){const L=FY_STORY[k];if(!L)return '';const s=fsObj(k),S=fsStage(k);let h=`<h3>${fyN(k)}的故事（${Math.min(s.d,L.length)}／${L.length+(FY_STORY_LATER[k]?1:0)}）</h3>`;
+  if(!S)return h+(FY_STORY_LATER[k]?`<div class="lot"><div class="lot-name">第 ${L.length+1} 段</div><p class="note">之後開放。</p></div>`:`<p class="note">${fyN(k)}的故事說完了。</p>`);
   if(!S.cond())return h+`<div class="lot"><div class="lot-name">第 ${s.d+1} 段　${S.t}</div><p class="note">${S.need}才會開始。</p></div>`;
   if(!s.a)return h+`<div class="lot"><div class="lot-name">第 ${s.d+1} 段　${S.t}</div>${fyTalkHTML(k,S.open)}<button class="btn primary" data-act="fsacc" data-k="${k}">答應</button></div>`;
-  const ck=i=>s.d===0?(i===0?s.f.deep:false):false;
-  h+=`<div class="lot"><div class="lot-name">第 ${s.d+1} 段　${S.t}（進行中）</div><p class="note">${S.goals.map((g,i)=>`${ck(i)?'✔':'・'} ${esc(g)}`).join('<br>')}</p>`;
-  if(S.give&&(s.d!==0||s.f.deep))h+=giveBtnHTML('fs',k);
-  if(s.d===0&&!s.f.deep&&fyMine().follow!==k)h+=`<p class="note">先讓${fyPron(k)}跟隨。</p>`;
-  if(s.d===2&&fyMine().follow!==k)h+=`<p class="note">先讓${fyPron(k)}跟隨，再走到噴水池旁邊。</p>`;
+  const st=S.steps[s.f.i];h+=`<div class="lot"><div class="lot-name">第 ${s.d+1} 段　${S.t}（進行中）</div><p class="note">${S.goals.map((g,i)=>`${i<s.f.i?'✔':'・'} ${esc(g)}`).join('<br>')}</p>`;
+  if(st){if(st.k==='give')h+=giveBtnHTML('fs',k);
+    if(st.k==='gives'){const gg=s.f.gg||{};h+=st.list.map((c,j)=>(gg[j]||0)>=st.n?`<p class="note">✔ ${cnSe(c)} ${st.n}／${st.n}</p>`:giveBtnHTML('fs',k+'|'+j).replace('交果實（',`交${cnSe(c)}的果實（`)).join('')}
+    if(st.k==='talk'){const q=st.qs[s.f.q||0];if(q){if(fsTalkOk(k))h+=fyTalkHTML(k,q.q)+q.a.map((x,j)=>`<button class="btn" data-act="fsans" data-k="${k}" data-j="${j}">${esc(x)}</button>`).join('');else h+=`<p class="note">${scene==='farm'&&!viewing?'再收成一次，再來和'+fyN(k)+'說話。':'回農場再和'+fyN(k)+'說話。'}（${s.f.q||0}／${st.qs.length}）</p>`}}
+    if(st.k==='regions')h+=`<p class="note">已經去過 ${Object.keys(s.f.rg||{}).length}／${st.n} 個地區。</p>`;
+    if((st.k==='deep'||st.k==='regions'||st.k==='show'||st.k==='altar')&&!fsFollow(k))h+=`<p class="note">先讓${fyPron(k)}跟隨。</p>`}
   return h+`<p class="note">完成後得到 ${FS_XP} 經驗。</p></div>`}
-/* ---- 翠風草原的地區故事「割早的田」 ---- */
+/* 126：煙火（程式畫的彩色光點，約 5 秒，點一下跳過） */
+function fwShow(done){const cols=['#E8433A','#F6C933','#5DBB3A','#FFFFFF','#2B2B33','#8E4FD0'],el=document.createElement('div');el.className='fwshow';el.setAttribute('role','dialog');el.setAttribute('aria-label','煙火');
+  el.innerHTML='<div class="fw-bg"></div>'+cols.map((c,i)=>{const x=20+((i*37)%60),y=18+((i*23)%30);return `<div class="fw" style="left:${x}%;top:${y}%;animation-delay:${(i*0.6).toFixed(1)}s">`+Array.from({length:14},(_,j)=>{const a=j/14*Math.PI*2,d=70+(j%3)*18;return `<i style="--x:${(Math.cos(a)*d).toFixed(0)}px;--y:${(Math.sin(a)*d).toFixed(0)}px;background:${c};${c==='#2B2B33'?'box-shadow:0 0 6px #fff;':''}animation-delay:${(i*0.6).toFixed(1)}s"></i>`}).join('')+'</div>'}).join('')+'<p class="fys-skip">點一下跳過</p>';
+  let closed=false;const close=()=>{if(closed)return;closed=true;el.remove();try{done&&done()}catch(e){}};el.addEventListener('click',close);document.body.appendChild(el);setTimeout(close,typeof fyRM==='function'&&fyRM()?800:5200)}
+/* ===== 126（18v）：地區故事改成每區一份 RS（草原沿用 118）。步驟欄位：npc（開場的人，預設這一區的 npc）、open、goal、
+   spot（走到 map 的 x,y 半徑 r 旁邊，看到 look）、give／need／buy、wait（上一步完成後要等多久）、ask（去問另一位 NPC 的話 {npc,line,btn}，問完回來找開場的人）、done、doneNpc、rw。 ===== */
 const RS_GRASS=[
- {t:'怪事',open:'你去草原的時候，有沒有看到田被割得整整齊齊的？｜還沒熟就被割掉，一刀到底，切口比我磨的鐮刀還平。｜老一輩的說，那是『裂風』。草原上的風神。',goal:'到翠風草原的「野花坡」，看看乾草堆旁邊那塊被割過的地',look:'切口很平。不是人割的。',done:'你也看到了吧。｜以前牠只割熟的，還會留一半給人。村裡每年收割前都會祭牠。｜這幾年不一樣了。牠連青的都割。'},
- {t:'兩種意見',open:'村裡吵翻了。有人說照舊祭牠，有人說乾脆把牠趕走。｜我是老派的。你幫我準備祭品，試一次看看。｜要熟透的、黃澄澄的，九顆。什麼作物都行。',goal:'交 9 顆黃色的果實（任何作物、任何造型，要純黃色）',give:{skin:'yellow'},need:9,done:'夠了。我今晚拿去山丘上擺。'},
- {t:'隔天',wait:RS_WAIT,open:'祭品不見了。九顆都不見。｜可是田還是被割了。只是這次……割的是熟的那一半。',goal:'和提歐神父說話，再回來告訴阿土伯',theo:'裂風啊。教會的紀錄裡，牠是替草原收割的。人收不完的，牠來收。｜牠不壞。至少以前不壞。｜為什麼變了，我也不知道。對不起，幫不上忙。',done:'神父也不知道？……算了。｜至少牠還認得祭品。這樣就還有得談。',rw:{c:400,fav:['tu',3]}}];
-const RS_SPOT={map:'meadow',x:384,y:330,r:70};
-function rsObj(){const S=state.rs||(state.rs={});const o=S.grass||(S.grass={d:0,a:0,f:{},t:0});if(!o.f)o.f={};return o}
-const rsOpen=()=>!!(state&&state.mq2&&state.mq2.i>4);/* 116 的 1-1 完成 */
-const rsStage=()=>RS_GRASS[rsObj().d]||null;
-const rsWaitLeft=()=>{const S=rsStage(),s=rsObj();return S&&S.wait?Math.max(0,(s.t||0)+S.wait-Date.now()):0};
-function rsAccept(){const S=rsStage(),s=rsObj();if(!S||s.a||!rsOpen()||rsWaitLeft()>0)return false;s.a=1;s.f={};save();toast(`答應了阿土伯：${S.t}`);return true}
-function rsDone(){const S=rsStage(),s=rsObj();if(!S||!s.a)return;const got=[];fsReward(S.rw||{},got);got.push(`${RS_XP} 經驗`);s.d++;s.a=0;s.f={};s.t=Date.now();
-  noteOpen(`<h2>割早的田：${esc(S.t)}</h2>`+npcTalk('tu',S.done)+`<p class="note">得到：${got.join('、')}</p>`+(RS_GRASS[s.d]&&RS_GRASS[s.d].wait?'<p class="note">過一陣子再來找阿土伯。</p>':''));addXp(RS_XP,true);save();try{renderAll();if(sheet&&(sheet.town||sheet.orders))renderSheet()}catch(e){}}
-function rsTick(){try{const s=rsObj();if(!s.a||s.d!==0||scene!=='explore'||exBiome!=='grass'||regMap!==RS_SPOT.map)return;if(Math.hypot(exMe.x-RS_SPOT.x,exMe.y-RS_SPOT.y)>RS_SPOT.r)return;
-  if(!s.f.look){s.f.look=1;toast(RS_GRASS[0].look,4500);save();setTimeout(rsDone,1200)}}catch(e){}}
-function rsCardHTML(inNpc){if(!rsOpen())return '';const s=rsObj(),S=rsStage();let h=`<h3>地區故事：割早的田（${s.d}／${RS_GRASS.length}）</h3>`;
-  if(!S)return h+'<p class="note">故事說完了。</p>';
-  const w=rsWaitLeft();if(w>0&&!s.a)return h+`<div class="lot"><div class="lot-name">第 ${s.d+1} 步　${S.t}</div><p class="note">再過 ${Math.ceil(w/60e3)} 分鐘再來找阿土伯。</p></div>`;
-  if(!s.a)return h+`<div class="lot"><div class="lot-name">第 ${s.d+1} 步　${S.t}</div>${inNpc?npcTalk('tu',S.open)+`<button class="btn primary" data-act="rsacc">答應</button>`:'<p class="note">到城鎮找阿土伯說話。可以不做，不影響主線。</p>'}</div>`;
+ {t:'怪事',open:'你去草原的時候，有沒有看到田被割得整整齊齊的？｜還沒熟就被割掉，一刀到底，切口比我磨的鐮刀還平。｜老一輩的說，那是『裂風』。草原上的風神。',goal:'到翠風草原的「野花坡」，看看乾草堆旁邊那塊被割過的地',spot:{map:'meadow',x:384,y:330,r:70},look:'切口很平。不是人割的。',done:'你也看到了吧。｜以前牠只割熟的，還會留一半給人。村裡每年收割前都會祭牠。｜這幾年不一樣了。牠連青的都割。'},
+ {t:'兩種意見',open:'村裡吵翻了。有人說照舊祭牠，有人說乾脆把牠趕走。｜我是老派的。你幫我準備祭品，試一次看看。｜要熟透的、黃澄澄的，九顆。什麼作物都行。',goal:'交 9 顆黃色的果實（任何作物、任何造型，要純黃色）',give:{skin:'yellow'},need:9,buy:1,done:'夠了。我今晚拿去山丘上擺。'},
+ {t:'隔天',wait:RS_WAIT,open:'祭品不見了。九顆都不見。｜可是田還是被割了。只是這次……割的是熟的那一半。',goal:'和提歐神父說話，再回來告訴阿土伯',ask:{npc:'theo',btn:'問神父「裂風」的事',line:'裂風啊。教會的紀錄裡，牠是替草原收割的。人收不完的，牠來收。｜牠不壞。至少以前不壞。｜為什麼變了，我也不知道。對不起，幫不上忙。'},done:'神父也不知道？……算了。｜至少牠還認得祭品。這樣就還有得談。',rw:{c:400,fav:['tu',3]}}];
+const RS={
+ grass:{n:'割早的田',npc:'tu',open:()=>!!(state&&state.mq2&&state.mq2.i>4),steps:RS_GRASS},
+ forest:{n:'界線',npc:'jin',open:()=>mq2Past('2-6'),steps:[
+  {t:'老樺樹',open:'果實借出去了，可是事情沒完。伐木的要砍到老樺樹那邊去。｜那棵不能動。為什麼不能動，我講了他們也不信。你自己去看。',goal:'到銀霧白樺林的「神木」，走到老樺樹旁邊',spot:{map:'giant_tree',x:417,y:470,r:80},look:'樹幹上有四道很深的舊痕，比手臂還長，已經被樹皮包住一半。｜不是斧頭砍的。',done:'我祖母的祖母就看過那些痕跡。有東西把這棵樹當成自己的。｜樹倒了，它會去哪裡？我不想知道。'},
+  {t:'界線',npc:'yue',open:'爪痕？……我沒看過那麼高的地方。｜行，老樺樹那邊不砍。可是我們要柴，東邊那片得給我們。｜界線要有記號，不然霧一來又吵。有星點的南瓜，誰都認得出不是野生的。六顆，我沿線擺。',goal:'交 6 顆星點花紋的南瓜給岳哥',give:{crop:'pumpkin',pf:2},need:6,buy:1,done:'擺好了。這條線以西，我的人不過去。'},
+  {t:'還是看不順眼',wait:RS_WAIT,open:'線是劃了。昨晚有人越線撿柴，被我趕回去。｜……至少現在吵的是一條線，不是一整片林子。｜東邊砍一棵，要補種三棵。你去跟他講，我不想跟他講話。',goal:'和岳哥說話，再回來告訴槿姨',ask:{npc:'yue',btn:'轉告「砍一棵補三棵」',line:'三棵？她怎麼不乾脆叫我種一片。｜……兩棵。算了，三棵就三棵。別跟她說我答應得這麼快。'},done:'他答應了？哼。',rw:{c:400,acc:3}}]},
+ marsh:{n:'水裡的光',npc:'duo',open:()=>mq2Past('3-7'),steps:[
+  {t:'暗掉的水',open:'果實的事是我錯怪研究所。可是魚變少是真的。｜以前晚上划船，槳一下去水就會亮。這兩年不亮了。你去水池那邊看。',goal:'到珍珠潟湖的「蓮花池」，走到水邊',spot:{map:'lotus',x:430,y:625,r:80},look:'水很清，也很暗。你攪了一下，只亮了一兩點，很快就滅了。',done:'你也看到了。以前是一整片的。'},
+  {t:'先撐過去',open:'魚少，村子就沒收入。你那種大得嚇人的甜瓜，城裡應該有人要。｜給我六顆，我讓年輕人挑去賣。先把這一季撐過去。',goal:'交 6 顆巨大的甜瓜',give:{crop:'melon',minSize:4},need:6,buy:1,done:'這麼大一顆……夠了，夠換一個月的米。'},
+  {t:'不是船',wait:RS_WAIT,open:'我去找了所長。他二話不說，把採樣船停了。｜停了七天。水還是不亮。',goal:'和所長維恩說話（城鎮），再回來告訴老舵',ask:{npc:'wien',btn:'問所長水的事',line:'我也想知道原因。水樣我每一瓶都留著，數字是一年比一年低，從我們開始採樣以前就在降了。｜船可以繼續停，停到村長安心為止。但我不認為是船。｜對不起，我只能告訴你這麼多。'},done:'不是船……那是什麼？｜算了。你幫得夠多了。魚的事，我們自己再想辦法。',rw:{c:400,acc:3}}]}};
+const RS_SPOT=RS_GRASS[0].spot;
+function rsObj(bk){bk=bk||'grass';const S=state.rs||(state.rs={});const o=S[bk]||(S[bk]={d:0,a:0,f:{},t:0});if(!o.f)o.f={};return o}
+const rsOpen=bk=>{const R=RS[bk||'grass'];return !!(R&&state&&R.open())};
+const rsStage=bk=>{bk=bk||'grass';return RS[bk].steps[rsObj(bk).d]||null};
+const rsNpcOf=(bk,S)=>(S&&S.npc)||RS[bk].npc;
+const rsWaitLeft=bk=>{const S=rsStage(bk),s=rsObj(bk);return S&&S.wait?Math.max(0,(s.t||0)+S.wait-Date.now()):0};
+function rsAccept(bk){bk=bk||'grass';const S=rsStage(bk),s=rsObj(bk);if(!S||s.a||!rsOpen(bk)||rsWaitLeft(bk)>0)return false;s.a=1;s.f={};save();toast(`答應了${NPCN[rsNpcOf(bk,S)]}：${S.t}`);return true}
+function rsDone(bk){bk=bk||'grass';const R=RS[bk],S=rsStage(bk),s=rsObj(bk);if(!S||!s.a)return;const got=[];fsReward(S.rw||{},got);got.push(`${RS_XP} 經驗`);s.d++;s.a=0;s.f={};s.t=Date.now();const nx=R.steps[s.d];
+  noteOpen(`<h2>${esc(R.n)}：${esc(S.t)}</h2>`+npcTalk(rsNpcOf(bk,S),S.done)+`<p class="note">得到：${got.join('、')}</p>`+(nx&&nx.wait?`<p class="note">過一陣子再來找${NPCN[rsNpcOf(bk,nx)]}。</p>`:''));addXp(RS_XP,true);save();try{renderAll();if(sheet&&(sheet.town||sheet.orders||sheet.rnpc))renderSheet()}catch(e){}}
+function rsTick(){try{if(scene!=='explore')return;for(const bk of Object.keys(RS)){const s=rsObj(bk),S=rsStage(bk);if(!S||!s.a||!S.spot||exBiome!==bk||regMap!==S.spot.map)continue;if(Math.hypot(exMe.x-S.spot.x,exMe.y-S.spot.y)>S.spot.r)continue;
+  if(!s.f.look){s.f.look=1;toast(S.look.replace(/｜/g,''),5000);save();setTimeout(()=>rsDone(bk),1200)}}}catch(e){}}
+/* 一區的卡：inNpc＝在那位 NPC 的面板裡（可以答應、交付、回報） */
+function rsCardHTML(inNpc,bk,who){bk=bk||'grass';if(!rsOpen(bk))return '';const R=RS[bk],s=rsObj(bk),S=rsStage(bk);let h=`<h3>地區故事：${R.n}（${s.d}／${R.steps.length}）</h3>`;
+  if(!S)return h+'<p class="note">故事說完了。</p>';const owner=rsNpcOf(bk,S),here=inNpc&&(!who||who===owner);
+  const w=rsWaitLeft(bk);if(w>0&&!s.a)return h+`<div class="lot"><div class="lot-name">第 ${s.d+1} 步　${S.t}</div><p class="note">再過 ${Math.ceil(w/60e3)} 分鐘再來找${NPCN[owner]}。</p></div>`;
+  if(!s.a)return h+`<div class="lot"><div class="lot-name">第 ${s.d+1} 步　${S.t}</div>${here?npcTalk(owner,S.open)+`<button class="btn primary" data-act="rsacc" data-r="${bk}">答應</button>`:`<p class="note">去找${NPCN[owner]}說話。可以不做，不影響主線。</p>`}</div>`;
   h+=`<div class="lot"><div class="lot-name">第 ${s.d+1} 步　${S.t}（進行中）</div><p>${esc(S.goal)}</p>`;
-  if(S.give)h+=giveBtnHTML('rs','grass');
-  if(S.theo)h+=s.f.theo?(inNpc?`<button class="btn primary" data-act="rsdone">把神父的話告訴阿土伯</button>`:'<p class="note">回去告訴阿土伯。</p>'):'<p class="note">✔ 還沒和提歐神父說話。</p>'.replace('✔','・');
+  if(S.give)h+=giveBtnHTML('rs',bk);
+  if(S.ask)h+=s.f.theo?(here?`<button class="btn primary" data-act="rsdone" data-r="${bk}">回報${NPCN[owner]}</button>`:`<p class="note">回去告訴${NPCN[owner]}。</p>`):`<p class="note">・還沒和${NPCN[S.ask.npc]}說話。</p>`;
   return h+`<p class="note">每一步得到 ${RS_XP} 經驗。</p></div>`}
-function rsTheoHTML(){const s=rsObj(),S=rsStage();if(!S||!S.theo||!s.a)return '';if(!s.f.theo)return `<h3>割早的田</h3><button class="btn primary" data-act="rstheo">問神父「裂風」的事</button>`;return `<h3>割早的田</h3>`+npcTalk('theo',S.theo)+'<p class="note">回去告訴阿土伯。</p>'}
+/* 被問的那一位（神父、岳哥、所長） */
+function rsAskHTML(n){let h='';for(const bk of Object.keys(RS)){const s=rsObj(bk),S=rsStage(bk);if(!S||!S.ask||!s.a||S.ask.npc!==n)continue;
+  h+=`<h3>${RS[bk].n}</h3>`+(s.f.theo?npcTalk(n,S.ask.line)+`<p class="note">回去告訴${NPCN[rsNpcOf(bk,S)]}。</p>`:`<button class="btn primary" data-act="rstheo" data-r="${bk}">${esc(S.ask.btn)}</button>`)}return h}
+const rsTheoHTML=()=>rsAskHTML('theo');
+/* 這位 NPC 面板裡要放的地區故事卡（開場、交付、回報的人；被問的人） */
+function rsNpcHTML(n){let h='';for(const bk of Object.keys(RS)){const S=rsStage(bk);if(!rsOpen(bk))continue;const owner=S?rsNpcOf(bk,S):RS[bk].npc;if(owner===n||(!S&&RS[bk].npc===n))h+=rsCardHTML(true,bk,n)}return h+rsAskHTML(n)}
+const rsAllCardsHTML=()=>Object.keys(RS).map(bk=>rsCardHTML(false,bk)).join('');
 /* ===== 122（18m）：珍珠潟湖的線索、藏身處、記號、蜜露和孩子 ===== */
 const MARK_SVG='<g fill="none" stroke="#3B2614" stroke-width="2.2" stroke-linecap="round"><path d="M11.5 -6.5 A13 13 0 1 1 5 -11.8"/><path d="M5 -11.8 Q8 -8.6 11.5 -6.5"/></g><g fill="#3B2614">'+Array.from({length:9},(_,i)=>{const a=i/9*Math.PI*2-Math.PI/2;return `<circle cx="${(Math.cos(a)*7).toFixed(2)}" cy="${(Math.sin(a)*7).toFixed(2)}" r="1.25"/>`}).join('')+'</g>';/* 一個圓，右上被咬掉一塊，九個小點排成一圈 */
 const sparkSVG=(x,y)=>`<g transform="translate(${x} ${y})" pointer-events="none" class="clue"><ellipse rx="16" ry="5" fill="rgba(255,240,180,.25)"/><path d="M0 -14 L2 -4 L12 -2 L2 0 L0 10 L-2 0 L-12 -2 L-2 -4Z" fill="#FFF3B0" opacity=".85"/></g>`;
@@ -9206,7 +9277,7 @@ function regNpcObjs(){if(scene!=='explore')return [];const out=[];
 function regNpcSVG(p,x,y,bang){return `<g transform="translate(${x} ${y}) scale(1.15)" pointer-events="none">${npcBodySVG(p)}${nameTag(p.n)}${bang?'<g><circle cx="0" cy="-80" r="8" fill="#FFF6DE" stroke="#C0392B" stroke-width="1.6"/><text x="0" y="-75.5" text-anchor="middle" font-size="12" font-weight="700" fill="#C0392B">!</text></g>':''}</g><rect data-reg="npc:${p.id}" x="${x-18}" y="${y-82}" width="36" height="86" fill="transparent" style="cursor:pointer"/>`}
 function regNpcTap(id){const R0=REG_NPCS.find(r=>r.id===id&&r.bk===exBiome),L=id==='kid'?lampPos('glen'):null,x=R0?R0.x:L?L[0]-34:0,y=R0?R0.y:L?L[1]:0;const go=()=>{const line=mq2Talk(id);sheet={rnpc:id,line};renderSheet();openSheetUI()};const m=curMe();if(Math.hypot(m.x-x,m.y-y)<80)go();else walkTo(x,y+16,go)}
 function rnpcHTML(){const id=sheet.rnpc,p=TOWN_NPC.find(q=>q.id===id);if(!p)return '<button class="btn" data-act="close">關閉</button>';const s=mq2Cur();
-  return `<h2>${esc(p.n)}</h2>`+npcTalk(id,sheet.line||p.line)+(s&&mq2Has(s,id)?'<h3>主線</h3>'+mq2CardHTML(id):'')+'<button class="btn" data-act="close">關閉</button>'}
+  return `<h2>${esc(p.n)}</h2>`+npcTalk(id,sheet.line||p.line)+(s&&mq2Has(s,id)?'<h3>主線</h3>'+mq2CardHTML(id):'')+rsNpcHTML(id)+'<button class="btn" data-act="close">關閉</button>'}
 function mq2KidTick(){try{if(scene!=='explore'||exBiome!=='forest'||regMap!=='glen'||!kidOn())return;const L=lampPos('glen');if(!L||Math.hypot(exMe.x-(L[0]-34),exMe.y-L[1])>90)return;const s=mq2Cur(),u=mq2Sub(s,'2-3'),F=mq2SF('2-3');F.ok=1;save();
   noteOpen(npcTalk('kid',u.kid));setTimeout(mq2Tick,0);try{renderWorld()}catch(e){}}catch(e){}}
 /* --- 30 NPC 委託 --- */
@@ -9283,7 +9354,7 @@ function favHTML(n){const v=favOf(n),t=favTier(n),nx=FAV_STEP[t],got=(state.favG
 /* 任務面板（原本的「訂單」） */
 function ordersHTML(){
   ensureComm();const o=state.orders||{};
-  let h=`<h2>任務</h2><h3>主線</h3>`+mq2CardHTML(false)+`<h3>支線：阿凱的委託：失落的種子庫</h3>`+mqCardHTML()+rsCardHTML(false)+`<h3>今日委託</h3>`+(myLv()>=LV_COMM?`<p class="note">每天 0 點換新，不用先接。</p>`:'')+cmListHTML()+weeklyHTML();
+  let h=`<h2>任務</h2><h3>主線</h3>`+mq2CardHTML(false)+`<h3>支線：阿凱的委託：失落的種子庫</h3>`+mqCardHTML()+rsAllCardsHTML()+`<h3>今日委託</h3>`+(myLv()>=LV_COMM?`<p class="note">每天 0 點換新，不用先接。</p>`:'')+cmListHTML()+weeklyHTML();
   if(!ORDERS.every(x=>o[x.k]===2))h+=`<h3>入門練習</h3>`+ORDERS.map(x=>`<div class="lot"><div class="lot-name">${x.t}</div><div class="meta">獎勵 ${x.r} 金幣</div>${o[x.k]===2?'<p class="note">已領取</p>':o[x.k]===1?`<button class="btn primary" data-act="claim" data-k="${x.k}">領取 ${x.r} 金幣</button>`:'<p class="note">進行中</p>'}</div>`).join('');
   return h+'<button class="btn" data-act="close">關閉</button>';
 }
@@ -9293,9 +9364,9 @@ function orderAction(b){
   if(a==='mqacc'){mqAccept();if(sheet)renderSheet();return true}
   if(a==='mq2acc'){mq2Accept(b.dataset.sub);if(sheet&&!sheet.note)renderSheet();return true}
   if(a==='mq2trade'){mq2Trade();if(sheet)renderSheet();return true}/* 116 */
-  if(a==='rsacc'){rsAccept();if(sheet&&!sheet.note)renderSheet();return true}
-  if(a==='rstheo'){const s=rsObj();if(s.a&&rsStage()&&rsStage().theo){s.f.theo=1;save()}if(sheet)renderSheet();return true}
-  if(a==='rsdone'){if(rsObj().f.theo)rsDone();return true}/* 118.4 */
+  if(a==='rsacc'){rsAccept(b.dataset.r||'grass');if(sheet&&!sheet.note)renderSheet();return true}
+  if(a==='rstheo'){const bk=b.dataset.r||'grass',s=rsObj(bk),S=rsStage(bk);if(s.a&&S&&S.ask){s.f.theo=1;save()}if(sheet)renderSheet();return true}
+  if(a==='rsdone'){const bk=b.dataset.r||'grass';if(rsObj(bk).f.theo)rsDone(bk);return true}/* 118.4、126 */
   if(a==='oldc'){oldPick={crop:b.dataset.k,col:oldPick.col,sure:false};renderSheet();return true}
   if(a==='oldk'){oldPick.col=b.dataset.k;oldPick.sure=false;renderSheet();return true}
   if(a==='oldok'){if(!oldPick.sure){oldPick.sure=true;renderSheet();return true}mqOldSeed(oldPick.crop,oldPick.col);if(sheet)renderSheet();return true}
@@ -9319,8 +9390,8 @@ function giveSpec(kind,id){ensureComm();
   if(kind==='cm'){const o=state.cm&&state.cm.list.find(x=>x.id===id);if(!o||o.done||o.gone||o.c.wild)return null;cmNorm(o);return {c:o.c,need:o.need,got:o.got||0,buy:true,set:v=>{o.got=v},title:`${NPCN[o.n]}：${condTxt(o.c)}`,fin:()=>cmReward(o,`${NPCN[o.n]}的委託`)}}
   if(kind==='w'){const w=state.weekly;if(!w||w.done||myLv()<LV_COMM)return null;return {c:w.c,need:w.need||3,got:w.got||0,buy:true,same:!!w.need,key:w.key||null,setKey:k=>{w.key=k},set:v=>{w.got=v},title:wkTxt(w),fin:()=>cmReward(w,'每週大委託')}}
   if(kind==='ns'){const s=nsOf(id),S=nsStage(id);if(!S||!s.a||!S.fruit)return null;return {c:S.fruit,need:3,got:s.got||0,buy:false,set:v=>{s.got=v},title:`${NPCN[id]}：${S.t}`,fin:()=>{delete s.got;nsDone(id)}}}
-  if(kind==='fs'){const s=fsObj(id),S=fsStage(id);if(!S||!s.a||!S.give||(s.d===0&&!s.f.deep))return null;return {c:S.give,need:3,got:s.f.got||0,buy:false,set:v=>{s.f.got=v},title:`${fyN(id)}：${S.t}`,fin:()=>fsDone(id)}}/* 118.3 */
-  if(kind==='rs'){const s=rsObj(),S=rsStage();if(!S||!s.a||!S.give)return null;return {c:S.give,need:S.need||3,got:s.f.got||0,buy:true,set:v=>{s.f.got=v},title:`阿土伯：${S.goal}`,fin:()=>rsDone()}}/* 118.4 */
+  if(kind==='fs')return fsGiveSpec(id);/* 118.3、126 */
+  if(kind==='rs'){const bk=RS[id]?id:'grass',s=rsObj(bk),S=rsStage(bk);if(!S||!s.a||!S.give)return null;return {c:S.give,need:S.need||3,got:s.f.got||0,buy:!!S.buy,set:v=>{s.f.got=v},title:`${NPCN[rsNpcOf(bk,S)]}：${S.goal}`,fin:()=>rsDone(bk)}}/* 118.4、126 */
   if(kind==='mq2'&&id==='3-3'){const s=mq2Cur(),M=mq2Obj();if(!s||s.id!=='3-3'||M.st!==1||M.f.ok)return null;return {c:s.give.c,need:3,got:M.f.got||0,buy:false,set:v=>{M.f.got=v},title:`所長維恩：${s.t}`,fin:()=>{M.f.ok=1;mq2Tick()}}}/* 122 */
   if(kind==='mq2'){const s=mq2Cur(),u=mq2Sub(s,id);if(!u||!u.give)return null;const F=mq2SF(id);if(!F.a||F.d||F.ok||(id==='2-3'&&F.lamp))return null;return {c:u.give.c,need:u.give.need,got:F.got||0,buy:false,set:v=>{F.got=v},title:`${NPCN[u.npc]}：${u.t}`,fin:()=>mq2GiveFin(id)}}/* 121 */
   if(kind==='mq'){const m=mqCur();if(!m||!m.cond||state.mq.st!==1)return null;const f=state.mq.f||(state.mq.f={});return {c:m.cond,need:3,got:f.got||0,buy:false,set:v=>{f.got=v},title:condTxt(m.cond),fin:()=>mqDone()}}

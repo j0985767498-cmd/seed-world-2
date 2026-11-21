@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-18u'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-18v'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-18v`。第 111～125、127～129、132 節（18c～18u）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；第 117 節的 Firestore 規則（`tools/firestore_rules_117.txt`）要貼到主控台；第 114 節等使用者決定供奉的速度。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-18w`。第 111～129、132 節（18c～18v）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；第 117 節的 Firestore 規則（`tools/firestore_rules_117.txt`）要貼到主控台；第 114 節等使用者決定供奉的速度。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -230,6 +230,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 等級與任務（15y）：`addXp`、`levelUp`、`LV_CROP`／`LV_REG`、主線 `MQ`／`mqEv`、委託 `commGen`／`ensureComm`、每週 `wkTxt`／`wkFits`、NPC 故事 `NS`／`nsAccept`、種子庫館藏 `vdHTML`、主題榜 `wkTheme`／`wkSettle`。
 - 供奉（114）：`EVO_NEED`／`GOD_NEED`／`EVO_P`／`GOD_P`／`OFFER_PERF`、階段 `f.evo` 0／1／2（`fyStage`、`FY_STAGE`）、進度 `f.op`（`fyOp`）、`offerOk`／`offerRate`／`offerSlots`／`offerDo`、`fyStageUp`（`fyFirstAct`）、換色 `RECOLOR_N`／`recolorOk`／`fyRecolor`；114.9 進度百分比 `fyPct`／`numC`、門檻台詞 `FY_MS`（`f.op.ms`）；畫面 `fyOffHTML`／`fyUpColHTML`／`fyColHTML`、`fyOfferFx`、神化演出 `fyShow('god')`；遷移旗標 `fyopV`。
 - 神之子（113）：名字 `FY_NM`→`fyN`；祭壇清單 `ALT_LIST`（`ALT_N`）、`altObj`／`altGive`／`altFull`、`fyWakeAlt`（皇冠番茄 `crownGift`）、專屬造型捷徑 `fyExSlots`／`fyWakeEx`（`WAKE_EX_N`）；進度 `state.fairy.altar`。
+- 故事引擎（126）：`FY_STORY[作物]` 每段 `steps`（deep／regions／talk／give／gives／altar／show，進度 `s.f.i`），`fsStep`／`fsNext`／`fsMap`／`fsCheck`（`fsTickAll`）／`fsAnswer`／`fsGiveSpec`（交付 id＝作物或「作物|第幾種」）、`FY_STORY_LATER`；台詞 `FY_LTAB`（`ROMA_L`／`JACK_L`／`MIERU_L`）；煙火 `fwShow`；地區故事 `RS[地區]`（grass／forest／marsh；步驟 `npc`／`spot`／`wait`／`ask`），`rsObj(bk)`／`rsAccept(bk)`／`rsDone(bk)`／`rsTick`、`rsNpcHTML`／`rsAskHTML`／`rsAllCardsHTML`；`mq2Past`。
 - 蘿瑪與地區故事（118）：台詞 `fyLinesFor`（`ROMA_L`、`fyGod`）；`FY_STORY`／`fsObj`／`fsAccept`／`fsDone`／`fsMap`／`fsCheck`／`fsCardHTML`（`state.fyst`）；地區故事 `RS_GRASS`／`rsObj`／`rsTick`／`rsCardHTML`／`rsTheoHTML`（`state.rs`）；交付 `giveSpec` 的 kind `fs`、`rs`。
 - 標本名額照組（127）：`specGroup`／`specGid`、`sgTally`／`sgFetch`／`sgCounts`／`sgN`、`sgFullTxt`。
 - 標本與精靈：`claimSpec`、`rightsTx`、`specUse`、收藏櫃 `cabListHTML`；精靈 `fyWake`／`fyEvolve`、`fySpringHTML`、跟隨 `fyLoop`、演出 `fyShow`、圖 `fyArt`／`fyArtHTML`（新畫布 `FY_CV`、上色開關 `FY_RECOLOR`）。
@@ -377,7 +378,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 123 | 花紋改版：三種形式、顏色自動配 | 已完成 | docs/規格存檔.md；18n（9.120）；櫻花瓣保留成第四種（使用者）；自動配色對照圖 `tools/pattern_auto_123.html` 等使用者定；順便修定型函式同名的錯；沒測 iPhone |
 | 124 | 稀有度改版：最稀有的一項決定等級 | 已完成 | docs/規格存檔.md；18o（9.121）；跨界照舊是神話（規格沒提）；rights 各等級數量讀不到；沒測 iPhone |
 | 125 | 偷菜與偷偷手套 | 已完成 | docs/規格存檔.md；18p（9.122）；第 129 節起只限朋友；通知用私訊、不用改規則；沒有截圖、沒測 iPhone |
-| 126 | 傑柯與蜜露的台詞、故事；銀霧白樺林與珍珠潟湖的地區故事 | 未做 | docs/待實作/第126節.md；兩位的第二段等第 114 節 |
+| 126 | 傑柯與蜜露的台詞、故事；銀霧白樺林與珍珠潟湖的地區故事 | 已完成 | docs/規格存檔.md；18v（9.128）；傑柯第三段之後開放；裝飾給楓樹；沒有截圖、沒測 iPhone |
 | 127 | 種子袋整理：還會變的種子換圖示；標本名額照「作物＋夢幻色」算 | 已完成 | docs/規格存檔.md；18q（9.123）；自動合併不做（使用者）；不用改規則；沒測 iPhone |
 | 128 | 每日自動備份與自己還原 | 已完成 | docs/規格存檔.md；18r（9.124）；不用改規則；沒測 iPhone |
 | 129 | 朋友名單（補第 125 節：偷菜只能偷朋友） | 已完成 | docs/規格存檔.md；18t（9.126）；不用改規則；沒有截圖、沒測 iPhone |

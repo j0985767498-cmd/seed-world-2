@@ -1,0 +1,30 @@
+{
+ "map": "ruins/plaza",
+ "name": "噴泉廣場",
+ "world": {
+  "w": 800,
+  "h": 1100
+ },
+ "walkable": {
+  "x0": 44,
+  "y0": 104,
+  "x1": 756,
+  "y1": 1060
+ },
+ "image": {
+  "w": 745,
+  "h": 1024
+ },
+ "unitsPerPixel": 1.0742,
+ "aspect": 0.7273,
+ "leonardo": "2:3",
+ "colors": {
+  "road": "#8a8a8a",
+  "tile": "#c8c8c8",
+  "grass": "#7fb069",
+  "water": "#4a90c8",
+  "shallow": "#8cc8e8",
+  "wall": "#3a3030",
+  "pit": "#000000"
+ }
+}

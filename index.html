@@ -4828,14 +4828,14 @@ function potMenu(){let el=document.getElementById('potMenu');if(!el){el=document
   const I=state.items||{};el.innerHTML='<b>換補血藥</b>'+POT_TYPES.map(T=>`<button type="button" data-pot="${T.k}" aria-pressed="${state.potSel===T.k}">${potIc(T.k)}<span>${T.n}</span><em>${I[T.k]||0}</em></button>`).join('');el.hidden=false}
 function potChoose(k){if(!POT_TYPES.some(x=>x.k===k))return;state.potSel=k;save();const pb=document.getElementById('potBtn');if(pb){pb._k='';potSlotPaint(pb)}}
 /* 自動喝藥：血量低於門檻、有藥、不在冷卻 → 喝一瓶，快捷格閃一下 */
-function autoPotCheck(){try{if(!state||state.autoPot===false||scene!=='explore'||pHP<=0)return false;const at=state.autoPotAt||0.3;if(pHP>=PHP_MAX*at||Date.now()<potCd)return false;const k=potPick();if(!((state.items||{})[k]>0))return false;
+function autoPotCheck(){try{if(!state||state.autoPot===false||scene!=='explore'||pHP<=0)return false;const at=state.autoPotAt||0.3;if(pHP>=pMax()*at||Date.now()<potCd)return false;const k=potPick();if(!((state.items||{})[k]>0))return false;
   if(!drinkPot(k,true))return false;const pb=document.getElementById('potBtn');if(pb){pb.classList.remove('flash');void pb.offsetWidth;pb.classList.add('flash')}return true}catch(e){return false}}
 function renderPotBox(){const el=document.getElementById('potBox');if(!el||!state)return;const on=state.autoPot!==false,at=state.autoPotAt||0.3;
   el.innerHTML=`<h3>自動喝補血藥</h3><button class="btn${on?' primary':''}" data-ap="tog">自動喝補血藥：${on?'開':'關'}</button><div class="row2" style="margin-top:6px">${[0.2,0.3,0.5].map(v=>`<button class="mini" data-ap="${v}" aria-pressed="${at===v}" style="${at===v?'background:var(--tabon);color:var(--tabtx)':''}">血量低於 ${Math.round(v*100)}%</button>`).join('')}</div><p class="note">在野外（包括打主的時候），血量低於這條線就自動喝一瓶。</p><h3>傷害數字</h3><button class="btn${state.dmgNum!==false?' primary':''}" data-ap="dmg">顯示傷害數字：${state.dmgNum!==false?'開':'關'}</button>`}/* 152 */
 try{document.getElementById('potBox').addEventListener('click',e=>{const b=e.target.closest('[data-ap]');if(!b||!state)return;if(b.dataset.ap==='tog')state.autoPot=state.autoPot===false;else if(b.dataset.ap==='dmg')state.dmgNum=state.dmgNum===false;else state.autoPotAt=+b.dataset.ap;save();renderPotBox()})}catch(e){}
 /* 頭上的細血條（野外、血量不滿才有） */
-function hpHeadG(){if(!state||scene!=='explore'||pHP>=PHP_MAX)return '';const m=curMe(),w=40,f=Math.max(0,pHP/PHP_MAX);return `<g id="hpHead" transform="translate(${Math.round(m.x)} ${Math.round(m.y+(char2On()?char2TagDY()*CHAR_S:0))})" pointer-events="none"><rect x="${-w/2}" y="-108" width="${w}" height="5" rx="2.5" fill="#3B2614"/><rect id="hpHeadF" x="${-w/2+1}" y="-107" width="${((w-2)*f).toFixed(1)}" height="3" rx="1.5" fill="${f<0.3?'#E0463B':'#7FBF4A'}"/></g>`}
-function hpHeadPaint(){try{const want=state&&scene==='explore'&&pHP<PHP_MAX,g=document.getElementById('hpHead');if(!want){if(g)renderChars();return}if(!g){renderChars();return}const f=Math.max(0,pHP/PHP_MAX),r=document.getElementById('hpHeadF');if(r){r.setAttribute('width',(38*f).toFixed(1));r.setAttribute('fill',f<0.3?'#E0463B':'#7FBF4A')}}catch(e){}}
+function hpHeadG(){if(!state||scene!=='explore'||pHP>=pMax())return '';const m=curMe(),w=40,f=Math.max(0,pHP/pMax());return `<g id="hpHead" transform="translate(${Math.round(m.x)} ${Math.round(m.y+(char2On()?char2TagDY()*CHAR_S:0))})" pointer-events="none"><rect x="${-w/2}" y="-108" width="${w}" height="5" rx="2.5" fill="#3B2614"/><rect id="hpHeadF" x="${-w/2+1}" y="-107" width="${((w-2)*f).toFixed(1)}" height="3" rx="1.5" fill="${f<0.3?'#E0463B':'#7FBF4A'}"/></g>`}
+function hpHeadPaint(){try{const want=state&&scene==='explore'&&pHP<pMax(),g=document.getElementById('hpHead');if(!want){if(g)renderChars();return}if(!g){renderChars();return}const f=Math.max(0,pHP/pMax()),r=document.getElementById('hpHeadF');if(r){r.setAttribute('width',(38*f).toFixed(1));r.setAttribute('fill',f<0.3?'#E0463B':'#7FBF4A')}}catch(e){}}
 /* 野外：右下只留背包（＋補血藥快捷格），任務、神之子搬到右上那排（地圖旁邊）；回農場、城鎮搬回去 */
 function wildBar(){const wild=scene==='explore',tb=document.getElementById('tbar'),rb=document.getElementById('rbar'),o=document.getElementById('ordersBtn'),f=document.getElementById('ibFy'),mp=document.getElementById('mapBtn'),bag=document.getElementById('ibBag');if(!tb||!rb||!o||!f)return;
   document.body.classList.toggle('wild',wild);try{renderHP()}catch(e){}try{renderMini()}catch(e){}/* 154 *//* 回農場、城鎮時把快捷格、血條收起來 */
@@ -5559,7 +5559,13 @@ function exItems(bk,cx,cy){
   exItemCache.set(key,out);return out;
 }
 /* 40.3：農場（含拜訪朋友）可以縮到 0.4（看得到約 1000 寬），其他場景最小照舊 0.6 */
-const zMin=()=>scene==='farm'?0.4:0.6,zk=()=>Math.max(zMin(),zoom);
+/* 158.1（19u）：升級自動變強（取代 PHP_MAX、SICKLE_DMG 固定值；怪物數值不動）。Lv 1、2 都是 1000 */
+const pAtk=lv=>Math.round(1000*Math.pow(1.03,Math.max(0,(lv||1)-2)));
+const pHpMax=lv=>Math.round(1000*Math.pow(1.028,Math.max(0,(lv||1)-2)));
+const pMax=()=>pHpMax((state&&state.lv)||1),pAtkNow=()=>pAtk((state&&state.lv)||1);
+/* 158.2：野外鏡頭預設 1.35 倍，兩指縮放 1.0～1.8（state.camZoom）；農場、城鎮照舊 */
+const EX_ZOOM=1.35,exZoom=()=>clamp(state&&typeof state.camZoom==='number'?state.camZoom:EX_ZOOM,1,1.8);
+const zMin=()=>scene==='farm'?0.4:0.6,zk=()=>scene==='explore'?exZoom():Math.max(zMin(),zoom);
 function camRect(){const vw=window.innerWidth,vh=window.innerHeight,k=vw/400*zk(),w=vw/k,h=vh/k,m=curMe();return {x:m.x-w/2,y:m.y-h*0.55,w,h}}
 function exRange(r){const cx0=Math.floor((r.x-90)/EXC),cx1=Math.floor((r.x+r.w+90)/EXC),cy0=Math.floor((r.y-130)/EXC),cy1=Math.floor((r.y+r.h+90)/EXC);return {cx0,cx1,cy0,cy1,key:[cx0,cx1,cy0,cy1].join(',')}}
 // ===== 野外植株（同一天、同一地區所有玩家看到的相同）=====
@@ -7626,7 +7632,7 @@ document.getElementById('exploreBody').addEventListener('click',e=>{const b=e.ta
 function goMarket(){try{bossLeave()}catch(e){}/* 135 */
   if(myLv()<LV_TOWN&&!mq2Cur()){/* 116：序章從教會開始，主線進行中不擋 */toast(`城鎮 Lv ${LV_TOWN} 開放（你現在 Lv ${myLv()}）。收成、雜交、發現新的樣子都能得到經驗`,4500);return}
   if(viewing){if(viewing.unsub)viewing.unsub();viewing=null}
-  tripSave();pHP=PHP_MAX;/* 131 */selDecor=null;renderDecoBar();scene='market';{const a=regArrival('town','plaza','farm');marketMe={x:a[0],y:a[1]}}hoverPlot=null;hoverStall=null;hoverTown=null;regPreload('town');
+  tripSave();pHP=pMax();/* 131 */selDecor=null;renderDecoBar();scene='market';{const a=regArrival('town','plaza','farm');marketMe={x:a[0],y:a[1]}}hoverPlot=null;hoverStall=null;hoverTown=null;regPreload('town');
   joinFarm('town');/* 15b：多人頻道改成 town（32.1） */renderHUD();renderWorld();renderChars();updateCam();refreshAct();
   toast('來到城鎮了！');mqEv('town');
 }
@@ -7720,7 +7726,7 @@ function bossStep(dt){lordSummonTick();const b=bossRT,now=bossNow();if(!b)return
   if(b.done){bossPaint(b);return}
   /* 自己打：靠近、沒躲起來 */
   const reach=BOSS_REACH+b.def.h*10;if(!b.hidden&&Math.hypot(me.x-b.x,(me.y-b.y)*1.2)<=reach&&now>=bossSwingAt){bossSwingAt=now+(typeof MON_SWING!=='undefined'?MON_SWING:350);try{pFightAt=now}catch(e){}
-    if(b.mode==='guard'){try{dmgShow(b.x,b.y-BOSS_HU*(b.def.h||1),0,{miss:1,text:'擋住了',key:'boss'})}catch(e){}}else{b.myDmg+=(typeof SICKLE_DMG!=='undefined'?SICKLE_DMG:1000);try{dmgShow(b.x,b.y-BOSS_HU*(b.def.h||1),typeof SICKLE_DMG!=='undefined'?SICKLE_DMG:1000,{key:'boss'})}catch(e){}/* 152 */b.dmg[bossMe()]=b.myDmg;b.hitT=now;if(b.net)lordPushDmg(b)}}
+    if(b.mode==='guard'){try{dmgShow(b.x,b.y-BOSS_HU*(b.def.h||1),0,{miss:1,text:'擋住了',key:'boss'})}catch(e){}}else{b.myDmg+=pAtkNow();/* 158 */try{dmgShow(b.x,b.y-BOSS_HU*(b.def.h||1),pAtkNow(),{key:'boss'})}catch(e){}/* 152 */b.dmg[bossMe()]=b.myDmg;b.hitT=now;if(b.net)lordPushDmg(b)}}
   if(host&&bossHp(b)<=0&&!b.done)bossWin(b);
   bossPaint(b)}
 const bossIsHost=b=>b.kind==='servant'||!b.net||b.net.host===uid;
@@ -7931,7 +7937,7 @@ function nestObj(){const [x,y]=NEST_AT,lit=nestLit();return {y,h:`<g transform="
 function nestTick(){try{if(scene!=='explore'||exBiome!=='forest'||regMap!=='secret'||!nestLit())return;if(bossRT&&bossRT.kind==='lord'&&!bossRT.done)return;const m=curMe();if(Math.hypot(m.x-NEST_AT[0],m.y-NEST_AT[1])>55)return;const r=noteDef('R6');if(noteGet('R6'))noteOpen(`<h2>撿到的東西</h2>`+relCardHTML(r)+'<p class="note">記進「圖鑑 → 筆記」了。</p>')}catch(e){}}
 /* ===== 135 第二階段結束 ===== */
 function goFarm(){
-  try{bossLeave()}catch(e){}/* 135：離開就算放棄 */tripSave();pHP=PHP_MAX;/* 131 */if(viewing){if(viewing.unsub)viewing.unsub();viewing=null}
+  try{bossLeave()}catch(e){}/* 135：離開就算放棄 */tripSave();pHP=pMax();/* 131 */if(viewing){if(viewing.unsub)viewing.unsub();viewing=null}
   scene='farm';hoverPlot=null;hoverStall=null;
   if(state.me&&state.me.y>2110)state.me.y=2090;
   joinFarm(uid);renderHUD();renderWorld();renderChars();updateCam();refreshAct();
@@ -8410,7 +8416,8 @@ const FY_PART={tomato:['star',[[0.40,0.04]]],eggplant:['note',[[0.62,0.30]]],chi
    玩家斜後方、腳底比玩家腳底高約玩家身高的 20%。角色重畫、高度改變時 fyScaleMeasure 會重新量 */
 const CHAR_S=1.15,FY_REL=1.3,AV_HU0=57.5;let AV_HU=AV_HU0,FY_S=1.15,FY_DX=24,FY_DY=-42,FY_HW=44,FY_Q=1,fyMeasured=false;
 function fyScaleSet(hu){AV_HU=hu;const PH=AV_HU*CHAR_S;FY_S=FY_REL*PH/FY_FH;FY_DX=0.7*PH;FY_DY=-0.2*PH;FY_HW=FY_FH*FY_S;FY_Q=FY_DX/24.15;
-  try{for(const S of FYO.values())S.sh.setAttribute('rx',(9*FY_S/1.15).toFixed(1))}catch(e){}}
+  try{for(const S of FYO.values()){S.sh.setAttribute('rx',fyShRx().toFixed(1));S.sh.setAttribute('ry',(fyShRx()*0.3).toFixed(1))}}catch(e){}}
+function fyShRx(){return FY_FH*0.42*FY_S*0.35}/* 158.3：神之子身體寬約 FY_FH×0.42 */
 fyScaleSet(AV_HU0);
 function fyScaleMeasure(){if(fyMeasured)return;try{const e=document.getElementById('meGAv')||document.getElementById('meAv');if(!e||!e.getBBox)return;const hh=e.getBBox().height;if(hh>20&&hh<200){fyMeasured=true;if(Math.abs(hh-AV_HU)>0.5)fyScaleSet(hh)}}catch(e){}}
 /* 放招：往技能方向前移一小段、放大到 1.15 倍、亮一下夢幻色光，0.4 秒後回原位；回傳技能特效該從哪裡發出（神之子身上） */
@@ -8432,7 +8439,7 @@ function fyBodySVG(f){const H=FY_FH,ev=f.evo,w=FY_WING[f.k]||'#FFE6A0';
   if(ev&&!FAIRY_BASE_READY)s+=`<g transform="translate(0 ${f3(-H*0.53)}) scale(1 .3)"><circle r="${f3(H*0.12)}" fill="none" stroke="#FFD54A" stroke-width="2.2"/><g class="fyorb">${[0,120,240].map(a=>`<circle cx="${f3(H*0.12*Math.cos(a*Math.PI/180))}" cy="${f3(H*0.12*Math.sin(a*Math.PI/180))}" r="1.9" fill="#FFF8D0"/>`).join('')}</g></g>`;/* 97.4 光環：細金環＋三顆繞圈的亮點 */
   return s+`<rect x="${-H*0.28}" y="${-H*0.5}" width="${H*0.56}" height="${H}" fill="transparent"/>`}
 function fyNode(who,o){const [B]=fyLayers();if(!B)return null;let S=FYO.get(who);
-  if(!S){const ns='http://www.w3.org/2000/svg';const sh=document.createElementNS(ns,'ellipse');sh.setAttribute('class','fysh');sh.setAttribute('rx',(9*FY_S/1.15).toFixed(1));sh.setAttribute('ry','2.6');sh.setAttribute('fill','#2A1A08');
+  if(!S){const ns='http://www.w3.org/2000/svg';const sh=document.createElementNS(ns,'ellipse');sh.setAttribute('class','fysh');sh.setAttribute('rx',fyShRx().toFixed(1));sh.setAttribute('ry',(fyShRx()*0.3).toFixed(1));sh.setAttribute('fill','#000');
     const g=document.createElementNS(ns,'g');g.setAttribute('class','fyo');g.setAttribute('data-fy',who);g.style.pointerEvents='auto';
     const p=o.getPos();fyScaleMeasure();S={who,x:p.x+(p.flip?FY_DX:-FY_DX),y:p.y+FY_DY,sx:p.flip?-1:1,tilt:0,lx:p.x,ly:p.y,still:0,next:performance.now()/1000+8+Math.random()*7,idle:null,side:null,trail:0,part:0,parts:0,key:'',g,sh,front:false,ph:(hashStr(who)%628)/100};
     B.appendChild(sh);B.appendChild(g);FYO.set(who,S)}
@@ -8473,14 +8480,14 @@ function fyLoop(ts){if(!fyOwners.size){fyRaf=0;fyLastT=0;return}/* 106.4：畫�
       if(S.still>4&&t>S.next){const ty_=1+Math.floor(Math.random()*3),dur=ty_===1?0.8:ty_===2?1.5:1.7;S.idle={type:ty_,t0:t,dur,x0:S.x,y0:S.y,a0:side>0?0:Math.PI};S.next=t+dur+8+Math.random()*7}}
     const vx=(S.x-px)/dt;
     /* 轉向：0.2 秒壓扁再翻面；精靈的視線朝向主人（在主人右邊就鏡像） */
-    const want=(S.side!=null?S.side:side)>0?-1:1;if(!rm){const st=dt*10;S.sx=S.sx<want?Math.min(want,S.sx+st):Math.max(want,S.sx-st)}else S.sx=want;
+    const want=(S.side!=null?S.side:side)>0?-1:1;S.sx=want;/* 158.4：直接翻面，不再壓扁成一條線 */
     const tt=moving&&!rm?Math.max(-6,Math.min(6,vx*0.06)):0;S.tilt+=(tt-S.tilt)*Math.min(1,dt*6);
     const ph=S.ph,fl=rm?0:5*Math.sin(2*Math.PI*t/2.6+ph),rot=rm?0:S.tilt+2*Math.sin(2*Math.PI*t/2.6+ph+1.3);
     const sxx=Math.abs(S.sx)<0.04?0.04*Math.sign(S.sx||1):S.sx;
     let cx=0,cy=0,cs=1;if(S.cast){const u=(t-S.cast.t0)/0.4;if(u>=1||u<0)S.cast=null;else{const e=Math.sin(Math.PI*u);cx=S.cast.dx*14*FY_Q*e;cy=S.cast.dy*14*FY_Q*e;cs=1+0.15*e}}/* 155：放招 */
     S.g.setAttribute('transform',`translate(${f1(S.x+cx)} ${f1(S.y+fl+cy)}) rotate(${f1(rot)}) scale(${(sxx*FY_S*cs).toFixed(3)} ${(FY_S*cs).toFixed(3)})`);
     {const fr=front||S.y>p.y+2;if(fr!==S.fade){S.fade=fr;S.g.style.opacity=fr?'0.7':''}}/* 155：在玩家前面時 70% 不透明 */
-    const hk=1-fl/5*0.18;S.sh.setAttribute('transform',`translate(${f1(S.x)} ${f1(p.y+1)}) scale(${hk.toFixed(3)})`);S.sh.setAttribute('opacity',(0.18*(0.75+0.25*hk)).toFixed(3));
+    const hk=1-fl/5*0.18-Math.min(0.35,Math.max(0,(p.y+1-S.y-fl)/(FY_HW*2)));S.sh.setAttribute('transform',`translate(${f1(S.x)} ${f1(p.y+1)}) scale(${hk.toFixed(3)})`);S.sh.setAttribute('opacity',(0.25*hk).toFixed(3));/* 158.3：飄得越高影子越小越淡 */
     if(front!==S.front&&FR){S.front=front;(front?FR:fyLayers()[0]).appendChild(S.g)}
     if(rm)continue;
     /* 移動時的光點（進化型更多、帶翅膀主色） */
@@ -8555,29 +8562,29 @@ const MON_MAP={grass:{entry:[['haybale',70],['wind_boar',30]],meadow:[['sprout_b
   snow:{entry:[['snow_pile',70],['snow_whirl',30]],forest:[['frost_bellgrass',70],['frost_wolf',30]],cabin:[['baby_mammoth',70],['crystal_leopard',30]],lake:[['ice_crab',70],['ice_bubbles',30]],cave_front:[['ice_prism',70],['snow_badger',30]],cave1:[['yeti_cub',70],['ice_spider',30]],cave2:[['aurora_jelly',70],['ice_golem',30]]},volcano:{entry:[['fire_rat',70],['volcano_snail',30]],basalt:[['obsidian_rhino',70],['ash_mole',30]],sulfur:[['sulfur_shroom',70],['sulfur_hedgehog',30]],lava_river:[['lava_serpent',70],['lava_lizard',30]],cult_camp:[['lava_armadillo',70],['ember_golem',30]],crater:[['crater_eagle',70],['flame_sprite',30]],lava_tube:[['ore_ant',70],['ember_bat',30]]},canyon:{entry:[['night_antelope',70],['glow_scorpion',30]],beach:[['star_puffer',70],['glow_dragonfly',30]],glow_wood:[['flytrap',70],['star_hummingbird',30]],bridge:[['cliff_antelope',70],['silver_moth',30]],echo:[['chime_beast',70],['amethyst_star',30]],plateau:[['moon_moth',70],['laurel_sprite',30]],star_cave:[['star_stag',70],['crystal_star',30]]},ruins:{entry:[['mech_scorpion',70],['mech_bee',30]],plaza:[['mech_raptor',70],['three_head_bird',30]],houses:[['black_raptor',70],['mech_centipede',30]],greenhouse:[['moss_bee',70],['mech_spider',30]],station:[['steel_python',70],['mech_ptero',30]],metro:[['mech_croc',70],['mech_crab',30]],avenue:[['rune_tablet',70],['mech_ankylo',30]],core:[['prism_beetle',70],['stone_doll',30]]}};/* 105.12：84 隻到齊（秘境不放） */
 const MON_N=5,MON_RESPAWN=[1000,3000],MON_FAR=250,MON_SAFE=500,MON_BOSS=0.05,MON_BOSS_K=1.4,MON_RANGE=30,MON_SWING=350,MON_HP=[3,5],MON_SPD=16,MON_COIN=[[1,2],[10,15]],MON_COIN_P=[0.30,1],MON_ACC=[0.03,0.20],MON_BAR_RESET=5000;/* 105.10（測試值） */
 let MON_RT=null,monRaf=0,monLast=0,monForceBoss=false,monFightI=-1,monSwingAt=0;
-/* ===== 131（18z）：戰鬥第一步。角色血量 PHP_MAX（野外才有），5 秒沒打也沒被打每秒回 2%；歸零倒下回農場、這趟素材（state.trip）每種掉一半。
+/* ===== 131（18z）：戰鬥第一步。角色血量 pMax()（158 起照等級；野外才有），5 秒沒打也沒被打每秒回 2%；歸零倒下回農場、這趟素材（state.trip）每種掉一半。
    怪物有血量（MON_RHP，王 ×5），鐮刀一下 SICKLE_DMG；被打才還手：追打的人，離原位 MON_LEASH 或 MON_GIVEUP 毫秒沒被打就放棄、走回去、補滿；
    出手前閃紅光停 MON_WIND 毫秒，再判定前方 MON_ATK_R 的範圍（走開就不中）。一張地圖 5 隻＋同一張圖每多 1 人 2 隻、最多 MON_MAXN（多的不存檔）。
    打怪的經驗 MON_XP（血量 ÷100、王 ×10）先不給（MON_XP_ON=false，等使用者決定）。怪物還是每個人各自的（不同步）。 ===== */
-const PHP_MAX=1000,PHP_REGEN=0.02,PHP_CALM=5000,SICKLE_DMG=1000,MON_MAXN=12,MON_LEASH=250,MON_GIVEUP=5000,MON_WIND=500,MON_ATK_R=45,MON_ATK_CD=1200,MON_CHASE=70,MON_BOSS_HP=5,MON_BOSS_DMG=1.5;
+const PHP_BASE=1000,PHP_REGEN=0.02,PHP_CALM=5000,SICKLE_DMG=1000,MON_MAXN=12,MON_LEASH=250,MON_GIVEUP=5000,MON_WIND=500,MON_ATK_R=45,MON_ATK_CD=1200,MON_CHASE=70,MON_BOSS_HP=5,MON_BOSS_DMG=1.5;
 const MON_RHP={grass:3000,forest:5000,marsh:7000,sakura:12000,desert:18000,snow:25000,volcano:33000,canyon:41000,ruins:50000},MON_RDMG={grass:[50,80],forest:[80,120],marsh:[100,150],sakura:[180,250],desert:[250,350],snow:[350,450],volcano:[450,550],canyon:[550,650],ruins:[650,750]};/* 141：後三區照 139.0 回報往上推 */
 const MON_XP_ON=false,monXp=(bk,boss)=>Math.round((MON_RHP[bk]||3000)/100)*(boss?10:1);
 const POT_HEAL=0.3,POT_CD=5000,POT_GIFT=3;
 const monMaxHp=boss=>(MON_RHP[exBiome]||3000)*(boss?MON_BOSS_HP:1);
 const monDmg=m=>{const r=MON_RDMG[exBiome]||[50,80];return Math.round((r[0]+Math.random()*(r[1]-r[0]))*(m.boss?MON_BOSS_DMG:1)*monVar(m.k,'dmg'))};
 const monCount=()=>Math.min(MON_MAXN,MON_N+2*Object.keys(others||{}).length);
-let pHP=PHP_MAX,pFightAt=0,pRegAt=0,potCd=0;
+let pHP=PHP_BASE,pFightAt=0,pRegAt=0,potCd=0;
 function pDamage(n){pHP=Math.max(0,pHP-n);pFightAt=Date.now();try{const me=curMe();dmgShow(me.x,me.y-78,n,{hurt:1,key:'me'})}catch(e){}/* 152：紅字 */renderHP();if(pHP<=0)pDie();else autoPotCheck()}
-function pDie(){const lost=tripLose();pHP=PHP_MAX;pFightAt=0;try{closePanel();closeSheet()}catch(e){}goFarm();renderHP();
+function pDie(){const lost=tripLose();pHP=pMax();pFightAt=0;try{closePanel();closeSheet()}catch(e){}goFarm();renderHP();
   setTimeout(()=>{try{noteOpen(`<h2>你倒下了</h2><p class="note">被送回農場，血量補滿了。${lost?'這趟撿到、還沒帶回來的素材掉了一半。':''}</p><p class="note">金幣、種子、果實、道具都沒有少。</p>`)}catch(e){}},400)}
-function pRegen(){autoPotCheck();const now=Date.now();if(scene!=='explore'){if(pHP<PHP_MAX){pHP=PHP_MAX;renderHP()}pRegAt=now;return}const dt=Math.min(5,(now-(pRegAt||now))/1000);pRegAt=now;if(pHP<PHP_MAX&&now-pFightAt>=PHP_CALM){const ed=Math.min(dt,(now-pFightAt-PHP_CALM)/1000);if(ed>0){pHP=Math.min(PHP_MAX,pHP+PHP_MAX*PHP_REGEN*ed);renderHP()}}}/* 只算安靜滿 5 秒之後的時間 */
+function pRegen(){autoPotCheck();const now=Date.now();if(scene!=='explore'){if(pHP<pMax()){pHP=pMax();renderHP()}pRegAt=now;return}const dt=Math.min(5,(now-(pRegAt||now))/1000);pRegAt=now;if(pHP<pMax()&&now-pFightAt>=PHP_CALM){const ed=Math.min(dt,(now-pFightAt-PHP_CALM)/1000);if(ed>0){pHP=Math.min(pMax(),pHP+pMax()*PHP_REGEN*ed);renderHP()}}}/* 只算安靜滿 5 秒之後的時間 */
 function drinkPot(k,quiet){k=k||potPick();const T=POT_TYPES.find(x=>x.k===k)||POT_TYPES[0];const it=state.items||(state.items={}),now=Date.now(),say=m=>{if(!quiet)toast(m)};if(scene!=='explore'){say('補血藥只能在野外喝');return false}if(!(it[T.k]>0)){say(`沒有${T.n}了（到城鎮的道具行製作）`);return false}if(now<potCd){say(`還要 ${Math.ceil((potCd-now)/1000)} 秒才能再喝`);return false}
-  if(pHP>=PHP_MAX){say('血量是滿的');return false}it[T.k]--;potCd=now+POT_CD;{const h0=pHP;pHP=Math.min(PHP_MAX,pHP+PHP_MAX*T.heal);try{const me=curMe();dmgShow(me.x,me.y-78,pHP-h0,{heal:1,key:'meh'})}catch(e){}}/* 152：綠字 */saveLite();renderHP();potCdRun();return true}/* 144：k＝哪一種；quiet＝自動喝藥不跳提示 */
+  if(pHP>=pMax()){say('血量是滿的');return false}it[T.k]--;potCd=now+POT_CD;{const h0=pHP;pHP=Math.min(pMax(),pHP+pMax()*T.heal);try{const me=curMe();dmgShow(me.x,me.y-78,pHP-h0,{heal:1,key:'meh'})}catch(e){}}/* 152：綠字 */saveLite();renderHP();potCdRun();return true}/* 144：k＝哪一種；quiet＝自動喝藥不跳提示 */
 function renderHP(){try{let b=document.getElementById('hpBar'),pb=document.getElementById('potBtn');
   if(!b){b=document.createElement('div');b.id='hpBar';b.innerHTML='<i></i><span></span>';document.body.appendChild(b)}
   if(!pb){pb=document.createElement('button');pb.id='potBtn';pb.type='button';pb.setAttribute('aria-label','補血藥（長按換種類）');potSlotBind(pb);document.body.appendChild(pb)}
   const on=!!state&&scene==='explore'&&(typeof regIn!=='function'||regIn());b.hidden=!on;pb.hidden=!on;if(!on)return;
-  b.querySelector('i').style.width=(pHP/PHP_MAX*100).toFixed(1)+'%';b.querySelector('span').textContent=`${Math.ceil(pHP)}／${PHP_MAX}`;b.classList.toggle('low',pHP<PHP_MAX*0.3);
+  b.querySelector('i').style.width=(pHP/pMax()*100).toFixed(1)+'%';b.querySelector('span').textContent=`${Math.ceil(pHP)}／${pMax()}`;b.classList.toggle('low',pHP<pMax()*0.3);
   potSlotPaint(pb);hpHeadPaint()}catch(e){}}
 /* 這趟素材：離開農場、城鎮之後撿到的；回去就算存好 */
 function tripAdd(k,n){if(scene!=='explore'||!n)return;const T=state.trip||(state.trip={});T[k]=(T[k]||0)+n}
@@ -8696,7 +8703,7 @@ function monDebris(m){try{const L=document.getElementById('monSw');if(!L)return;
   for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,d=22+Math.random()*26;s+=`<circle cx="${m.x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(2.5+Math.random()*2.5).toFixed(1)}" fill="${c}" stroke="#3B2614" stroke-width="1" style="--dx:${(Math.cos(a)*d).toFixed(1)}px;--dy:${(Math.sin(a)*d-14).toFixed(1)}px"/>`}
   g.innerHTML=s;L.appendChild(g);setTimeout(()=>{try{g.remove()}catch(e){}},520)}catch(e){}}
 /* ===== 141 結束 ===== */
-function monHit(i){const m=MON_RT&&MON_RT.list[i];if(!m||m.dead)return;const now=Date.now();m.hp=Math.max(0,m.hp-SICKLE_DMG);try{dmgShow(m.x,monHeadY(m),SICKLE_DMG,{key:'m'+i})}catch(e){}/* 152 */m.lastHit=now;pFightAt=now;if(!m.aggro){m.aggro=1;m.ox=m.x;m.oy=m.y}/* 131 */monSwing(m);try{sfx('pop',60)}catch(e){}
+function monHit(i){const m=MON_RT&&MON_RT.list[i];if(!m||m.dead)return;const now=Date.now();const atk=pAtkNow();m.hp=Math.max(0,m.hp-atk);try{dmgShow(m.x,monHeadY(m),atk,{key:'m'+i})}catch(e){}/* 152 */m.lastHit=now;pFightAt=now;if(!m.aggro){m.aggro=1;m.ox=m.x;m.oy=m.y}/* 131 */monSwing(m);try{sfx('pop',60)}catch(e){}
   const s=m.el&&m.el.querySelector('.ms'),hasHit=!!MON_IMG[m.k+'_hit'];
   if(hasHit&&s){s.innerHTML=monImgTag(m.k,m.boss,true);clearTimeout(m._ht);if(m.hp>0)m._ht=setTimeout(()=>{if(!m.dead)s.innerHTML=monImgTag(m.k,m.boss,false)},250)}
   if(hasHit)monReplay(s,'hit');else monHit2(m,s);monDebris(m);monBar(m,true);/* 141.3 */
@@ -8979,8 +8986,10 @@ function char2Paint(a,face,moving){let g=a.querySelector&&a.querySelector('g.c2'
 function renderChar2Box(){const el=document.getElementById('char2Box');if(!el||!state)return;const on=char2On(),s=char2Sex();
   el.innerHTML=`<h3>新版角色（測試）</h3><button class="btn${on?' primary':''}" data-c2="tog">新版角色（測試）：${on?'開':'關'}</button>${on?`<div class="row2" style="margin-top:6px"><button class="mini" data-c2="m" aria-pressed="${s==='m'}" style="${s==='m'?'background:var(--tabon);color:var(--tabtx)':''}">男生</button><button class="mini" data-c2="f" aria-pressed="${s==='f'}" style="${s==='f'?'background:var(--tabon);color:var(--tabtx)':''}">女生</button></div>`:''}<p class="note">只換你自己的樣子；衣服、髮型、神之翼這一版還不會顯示。</p>`}
 try{document.getElementById('char2Box').addEventListener('click',e=>{const b=e.target.closest('[data-c2]');if(!b||!state)return;const v=b.dataset.c2;if(v==='tog'){state.char2=!state.char2;if(state.char2)char2Preload()}else state.char2Sex=v;save();renderChar2Box();try{const L=document.getElementById('charLayer');if(L)L._s='';renderChars();fyMeasured=false;fyScaleMeasure()}catch(e){}})}catch(e){}/* 155：神之子跟著新角色的高度 */
+/* 158.3：主角腳下的影子（寬約身體 70%、高為寬的 30%、黑 25%）；新版角色身體約畫布寬的 60% */
+function charShadow(id){const bw=id==='meG'&&char2On()?char2Geo(char2Sex()).W*0.6:24,rx=bw*0.35,ry=rx*0.3;return `<ellipse class="psh" cx="0" cy="-0.5" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="#000" opacity=".25"/>`}
 /* ===== 156 結束 ===== */
-function charG(id,x,y,av,flip,pose,name,lv,fy,who,ch){return `<g ${id?`id="${id}"`:''} transform="translate(${Math.round(x)} ${Math.round(y)}) scale(1.15)" pointer-events="none"><g${id?` id="${id}Av"`:''}>${id==='meG'&&char2On()?char2SVG(meFace,!!raf):avIdle(av,flip,pose)}</g>${name?`<g${id?` id="${id}Tag"`:''}${id==='meG'&&char2On()?` transform="translate(0 ${char2TagDY().toFixed(1)})"`:''}>${nameTag(name,lv,ch)}</g>`:''}</g>`}/* 71.1（16h）：角色和名牌分成兩個群組，走路時只重畫角色 */
+function charG(id,x,y,av,flip,pose,name,lv,fy,who,ch){return `<g ${id?`id="${id}"`:''} transform="translate(${Math.round(x)} ${Math.round(y)}) scale(1.15)" pointer-events="none">${charShadow(id)}<g${id?` id="${id}Av"`:''}>${id==='meG'&&char2On()?char2SVG(meFace,!!raf):avIdle(av,flip,pose)}</g>${name?`<g${id?` id="${id}Tag"`:''}${id==='meG'&&char2On()?` transform="translate(0 ${char2TagDY().toFixed(1)})"`:''}>${nameTag(name,lv,ch)}</g>`:''}</g>`}/* 71.1（16h）：角色和名牌分成兩個群組，走路時只重畫角色 */
 function avIdle(av,flip,pose){const a=avatarSVG(av,flip,pose);return pose&&typeof pose==='object'&&pose.ph==null&&!pose.act?`<g class="brth">${a}</g>`:a}/* 56：站著不動時輕微起伏 */
 function renderChars(){
   if(!state)return;const L=document.getElementById('charLayer');let s='';
@@ -9075,7 +9084,7 @@ window.addEventListener('keydown',e=>{if(!state||e.target.closest('input,textare
 window.addEventListener('keyup',e=>{delete keys[e.key]});
 // ===== 畫面縮放（雙指捏合／滑鼠滾輪）=====
 let zoom=(()=>{try{return clamp(+localStorage.getItem('sw_zoom')||1,0.4,1.8)}catch(e){return 1}})();
-function setZoom(z){zoom=clamp(z,zMin(),1.8);try{localStorage.setItem('sw_zoom',String(zoom))}catch(e){}updateCam()}
+function setZoom(z){if(scene==='explore'&&state){state.camZoom=clamp(z,1,1.8);try{saveLite()}catch(e){}updateCam();return}/* 158.2 */zoom=clamp(z,zMin(),1.8);try{localStorage.setItem('sw_zoom',String(zoom))}catch(e){}updateCam()}
 // ===== 點哪走哪 =====
 let moveTo=null;   // {x,y,then}
 /* ===== 148（19m）：NPC 的點擊範圍與優先順序 ===== */
@@ -9239,11 +9248,11 @@ try{if(window.visualViewport)visualViewport.addEventListener('resize',()=>{if(vi
 /* 雙擊空白處：回到預設視角 */
 let lastEmptyTap=null;
 function emptyTapTarget(t){return !(t&&t.closest&&t.closest('[data-plot],[data-decor],[data-stall],[data-bld],[data-npc],[data-wp],[data-item]'))}
-function viewReset(){setZoom(1);resetPageZoom();if(typeof buildCam!=='undefined'&&(buildMode||shovelMode||sowMode||accelMode||decoMode||pickMode)){const m=curMe();buildCam={x:m.x,y:m.y}}updateCam();toast('回到預設視角',1500)}
+function viewReset(){setZoom(scene==='explore'?EX_ZOOM:1);resetPageZoom();if(typeof buildCam!=='undefined'&&(buildMode||shovelMode||sowMode||accelMode||decoMode||pickMode)){const m=curMe();buildCam={x:m.x,y:m.y}}updateCam();toast('回到預設視角',1500)}
 // iPhone Safari 會忽略禁止縮放的設定：攔截網頁本身的縮放手勢，雙指只縮放遊戲畫面
 for(const t of ['gesturestart','gesturechange','gestureend'])document.addEventListener(t,e=>e.preventDefault(),{passive:false});
 document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false});
-sceneEl.addEventListener('wheel',e=>{if(!state)return;e.preventDefault();setZoom(zoom*(e.deltaY<0?1.1:1/1.1))},{passive:false});
+sceneEl.addEventListener('wheel',e=>{if(!state)return;e.preventDefault();setZoom(zk()*(e.deltaY<0?1.1:1/1.1))},{passive:false});
 
 
 // ===== 種子包的整齊度說明 =====
@@ -10218,6 +10227,7 @@ function outfitWardHTML(){if(!state)return '';const OW=outfitsObj(),L=OUTFITS.fi
 function levelUp(lv){
   sfx('fan');
   const out=[],c=50+10*lv;state.coins+=c;out.push(`得到 ${c} 金幣`);
+  {const a0=pAtk(lv-1),a1=pAtk(lv),h0=pHpMax(lv-1),h1=pHpMax(lv);out.push(`攻擊 ${a0.toLocaleString('en-US')} → ${a1.toLocaleString('en-US')}、血量 ${h0.toLocaleString('en-US')} → ${h1.toLocaleString('en-US')}`);try{pHP=h1;renderHP()}catch(e){}}/* 158.1：升級血量補滿 */
   {const g=lvPackFor(lv),it=state.items||(state.items={});if(lv%4===0)g.mut=(g.mut||0)+1;for(const [k,n] of Object.entries(g))it[k]=(it[k]||0)+n;const gg={...g};if(lv%3===0){const bk=lvPackBk(lv),P=packsObj();P[bk]=(P[bk]||0)+1;gg.pack=1}if(Object.keys(gg).length)out.push(lvGiftHTML(gg))}/* 157.1 */
   for(const k of BASE_CROPS)if(LV_CROP[k]===lv)out.push(`新作物：${CROPS[k].n}（野外開始出現）`);
   for(const k in LV_REG)if(LV_REG[k]===lv)out.push(`新地區：${BIOMES[k].n}`);

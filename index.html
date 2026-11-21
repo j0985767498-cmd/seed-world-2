@@ -878,6 +878,7 @@ details.gfold .gfb{margin-top:8px}
 .fy-god .fys-pillar{width:150px!important;background:linear-gradient(90deg,rgba(255,240,180,0),rgba(255,255,235,1),rgba(255,240,180,0))!important}.fy-god .fys-flash{animation-duration:.7s!important}.fys-ring2{border-width:6px;animation:fysring .9s 2.45s ease-out forwards}/* 114：神化的光柱、白光加強，最後多一圈擴散的光環 */
 .offfx{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);z-index:60;display:flex;gap:14px;pointer-events:auto;animation:offfx .9s ease-out forwards}.offfx b{font-size:30px;text-shadow:0 0 8px #fff}.offok{color:#E8B400}.offbad{color:#8A8A8A}.offfx .offbad::before{content:'✕ '}@keyframes offfx{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-80%) scale(1)}}/* 114 */
 .mwind{animation:mwind .5s ease-in-out}.mwind .ms{filter:drop-shadow(0 0 6px #FF2A2A) drop-shadow(0 0 2px #FF2A2A) brightness(1.15) sepia(.5) saturate(4) hue-rotate(-30deg)}@keyframes mwind{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+/* 135 */#bossBar{position:fixed;left:50%;transform:translateX(-50%);top:calc(122px + env(safe-area-inset-top,0px));z-index:11;width:min(300px,82vw);display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;pointer-events:none}#bossBar[hidden]{display:none}#bossBar b{width:100%;text-align:center;font-size:14px;color:#fff;text-shadow:0 0 3px #3B2614,0 0 3px #3B2614}#bossBar .bbw{position:relative;flex:1;height:14px;border-radius:8px;border:2px solid #3B2614;background:#4A2A18;overflow:hidden}#bossBar .bbw i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#E8504A,#B8282A);transition:width .2s}#bossBar .bbw em{position:absolute;left:50%;top:0;bottom:0;width:2px;background:#FFF6DE;opacity:.85}#bossBar.ph2 .bbw i{background:linear-gradient(#F0A040,#C8501A)}#bossBar .bbq{pointer-events:auto;font-size:12px;padding:2px 8px;border-radius:8px;border:2px solid #5A3416;background:#FFF6DE;color:#5A3416}#bossBar .bbq[hidden]{display:none}.lordshow{position:fixed;inset:0;z-index:40;background:rgba(10,10,20,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;animation:lsIn 2.2s ease forwards;pointer-events:none}.lordshow .ls-n{font-size:30px;font-weight:800;letter-spacing:4px;text-shadow:0 2px 8px #000}.lordshow .ls-t{font-size:15px;margin-top:8px;opacity:.9}@keyframes lsIn{0%{opacity:0}15%{opacity:1}80%{opacity:1}100%{opacity:0}}.lordcalm{position:fixed;inset:0;z-index:40;background:rgba(255,250,230,.55);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#5A3416;animation:lsIn 2.6s ease forwards;pointer-events:none}.bgrass{animation:bgr .35s ease-in-out infinite alternate;transform-origin:0 0}@keyframes bgr{from{transform:skewX(-8deg)}to{transform:skewX(8deg)}}.lordwall{animation:lwall 1.6s ease-in-out infinite alternate}@keyframes lwall{from{stroke-opacity:.3}to{stroke-opacity:.7}}.feather{animation:fth 1.8s ease-in-out infinite alternate}@keyframes fth{from{opacity:.65}to{opacity:1}}
 #hpBar{position:fixed;left:50%;transform:translateX(-50%);top:calc(98px + env(safe-area-inset-top,0px));z-index:11;width:170px;height:16px;border-radius:9px;border:2px solid #5A3416;background:#FFF6DE;overflow:hidden;box-shadow:0 2px 0 #5A3416;pointer-events:none}#hpBar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(180deg,#F26A5A,#C9372A);transition:width .2s}#hpBar.low i{background:linear-gradient(180deg,#FF8A3D,#E04020)}#hpBar span{position:relative;display:block;text-align:center;font-size:11px;line-height:12px;font-weight:700;color:#3B2614}
 #potBtn{position:fixed;right:8px;top:calc(312px + env(safe-area-inset-top,0px));z-index:10;width:54px;height:44px;border-radius:14px;border:2px solid #7A1E14;background:#FFE1D6;color:#7A1E14;font:inherit;font-weight:700;font-size:12px;box-shadow:0 3px 0 #7A1E14}#potBtn:disabled{opacity:.5}/* 131 */
 .themerow{display:grid;grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:8px}.thcard{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;border:2px solid #C9A06A;border-radius:10px;background:#FFF6DE;font:inherit;color:#5A3416}.thcard.on{border-color:#2E9B43}.thcard small{color:#7A5A30}.lrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 0;border-bottom:1px dashed var(--line)}.lrow .lbtns{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}/* 137 */
@@ -1709,7 +1710,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-19a';
+const BUILD='2026-11-19b';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2980,6 +2981,7 @@ function renderSheet(){
   if(sheet.mqgo){sb.innerHTML=mqGoHTML();return}/* 116.5 */
   if(sheet.give){sb.innerHTML=giveHTML();return}/* 117.2 */
   if(sheet.rnpc){sb.innerHTML=rnpcHTML();return}/* 121 */
+  if(sheet.hatsuho){sb.innerHTML=hatsuhoHTML();return}/* 135 */
   if(sheet.me){sb.innerHTML=meSheetHTML();return}
   if(sheet.sellOld){sb.innerHTML=sellOldHTML();return}
   if(sheet.m96){sb.innerHTML=mu96HTML();return}
@@ -3068,6 +3070,7 @@ sb.addEventListener('click',e=>{
   if(sheet.mat)return;
   if(sheet.give)return giveAction(b);
   if(sheet.rnpc){if(orderAction(b)&&sheet&&sheet.rnpc)renderSheet();return}/* 121 */
+  if(sheet.hatsuho)return hatsuhoAction(b);/* 135 */
   if(sheet.theme){if(b.dataset.act==='thgo'){const r=themeApply(b.dataset.k);if(r){closeSheet();closePanel()}else renderSheet()}else if(b.dataset.act==='close')closeSheet();return}/* 137 */
   if(sheet.qd||sheet.qgo){if(b.dataset.act==='close'){closeSheet();return}orderAction(b);return}/* 133 */
   if(sheet.mqgo){if(b.dataset.act==='mqgo'){const id=sheet.mqgo;closeSheet();goMarket();if(scene==='market')setTimeout(()=>townArrowSet(id),400)}return}
@@ -6597,7 +6600,7 @@ function regTestHTML(M){
   if(M.slick){tag(M.slick[0],M.slick[1]-M.slick[2]-6,'機關：特別滑的冰（從南邊往北滑，停在冰岩下，再往西）');tag(M.island[0],M.island[1]-34,'小島（缺口在東邊）')}
   if(M._stn&&M._stn.length)tag(M._stn[0][0],M._stn[0][1]-30,'機關：踏腳石漣漪');
   return L.join('')}
-function regTap(k){if(k==='rnpc'){riddleTap();return}/* 66 */if(String(k).startsWith('npc:')){regNpcTap(String(k).slice(4));return}/* 121 */if(k==='roam'){roamTap();return}/* 91 */
+function regTap(k){if(k==='lordoffer'){lordOfferTap();return}/* 135 */if(k==='rnpc'){riddleTap();return}/* 66 */if(String(k).startsWith('npc:')){regNpcTap(String(k).slice(4));return}/* 121 */if(k==='roam'){roamTap();return}/* 91 */
   if(k==='shrine'){const M=regCur(),T=M.secTrig;if(!T||!T.shrine)return;const m=curMe(),[x,y]=T.shrine,go=()=>{sheet={shr:1};renderSheet();openSheetUI()};
     if(Math.hypot(m.x-x,m.y-(y+30))<90)go();else walkTo(x,y+34,go)}
 }
@@ -6696,11 +6699,13 @@ function regWorld(){
   for(const w of exVisiblePlants())bg.push({y:w.y,h:wpSVG(w,w.key===hoverWp)});
   {const R=rdHere();if(R){if(R.y<=me.y)bg.push({y:R.y,h:riddleSVG(R)});else fg+=riddleSVG(R)}}/* 66 */
   for(const o of regNpcObjs()){if(o.y<=me.y)bg.push(o);else fg+=o.h}/* 121 */
+  for(const o of lordObjs())bg.push(o);/* 135 */
   {const d=roamHere();if(d){if(d.y<=me.y)bg.push({y:d.y,h:roamSVG(d)});else fg+=roamSVG(d)}}/* 91 */
   bg.sort((a,b)=>a.y-b.y);regFg=fg+(M.cave&&M.v2?regTopV2(M):(M._top||''))+regTestHTML(M);return (M.v2?M._ground.replace('%%GI%%',()=>regGroundEl(M))+regDynHTML(M):M._ground)+bg.map(o=>o.h).join('');
 }
 function regBlocked(M,x,y){
   const B=M.B;if(x<B.x0||x>B.x1||y<B.y0||y>B.y1)return true;
+  if(bossWalkOk(M,x,y))return false;/* 135：艾克希爾的荷葉路 */
   if(M._FL&&!M._FL.some(p=>v2pip(p,x,y)))return true;
   {const R=M.id===(RIDDLE[M.bk]||{}).map?RIDDLE[M.bk]:null;if(R&&Math.abs(x-R.x)<14&&Math.abs(y-R.y)<6)return true}/* 66：謎語 NPC 擋路 */
   for(const r of M.wlk)if(x>=r[0]&&x<=r[2]&&y>=r[1]&&y<=r[3])return false;/* 橋、石階、木棧道上可以走 */
@@ -6718,7 +6723,7 @@ function regBlocked(M,x,y){
   return false;
 }
 function regExitAt(M,x,y){
-  const B=M.B;
+  const B=M.B;if(regSealed(M))return null;/* 135：主的戰鬥中、神隱之森起霧時出口封住 */
   for(const e of M.exits){
     if(e.trig||(e.need&&!secOpen(M.bk)))continue;
     if(e.door){if(x>=e.door[0]&&x<=e.door[2]&&y>=e.door[1]&&y<=e.door[3])return e;continue}
@@ -6755,6 +6760,7 @@ function regEnter(id,from){
   renderHUD();renderWorld();renderChars();updateCam();refreshAct();
   regBanner(REGION_CFG[bk].name+'・'+REGION_MAPS[bk][id].n);
   try{monEnter()}catch(e){}/* 105 */
+  try{bossEnter(bk,id)}catch(e){}/* 135 */
   try{w3dSync()}catch(e){}/* 108 */
   const mp=document.getElementById('mapPanel');if(mp&&!mp.hidden)renderRegMap();
 }
@@ -6874,15 +6880,253 @@ document.getElementById('exploreBody').addEventListener('click',e=>{const b=e.ta
 // ===== 點擊場景 =====
 
 // ===== 場景切換 =====
-function goMarket(){
+function goMarket(){try{bossLeave()}catch(e){}/* 135 */
   if(myLv()<LV_TOWN&&!mq2Cur()){/* 116：序章從教會開始，主線進行中不擋 */toast(`城鎮 Lv ${LV_TOWN} 開放（你現在 Lv ${myLv()}）。收成、雜交、發現新的樣子都能得到經驗`,4500);return}
   if(viewing){if(viewing.unsub)viewing.unsub();viewing=null}
   tripSave();pHP=PHP_MAX;/* 131 */selDecor=null;renderDecoBar();scene='market';{const a=regArrival('town','plaza','farm');marketMe={x:a[0],y:a[1]}}hoverPlot=null;hoverStall=null;hoverTown=null;regPreload('town');
   joinFarm('town');/* 15b：多人頻道改成 town（32.1） */renderHUD();renderWorld();renderChars();updateCam();refreshAct();
   toast('來到城鎮了！');mqEv('town');
 }
+/* 135 */
+/* ===== 135（19b）第一階段：主的僕人（三個秘境，各人各自）、主（第一季三隻：克洛諾斯、米涅瓦、艾克希爾）、主的多人同步。
+   bossRT＝現在這張地圖上的那一隻（僕人或主）。招式是資料（BATK：蓄力時間、地上的範圍、傷害倍率）；蓄力時在地上畫紅色範圍（至少 0.8 秒），
+   出手那一刻每個人用自己的位置判定有沒有中。靠近就自動用鐮刀打（和一般怪一樣每 0.35 秒），自己打的量記在 myDmg。
+   多人（只有主）：Realtime Database fight/<地區>：meta｛fid,host,max,members,t0,st｝、s（主機每 150ms 寫一次位置與招式）、dmg/<uid>（各自累計的傷害）、
+   hb/<uid>（每秒心跳，伺服器時間）、down/<uid>（倒下或離開）。血量＝max－所有人 dmg 加總。主機心跳超過 4 秒沒更新 → 還在的成員裡 uid 最小的接手。
+   成員＝主現身那一刻在同一張地圖（presence）的人；之後才進來的看不到、不算。只有觸發的人消耗東西。輸贏由主機判斷（血量歸零贏；15 分鐘或全員倒下輸）。
+   全服第一次：fairyFirst/lord_<主id>（沿用第 114 節的規則，不用改規則）。精魄孵化、神寵、卡包、米涅瓦的巢是第二階段。 ===== */
+const BOSS_IMG={servant_grass:[414,465],servant_forest:[468,415],servant_marsh:[557,414],lord_grass:[363,343],lord_forest:[401,397],lord_marsh:[338,420]};
+const BOSS_HU=62;/* 角色的顯示高度（px），僕人、主照倍數 h */
+const BOSS_RESPAWN=5*60e3,LORD_LIMIT=15*60e3,LORD_CD=20*3600e3,LORD_HP_K=0.7,BOSS_REACH=46,BOSS_SPD=60,LORD_HB_DEAD=4000,LORD_STALE=30e3;
+const SERVANTS={
+ grass:{art:'servant_grass',n:'刈穗螳',h:1.5,at:[560,700],mat:'jadeblade',gold:'jadesickle',hpK:25,dmgK:1.5,atk:['cross','hide','spin'],noHit:1,bye:'刈穗螳碎成一地翡翠色的穗。'},
+ forest:{art:'servant_forest',n:'喚名鴉',h:1.4,at:[400,960],mat:'ravenfeather',gold:'silvereye',hpK:25,dmgK:1.5,atk:['dive','flock','fake'],call:1,bye:'喚名鴉飛走了，留下幾根黑羽。'},
+ marsh:{art:'servant_marsh',n:'鷺守',h:2.0,at:[400,338],mat:'pearlplume',gold:'heroncrest',hpK:25,dmgK:1.5,atk:['thrust','wave','guard'],fixed:1,bye:'鷺守飛走了，留下幾根羽毛。'}};
+const LORDS={
+ grass:{id:'kronos',art:'lord_grass',n:'裂風的克洛諾斯',title:'草原的風神',h:1.5,glow:'#7FE3B0',hpK:250,dmgK:2,atk:['combo','cross','spin'],atk2:'gale',cons:1,at:[400,650]},
+ forest:{id:'minerva',art:'lord_forest',n:'霧隱的米涅瓦',title:'霧裡的梟',h:1.7,glow:'#C9D8FF',hpK:250,dmgK:2,atk:['decoy','dive','flock'],atk2:'fogdive',at:[400,600]},
+ marsh:{id:'exhir',art:'lord_marsh',n:'凝露的艾克希爾',title:'水上的白鹿',h:2.0,glow:'#9FE7FF',hpK:250,dmgK:2,atk:['charge','wave','tide'],atk2:'tide2',at:[400,250],c:[400,520]}};
+const bossSrc=(art,pose)=>`assets/boss/${art}_${pose}.png?v=${BUILD}`;
+/* ---- 招式：shape(b,tx,ty) 回傳地上的範圍；wind＝蓄力毫秒（≥800） ---- */
+const BATK={
+ cross:{wind:1000,dmg:1,shape:b=>({t:'cross',x:b.x,y:b.y,L:300,w:56})},/* 雙鐮交叉斬：十字線 */
+ spin:{wind:900,dmg:1,shape:b=>({t:'circle',x:b.x,y:b.y,r:120})},/* 收穗旋：往外躲 */
+ hide:{wind:900,dmg:1.2,hide:3000,shape:(b,tx,ty)=>({t:'circle',x:b.x,y:b.y,r:80})},/* 躲進高草：3 秒，草晃動的地方就是牠，出來時砍 */
+ dive:{wind:1300,dmg:1.2,track:800,shape:(b,tx,ty)=>({t:'circle',x:tx,y:ty,r:75,shadow:1})},/* 俯衝：影子跟著，停住 0.5 秒後衝下 */
+ flock:{wind:1300,dmg:1,shape:(b,tx,ty)=>{const x0=b.B.x0,x1=b.B.x1,g0=x0+60+Math.floor(bRnd(b)*Math.max(1,x1-x0-220));return {t:'band',y:ty,h:90,x0,x1,g0,g1:g0+100}}},/* 鴉群：一排，中間一個缺口 */
+ fake:{wind:1300,dmg:1.2,shape:(b,tx,ty)=>{const left=bRnd(b)<0.5;return {t:'half',x:tx,y:ty,w:260,h:150,side:left?-1:1,fake:left?'往左躲！':'往右躲！'}}},/* 學人說話：灰字說往哪邊，攻擊就打那一邊 */
+ thrust:{wind:900,dmg:1,shape:(b,tx,ty)=>bLine(b.x,b.y,tx,ty,320,56)},/* 長喙突刺 */
+ wave:{wind:1100,dmg:1,shape:(b,tx,ty)=>bLine(b.x,b.y,tx,ty,700,130)},/* 展翅掀浪：要橫著躲 */
+ guard:{wind:0,guard:2600,dmg:0,shape:()=>null},/* 單腳站立：打不掉血 */
+ combo:{wind:800,dmg:0.8,rep:3,shape:(b,tx,ty)=>bLine(b.x,b.y,tx,ty,300,50)},/* 克洛諾斯：連續三刀，之後停頓 */
+ gale:{wind:1000,dmg:1.2,shape:b=>({t:'circle',x:b.x,y:b.y,r:170})},
+ decoy:{wind:1300,dmg:1.2,track:800,shape:(b,tx,ty)=>({t:'circle',x:tx,y:ty,r:75,shadow:1,decoys:bDecoys(b,tx,ty,2)})},/* 米涅瓦：假身影沒有影子 */
+ fogdive:{wind:1000,dmg:1.3,track:600,shape:(b,tx,ty)=>({t:'circle',x:tx,y:ty,r:70,shadow:1,decoys:bDecoys(b,tx,ty,3)})},
+ charge:{wind:1000,dmg:1.2,move:1,shape:(b,tx,ty)=>bLine(b.x,b.y,tx,ty,520,70)},/* 艾克希爾：在水面上奔跑 */
+ tide:{wind:1500,dmg:1,shape:b=>({t:'out',x:b.cx,y:b.cy,r:210})},/* 漲潮：島中間才安全 */
+ tide2:{wind:1200,dmg:1.2,shape:b=>({t:'circle',x:b.cx,y:b.cy,r:200})}};/* 退潮：島中間被打，要站到邊上或荷葉路 */
+function bRnd(b){b.rs=((b.rs||7)*1103515245+12345)>>>0;return (b.rs>>>8)/16777216}
+function bLine(x0,y0,tx,ty,L,w){const dx=tx-x0,dy=ty-y0,d=Math.hypot(dx,dy)||1;return {t:'line',x0,y0,x1:x0+dx/d*L,y1:y0+dy/d*L,w}}
+function bDecoys(b,tx,ty,n){const o=[];for(let i=0;i<n;i++){const a=bRnd(b)*Math.PI*2,d=110+bRnd(b)*70;o.push([Math.round(tx+Math.cos(a)*d),Math.round(ty+Math.sin(a)*d*0.8)])}return o}
+function bossHit(s,x,y){if(!s)return false;
+  if(s.t==='circle')return Math.hypot(x-s.x,(y-s.y)*1.2)<=s.r;
+  if(s.t==='out')return Math.hypot(x-s.x,(y-s.y)*1.2)>s.r;
+  if(s.t==='cross')return (Math.abs(x-s.x)<=s.w/2&&Math.abs(y-s.y)<=s.L/2)||(Math.abs(y-s.y)<=s.w/2&&Math.abs(x-s.x)<=s.L/2);
+  if(s.t==='line'){const vx=s.x1-s.x0,vy=s.y1-s.y0,L2=vx*vx+vy*vy||1,t=Math.max(0,Math.min(1,((x-s.x0)*vx+(y-s.y0)*vy)/L2)),dx=x-s.x0-vx*t,dy=y-s.y0-vy*t;return Math.hypot(dx,dy)<=s.w/2}
+  if(s.t==='band')return Math.abs(y-s.y)<=s.h/2&&!(x>=s.g0&&x<=s.g1);
+  if(s.t==='half')return Math.abs(y-s.y)<=s.h/2&&(s.side<0?(x<=s.x&&x>=s.x-s.w):(x>=s.x&&x<=s.x+s.w));
+  return false}
+function bossShapeSVG(s){if(!s)return '';const F='rgba(230,40,30,.28)',S='#E0321F';
+  if(s.t==='circle')return (s.decoys||[]).map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="${s.r}" ry="${(s.r/1.2).toFixed(1)}" fill="rgba(230,40,30,.12)" stroke="${S}" stroke-dasharray="6 5" stroke-width="1.5"/>`).join('')+`<ellipse cx="${s.x}" cy="${s.y}" rx="${s.r}" ry="${(s.r/1.2).toFixed(1)}" fill="${F}" stroke="${S}" stroke-width="2"/>${s.shadow?`<ellipse cx="${s.x}" cy="${s.y}" rx="${s.r*0.45}" ry="${s.r*0.18}" fill="rgba(20,10,10,.45)"/>`:''}`;
+  if(s.t==='out')return `<path d="M-2000 -2000 H4000 V4000 H-2000Z M${s.x-s.r} ${s.y} a${s.r} ${(s.r/1.2).toFixed(1)} 0 1 0 ${2*s.r} 0 a${s.r} ${(s.r/1.2).toFixed(1)} 0 1 0 ${-2*s.r} 0Z" fill="${F}" fill-rule="evenodd"/>`;
+  if(s.t==='cross')return `<rect x="${s.x-s.w/2}" y="${s.y-s.L/2}" width="${s.w}" height="${s.L}" fill="${F}" stroke="${S}" stroke-width="2"/><rect x="${s.x-s.L/2}" y="${s.y-s.w/2}" width="${s.L}" height="${s.w}" fill="${F}" stroke="${S}" stroke-width="2"/>`;
+  if(s.t==='line')return `<line x1="${s.x0}" y1="${s.y0}" x2="${s.x1}" y2="${s.y1}" stroke="rgba(230,40,30,.32)" stroke-width="${s.w}" stroke-linecap="round"/>`;
+  if(s.t==='band')return `<rect x="${s.x0}" y="${s.y-s.h/2}" width="${s.g0-s.x0}" height="${s.h}" fill="${F}"/><rect x="${s.g1}" y="${s.y-s.h/2}" width="${s.x1-s.g1}" height="${s.h}" fill="${F}"/>`;
+  if(s.t==='half')return `<rect x="${s.side<0?s.x-s.w:s.x}" y="${s.y-s.h/2}" width="${s.w}" height="${s.h}" fill="${F}"/>`;
+  return ''}
+/* ---- 狀態 ---- */
+let bossRT=null,bossRaf=0,bossLast=0,bossSwingAt=0,bossNetOff=null;const bossCalled={},lordSum={},lordNetState={};
+const bossNow=()=>Date.now();
+const bossMe=()=>uid||'me';
+const lordCdOk=id=>!(state.lordCd&&state.lordCd[id]&&bossNow()-state.lordCd[id]<LORD_CD);
+const bossMonHp=bk=>(typeof MON_RHP!=='undefined'&&MON_RHP[bk])||3000;
+const bossDmgOf=b=>{const r=(typeof MON_RDMG!=='undefined'&&MON_RDMG[b.bk])||[50,80],a=BATK[b.atk]||{};return Math.round((r[0]+Math.random()*(r[1]-r[0]))*b.dmgK*(a.dmg||1))};
+const bossHp=b=>Math.max(0,b.max-Object.values(b.dmg||{}).reduce((s,v)=>s+(+v||0),0));
+function bossMake(kind,bk,def,members){const M=regCur(),n=Math.max(1,Object.keys(members||{}).length),base=bossMonHp(bk)*def.hpK,max=kind==='lord'?Math.round(base*(1+LORD_HP_K*(n-1))):base;
+  const c=def.c||def.at;return {kind,bk,def,art:def.art,n:def.n,x:def.at[0],y:def.at[1],face:-1,max,mode:'idle',until:bossNow()+1500,atk:null,shape:null,seq:0,ph:1,hidden:false,rs:(hashStr(bk+kind+bossNow())>>>0)||7,
+    B:M&&M.B?{x0:M.B.x0,x1:M.B.x1,y0:M.B.y0,y1:M.B.y1}:{x0:0,x1:800,y0:0,y1:1200},cx:c[0],cy:c[1],dmgK:def.dmgK,dmg:{[bossMe()]:0},myDmg:0,members:members||null,active:kind==='lord',t0:bossNow(),done:false}}
+/* ---- 進出地圖 ---- */
+function bossEnter(bk,id){bossLeave();if(id!=='secret'||!(SERVANTS[bk]||LORDS[bk]))return;const sv=SERVANTS[bk];
+  if(sv){const at=(state.servantAt||{})[bk]||0;bossRT=bossNow()-at>=BOSS_RESPAWN?bossMake('servant',bk,sv,null):{kind:'wait',bk,until:at+BOSS_RESPAWN,def:sv}}
+  if(sv&&sv.call&&!bossCalled[bk]){bossCalled[bk]=1;setTimeout(()=>{try{if(scene==='explore'&&exBiome===bk&&regMap==='secret')toast(`${myName()}……`,2500)}catch(e){}},1500)}/* 喚名鴉：像有人在叫你的名字 */
+  if(LORDS[bk]){lordSum.bk=bk;lordSum.f=0;lordSum.still=null;lordSum.path=null;lordNetWatch(bk)}
+  bossStart()}
+function bossLeave(){const b=bossRT;if(b&&b.kind==='lord'&&!b.done)lordForfeit(true);bossRT=null;if(bossNetOff){try{bossNetOff()}catch(e){}bossNetOff=null}lordSum.path=null;lordSum.f=0;
+  try{bossClear()}catch(e){}}
+function bossStart(){if(!bossRaf&&typeof requestAnimationFrame==='function'){bossLast=0;bossRaf=requestAnimationFrame(bossLoop)||-1}}
+function bossLoop(ts){bossRaf=0;if(!state||scene!=='explore'||regMap!=='secret'){if(bossRT)bossLeave();return}bossRaf=requestAnimationFrame(bossLoop)||-1;if(document.hidden===true||regBusy)return;
+  const dt=bossLast?Math.min(0.2,(ts-bossLast)/1000):0;bossLast=ts;try{bossStep(dt)}catch(e){try{crumb('boss '+e.message)}catch(x){}}}
+/* 一步：現身條件、AI（主機或僕人）、自己打它、畫 */
+function bossStep(dt){lordSummonTick();const b=bossRT,now=bossNow();if(!b)return;
+  if(b.kind==='wait'){if(now>=b.until)bossRT=bossMake('servant',b.bk,b.def,null);else bossPaintWait(b);return}
+  const me=curMe();
+  if(b.kind==='servant'&&!b.active){if(Math.hypot(me.x-b.x,me.y-b.y)<170){b.active=true;b.until=now+900}bossPaint(b);return}/* 靠近才站起來 */
+  if(b.done){if(b.kind==='lord'&&b.fade&&now>b.fade){bossRT=null;try{bossClear();renderWorld()}catch(e){}return}bossPaint(b);return}
+  const host=bossIsHost(b);
+  if(host)bossAI(b,dt,now);else bossFollow(b,dt);
+  if(b.done){bossPaint(b);return}
+  /* 自己打：靠近、沒躲起來 */
+  const reach=BOSS_REACH+b.def.h*10;if(!b.hidden&&Math.hypot(me.x-b.x,(me.y-b.y)*1.2)<=reach&&now>=bossSwingAt){bossSwingAt=now+(typeof MON_SWING!=='undefined'?MON_SWING:350);try{pFightAt=now}catch(e){}
+    if(b.mode==='guard'){try{fxAdd('gain',b.x,b.y-90,'擋住了',600)}catch(e){}}else{b.myDmg+=(typeof SICKLE_DMG!=='undefined'?SICKLE_DMG:1000);b.dmg[bossMe()]=b.myDmg;b.hitT=now;if(b.net)lordPushDmg(b)}}
+  if(host&&bossHp(b)<=0&&!b.done)bossWin(b);
+  bossPaint(b)}
+const bossIsHost=b=>b.kind==='servant'||!b.net||b.net.host===uid;
+function bossTargets(b){const me=curMe(),out=[{u:bossMe(),x:me.x,y:me.y}];if(b.kind==='lord'&&b.members)for(const u of Object.keys(b.members)){if(u===uid)continue;const o=others&&others[u];if(o&&!(b.downs&&b.downs[u]))out.push({u,x:o.x,y:o.y})}return out}
+function bossAI(b,dt,now){const P=bossTargets(b),T=P.reduce((a,p)=>!a||Math.hypot(p.x-b.x,p.y-b.y)<Math.hypot(a.x-b.x,a.y-b.y)?p:a,null);b.tx=T.x;b.ty=T.y;
+  if(b.kind==='lord'){if(b.ph===1&&bossHp(b)<=b.max/2)b.ph=2;if(!b.net&&now-b.t0>LORD_LIMIT){lordEnd(b,'lost');return}}/* 第二階段；一個人打（沒有連線）也有 15 分鐘 */
+  const k=b.ph===2?0.7:1;
+  if(b.mode==='idle'){const d=Math.hypot(T.x-b.x,T.y-b.y);if(d>110&&!b.def.fixed){const sp=BOSS_SPD*dt,nx=b.x+(T.x-b.x)/d*sp,ny=b.y+(T.y-b.y)/d*sp;if(b.kind==='lord'||!regBlocked(regCur(),nx,ny)){b.x=nx;b.y=ny}}if(Math.abs(T.x-b.x)>4)b.face=T.x>b.x?1:-1;
+    if(now>=b.until){const L=b.def.atk.concat(b.ph===2&&b.def.atk2?[b.def.atk2]:[]);b.atk=L[Math.floor(bRnd(b)*L.length)];b.rep=BATK[b.atk].rep||1;bossBegin(b,now,k)}}
+  else if(b.mode==='hidden'){const d=Math.hypot(T.x-b.x,T.y-b.y);if(d>30){const sp=BOSS_SPD*1.4*dt;b.x+=(T.x-b.x)/d*sp;b.y+=(T.y-b.y)/d*sp}if(now>=b.until){b.hidden=false;b.mode='wind';b.until=now+Math.max(800,BATK[b.atk].wind*k);b.shape=BATK[b.atk].shape(b,b.x,b.y);b.seq++}}
+  else if(b.mode==='wind'){const A=BATK[b.atk];if(A.track&&now<b.until-500){const s=A.shape(b,T.x,T.y);if(b.shape&&b.shape.decoys)s.decoys=b.shape.decoys;b.shape=s}/* 影子跟著，最後 0.5 秒停住 */
+    if(now>=b.until){bossStrike(b);if(A.move&&b.shape&&b.shape.t==='line'){b.x=Math.max(b.B.x0+30,Math.min(b.B.x1-30,b.shape.x1));b.y=Math.max(b.B.y0+40,Math.min(b.B.y1-30,b.shape.y1))}
+      b.rep--;if(b.rep>0)bossBegin(b,now,k,true);else{b.mode='rec';b.until=now+(A.rep?1600:700)*k;b.shape=null;b.seq++}}}/* 連續幾刀之後停頓 */
+  else if(b.mode==='guard'){if(now>=b.until){b.mode='rec';b.until=now+500;b.seq++}}
+  else if(b.mode==='rec'){if(now>=b.until){b.mode='idle';b.until=now+(b.kind==='lord'?1500:1400)*k;b.seq++}}
+  if(b.net)lordPushState(b,now)}
+function bossBegin(b,now,k,again){const A=BATK[b.atk];b.seq++;if(A.guard){b.mode='guard';b.until=now+A.guard;b.shape=null;return}
+  if(A.hide&&!again){b.mode='hidden';b.hidden=true;b.until=now+A.hide;b.shape=null;return}
+  b.mode='wind';b.until=now+Math.max(800,A.wind*k);b.shape=A.shape(b,b.tx,b.ty)}
+/* 出手：只判定自己（別人在自己的遊戲判定） */
+function bossStrike(b){const me=curMe();b.hitAt=bossNow();if(b.shape&&bossHit(b.shape,me.x,me.y)){try{pDamage(bossDmgOf(b))}catch(e){}return true}return false}
+/* 不是主機：照收到的狀態走；蓄力時間到了自己判定一次 */
+function bossFollow(b,dt){const S=b.net&&b.net.s;if(!S)return;const k=Math.min(1,dt*10);b.x+=(S.x-b.x)*k;b.y+=(S.y-b.y)*k;b.face=S.face;b.hidden=!!S.hid;b.ph=S.ph||1;
+  if(S.seq!==b.seq){if(b.mode==='wind'&&b.struck!==b.seq)bossStrike(b);/* 漏掉的那一下補判 */b.seq=S.seq;b.mode=S.mode;b.atk=S.atk;b.shape=S.shape||null;b.until=bossNow()+(S.left||0);b.struck=0}
+  if(b.mode==='wind'&&bossNow()>=b.until&&b.struck!==b.seq){b.struck=b.seq;bossStrike(b)}}
+/* ---- 畫 ---- */
+function bossPose(b){if(b.done)return b.kind==='lord'?'calm':'idle';if(b.mode==='wind')return 'windup';if(b.hitT&&bossNow()-b.hitT<220&&!b.def.noHit)return 'hit';if(b.hitAt&&bossNow()-b.hitAt<350)return 'attack';return 'idle'}
+function bossClear(){for(const id of ['bossG','bossTel']){const g=document.getElementById(id);if(g&&g.remove)g.remove()}bossBar(null)}
+function bossLayer(id,par,first){let g=document.getElementById(id);const P=document.getElementById(par);if(!P)return null;if(!g||g.parentNode!==P){if(g&&g.remove)g.remove();g=document.createElementNS('http://www.w3.org/2000/svg','g');g.id=id;g.setAttribute('pointer-events','none');if(first&&P.firstChild)P.insertBefore(g,P.firstChild);else P.appendChild(g)}return g}
+function bossPaint(b){const me=curMe(),g=bossLayer('bossG',b.y<=me.y?'monBack':'monFront'),t=bossLayer('bossTel','monBack',true);if(!g||!t)return;
+  const I=BOSS_IMG[b.art]||[400,400],H=BOSS_HU*b.def.h,W=H*I[0]/I[1],pose=bossPose(b),now=bossNow(),flash=b.def.noHit&&b.hitT&&now-b.hitT<160,
+    fade=b.done&&b.fade?Math.max(0,Math.min(1,(b.fade-now)/1500)):1,key=[pose,Math.round(b.x),Math.round(b.y),b.face,b.hidden,b.ph,b.mode==='guard',flash,fade.toFixed(2)].join('|');
+  if(g._k!==key){g._k=key;const glow=b.kind==='lord'&&b.ph===2&&!b.done?`filter:drop-shadow(0 0 8px ${b.def.glow}) drop-shadow(0 0 16px ${b.def.glow})`:flash?'filter:brightness(1.8)':'';
+    g.innerHTML=b.hidden?`<g transform="translate(${b.x.toFixed(1)} ${b.y.toFixed(1)})"><g class="bgrass"><path d="M-18 0 q4 -18 0 -30 M0 0 q-4 -24 2 -38 M18 0 q-4 -18 0 -28" stroke="#4E8A36" stroke-width="3" fill="none" stroke-linecap="round"/></g></g>`:
+      `<g transform="translate(${b.x.toFixed(1)} ${b.y.toFixed(1)})" opacity="${fade}"><ellipse rx="${(W*0.3).toFixed(1)}" ry="${(W*0.09).toFixed(1)}" fill="rgba(30,20,10,.25)"/><g transform="scale(${-b.face} 1)${flash?' scale(1.04 .94)':''}" style="${glow}"><image href="${bossSrc(b.art,pose)}" x="${(-W/2).toFixed(1)}" y="${(-H).toFixed(1)}" width="${W.toFixed(1)}" height="${H.toFixed(1)}"/></g>${b.mode==='guard'?`<ellipse cy="${(-H/2).toFixed(1)}" rx="${(W*0.45).toFixed(1)}" ry="${(H*0.55).toFixed(1)}" fill="rgba(200,230,255,.18)" stroke="#BFE3FF" stroke-width="2"/>`:''}${b.kind==='servant'?`<text y="${(-H-8).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" stroke="#3B2614" stroke-width="3" paint-order="stroke">${esc(b.n)}</text>`:''}</g>`}
+  const wall=b.kind==='lord'&&!b.done?`<rect x="${b.B.x0}" y="${b.B.y0}" width="${b.B.x1-b.B.x0}" height="${b.B.y1-b.B.y0}" fill="none" stroke="${b.def.glow}" stroke-opacity=".55" stroke-width="14" class="lordwall"/>`:'';/* 戰場邊界：一圈光牆 */
+  const sk=(b.mode==='wind'?JSON.stringify(b.shape):'')+wall.length;if(t._k!==sk){t._k=sk;t.innerHTML=wall+(b.mode==='wind'?bossShapeSVG(b.shape)+(b.shape&&b.shape.fake?`<text x="${b.shape.x}" y="${b.shape.y-90}" text-anchor="middle" font-size="18" font-weight="700" fill="#9A9A9A" stroke="#fff" stroke-width="3" paint-order="stroke">${b.shape.fake}</text>`:''):'')}
+  bossBar(b.active?b:null)}
+function bossPaintWait(b){const g=bossLayer('bossG','monBack');if(!g)return;const s=Math.max(0,Math.ceil((b.until-bossNow())/1000)),txt=`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  if(g._k!==txt){g._k=txt;const [x,y]=b.def.at;g.innerHTML=`<text x="${x}" y="${y-20}" text-anchor="middle" font-size="15" font-weight="700" fill="#fff" stroke="#3B2614" stroke-width="3" paint-order="stroke">${esc(b.def.n)} ${txt}</text>`}bossBar(null)}
+function bossBar(b){let el=document.getElementById('bossBar');if(!b){if(el)el.hidden=true;return}
+  if(!el||!el.querySelector){el=document.createElement('div');el.id='bossBar';el.innerHTML='<b></b><span class="bbw"><i></i><em></em></span><button type="button" class="bbq">離開</button>';document.body.appendChild(el);
+    el.querySelector('.bbq').addEventListener('click',()=>{if(bossRT&&bossRT.kind==='lord'&&!bossRT.done&&confirm('離開就算放棄。確定嗎？'))goFarm()})}
+  el.hidden=false;const hp=bossHp(b),lord=b.kind==='lord',k=[b.n,hp,b.max,b.ph,lord&&b.net?Object.keys(b.members||{}).length:0,b.done].join('|');if(el._k===k)return;el._k=k;
+  el.querySelector('b').textContent=b.n+(lord&&b.net&&Object.keys(b.members||{}).length>1?`（${Object.keys(b.members).length} 人）`:'');el.querySelector('i').style.width=(hp/b.max*100).toFixed(1)+'%';
+  el.querySelector('em').hidden=!lord;el.querySelector('.bbq').hidden=!lord||b.done;el.classList.toggle('ph2',b.ph===2)}
+/* ---- 贏了、輸了 ---- */
+function bossWin(b){if(b.kind==='lord'){lordEnd(b,'won');return}b.done=true;b.mode='idle';b.shape=null;bossReward(b);(state.servantAt||(state.servantAt={}))[b.bk]=bossNow();save();
+  setTimeout(()=>{if(bossRT===b)bossRT={kind:'wait',bk:b.bk,until:(state.servantAt||{})[b.bk]+BOSS_RESPAWN,def:b.def}},1200)}
+const spiritObj=()=>state.spirits&&typeof state.spirits==='object'?state.spirits:(state.spirits={});
+const spiritName=bk=>LORDS[bk]?LORDS[bk].n.replace(/^.*的/,'')+'的精魄':'精魄';
+function spiritLine(){const S=spiritObj(),ks=Object.keys(S).filter(k=>S[k]>0);return ks.length?`<p class="note" style="margin:0 0 6px">精魄：${ks.map(k=>`${esc(spiritName(k))} ×${S[k]}`).join('、')}${qh('主平靜下來後留下的東西。之後可以孵出神寵（還沒開放）。')}</p>`:''}
+function bossReward(b){const bk=b.bk,lord=b.kind==='lord',sv=SERVANTS[bk],got=[];
+  if(sv){const n=lord?3+Math.floor(Math.random()*3):2+Math.floor(Math.random()*2);matAdd(sv.mat,n);tripAdd(sv.mat,n);got.push(`${matName(sv.mat)} ×${n}`);if(Math.random()<(lord?0.3:0.15)){matAdd(sv.gold,1);tripAdd(sv.gold,1);got.push(matName(sv.gold))}}
+  const cr=(typeof MON_COIN!=='undefined'?MON_COIN[0]:[1,2]),c=(cr[0]+Math.floor(Math.random()*(cr[1]-cr[0]+1)))*(lord?50:10);state.coins+=c;got.push(`${c} 金幣`);
+  if(typeof MON_XP_ON!=='undefined'&&MON_XP_ON){try{addXp(monXp(bk,false)*(lord?100:20),true)}catch(e){}}
+  if(lord){if(Math.random()<0.4){const S=spiritObj();S[bk]=(S[bk]||0)+1;got.push(spiritName(bk))}
+    if(Math.random()<0.01){try{const L=lordSeed(bk);if(L)got.push(`「${L.name}」的種子 ${L.count} 顆`)}catch(e){}}
+    if(!b.def.cons)(state.lordCd||(state.lordCd={}))[b.def.id]=bossNow();lordFirst(b)}
+  save();try{renderHUD()}catch(e){}
+  setTimeout(()=>{try{noteOpen(`<h2>${esc(b.n)}${lord?'平靜下來了':''}</h2>${!lord&&sv?`<p class="note">${esc(sv.bye)}</p>`:''}<p class="note">得到：${got.join('、')}</p>`)}catch(e){}},lord?2600:700);return got}
+/* 1%：該區作物的專屬造型種子（接替第 134 節拿掉的種子台座） */
+function lordSeed(bk){const cs=(BIOMES[bk]&&BIOMES[bk].crops||[]).map(c=>Array.isArray(c)?c[0]:c).filter(c=>EX_OF[c]);const k=cs[Math.floor(Math.random()*cs.length)];if(!k||(typeof bagCap==='function'&&state.lots.length>=bagCap()))return null;
+  const ex=Array.isArray(EX_OF[k])?EX_OF[k][Math.floor(Math.random()*EX_OF[k].length)]:EX_OF[k],g=makeWild(k,bk,false);g.sp=[ex,ex];
+  const L={id:state.nextLot++,lid:'L'+(state.nextLid++),crop:k,name:`${EXN[ex]||''}${CROPS[k].n}`,source:'主留下的種子',m:g,f:clone(g),count:10,gen:0,germ:1};state.lots.unshift(L);try{lotNew(L)}catch(e){}return L}
+async function lordFirst(b){if(!uid)return;try{const ref=db.collection('fairyFirst').doc('lord_'+b.def.id);let first=false;await db.runTransaction(async tx=>{const d=await tx.get(ref);if(d.exists)return;tx.set(ref,{u:uid,name:myName(),at:Date.now()});first=true});if(first)postNews('fairy',`${myName()} 是第一個讓${b.def.n}平靜下來的人`,4)}catch(e){}}
+/* 結束：st＝won／lost。主機（或一個人）判斷；連線時寫進 meta，大家在 lordNetSync 收到 */
+function lordEnd(b,st){if(b.done)return;b.done=true;b.shape=null;b.mode='idle';b.fade=bossNow()+(st==='won'?6000:1500);
+  if(b.net){bossNet.update(fpath(b.bk)+'/meta',{st});if(b.net.host===uid){const fid=b.net.fid;setTimeout(()=>{const N=lordNetState[b.bk];if(N&&N.meta&&N.meta.fid===fid)try{bossNet.remove(fpath(b.bk))}catch(e){}},20000)}}
+  lordResult(b,st)}
+function lordResult(b,st){if(b.res)return;b.res=st;b.done=true;b.shape=null;if(!b.fade)b.fade=bossNow()+(st==='won'?6000:1500);
+  if(st==='won'){try{const ov=document.createElement('div');ov.className='lordcalm';ov.innerHTML=`<div>${esc(b.n)}平靜下來了</div>`;document.body.appendChild(ov);setTimeout(()=>{try{ov.remove()}catch(e){}},2600)}catch(e){}if(!(b.downs&&b.downs[uid]))bossReward(b)}
+  else setTimeout(()=>{try{noteOpen(`<h2>${esc(b.n)}離開了</h2><p class="note">這次沒能讓牠平靜下來。${b.def.cons?'用掉的供品不會還回來。':''}</p>`)}catch(e){}},500)}
+/* 放棄（離開地圖、倒下、按「離開」）：連線時記 down；自己是主機就交給下一個人，沒人了就算輸 */
+function lordForfeit(quiet){const b=bossRT;if(!b||b.kind!=='lord'||b.done)return;b.done=true;b.res='left';
+  if(b.net){bossNet.set(fpath(b.bk)+'/down/'+uid,1);if(b.net.host===uid){const alive=lordAlive(b).filter(u=>u!==uid);if(alive.length)bossNet.update(fpath(b.bk)+'/meta',{host:alive.sort()[0]});else bossNet.update(fpath(b.bk)+'/meta',{st:'lost'})}}}
+/* ---- 主：現身條件 ---- */
+const twNow=()=>{const d=new Date(bossNow()+8*3600e3);return {h:d.getUTCHours(),m:d.getUTCMinutes()}};
+const minervaFog=()=>{const t=twNow();return t.h%2===0&&t.m<20};/* 台灣時間偶數整點起霧 20 分鐘 */
+const MIN_FEATHERS=[[250,860],[600,760],[400,620]];
+const EXH_STILL=30e3;
+function lordSummonTick(){if(scene!=='explore'||regMap!=='secret')return;const bk=exBiome,L=LORDS[bk];if(!L||(bossRT&&bossRT.kind==='lord'))return;const me=curMe(),now=bossNow(),S=lordSum;
+  if(bk==='forest'){if(!minervaFog()||!lordCdOk(L.id)||lordBusy(bk)){if(S.f){S.f=0;try{renderWorld()}catch(e){}}return}const f=MIN_FEATHERS[S.f||0];if(f&&Math.hypot(me.x-f[0],me.y-f[1])<50){S.f=(S.f||0)+1;try{renderWorld()}catch(e){}if(S.f>=3)lordSummon('forest')}}
+  if(bk==='marsh'){if(!lordCdOk(L.id)||lordBusy(bk))return;
+    if(S.path){if(Math.hypot(me.x-L.at[0],me.y-L.at[1])<50){lordSummon('marsh');return}if(!bossOnPath(me.x,me.y,60)){S.path=null;try{renderWorld()}catch(e){}}return}/* 中途離開荷葉路就重來 */
+    if(!exhShore(me.x,me.y)){S.still=null;return}if(!S.still||Math.hypot(me.x-S.still.x,me.y-S.still.y)>6){S.still={x:me.x,y:me.y,t:now};return}
+    if(now-S.still.t>=EXH_STILL){S.path={x0:Math.round(me.x),y0:Math.round(me.y)};S.still=null;try{renderWorld()}catch(e){}}}}
+/* 蓮花島的湖岸：島邊緣一圈（島內 72%～100%） */
+function exhShore(x,y){const M=regCur(),I=M&&M.isles&&M.isles[0];if(!I)return false;const r=Math.hypot((x-I[0])/I[2],(y-I[1])/I[3]);return r>0.72&&r<1.02}
+function bossOnPath(x,y,w){const S=lordSum.path;if(!S)return false;const [bx,by]=LORDS.marsh.at,ax=S.x0,ay=S.y0,vx=bx-ax,vy=by-ay,L2=vx*vx+vy*vy||1,t=Math.max(0,Math.min(1,((x-ax)*vx+(y-ay)*vy)/L2)),dx=x-ax-vx*t,dy=y-ay-vy*t;return dx*dx+dy*dy<(w||30)*(w||30)}
+/* 荷葉路可以走（regBlocked 會先問這裡） */
+const bossWalkOk=(M,x,y)=>!!lordSum.path&&!!M&&M.bk==='marsh'&&M.id==='secret'&&scene==='explore'&&exBiome==='marsh'&&bossOnPath(x,y,30);
+/* 地圖上的東西：割草圈（點了放初穗）、羽毛、倒影與荷葉 */
+function lordObjs(){const out=[];if(scene!=='explore'||regMap!=='secret')return out;const bk=exBiome,L=LORDS[bk];if(!L)return out;const fight=bossRT&&bossRT.kind==='lord';
+  if(bk==='grass'&&!fight){const [x,y]=L.at;out.push({y:y-30,h:`<rect data-reg="lordoffer" x="${x-50}" y="${y-36}" width="100" height="60" fill="transparent" style="cursor:pointer"/>`})}
+  if(bk==='forest'&&!fight&&minervaFog()&&lordCdOk(L.id)){const f=MIN_FEATHERS[lordSum.f||0];if(f)out.push({y:f[1],h:`<g transform="translate(${f[0]} ${f[1]})" pointer-events="none" class="feather"><path d="M0 0 C-7 -14 -5 -36 6 -50 C11 -32 8 -14 0 0Z" fill="#F4F6FA" stroke="#9AA6B8" stroke-width="1.2"/><path d="M0 0 L5 -46" stroke="#9AA6B8" stroke-width="1"/></g>`})}
+  if(bk==='marsh'&&lordSum.path){const S=lordSum.path,[bx,by]=L.at,n=Math.max(4,Math.round(Math.hypot(bx-S.x0,by-S.y0)/44));let s='';for(let i=1;i<=n;i++){const t=i/(n+1),x=S.x0+(bx-S.x0)*t,y=S.y0+(by-S.y0)*t;s+=`<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="24" ry="10" fill="#5FA04A" stroke="#3E7A2E" stroke-width="1.2"/>`}
+    out.push({y:-1,h:`<g pointer-events="none">${s}${fight?'':`<g opacity=".45" transform="translate(0 ${2*by}) scale(1 -1)"><image href="${bossSrc('lord_marsh','idle')}" x="${bx-30}" y="${by-74}" width="60" height="74"/></g>`}</g>`})}
+  if(bk==='forest'&&!fight&&minervaFog()&&lordCdOk(L.id))out.push({y:-1,h:`<rect x="-200" y="-200" width="1200" height="1600" fill="#E8EEF4" opacity=".35" pointer-events="none" class="lordfog"/>`});/* 起霧 */
+  return out}
+/* 出口封住：主的戰鬥中；神隱之森起霧時 */
+const regSealed=M=>!!M&&M.id==='secret'&&scene==='explore'&&((bossRT&&bossRT.kind==='lord'&&!bossRT.done)||(M.bk==='forest'&&minervaFog()&&lordCdOk(LORDS.forest.id)&&!lordBusy('forest')));
+/* ---- 克洛諾斯的初穗：同一種作物的果實 3 顆（純色、基本造型）＋翡翠鐮片 3 個 ---- */
+function hatsuhoSlots(){return fruitsArr().map((f,i)=>({f,i})).filter(o=>{const a=keyApp(o.f.k);return a&&!a.legacy&&!a.sp&&a.skin&&/^[ps]$/.test(colParts(a.skin).t)&&fCount(o.f)>=3})}
+function lordOfferTap(){const me=curMe(),[x,y]=LORDS.grass.at;if(Math.hypot(me.x-x,me.y-y)>110){walkTo(x,y+40,lordOfferTap);return}sheet={hatsuho:1};renderSheet();openSheetUI()}
+function hatsuhoHTML(){const L=hatsuhoSlots(),n=matCount('jadeblade'),ok=n>=3&&!lordBusy('grass');
+  let h=`<h2>割草圈</h2><p class="note">正中間的草被割得整整齊齊，像在等什麼。${qh('放「初穗」：同一種作物、純色、一般造型的果實 3 顆＋翡翠鐮片 3 個。只有你會用掉東西；這時候在這張地圖的人都可以一起參加。')}</p><p class="note">翡翠鐮片 ${n}／3${lordBusy('grass')?'　這裡已經有人在和牠對峙了':''}</p>`;
+  h+=L.length?L.map(o=>{let ic='';try{ic=fruitSVG(fruitPh(o.f),o.f.c,40)}catch(e){}const a=keyApp(o.f.k);return `<button class="pick" data-act="hatsugo" data-i="${o.i}"${ok?'':' disabled'}><span class="seedic">${ic}</span><span><b>${esc((a&&a.skin?colorName(a.skin):''))}${esc(CROPS[o.f.c]?CROPS[o.f.c].n:'')}</b><span class="meta">${fCount(o.f)} 顆，放 3 顆</span></span></button>`}).join(''):'<p class="note">果實袋裡沒有 3 顆以上同樣的純色、一般造型的果實。</p>';
+  return h+'<button class="btn" data-act="close">關閉</button>'}
+function hatsuhoAction(b){if(b.dataset.act==='hatsugo'){if(!hatsuhoGo(+b.dataset.i))renderSheet()}}
+function hatsuhoGo(i){const F=fruitsArr(),f=F[i];if(!f||matCount('jadeblade')<3||lordBusy('grass')||(bossRT&&bossRT.kind==='lord'))return false;if(!hatsuhoSlots().some(o=>o.i===i))return false;
+  let left=3;for(const qk of Object.keys(f.q).sort((a,c)=>fqSplit(a)[1]-fqSplit(c)[1])){const m=Math.min(left,f.q[qk]);f.q[qk]-=m;left-=m;if(f.q[qk]<=0)delete f.q[qk];if(!left)break}if(!fCount(f))F.splice(i,1);
+  const S=matsObj();S.jadeblade-=3;if(S.jadeblade<=0)delete S.jadeblade;save();closeSheet();lordSummon('grass');return true}
+/* ---- 主現身：成員＝這一刻在同一張地圖的人 ---- */
+function lordBusy(bk){const N=lordNetState[bk];if(!N||!N.meta||N.meta.st!=='on')return false;const hb=Object.values(N.hb||{}).filter(x=>typeof x==='number');const last=hb.length?Math.max(...hb):N.meta.t0||0;
+  return bossNow()-last<LORD_STALE&&bossNow()-(N.meta.t0||0)<LORD_LIMIT+60e3}/* 沒人心跳 30 秒的舊戰鬥不算（主機當掉、大家都走了） */
+function lordSummon(bk){const L=LORDS[bk];if(!L||(bossRT&&bossRT.kind==='lord')||lordBusy(bk))return null;
+  const members={[bossMe()]:myName()};for(const u of Object.keys(others||{})){const o=others[u];if(o&&typeof o==='object')members[u]=String(o.name||'玩家').slice(0,20)}
+  const b=bossMake('lord',bk,L,members);bossRT=b;lordSum.f=0;lordSum.still=null;lordShow(L);
+  if(rtdb&&uid){b.net={host:uid,s:null};lordNetStart(b)}try{renderWorld()}catch(e){}return b}
+function lordShow(L){try{const el=document.createElement('div');el.className='lordshow';el.innerHTML=`<div class="ls-n">${esc(L.n)}</div><div class="ls-t">${esc(L.title)}</div>`;document.body.appendChild(el);setTimeout(()=>{try{el.remove()}catch(e){}},2200)}catch(e){}}
+/* ---- 多人同步（Realtime Database）。bossNet 是一層介面，測試換成假的 ---- */
+let bossNet={on:(p,cb)=>{const r=rtdb.ref(p),f=s=>cb(s.val());r.on('value',f,()=>{});return ()=>r.off('value',f)},set:(p,v)=>rtdb.ref(p).set(v).catch(()=>{}),update:(p,v)=>rtdb.ref(p).update(v).catch(()=>{}),remove:p=>rtdb.ref(p).remove().catch(()=>{}),
+  stamp:()=>firebase.database.ServerValue.TIMESTAMP,onDis:p=>{try{rtdb.ref(p).onDisconnect().set(1)}catch(e){}}};
+const fpath=bk=>`fight/${bk}`;
+function lordNetWatch(bk){if(!uid||!(rtdb||bossNet.fake))return;if(bossNetOff){try{bossNetOff()}catch(e){}}bossNetOff=bossNet.on(fpath(bk),v=>{lordNetState[bk]=v||null;try{lordNetSync(bk,v)}catch(e){try{crumb('lordsync '+e.message)}catch(x){}}})}
+function lordNetStart(b){const bk=b.bk,fid=uid+'_'+bossNow();b.net.fid=fid;b.hbs={};bossNet.set(fpath(bk),{meta:{fid,host:uid,max:b.max,members:b.members,t0:bossNow(),st:'on'},s:lordState(b)});lordHeartbeat(b)}
+function lordState(b){return {x:Math.round(b.x),y:Math.round(b.y),face:b.face,mode:b.mode,atk:b.atk||'',seq:b.seq,shape:b.shape||null,left:Math.max(0,Math.round(b.until-bossNow())),ph:b.ph,hid:b.hidden?1:0}}
+function lordPushState(b,now){if(!b.net||b.net.host!==uid||b.done)return;if(b._ps&&now-b._ps<150&&b._pseq===b.seq)return;b._ps=now;b._pseq=b.seq;bossNet.set(fpath(b.bk)+'/s',lordState(b))}
+function lordPushDmg(b){const now=bossNow();if(b._pd&&now-b._pd<250&&bossHp(b)>0)return;b._pd=now;bossNet.set(fpath(b.bk)+'/dmg/'+uid,b.myDmg)}
+/* 每秒：自己的心跳（斷線時 onDisconnect 記 down）＋檢查主機、輸贏 */
+function lordHeartbeat(b){bossNet.onDis(fpath(b.bk)+'/down/'+uid);const tick=()=>{if(bossRT!==b||b.done)return;bossNet.set(fpath(b.bk)+'/hb/'+uid,bossNet.stamp());if(b.myDmg)bossNet.set(fpath(b.bk)+'/dmg/'+uid,b.myDmg);lordHostCheck(b);setTimeout(tick,1000)};tick()}
+const lordAlive=b=>{const hb=b.hbs||{},v=Object.values(hb).filter(x=>typeof x==='number'),newest=v.length?Math.max(...v):0;return Object.keys(b.members||{}).filter(u=>!(b.downs&&b.downs[u])&&(u===uid||(typeof hb[u]==='number'&&newest-hb[u]<LORD_HB_DEAD)))};
+function lordHostCheck(b){if(!b.net||b.done)return;const now=bossNow(),alive=lordAlive(b);
+  if(b.net.host===uid){if(now-b.t0>LORD_LIMIT)lordEnd(b,'lost');else if(bossHp(b)<=0)lordEnd(b,'won');return}
+  const hb=b.hbs||{},hh=hb[b.net.host];
+  if(alive.includes(b.net.host)&&typeof hh==='number')return;if(typeof hh!=='number'&&now-b.t0<LORD_HB_DEAD+2000)return;/* 主機剛開始，心跳還沒到 */
+  if(alive.sort()[0]===uid){b.net.host=uid;bossNet.update(fpath(b.bk)+'/meta',{host:uid});const S=b.net.s;if(S){b.x=S.x;b.y=S.y;b.ph=S.ph||b.ph}b.mode='idle';b.until=now+800;b.shape=null;b.seq=(b.seq||0)+1}}/* 主機斷線：接手 */
+/* 收到同步：加入（成員裡有自己）、更新、結束 */
+function lordNetSync(bk,v){const b=bossRT;if(!v||!v.meta)return;const m=v.meta;
+  if(m.st==='on'&&(!b||b.kind!=='lord')&&m.members&&m.members[uid]&&!(v.down&&v.down[uid])&&exBiome===bk&&regMap==='secret'&&lordBusy(bk)&&lordSum.gone!==m.fid){
+    const nb=bossMake('lord',bk,LORDS[bk],m.members);nb.max=m.max;nb.t0=m.t0;nb.net={host:m.host,fid:m.fid,s:v.s||null};nb.dmg=Object.assign({},v.dmg||{});nb.myDmg=(v.dmg||{})[uid]||0;nb.dmg[uid]=nb.myDmg;nb.hbs=v.hb||{};nb.downs=v.down||{};
+    if(v.s){nb.x=v.s.x;nb.y=v.s.y;nb.seq=v.s.seq;nb.mode=v.s.mode;nb.shape=v.s.shape||null}bossRT=nb;lordSum.f=0;lordSum.still=null;lordShow(LORDS[bk]);lordHeartbeat(nb);try{renderWorld()}catch(e){}return}
+  if(!b||b.kind!=='lord'||!b.net||b.net.fid!==m.fid)return;
+  b.net.host=m.host;if(v.s)b.net.s=v.s;b.hbs=v.hb||{};b.downs=v.down||{};b.dmg=Object.assign({},v.dmg||{});b.dmg[uid]=Math.max(b.myDmg,b.dmg[uid]||0);
+  if(m.st!=='on'&&b.res!=='left'){lordSum.gone=m.fid;lordResult(b,m.st)}}
+/* ===== 135 結束 ===== */
 function goFarm(){
-  tripSave();pHP=PHP_MAX;/* 131 */if(viewing){if(viewing.unsub)viewing.unsub();viewing=null}
+  try{bossLeave()}catch(e){}/* 135：離開就算放棄 */tripSave();pHP=PHP_MAX;/* 131 */if(viewing){if(viewing.unsub)viewing.unsub();viewing=null}
   scene='farm';hoverPlot=null;hoverStall=null;
   if(state.me&&state.me.y>2110)state.me.y=2090;
   joinFarm(uid);renderHUD();renderWorld();renderChars();updateCam();refreshAct();
@@ -7607,9 +7851,10 @@ function monSwing(m){const L=document.getElementById('monSw');if(!L)return;const
 const MAT_P=0.3,MAT_GOLD_P=0.01,MAT_MAX=999;
 const MATS={hay:{n:'乾草束',mon:'haybale',reg:'grass'},mane:{n:'鬃毛',mon:'sprout_boar',reg:'grass'},bud:{n:'花苞',mon:'flower_snake',reg:'grass'},fin:{n:'薄鰭',mon:'wind_eel',reg:'grass'},twig:{n:'浮木枝',mon:'branch_log',reg:'grass'},gravel:{n:'碎石',mon:'crack_rock',reg:'grass'},xfur:{n:'山魈毛',mon:'one_leg_xiao',reg:'grass'},shard:{n:'陶片',mon:'moss_jar',reg:'grass'},hoop:{n:'鐵箍',mon:'well_bucket',reg:'grass'},
   fernbud:{n:'蕨芽',mon:'fern_curl',reg:'forest'},barkmask:{n:'樹皮面具',mon:'bark_spirit',reg:'forest'},mossshell:{n:'苔殼',mon:'moss_snail',reg:'forest'},creekstone:{n:'溪石',mon:'creek_stone',reg:'forest'},ringstone:{n:'環石',mon:'orbit_stone',reg:'forest'},rootlet:{n:'根鬚',mon:'root_stump',reg:'forest'},redthorn:{n:'紅眼荊棘',mon:'bramble_ball',reg:'forest'},burl:{n:'樹瘤',mon:'tree_burl',reg:'forest'},redspore:{n:'紅孢子',mon:'red_shroom',reg:'forest'},mothdust:{n:'鱗粉',mon:'night_moth',reg:'forest'},
-  bubshell:{n:'泡殼',mon:'bubble_snail',reg:'marsh'},batwing:{n:'網紋翼膜',mon:'eave_bat',reg:'marsh'}};/* 131.5：白樺林、潟湖「之後不會換」的怪 */
-const MAT_ICON={};/* 正式圖示：{鍵:'assets/...png'}，空的就用怪物縮圖 */
-const MON_MAT={};for(const b in MATS)MON_MAT[MATS[b].mon]=b;
+  bubshell:{n:'泡殼',mon:'bubble_snail',reg:'marsh'},batwing:{n:'網紋翼膜',mon:'eave_bat',reg:'marsh'},
+  jadeblade:{n:'翡翠鐮片',mon:'',reg:'grass',sv:1},jadesickle:{n:'翠玉鐮',mon:'',reg:'grass',sv:1,gold:1},ravenfeather:{n:'鴉羽',mon:'',reg:'forest',sv:1},silvereye:{n:'銀眼石',mon:'',reg:'forest',sv:1,gold:1},pearlplume:{n:'珠光羽',mon:'',reg:'marsh',sv:1},heroncrest:{n:'鷺冠羽',mon:'',reg:'marsh',sv:1,gold:1}};/* 135.3：主的僕人的素材（金色 15% 是另一種，不加「金色的」） *//* 131.5：白樺林、潟湖「之後不會換」的怪 */
+const MAT_ICON={jadeblade:'assets/boss/servant_grass_idle.png',jadesickle:'assets/boss/servant_grass_idle.png',ravenfeather:'assets/boss/servant_forest_idle.png',silvereye:'assets/boss/servant_forest_idle.png',pearlplume:'assets/boss/servant_marsh_idle.png',heroncrest:'assets/boss/servant_marsh_idle.png'};/* 正式圖示：{鍵:'assets/...png'}，空的就用怪物縮圖 */
+const MON_MAT={};for(const b in MATS)if(MATS[b].mon)MON_MAT[MATS[b].mon]=b;
 const matBase=k=>String(k).replace(/_g$/,''),matGold=k=>/_g$/.test(k);
 const matName=k=>{const M=MATS[matBase(k)];return M?(matGold(k)?'金色的':'')+M.n:'素材'};
 const matsObj=()=>state.mats&&typeof state.mats==='object'?state.mats:(state.mats={});
@@ -7630,8 +7875,8 @@ function matFly(p,k,n){fxAdd('gain',p.x,p.y-48,`+${n} ${matName(k)}`,1600);if(RM
 /* 115.3：種子袋的「素材」分頁（依地區分組、可以收合） */
 function matBagHTML(){const S=matsObj(),regs={};for(const b in MATS)(regs[MATS[b].reg]=regs[MATS[b].reg]||[]).push(b);
   const TR=state.trip||{},trs=Object.keys(TR).filter(k=>TR[k]>0);
-  let h=(trs.length?`<p class="note" style="margin:0 0 6px">這趟撿到：${trs.map(k=>`${esc(matName(k))} ×${TR[k]}`).join('、')}（還沒帶回去）</p>`:'')+`<p class="note" style="margin:0 0 6px">打倒怪物會掉素材，在城鎮的道具行可以做成道具。${qh('素材不能賣，也不能上架市集。每種最多 '+MAT_MAX+' 個。')}</p>`;
-  for(const r in regs){const ks=[];for(const b of regs[r])ks.push(b,b+'_g');const show=ks.filter(k=>!matGold(k)||(S[k]||0)>0);
+  let h=spiritLine()+(trs.length?`<p class="note" style="margin:0 0 6px">這趟撿到：${trs.map(k=>`${esc(matName(k))} ×${TR[k]}`).join('、')}（還沒帶回去）</p>`:'')+`<p class="note" style="margin:0 0 6px">打倒怪物會掉素材，在城鎮的道具行可以做成道具。${qh('素材不能賣，也不能上架市集。每種最多 '+MAT_MAX+' 個。')}</p>`;
+  for(const r in regs){const ks=[];for(const b of regs[r]){ks.push(b);if(!MATS[b].sv)ks.push(b+'_g')}const show=ks.filter(k=>!matGold(k)||(S[k]||0)>0);
     h+=`<details class="matreg" open><summary>${BIOMES[r]?BIOMES[r].n:r}（${ks.filter(k=>(S[k]||0)>0).length} 種）</summary><div class="slots">${show.map(k=>`<button class="slot mslot${(S[k]||0)?'':' dim'}" data-mat="${k}" aria-label="${esc(matName(k))}，${S[k]||0} 個">${matIcon(k,40)}<b class="cnt">${S[k]||0}</b><span class="nm">${esc(matName(k))}</span></button>`).join('')}</div></details>`}
   return h}
 function openMat(k){if(!MATS[matBase(k)])return;sheet={mat:k};renderSheet();openSheetUI()}

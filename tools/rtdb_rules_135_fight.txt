@@ -1,0 +1,34 @@
+第 135 節（19b）：主的多人同步用 Realtime Database 的 fight/<地區>。
+repo 裡沒有主控台上目前的 Realtime Database 規則全文，所以這裡只給要「加進去」的那一段。
+做法：Firebase 主控台 → Realtime Database → 規則，在最外層 "rules": { ... } 裡面、和 "presence"、"status" 並排的地方，加上下面這一段（注意前後的逗號）。
+如果把目前的規則全文貼給 Claude，可以產出完整的一份。
+
+    "fight": {
+      "$bk": {
+        ".read": "auth != null",
+        "meta": {
+          ".write": "auth != null"
+        },
+        "s": {
+          ".write": "auth != null && (data.parent().child('meta/host').val() === auth.uid || newData.parent().child('meta/host').val() === auth.uid)"
+        },
+        "dmg": {
+          "$uid": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.isNumber()" }
+        },
+        "hb": {
+          "$uid": { ".write": "auth != null && auth.uid === $uid" }
+        },
+        "down": {
+          "$uid": { ".write": "auth != null && auth.uid === $uid" }
+        },
+        ".write": "auth != null && (!data.exists() || data.child('meta/host').val() === auth.uid || data.child('meta/st').val() !== 'on' || now - data.child('meta/t0').val() > 960000)"
+      }
+    }
+
+說明：
+- 整份 fight/<地區> 只有在「沒有戰鬥」「自己是主機」「已經結束」或「開始超過 16 分鐘」時能整個蓋掉或刪掉（開新的一場、主機收尾）。
+  注意：主機當掉、大家也都走了的舊戰鬥，程式在沒人心跳 30 秒後就當作沒有（lordBusy），但規則要等 16 分鐘才允許別人蓋掉；這段時間別人叫主會寫入失敗、只在自己的畫面打（不同步）。
+- meta 任何登入的人都能改（接手主機時要改 meta/host、結束時改 meta/st）。
+- s（主的位置與招式）只有主機能寫。
+- dmg、hb、down 每個人只能寫自己的那一格；dmg 必須是數字。
+- 全服第一次的公告用 Firestore 的 fairyFirst/lord_<主id>，沿用第 114 節的規則（tools/firestore_rules_console_114.txt），Firestore 不用另外改。

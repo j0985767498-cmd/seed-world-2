@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-18x'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-18z'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-18y`。第 111～130、132、134 節（18c～18x）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-19a`（18z 之後換日期）。第 111～134 節（18c～18z）已做；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -213,11 +213,13 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 準備與畫：`regPrep`→`regPrepV2`（產生 `M._raw` 物件清單、`M._objs`、`M.blk`／`M.wlk` 碰撞、`M._P` 小路、`M._LG` 湖、`M._RV` 河、`M._T` 階地、`M._BR` 橋）、`regGroundSVG`／`regGroundEl`（地面轉 PNG，`REG_GLRU`）、`regWaterHTML`、`regTerraceHTML`、`regDynHTML`、`regTopV2`、`regWorld`、`regCam`。
 - 移動與事件：`regBlocked`、`regMove`、`regExitAt`、`regGo`、`regEnter`、`regArrival`、`regPlants`（`wpGeno`、`makeWild`、`wpDepth`）、`regItems`、`regFxStep`（機關）、`secEnter`（秘境）、`regStandTick`、`mapLv`／`gateStop`（等級）、地圖面板 `renderRegMap`。
 - 素材、製作、定型（115）：`MATS`／`MON_MAT`、`matDrop`（`MAT_P`、`MAT_GOLD_P`）、`matIcon`（`MAT_ICON`）、`state.mats`、種子袋「素材」分頁 `matBagHTML`／`matHTML`；道具行「製作」`RECIPES`、`craftEntries`／`craftPlan`／`craftDo`／`craftHTML`；定型 `fixWhy`／`fixBlock`／`fixGeno`／`fixStart`／`fixTick`（`FIX_MIN`、`FIX_MAX`、`state.fixq`）。
+- 戰鬥（131）：血量 `PHP_MAX`／`pHP`、`pDamage`／`pDie`／`pRegen`、`#hpBar`（`renderHP`）；怪物 `MON_RHP`／`MON_RDMG`／`SICKLE_DMG`、還手（`aggro`、`MON_WIND`／`MON_ATK_R`／`MON_LEASH`／`MON_GIVEUP`、`.mwind`）、數量 `monCount`（`MON_RT.xs`）；小補血藥 `pot`（`drinkPot`、`#potBtn`、`state.potGift`）；這趟素材 `state.trip`（`tripAdd`／`tripSave`／`tripLose`）；經驗 `monXp`（`MON_XP_ON=false`）。
 - 怪物（105）：`MON_DEF`／`MON_IMG`／`MON_MAP`、`monEnter`、`monLoop`、`monHit`、`monKill`、`monDrop`、`monSwing`、`monReach`／`monSpotFar`；圖層 `#monBack`／`#monFront`／`#monSw`。
 - 發光的植株 `roam*`（`ROAM_PTS`）、謎語 NPC `RIDDLE`／`rdHere`、櫻花花季 `sakuraBloom`。
 - **3D 畫面（108）**：`js/w3d.js`（`w3dEnter`、`w3dLeave`、`w3dSetPlayer`／`Others`／`Monsters`／`Plants`、`w3dPick`、`w3dView`）＋`lib/three.min.js`，用到才載入；地形 `buildHeight`（高台 `PLAT`、緩坡 `RAMP_L`、水往下挖 `waterDist`）、水 `buildWater`（深度圖＋湖面＋河帶）、橋 `buildBridges`／`gY`、景物 `wellMesh`／`archMesh`／`mushRing`、夢幻色光 `glowFor`、精靈 `w3dSetFairies`、樹冠透視 `holes`（`uHole`）、角色影格 `w3dPreload`；index.html 的「108（17x）」區塊：`W3D_MAPS`（目前草原 5 張）、`w3dSync`、`w3dLoad`、`W3D_HOST`（`pump`、`tap`）、`w3dBtn`。
 
 **城鎮、任務、角色**
+- 任務指引與提醒（133）：`qList`（七種任務統一，st acc／run／wait／done）、`giveReady`／`giveProg`、`altItemReady`／`altListReady`、`qNpcWhere`；記號 `qMarkSVG`／`qMarkFor`／`qChip`；追蹤 `state.qTrack`／`qTracked`、那一行 `qLineText`（`renderMqLine`）；帶路 `qGo`、`qArrow`（`qArrowExplore`、`regNextExit`、`exitPos`、`qArrowCheck`）、`qGoHTML`、說明 `qDetailHTML`；面板 `qPanelHTML`；提醒 `qScan`／`qNotify`（`state.qSeen`／`qAcc`／`qWait`／`qLoginDay`／`qExpDay`、開關 `state.qRemind`）；`openOrders`。
 - 秘境帶路（134）：地區故事第 4 步 `enter`（`rsEnter`，在 `regEnter` 裡）、`rsReady`、`RS_DONE3`（130 的「完成」看第 3 步）、舊玩家 `paid`（旗標 `rs134V`）、傳說卡 `state.legSeen`／`RS_LEG`；種子台座拿掉（`EX_P` 只剩 deep），仙境花園 `cutRing`（`regGroundSVG`）；`GOD_NEED=2000`。
 - 筆記頁（130）：`state.notes`／`state.noteNew`、`noteGet`（`NOTE_XP`）、`noteDot`；傳說 `NOTE_LEG`、`noteTalk`；遺物 `NOTE_REL`、`NOTE_SPOTS`、`noteTick`（在 `tick` 裡和 `rsTick` 一起跑）、`relCardHTML`；頁面 `noteHTML`。
 - 互助（132）：`HELP_MIN`／`HELP_COIN`／`HELP_XP`／`HELP_DAYS`、`helpDo`（`state.helped`）、`helpApply`（`state.helpGot`）、`helpedToday`、圖示列 `ibHelp`；私訊 kind `help`；經驗上限 `XP_CAP.f`。
@@ -386,8 +388,8 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 129 | 朋友名單（補第 125 節：偷菜只能偷朋友） | 已完成 | docs/規格存檔.md；18t（9.126）；不用改規則；沒有截圖、沒測 iPhone |
 | 130 | 筆記頁：主的傳說、第一批的遺物 | 已完成 | docs/規格存檔.md；18w（9.129）；調查點都用現成物件；沒有截圖、沒測 iPhone |
 | 134 | 秘境公開、當地人帶路、拿掉種子台座；神化 2,000 | 已完成 | docs/規格存檔.md；18x（9.130）；白樺林、潟湖照觸發改對白（種子、睡蓮）；沒有截圖、沒測 iPhone |
-| 133 | 任務的指引、「可以完成了」的提示、提醒（擴到所有任務） | 未做 | docs/待實作/第133節.md；排在第 126、130 節之後、131 之前 |
-| 131 | 戰鬥改版第一步：血量、怪物會還手、小補血藥、打怪經驗、白樺林與潟湖的素材 | 未做 | docs/待實作/第131節.md；排在最後（114、129、126、130 之後）；131.1 回報後停下來等使用者 |
+| 133 | 任務的指引、「可以完成了」的提示、提醒（擴到所有任務） | 已完成 | docs/規格存檔.md；18y（9.131）；難判斷的四類列在 9.131；**要請使用者在 iPhone 上看那一行和箭頭**；沒有截圖 |
+| 131 | 戰鬥改版第一步：血量、怪物會還手、小補血藥、打怪經驗、白樺林與潟湖的素材 | 已完成 | docs/規格存檔.md；18z（9.132）；打怪經驗先 0（使用者）；怪物仍是各人各自的；**要請使用者 iPhone 實機試邊走邊打邊躲**；沒有截圖 |
 | 135 | 主、主的僕人、精魄、神寵：九隻主的現身條件、重生、掉落、神寵三階段 | 未做（設計定案） | docs/待實作/第135節.md；排在第 131 節之後；主的痕跡、秘境帶路在第 134 節 |
 | 136 | 冰封種子庫的由來（門禁卡、館藏重開、古老的種子） | 未做（設計定案） | docs/待實作/第136節.md；跟晶霜雪原那一章一起做 |
 | 132 | 互助：每天幫每位朋友照顧一次 | 已完成 | docs/規格存檔.md；18u（9.127）；開花等授粉的不計時、不受影響；不用改規則；沒有截圖、沒測 iPhone |

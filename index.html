@@ -476,6 +476,13 @@ body.game{background:#5E9E38}
 #decoPop{position:fixed;z-index:58;display:flex;gap:6px;background:#FFF6DE;border:2px solid #5A3416;border-radius:12px;padding:6px;box-shadow:0 3px 0 #5A3416}
 #decoPop button{font:inherit;font-size:13px;font-weight:700;border:1.5px solid #5A3416;background:#fff;color:#5A3416;border-radius:9px;padding:7px 10px;min-height:36px}
 #fxH{position:fixed;inset:0;pointer-events:none;z-index:57;overflow:hidden}
+/* 152.1（19q）：傷害數字 */#dmgL{position:fixed;inset:0;pointer-events:none;z-index:58;overflow:hidden}#dmgL .dmg{position:absolute;left:0;top:0;opacity:0;white-space:nowrap;font-family:var(--numfont,"Arial Rounded MT Bold","Hiragino Maru Gothic ProN",system-ui,sans-serif);font-weight:900;font-size:20px;line-height:1;color:var(--dc,#fff);
+  text-shadow:-2px -2px 0 #2A1608,2px -2px 0 #2A1608,-2px 2px 0 #2A1608,2px 2px 0 #2A1608,0 2px 0 #2A1608,0 -2px 0 #2A1608,2px 0 0 #2A1608,-2px 0 0 #2A1608;will-change:transform,opacity;animation:dmgUp .8s ease-out forwards}
+#dmgL .dmg b{font-weight:900}#dmgL .dmg i{font-style:normal;font-size:11px;margin-right:3px;vertical-align:4px;color:#FFE08A}
+#dmgL .dmg.crit{color:var(--dc,#FF6A2C);font-size:28px;animation:dmgCrit .9s ease-out forwards}#dmgL .dmg.hurt{color:#FF4B4B}#dmgL .dmg.heal{color:#5BE36A}#dmgL .dmg.miss{color:#B9B9B9;font-size:17px}#dmgL .dmg.pet{font-size:16px}
+@keyframes dmgUp{0%{opacity:0;transform:translate(-50%,-50%) translateY(6px) scale(.8)}12%{opacity:1;transform:translate(-50%,-50%) translateY(0) scale(1.08)}22%{transform:translate(-50%,-50%) translateY(-4px) scale(1)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) translateY(-40px) scale(1)}}
+@keyframes dmgCrit{0%{opacity:0;transform:translate(-50%,-50%) scale(2)}12%{opacity:1;transform:translate(-50%,-50%) scale(.95)}18%{transform:translate(-50%,-50%) translateX(-3px) scale(1.05)}24%{transform:translate(-50%,-50%) translateX(3px) scale(1)}30%{transform:translate(-50%,-50%) translateX(0)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) translateY(-44px)}}
+@media (prefers-reduced-motion:reduce){#dmgL .dmg,#dmgL .dmg.crit{animation:dmgFade .8s linear forwards}@keyframes dmgFade{0%,70%{opacity:1;transform:translate(-50%,-50%)}100%{opacity:0;transform:translate(-50%,-50%)}}}
 #fxH .pf{position:absolute;transform:translate(-50%,-50%);pointer-events:none;font-weight:700}
 #fxH .pf.ck{width:22px;height:22px;border-radius:50%;background:#FFD54A;border:2px solid #7A5A10;color:#5A3416;font-size:14px;line-height:19px;text-align:center;animation:pfPop .6s ease-out forwards}
 #fxH .pf.sk{color:#8A8A8A;font-size:22px;text-shadow:0 0 3px #fff;animation:pfFade .4s ease-out forwards}
@@ -879,6 +886,19 @@ details.gfold .gfb{margin-top:8px}
 .offfx{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);z-index:60;display:flex;gap:14px;pointer-events:auto;animation:offfx .9s ease-out forwards}.offfx b{font-size:30px;text-shadow:0 0 8px #fff}.offok{color:#E8B400}.offbad{color:#8A8A8A}.offfx .offbad::before{content:'✕ '}@keyframes offfx{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-80%) scale(1)}}/* 114 */
 .mwind{animation:mwind .5s ease-in-out}.mwind .ms{filter:drop-shadow(0 0 6px #FF2A2A) drop-shadow(0 0 2px #FF2A2A) brightness(1.15) sepia(.5) saturate(4) hue-rotate(-30deg)}@keyframes mwind{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 /* 135 */#bossBar{position:fixed;left:50%;transform:translateX(-50%);top:calc(122px + env(safe-area-inset-top,0px));z-index:11;width:min(300px,82vw);display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;pointer-events:none}#bossBar[hidden]{display:none}#bossBar b{width:100%;text-align:center;font-size:14px;color:#fff;text-shadow:0 0 3px #3B2614,0 0 3px #3B2614}#bossBar .bbw{position:relative;flex:1;height:14px;border-radius:8px;border:2px solid #3B2614;background:#4A2A18;overflow:hidden}#bossBar .bbw i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#E8504A,#B8282A);transition:width .2s}#bossBar .bbw em{position:absolute;left:50%;top:0;bottom:0;width:2px;background:#FFF6DE;opacity:.85}#bossBar.ph2 .bbw i{background:linear-gradient(#F0A040,#C8501A)}#bossBar .bbq{pointer-events:auto;font-size:12px;padding:2px 8px;border-radius:8px;border:2px solid #5A3416;background:#FFF6DE;color:#5A3416}#bossBar .bbq[hidden]{display:none}
+.fyhero{position:relative;width:75%;margin:0 auto 4px;aspect-ratio:348/445;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.fyhero .fyglow{position:absolute;left:50%;top:52%;width:105%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,var(--g1) 0%,transparent 64%);opacity:.55;filter:blur(6px);animation:fyGlowA 7s ease-in-out infinite}
+.fyhero.god .fyglow{background:conic-gradient(from 0deg,var(--g1),var(--g2),var(--g1),var(--g2),var(--g1));-webkit-mask:radial-gradient(circle,#000 0,#000 30%,transparent 66%);mask:radial-gradient(circle,#000 0,#000 30%,transparent 66%);opacity:.6;filter:blur(10px)}
+@keyframes fyGlowA{0%{transform:translate(-50%,-50%) rotate(0) scale(.96);opacity:.6}50%{transform:translate(-50%,-50%) rotate(180deg) scale(1.04);opacity:.9}100%{transform:translate(-50%,-50%) rotate(360deg) scale(.96);opacity:.6}}
+.fyhero .fyfloat{position:absolute;inset:0;animation:fyFloat 4s ease-in-out infinite}.fyhero .fybreath{position:absolute;inset:0;transform-origin:50% 96%;animation:fyBreath 3s ease-in-out infinite}.fyhero .fybreath>svg,.fyhero .fybreath>img,.fyhero .fybreath>div{width:100%!important;height:100%!important}
+@keyframes fyFloat{0%,100%{transform:translateY(-6px)}50%{transform:translateY(6px)}}@keyframes fyBreath{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.02)}}
+.fyhero .fyshine{position:absolute;inset:0;overflow:hidden;pointer-events:none;-webkit-mask:linear-gradient(#000,#000);border-radius:12px}.fyhero .fyshine::after{content:"";position:absolute;top:-20%;left:-60%;width:40%;height:140%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);animation:fyShine 6s ease-in-out infinite;mix-blend-mode:screen}
+@keyframes fyShine{0%,78%{left:-60%}92%,100%{left:130%}}
+.fyhero .fymotes{position:absolute;inset:0;pointer-events:none;overflow:hidden}.fyhero .fymotes i{position:absolute;bottom:4%;width:6px;height:6px;border-radius:50%;background:var(--g1);box-shadow:0 0 8px var(--g1);opacity:0;animation:fyMote 4.6s linear infinite}.fyhero.god .fymotes i:nth-child(2n){background:var(--g2);box-shadow:0 0 8px var(--g2)}
+@keyframes fyMote{0%{transform:translateY(0) scale(.6);opacity:0}15%{opacity:.9}100%{transform:translateY(-300px) scale(1.1);opacity:0}}
+.fyhero.pop .fybreath{animation:fyPopA .45s ease-out,fyBreath 3s ease-in-out .45s infinite}@keyframes fyPopA{0%{transform:scale(1)}35%{transform:scale(1.07,.95)}65%{transform:scale(.97,1.04)}100%{transform:scale(1)}}
+.fyhero .fyburst{position:absolute;left:50%;top:50%;pointer-events:none}.fyhero .fyburst i{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--g1);box-shadow:0 0 8px var(--g2);animation:fyBurst .7s ease-out forwards}@keyframes fyBurst{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--bx),var(--by)) scale(.3);opacity:0}}
+@media (prefers-reduced-motion:reduce){.fyhero .fyfloat,.fyhero .fybreath,.fyhero .fyglow,.fyhero .fyshine::after,.fyhero .fymotes i,.fyhero .fyburst i{animation:none!important}.fyhero .fymotes,.fyhero .fyshine{display:none}}
 /* 148.2（19m）：神之子資訊 */.fyinfo{display:grid;gap:6px;margin:8px 0}.fyinfo>div{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-radius:10px;background:var(--pn,#FFF6DE);border:1.5px solid rgba(90,52,22,.25)}.fyinfo span{color:#8A6A4A;font-size:13px}.fyinfo b{display:flex;align-items:center;gap:6px}.fysw{display:inline-block;width:16px;height:16px;border-radius:50%;border:2px solid rgba(0,0,0,.25)}.fybar{height:12px;border-radius:7px;border:2px solid #5A3416;background:#F2E6CC;overflow:hidden;margin:4px 0}.fybar i{display:block;height:100%;background:linear-gradient(#FFE08A,#E8B23A)}
 /* 147（19m）：主與僕人的頭像：圓框、地區主色底、深棕框線 */.bpor{display:inline-flex;flex:none;align-items:center;justify-content:center;box-sizing:border-box;border-radius:50%;background:var(--pc,#E8DCC0);border:2.5px solid #5A3416;overflow:hidden}.bpor img{width:100%;height:100%;object-fit:cover;display:block}.bpor[hidden]{display:none}#bossBar .bpor{width:40px;height:40px}.mati.por{border-radius:50%;background:var(--pc,#E8DCC0);border:2px solid #5A3416;overflow:visible;box-sizing:border-box}.mati.por img{width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;border-radius:50%}.lordcalm{flex-direction:column;gap:10px}.lordshow{position:fixed;inset:0;z-index:40;background:rgba(10,10,20,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;animation:lsIn 2.2s ease forwards;pointer-events:none}.lordshow .ls-n{font-size:30px;font-weight:800;letter-spacing:4px;text-shadow:0 2px 8px #000}.lordshow .ls-t{font-size:15px;margin-top:8px;opacity:.9}@keyframes lsIn{0%{opacity:0}15%{opacity:1}80%{opacity:1}100%{opacity:0}}.lordcalm{position:fixed;inset:0;z-index:40;background:rgba(255,250,230,.55);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#5A3416;animation:lsIn 2.6s ease forwards;pointer-events:none}.bgrass{animation:bgr .35s ease-in-out infinite alternate;transform-origin:0 0}@keyframes bgr{from{transform:skewX(-8deg)}to{transform:skewX(8deg)}}.lordwall{animation:lwall 1.6s ease-in-out infinite alternate}@keyframes lwall{from{stroke-opacity:.3}to{stroke-opacity:.7}}.feather{animation:fth 1.8s ease-in-out infinite alternate}@keyframes fth{from{opacity:.65}to{opacity:1}}
 #hpBar{position:fixed;left:50%;transform:translateX(-50%);top:calc(98px + env(safe-area-inset-top,0px));z-index:11;width:170px;height:16px;border-radius:9px;border:2px solid #5A3416;background:#FFF6DE;overflow:hidden;box-shadow:0 2px 0 #5A3416;pointer-events:none}#hpBar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(180deg,#F26A5A,#C9372A);transition:width .2s}#hpBar.low i{background:linear-gradient(180deg,#FF8A3D,#E04020)}#hpBar span{position:relative;display:block;text-align:center;font-size:11px;line-height:12px;font-weight:700;color:#3B2614}
@@ -1024,6 +1044,18 @@ body.pnlOpen .hudTop,body.pnlOpen #mqLine,body.pnlOpen #rbar,body.pnlOpen #mapBt
 .mcell{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;min-height:76px;border-radius:16px;background:var(--card);border:2.5px solid var(--ol);box-shadow:0 3px 0 var(--ol);color:var(--ol);font:inherit;font-weight:700;font-size:13px}
 .mcell img{width:34px;height:34px}
 .mpgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+/* 154（19q）：小地圖（右上小圖示那排正下方） */#miniMap{position:fixed;right:10px;top:calc(62px + env(safe-area-inset-top,0px));z-index:11;width:96px;height:96px}#miniMap[hidden]{display:none}
+#miniMap .mmmap{display:block;width:96px;height:96px;padding:0;border:2px solid rgba(255,236,200,.65);border-radius:14px;background:rgba(30,20,12,.58);box-shadow:0 2px 6px rgba(0,0,0,.3);cursor:pointer}#miniMap .mmmap svg{display:block;width:100%;height:100%}
+#miniMap .mmcol{position:absolute;left:-4px;bottom:-4px;width:24px;height:24px;padding:0;border-radius:50%;border:2px solid var(--ol,#5A3416);background:#FFF9EC;color:var(--ol,#5A3416);font-weight:900;font-size:15px;line-height:18px}
+#miniMap.col{width:44px;height:44px}#miniMap .mmopen{width:44px;height:44px;padding:0;border-radius:50%;border:2.5px solid var(--ol,#5A3416);background:#FFF9EC;box-shadow:0 2px 0 var(--ol,#5A3416);display:flex;align-items:center;justify-content:center}#miniMap .mmopen img{width:28px;height:28px}
+#miniMap .mmcur{animation:mmBlink 1.6s ease-in-out infinite}@keyframes mmBlink{0%,100%{stroke-opacity:1}50%{stroke-opacity:.15}}
+body.pnlOpen #miniMap,body.shFull #miniMap{visibility:hidden}@media (min-width:561px){body.wild #mqLine{max-width:calc(100vw - 136px)}}
+@media (prefers-reduced-motion:reduce){#miniMap .mmcur{animation:none}}
+/* 151（19q）：地區卡片 4:5 */.rggrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 4px}.rgcard{position:relative;display:block;width:100%;aspect-ratio:4/5;padding:0;border:2.5px solid var(--ol,#5A3416);border-radius:14px;overflow:hidden;background:#E9DDC2;box-shadow:0 3px 0 var(--ol,#5A3416);color:#fff}
+.rgcard>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}.rgcard .rgfb{display:none}.rgcard.noimg .rgfb{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 8px 40px;color:var(--ink,#4A3020);text-align:center}.rgcard.noimg .rgfb svg{width:70%;height:auto}
+.rgname{position:absolute;left:0;right:0;bottom:0;padding:26px 8px 8px;background:linear-gradient(transparent,rgba(20,12,4,.78));text-align:left;display:flex;align-items:baseline;gap:6px}.rgname b{font-size:15px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}.rgname i{font-style:normal;font-size:10.5px;color:#FFE7A8}
+.rgcur{position:absolute;top:6px;left:6px;font-size:11px;font-weight:700;padding:2px 7px;border-radius:9px;background:#2E9B43;color:#fff;border:1.5px solid #fff}
+.rgcard.lock>img{filter:brightness(.42) saturate(.6)}.rgcard.lock.noimg .rgfb{opacity:.45}.rglock{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);white-space:nowrap;font-size:14px;font-weight:800;padding:5px 10px;border-radius:10px;background:rgba(0,0,0,.55);color:#fff;border:1.5px solid rgba(255,255,255,.7)}
 .mpc{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px;border-radius:16px;background:var(--card);border:2.5px solid var(--ol);box-shadow:0 3px 0 var(--ol);font:inherit;color:var(--ol)}
 .mpc img{width:40px;height:40px}.mpc[aria-current="true"],.biome[aria-current="true"]{outline:3px solid var(--tabon)}
 /* 一套面板：抽屜疊在面板上、任務 → 變成面板的樣子 */
@@ -1102,7 +1134,7 @@ details.par summary{font-weight:700;cursor:pointer}
 /* 144 修正（19m）：布置只在自己的農場能用，其他地方留空位，朋友、圖鑑不往右補位 */#tbar #ibLay[hidden]{display:flex!important;visibility:hidden;pointer-events:none}#tbar #ibLay.on{background:var(--tabon)}#frDot{position:absolute;right:-2px;top:-2px;width:12px;height:12px;border-radius:50%;background:var(--dg);border:2px solid #fff}#rbar{top:auto!important;right:calc(16px + 19px);bottom:calc(16px + 92px + 12px + 16px + env(safe-area-inset-bottom,0px));flex-direction:column-reverse;gap:28px}#ringBtn{right:16px!important;bottom:calc(16px + env(safe-area-inset-bottom,0px))!important}#meChip{max-width:calc(100vw - 268px);min-width:0!important}#meChip .mcn{overflow:hidden;min-width:0}#meChip .mcn b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}@media (max-width:560px){.hudRow{flex-direction:column;align-items:flex-start}.hudRow .coins{margin-left:0}#mqLine{top:calc(150px + env(safe-area-inset-top,0px))}#hpBar{top:calc(188px + env(safe-area-inset-top,0px))}#bossBar{top:calc(212px + env(safe-area-inset-top,0px))}}#tbar #mapBtn{height:44px!important;width:44px!important}body.pnlOpen #tbar,body.shFull #tbar{visibility:hidden}#layBar{display:flex;gap:6px;justify-content:center}#layBar[hidden]{display:none}#layBar button{min-height:44px;padding:0 14px;border-radius:12px;border:2.5px solid var(--ol);background:#FFF9EC;color:var(--ol);font:inherit;font-weight:700;box-shadow:0 3px 0 var(--ol)}#layBar button.primary{background:linear-gradient(180deg,var(--go1),var(--go2));color:#fff;box-shadow:0 3px 0 var(--gosh)}
 /* 141 */.ms.hit2{animation:monHit2 .38s ease-out}@keyframes monHit2{0%{transform:translateX(calc(var(--kd,1)*10px)) scale(1.16,.8)}30%{transform:translateX(calc(var(--kd,1)*6px)) scale(.94,1.08)}50%{transform:translateX(3px)}70%{transform:translateX(-3px)}100%{transform:none}}.mdeb circle{animation:mdeb .5s ease-out forwards}@keyframes mdeb{0%{transform:translate(0,0);opacity:1}100%{transform:translate(var(--dx),var(--dy));opacity:0}}@media (prefers-reduced-motion:reduce){.ms.hit2,.mdeb circle{animation:none}}
 /* 143 */.pitlight{animation:pitL 4s ease-in-out infinite alternate}@keyframes pitL{from{opacity:.45}to{opacity:.9}}body.pitglow .pitlight{animation:none;opacity:1;filter:brightness(1.6)}
-/* 144（19j）：補血藥快捷格（背包左上方、小一號）、冷卻圈、長按選單；野外時任務、神之子在右上 */#potBtn{top:auto!important;right:calc(16px + 19px + 54px + 12px)!important;bottom:calc(16px + 92px + 12px + 16px + 4px + env(safe-area-inset-bottom,0px))!important;/* 144 修正：背包左邊、同一高度 */width:46px!important;height:46px!important;border-radius:50%!important;border:3px solid var(--ol)!important;background:#FFF9EC!important;box-shadow:0 3px 0 var(--ol)!important;padding:0!important;display:flex;align-items:center;justify-content:center;overflow:visible}#potBtn[hidden]{display:none}#potBtn b{position:absolute;right:-4px;bottom:-4px;min-width:18px;height:18px;line-height:18px;border-radius:9px;background:var(--ol);color:#fff;font-size:11px;font-weight:900;text-align:center;padding:0 3px}#potBtn.empty{filter:grayscale(1);opacity:.6}#potBtn .pcd{position:absolute;inset:0;border-radius:50%;pointer-events:none}#potBtn.flash{animation:potFlash .6s ease-out}@keyframes potFlash{0%{box-shadow:0 0 0 0 rgba(255,230,120,.95),0 3px 0 var(--ol)}100%{box-shadow:0 0 0 16px rgba(255,230,120,0),0 3px 0 var(--ol)}}#potMenu{position:fixed;right:calc(16px + 19px + 54px + 12px);bottom:calc(16px + 92px + 12px + 16px + 4px + 58px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--pn);border:2.5px solid var(--ol);border-radius:14px;padding:8px;box-shadow:0 4px 10px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:6px;min-width:150px}#potMenu[hidden]{display:none}#potMenu b{font-size:13px;font-weight:900;color:var(--ol)}#potMenu button{display:flex;align-items:center;gap:6px;min-height:44px;border-radius:10px;border:2px solid var(--ln);background:var(--card);font:inherit;font-weight:700;color:var(--ol);padding:0 8px}#potMenu button[aria-pressed=true]{border-color:var(--ol)}#potMenu em{margin-left:auto;font-style:normal}body.pnlOpen #potBtn,body.shFull #potBtn{visibility:hidden}
+/* 144（19j）：補血藥快捷格（背包左上方、小一號）、冷卻圈、長按選單；野外時任務、神之子在右上 */#potBtn .pic{display:flex;align-items:center;justify-content:center}#potBtn{top:auto!important;right:calc(16px + 19px + 54px + 12px)!important;bottom:calc(16px + 92px + 12px + 16px + 4px + env(safe-area-inset-bottom,0px))!important;/* 144 修正：背包左邊、同一高度 */width:46px!important;height:46px!important;border-radius:50%!important;border:3px solid var(--ol)!important;background:#FFF9EC!important;box-shadow:0 3px 0 var(--ol)!important;padding:0!important;display:flex;align-items:center;justify-content:center;overflow:visible}#potBtn[hidden]{display:none}#potBtn b{position:absolute;right:-4px;bottom:-4px;min-width:18px;height:18px;line-height:18px;border-radius:9px;background:var(--ol);color:#fff;font-size:11px;font-weight:900;text-align:center;padding:0 3px}#potBtn.empty{filter:grayscale(1);opacity:.6}#potBtn .pcd{position:absolute;inset:0;border-radius:50%;pointer-events:none}#potBtn.flash{animation:potFlash .6s ease-out}@keyframes potFlash{0%{box-shadow:0 0 0 0 rgba(255,230,120,.95),0 3px 0 var(--ol)}100%{box-shadow:0 0 0 16px rgba(255,230,120,0),0 3px 0 var(--ol)}}#potMenu{position:fixed;right:calc(16px + 19px + 54px + 12px);bottom:calc(16px + 92px + 12px + 16px + 4px + 58px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--pn);border:2.5px solid var(--ol);border-radius:14px;padding:8px;box-shadow:0 4px 10px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:6px;min-width:150px}#potMenu[hidden]{display:none}#potMenu b{font-size:13px;font-weight:900;color:var(--ol)}#potMenu button{display:flex;align-items:center;gap:6px;min-height:44px;border-radius:10px;border:2px solid var(--ln);background:var(--card);font:inherit;font-weight:700;color:var(--ol);padding:0 8px}#potMenu button[aria-pressed=true]{border-color:var(--ol)}#potMenu em{margin-left:auto;font-style:normal}body.pnlOpen #potBtn,body.shFull #potBtn{visibility:hidden}
 /* 145（19k）：地點兩層字 */.sceneName small,#mapBanner small{display:block;font-size:10.5px;opacity:.8;line-height:1.2}.sceneName b,#mapBanner b{display:block;font-weight:700;line-height:1.25}.sceneName.two b{font-size:15px}#mapBanner.two b{font-size:18px}#mqLine{top:calc(124px + env(safe-area-inset-top,0px))}@media (max-width:560px){#mqLine{top:calc(166px + env(safe-area-inset-top,0px))}#hpBar{top:calc(204px + env(safe-area-inset-top,0px))}#bossBar{top:calc(228px + env(safe-area-inset-top,0px))}}
 </style>
 </head>
@@ -1619,7 +1651,7 @@ function packKeys(l){
 }
 let DRAW_MU=null;/* 96：剛抽到的那顆是不是新突變（{k,v}），發芽判定時用 */
 function drawSeed(l){if(l.zs)unzipLot(l);DRAW_MU=null;{const m=lcMu(l);if(m&&rnd()*lc(l)<m){const k=Math.floor(rnd()*m),g=l.mseeds.splice(k,1)[0],md=(l.mmd||[]).splice(k,1)[0];DRAW_MU=md||{k:'?'};if(!l.mseeds.length){delete l.mseeds;delete l.mmd}return g}}if(l.seeds&&l.seeds.length)return l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0];l.count--;return child(l.m,l.f).g}
-function newGame(){state={rv98:1,patV:1,fyopV:1,notes:{},rs134V:1,themeV:1,spV:1,nameV:1,n149V:1,potSel:'pot',autoPot:true,autoPotAt:0.3,fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
+function newGame(){state={rv98:1,patV:1,fyopV:1,notes:{},rs134V:1,themeV:1,spV:1,nameV:1,n149V:1,dmgNum:true,miniMap:true,potSel:'pot',autoPot:true,autoPotAt:0.3,fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
 const WILD={tomato:'red',strawberry:'red',zucchini:'green',corn:'yellow',broccoli:'white',melon:'yellow',chili:'red',pumpkin:'yellow',eggplant:'purple'};
 function originalFor(crop){
   const wild=rnd()<0.7,col=wild?WILD[crop]:pk(['red','yellow','green','white','purple'].filter(c=>c!==WILD[crop]));
@@ -1865,7 +1897,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-19p';
+const BUILD='2026-11-19r';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -3258,7 +3290,7 @@ sb.addEventListener('click',e=>{
   if(sheet.give)return giveAction(b);
   if(sheet.rnpc){if(b.dataset.act==='vdopen'){openVD();return}if(orderAction(b)&&sheet&&sheet.rnpc)renderSheet();return}/* 121 */
   if(sheet.hatsuho)return hatsuhoAction(b);/* 135 */
-  if(sheet.fyinfo){if(b.dataset.act==='fiall'){closeSheet();openFyPage()}return}/* 148.2 */
+  if(sheet.fyinfo){if(b.dataset.act==='fiall'){closeSheet();openFyPage()}else if(b.dataset.act==='fipop')fyPop(b);return}/* 148.2 */
   if(sheet.theme){if(b.dataset.act==='thgo'){const r=themeApply(b.dataset.k);if(r){closeSheet();closePanel()}else renderSheet()}else if(b.dataset.act==='close')closeSheet();return}/* 137 */
   if(sheet.qd||sheet.qgo){if(b.dataset.act==='close'){closeSheet();return}orderAction(b);return}/* 133 */
   if(sheet.mqgo){if(b.dataset.act==='mqgo'){const id=sheet.mqgo;closeSheet();goMarket();if(scene==='market')setTimeout(()=>townArrowSet(id),400)}return}
@@ -4707,8 +4739,14 @@ function renderMapPanel(){const el=document.getElementById('mapBody');if(!el||!s
   const here=k=>(k==='farm'&&scene==='farm'&&!viewing)||(k==='town'&&scene==='market');
   h+=`<div class="mpgrid"><button class="mpc" data-mp="farm"${here('farm')?' aria-current="true"':''}><img src="assets/icons/s/home.png" alt="" onerror="this.remove()"><b>我的農場</b></button><button class="mpc" data-mp="town"${here('town')?' aria-current="true"':''}><img src="assets/icons/s/town.png" alt="" onerror="this.remove()"><b>城鎮</b>${myLv()<LV_TOWN?`<span class="meta">Lv ${LV_TOWN}</span>`:''}</button></div>`;
   h+=`<h3>探索</h3><p class="note">${exRefreshTxt()}${qh(exCapOn()?`每天最多撿 ${EX_LIMIT} 件道具、採 ${EX_PLANT_LIMIT} 株野生植株；今天還能撿 ${Math.max(0,EX_LIMIT-state.ex.picks)} 件、採 ${Math.max(0,EX_PLANT_LIMIT-(state.ex.plants||0))} 株。`:'目前沒有每日上限（測試模式）。')}</p>`;
-  h+=BIOME_KEYS.filter(regOpenOk).sort((a,b)=>LV_REG[a]-LV_REG[b]).map(k=>{const B=BIOMES[k],lk=myLv()<regLv(k)&&REG_OPEN[k]!==0,cur=scene==='explore'&&exBiome===k;return `<button class="biome" data-mp="${k}"${lk?' style="opacity:.55"':''}${cur?' aria-current="true"':''}>${biomeThumb(k)}<span class="lr"><b>${B.n}${lk?`（Lv ${regLv(k)}）`:''}${REG_OPEN[k]===0?'（未開放・測試）':''}${cur?'（你在這裡）':''}</b><span class="meta">${B.desc}</span></span></button>`}).join('');
+  h+=`<div class="rggrid">`+BIOME_KEYS.filter(regOpenOk).sort((a,b)=>LV_REG[a]-LV_REG[b]).map(k=>rgCardHTML(k)).join('')+`</div>`;/* 151：畫好的預覽圖卡片 */
   el.innerHTML=h}
+/* ===== 151（19q）：選地區的預覽圖（assets/regions/preview_<地區>.jpg，4:5）；圖載不到就換回原本的縮圖＋說明 ===== */
+const rgPrev=k=>`assets/regions/preview_${k}.jpg?v=${BUILD}`;
+function rgCardHTML(k){const B=BIOMES[k],lk=myLv()<regLv(k)&&REG_OPEN[k]!==0,cur=scene==='explore'&&exBiome===k,test=REG_OPEN[k]===0;
+  return `<button class="rgcard${lk?' lock':''}" data-mp="${k}"${cur?' aria-current="true"':''} aria-label="${esc(B.n)}${lk?`，Lv ${regLv(k)} 開放`:''}"><img src="${rgPrev(k)}" alt="" onerror="this.parentNode.classList.add('noimg');this.remove()"><span class="rgfb">${biomeThumb(k)}<span class="meta">${esc(B.desc)}</span></span>`+
+    `<span class="rgname"><b>${esc(B.n)}</b>${test?'<i>未開放（測試）</i>':''}</span>${cur?'<span class="rgcur">你在這裡</span>':''}${lk?`<span class="rglock">Lv ${regLv(k)} 開放</span>`:''}</button>`}
+/* ===== 151 結束 ===== */
 function mapPanelTap(k){if(!state)return;
   if(k==='region'){closePanel();const el=document.getElementById('mapPanel');if(el){el.hidden=false;renderRegMap()}return}
   if(k==='farm'){closePanel();if(scene!=='farm'||viewing)goFarm();return}
@@ -4776,28 +4814,29 @@ const POT_TYPES=[{k:'pot',n:'小補血藥',heal:0.3}];/* 小補血藥回 30%（�
 function potPick(){const I=state.items||{},sel=POT_TYPES.find(x=>x.k===state.potSel);if(sel&&I[sel.k]>0)return sel.k;const any=POT_TYPES.find(x=>I[x.k]>0);return any?any.k:(sel?sel.k:POT_TYPES[0].k)}
 const POT_SVG='<svg viewBox="-12 -14 24 26" width="26" height="28" aria-hidden="true"><rect x="-3.5" y="-13" width="7" height="4" rx="1" fill="#9A7A55" stroke="#3B2A18" stroke-width="1.2"/><path d="M-3.5 -9 h7 v3 q7 3 7 9 q0 7 -10.5 7 q-10.5 0 -10.5 -7 q0 -6 7 -9z" fill="#E8503F" stroke="#3B2A18" stroke-width="1.4"/><path d="M-6 0 q2 -4 5 -4" stroke="#FFD0C8" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>';
 function potSlotPaint(pb){if(!pb)return;const k=potPick(),n=(state.items||{})[k]||0,cd=Math.max(0,potCd-Date.now());pb.classList.toggle('empty',!n);
-  const key=k+'|'+n+'|'+Math.ceil(cd/100);if(pb._k===key)return;pb._k=key;const deg=cd>0?Math.round(cd/POT_CD*360):0;
-  pb.innerHTML=POT_SVG+`<b>${n}</b>`+(cd>0?`<i class="pcd" style="background:conic-gradient(rgba(30,20,10,.55) ${deg}deg,transparent 0)"></i>`:'')}
+  if(pb._ick!==k||!pb.querySelector||!pb.querySelector('.pic')){pb._ick=k;pb._k='';pb.innerHTML=`<span class="pic">${potIc(k)}</span><b></b><i class="pcd"></i>`}/* 153：圖示只換種類時重畫（倒數時不重建圖片） */
+  const key=n+'|'+Math.ceil(cd/100);if(pb._k===key)return;pb._k=key;const deg=cd>0?Math.round(cd/POT_CD*360):0;
+  const b=pb.querySelector('b'),ci=pb.querySelector('.pcd');if(b)b.textContent=n;if(ci){ci.style.background=cd>0?`conic-gradient(rgba(30,20,10,.55) ${deg}deg,transparent 0)`:'';ci.style.display=cd>0?'':'none'}}
 let potCdT=0;function potCdRun(){clearInterval(potCdT);potCdT=setInterval(()=>{const pb=document.getElementById('potBtn');potSlotPaint(pb);if(Date.now()>=potCd){clearInterval(potCdT);potSlotPaint(pb)}},100)}
 function potSlotBind(pb){let t=0,long=false;
   pb.addEventListener('pointerdown',()=>{long=false;clearTimeout(t);t=setTimeout(()=>{long=true;potMenu()},450)});
   for(const ev of ['pointerup','pointerleave','pointercancel'])pb.addEventListener(ev,()=>clearTimeout(t));
   pb.addEventListener('click',e=>{e.preventDefault();if(long){long=false;return}drinkPot()});pb.addEventListener('contextmenu',e=>e.preventDefault())}
 function potMenu(){let el=document.getElementById('potMenu');if(!el){el=document.createElement('div');el.id='potMenu';document.body.appendChild(el);el.addEventListener('click',e=>{const b=e.target.closest('[data-pot]');if(b){potChoose(b.dataset.pot)}el.hidden=true})}
-  const I=state.items||{};el.innerHTML='<b>換補血藥</b>'+POT_TYPES.map(T=>`<button type="button" data-pot="${T.k}" aria-pressed="${state.potSel===T.k}">${POT_SVG}<span>${T.n}</span><em>${I[T.k]||0}</em></button>`).join('');el.hidden=false}
+  const I=state.items||{};el.innerHTML='<b>換補血藥</b>'+POT_TYPES.map(T=>`<button type="button" data-pot="${T.k}" aria-pressed="${state.potSel===T.k}">${potIc(T.k)}<span>${T.n}</span><em>${I[T.k]||0}</em></button>`).join('');el.hidden=false}
 function potChoose(k){if(!POT_TYPES.some(x=>x.k===k))return;state.potSel=k;save();const pb=document.getElementById('potBtn');if(pb){pb._k='';potSlotPaint(pb)}}
 /* 自動喝藥：血量低於門檻、有藥、不在冷卻 → 喝一瓶，快捷格閃一下 */
 function autoPotCheck(){try{if(!state||state.autoPot===false||scene!=='explore'||pHP<=0)return false;const at=state.autoPotAt||0.3;if(pHP>=PHP_MAX*at||Date.now()<potCd)return false;const k=potPick();if(!((state.items||{})[k]>0))return false;
   if(!drinkPot(k,true))return false;const pb=document.getElementById('potBtn');if(pb){pb.classList.remove('flash');void pb.offsetWidth;pb.classList.add('flash')}return true}catch(e){return false}}
 function renderPotBox(){const el=document.getElementById('potBox');if(!el||!state)return;const on=state.autoPot!==false,at=state.autoPotAt||0.3;
-  el.innerHTML=`<h3>自動喝補血藥</h3><button class="btn${on?' primary':''}" data-ap="tog">自動喝補血藥：${on?'開':'關'}</button><div class="row2" style="margin-top:6px">${[0.2,0.3,0.5].map(v=>`<button class="mini" data-ap="${v}" aria-pressed="${at===v}" style="${at===v?'background:var(--tabon);color:var(--tabtx)':''}">血量低於 ${Math.round(v*100)}%</button>`).join('')}</div><p class="note">在野外（包括打主的時候），血量低於這條線就自動喝一瓶。</p>`}
-try{document.getElementById('potBox').addEventListener('click',e=>{const b=e.target.closest('[data-ap]');if(!b||!state)return;if(b.dataset.ap==='tog')state.autoPot=state.autoPot===false;else state.autoPotAt=+b.dataset.ap;save();renderPotBox()})}catch(e){}
+  el.innerHTML=`<h3>自動喝補血藥</h3><button class="btn${on?' primary':''}" data-ap="tog">自動喝補血藥：${on?'開':'關'}</button><div class="row2" style="margin-top:6px">${[0.2,0.3,0.5].map(v=>`<button class="mini" data-ap="${v}" aria-pressed="${at===v}" style="${at===v?'background:var(--tabon);color:var(--tabtx)':''}">血量低於 ${Math.round(v*100)}%</button>`).join('')}</div><p class="note">在野外（包括打主的時候），血量低於這條線就自動喝一瓶。</p><h3>傷害數字</h3><button class="btn${state.dmgNum!==false?' primary':''}" data-ap="dmg">顯示傷害數字：${state.dmgNum!==false?'開':'關'}</button>`}/* 152 */
+try{document.getElementById('potBox').addEventListener('click',e=>{const b=e.target.closest('[data-ap]');if(!b||!state)return;if(b.dataset.ap==='tog')state.autoPot=state.autoPot===false;else if(b.dataset.ap==='dmg')state.dmgNum=state.dmgNum===false;else state.autoPotAt=+b.dataset.ap;save();renderPotBox()})}catch(e){}
 /* 頭上的細血條（野外、血量不滿才有） */
 function hpHeadG(){if(!state||scene!=='explore'||pHP>=PHP_MAX)return '';const m=curMe(),w=40,f=Math.max(0,pHP/PHP_MAX);return `<g id="hpHead" transform="translate(${Math.round(m.x)} ${Math.round(m.y)})" pointer-events="none"><rect x="${-w/2}" y="-108" width="${w}" height="5" rx="2.5" fill="#3B2614"/><rect id="hpHeadF" x="${-w/2+1}" y="-107" width="${((w-2)*f).toFixed(1)}" height="3" rx="1.5" fill="${f<0.3?'#E0463B':'#7FBF4A'}"/></g>`}
 function hpHeadPaint(){try{const want=state&&scene==='explore'&&pHP<PHP_MAX,g=document.getElementById('hpHead');if(!want){if(g)renderChars();return}if(!g){renderChars();return}const f=Math.max(0,pHP/PHP_MAX),r=document.getElementById('hpHeadF');if(r){r.setAttribute('width',(38*f).toFixed(1));r.setAttribute('fill',f<0.3?'#E0463B':'#7FBF4A')}}catch(e){}}
 /* 野外：右下只留背包（＋補血藥快捷格），任務、神之子搬到右上那排（地圖旁邊）；回農場、城鎮搬回去 */
 function wildBar(){const wild=scene==='explore',tb=document.getElementById('tbar'),rb=document.getElementById('rbar'),o=document.getElementById('ordersBtn'),f=document.getElementById('ibFy'),mp=document.getElementById('mapBtn'),bag=document.getElementById('ibBag');if(!tb||!rb||!o||!f)return;
-  document.body.classList.toggle('wild',wild);try{renderHP()}catch(e){}/* 回農場、城鎮時把快捷格、血條收起來 */
+  document.body.classList.toggle('wild',wild);try{renderHP()}catch(e){}try{renderMini()}catch(e){}/* 154 *//* 回農場、城鎮時把快捷格、血條收起來 */
   if(o.parentNode!==rb){bag.after(o);o.after(f)}}/* 144 修正：按鈕到哪裡都固定，不再搬到右上（舊版搬過的搬回來） */
 /* ===== 144 結束 ===== */
 // ===== 建設農地 =====
@@ -5449,7 +5488,7 @@ function iconReady(n){const v=ICON_OK[n];if(v!==undefined)return v===1;ICON_OK[n
 const uiIcon=(n,h)=>`<img class="uic" src="${iconSrc(n)}" alt="" aria-hidden="true" style="height:${h}px">`;
 const sbtnInner=(n,t,c)=>`<img class="sbi" src="${iconSrc(n)}" alt="" aria-hidden="true"><span class="sbt">${t}</span>${c?`<i class="sbn">${c}</i>`:''}`;
 const ITEM_ICON={acc:'accel',mut:'mutagen',wild:'seed_bag',rare:'seed_bag'};
-function itemArt(x,y,t){if(isSpK(t))return spiritArt(x,y,t);
+function itemArtOld(x,y,t){if(isSpK(t))return spiritArt(x,y,t);if(t==='fix'&&x===0&&y===0)return FIX_ICON.replace(/^<svg[^>]*>|<\/svg>$/g,'');
   let s='';
   {const ik=ITEM_ICON[t];if(ik&&iconReady(ik)){const [iw,ih]=ICON_DIM[ik],h=30,w=h*iw/ih;/* 圖示：底部中央對齊 (x,y)，高 30 */
     if(t==='rare')s+=`<circle cx="${x}" cy="${y-14}" r="15" fill="#F2C230" opacity=".45"/>`;
@@ -5473,7 +5512,23 @@ function itemArt(x,y,t){if(isSpK(t))return spiritArt(x,y,t);
   }
   return s;
 }
+/* ===== 153（19q）：道具圖示換新（assets/items/<鍵>.png）；載不到就換回原本的圖示或程式畫的圖（itFail） =====
+   精魄用同一張 spirit.png，依那隻主的顏色疊色；珍稀種原用 seed_pouch.png 調成金色＋閃光 */
+const ITEM_IMG={pot:'pot',pot_m:'pot_m',pot_l:'pot_l',fix:'fix',mut:'mut',acc:'acc',glove:'glove',recast_s:'recast_s',recast_l:'recast_l',pack:'card_pack',wild:'seed_pouch',rare:'seed_pouch'};
+const ITEM_DIM={pot:[176,223],pot_m:[210,233],pot_l:[127,286],fix:[174,220],mut:[177,253],acc:[221,243],glove:[225,225],recast_s:[214,191],recast_l:[192,257],card_pack:[206,251],seed_pouch:[207,244],spirit:[196,221],gene_extract:[218,298],gene_needle:[258,340],gene_capsule:[253,221]};
+const itemImgKey=t=>isSpK(t)?'spirit':(ITEM_IMG[t]||null);
+const spTint=k=>{const bk=String(k).slice(3);return (LORDS[bk]&&LORDS[bk].glow)||POR_C[bk]||'#FFE6A8'};
+function itDefs(){try{if(document.getElementById('itDefs'))return;const s=document.createElementNS('http://www.w3.org/2000/svg','svg');s.id='itDefs';s.setAttribute('width','0');s.setAttribute('height','0');s.setAttribute('aria-hidden','true');s.style.position='absolute';
+  s.innerHTML='<defs><filter id="itGold" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.62 0.62 0.12 0 0.06  0.47 0.47 0.09 0 0.02  0.14 0.14 0.04 0 0  0 0 0 1 0"/></filter></defs>';document.body.appendChild(s)}catch(e){}}
+function itFail(im){try{const g=im.parentNode;g.firstChild.style.display='';[...g.childNodes].slice(1).forEach(e=>e.remove())}catch(e){}}
+function itemArt(x,y,t){const old=itemArtOld(x,y,t),ik=itemImgKey(t);if(!ik||!ITEM_DIM[ik])return old;
+  const [iw,ih]=ITEM_DIM[ik],H=30,W=H*iw/ih,x0=x-W/2,y0=y-H;let pre='',post='',fl='';
+  if(t==='rare'){itDefs();fl=' filter="url(#itGold)"';pre=`<circle cx="${x}" cy="${y-14}" r="15" fill="#F2C230" opacity=".4"/>`;post=`<path d="M${x+11} ${y-30} l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6 -4 -4 -1.6 4 -1.6z" fill="#FFF6C2" stroke="#B9840F" stroke-width="1"><animate attributeName="opacity" values="1;.35;1" dur="1.6s" repeatCount="indefinite"/></path>`}
+  if(ik==='spirit'){const c=spTint(t);post=`<circle cx="${f1(x)}" cy="${f1(y0+H*0.5)}" r="${f1(W*0.4)}" fill="${c}" opacity=".78" style="mix-blend-mode:multiply"/><circle cx="${f1(x-W*0.12)}" cy="${f1(y0+H*0.36)}" r="${f1(W*0.1)}" fill="#fff" opacity=".7"/>`}
+  return `<g class="iti"><g style="display:none">${old}</g>${pre}<image href="assets/items/${ik}.png?v=${BUILD}" x="${f1(x0)}" y="${f1(y0)}" width="${f1(W)}" height="${H}"${fl} onerror="itFail(this)"/>${post}</g>`}
 const itemIcon=t=>`<svg viewBox="-16 -32 32 36" width="36" height="40" aria-hidden="true">${itemArt(0,0,t)}</svg>`;
+const potIc=k=>`<svg viewBox="-16 -32 32 36" width="30" height="34" aria-hidden="true">${itemArt(0,0,k)}</svg>`;
+/* ===== 153 結束 ===== */
 function itemSVG(it,hl){
   return `<g data-item="${it.key}" role="button" aria-label="${esc(itemName(it.t))}">${hl?`<ellipse cx="${f1(it.x)}" cy="${f1(it.y+1)}" rx="20" ry="7" fill="none" stroke="#FFD54A" stroke-width="3" stroke-dasharray="5 3"/>`:''}${shadow(it.x,it.y+1,11)}<g class="bob"><circle cx="${f1(it.x)}" cy="${f1(it.y-12)}" r="19" fill="#FFFFFF" opacity=".28"/>${itemArt(Math.round(it.x),Math.round(it.y),it.t)}</g></g>`;
 }
@@ -6911,6 +6966,8 @@ function regGroundKeep(key,url){REG_GLRU.splice(REG_GLRU.indexOf(key)>>>0,REG_GL
 /* ===== 150（19o）：畫好的地面圖 ===== */
 const REG_GND_ST={};/* 圖片網址 → 'p' 載入中、'ok'、'x' 載不到 */
 /* 地圖的 ground 欄位：是圖片路徑才算畫好的地面（秘境原本就用 ground 寫地面顏色） */
+/* 19r：SVG <image> 同時寫 href 和 xlink:href（舊版 Safari 只認 xlink:href） */
+function imgHref(el,u){try{el.setAttribute('href',u);el.setAttributeNS('http://www.w3.org/1999/xlink','xlink:href',u)}catch(e){try{el.setAttribute('href',u)}catch(_){}}}
 function gndImg(M){return M&&typeof M.ground==='string'&&/\.(jpe?g|png|webp)$/i.test(M.ground)?M.ground:null}
 const gndSrc=M=>gndImg(M)+'?v='+BUILD;
 /* 19p 修正：iPhone 上一直停在「載入中」。原本 new Image() 只放在區域變數裡，Safari 會在圖還沒下載完時把它回收，
@@ -6922,7 +6979,7 @@ function gndLoad(M){const k=gndImg(M),s=REG_GND_ST[k],now=Date.now();
   if(s==='ok')return s;if(s&&now-(REG_GND_T[k]||0)<(s==='x'?30000:10000))return s;
   REG_GND_ST[k]='p';REG_GND_T[k]=now;
   const redraw=()=>{try{if(regIn()&&regCur()===M)renderWorld()}catch(e){}};
-  const fin=url=>{REG_GND_URL[k]=url;REG_GND_ST[k]='ok';delete REG_GND_IM[k];try{const el=document.getElementById('rgimg');if(el){el.setAttribute('href',url);el.dataset.k='G'}}catch(e){}redraw()};
+  const fin=url=>{REG_GND_URL[k]=url;REG_GND_ST[k]='ok';delete REG_GND_IM[k];try{const el=document.getElementById('rgimg');if(el){imgHref(el,url);el.dataset.k='G'}}catch(e){}redraw()};
   const fail=()=>{REG_GND_ST[k]='x';REG_GND_T[k]=Date.now();delete REG_GND_IM[k];redraw()};
   const viaImg=()=>{try{const im=new Image();REG_GND_IM[k]=im;/* 留住參考，不讓瀏覽器回收 */im.onload=()=>fin(gndSrc(M));im.onerror=fail;im.src=gndSrc(M)}catch(e){fail()}};
   try{if(typeof fetch==='function'&&typeof URL!=='undefined'&&URL.createObjectURL){const pr=fetch(gndSrc(M)).then(r=>{if(!r.ok)throw new Error('http '+r.status);return r.blob()}).then(b=>{if(!b||!b.size)throw new Error('empty');fin(URL.createObjectURL(b))}).catch(()=>viaImg());REG_GND_IM[k]=pr}else viaImg()}catch(e){viaImg()}
@@ -6932,18 +6989,18 @@ function gndShadowSVG(M,objs){let s='';const FL=REGION_FLAT[M.bk]||{};for(const 
   s+=`<ellipse cx="${o[1].toFixed(1)}" cy="${(o[2]-2).toFixed(1)}" rx="${(w/2).toFixed(1)}" ry="${ry.toFixed(1)}" fill="#000" opacity=".18"/>`}return s?`<g class="gshadow" pointer-events="none">${s}</g>`:''}
 /* ===== 150 結束 ===== */
 function regGroundEl(M){const key=M.bk+'|'+M.id,W=M.W,H=M.H;
-  if(gndImg(M)){const st=gndLoad(M);if(st==='ok')return `<rect x="0" y="0" width="${W}" height="${H}" fill="${regGroundColor(M)}"/><image id="rgimg" data-k="G" href="${gndHref(M)}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>`}/* 150：載入中、載不到 → 照舊畫格子地面 */
+  if(gndImg(M)){const st=gndLoad(M);if(st==='ok')return `<rect x="0" y="0" width="${W}" height="${H}" fill="${regGroundColor(M)}"/><image id="rgimg" data-k="G" href="${gndHref(M)}" xlink:href="${gndHref(M)}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>`}/* 150：載入中、載不到 → 照舊畫格子地面 */
   if(REG_GIMG[key]==='x'){const was=REG_LITE;REG_LITE=true;try{return REG_GSVG[key]||(REG_GSVG[key]=regGroundInline(M))}finally{REG_LITE=was}}/* 圖片載不到：直接放沒有濾鏡的向量 */
   const ready=REG_GIMG[key]&&REG_GIMG[key]!=='p';
   if(!REG_GIMG[key]){REG_GIMG[key]='p';
     const go=(lite)=>{let u;try{const was=REG_LITE;REG_LITE=lite;try{u=URL.createObjectURL(new Blob([regGroundSVG(M)],{type:'image/svg+xml'}))}finally{REG_LITE=was}}catch(e){REG_GIMG[key]='x';return}
-      const done=pu=>{REG_GIMG[key]=pu;regGroundKeep(key,pu);try{const el=document.getElementById('rgimg');if(el&&el.dataset.k===key&&!(gndImg(M)&&REG_GND_ST[gndImg(M)]==='ok'))el.setAttribute('href',pu)}catch(e){}};
+      const done=pu=>{REG_GIMG[key]=pu;regGroundKeep(key,pu);try{const el=document.getElementById('rgimg');if(el&&el.dataset.k===key&&!(gndImg(M)&&REG_GND_ST[gndImg(M)]==='ok'))imgHref(el,pu)}catch(e){}};
       const im=new Image();im.onload=()=>{let ok=false;try{const k=1.5,cv=document.createElement('canvas');cv.width=W*k;cv.height=H*k;cv.getContext('2d').drawImage(im,0,0,W*k,H*k);
         cv.toBlob(b=>{if(!b){if(lite)done(u);else{try{URL.revokeObjectURL(u)}catch(e){}go(true)}return}try{URL.revokeObjectURL(u)}catch(e){}done(URL.createObjectURL(b))},'image/png');ok=true}catch(e){}
         if(!ok){if(lite)done(u);else{try{URL.revokeObjectURL(u)}catch(e){}go(true)}}};/* canvas 被擋：改用簡化版，簡化版直接當圖片用 */
       im.onerror=()=>{try{URL.revokeObjectURL(u)}catch(e){}if(!lite)go(true);else{REG_GIMG[key]='x';try{if(regIn()&&regCur()===M)renderWorld()}catch(e){}}};im.src=u};
     go(false)}
-  return `<rect x="0" y="0" width="${W}" height="${H}" fill="${regGroundColor(M)}"/><image id="rgimg" data-k="${key}" ${ready?`href="${REG_GIMG[key]}" `:''}x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>`}
+  return `<rect x="0" y="0" width="${W}" height="${H}" fill="${regGroundColor(M)}"/><image id="rgimg" data-k="${key}" ${ready?`href="${REG_GIMG[key]}" xlink:href="${REG_GIMG[key]}" `:''}x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>`}
 /* 階地（DOM：岩壁圖、石階、蓋過邊緣的草帶） */
 function regTerraceHTML(M){
   const bk=M.bk,V=REG_V2[bk],W=M.W;let s='';if(!M._T.length||!V.terr)return s;const TC=V.terr;
@@ -7462,16 +7519,54 @@ function regBanner(t,sub){try{const el=document.getElementById('mapBanner');if(s
 function regMapSVG(bk){
   const MS=REGION_MAPS[bk],seen=regSeen(bk),oy=-Math.min(0,...Object.values(MS).map(M=>M.gy)),P=id=>{const M=MS[id];return [30+(M.gx-1)*92,24+(M.gy+oy)*58]},fy=24+(3+oy)*58;
   let s='';const done=new Set();
-  const sf=secFound(bk);
+  const sf=secFound(bk),Q=mapQSet(bk),lv=myLv();
   for(const [id,M] of Object.entries(MS))for(const e of M.exits){if(!sf&&(M.secret||e.to==='secret'))continue;const k=[id,e.to].sort().join('|');if(done.has(k))continue;done.add(k);
     const a=P(id),b=e.to==='farm'?[30,fy]:P(e.to);s+=`<line x1="${a[0]+30}" y1="${a[1]+13}" x2="${b[0]+30}" y2="${b[1]+13}" stroke="#8A6A4A" stroke-width="3" ${e.door||MS[e.to]&&MS[e.to].cave&&!M.cave?'stroke-dasharray="5 4"':''}/>`}
   s+=`<rect x="30" y="${fy}" width="60" height="26" rx="8" fill="#BFE3A8" stroke="#5A3416" stroke-width="1.5"/><text x="60" y="${fy+17}" text-anchor="middle" font-size="11" fill="#3B2A18">農場</text>`;
-  for(const [id,M] of Object.entries(MS)){if(M.secret&&!sf)continue;const [x,y]=P(id),cur=scene==='explore'&&exBiome===bk&&regMap===id,v=seen[id];
-    s+=`<rect x="${x}" y="${y}" width="60" height="26" rx="8" fill="${cur?'#F2C230':M.secret?'#F7E7A6':v?(M.cave?'#B8C9D6':'#E3EEF5'):'#D8D2C8'}" stroke="#5A3416" stroke-width="${cur?2.5:1.5}"/><text x="${x+30}" y="${y+17}" text-anchor="middle" font-size="${M.n.length>3?9.5:11}" fill="#3B2A18">${v||cur?M.n:'？'}</text>`;
-    if(cur)s+=`<circle cx="${x+56}" cy="${y+2}" r="6" fill="#D9473A" stroke="#fff" stroke-width="2"/>`}
-  return `<svg viewBox="0 0 310 ${230+oy*58}" width="100%" aria-label="${REGION_CFG[bk].name}地圖">${s}</svg>`;
+  for(const [id,M] of Object.entries(MS)){if(M.secret&&!sf)continue;const [x,y]=P(id),cur=scene==='explore'&&exBiome===bk&&regMap===id,v=seen[id],need=mapLv(bk,id),lk=need>lv;
+    s+=`<g data-rmi="${id}" style="cursor:pointer"><rect x="${x}" y="${y}" width="60" height="26" rx="8" fill="${cur?'#F2C230':lk?'#B9B4AC':M.secret?'#F7E7A6':v?(M.cave?'#B8C9D6':'#E3EEF5'):'#D8D2C8'}" stroke="#5A3416" stroke-width="${cur?2.5:1.5}"/><text x="${x+30}" y="${y+17}" text-anchor="middle" font-size="${M.n.length>3?9.5:11}" fill="#3B2A18">${v||cur?M.n:'？'}</text>`+
+      `<text x="${x+30}" y="${y+37}" text-anchor="middle" font-size="8.5" fill="${lk?'#8A3A2A':'#7A6A55'}">${lk?'🔒':''}Lv ${need}</text>`;
+    if(Q.has(id))s+=`<circle cx="${x+4}" cy="${y+2}" r="6.5" fill="#FFF6C8" stroke="#D9A200" stroke-width="1.6"/><text x="${x+4}" y="${y+5.5}" text-anchor="middle" font-size="9" font-weight="700" fill="#B07A00">!</text>`;
+    if(M.secret){const art=LORDS[bk]?'lord_'+bk:SERVANTS[bk]?'servant_'+bk:null;if(art)s+=`<clipPath id="rmc_${bk}"><circle cx="${x+60}" cy="${y}" r="11"/></clipPath><circle cx="${x+60}" cy="${y}" r="12" fill="${porC(art)}" stroke="#5A3416" stroke-width="2"/><image href="${porSrc(art)}" x="${x+49}" y="${y-11}" width="22" height="22" clip-path="url(#rmc_${bk})" onerror="this.remove()"/>`}
+    if(cur)s+=`<circle cx="${x+56}" cy="${y+2}" r="6" fill="#D9473A" stroke="#fff" stroke-width="2"/>`;s+='</g>'}
+  return `<svg viewBox="0 0 310 ${236+oy*58}" width="100%" aria-label="${REGION_CFG[bk].name}地圖">${s}</svg>`;
 }
-function renderRegMap(){const el=document.getElementById('mapPanel');if(!el||!regHas(exBiome))return;el.innerHTML=`<b>${REGION_CFG[exBiome].name}地圖</b><span class="meta">　黃色是你現在的位置，虛線是洞口</span>${regMapSVG(exBiome)}${isTestMode()?`<div class="meta" style="margin:4px 0 2px">測試模式：直接傳送</div><div style="display:flex;flex-wrap:wrap;gap:4px">${Object.entries(REGION_MAPS[exBiome]).map(([id,M])=>`<button class="btn" data-tp="${id}" style="margin:0;padding:4px 8px;width:auto;font-size:12px">${M.secret?'秘境・':''}${M.n}</button>`).join('')}</div>${monTable()?`<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px"><button class="btn" data-monre="1" style="margin:0;padding:4px 8px;width:auto;font-size:12px">怪物立刻全部重生</button><button class="btn${monForceBoss?' primary':''}" data-monboss="1" style="margin:0;padding:4px 8px;width:auto;font-size:12px">下一隻一定是王：${monForceBoss?'開':'關'}</button></div>`:''}${ROAM_BK.includes(exBiome)&&ROAM_PTS[exBiome][regMap]?`<button class="btn" data-roamspawn="1" style="margin:4px 0 0;padding:4px 8px;width:auto;font-size:12px">在這張地圖立刻生出一株發光的植株（測試用）</button>`:''}`:''}<button class="btn" data-mp="close" style="margin:4px 0 0">關閉</button>`;fitMapPanel()}
+/* 154：點地圖上的一張 → 一行說明（名字、等級、這裡有什麼怪），不傳送 */
+function regMapInfo(bk,id){const M=REGION_MAPS[bk]&&REGION_MAPS[bk][id];if(!M)return '';const v=regSeen(bk)[id]||(regMap===id&&exBiome===bk),need=mapLv(bk,id);
+  const mons=((MON_MAP[bk]||{})[id]||[]).map(([k])=>MON_DEF[k]&&MON_DEF[k].n).filter(Boolean);
+  return `${v?M.n:'還沒去過的地方'}：Lv ${need}${need>myLv()?'（等級不夠）':''}${mons.length&&v?`，有${mons.join('、')}`:''}${M.secret?(LORDS[bk]?`，${LORDS[bk].n}的地方`:SERVANTS[bk]?`，${SERVANTS[bk].n}守著`:''):''}${mapQSet(bk).has(id)?'，有任務':''}`}
+/* ===== 154（19q）：野外常駐的地區小地圖 ===== */
+/* 有任務記號（接得到／可以完成）的 NPC 在哪幾張地圖 */
+function mapQSet(bk){const S=new Set();try{for(const q of qList()){if(q.st!=='acc'&&q.st!=='done')continue;const w=q.where;if(w&&w.bk===bk&&w.map)S.add(w.map)}}catch(e){}return S}
+let miniFightOpen=false;
+const miniOn=()=>!!state&&scene==='explore'&&typeof regIn==='function'&&regIn();
+const miniFight=()=>{const b=document.getElementById('bossBar');return !!(b&&!b.hidden&&b.isConnected!==false)};
+function regMiniSVG(bk){const MS=REGION_MAPS[bk],sf=secFound(bk),seen=regSeen(bk),Q=mapQSet(bk),lv=myLv();
+  const ids=Object.keys(MS).filter(id=>!MS[id].secret||sf);if(!ids.length)return '';
+  const xs=ids.map(id=>MS[id].gx),ys=ids.map(id=>MS[id].gy),x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys),cols=x1-x0+1,rows=y1-y0+1;
+  const S=Math.min(84/cols,84/rows),cw=S*0.68,ch=S*0.5,ox=6+(84-cols*S)/2,oyy=6+(84-rows*S)/2,C=id=>[ox+(MS[id].gx-x0+0.5)*S,oyy+(MS[id].gy-y0+0.5)*S];
+  let s='';const done=new Set();
+  for(const id of ids)for(const e of MS[id].exits||[]){if(!MS[e.to]||!ids.includes(e.to))continue;const k=[id,e.to].sort().join('|');if(done.has(k))continue;done.add(k);const a=C(id),b=C(e.to);s+=`<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="rgba(255,240,210,.55)" stroke-width="1.2"/>`}
+  for(const id of ids){const M=MS[id],[cx,cy]=C(id),cur=regMap===id,v=seen[id],lk=mapLv(bk,id)>lv,x=cx-cw/2,y=cy-ch/2;
+    const fill=cur?'#FFD54A':lk?'#77736E':M.secret?'#F2D88A':v?'#E6EEF2':'rgba(230,238,242,.38)';
+    s+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${cw.toFixed(1)}" height="${ch.toFixed(1)}" rx="2.5" fill="${fill}"${cur?' class="mmcur" stroke="#fff" stroke-width="1.6"':''}/>`;
+    if(lk)s+=`<path d="M${(cx-2.6).toFixed(1)} ${(cy-0.4).toFixed(1)}h5.2v3.6h-5.2zM${(cx-1.6).toFixed(1)} ${(cy-0.4).toFixed(1)}v-1.4a1.6 1.6 0 0 1 3.2 0v1.4" fill="none" stroke="#2A2A2A" stroke-width="0.9"/>`;
+    if(Q.has(id))s+=`<circle cx="${(x+cw).toFixed(1)}" cy="${y.toFixed(1)}" r="3.6" fill="#FFD84A" stroke="#7A4A00" stroke-width=".8"/><text x="${(x+cw).toFixed(1)}" y="${(y+2.2).toFixed(1)}" text-anchor="middle" font-size="5.6" font-weight="900" fill="#7A3A00">!</text>`}
+  return `<svg viewBox="0 0 96 96" width="96" height="96" aria-hidden="true">${s}</svg>`}
+function renderMini(){let el=document.getElementById('miniMap');if(!el){if(!miniOn())return;el=document.createElement('div');el.id='miniMap';document.body.appendChild(el);
+    el.addEventListener('click',e=>{const b=e.target.closest('[data-mm]');if(!b||!state)return;e.stopPropagation();const a=b.dataset.mm;
+      if(a==='open'){if(miniFight())miniFightOpen=true;else{state.miniMap=true;save()}el._k='';renderMini()}
+      else if(a==='col'){miniFightOpen=false;state.miniMap=false;save();el._k='';renderMini()}
+      else if(a==='big'){const P=document.getElementById('mapPanel');if(P){P.hidden=false;renderRegMap()}}})}
+  if(!miniOn()){el.hidden=true;el._k='';if(!miniFight())miniFightOpen=false;return}
+  const fight=miniFight();if(!fight)miniFightOpen=false;const col=state.miniMap===false||(fight&&!miniFightOpen),bk=exBiome;
+  let Q='';try{Q=[...mapQSet(bk)].join(',')}catch(e){}
+  const k=[bk,regMap,col,Object.keys(regSeen(bk)).length,secFound(bk),myLv(),Q].join('|');el.hidden=false;if(el._k===k)return;el._k=k;
+  el.className=col?'col':'';
+  el.innerHTML=col?`<button type="button" class="mmopen" data-mm="open" aria-label="展開小地圖"><img src="assets/icons/s/map.png" alt="" onerror="this.remove()"></button>`
+    :`<button type="button" class="mmmap" data-mm="big" aria-label="${esc(REGION_CFG[bk].name)}的地圖（點一下放大）">${regMiniSVG(bk)}</button><button type="button" class="mmcol" data-mm="col" aria-label="收起小地圖">‹</button>`}
+/* ===== 154 結束 ===== */
+function renderRegMap(){const el=document.getElementById('mapPanel');if(!el||!regHas(exBiome))return;el.innerHTML=`<b>${REGION_CFG[exBiome].name}地圖</b><span class="meta">　黃色是你現在的位置，虛線是洞口；點一張看說明</span>${regMapSVG(exBiome)}<div id="rmInfo" class="note" style="min-height:1.4em;margin:2px 0 0"></div>${isTestMode()?`<div class="meta" style="margin:4px 0 2px">測試模式：直接傳送</div><div style="display:flex;flex-wrap:wrap;gap:4px">${Object.entries(REGION_MAPS[exBiome]).map(([id,M])=>`<button class="btn" data-tp="${id}" style="margin:0;padding:4px 8px;width:auto;font-size:12px">${M.secret?'秘境・':''}${M.n}</button>`).join('')}</div>${monTable()?`<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px"><button class="btn" data-monre="1" style="margin:0;padding:4px 8px;width:auto;font-size:12px">怪物立刻全部重生</button><button class="btn${monForceBoss?' primary':''}" data-monboss="1" style="margin:0;padding:4px 8px;width:auto;font-size:12px">下一隻一定是王：${monForceBoss?'開':'關'}</button></div>`:''}${ROAM_BK.includes(exBiome)&&ROAM_PTS[exBiome][regMap]?`<button class="btn" data-roamspawn="1" style="margin:4px 0 0;padding:4px 8px;width:auto;font-size:12px">在這張地圖立刻生出一株發光的植株（測試用）</button>`:''}`:''}<button class="btn" data-mp="close" style="margin:4px 0 0">關閉</button>`;fitMapPanel()}
 /* 98.2：量真正看得到的高度（visualViewport），地圖 SVG 放不下就縮小高度、寬度跟著等比例 */
 function vvhSet(){try{const h=(window.visualViewport&&visualViewport.height)||innerHeight;document.documentElement.style.setProperty('--vvh',Math.round(h)+'px')}catch(e){}}
 function fitMapPanel(){try{const el=document.getElementById('mapPanel');if(!el||el.hidden)return;const sv=el.querySelector('svg');if(!sv)return;sv.style.height='';sv.style.width='';vvhSet();
@@ -7480,7 +7575,7 @@ function fitMapPanel(){try{const el=document.getElementById('mapPanel');if(!el||
 try{vvhSet();addEventListener('resize',()=>{vvhSet();fitMapPanel()});if(window.visualViewport)visualViewport.addEventListener('resize',()=>{vvhSet();fitMapPanel()})}catch(e){}
 const regLoaded={};
 function regPreload(bk){if(regLoaded[bk]||typeof Image==='undefined'||!REGION_IMG[bk])return;regLoaded[bk]=true;try{regTintPreload(bk)}catch(e){}for(const f of Object.keys(REGION_IMG[bk])){try{const i=new Image();i.src='assets/'+regDir(bk)+'/'+f+'.png'}catch(e){}}}
-try{document.getElementById('mapBtn').addEventListener('click',e=>{e.stopPropagation();const el=document.getElementById('mapPanel');if(el&&!el.hidden){el.hidden=true;return}curPanel==='map'?closePanel():openPanel('map')});/* 138.4：農場、城鎮、各地區都從這裡去 */document.getElementById('mapPanel').addEventListener('click',e=>{if(isTestMode()&&e.target.closest('[data-monre]')){monTestRespawn();testNote('這張地圖的怪物全部重生了');return}if(isTestMode()&&e.target.closest('[data-monboss]')){monForceBoss=!monForceBoss;renderRegMap();return}if(e.target.closest('[data-roamspawn]')){if(isTestMode()){roamRespawn(exBiome,true);testNote('已在這張地圖生出一株（roamers_test）')}return}const tp=e.target.closest('[data-tp]');if(tp&&isTestMode()&&regIn()&&!regBusy){const id=tp.dataset.tp,M=REGION_MAPS[exBiome][id],ex=M.exits.find(x=>!x.need&&!x.trig&&!x.hid)||M.exits[0];regEnter(id,ex.to);testNote('已傳送到 '+M.n);return}if(e.target.closest('[data-mp]'))document.getElementById('mapPanel').hidden=true})}catch(e){}
+try{document.getElementById('mapBtn').addEventListener('click',e=>{e.stopPropagation();const el=document.getElementById('mapPanel');if(el&&!el.hidden){el.hidden=true;return}curPanel==='map'?closePanel():openPanel('map')});/* 138.4：農場、城鎮、各地區都從這裡去 */document.getElementById('mapPanel').addEventListener('click',e=>{{const ri=e.target.closest('[data-rmi]');if(ri){const I=document.getElementById('rmInfo');if(I)I.textContent=regMapInfo(exBiome,ri.dataset.rmi);return}}/* 154 */if(isTestMode()&&e.target.closest('[data-monre]')){monTestRespawn();testNote('這張地圖的怪物全部重生了');return}if(isTestMode()&&e.target.closest('[data-monboss]')){monForceBoss=!monForceBoss;renderRegMap();return}if(e.target.closest('[data-roamspawn]')){if(isTestMode()){roamRespawn(exBiome,true);testNote('已在這張地圖生出一株（roamers_test）')}return}const tp=e.target.closest('[data-tp]');if(tp&&isTestMode()&&regIn()&&!regBusy){const id=tp.dataset.tp,M=REGION_MAPS[exBiome][id],ex=M.exits.find(x=>!x.need&&!x.trig&&!x.hid)||M.exits[0];regEnter(id,ex.to);testNote('已傳送到 '+M.n);return}if(e.target.closest('[data-mp]'))document.getElementById('mapPanel').hidden=true})}catch(e){}
 
 function biomeThumb(k){
   const B=BIOMES[k],R=seededRnd(hashStr('thumb|'+k));
@@ -7623,7 +7718,7 @@ function bossStep(dt){lordSummonTick();const b=bossRT,now=bossNow();if(!b)return
   if(b.done){bossPaint(b);return}
   /* 自己打：靠近、沒躲起來 */
   const reach=BOSS_REACH+b.def.h*10;if(!b.hidden&&Math.hypot(me.x-b.x,(me.y-b.y)*1.2)<=reach&&now>=bossSwingAt){bossSwingAt=now+(typeof MON_SWING!=='undefined'?MON_SWING:350);try{pFightAt=now}catch(e){}
-    if(b.mode==='guard'){try{fxAdd('gain',b.x,b.y-90,'擋住了',600)}catch(e){}}else{b.myDmg+=(typeof SICKLE_DMG!=='undefined'?SICKLE_DMG:1000);b.dmg[bossMe()]=b.myDmg;b.hitT=now;if(b.net)lordPushDmg(b)}}
+    if(b.mode==='guard'){try{dmgShow(b.x,b.y-BOSS_HU*(b.def.h||1),0,{miss:1,text:'擋住了',key:'boss'})}catch(e){}}else{b.myDmg+=(typeof SICKLE_DMG!=='undefined'?SICKLE_DMG:1000);try{dmgShow(b.x,b.y-BOSS_HU*(b.def.h||1),typeof SICKLE_DMG!=='undefined'?SICKLE_DMG:1000,{key:'boss'})}catch(e){}/* 152 */b.dmg[bossMe()]=b.myDmg;b.hitT=now;if(b.net)lordPushDmg(b)}}
   if(host&&bossHp(b)<=0&&!b.done)bossWin(b);
   bossPaint(b)}
 const bossIsHost=b=>b.kind==='servant'||!b.net||b.net.host===uid;
@@ -7664,10 +7759,10 @@ function bossPaint(b){const me=curMe(),g=bossLayer('bossG',b.y<=me.y?'monBack':'
   bossBar(b.active?b:null)}
 function bossPaintWait(b){const g=bossLayer('bossG','monBack');if(!g)return;const s=Math.max(0,Math.ceil((b.until-bossNow())/1000)),txt=`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
   if(g._k!==txt){g._k=txt;const [x,y]=b.def.at;g.innerHTML=`<text x="${x}" y="${y-20}" text-anchor="middle" font-size="15" font-weight="700" fill="#fff" stroke="#3B2614" stroke-width="3" paint-order="stroke">${esc(b.def.n)} ${txt}</text>`}bossBar(null)}
-function bossBar(b){let el=document.getElementById('bossBar');if(!b){if(el)el.hidden=true;return}
+function bossBar(b){let el=document.getElementById('bossBar');if(!b){if(el&&!el.hidden){el.hidden=true;try{renderMini()}catch(e){}}return}/* 154：大血條收起來 → 小地圖恢復 */
   if(!el||!el.querySelector){el=document.createElement('div');el.id='bossBar';el.innerHTML='<b></b><span class="bpor"><img alt="" aria-hidden="true"></span><span class="bbw"><i></i><em></em></span><button type="button" class="bbq">離開</button>';document.body.appendChild(el);
     el.querySelector('.bbq').addEventListener('click',()=>{if(bossRT&&bossRT.kind==='lord'&&!bossRT.done&&confirm('離開就算放棄。確定嗎？'))goFarm()})}
-  el.hidden=false;try{const ps=el.querySelector('.bpor');if(ps&&ps._a!==b.art){ps._a=b.art;ps.hidden=!b.art;ps.style.setProperty('--pc',porC(b.art));const im=ps.querySelector('img');im.onerror=()=>{ps.hidden=true};im.src=porSrc(b.art)}}catch(e){}/* 147：血條旁的頭像 */const hp=bossHp(b),lord=b.kind==='lord',k=[b.n,hp,b.max,b.ph,lord&&b.net?Object.keys(b.members||{}).length:0,b.done].join('|');if(el._k===k)return;el._k=k;
+  if(el.hidden){el.hidden=false;try{renderMini()}catch(e){}}/* 154：大血條出現 → 小地圖自動收起 */el.hidden=false;try{const ps=el.querySelector('.bpor');if(ps&&ps._a!==b.art){ps._a=b.art;ps.hidden=!b.art;ps.style.setProperty('--pc',porC(b.art));const im=ps.querySelector('img');im.onerror=()=>{ps.hidden=true};im.src=porSrc(b.art)}}catch(e){}/* 147：血條旁的頭像 */const hp=bossHp(b),lord=b.kind==='lord',k=[b.n,hp,b.max,b.ph,lord&&b.net?Object.keys(b.members||{}).length:0,b.done].join('|');if(el._k===k)return;el._k=k;
   el.querySelector('b').textContent=b.n+(lord&&b.net&&Object.keys(b.members||{}).length>1?`（${Object.keys(b.members).length} 人）`:'');el.querySelector('i').style.width=(hp/b.max*100).toFixed(1)+'%';
   el.querySelector('em').hidden=!lord;el.querySelector('.bbq').hidden=!lord||b.done;el.classList.toggle('ph2',b.ph===2)}
 /* ---- 贏了、輸了 ---- */
@@ -7808,10 +7903,10 @@ function petEvolve(id){const p=petsArr().find(x=>x.id===id);if(!p||!petEvoOk(p))
   setTimeout(()=>{try{noteOpen(`<h2>${esc(petName(p))}</h2><div style="text-align:center"><svg viewBox="-50 -76 100 82" width="130" height="108">${petSVG(p,60)}</svg></div><p class="note">長大了！</p>`);renderChars()}catch(e){}},200);return true}
 /* 背包「道具」分頁裡的精魄、孵化中、神寵、卡包 */
 function spiritLine(){const I=state.items||{},sp=SPK.filter(k=>I[k]>0),H=hatchArr(),P=packsObj(),pk=Object.keys(P).filter(k=>P[k]>0);let h='';
-  if(sp.length)h+=`<h3>精魄${qh('主平靜下來後留下的東西。用了就開始孵，6 小時（不在線上也算）孵出神寵。可以上架市集。')}</h3>`+sp.map(k=>`<div class="itm"><svg viewBox="-16 -32 32 36" width="36" height="40" aria-hidden="true">${spiritArt(0,0,k)}</svg><span class="lr"><b>${esc(spiritName(k.slice(3)))}</b><span class="meta">持有 ${I[k]} 個</span></span><button class="mini" data-spuse="${k.slice(3)}">孵化</button></div>`).join('');
-  if(H.length)h+=`<h3>孵化中</h3>`+H.map(x=>{const m=Math.ceil(hatchLeft(x)/60e3);return `<div class="itm"><svg viewBox="-16 -32 32 36" width="36" height="40" aria-hidden="true">${spiritArt(0,0,'sp_'+x.bk)}</svg><span class="lr"><b>${esc(spiritName(x.bk))}</b><span class="meta">還要 ${m>=60?Math.floor(m/60)+' 小時 '+(m%60)+' 分':m+' 分鐘'}</span></span></div>`}).join('');
+  if(sp.length)h+=`<h3>精魄${qh('主平靜下來後留下的東西。用了就開始孵，6 小時（不在線上也算）孵出神寵。可以上架市集。')}</h3>`+sp.map(k=>`<div class="itm">${itemIcon(k)}<span class="lr"><b>${esc(spiritName(k.slice(3)))}</b><span class="meta">持有 ${I[k]} 個</span></span><button class="mini" data-spuse="${k.slice(3)}">孵化</button></div>`).join('');
+  if(H.length)h+=`<h3>孵化中</h3>`+H.map(x=>{const m=Math.ceil(hatchLeft(x)/60e3);return `<div class="itm">${itemIcon('sp_'+x.bk)}<span class="lr"><b>${esc(spiritName(x.bk))}</b><span class="meta">還要 ${m>=60?Math.floor(m/60)+' 小時 '+(m%60)+' 分':m+' 分鐘'}</span></span></div>`}).join('');
   const PS=petsArr();if(PS.length)h+=`<h3>神寵${qh('帶著的那一隻會跟著你，打怪時你拿到多少經驗，牠也拿多少。神寵不能交易。')}</h3>`+PS.map(p=>`<button class="itm pick" data-pet="${p.id}"><svg viewBox="-26 -46 52 50" width="44" height="44" aria-hidden="true">${petSVG(p,34)}</svg><span class="lr"><b>${esc(petName(p))}</b><span class="meta">Lv ${p.lv}・${PET_ST[p.st]}${state.petOn===p.id?'・帶著':''}${petEvoOk(p)?'・可以進化了':''}</span></span></button>`).join('');
-  if(pk.length)h+=`<h3>夢幻色卡包</h3>`+pk.map(k=>`<div class="itm"><span class="pkic" aria-hidden="true">🂠</span><span class="lr"><b>夢幻色卡包（${esc(BIOMES[k]?BIOMES[k].n:k)}）</b><span class="meta">${P[k]} 包・規則還沒定，先收著</span></span></div>`).join('');
+  if(pk.length)h+=`<h3>夢幻色卡包</h3>`+pk.map(k=>`<div class="itm">${itemIcon('pack')}<span class="lr"><b>夢幻色卡包（${esc(BIOMES[k]?BIOMES[k].n:k)}）</b><span class="meta">${P[k]} 包・規則還沒定，先收著</span></span></div>`).join('');
   return h}
 function openPet(id){sheet={pet:id};renderSheet();openSheetUI()}
 function petHTML(){const p=petsArr().find(x=>x.id===sheet.pet);if(!p)return '<p class="note">找不到這隻神寵。</p><button class="btn" data-act="close">關閉</button>';const N=petEvoNeed(p),I=state.items||{};
@@ -8004,8 +8099,13 @@ function openFyInfo(who,f){if(!f)return false;const own=(who==='me'||(who==='hom
 /* 右下的神之子按鈕：有跟著的就看那一位，沒有就到神之子頁 */
 function openFyBtn(){const f=fyMe();if(f&&openFyInfo('me',f))return;openFyPage()}
 const fySwC=c=>{try{const p=colParts(c);if(p.t==='s')return c==='rainbow'?`linear-gradient(135deg,${RAINBOW.join(',')})`:`linear-gradient(135deg,${SPGRAD[c][0]},${SPGRAD[c][1]})`;return rgbS(RGBC[c]||RGBC.white)}catch(e){return '#fff'}};
+/* 152.2（19q）：神之子資訊面板的立繪：呼吸、漂浮、背後的光、光點、閃光、點一下會彈；神化後雙色光、光點變多 */
+function fyGlowC(f){const c=f&&f.col||'white';try{const p=colParts(c);if(c==='rainbow')return [RAINBOW[0],RAINBOW[4]];if(p.t==='s')return [SPGRAD[c][0],SPGRAD[c][1]];if(p.t==='d'||p.t==='l'){const a=p.a||p.s||c,b=p.b||a;return [SPGRAD[a]?SPGRAD[a][1]:rgbS(RGBC[a]||RGBC.white),SPGRAD[b]?SPGRAD[b][0]:rgbS(RGBC[b]||RGBC.white)]}return [rgbS(RGBC[c]||RGBC.white),rgbS(RGBC[c]||RGBC.white)]}catch(e){return ['#FFE6A8','#FFE6A8']}}
+function fyHeroHTML(k,f){const [c1,c2]=fyGlowC(f),god=fyStage(f)>=2,n=god?14:8;let m='';for(let i=0;i<n;i++)m+=`<i style="left:${(8+((i*37)%84))}%;animation-delay:${(-(i*0.73)%5).toFixed(2)}s;animation-duration:${(4+(i%3)*0.9).toFixed(1)}s"></i>`;
+  return `<div class="fyhero${god?' god':''}" data-act="fipop" role="button" aria-label="${esc(fyN(k))}" style="--g1:${c1};--g2:${god?c2:c1}"><div class="fyglow"></div><div class="fymotes">${m}</div><div class="fyfloat"><div class="fybreath">${fyArtHTML(k,f,300,true)}</div><div class="fyshine"></div></div><div class="fyburst"></div></div>`}
+function fyPop(el){try{const h=el.closest('.fyhero');if(!h)return;h.classList.remove('pop');void h.offsetWidth;h.classList.add('pop');const B=h.querySelector('.fyburst');if(B){let s='';for(let i=0;i<12;i++){const a=i/12*6.283;s+=`<i style="--bx:${(Math.cos(a)*70).toFixed(0)}px;--by:${(Math.sin(a)*70).toFixed(0)}px"></i>`}B.innerHTML=s}}catch(e){}}
 function fyInfoHTML(){const s=sheet.fyinfo,k=s&&s.k,F=s&&s.own?fyMine()[k]:null,f=F?Object.assign({k},F):s&&s.f;if(!f||!FY[k])return '<button class="btn" data-act="close">關閉</button>';const st=fyStage(f);
-  let h=`<h2>${esc(fyN(k))}</h2><div class="fybig">${fyArtHTML(k,f,170,true)}</div><div class="fyinfo">`;
+  let h=`${fyHeroHTML(k,f)}<h2 style="text-align:center">${esc(fyN(k))}</h2><div class="fyinfo">`;
   h+=`<div><span>夢幻色</span><b><i class="fysw" style="background:${fySwC(f.col)}"></i>${esc(colorName(f.col,f.sb))}</b></div>`;
   h+=`<div><span>階段</span><b>${FY_STAGE[st]}</b></div>`;
   if(s.owner)h+=`<div><span>主人</span><b>${esc(s.owner)}</b></div>`;
@@ -8304,7 +8404,17 @@ function spStallMini(l,gx,cy){const a=specApp({key:l.key,sb:l.sb,cb:l.cb});retur
 const FY_WING={tomato:'#FF8A3D',eggplant:'#5B4BC0',chili:'#FF5A2A',strawberry:'#FF7FB3',corn:'#FFC23A',pumpkin:'#9A4FD0',broccoli:'#3F9A4E',zucchini:'#27C08F',melon:'#FF8DC8'};
 /* 專屬粒子：種類、冒出的位置（圖寬、圖高的比例，左上角為 0） */
 const FY_PART={tomato:['star',[[0.40,0.04]]],eggplant:['note',[[0.62,0.30]]],chili:['ember',[[0.12,0.05],[0.88,0.05]]],strawberry:['spark4',[[0.50,0.05],[0.50,0.30]]],corn:['smoke',[[0.88,0.36]]],pumpkin:['lantern',[[0.15,0.45]]],broccoli:['volcano',[[0.22,0.07]]],zucchini:['swing',[[0.06,0.14]]],melon:['sparkler',[[0.90,0.16]]]};
-const FY_S=1.15,FY_DX=21*FY_S,FY_DY=-37*FY_S,FY_HW=FY_FH*FY_S;/* 和角色同一個縮放：肩膀後上方、高度約玩家 70% */
+/* 155（19r）：跟著的神之子＝玩家角色顯示高度的 1.3 倍（照比例算：量到的角色高度 AV_HU × 角色縮放 CHAR_S）；
+   玩家斜後方、腳底比玩家腳底高約玩家身高的 20%。角色重畫、高度改變時 fyScaleMeasure 會重新量 */
+const CHAR_S=1.15,FY_REL=1.3,AV_HU0=57.5;let AV_HU=AV_HU0,FY_S=1.15,FY_DX=24,FY_DY=-42,FY_HW=44,FY_Q=1,fyMeasured=false;
+function fyScaleSet(hu){AV_HU=hu;const PH=AV_HU*CHAR_S;FY_S=FY_REL*PH/FY_FH;FY_DX=0.7*PH;FY_DY=-0.2*PH;FY_HW=FY_FH*FY_S;FY_Q=FY_DX/24.15;
+  try{for(const S of FYO.values())S.sh.setAttribute('rx',(9*FY_S/1.15).toFixed(1))}catch(e){}}
+fyScaleSet(AV_HU0);
+function fyScaleMeasure(){if(fyMeasured)return;try{const e=document.getElementById('meGAv')||document.getElementById('meAv');if(!e||!e.getBBox)return;const hh=e.getBBox().height;if(hh>20&&hh<200){fyMeasured=true;if(Math.abs(hh-AV_HU)>0.5)fyScaleSet(hh)}}catch(e){}}
+/* 放招：往技能方向前移一小段、放大到 1.15 倍、亮一下夢幻色光，0.4 秒後回原位；回傳技能特效該從哪裡發出（神之子身上） */
+function fyCast(who,dx,dy){const S=FYO.get(who);if(!S)return null;const L=Math.hypot(dx||0,dy||0)||1;S.cast={t0:performance.now()/1000,dx:(dx||0)/L,dy:(dy||0)/L};
+  try{const [c1]=fyGlowC(S.f||{});fyPuff('fyp-glow',S.x,S.y-FY_HW*0.45,`<circle r="${(FY_HW*0.42).toFixed(1)}" fill="${c1}" opacity=".7"/>`,450,1)}catch(e){}return fyCastOrigin(who)}
+function fyCastOrigin(who){const S=FYO.get(who);return S?[S.x,S.y-FY_HW*0.45]:null}
 const FYO=new Map();let fyOwners=new Map(),fyRaf=0,fyLastT=0,fyGen=0;
 const fyRM=()=>typeof RMQ!=='undefined'&&RMQ.matches;
 /* renderChars 每次都會把這一輪看得到的精靈登記進來 */
@@ -8320,9 +8430,9 @@ function fyBodySVG(f){const H=FY_FH,ev=f.evo,w=FY_WING[f.k]||'#FFE6A0';
   if(ev&&!FAIRY_BASE_READY)s+=`<g transform="translate(0 ${f3(-H*0.53)}) scale(1 .3)"><circle r="${f3(H*0.12)}" fill="none" stroke="#FFD54A" stroke-width="2.2"/><g class="fyorb">${[0,120,240].map(a=>`<circle cx="${f3(H*0.12*Math.cos(a*Math.PI/180))}" cy="${f3(H*0.12*Math.sin(a*Math.PI/180))}" r="1.9" fill="#FFF8D0"/>`).join('')}</g></g>`;/* 97.4 光環：細金環＋三顆繞圈的亮點 */
   return s+`<rect x="${-H*0.28}" y="${-H*0.5}" width="${H*0.56}" height="${H}" fill="transparent"/>`}
 function fyNode(who,o){const [B]=fyLayers();if(!B)return null;let S=FYO.get(who);
-  if(!S){const ns='http://www.w3.org/2000/svg';const sh=document.createElementNS(ns,'ellipse');sh.setAttribute('class','fysh');sh.setAttribute('rx','9');sh.setAttribute('ry','2.6');sh.setAttribute('fill','#2A1A08');
+  if(!S){const ns='http://www.w3.org/2000/svg';const sh=document.createElementNS(ns,'ellipse');sh.setAttribute('class','fysh');sh.setAttribute('rx',(9*FY_S/1.15).toFixed(1));sh.setAttribute('ry','2.6');sh.setAttribute('fill','#2A1A08');
     const g=document.createElementNS(ns,'g');g.setAttribute('class','fyo');g.setAttribute('data-fy',who);g.style.pointerEvents='auto';
-    const p=o.getPos();S={who,x:p.x+(p.flip?FY_DX:-FY_DX),y:p.y+FY_DY,sx:p.flip?-1:1,tilt:0,lx:p.x,ly:p.y,still:0,next:performance.now()/1000+8+Math.random()*7,idle:null,side:null,trail:0,part:0,parts:0,key:'',g,sh,front:false,ph:(hashStr(who)%628)/100};
+    const p=o.getPos();fyScaleMeasure();S={who,x:p.x+(p.flip?FY_DX:-FY_DX),y:p.y+FY_DY,sx:p.flip?-1:1,tilt:0,lx:p.x,ly:p.y,still:0,next:performance.now()/1000+8+Math.random()*7,idle:null,side:null,trail:0,part:0,parts:0,key:'',g,sh,front:false,ph:(hashStr(who)%628)/100};
     B.appendChild(sh);B.appendChild(g);FYO.set(who,S)}
   const k=fyArtKey(o.f);if(S.key!==k){S.key=k;S.g.innerHTML=fyBodySVG(o.f)}S.f=o.f;return S}
 function fyDrop(who){const S=FYO.get(who);if(!S)return;try{S.g.remove();S.sh.remove();if(S.bub)S.bub.remove()}catch(e){}FYO.delete(who)}
@@ -8355,7 +8465,7 @@ function fyLoop(ts){if(!fyOwners.size){fyRaf=0;fyLastT=0;return}/* 106.4：畫�
     if(rm){S.x=tx;S.y=ty}
     else if(S.idle){const I=S.idle,u=Math.min(1,(t-I.t0)/I.dur),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
       if(I.type===1){S.x=I.x0+(p.x-side*FY_DX-I.x0)*e;S.y=I.y0+(ty-I.y0)*e-14*Math.sin(Math.PI*u);if(u>=1){S.side=-side;S.idle=null}}
-      else if(I.type===2){const a=I.a0+2*Math.PI*u;S.x=p.x+26*Math.cos(a);S.y=p.y-34+9*Math.sin(a);front=Math.sin(a)>0.15;if(u>=1)S.idle=null}
+      else if(I.type===2){const a=I.a0+2*Math.PI*u;S.x=p.x+26*FY_Q*Math.cos(a);S.y=p.y+FY_DY+9*FY_Q*Math.sin(a);front=Math.sin(a)>0.15;if(u>=1)S.idle=null}
       else{const hx=p.x+side*8,hy=p.y-70,a=Math.min(1,u/0.22),b=u>0.8?(u-0.8)/0.2:0;const ea=a<.5?2*a*a:1-Math.pow(-2*a+2,2)/2,eb=b<.5?2*b*b:1-Math.pow(-2*b+2,2)/2;S.x=I.x0+(hx-I.x0)*ea+(tx-hx)*eb;S.y=I.y0+(hy-I.y0)*ea+(ty-hy)*eb;if(u>=1)S.idle=null}}
     else{const k=1-Math.pow(0.5,dt/0.15);S.x+=(tx-S.x)*k;S.y+=(ty-S.y)*k;
       if(S.still>4&&t>S.next){const ty_=1+Math.floor(Math.random()*3),dur=ty_===1?0.8:ty_===2?1.5:1.7;S.idle={type:ty_,t0:t,dur,x0:S.x,y0:S.y,a0:side>0?0:Math.PI};S.next=t+dur+8+Math.random()*7}}
@@ -8365,7 +8475,9 @@ function fyLoop(ts){if(!fyOwners.size){fyRaf=0;fyLastT=0;return}/* 106.4：畫�
     const tt=moving&&!rm?Math.max(-6,Math.min(6,vx*0.06)):0;S.tilt+=(tt-S.tilt)*Math.min(1,dt*6);
     const ph=S.ph,fl=rm?0:5*Math.sin(2*Math.PI*t/2.6+ph),rot=rm?0:S.tilt+2*Math.sin(2*Math.PI*t/2.6+ph+1.3);
     const sxx=Math.abs(S.sx)<0.04?0.04*Math.sign(S.sx||1):S.sx;
-    S.g.setAttribute('transform',`translate(${f1(S.x)} ${f1(S.y+fl)}) rotate(${f1(rot)}) scale(${(sxx*FY_S).toFixed(3)} ${FY_S})`);
+    let cx=0,cy=0,cs=1;if(S.cast){const u=(t-S.cast.t0)/0.4;if(u>=1||u<0)S.cast=null;else{const e=Math.sin(Math.PI*u);cx=S.cast.dx*14*FY_Q*e;cy=S.cast.dy*14*FY_Q*e;cs=1+0.15*e}}/* 155：放招 */
+    S.g.setAttribute('transform',`translate(${f1(S.x+cx)} ${f1(S.y+fl+cy)}) rotate(${f1(rot)}) scale(${(sxx*FY_S*cs).toFixed(3)} ${(FY_S*cs).toFixed(3)})`);
+    {const fr=front||S.y>p.y+2;if(fr!==S.fade){S.fade=fr;S.g.style.opacity=fr?'0.7':''}}/* 155：在玩家前面時 70% 不透明 */
     const hk=1-fl/5*0.18;S.sh.setAttribute('transform',`translate(${f1(S.x)} ${f1(p.y+1)}) scale(${hk.toFixed(3)})`);S.sh.setAttribute('opacity',(0.18*(0.75+0.25*hk)).toFixed(3));
     if(front!==S.front&&FR){S.front=front;(front?FR:fyLayers()[0]).appendChild(S.g)}
     if(rm)continue;
@@ -8453,12 +8565,12 @@ const monMaxHp=boss=>(MON_RHP[exBiome]||3000)*(boss?MON_BOSS_HP:1);
 const monDmg=m=>{const r=MON_RDMG[exBiome]||[50,80];return Math.round((r[0]+Math.random()*(r[1]-r[0]))*(m.boss?MON_BOSS_DMG:1)*monVar(m.k,'dmg'))};
 const monCount=()=>Math.min(MON_MAXN,MON_N+2*Object.keys(others||{}).length);
 let pHP=PHP_MAX,pFightAt=0,pRegAt=0,potCd=0;
-function pDamage(n){pHP=Math.max(0,pHP-n);pFightAt=Date.now();try{fxAdd('gain',curMe().x,curMe().y-70,`-${n}`,900)}catch(e){}renderHP();if(pHP<=0)pDie();else autoPotCheck()}
+function pDamage(n){pHP=Math.max(0,pHP-n);pFightAt=Date.now();try{const me=curMe();dmgShow(me.x,me.y-78,n,{hurt:1,key:'me'})}catch(e){}/* 152：紅字 */renderHP();if(pHP<=0)pDie();else autoPotCheck()}
 function pDie(){const lost=tripLose();pHP=PHP_MAX;pFightAt=0;try{closePanel();closeSheet()}catch(e){}goFarm();renderHP();
   setTimeout(()=>{try{noteOpen(`<h2>你倒下了</h2><p class="note">被送回農場，血量補滿了。${lost?'這趟撿到、還沒帶回來的素材掉了一半。':''}</p><p class="note">金幣、種子、果實、道具都沒有少。</p>`)}catch(e){}},400)}
 function pRegen(){autoPotCheck();const now=Date.now();if(scene!=='explore'){if(pHP<PHP_MAX){pHP=PHP_MAX;renderHP()}pRegAt=now;return}const dt=Math.min(5,(now-(pRegAt||now))/1000);pRegAt=now;if(pHP<PHP_MAX&&now-pFightAt>=PHP_CALM){const ed=Math.min(dt,(now-pFightAt-PHP_CALM)/1000);if(ed>0){pHP=Math.min(PHP_MAX,pHP+PHP_MAX*PHP_REGEN*ed);renderHP()}}}/* 只算安靜滿 5 秒之後的時間 */
 function drinkPot(k,quiet){k=k||potPick();const T=POT_TYPES.find(x=>x.k===k)||POT_TYPES[0];const it=state.items||(state.items={}),now=Date.now(),say=m=>{if(!quiet)toast(m)};if(scene!=='explore'){say('補血藥只能在野外喝');return false}if(!(it[T.k]>0)){say(`沒有${T.n}了（到城鎮的道具行製作）`);return false}if(now<potCd){say(`還要 ${Math.ceil((potCd-now)/1000)} 秒才能再喝`);return false}
-  if(pHP>=PHP_MAX){say('血量是滿的');return false}it[T.k]--;potCd=now+POT_CD;pHP=Math.min(PHP_MAX,pHP+PHP_MAX*T.heal);saveLite();renderHP();potCdRun();return true}/* 144：k＝哪一種；quiet＝自動喝藥不跳提示 */
+  if(pHP>=PHP_MAX){say('血量是滿的');return false}it[T.k]--;potCd=now+POT_CD;{const h0=pHP;pHP=Math.min(PHP_MAX,pHP+PHP_MAX*T.heal);try{const me=curMe();dmgShow(me.x,me.y-78,pHP-h0,{heal:1,key:'meh'})}catch(e){}}/* 152：綠字 */saveLite();renderHP();potCdRun();return true}/* 144：k＝哪一種；quiet＝自動喝藥不跳提示 */
 function renderHP(){try{let b=document.getElementById('hpBar'),pb=document.getElementById('potBtn');
   if(!b){b=document.createElement('div');b.id='hpBar';b.innerHTML='<i></i><span></span>';document.body.appendChild(b)}
   if(!pb){pb=document.createElement('button');pb.id='potBtn';pb.type='button';pb.setAttribute('aria-label','補血藥（長按換種類）');potSlotBind(pb);document.body.appendChild(pb)}
@@ -8582,7 +8694,7 @@ function monDebris(m){try{const L=document.getElementById('monSw');if(!L)return;
   for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,d=22+Math.random()*26;s+=`<circle cx="${m.x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(2.5+Math.random()*2.5).toFixed(1)}" fill="${c}" stroke="#3B2614" stroke-width="1" style="--dx:${(Math.cos(a)*d).toFixed(1)}px;--dy:${(Math.sin(a)*d-14).toFixed(1)}px"/>`}
   g.innerHTML=s;L.appendChild(g);setTimeout(()=>{try{g.remove()}catch(e){}},520)}catch(e){}}
 /* ===== 141 結束 ===== */
-function monHit(i){const m=MON_RT&&MON_RT.list[i];if(!m||m.dead)return;const now=Date.now();m.hp=Math.max(0,m.hp-SICKLE_DMG);m.lastHit=now;pFightAt=now;if(!m.aggro){m.aggro=1;m.ox=m.x;m.oy=m.y}/* 131 */monSwing(m);try{sfx('pop',60)}catch(e){}
+function monHit(i){const m=MON_RT&&MON_RT.list[i];if(!m||m.dead)return;const now=Date.now();m.hp=Math.max(0,m.hp-SICKLE_DMG);try{dmgShow(m.x,monHeadY(m),SICKLE_DMG,{key:'m'+i})}catch(e){}/* 152 */m.lastHit=now;pFightAt=now;if(!m.aggro){m.aggro=1;m.ox=m.x;m.oy=m.y}/* 131 */monSwing(m);try{sfx('pop',60)}catch(e){}
   const s=m.el&&m.el.querySelector('.ms'),hasHit=!!MON_IMG[m.k+'_hit'];
   if(hasHit&&s){s.innerHTML=monImgTag(m.k,m.boss,true);clearTimeout(m._ht);if(m.hp>0)m._ht=setTimeout(()=>{if(!m.dead)s.innerHTML=monImgTag(m.k,m.boss,false)},250)}
   if(hasHit)monReplay(s,'hit');else monHit2(m,s);monDebris(m);monBar(m,true);/* 141.3 */
@@ -8659,7 +8771,7 @@ const FIX_ICON='<svg viewBox="-16 -32 32 36" width="36" height="40" aria-hidden=
 /* 142：配方的素材可以有替代品 [鍵, 數量, [替代的鍵…]]：合計夠就好，先用替代品（舊素材） */
 const mcnt=e=>[e[0]].concat(e[2]||[]).reduce((s,k)=>s+matCount(k),0);
 function mtake(e,n){const S=matsObj();for(const k of (e[2]||[]).concat([e[0]])){const m=Math.min(n,S[k]||0);if(m){S[k]-=m;n-=m;if(S[k]<=0)delete S[k]}if(n<=0)break}}
-const outIcon=k=>k==='fix'?FIX_ICON:itemIcon(k);
+const outIcon=k=>itemIcon(k);/* 153：定型劑也用新圖（載不到換回 FIX_ICON） */
 const fruitReqTxt=f=>`「${nameCol(f.skin)}${f.sp?SPN[f.sp]:''}」`;/* 145 */
 const fruitReqOk=(f,a)=>!!a&&a.skin===f.skin&&(f.sp==null||a.sp===f.sp);/* 果皮要一模一樣（純色），中間色、半夢幻色的鍵值不同，自然不算 */
 /* 符合條件的果實：每一格、每一種大小・完美度一筆，先完美度低、再個頭小的 */
@@ -9197,6 +9309,27 @@ function sfx(k,gap,...a){try{if(!SFX_ON||!SFX[k])return;const now=Date.now();if(
 /* 按鈕按下去「啵」一聲（同一時間只響一次） */
 try{addEventListener('pointerdown',e=>{const b=e.target&&e.target.closest&&e.target.closest('button,.btn,[role="button"]');if(b&&!b.disabled)sfx('click',60)},{capture:true,passive:true})}catch(e){}
 function bumpEl(el,cls){if(!el||RMQ.matches)return;el.classList.remove(cls||'bump');void el.offsetWidth;el.classList.add(cls||'bump');setTimeout(()=>el.classList.remove(cls||'bump'),450)}
+/* ===== 152.1（19q）：傷害數字（楓之谷式） =====
+   dmgShow(世界 x, 世界 y, 數字, {key 同一個目標疊成一串, crit 爆擊, hurt 玩家被打, heal 回血, miss, text 自訂字, pet 神之子／神寵（小一號）, color 代表色})
+   最多 12 個元素重複使用；只用 transform／opacity；畫面外不跳；設定頁可以關（state.dmgNum） */
+const DMG_MAX=12,dmgPool=[],dmgStack=new Map();let dmgI=0;
+const dmgOn=()=>!state||state.dmgNum!==false;
+const dmgFmt=n=>String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+function w2s(x,y){try{const m=sceneEl.getScreenCTM();if(!m)return null;return [m.a*x+m.c*y+m.e,m.b*x+m.d*y+m.f]}catch(e){return null}}
+function dmgShow(x,y,val,o){o=o||{};if(!dmgOn())return null;const p=w2s(x,y);if(!p||!isFinite(p[0])||!isFinite(p[1]))return null;
+  if(p[0]<-30||p[1]<-30||p[0]>innerWidth+30||p[1]>innerHeight+30)return null;/* 畫面外的不跳 */
+  let L=document.getElementById('dmgL');if(!L){L=document.createElement('div');L.id='dmgL';L.setAttribute('aria-hidden','true');document.body.appendChild(L)}
+  let d;if(dmgPool.length<DMG_MAX){d=document.createElement('div');dmgPool.push(d);L.appendChild(d)}else{d=dmgPool[dmgI%DMG_MAX];dmgI++}
+  let k=0;if(o.key){const now=Date.now(),s=dmgStack.get(o.key);k=s&&now-s.t<900?Math.min(s.n+1,5):0;dmgStack.set(o.key,{n:k,t:now})}
+  const dx=k?(k%2?1:-1)*(6+(k%3)*5):0,dy=-k*15;
+  const txt=o.text||(o.miss?'MISS':o.heal?'+'+dmgFmt(val):o.hurt?'-'+dmgFmt(val):dmgFmt(val));
+  d.className='';void d.offsetWidth;/* 重新開始動畫 */
+  d.className='dmg'+(o.crit?' crit':'')+(o.hurt?' hurt':'')+(o.heal?' heal':'')+(o.miss?' miss':'')+(o.pet?' pet':'');
+  d.style.left=(p[0]+dx).toFixed(1)+'px';d.style.top=(p[1]+dy).toFixed(1)+'px';
+  if(o.color)d.style.setProperty('--dc',o.color);else d.style.removeProperty('--dc');
+  d.innerHTML=(o.crit?'<i>爆擊</i>':'')+'<b>'+txt+'</b>';return d}
+const monHeadY=m=>{const d=MON_DEF[m.k]||{h:60};return m.y-(d.h||60)*(m.boss?1.6:1)-8};
+/* ===== 152.1 結束 ===== */
 function fxAdd(cls,x,y,html,ms,css){const L=document.getElementById('fxH');if(!L)return null;const d=document.createElement('div');d.className='pf '+cls;d.style.left=x+'px';d.style.top=y+'px';if(css)d.style.cssText+=css;if(html)d.innerHTML=html;L.appendChild(d);setTimeout(()=>d.remove(),ms);return d}
 function plotFx(i,kind){sfx(kind==='self'?'chime':kind==='accel'?'up':kind==='skip'?'skip':'click',kind==='self'?70:60);if(RMQ.matches)return;const c=plotScreen(i);if(!c)return;const top=c.y-18;
   if(kind==='skip'){fxAdd('sk',c.x,top,'✕',420);return}
@@ -9249,7 +9382,7 @@ document.getElementById('decoPop').addEventListener('click',e=>{const b=e.target
   if(a==='flip'){if(d.fl)delete d.fl;else d.fl=1;save();renderWorld();return}
   if(a==='move'){openDecor();selDecor=i;quickMove=i;renderWorld();renderDecoBar();toast('按住這件裝飾拖到想放的位置，放開就完成',3000);return}});
 sceneEl.addEventListener('pointerdown',()=>{if(!document.getElementById('decoPop').hidden)closeDecoPop()},true);
-sceneEl.addEventListener('pointerdown',e=>{const g=e.target&&e.target.closest&&e.target.closest('[data-fy]');if(!g||!state||uiBusy())return;if(npcAtClient(e.clientX,e.clientY))return;/* 148：NPC 優先 */e.stopPropagation();e.preventDefault();fyTap(g.dataset.fy)},true);/* 93.4：點精靈說話 */
+sceneEl.addEventListener('pointerdown',e=>{const g=e.target&&e.target.closest&&e.target.closest('[data-fy]');if(!g||!state||uiBusy())return;{let pl=null;try{pl=(document.elementsFromPoint(e.clientX,e.clientY)||[]).map(x=>x.closest&&x.closest('[data-ply]')).find(Boolean)}catch(_){}if(pl){e.stopPropagation();e.preventDefault();openMe(pl.dataset.ply);return}}/* 155：神之子變大了，點到玩家時以玩家優先 */if(npcAtClient(e.clientX,e.clientY))return;/* 148：NPC 優先 */e.stopPropagation();e.preventDefault();fyTap(g.dataset.fy)},true);/* 93.4：點精靈說話 */
 sceneEl.addEventListener('pointerdown',e=>{const g=e.target&&e.target.closest&&e.target.closest('[data-ply]');if(!g||!state||uiBusy())return;if(npcAtClient(e.clientX,e.clientY))return;e.stopPropagation();e.preventDefault();openMe(g.dataset.ply)},true);/* 41.1：點其他玩家開名片 */
 function gateText(st){const t=st&&st.gateTxt;if(t)return t;const n=st===state?myName():(viewing&&viewing.name)||'朋友';return `${n} 的農場`}
 function gateSignHTML(){return `<h2>農場大門的招牌</h2><p class="note">最多 8 個字，來拜訪的朋友也看得到。空白就顯示「${esc(myName())} 的農場」。</p><div class="regbox"><input id="signIn" maxlength="8" value="${esc(sheet.draft)}" aria-label="大門招牌文字" aria-describedby="signErr"><div class="err" id="signErr">${sheet.err}</div></div><button class="btn primary" data-act="gatesave">儲存</button><button class="btn" data-act="close">取消</button>`}

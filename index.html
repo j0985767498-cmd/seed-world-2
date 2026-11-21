@@ -880,6 +880,7 @@ details.gfold .gfb{margin-top:8px}
 .mwind{animation:mwind .5s ease-in-out}.mwind .ms{filter:drop-shadow(0 0 6px #FF2A2A) drop-shadow(0 0 2px #FF2A2A) brightness(1.15) sepia(.5) saturate(4) hue-rotate(-30deg)}@keyframes mwind{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 #hpBar{position:fixed;left:50%;transform:translateX(-50%);top:calc(98px + env(safe-area-inset-top,0px));z-index:11;width:170px;height:16px;border-radius:9px;border:2px solid #5A3416;background:#FFF6DE;overflow:hidden;box-shadow:0 2px 0 #5A3416;pointer-events:none}#hpBar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(180deg,#F26A5A,#C9372A);transition:width .2s}#hpBar.low i{background:linear-gradient(180deg,#FF8A3D,#E04020)}#hpBar span{position:relative;display:block;text-align:center;font-size:11px;line-height:12px;font-weight:700;color:#3B2614}
 #potBtn{position:fixed;right:8px;top:calc(312px + env(safe-area-inset-top,0px));z-index:10;width:54px;height:44px;border-radius:14px;border:2px solid #7A1E14;background:#FFE1D6;color:#7A1E14;font:inherit;font-weight:700;font-size:12px;box-shadow:0 3px 0 #7A1E14}#potBtn:disabled{opacity:.5}/* 131 */
+.themerow{display:grid;grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:8px}.thcard{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;border:2px solid #C9A06A;border-radius:10px;background:#FFF6DE;font:inherit;color:#5A3416}.thcard.on{border-color:#2E9B43}.thcard small{color:#7A5A30}.lrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 0;border-bottom:1px dashed var(--line)}.lrow .lbtns{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}/* 137 */
 .qst{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-style:normal;font-weight:700;font-size:12px;margin-right:4px;vertical-align:-3px}.qst-done{background:#E8F8E0;color:#2E9B43;border:1.5px solid #2E9B43}.qst-acc{background:#FFF6C8;color:#B07D00;border:1.5px solid #D9A200}.qst-run,.qst-wait{background:#EEE;color:#888;border:1.5px solid #BBB}.qcard.qtr{outline:2px solid #2E9B43}#mqLine.qdone{background:#2E9B43!important;color:#fff!important}.qgreen{background:#2E9B43!important}.qnote{position:fixed;left:50%;top:64px;transform:translateX(-50%);z-index:65;background:#2E9B43;color:#fff;padding:8px 14px;border-radius:14px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;max-width:88vw}.fybang.ok{background:#2E9B43!important;color:#fff!important}/* 133 */
 .notedot{position:absolute;right:4px;top:3px;width:9px;height:9px;border-radius:50%;background:#E0453A;box-shadow:0 0 0 2px #fff;pointer-events:none}[data-open="dex"]{position:relative}/* 130 */
 .fwshow{position:fixed;inset:0;z-index:70;overflow:hidden}.fw-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 110%,#1B2A4A,#05070F)}.fw{position:absolute;width:0;height:0}.fw i{position:absolute;width:7px;height:7px;margin:-3px;border-radius:50%;opacity:0;animation:fwb 1.6s ease-out forwards}@keyframes fwb{0%{opacity:1;transform:translate(0,0) scale(.4)}70%{opacity:1}100%{opacity:0;transform:translate(var(--x),calc(var(--y) + 30px)) scale(1)}}/* 126 煙火 */
@@ -1014,7 +1015,7 @@ body{font-variant-numeric:tabular-nums}
 <div class="panel" id="p-bag" hidden role="dialog" aria-label="種子袋"><div class="ph"><h2>種子袋</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div class="filters" id="bagTabs" role="tablist"></div><div id="bag"></div></div></div>
 <div class="panel" id="p-dex" hidden role="dialog" aria-label="品種圖鑑"><div class="ph"><h2>品種圖鑑</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div id="dexTabs"></div><div class="filters" id="dexFilter"></div><div id="dex"></div></div></div>
 <div class="panel" id="p-social" hidden role="dialog" aria-label="朋友"><div class="ph"><h2>朋友</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><h3 style="margin-top:4px">朋友</h3><div id="friends"></div><h3>公共聊天室</h3><div id="chat" aria-live="polite"></div><div class="chatbar"><input id="chatIn" maxlength="300" placeholder="輸入訊息" aria-label="聊天訊息" aria-describedby="chatErr"><button class="mini big" id="chatSend">傳送</button></div><div class="err" id="chatErr"></div></div></div>
-<div class="panel" id="p-decor" hidden role="dialog" aria-label="裝飾農場"><div class="ph"><h2>裝飾農場</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><p class="note">選一種，點空地就放。<button type="button" class="qh" aria-expanded="false" aria-label="說明">？</button><span class="qhx" hidden>標價的裝飾每放一個扣一次（收回不退）。圍籬、地面可以滑著連續鋪。告示牌可以寫 2–8 個字。</span></p><div class="filters" id="decorCats"></div><div class="decorItems" id="decorItems"></div></div></div>
+<div class="panel" id="p-decor" hidden role="dialog" aria-label="裝飾農場"><div class="ph"><h2>裝飾農場</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><p class="note">選一種，點空地就放。<button type="button" class="qh" aria-expanded="false" aria-label="說明">？</button><span class="qhx" hidden>標價的裝飾每放一個扣一次（收回不退）。圍籬、地面可以滑著連續鋪。告示牌可以寫 2–8 個字。</span></p><div id="themeBox"></div><div class="filters" id="decorCats"></div><div class="decorItems" id="decorItems"></div></div></div>
 <div class="panel" id="p-explore" hidden role="dialog" aria-label="探索世界"><div class="ph"><h2>探索世界</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb" id="exploreBody"></div></div>
 <div class="panel" id="p-genes" hidden role="dialog" aria-label="遺傳規則"><div class="ph"><h2>遺傳規則</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div id="genes"></div></div></div>
 <div class="panel" id="p-settings" hidden role="dialog" aria-label="設定"><div class="ph"><h2>設定</h2><button class="xbtn" data-close aria-label="關閉">✕</button></div><div class="pb"><div class="settings"><div id="ctrlBox"></div><div id="testBox"></div><details class="dist"><summary>錯誤紀錄（回報問題時截圖給開發者）</summary><pre id="errLog" style="white-space:pre-wrap;font-size:12px;margin:6px 0 0">目前沒有錯誤</pre></details><button class="btn" id="allSeedsBtn">測試：領取全部 8 種原始品種</button><button class="btn warn" id="resetBtn">重新開始</button><button class="btn" id="genesBtn">打開遺傳規則（顯隱性與強弱表）</button>
@@ -1465,7 +1466,7 @@ function packKeys(l){
 }
 let DRAW_MU=null;/* 96：剛抽到的那顆是不是新突變（{k,v}），發芽判定時用 */
 function drawSeed(l){if(l.zs)unzipLot(l);DRAW_MU=null;{const m=lcMu(l);if(m&&rnd()*lc(l)<m){const k=Math.floor(rnd()*m),g=l.mseeds.splice(k,1)[0],md=(l.mmd||[]).splice(k,1)[0];DRAW_MU=md||{k:'?'};if(!l.mseeds.length){delete l.mseeds;delete l.mmd}return g}}if(l.seeds&&l.seeds.length)return l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0];l.count--;return child(l.m,l.f).g}
-function newGame(){state={rv98:1,patV:1,fyopV:1,notes:{},rs134V:1,fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
+function newGame(){state={rv98:1,patV:1,fyopV:1,notes:{},rs134V:1,themeV:1,fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
 const WILD={tomato:'red',strawberry:'red',zucchini:'green',corn:'yellow',broccoli:'white',melon:'yellow',chili:'red',pumpkin:'yellow',eggplant:'purple'};
 function originalFor(crop){
   const wild=rnd()<0.7,col=wild?WILD[crop]:pk(['red','yellow','green','white','purple'].filter(c=>c!==WILD[crop]));
@@ -1595,6 +1596,7 @@ function migrate(o){if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fair
   lvMigrate(o);/* 28.4（15y）：舊玩家回推等級、主線標記完成（只做一次，旗標 lvV） */
   m111(o);/* 111（18c）：生長時間換算、加速劑獎勵調整（只做一次，旗標 growV） */
   m112(o);/* 112（18d）：果實袋、每週整齊供應改成顆數（旗標 hvV） */
+  if(!o.themeV){o.themeV=1}/* 137：田園小屋全部是免費裝飾，新舊玩家都直接「已擁有」（不用另外記） */
   if(!o.rs134V){o.rs134V=1;try{for(const k of Object.keys(o.rs||{})){const r=o.rs[k];if(r&&r.d>=3){r.paid=1;r.t=0}}}catch(e){}}/* 134：舊玩家第 3 步的 rw 已經給過，第 4 步不重複；第 4 步不用等 */
   try{if(o.rs&&o.rs.grass&&o.rs.grass.d>=3){if(!o.notes||typeof o.notes!=='object')o.notes={};if(!o.notes.L_grass){o.notes.L_grass=Date.now();o.noteNew=1}}}catch(e){}/* 130：割早的田已經完成的人補上「裂風」 */
   if(!o.fyopV){o.fyopV=1;try{for(const k of Object.keys(o.fairy||{})){const f=o.fairy[k];if(FY[k]&&f&&typeof f==='object'&&f.no){f.evo=f.evo?1:0;f.op={n:0,cols:[]}}}}catch(e){}}/* 114（18s）：每一位已喚醒的神之子建立進度；舊規則進化的保留進化、神化從 0 開始 */
@@ -1707,7 +1709,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-18z';
+const BUILD='2026-11-19a';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -2973,6 +2975,7 @@ function renderSheet(){
   if(sheet.note){sb.innerHTML=sheet.note+(sheet.brag?'<div class="row2"><button class="btn primary" data-act="close">太好了</button><button class="btn" data-act="brag">炫耀一下</button></div>':'<button class="btn primary" data-act="close">好</button>');return}
   if(sheet.fruit){sb.innerHTML=fruitHTML();return}/* 112.5 */
   if(sheet.mat){sb.innerHTML=matHTML();return}/* 115.3 */
+  if(sheet.theme){sb.innerHTML=themeHTML();return}/* 137 */
   if(sheet.qd){sb.innerHTML=qDetailHTML();return}if(sheet.qgo){sb.innerHTML=qGoHTML();return}/* 133 */
   if(sheet.mqgo){sb.innerHTML=mqGoHTML();return}/* 116.5 */
   if(sheet.give){sb.innerHTML=giveHTML();return}/* 117.2 */
@@ -3065,6 +3068,7 @@ sb.addEventListener('click',e=>{
   if(sheet.mat)return;
   if(sheet.give)return giveAction(b);
   if(sheet.rnpc){if(orderAction(b)&&sheet&&sheet.rnpc)renderSheet();return}/* 121 */
+  if(sheet.theme){if(b.dataset.act==='thgo'){const r=themeApply(b.dataset.k);if(r){closeSheet();closePanel()}else renderSheet()}else if(b.dataset.act==='close')closeSheet();return}/* 137 */
   if(sheet.qd||sheet.qgo){if(b.dataset.act==='close'){closeSheet();return}orderAction(b);return}/* 133 */
   if(sheet.mqgo){if(b.dataset.act==='mqgo'){const id=sheet.mqgo;closeSheet();goMarket();if(scene==='market')setTimeout(()=>townArrowSet(id),400)}return}
   if(sheet.me)return meAction(b);
@@ -4824,11 +4828,66 @@ function plotMove(i){
 
 // ===== 裝飾面板與編輯 =====
 let decorCat='標示';
+/* ===== 137（19a）：主題布置。四套主題（THEMES，座標相對於大門上方的起點 THEME_A）、一鍵套用、回到套用前、我的布置 3 格。
+   套用：先算價格（這套裡倉庫＋農場上都沒有的收費裝飾原價 ×0.7），扣錢、補進倉庫 → 農場上的裝飾全部收回倉庫 → 照主題從倉庫拿出來放；
+   出界、壓到田、擋大門、同一格已經有的那一件不放（留在倉庫）。只動裝飾，不動田、作物、神之子、開墾格。
+   套用前的布置存在 state.themePrev（只留最近一次），「回到套用前」和「我的布置」都是：全部收回 → 從倉庫照位置拿，倉庫不夠的不放、不扣錢。
+   田園小屋：所有裝飾都免費，新玩家、舊玩家（旗標 themeV）都直接「已擁有」。 ===== */
+const THEME_A=[1100,2064];/* 大門 [1100,2150] 往上，第一塊路離大門 90px 以外；x、y 都對齊地面菱形格 */
+const THEME_K=0.7;
+const thPath=(t,n)=>Array.from({length:n},(_,i)=>[t,0,-24*i]);
+const thRow=(t,y)=>[-264,-220,-176,-132,-88,88,132,176,220,264].map(x=>[t,x,y]);/* 田的下緣一整排，中間留路 */
+const THEMES={
+ cottage:{n:'田園小屋',d:'新手的家，溫暖樸素',items:[...thPath('gravel',9),...thRow('fence',-216),['bed',-80,-170],['bed',80,-170],['scarecrow',-230,-120],['well',230,-110],['cart',150,-50],['bench',-140,-40],['mailbox',44,-12],['tree',-360,-40],['tree',360,-40],['bush',-210,-60]]},
+ sakura:{n:'櫻花庭院',d:'日式、安靜',items:[...thPath('stone',9),...thRow('hedge',-216),['stepping_stones',-66,-36],['stepping_stones',-110,-60],['stepping_stones',-154,-84],['stepping_stones',-198,-108],['pond',230,-120],['bridge',160,-130],['lantern',-40,-12],['lantern',40,-12],['stone_lantern',-110,-175],['stone_lantern',110,-175],['pot',-60,-110],['pot',60,-110],['arch',0,-200],['cherry_tree',-360,-40],['cherry_tree',360,-40]]},
+ market:{n:'果園市集',d:'熱鬧、有人氣',items:[...thPath('deck',9),...thRow('picket',-216),['parasol',-130,-130],['parasol',130,-130],['picnic',-130,-108],['picnic',130,-108],['cart',-240,-50],['rack',300,-170],['flag',-40,-30],['flag',40,-30],['lights',-220,-175],['lights',220,-175],['apple_tree',-360,-40],['apple_tree',360,-40],['seed_stall',250,-55],['crates',110,-20],['crates',330,-110],['barrel',-300,-130]]},
+ lake:{n:'湖畔花園',d:'漂亮、開闊',items:[...thPath('tile',9),...thRow('stonewall',-216),['lawn',-44,-24],['lawn',44,-24],['lawn',-44,-72],['lawn',44,-72],['fountain',-180,-120],['pond',200,-110],['bed',-90,-175],['bed',90,-175],['bed',-260,-60],['swing',270,-30],['lamp',-40,0],['lamp',40,0],['lavender',-320,-140],['lavender',320,-160],['rocking_chair',150,-35],['flower_shelf',-150,-35]]}};
+const thNeed=id=>{const c={};for(const [t] of THEMES[id].items)c[t]=(c[t]||0)+1;return c};
+const decoOwnN=t=>decoStoreN(t)+((state&&state.decor)||[]).filter(d=>d.t===t).length;
+function themePrice(id){let s=0;const c=thNeed(id);for(const t in c){const p=(DECOR_MAP[t]||{}).p||0;if(p)s+=p*Math.max(0,c[t]-decoOwnN(t))}return Math.round(s*THEME_K)}
+const decoPlaceErr=(t,x,y)=>decoErr(x,y)||(decoOcc(t,x,y,-1)?'occ':'');
+/* 全部收回倉庫，回傳收回前的清單（複本） */
+function decoCollectAll(){const old=(state.decor||[]).map(d=>JSON.parse(JSON.stringify(d)));for(const d of state.decor||[])decoStorePut(d.t);state.decor=[];return old}
+/* 照清單從倉庫拿出來放；倉庫沒有、放不下的略過。回傳 {put,miss} */
+function decoPlaceList(list){let put=0,miss=0;for(const d0 of list){const t=d0.t;if(!DECOR_MAP[t]){miss++;continue}if(!(decoStoreN(t)>0)){miss++;continue}
+  if(!d0.e){const err=decoPlaceErr(t,d0.x,d0.y);if(err){miss++;continue}}if(state.decor.length>=400){miss++;continue}
+  const st=state.decoStore;st[t]--;if(!st[t])delete st[t];state.decor.push(JSON.parse(JSON.stringify(d0)));put++}return {put,miss}}
+function themeItemsAbs(id){return THEMES[id].items.map(([t,dx,dy])=>{const [x,y]=decoSnap(t,THEME_A[0]+dx,THEME_A[1]+dy);return {t,x,y}})}
+function themeApply(id){const T=THEMES[id];if(!T)return null;if(scene!=='farm'||viewing){toast('只能在自己的農場佈置');return null}const pr=themePrice(id);if((state.coins||0)<pr){toast(`金幣不夠，還差 ${pr-state.coins}`);return null}
+  const c=thNeed(id);state.coins-=pr;for(const t in c){const miss=Math.max(0,c[t]-decoOwnN(t));for(let k=0;k<miss;k++)decoStorePut(t)}
+  state.themePrev=decoCollectAll();const r=decoPlaceList(themeItemsAbs(id));state.themeUsed=id;
+  save();try{renderCoins();renderWorld();pushProfile()}catch(e){}toast(`套用了「${T.n}」${r.miss?`，${r.miss} 件放不下（壓到田或擋到路），留在倉庫`:''}`,4000);return r}
+function themeUndo(){if(!Array.isArray(state.themePrev)){toast('沒有套用前的布置');return null}const prev=state.themePrev;decoCollectAll();const r=decoPlaceList(prev);delete state.themePrev;state.themeUsed=null;save();try{renderWorld();pushProfile()}catch(e){}toast(r.miss?`回到套用前了，${r.miss} 件倉庫不夠沒有放`:'回到套用前了',3500);return r}
+/* 我的布置 3 格 */
+const layoutsArr=()=>{if(!Array.isArray(state.layouts))state.layouts=[null,null,null];while(state.layouts.length<3)state.layouts.push(null);return state.layouts};
+function layoutSave(i,name){const L=layoutsArr();L[i]={n:(name||(L[i]&&L[i].n)||`我的布置 ${i+1}`).slice(0,10),items:(state.decor||[]).map(d=>JSON.parse(JSON.stringify(d))),at:Date.now()};save();toast('存好了');return true}
+function layoutApply(i){const L=layoutsArr()[i];if(!L)return null;if(scene!=='farm'||viewing){toast('只能在自己的農場佈置');return null}decoCollectAll();const r=decoPlaceList(L.items);state.themeUsed=null;save();try{renderWorld();pushProfile()}catch(e){}toast(r.miss?`少了 ${r.miss} 件，到裝飾店補`:`套用了「${L.n}」`,4000);return r}
+function layoutDel(i){const L=layoutsArr();L[i]=null;save()}
+function layoutRename(i,n){const L=layoutsArr()[i];if(!L)return;L.n=String(n||'').trim().slice(0,10)||L.n;save()}
+/* 畫面 */
+function themeSVG(id,w){const its=themeItemsAbs(id).map(o=>({...o,it:DECOR_MAP[o.t]})).filter(o=>o.it).sort((a,b)=>(b.it.flat?1:0)-(a.it.flat?1:0)||a.y-b.y);
+  const x0=THEME_A[0]-400,y0=THEME_A[1]-300,W=800,H=360;let s=`<rect x="${x0}" y="${y0}" width="${W}" height="${H}" fill="#A9D277"/><rect x="${x0}" y="${y0}" width="${W}" height="70" fill="#8B5E3C" opacity=".5"/>`;
+  for(const o of its)s+=`<g stroke="#3A2416" stroke-width="1.3" stroke-linejoin="round">${o.it.f(o.x,o.y,'')}</g>`;
+  return `<svg viewBox="${x0} ${y0} ${W} ${H}" width="${w}" aria-hidden="true" style="border-radius:8px;border:1.5px solid #5A3416">${s}</svg>`}
+function themeBoxHTML(){const L=layoutsArr();let h=`<h3 style="margin:2px 0 6px">主題</h3><div class="themerow">`+Object.keys(THEMES).map(id=>{const p=themePrice(id);return `<button class="thcard${state.themeUsed===id?' on':''}" data-th="${id}">${themeSVG(id,118)}<b>${THEMES[id].n}</b><small>${p?p+' 金幣':'已擁有'}</small></button>`}).join('')+'</div>';
+  if(Array.isArray(state.themePrev))h+=`<button class="btn small" data-thundo="1">回到套用前</button>`;
+  h+=`<h3 style="margin:10px 0 6px">我的布置</h3>`+L.map((x,i)=>`<div class="lrow"><b>${x?esc(x.n):`空的第 ${i+1} 格`}</b>${x?`<span class="meta">${x.items.length} 件</span>`:''}<span class="lbtns"><button class="mini" data-lyt="save" data-i="${i}">存目前的布置</button>${x?`<button class="mini" data-lyt="apply" data-i="${i}">套用</button><button class="mini" data-lyt="ren" data-i="${i}">改名</button><button class="mini" data-lyt="del" data-i="${i}">${sheetDelArm===i?'確定刪除':'刪除'}</button>`:''}</span></div>`).join('');
+  return h+'<h3 style="margin:10px 0 6px">單件裝飾</h3>'}
+let sheetDelArm=-1;
+function themeHTML(){const id=sheet.theme,T=THEMES[id];if(!T)return '<button class="btn" data-act="close">關閉</button>';const p=themePrice(id),lack=p-(state.coins||0);
+  return `<h2>${T.n}</h2><p class="note">${T.d}。${THEMES[id].items.length} 件。${qh('農場上現在的裝飾會全部收回倉庫（不會不見、不扣錢），再照這一套擺。壓到田、擋到大門的那幾件留在倉庫。田、作物都不會動。')}</p><div style="text-align:center">${themeSVG(id,320)}</div>
+  <p class="note">${p?`整套 ${p} 金幣（倉庫已經有的不算錢）`:'已擁有，套用免費'}</p>${lack>0?`<button class="btn" disabled>還差 ${lack} 金幣</button>`:`<button class="btn primary" data-act="thgo" data-k="${id}">套用</button>`}<button class="btn" data-act="close">關閉</button>`}
+
 function renderDecorPanel(){
+  {const tb=document.getElementById('themeBox');if(tb)tb.innerHTML=themeBoxHTML()}/* 137 */
   document.getElementById('decorCats').innerHTML=DECOR_CATS.map(c=>`<button class="fchip" data-dc2="${c}" aria-pressed="${c===decorCat}">${c}</button>`).join('');
   document.getElementById('decorItems').innerHTML=DECOR.filter(d=>d.cat===decorCat).map(d=>{let vb='-30 -50 60 60';if(d.img){const [,h,iw,ih]=d.img,w=h*iw/ih,z=Math.max(w,h)*1.08;vb=`${(-z/2).toFixed(1)} ${(-z*0.97).toFixed(1)} ${z.toFixed(1)} ${z.toFixed(1)}`}return `<button class="ditem" data-item="${d.k}"><svg viewBox="${vb}" width="52" height="52" aria-hidden="true">${d.f(0,0,'')}</svg><span>${d.n}${decoStoreN(d.k)?`<br><small>倉庫 ${decoStoreN(d.k)}</small>`:d.p?`<br><small>${d.p} 金幣</small>`:''}</span></button>`}).join('');/* 15c：圖片縮圖、價格；36.7 倉庫數量 */
 }
 document.getElementById('p-decor').addEventListener('click',e=>{
+  {const th=e.target.closest('[data-th]'),un=e.target.closest('[data-thundo]'),ly=e.target.closest('[data-lyt]');/* 137 */
+    if(th){sheet={theme:th.dataset.th};renderSheet();openSheetUI();return}
+    if(un){if(scene!=='farm'||viewing){toast('只能在自己的農場佈置');return}themeUndo();renderDecorPanel();return}
+    if(ly){const i=+ly.dataset.i,a=ly.dataset.lyt;if(a==='save'){layoutSave(i)}else if(a==='apply'){layoutApply(i)}else if(a==='ren'){const n=prompt('布置的名字（10 個字以內）',(layoutsArr()[i]||{}).n||'');if(n!=null)layoutRename(i,n)}else if(a==='del'){if(sheetDelArm!==i){sheetDelArm=i;renderDecorPanel();return}sheetDelArm=-1;layoutDel(i)}renderDecorPanel();return}}
   const c=e.target.closest('[data-dc2]');if(c){decorCat=c.dataset.dc2;renderDecorPanel();return}
   const it=e.target.closest('[data-item]');if(!it)return;
   if(scene!=='farm'||viewing){toast('只能在自己的農場佈置');return}
@@ -9654,7 +9713,7 @@ function renderMe(){try{const el=document.getElementById('meChip');if(!el||!stat
 function meStats(){const seen=state.seen||{};let ns=0;for(const c in seen)ns+=(seen[c]||[]).length;const sp=[0,0,0,0,0,0];(state.specs||[]).forEach(s=>sp[s.tier||0]++);
   return {seen:ns,fin:Object.keys(state.fin||{}).length,specs:(state.specs||[]).length,sp,named:regList.filter(r=>r.inventorUid===uid).length,hv:(state.st&&state.st.hv)||0,cr:(state.st&&state.st.cr)||0,since:(state.st&&state.st.since)||0}}
 let profT=0;
-function pushProfile(){try{if(!uid||!state)return;const s=meStats();db.collection('profiles').doc(uid).set({name:myName(),lv:myLv(),title:lvTitle(myLv()),titles:state.titles||[],fr:myFr().slice(0,FRIEND_MAX),st:{seen:s.seen,fin:s.fin,specs:s.specs,named:s.named,hv:s.hv,cr:s.cr,since:s.since}},{merge:true}).catch(()=>{})}catch(e){}}
+function pushProfile(){try{if(!uid||!state)return;const s=meStats();db.collection('profiles').doc(uid).set({name:myName(),lv:myLv(),title:lvTitle(myLv()),titles:state.titles||[],fr:myFr().slice(0,FRIEND_MAX),th:state.themeUsed&&THEMES[state.themeUsed]?THEMES[state.themeUsed].n:'',st:{seen:s.seen,fin:s.fin,specs:s.specs,named:s.named,hv:s.hv,cr:s.cr,since:s.since}},{merge:true}).catch(()=>{})}catch(e){}}
 function openMe(pid){if(pid&&pid!==uid)statusWatch([pid]);sheet={me:pid||uid,dir:2};renderSheet();openSheetUI()}
 function meSheetHTML(){
   const own=sheet.me===uid,P=own?null:profiles.find(p=>p.id===sheet.me);if(!own&&!P)return '<p class="note">找不到這位玩家。</p><button class="btn" data-act="close">關閉</button>';
@@ -9665,6 +9724,7 @@ function meSheetHTML(){
   if(own){const m=mqCur(),done=state.cm?state.cm.list.filter(o=>o.done).length:0;
     h+=`<h3>目前的任務</h3><div class="lot"><div class="meta">${m?(state.mq.st?`主線第 ${state.mq.ch} 章：${m.hint}`:myLv()>=m.lv?`主線第 ${state.mq.ch} 章「${m.t}」可以接了`:`主線第 ${state.mq.ch} 章 Lv ${m.lv} 開放`):'主線任務全部完成'}</div>${state.cm?`<div class="meta">今天的委託完成 ${done}／${state.cm.list.length} 張</div>`:''}</div>`}
   if(!own)h+=frBtnHTML(sheet.me);/* 129 */
+  if(!own&&P.th)h+=`<p class="note">農場布置：${esc(P.th)}</p>`;/* 137 */
   if(tl.length)h+=`<h3>徽章</h3><div class="badges" style="justify-content:flex-start">${tl.map(t=>`<span class="badge r3">${esc(t)}</span>`).join('')}</div>`;
   h+=`<h3>育種紀錄</h3><div class="scores"><div class="score"><b>${S.seen||0}</b><span>種出過的樣子</span></div><div class="score"><b>${S.fin||0}</b><span>育成的成品</span></div><div class="score"><b>${S.specs||0}</b><span>標本</span></div><div class="score"><b>${S.named||0}</b><span>命名的品種</span></div></div><p class="note">累計收成 ${S.hv||0} 次・雜交 ${S.cr||0} 次${own&&vdOpen()?'・種子箱 '+vdCount()+'／'+BASE_CROPS.length*VD_N:''}${S.since?'・'+new Date(S.since).toLocaleDateString('zh-TW')+' 開始':''}${own&&S.sp?'<br>標本：'+TIERS.map((t,i)=>S.sp[i]?`${t} ${S.sp[i]}`:'').filter(Boolean).join('・'):''}</p>`;
   if(own){h+=`<details class="dist"><summary>育種家分數與紀錄</summary>${meHTML()}</details>`;

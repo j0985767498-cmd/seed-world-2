@@ -1865,7 +1865,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-19n';
+const BUILD='2026-11-19o';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -6387,11 +6387,18 @@ const RUINS_MAPS={/* 143（19i）：失落的高文明城市（素材 assets/rui
     paths:[{p:[[400,1150],[400,900],[400,640],[400,400],[400,-40]],w:96,road:1},{p:[[400,650],[600,645],[840,640]],w:60,road:1}],
     objs:[['car',300,840],['car',560,780,null,{fl: 1}],['car',320,430],['lamp',300,980],['lamp',500,520,null,{fl: 1}],['billboard',610,920],['overpass',430,560],['rubble',180,640],['rtree',160,780],['rtree',640,400,null,{fl: 1}],['rubble',650,300]],blocks:[[566, 912, 580, 920], [640, 912, 654, 920], [272, 546, 308, 560], [470, 538, 600, 560]],
     spawns:[[180, 480], [620, 480], [200, 980], [650, 1000]],items:[[130, 700]]},
-  plaza:{n:'噴泉廣場',gx:1,gy:1,v2:1,zebra:[[400,860,0],[400,400,0],[600,640,90]],seams:[[300,840,320,780,300,720]],
-    exits:[{side:'s',c:400,w:120,to:'entry'},{side:'e',c:640,w:120,to:'greenhouse'},{side:'n',c:400,w:120,to:'avenue'}],
-    paths:[{p:[[400,1150],[400,790],[285,700],[285,560],[400,470],[400,-40]],w:74,road:1},{p:[[400,790],[515,700],[515,560],[400,470]],w:74,road:1},{p:[[515,640],[680,642],[840,640]],w:70,road:1}],
-    objs:[['bigtree',400,650],['rubble',340,600],['rubble',460,600,null,{fl: 1}],['rubble',340,700,null,{fl: 1}],['rubble',460,700],['shop',170,450],['busstop',640,880],['tlight',650,500],['flood',200,960],['flood',620,330,null,{fl: 1}],['lamp',300,980],['car',190,760]],blocks:[[142, 868, 258, 934], [562, 238, 678, 304]],
-    spawns:[[150, 620], [680, 760], [160, 1010], [640, 220]],items:[[700, 520]]},
+  /* 150（19o）：地面是一整張畫好的圖（assets/ground/ruins_plaza.jpg，1024×1024），地圖照圖改：1100×1100、十字路＋圓環、
+     四角草地和人行道都能走、外圍矮石牆不能走；左邊的路是死路（瓦礫＋廢車擋住）；圖上的小水窪只是裝飾 */
+  plaza:{n:'噴泉廣場',gx:1,gy:1,v2:1,W:1100,H:1100,B:{x0:24,y0:24,x1:1076,y1:1076},ground:'assets/ground/ruins_plaza.jpg',
+    exits:[{side:'s',c:548,w:150,to:'entry'},{side:'e',c:543,w:150,to:'greenhouse'},{side:'n',c:548,w:150,to:'avenue'}],
+    paths:[{p:[[548,-40],[548,345]],w:172,road:1},{p:[[548,729],[548,1140]],w:172,road:1},{p:[[742,543],[1140,543]],w:182,road:1},{p:[[160,543],[358,543]],w:182,road:1},{p:[[746,537],[736,598],[709,652],[665,696],[611,723],[550,733],[489,723],[435,696],[391,652],[364,598],[354,537],[364,476],[391,422],[435,378],[489,351],[550,341],[611,351],[665,378],[709,422],[736,476],[746,537]],w:134,road:1}],/* 圓環（中間草地島半徑約 129、外圈約 263） */
+    objs:[['bigtree',550,560],['rubble',500,500,null,{s:0.7}],['rubble',605,610,null,{fl:1,s:0.7}],
+      ['rubble',70,500],['car',92,600,null,{fl:1}],['rubble',118,560,null,{fl:1,s:0.85}],
+      ['tower_a',130,200],['tower_b',960,190,null,{fl:1}],['lean',170,960],['tower_b',940,960],
+      ['shop',300,330],['busstop',770,800],['tlight',768,322],['tlight',334,758,null,{fl:1}],['lamp',425,860],['lamp',672,240,null,{fl:1}],
+      ['rtree',820,320],['rtree',330,1010,null,{fl:1}],['rtree',1010,760],['rubble',760,1030,null,{fl:1}]],
+    blocks:[[24,446,150,640]],
+    spawns:[[300,130],[790,140],[290,800],[850,860]],items:[[1000,700]]},
   houses:{n:'商店街',gx:2,gy:2,v2:1,
     exits:[{side:'w',c:640,w:120,to:'entry'},{side:'n',c:400,w:120,to:'greenhouse'}],
     paths:[{p:[[-40,640],[160,645],[400,640],[402,400],[400,-40]],w:62,road:1},{p:[[400,640],[400,880],[400,1040]],w:40,end:'dirt'}],
@@ -6755,7 +6762,7 @@ function regPrepV2(bk,id,M){
     sel.forEach(([x,y],i)=>{const k=b.k2&&(cnt++%4===3)?b.k2:b.k;const end=i===0||i===sel.length-1;objs.push([k,x+(R()-.5)*8,y+(R()-.5)*12,null,{s:(end?0.7:0.86+R()*0.28)*(b.s||1),fl:R()<.5,belt:1}])});
     const hw=b.w||18;for(let i=0;i<pts.length;i+=3){const [x,y]=pts[i];blk.push([x-hw,y-12,x+hw,y+4])}}
   /* 邊界 */
-  if(!M.cave&&V.edgeFn){const ex=M.exits.filter(e=>e.side&&(!e.hid||(e.gap&&secOpen(bk))));V.edgeFn(M,R,(side,v)=>ex.some(e=>e.side===side&&Math.abs(v-e.c)<e.w/2+34),objs,W,H)}/* 143：遺城的邊界（北邊高樓天際線） */
+  if(gndImg(M)){}/* 150：畫好的地面自己有外牆，不另外排邊界 */else if(!M.cave&&V.edgeFn){const ex=M.exits.filter(e=>e.side&&(!e.hid||(e.gap&&secOpen(bk))));V.edgeFn(M,R,(side,v)=>ex.some(e=>e.side===side&&Math.abs(v-e.c)<e.w/2+34),objs,W,H)}/* 143：遺城的邊界（北邊高樓天際線） */
   else if(!M.cave){const T=V.tree,ex=M.exits.filter(e=>e.side&&(!e.hid||(e.gap&&secOpen(bk))));
     const gap=(side,v)=>ex.some(e=>e.side===side&&Math.abs(v-e.c)<e.w/2+34);
     for(let x=-10;x<W+30;x+=58)if(!gap('n',x))objs.push([T,x+(R()-.5)*20,58+(R()-.5)*16,null,{s:1+R()*0.2,br:0.9,fl:R()<.5,edge:1}]);
@@ -6802,7 +6809,7 @@ function regPrepV2(bk,id,M){
   const SR=seededRnd(hashStr('sway|'+regPfx(bk)+id));
   M._raw=objs;/* 108：3D 畫面用（種類、位置、大小、鏡像） */
   M._objs=objs.filter(o=>!FLAT[o[0]]).map(o=>({y:o[2],h:regObjHTML(o,M,SR)})).sort((a,b)=>a.y-b.y);M._ys=M._objs.map(o=>o.y);
-  M._ground=regGroundV2(M,objs.filter(o=>FLAT[o[0]]));M._top=regTopV2(M);M._p=1;return M;
+  M._ground=regGroundV2(M,objs.filter(o=>FLAT[o[0]]));if(gndImg(M))M._ground=M._ground.replace('%%GI%%',()=>'%%GI%%'+gndShadowSVG(M,objs));M._top=regTopV2(M);M._p=1;return M;
 }
 /* 地面（向量部分）：畫成一張圖 */
 function regGroundSVG(M){
@@ -6898,15 +6905,28 @@ const REG_GSVG={};
 /* 99.2（17j）：地面圖省記憶體。轉成 PNG 之前先放一塊地面色（不再把帶濾鏡的 SVG 直接放進畫面，iPhone 每次重畫都要重算水邊濾鏡）；
    轉好後丟掉 SVG；PNG 只留最近 3 張。瀏覽器不讓 SVG 畫進 canvas 時（舊 Safari），改用沒有濾鏡的簡化水邊（REG_LITE）。 */
 let REG_LITE=false;const REG_GLRU=[];
-function regGroundColor(M){const C=REGION_CFG[M.bk];return M.cave?(M.cground||C.caveGround):(M.ground||C.ground)}
+function regGroundColor(M){const C=REGION_CFG[M.bk];return M.cave?(M.cground||C.caveGround):((gndImg(M)?null:M.ground)||C.ground)}/* 150：ground 是圖片時不當顏色 */
 function regGroundKeep(key,url){REG_GLRU.splice(REG_GLRU.indexOf(key)>>>0,REG_GLRU.indexOf(key)<0?0:1);REG_GLRU.push(key);
   while(REG_GLRU.length>3){const k=REG_GLRU.shift();const u=REG_GIMG[k];if(u&&u!=='x'&&k!==key){try{URL.revokeObjectURL(u)}catch(e){}delete REG_GIMG[k]}}}
+/* ===== 150（19o）：畫好的地面圖 ===== */
+const REG_GND_ST={};/* 圖片網址 → 'p' 載入中、'ok'、'x' 載不到 */
+/* 地圖的 ground 欄位：是圖片路徑才算畫好的地面（秘境原本就用 ground 寫地面顏色） */
+function gndImg(M){return M&&typeof M.ground==='string'&&/\.(jpe?g|png|webp)$/i.test(M.ground)?M.ground:null}
+const gndSrc=M=>gndImg(M)+'?v='+BUILD;
+function gndLoad(M){const k=gndImg(M);if(REG_GND_ST[k])return REG_GND_ST[k];REG_GND_ST[k]='p';
+  try{const im=new Image();im.onload=()=>{REG_GND_ST[k]='ok';try{const el=document.getElementById('rgimg');if(el){el.setAttribute('href',gndSrc(M));el.dataset.k='G'}}catch(e){}try{if(regIn()&&regCur()===M)renderWorld()}catch(e){}};
+    im.onerror=()=>{REG_GND_ST[k]='x';try{if(regIn()&&regCur()===M)renderWorld()}catch(e){}};im.src=gndSrc(M)}catch(e){REG_GND_ST[k]='x'}return REG_GND_ST[k]}
+/* 物件腳下的接地陰影：扁橢圓、黑 18%、寬約物件寬的 70% */
+function gndShadowSVG(M,objs){let s='';const FL=REGION_FLAT[M.bk]||{};for(const o of objs){if(FL[o[0]])continue;const a=v2artDim(M.bk,o[0]);if(!a)continue;const sk=(o[4]&&o[4].s)||1,w=a.w*sk*0.7,ry=Math.max(5,Math.min(22,w*0.13));
+  s+=`<ellipse cx="${o[1].toFixed(1)}" cy="${(o[2]-2).toFixed(1)}" rx="${(w/2).toFixed(1)}" ry="${ry.toFixed(1)}" fill="#000" opacity=".18"/>`}return s?`<g class="gshadow" pointer-events="none">${s}</g>`:''}
+/* ===== 150 結束 ===== */
 function regGroundEl(M){const key=M.bk+'|'+M.id,W=M.W,H=M.H;
+  if(gndImg(M)){const st=gndLoad(M);if(st==='ok')return `<rect x="0" y="0" width="${W}" height="${H}" fill="${regGroundColor(M)}"/><image id="rgimg" data-k="G" href="${gndSrc(M)}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>`}/* 150：載入中、載不到 → 照舊畫格子地面 */
   if(REG_GIMG[key]==='x'){const was=REG_LITE;REG_LITE=true;try{return REG_GSVG[key]||(REG_GSVG[key]=regGroundInline(M))}finally{REG_LITE=was}}/* 圖片載不到：直接放沒有濾鏡的向量 */
   const ready=REG_GIMG[key]&&REG_GIMG[key]!=='p';
   if(!REG_GIMG[key]){REG_GIMG[key]='p';
     const go=(lite)=>{let u;try{const was=REG_LITE;REG_LITE=lite;try{u=URL.createObjectURL(new Blob([regGroundSVG(M)],{type:'image/svg+xml'}))}finally{REG_LITE=was}}catch(e){REG_GIMG[key]='x';return}
-      const done=pu=>{REG_GIMG[key]=pu;regGroundKeep(key,pu);try{const el=document.getElementById('rgimg');if(el&&el.dataset.k===key)el.setAttribute('href',pu)}catch(e){}};
+      const done=pu=>{REG_GIMG[key]=pu;regGroundKeep(key,pu);try{const el=document.getElementById('rgimg');if(el&&el.dataset.k===key&&!(gndImg(M)&&REG_GND_ST[gndImg(M)]==='ok'))el.setAttribute('href',pu)}catch(e){}};
       const im=new Image();im.onload=()=>{let ok=false;try{const k=1.5,cv=document.createElement('canvas');cv.width=W*k;cv.height=H*k;cv.getContext('2d').drawImage(im,0,0,W*k,H*k);
         cv.toBlob(b=>{if(!b){if(lite)done(u);else{try{URL.revokeObjectURL(u)}catch(e){}go(true)}return}try{URL.revokeObjectURL(u)}catch(e){}done(URL.createObjectURL(b))},'image/png');ok=true}catch(e){}
         if(!ok){if(lite)done(u);else{try{URL.revokeObjectURL(u)}catch(e){}go(true)}}};/* canvas 被擋：改用簡化版，簡化版直接當圖片用 */
@@ -6975,7 +6995,7 @@ function regWaterHTML(M){
       for(let j=0;j<1;j++)f+=`<ellipse class="ripA" cx="${v2f(cx+(j?rx*0.34:-rx*0.3))}" cy="${v2f(cy+(j?-ry*0.22:ry*0.28))}" rx="15" ry="6.5" fill="none" stroke="#FFFFFF" stroke-width="1.5" style="animation-delay:-${j*4.5+gi*2}s"/>`;return f}).join('')}</g>`}
   for(const [k,[cx,cy,rx,ry]] of (M.isles||[]).entries()){const IR=()=>seededRnd(hashStr('isle'+M.id+k)),C=REGION_CFG[M.bk],V=REG_V2[M.bk];/* 水中的小島 */
     if(M.ice)s+=`<path d="${v2d(v2wob(cx,cy,rx+12,ry+11,IR(),0.03))}" fill="${(M.water||V.water).sh}"/><path d="${v2d(v2wob(cx,cy,rx+3,ry+3,IR(),0.03))}" fill="${(M.water||V.water).edge}"/>`;/* 79：不結冰的小島由地面圖挖空（岸邊有濕沙帶），這裡只補一點亮面 */
-    s+=`${M.ice?`<path d="${v2d(v2wob(cx,cy,rx,ry,IR(),0.03))}" fill="${M.ground||C.ground}"/>`:''}<ellipse cx="${cx-rx*0.2}" cy="${cy-ry*0.15}" rx="${rx*0.6}" ry="${ry*0.5}" fill="${V.spots[1]}" opacity=".5"/>`}
+    s+=`${M.ice?`<path d="${v2d(v2wob(cx,cy,rx,ry,IR(),0.03))}" fill="${(gndImg(M)?null:M.ground)||C.ground}"/>`:''}<ellipse cx="${cx-rx*0.2}" cy="${cy-ry*0.15}" rx="${rx*0.6}" ry="${ry*0.5}" fill="${V.spots[1]}" opacity=".5"/>`}
   if(M.slick){const [x,y,r]=M.slick;s+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#A9D2EA" opacity=".42" pointer-events="none"/><circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="3 9" opacity=".7" pointer-events="none"/><path d="M${x-r*0.6} ${y-r*0.5} q${r*0.3} ${-r*0.2} ${r*0.6} ${-r*0.05}" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" fill="none" opacity=".6"/>`}
   if(M.island){const [x,y,rx,ry]=M.island,C=REGION_CFG[M.bk];/* 湖心小島：雪堤圍一圈，只有東邊留一個缺口 */
     s+=`<ellipse cx="${x}" cy="${y+5}" rx="${rx+7}" ry="${ry+6}" fill="#8FB4C8" opacity=".5"/><ellipse cx="${x}" cy="${y}" rx="${rx+5}" ry="${ry+4}" fill="#FFFFFF" stroke="#A9BCCC" stroke-width="2"/><ellipse cx="${x}" cy="${y+1}" rx="${rx-4}" ry="${ry-4}" fill="${C.ground}"/>`;

@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-19f'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-19g'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-19g`。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）、第 140 節（19f）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-19h`。第 141 節（19g）已做。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）、第 140 節（19f）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -218,6 +218,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 精魄與神寵（135 第二階段）：精魄是道具 `sp_<地區>`（`SPK`／`isSpK`、`spiritArt`）、孵化 `spiritUse`／`hatchTick`（`state.hatch`、`HATCH_MS`）、神寵 `state.pets`／`state.petOn`（`petsArr`、`petCur`、`petName`、`petSVG` 佔位、`petCharG`／`petMove`、`petXp`、`petEvoNeed`／`petEvoOk`／`petEvolve`、頁面 `sheet.pet` `petHTML`／`petAction`）、卡包 `state.packs`（`packsObj`）、背包道具分頁 `spiritLine`；米涅瓦的巢 `NEST_AT`／`nestObj`／`nestTick`（`state.lordWon`、筆記 `R6`，`x:1` 不算進五件）；旗標 `spV`。
 - 主題布置（137）：`THEMES`（相對 `THEME_A`）、`themePrice`、`themeApply`（`decoCollectAll`、`decoPlaceList`）、`themeUndo`（`state.themePrev`）、我的布置 `state.layouts`（`layoutSave`／`layoutApply`／`layoutRename`／`layoutDel`）、面板 `themeBoxHTML`／`themeSVG`、預覽 `sheet.theme`／`themeHTML`、`state.themeUsed`（名片 `th`）、旗標 `themeV`。
 - 戰鬥（131）：血量 `PHP_MAX`／`pHP`、`pDamage`／`pDie`／`pRegen`、`#hpBar`（`renderHP`）；怪物 `MON_RHP`／`MON_RDMG`／`SICKLE_DMG`、還手（`aggro`、`MON_WIND`／`MON_ATK_R`／`MON_LEASH`／`MON_GIVEUP`、`.mwind`）、數量 `monCount`（`MON_RT.xs`）；小補血藥 `pot`（`drinkPot`、`#potBtn`、`state.potGift`）；這趟素材 `state.trip`（`tripAdd`／`tripSave`／`tripLose`）；經驗 `monXp`（`MON_XP_ON=false`）。
+- 後六區的怪（141）：`MON_DEF` 的 `var`（變種，`monVar`／`MON_VAR_K`）、佔位 `monPhTag`／`monDim`／`MON_PH_C`／`monPhIcon`、被打 `monHit2`（`#monFlash`、`.hit2`）／`monDebris`／`monColor`、素材鍵 `x_<怪物 id>`、`monSrcB`（素材圖示用那一區的資料夾）。
 - 怪物（105）：`MON_DEF`／`MON_IMG`／`MON_MAP`、`monEnter`、`monLoop`、`monHit`、`monKill`、`monDrop`、`monSwing`、`monReach`／`monSpotFar`；圖層 `#monBack`／`#monFront`／`#monSw`。
 - 發光的植株 `roam*`（`ROAM_PTS`）、謎語 NPC `RIDDLE`／`rdHere`、櫻花花季 `sakuraBloom`。
 - **3D 畫面（108）**：`js/w3d.js`（`w3dEnter`、`w3dLeave`、`w3dSetPlayer`／`Others`／`Monsters`／`Plants`、`w3dPick`、`w3dView`）＋`lib/three.min.js`，用到才載入；地形 `buildHeight`（高台 `PLAT`、緩坡 `RAMP_L`、水往下挖 `waterDist`）、水 `buildWater`（深度圖＋湖面＋河帶）、橋 `buildBridges`／`gY`、景物 `wellMesh`／`archMesh`／`mushRing`、夢幻色光 `glowFor`、精靈 `w3dSetFairies`、樹冠透視 `holes`（`uHole`）、角色影格 `w3dPreload`；index.html 的「108（17x）」區塊：`W3D_MAPS`（目前草原 5 張）、`w3dSync`、`w3dLoad`、`W3D_HOST`（`pump`、`tap`）、`w3dBtn`。
@@ -401,5 +402,6 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 132 | 互助：每天幫每位朋友照顧一次 | 已完成 | docs/規格存檔.md；18u（9.127）；開花等授粉的不計時、不受影響；不用改規則；沒有截圖、沒測 iPhone |
 | 137 | 主題布置：一鍵套用、存自己的布置 | 已完成 | docs/規格存檔.md；19a（9.133）；田園小屋是「已擁有」、沒有開局自動擺；**要請使用者 iPhone 看四套套用後的畫面** |
 | 138 | 介面改版第一步：共用樣式、主畫面、背包、種子詳細、任務面板 | 已完成 | docs/規格存檔.md；19c（9.135）；農場上的抽屜照舊是抽屜、野生不含雜交第一代、道具放背包第四分頁（和規格不同的地方列在 9.135）；果實、素材詳細只換樣式；沒有截圖；**要請使用者 iPhone 看主畫面與面板** |
-| 139 | 後六區的地圖模板與怪物 | 進行中 | docs/待實作/第139節.md；**139.1～139.6、139.9 已做（19e，見規格存檔 9.137）**；139.7 怪物、139.8 素材等使用者更新規格；新地圖沒有怪；建議之後產圖的物件列在 9.137 |
+| 139 | 後六區的地圖模板與怪物 | 已完成 | docs/規格存檔.md；19e（9.137）；139.7、139.8 由第 141 節取代；建議之後產圖的物件列在 9.137 |
 | 140 | 主畫面按鈕重排（第 138 節的修正） | 已完成 | docs/規格存檔.md；19f（9.138）；金幣在兩種尺寸都放頭像下面、道具併進素材分頁（和規格不同）；有截圖（假存檔）；沒測 iPhone |
+| 141 | 後六區的一般怪與素材（取代 139.7、139.8） | 已完成 | docs/規格存檔.md；19g（9.139）；42 隻是佔位圖；怪物圖鑑還沒有（變種排在原版旁邊沒做）；森林、潟湖要換的怪照舊沒素材；沒測 iPhone |

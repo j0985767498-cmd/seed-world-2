@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-19o'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-19p'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-19p`。第 141 節（19g）、第 142 節（19h）、第 143 節（19i）、第 144 節（19j）、第 145 節（19k）、第 144 節修正（19l、19m）、第 147、148 節（19m）、第 149 節（19n）、第 150 節（19o）已做；第 146 節（色塊圖工具）已做。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）、第 140 節（19f）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-19q`。第 141 節（19g）、第 142 節（19h）、第 143 節（19i）、第 144 節（19j）、第 145 節（19k）、第 144 節修正（19l、19m）、第 147、148 節（19m）、第 149 節（19n）、第 150 節（19o，19p 修 iPhone 地面圖）已做；第 146 節（色塊圖工具）已做。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）、第 140 節（19f）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -213,7 +213,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 準備與畫：`regPrep`→`regPrepV2`（產生 `M._raw` 物件清單、`M._objs`、`M.blk`／`M.wlk` 碰撞、`M._P` 小路、`M._LG` 湖、`M._RV` 河、`M._T` 階地、`M._BR` 橋）、`regGroundSVG`／`regGroundEl`（地面轉 PNG，`REG_GLRU`）、`regWaterHTML`、`regTerraceHTML`、`regDynHTML`、`regTopV2`、`regWorld`、`regCam`。
 - 移動與事件：`regBlocked`、`regMove`、`regExitAt`、`regGo`、`regEnter`、`regArrival`、`regPlants`（`wpGeno`、`makeWild`、`wpDepth`）、`regItems`、`regFxStep`（機關）、`secEnter`（秘境）、`regStandTick`、`mapLv`／`gateStop`（等級）、地圖面板 `renderRegMap`。
 - 後六區地圖（139）：`VOLCANO_MAPS`／`CANYON_MAPS`／`RUINS_MAPS`（`borrowArt`、`SRC_IMG`、`*_ART`／`*_IMG`）、`SAKURA_SECRET`（狐火庭）、開放 `REG_OPEN`／`regOpenOk`、調色 `REGION_CFG.tint`→`regSrc`（`RT_CACHE`、`rtDone`、`regTintPreload`）、水色 `M.water`（`LAVA_W`、`SULFUR_W`）、程式畫的 `regX139`（seams／chains／smokes／vents／lstrings／mural／rails…）、峽谷 `night`（暗場用 `cave||night`）、機關 `reg139Step`（噴氣孔、回音 `ECHO_L`）、NPC smith／appr／cguard／granny／pounder／miko／oasisp／miner。
-- 畫好的地面（150）：地圖的 `ground` 是圖片路徑才算（`gndImg`；秘境的 `ground` 是顏色）、`gndLoad`／`REG_GND_ST`／`gndSrc`（在 `regGroundEl`）、接地陰影 `gndShadowSVG`；先做 `RUINS_MAPS.plaza`（`assets/ground/ruins_plaza.jpg`、1100×1100）。
+- 畫好的地面（150）：地圖的 `ground` 是圖片路徑才算（`gndImg`；秘境的 `ground` 是顏色）、`gndLoad`（fetch 成 blob、`REG_GND_IM` 留住參考、逾時重試）／`REG_GND_ST`／`gndHref`（在 `regGroundEl`）、接地陰影 `gndShadowSVG`；先做 `RUINS_MAPS.plaza`（`assets/ground/ruins_plaza.jpg`、1100×1100）。
 - 遺城重排（143）：`RUINS_ART`（assets/ruins/ 自己的圖）、v2 邊界掛鉤 `REG_V2.<區>.edgeFn`（`ruinsEdge`）、地面 `ruins143`（`road:1` 人行道＋柏油、`zebra`、`pit`、`geo`）、坑洞入口 `pitStep`（`pitTrig`、`body.pitglow`）。
 - 素材、製作、定型（115）：`MATS`／`MON_MAT`、`matDrop`（`MAT_P`、`MAT_GOLD_P`）、`matIcon`（`MAT_ICON`）、`state.mats`、種子袋「素材」分頁 `matBagHTML`／`matHTML`；道具行「製作」`RECIPES`、`craftEntries`／`craftPlan`／`craftDo`／`craftHTML`；定型 `fixWhy`／`fixBlock`／`fixGeno`／`fixStart`／`fixTick`（`FIX_MIN`、`FIX_MAX`、`state.fixq`）。
 - 主與僕人（135 第一階段）：`SERVANTS`／`LORDS`／`BATK`（招式資料）、`bossRT`、`bossEnter`／`bossLeave`／`bossLoop`→`bossStep`、`bossAI`／`bossFollow`（不是主機）、`bossStrike`／`bossHit`、畫 `bossPaint`（`bossG`、範圍 `bossTel`）、`#bossBar`；掉落 `bossReward`（`state.servantAt`、`state.lordCd`、`state.spirits`／`spiritLine`、`lordSeed`、`lordFirst`）；現身 `lordSummonTick`（`minervaFog`／`MIN_FEATHERS`、`exhShore`／`lordSum.path`／`bossWalkOk`）、初穗 `sheet.hatsuho`（`hatsuhoHTML`／`hatsuhoGo`）、`lordSummon`、出口封住 `regSealed`；同步 `bossNet`、`fight/<地區>`（`lordNetStart`／`lordNetSync`／`lordHeartbeat`／`lordHostCheck`／`lordEnd`／`lordResult`／`lordForfeit`、`lordBusy`）。
@@ -421,4 +421,4 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 147 | 主與僕人的頭像 | 已完成 | docs/規格存檔.md；19m（9.146）；圖鑑沒有主的清單（截圖改拍素材）；有截圖；沒測 iPhone |
 | 148 | NPC 驚嘆號點了沒反應；點神之子改成看資訊 | 已完成 | docs/規格存檔.md；19m（9.147）；原因四個列在 9.147；神之子沒有等級、數值、技能資料先不顯示；有截圖；**要請使用者 iPhone 試點驚嘆號** |
 | 149 | 原始品種改用現實的類型名稱；甘藍家族改叫甘藍 | 已完成 | docs/規格存檔.md；19n（9.148）；詳細頁的來源那行改成「來源：…」；順便修好名字裡形狀一律用番茄；開發用頁面還有「甘藍家族」；有截圖；沒測 iPhone |
-| 150 | 地圖用一整張畫好的地面當底（先做虹光遺城噴泉廣場） | 已完成 | docs/規格存檔.md；19o（9.149）；`ground` 照副檔名分辨（秘境用它寫顏色）；手機上會有點糊，建議放大 2 倍；有截圖；沒測 iPhone |
+| 150 | 地圖用一整張畫好的地面當底（先做虹光遺城噴泉廣場） | 已完成 | docs/規格存檔.md；19o（9.149）、19p 修 iPhone 上地面圖沒換上去；`ground` 照副檔名分辨（秘境用它寫顏色）；手機上會有點糊，建議放大 2 倍；有截圖；沒測 iPhone |

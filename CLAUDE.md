@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-19m'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-19n'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-19n`。第 141 節（19g）、第 142 節（19h）、第 143 節（19i）、第 144 節（19j）、第 145 節（19k）、第 144 節修正（19l、19m）、第 147、148 節（19m）已做；第 146 節（色塊圖工具）已做。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）、第 140 節（19f）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-19o`。第 141 節（19g）、第 142 節（19h）、第 143 節（19i）、第 144 節（19j）、第 145 節（19k）、第 144 節修正（19l、19m）、第 147、148 節（19m）、第 149 節（19n）已做；第 146 節（色塊圖工具）已做。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）、第 140 節（19f）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -250,6 +250,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 介面改版（138）：共用樣式 CSS 變數 `--tx`／`--ol`／`--pn`…、稀有度色 `RCOL`（`--r0`～`--r5`）；一套面板 `sheetMode`／`sheetModeOff`（`body.shOnP`、`shFull`、`SHEET_FULL`、`#sheetBack`）、`body.pnlOpen`；主畫面 `#rbar`、`#mapBtn`→`p-map`（`renderMapPanel`／`mapPanelTap`）、選單 `p-menu`（`MENU`／`menuTap`）、神之子 `openFyPage`、`#syncDot`；背包 `bagTabsHTML`（種子／果實／素材／道具 `itemBagHTML`）、`bagCatOf`（野生）、`slotCell`／`lotIc`／`lotTier`、`bagSel`／`bagInfoHTML`、`bagTidy`、`bagVaultReq`；種子詳細 `lotHeroHTML`／`lotParentsTxt`／`rbtn`；任務面板 `ordersHTML`（`qTab`／`qCatOf`／`Q_GRP`／`qCardHTML2`／`qProgHTML`）。
 - 主畫面重排（140）：右上 `#tbar`（`#ibFr`／`#frDot` `frDotOn`、`#ibDex`、`#ibLay`、`#mapBtn`、`#ibMenu`）、右下 `#rbar`（column-reverse：背包、任務、神之子）、布置模式 `layMode`／`renderLay`／`layTap`（`#layBar`）、背包分頁 種子／果實／素材（含道具）／種原庫、`MENU` 三格。
 - 自然命名（145）：`appName`（`nameCol`／`patWord`／`shapeWord`／`cropWord`）、`appTags`／`appTagsHTML`、`nmIc`、`shortApp(ph,crop)`、`lotAppOf`／`lotAutoName`、`lotsVarietySync`、玩家改名 `l.nm`／`p.nm`、遷移 `m145`（旗標 `nameV`）；地名兩層 `#sceneName.two`、`regBanner(地區,地圖)`。地圖版面色塊圖 `tools/export_layout.js`（146）。
+- 類型名稱（149）：`BASE_NAMES`／`baseName`（完整名稱）、`BASE_SHAPES`（小標籤短詞）、`gAutoName`（原始品種、野生種原的名字）、遷移 `m149`（旗標 `n149V`）、圖鑑系統名字在 `sortReg` 顯示時換；`shortApp(ph,crop)` 一定要傳作物。
 - 主與僕人的頭像（147）：`porHTML`／`porFail`／`porSrc`／`porC`（`POR_C`）、`porArtOfSrc`（素材圖示）；血條 `#bossBar .bpor`。
 - NPC 點擊（148）：`npcHitList`／`npcAt`／`npcGo`／`npcAtClient`（`handleTap` 最先看）、`walkTo(x,y,then,force)`；神之子資訊 `openFyInfo`／`openFyBtn`／`fyInfoHTML`（`sheet.fyinfo`）。
 - 個人介面 `openMe`／`meSheetHTML`、通知 `noteOpen`、慶祝卡 `celShow`、提示 `toast`、「？」小說明 `qh`。
@@ -418,4 +419,4 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 146 | 地圖版面色塊圖（給 AI 畫地面用；只做工具） | 已完成 | docs/規格存檔.md；9.144；先輸出 tools/layout/ruins_plaza.png／.json，其他地圖等試完 |
 | 147 | 主與僕人的頭像 | 已完成 | docs/規格存檔.md；19m（9.146）；圖鑑沒有主的清單（截圖改拍素材）；有截圖；沒測 iPhone |
 | 148 | NPC 驚嘆號點了沒反應；點神之子改成看資訊 | 已完成 | docs/規格存檔.md；19m（9.147）；原因四個列在 9.147；神之子沒有等級、數值、技能資料先不顯示；有截圖；**要請使用者 iPhone 試點驚嘆號** |
-| 149 | 原始品種改用現實的類型名稱；甘藍家族改叫甘藍 | 未做 | docs/待實作/第149節.md |
+| 149 | 原始品種改用現實的類型名稱；甘藍家族改叫甘藍 | 已完成 | docs/規格存檔.md；19n（9.148）；詳細頁的來源那行改成「來源：…」；順便修好名字裡形狀一律用番茄；開發用頁面還有「甘藍家族」；有截圖；沒測 iPhone |

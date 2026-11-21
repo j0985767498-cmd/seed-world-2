@@ -1044,6 +1044,7 @@ body.pnlOpen .hudTop,body.pnlOpen #mqLine,body.pnlOpen #rbar,body.pnlOpen #mapBt
 .mcell{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;min-height:76px;border-radius:16px;background:var(--card);border:2.5px solid var(--ol);box-shadow:0 3px 0 var(--ol);color:var(--ol);font:inherit;font-weight:700;font-size:13px}
 .mcell img{width:34px;height:34px}
 .mpgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+/* 157（19t）：升級拿到的道具、套裝 */.lvgift{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0}.lvgi{display:inline-flex;align-items:center;gap:2px;padding:2px 8px 2px 2px;border-radius:10px;background:var(--pn,#FFF6DE);border:1.5px solid rgba(90,52,22,.25);font-size:13px}.lvgi svg{width:28px;height:30px}.ofic{font-size:26px;width:36px;text-align:center}.ofic.big{font-size:40px;width:56px}.ofward{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0 8px}.ofw{display:inline-flex;flex-direction:column;padding:3px 9px;border-radius:10px;background:var(--pn,#FFF6DE);border:1.5px solid rgba(90,52,22,.3);font-size:13px;font-weight:700}.ofw small{font-weight:400;font-size:11px;color:#8A6A4A}
 /* 154（19q）：小地圖（右上小圖示那排正下方） */#miniMap{position:fixed;right:10px;top:calc(62px + env(safe-area-inset-top,0px));z-index:11;width:96px;height:96px}#miniMap[hidden]{display:none}
 #miniMap .mmmap{display:block;width:96px;height:96px;padding:0;border:2px solid rgba(255,236,200,.65);border-radius:14px;background:rgba(30,20,12,.58);box-shadow:0 2px 6px rgba(0,0,0,.3);cursor:pointer}#miniMap .mmmap svg{display:block;width:100%;height:100%}
 #miniMap .mmcol{position:absolute;left:-4px;bottom:-4px;width:24px;height:24px;padding:0;border-radius:50%;border:2px solid var(--ol,#5A3416);background:#FFF9EC;color:var(--ol,#5A3416);font-weight:900;font-size:15px;line-height:18px}
@@ -1651,7 +1652,7 @@ function packKeys(l){
 }
 let DRAW_MU=null;/* 96：剛抽到的那顆是不是新突變（{k,v}），發芽判定時用 */
 function drawSeed(l){if(l.zs)unzipLot(l);DRAW_MU=null;{const m=lcMu(l);if(m&&rnd()*lc(l)<m){const k=Math.floor(rnd()*m),g=l.mseeds.splice(k,1)[0],md=(l.mmd||[]).splice(k,1)[0];DRAW_MU=md||{k:'?'};if(!l.mseeds.length){delete l.mseeds;delete l.mmd}return g}}if(l.seeds&&l.seeds.length)return l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0];l.count--;return child(l.m,l.f).g}
-function newGame(){state={rv98:1,patV:1,fyopV:1,notes:{},rs134V:1,themeV:1,spV:1,nameV:1,n149V:1,dmgNum:true,miniMap:true,char2:false,potSel:'pot',autoPot:true,autoPotAt:0.3,fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
+function newGame(){state={rv98:1,patV:1,fyopV:1,notes:{},rs134V:1,themeV:1,spV:1,nameV:1,n149V:1,dmgNum:true,miniMap:true,char2:false,rx157V:1,outfitRx:{},outfits:{},potSel:'pot',autoPot:true,autoPotAt:0.3,fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
 const WILD={tomato:'red',strawberry:'red',zucchini:'green',corn:'yellow',broccoli:'white',melon:'yellow',chili:'red',pumpkin:'yellow',eggplant:'purple'};
 function originalFor(crop){
   const wild=rnd()<0.7,col=wild?WILD[crop]:pk(['red','yellow','green','white','purple'].filter(c=>c!==WILD[crop]));
@@ -1783,6 +1784,7 @@ function migrate(o){if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fair
   if(!o.themeV){o.themeV=1}
   if(!o.nameV){o.nameV=1;try{m145(o)}catch(e){}}/* 145 */
   if(!o.n149V){o.n149V=1;try{m149(o)}catch(e){}}/* 149 */
+  if(!o.rx157V){o.rx157V=1;try{m157(o)}catch(e){}}/* 157 */
   if(o.potSel==null)o.potSel='pot';if(o.autoPot==null)o.autoPot=true;if(o.autoPotAt==null)o.autoPotAt=0.3;/* 144 */
   if(!o.spV){o.spV=1;if(o.spirits&&typeof o.spirits==='object'){if(!o.items)o.items={};for(const bk in o.spirits)if(o.spirits[bk]>0)o.items['sp_'+bk]=(o.items['sp_'+bk]||0)+o.spirits[bk];delete o.spirits}}/* 135 第二階段：精魄改成道具（可以上架市集） *//* 137：田園小屋全部是免費裝飾，新舊玩家都直接「已擁有」（不用另外記） */
   if(!o.rs134V){o.rs134V=1;try{for(const k of Object.keys(o.rs||{})){const r=o.rs[k];if(r&&r.d>=3){r.paid=1;r.t=0}}}catch(e){}}/* 134：舊玩家第 3 步的 rw 已經給過，第 4 步不重複；第 4 步不用等 */
@@ -1897,7 +1899,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-19s';
+const BUILD='2026-11-19u';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -8788,8 +8790,21 @@ function craftDo(id,cnt,pick){const R=RECIPES.find(x=>x.id===id);cnt=cnt|0;if(!R
   state.coins-=R.coins*cnt;const F=fruitsArr();for(const e of plan){const f=F[e.i];f.q[e.qk]-=e.m;if(f.q[e.qk]<=0)delete f.q[e.qk]}
   for(let i=F.length-1;i>=0;i--)if(!fCount(F[i]))F.splice(i,1);
   const it=state.items||(state.items={});it[R.out[0]]=(it[R.out[0]]||0)+R.out[1]*cnt;try{addXpCap('k',XP_CRAFT*cnt)}catch(e){}/* 119.3 */save();return ''}
-function craftHTML(){const sel=sheet.rcp&&RECIPES.find(x=>x.id===sheet.rcp);
-  if(!sel)return `<p class="note">用怪物的素材和果實做道具。${qh('素材在背包的「素材」分頁；果實的條件只看顏色和造型，任何作物都可以。')}</p>`+RECIPES.map(r=>{const mx=craftMax(r);return `<button class="pick" data-act="rcp" data-k="${r.id}">${outIcon(r.out[0])}<span><b>${r.n}</b><span class="meta">${r.mats.map(([x,c])=>esc(matName(x))+' ×'+c).join('、')}、${fruitReqTxt(r.fruit)}果實 ×${r.fruit.n}、${r.coins} 金幣</span><span class="meta">${mx?`現在可以做 ${mx} 個`:'材料還不夠'}</span></span></button>`}).join('');
+function craftHTML(){if(sheet.ctab==='of')return craftTabsHTML()+outfitCraftHTML();const sel=sheet.rcp&&RECIPES.find(x=>x.id===sheet.rcp);if(!sel)return craftTabsHTML()+craftItemsHTML();return craftItemHTML(sel)}
+const craftTabsHTML=()=>`<div class="filters">${[['it','道具'],['of','服裝']].map(([k,n])=>`<button class="fchip" data-act="ctab" data-k="${k}" aria-pressed="${(sheet.ctab||'it')===k}">${n}</button>`).join('')}</div>`;/* 157.3 */
+function outfitCraftHTML(){const RX=outfitRxObj(),OW=outfitsObj(),sel=sheet.ofs&&OUTFITS.find(x=>x.id===sheet.ofs);
+  if(!sel)return `<p class="note">升級時會解鎖各地區的套裝配方（Lv 10、20…80）。${qh('Lv 5 直接送牧羊人套裝。材料是那一區怪物的素材和金幣。')}</p>`+OUTFITS.map(o=>{const st=OW[o.id]?'已經有了':!RX[o.id]?(o.id==='shepherd'?`Lv ${o.lv} 直接送`:`Lv ${o.lv} 解鎖`):!outfitReady(o.id)?'服裝圖準備中':outfitMax(o)?'材料夠了':'材料還不夠';
+    return `<button class="pick" data-act="ofsel" data-k="${o.id}"${RX[o.id]||OW[o.id]?'':' style="opacity:.55"'}><span class="ofic" aria-hidden="true">👘</span><span><b>${o.n}</b><span class="meta">${esc(BIOMES[o.bk].n)}的套裝</span><span class="meta">${st}</span></span></button>`}).join('');
+  const o=sel,row=(ic,nm,have,want)=>`<div class="crow${have<want?' short':''}">${ic}<span>${nm}</span><b>有 ${have}／要 ${want}</b></div>`;
+  let h=`<div class="lot-top"><span class="ofic big" aria-hidden="true">👘</span><div><div class="lot-name">${o.n}</div><div class="meta">${esc(BIOMES[o.bk].n)}的套裝（新版角色穿）</div></div></div>`;
+  h+=OUTFIT_MATS[o.bk].map(e=>row(matIcon(e[0],32),esc(matName(e[0])),matCount(e[0]),e[1])).join('');
+  h+=row(`<img class="ibimg" src="${iconSrc('coin')}" alt="" style="width:28px;height:28px">`,'金幣',state.coins||0,outfitCoins(o));
+  const own=!!OW[o.id],rx=!!RX[o.id],ready=outfitReady(o.id),ok=rx&&!own&&ready&&outfitMax(o);
+  h+=`<button class="btn primary" data-act="ofmake"${ok?'':' disabled'}>${own?'已經有了':!rx?(o.id==='shepherd'?`Lv ${o.lv} 直接送`:`Lv ${o.lv} 解鎖配方`):!ready?'服裝圖準備中':'製作'}</button>${sheet.err?`<div class="err">${esc(sheet.err)}</div>`:''}<button class="btn" data-act="ofback">返回服裝</button>`;
+  return h}
+function craftItemsHTML(){
+  return `<p class="note">用怪物的素材和果實做道具。${qh('素材在背包的「素材」分頁；果實的條件只看顏色和造型，任何作物都可以。')}</p>`+RECIPES.map(r=>{const mx=craftMax(r);return `<button class="pick" data-act="rcp" data-k="${r.id}">${outIcon(r.out[0])}<span><b>${r.n}</b><span class="meta">${r.mats.map(([x,c])=>esc(matName(x))+' ×'+c).join('、')}、${fruitReqTxt(r.fruit)}果實 ×${r.fruit.n}、${r.coins} 金幣</span><span class="meta">${mx?`現在可以做 ${mx} 個`:'材料還不夠'}</span></span></button>`}).join('')}
+function craftItemHTML(sel){
   const R=sel,c=Math.max(1,sheet.cn||1),need=R.fruit.n*c,E=craftEntries(R.fruit),fhave=E.reduce((s,e)=>s+e.n,0),plan=craftPlan(R.fruit,need,sheet.cpick||null);
   const row=(ic,nm,have,want)=>`<div class="crow${have<want?' short':''}">${ic}<span>${nm}</span><b>有 ${have}／要 ${want}</b></div>`;
   let h=`<div class="lot-top">${outIcon(R.out[0])}<div><div class="lot-name">${R.n}</div><div class="meta">${esc(R.desc)}・持有 ${(state.items||{})[R.out[0]]||0} ${itemUnit(R.out[0])}</div></div></div>`;
@@ -8806,6 +8821,10 @@ function craftAction(b){const a=b.dataset.act,R=sheet.rcp&&RECIPES.find(x=>x.id=
   if(a==='shoptab'){sheet.shop=b.dataset.k;sheet.rcp=null;renderSheet();return}
   if(a==='rcp'){sheet.rcp=b.dataset.k;sheet.cn=1;sheet.cpick=null;sheet.cfo=false;renderSheet();return}
   if(a==='rcpback'){sheet.rcp=null;renderSheet();return}
+  if(a==='ctab'){sheet.ctab=b.dataset.k;sheet.rcp=null;sheet.ofs=null;renderSheet();return}/* 157 */
+  if(a==='ofsel'){sheet.ofs=b.dataset.k;renderSheet();return}
+  if(a==='ofback'){sheet.ofs=null;renderSheet();return}
+  if(a==='ofmake'){const err=outfitMake(sheet.ofs);if(err){sheet.err=err;renderSheet();return}try{sfx('chime',60)}catch(e){}const o=OUTFITS.find(x=>x.id===sheet.ofs);renderAll();renderSheet();toast(`做好了套裝「${o.n}」`);return}
   if(!R)return;
   if(a==='cnm'||a==='cnp'||a==='cnmax'){sheet.cn=a==='cnmax'?Math.max(1,craftMax(R)):Math.max(1,(sheet.cn||1)+(a==='cnp'?1:-1));sheet.cpick=null;renderSheet();return}
   if(a==='cfp'){sheet.cfo=!sheet.cfo;if(sheet.cfo&&!sheet.cpick){const p=craftPlan(R.fruit,R.fruit.n*(sheet.cn||1),null),o={};for(const e of p||[])o[e.id]=e.m;sheet.cpick=o}renderSheet();return}
@@ -10039,7 +10058,7 @@ document.addEventListener('pointerup',spinUp,true);document.addEventListener('po
 function avatarEditorHTML(){
   const d=sheet.draft,dir=SPIN[(sheet.avDir||0)%8],tab=sheet.avTab||'face';
   const head=['face','hair','hat'].includes(tab),vb=head?'-18 -60 36 36':'-28 -64 56 68';
-  let h=`<h2>打扮我的角色</h2><div class="avprev"><div class="avspin" data-spin="av"><svg viewBox="-30 -66 60 70" width="150" height="175" role="img" aria-label="角色預覽">${spinSVG('av')}</svg></div></div>${spinHint()}`;
+  let h=`<h2>打扮我的角色</h2>${outfitWardHTML()}<div class="avprev"><div class="avspin" data-spin="av"><svg viewBox="-30 -66 60 70" width="150" height="175" role="img" aria-label="角色預覽">${spinSVG('av')}</svg></div></div>${spinHint()}`;
   h+=`<div class="filters avtabs" role="tablist">${AV_TABS.map(([k,n])=>`<button class="fchip" role="tab" data-avtab="${k}" aria-pressed="${tab===k}">${n}</button>`).join('')}</div>`;
   if(tab==='face')h+='<p class="note">表情固定是微笑。</p>';
   for(const [k,cols] of AV_TAB_ITEMS[tab]){
@@ -10167,16 +10186,49 @@ function addXp(n,quiet){
   else if(!quiet)toast(`+${n} 經驗`);
   renderMe();
 }
+/* ===== 157（19t）：升級獎勵改版 =====
+   每一級：金幣照舊＋一包道具（依等級段）；每 3 級卡包、每 4 級誘變劑。每 5 級：稱號；Lv 5 牧羊人套裝；Lv 10～80 每 10 級解鎖那一區的套裝配方；15、25、35…照舊送裝飾。
+   還沒做出來的道具換成小一級（中／大補血藥 → 小補血藥），都沒有就跳過（重鑄石）。 */
+const LV_PACK=[[50,{pot_l:2,acc:20,recast_l:1}],[30,{pot_m:3,acc:15,recast_s:2}],[10,{pot:3,acc:10,recast_s:1}],[2,{pot:2,acc:5}]];
+const ITEM_DOWN={pot_l:'pot_m',pot_m:'pot',recast_l:'recast_s'};
+const itemExists=k=>k==='acc'||k==='mut'||k==='glove'||k==='fix'||POT_TYPES.some(t=>t.k===k);
+function lvItemResolve(k){let x=k;while(x&&!itemExists(x))x=ITEM_DOWN[x]||null;return x}
+function lvPackFor(lv){const row=LV_PACK.find(r=>lv>=r[0]);if(!row)return {};const out={};for(const [k,n] of Object.entries(row[1])){const r=lvItemResolve(k);if(r)out[r]=(out[r]||0)+n}return out}
+const lvPackBk=lv=>{const L=BIOME_KEYS.filter(k=>LV_REG[k]&&LV_REG[k]<=lv&&REG_OPEN[k]!==0&&LORDS[k]).sort((a,b)=>LV_REG[b]-LV_REG[a]);return L[0]||'grass'};/* 卡包：已經開放、有主的地區裡等級最高的那一區 */
+const OUTFITS=[{id:'shepherd',n:'牧羊人',bk:'grass',lv:5},{id:'hunter',n:'林中獵人',bk:'forest',lv:10},{id:'fisher',n:'漁村少年',bk:'marsh',lv:20},{id:'miko',n:'巫女',bk:'sakura',lv:30},{id:'traveler',n:'沙漠旅人',bk:'desert',lv:40},{id:'explorer',n:'雪地探險家',bk:'snow',lv:50},{id:'smith',n:'鍛造學徒',bk:'volcano',lv:60},{id:'stargazer',n:'觀星者',bk:'canyon',lv:70},{id:'surveyor',n:'遺跡調查員',bk:'ruins',lv:80}];
+/* 配方：那一區一般怪的素材 3 種（×10、×10、×5）＋第一種的金色 ×1＋金幣（地區等級 ×30）；都挑現在那一區真的會掉的（19u 使用者改了草原、森林、沙漠） */
+const OUTFIT_MATS={grass:[['hay',10],['mane',10],['xfur',5],['hay_g',1]],forest:[['fernbud',10],['rootlet',10],['burl',5],['fernbud_g',1]],marsh:[['bubshell',10],['x_fiddler_crab',10],['x_leaf_frog',5],['bubshell_g',1]],
+  sakura:[['x_dream_tapir',10],['x_bamboo_rat',10],['x_wild_rose',5],['x_dream_tapir_g',1]],desert:[['x_jackal_shade',10],['x_sun_scarab',10],['x_sand_whale',5],['x_jackal_shade_g',1]],snow:[['x_baby_mammoth',10],['x_snow_pile',10],['x_crystal_leopard',5],['x_baby_mammoth_g',1]],
+  volcano:[['x_fire_rat',10],['x_obsidian_rhino',10],['x_flame_sprite',5],['x_fire_rat_g',1]],canyon:[['x_cliff_antelope',10],['x_star_puffer',10],['x_glow_scorpion',5],['x_cliff_antelope_g',1]],ruins:[['x_mech_scorpion',10],['x_mech_raptor',10],['x_three_head_bird',5],['x_mech_scorpion_g',1]]};
+const outfitCoins=o=>(LV_REG[o.bk]||1)*30;
+const outfitRxObj=()=>state.outfitRx&&typeof state.outfitRx==='object'?state.outfitRx:(state.outfitRx={});
+const outfitsObj=()=>state.outfits&&typeof state.outfits==='object'?state.outfits:(state.outfits={});
+/* 服裝圖：assets/char2/outfit/<套裝>/m_front.png 載得到就算準備好了（之後補圖自動開放） */
+const OF_READY={},OF_IM={};
+function outfitReady(id){const s=OF_READY[id];if(s===1)return true;if(s==null&&typeof Image!=='undefined'){OF_READY[id]=0;try{const im=new Image();OF_IM[id]=im;im.onload=()=>{OF_READY[id]=1;delete OF_IM[id];try{if(sheet)renderSheet()}catch(e){}};im.onerror=()=>{OF_READY[id]=-1;delete OF_IM[id]};im.src=`assets/char2/outfit/${id}/m_front.png?v=${BUILD}`}catch(e){OF_READY[id]=-1}}return false}
+function outfitMax(o){return OUTFIT_MATS[o.bk].every(e=>matCount(e[0])>=e[1])&&(state.coins||0)>=outfitCoins(o)}
+function outfitMake(id){const o=OUTFITS.find(x=>x.id===id);if(!o)return '沒有這個配方';if(!outfitRxObj()[id])return '還沒解鎖這個配方';if(outfitsObj()[id])return '已經有了';if(!outfitReady(id))return '服裝圖準備中';
+  for(const e of OUTFIT_MATS[o.bk])if(matCount(e[0])<e[1])return `${matName(e[0])}不夠`;if((state.coins||0)<outfitCoins(o))return '金幣不夠';
+  const S=matsObj();for(const e of OUTFIT_MATS[o.bk]){S[e[0]]-=e[1];if(S[e[0]]<=0)delete S[e[0]]}state.coins-=outfitCoins(o);outfitsObj()[id]=1;save();return ''}
+const lvGiftHTML=g=>`<span class="lvgift">${Object.entries(g).map(([k,n])=>`<span class="lvgi">${itemIcon(k)}<b>${esc(itemName(k))} ×${n}</b></span>`).join('')}</span>`;
+/* 舊玩家：已經超過的等級補發配方、牧羊人（道具包不補） */
+function m157(o){const lv=o.lv||1;o.outfitRx=o.outfitRx||{};o.outfits=o.outfits||{};if(lv>=5)o.outfits.shepherd=1;for(const of_ of OUTFITS)if(of_.id!=='shepherd'&&lv>=of_.lv)o.outfitRx[of_.id]=1}
+function outfitWardHTML(){if(!state)return '';const OW=outfitsObj(),L=OUTFITS.filter(o=>OW[o.id]);if(!L.length)return '';return `<div class="ofward"><b>我的套裝</b>${L.map(o=>`<span class="ofw">${o.n}<small>${outfitReady(o.id)?'新版角色可以穿（之後開放）':'準備中'}</small></span>`).join('')}</div>`}
+/* ===== 157 結束 ===== */
 function levelUp(lv){
   sfx('fan');
   const out=[],c=50+10*lv;state.coins+=c;out.push(`得到 ${c} 金幣`);
+  {const g=lvPackFor(lv),it=state.items||(state.items={});if(lv%4===0)g.mut=(g.mut||0)+1;for(const [k,n] of Object.entries(g))it[k]=(it[k]||0)+n;const gg={...g};if(lv%3===0){const bk=lvPackBk(lv),P=packsObj();P[bk]=(P[bk]||0)+1;gg.pack=1}if(Object.keys(gg).length)out.push(lvGiftHTML(gg))}/* 157.1 */
   for(const k of BASE_CROPS)if(LV_CROP[k]===lv)out.push(`新作物：${CROPS[k].n}（野外開始出現）`);
   for(const k in LV_REG)if(LV_REG[k]===lv)out.push(`新地區：${BIOMES[k].n}`);
   if(lv===LV_TOWN)out.push('城鎮開放了');if(lv===LV_COMM)out.push('NPC 委託開放了，每天換新');
   if(lv%3===0&&PLOT_START+8*(lv/3)<=PLOT_MAX)out.push(`農地上限 +8（現在 ${plotCap()} 塊）`);
   if(lv===TRAY_LV)out.push('育苗盤開放了：撒下去就能先看到每株幼苗的樣子，只把想要的移到田裡。');/* 111.5 */
   if(lv>=TRAY_LV&&lv%6===0&&30+5*(lv/6)<=50)out.push(`育苗盤 +5 格（現在 ${trayCap()} 格）`);
-  if(lv%5===0){const t=lvTitle(lv),g=LV_GIFT[(lv/5-1)%LV_GIFT.length];decoStorePut(g);out.push(`稱號：${t}`);out.push(`收到裝飾「${decoName(g)}」，放在裝飾倉庫`)}
+  if(lv%5===0){out.push(`稱號：${lvTitle(lv)}`);
+    if(lv===5){outfitsObj().shepherd=1;out.push(`收到套裝「牧羊人」${outfitReady('shepherd')?'':'（服裝圖準備中）'}`)}/* 157.2 */
+    else if(lv%10===0&&lv<=80){const o=OUTFITS.find(x=>x.lv===lv);if(o){outfitRxObj()[o.id]=1;out.push(`解鎖套裝配方「${o.n}」（城鎮道具行的「製作」→「服裝」）`)}}
+    else if(lv>=15){const g=LV_GIFT[(lv/5-1)%LV_GIFT.length];decoStorePut(g);out.push(`收到裝飾「${decoName(g)}」，放在裝飾倉庫`)}}
   const m=mqCur();if(m&&state.mq.st===0&&m.lv===lv)out.push(`新的主線任務：${m.t}（到「任務」看看）`);
   return out;
 }

@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-19v'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-19w'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-19w`。第 141 節（19g）、第 142 節（19h）、第 143 節（19i）、第 144 節（19j）、第 145 節（19k）、第 144 節修正（19l、19m）、第 147、148 節（19m）、第 149 節（19n）、第 150 節（19o，19p 修 iPhone 地面圖）、第 151～154 節（19q）、第 155 節（19r）、第 156 節（19s）、第 157 節（19t）、第 158 節（19u）、第 159、160 節（19v）已做；第 146 節（色塊圖工具）已做。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）、第 140 節（19f）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-19x`。第 161～164、166 節（19w）已做；第 165 節還沒做。第 141 節（19g）、第 142 節（19h）、第 143 節（19i）、第 144 節（19j）、第 145 節（19k）、第 144 節修正（19l、19m）、第 147、148 節（19m）、第 149 節（19n）、第 150 節（19o，19p 修 iPhone 地面圖）、第 151～154 節（19q）、第 155 節（19r）、第 156 節（19s）、第 157 節（19t）、第 158 節（19u）、第 159、160 節（19v）已做；第 146 節（色塊圖工具）已做。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）、第 140 節（19f）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -264,6 +264,11 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 等級成長（158）：`pAtk`／`pHpMax`（`pAtkNow`、`pMax`，取代 `PHP_MAX`；`PHP_BASE` 只當開局值）；野外鏡頭 `exZoom`／`EX_ZOOM`（`state.camZoom`，`zk`、`setZoom`）；影子 `charShadow`、`fyShRx`。
 - 武器（159）：`WEAPONS`／`WP_ORDER`／`WP_DIM`、`state.weapons`／`state.wpn`／`state.wpnPick`、`curWpn`／`wpnTag`／`wpnDmg`／`wpnFire`（`dealT`、`hitMon`、`bossDealt`、`m.stun`、`m.burn`）、子彈 `wpnShot`／`wpnStep`／`wpnLoop`（`WPN_PROJ`）、特效 `fxW`、拿在手上 `wpnHTML`／`wpnPaintMe`／`wpnAnim`（`#meWB`／`#meWF`、`WP_HAND`）、`wpnEquip`／`wpnLock`、新手 `wpickHTML`／`wpickDo`、背包 `wpnBagHTML`、製作 `wpCraftHTML`／`wpMake`（`fruitCropTake`）。
 - 補血藥（160）：`POT_TYPES` 三種（pot／pot_m／pot_l）、配方在 `RECIPES`。
+- 掉落物在地上（161）：`GDROP`（`DROP_LIFE`、`PICK_R`、`AUTO_PICK_R`）、`dropLayer`（`#dropL`）、`dropArt`、`dropSpawn`、`dropTake`、`dropPick`、`dropTick`（在 `monLoop`）、`dropClear`（在 `monClear`）、撿取按鈕 `#pickBtn`（`dropBtnPaint`）、`state.autoPick`；`matDrop(m,p,ground)`；`bossReward` 的素材、金幣也掉地上；傷害數字 28／36px。
+- 僕人下來空地（162）：`SERVANTS`／`LORDS` 的 `arena`（`arenaR`）、`ARENA_R`／`ARENA_JUMP`／`ARENA_LEAVE`、`bossArena`／`bossArenaR`、`bossJump`／`bossJumpStep`／`bossArenaSet`、`bossClamp`、`bossHomeStep`。
+- 劇情對話（163）：`VN_REG`／`VN_STORY`、`vnParse`（「名字(表情)：台詞」、「｜」分頁、「旁白：」）、`vnPlay`／`vnNext`／`vnTap`／`vnLog`／`vnEnd`／`vnFromNote`、立繪 `vnPortrait`（`assets/portrait/`、`VN_PID`／`FY_PID`）＋替代 `vnFallback`／`vnImgFail`（神之子裁切 `FY_CROP`／`FY_CROP_EVO`）、鏡頭 `vnCamP`／`vnZ`／`vnCamTo`、章節卡 `chapterCard`（`CH_BK`、`state.chSeen`）、設定 `renderVnBox`（`state.vnSpeed`）；`npcTalk`／`fyTalkHTML` 用 `<!--vnS:id-->…<!--vnE-->` 包台詞，`noteOpen` 看到就先播。
+- 被擋住的剪影（164）：`meBox`／`boxOver`／`meOccluded`、`ghostTick`（`#meGhost`、濾鏡 `#ghostF`）；`EX_ZOOM` 1.15（遷移 `cam164V`）、`FY_REL` 1.0、`FY_DX`／`FY_DY`。
+- 武器平衡、背著（166）：`wpnMelee`（受傷 ×0.6）、`wpnDrawnUntil`、`wpnBackHTML`、`wpnHTML(…,drawn)`；野外鐮刀 `wpnDmg(null)` ×0.5。
 - 個人介面 `openMe`／`meSheetHTML`、通知 `noteOpen`、慶祝卡 `celShow`、提示 `toast`、「？」小說明 `qh`。
 
 **效能、模式、其他**
@@ -442,3 +447,9 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 158 | 等級成長、野外鏡頭、影子 | 已完成 | docs/規格存檔.md；19u（9.157）；Lv 40 攻擊 3,075／血量 2,856、Lv 80 攻擊 10,030／血量 8,619；有截圖；沒測 iPhone |
 | 159 | 武器接進戰鬥（第一版） | 已完成 | docs/規格存檔.md；19v（9.158）；素材替代、雙刀一張圖、鐮刀和劍差不多強都列在 9.158 等使用者確認；手的位置固定偏移等看截圖；有截圖；沒測 iPhone |
 | 160 | 中、大補血藥 | 已完成 | docs/規格存檔.md；19v（9.159）；苔殼的怪不在地圖上，中補血藥也收苔岩根；沒有截圖、沒測 iPhone |
+| 161 | 掉落物撿取、傷害數字放大 | 已完成 | docs/規格存檔.md；19w（9.160）；主、僕人的素材和金幣也掉地上，精魄、卡包、種子照舊直接給；有截圖；沒測 iPhone |
+| 162 | 秘境的僕人下來空地打 | 已完成 | docs/規格存檔.md；19w（9.161）；潟湖秘境沒有半徑 120 的空地，用 80；潟湖的主照舊在水上；有截圖；沒測 iPhone |
+| 163 | 劇情對話改版：視覺小說式對話、劇情演出 | 已完成 | docs/規格存檔.md；19w（9.162）；背景音樂沒做（沒有音樂系統）；立繪還沒有圖，先用替代圖（裁切表在 9.162）；有截圖；沒測 iPhone |
+| 164 | 鏡頭、神之子大小、被怪物蓋住 | 已完成 | docs/規格存檔.md；19w（9.163）；有截圖；沒測 iPhone |
+| 165 | 新版角色的正面、背面走路 | 未做 | docs/待實作/第165節.md |
+| 166 | 武器平衡第一次調整、平常背著武器 | 已完成 | docs/規格存檔.md；19w（9.164）；斜背改 50°（35° 正面看不到），**等使用者看截圖再調**；遠程和南瓜鐮刀站定不會被打（怪物不追），模擬表在 9.164；沒測 iPhone |

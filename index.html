@@ -1098,6 +1098,7 @@ details.par summary{font-weight:700;cursor:pointer}
 /* 139 */.seam{animation:seamC 6s linear infinite}@keyframes seamC{0%{stroke:#FF6B6B}16%{stroke:#FFB347}33%{stroke:#FFE66D}50%{stroke:#7BE495}66%{stroke:#5BC0EB}83%{stroke:#9B8CFF}100%{stroke:#FF6B6B}}.seamhub{animation:seamH 2.4s ease-in-out infinite alternate}@keyframes seamH{from{opacity:.45}to{opacity:.95}}.smoke{animation:smk 4s ease-out infinite;opacity:0}@keyframes smk{0%{transform:translateY(0) scale(.6);opacity:.55}100%{transform:translateY(-70px) scale(1.6);opacity:0}}.vent{animation:vnt 6s linear infinite;opacity:0;transform-origin:center bottom}@keyframes vnt{0%{opacity:.9;transform:scale(1)}25%{opacity:.8;transform:scale(1.1)}26%,100%{opacity:0;transform:scale(.6)}}.lavaglow{animation:lvg 3s ease-in-out infinite alternate}@keyframes lvg{from{opacity:.45}to{opacity:.9}}.twk{animation:twk 3.5s ease-in-out infinite alternate}@keyframes twk{from{opacity:.15}to{opacity:.95}}.wx-volcano i{background:var(--c)!important;box-shadow:none!important}.wx-canyon i,.wx-ruins i{background:var(--c)!important;box-shadow:0 0 6px 2px var(--c)!important;width:3px!important;height:3px!important}@keyframes wxRise{0%{transform:translate(var(--x),100vh);opacity:0}10%{opacity:.9}100%{transform:translate(calc(var(--x) + var(--dx)),-10vh);opacity:0}}.meteor{position:absolute;top:8vh;left:-20vw;width:120px;height:2px;background:linear-gradient(90deg,transparent,#fff);transform:rotate(18deg);animation:meteor 30s linear infinite}@keyframes meteor{0%,94%{left:-20vw;top:6vh;opacity:0}95%{opacity:1}100%{left:110vw;top:40vh;opacity:0}}
 /* 140（19f）：右上一排小圖示、右下三顆大按鈕從育苗盤往上排 */#tbar{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:10px;left:auto;z-index:10;display:flex;flex-direction:row;gap:4px}#tbar button,#tbar #mapBtn{position:relative!important;top:auto!important;right:auto!important;width:44px;height:44px;border-radius:50%;background:#FFF9EC;border:2.5px solid var(--ol);box-shadow:0 2px 0 var(--ol);padding:0;display:flex;align-items:center;justify-content:center;color:var(--ol)}#tbar .ibimg{width:30px;height:30px}#tbar svg{width:22px;height:22px}#tbar span{display:none}#tbar button[hidden]{display:none}#tbar #ibLay.on{background:var(--tabon)}#frDot{position:absolute;right:-2px;top:-2px;width:12px;height:12px;border-radius:50%;background:var(--dg);border:2px solid #fff}#rbar{top:auto!important;right:calc(16px + 19px);bottom:calc(16px + 92px + 12px + 16px + env(safe-area-inset-bottom,0px));flex-direction:column-reverse;gap:28px}#ringBtn{right:16px!important;bottom:calc(16px + env(safe-area-inset-bottom,0px))!important}#meChip{max-width:calc(100vw - 268px);min-width:0!important}#meChip .mcn{overflow:hidden;min-width:0}#meChip .mcn b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}@media (max-width:560px){.hudRow{flex-direction:column;align-items:flex-start}.hudRow .coins{margin-left:0}#mqLine{top:calc(150px + env(safe-area-inset-top,0px))}#hpBar{top:calc(188px + env(safe-area-inset-top,0px))}#bossBar{top:calc(212px + env(safe-area-inset-top,0px))}}#tbar #mapBtn{height:44px!important;width:44px!important}body.pnlOpen #tbar,body.shFull #tbar{visibility:hidden}#layBar{display:flex;gap:6px;justify-content:center}#layBar[hidden]{display:none}#layBar button{min-height:44px;padding:0 14px;border-radius:12px;border:2.5px solid var(--ol);background:#FFF9EC;color:var(--ol);font:inherit;font-weight:700;box-shadow:0 3px 0 var(--ol)}#layBar button.primary{background:linear-gradient(180deg,var(--go1),var(--go2));color:#fff;box-shadow:0 3px 0 var(--gosh)}
 /* 141 */.ms.hit2{animation:monHit2 .38s ease-out}@keyframes monHit2{0%{transform:translateX(calc(var(--kd,1)*10px)) scale(1.16,.8)}30%{transform:translateX(calc(var(--kd,1)*6px)) scale(.94,1.08)}50%{transform:translateX(3px)}70%{transform:translateX(-3px)}100%{transform:none}}.mdeb circle{animation:mdeb .5s ease-out forwards}@keyframes mdeb{0%{transform:translate(0,0);opacity:1}100%{transform:translate(var(--dx),var(--dy));opacity:0}}@media (prefers-reduced-motion:reduce){.ms.hit2,.mdeb circle{animation:none}}
+/* 143 */.pitlight{animation:pitL 4s ease-in-out infinite alternate}@keyframes pitL{from{opacity:.45}to{opacity:.9}}body.pitglow .pitlight{animation:none;opacity:1;filter:brightness(1.6)}
 </style>
 </head>
 <body class="game">
@@ -1854,7 +1855,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-19h';
+const BUILD='2026-11-19i';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -6313,68 +6314,55 @@ const CANYON_MAPS={
     spawns:[[280,450],[520,450],[400,700]],items:[[240,700],[560,700]]}
 };
 /* ---- 虹光遺城：被植物吞掉的現代城市＋更古老的石造遺跡。借：城鎮的建築、噴水池、長椅、公布欄、木箱，草原的圓樹、巨石，森林的苔叢，沙漠的方尖碑、神殿、象形石牆、祭壇（調成灰綠） ---- */
-const [RUINS_ART,RUINS_IMG]=borrowArt({tree:['grass','round_tree',125,22,14],oak:['grass','oak',170,30,16],bush:['forest','mossy_bush',58,54,16],boulder:['grass','boulder',64,58,18],tall:['grass','tall_grass',46,0,0],
-  hall:['town','farm_hall',210,170,60],shop:['town','item_shop',190,150,56],lounge:['town','lounge',200,190,60],dessert:['town','dessert_shop',190,168,56],appraisal:['town','appraisal',200,160,56],
-  fountain:['town','fountain',110,92,30],bench:['town','bench',52,62,12],notice:['town','notice_board',80,60,12],crates:['town','crates',54,56,14],lamp:['town','lamp_post',100,12,8],
-  obelisk:['desert','obelisk',150,48,16],temple:['desert','temple',170,0,0],hiero:['desert','hiero_wall',110,100,16],pillar:['desert','ruins',110,90,26],altar:['desert','../secret/seed_altar',150,120,40],
-  cliff:['grass','cliff',96,0,0],stairs:['grass','stairs',92,0,0],sign:['grass','signpost',78,16,8],roots:['forest','roots',90,0,0],stalag:['snow','stalagmites',80,40,14],flowers:['grass','wildflowers',42,0,0]});
-const RUINS_FLAT={stairs:1,tall:1,flowers:1,roots:1},RUINS_SWAY={tree:1,oak:1,tall:1};
-const RUINS_MAPS={
-  entry:{n:'城外公路',gx:1,gy:2,v2:1,
+const [RUINS_ART,RUINS_IMG]=(()=>{const [A,I]=borrowArt({bush:['forest','mossy_bush',58,54,16],tall:['grass','tall_grass',46,0,0],flowers:['grass','wildflowers',42,0,0],roots:['forest','roots',90,0,0],stalag:['snow','stalagmites',80,40,14],altar:['desert','../secret/seed_altar',150,120,40],pillar:['desert','ruins',110,90,26]});Object.assign(A,{tower_a:['ruin_tower_a',460,148,40],tower_b:['ruin_tower_b',360,202,40],lean:['ruin_lean',390,198,40],overpass:['ruin_overpass',272,0,0],shop:['ruin_shop',200,150,36],station:['ruin_station',230,0,0],sink:['sinkhole_edge',306,240,90],car:['car_wreck',80,85,24],lamp:['street_lamp',130,14,8],busstop:['bus_stop',110,100,22],tlight:['traffic_light',60,64,16],rubble:['rubble_pile',80,76,22],billboard:['billboard',170,0,0],flood:['flooded_patch',117,0,0],rtree:['ruin_tree',170,26,14],bigtree:['ruin_tree',238,36,18]});Object.assign(I,{ruin_tower_a:[213, 463],ruin_tower_b:[239, 341],ruin_lean:[235, 370],ruin_overpass:[303, 229],ruin_shop:[236, 290],ruin_station:[274, 260],sinkhole_edge:[257, 303],car_wreck:[266, 223],street_lamp:[186, 319],bus_stop:[285, 274],traffic_light:[256, 221],rubble_pile:[237, 214],billboard:[257, 351],flooded_patch:[271, 211],ruin_tree:[277, 377]});return [A,I]})();/* 143：遺城自己的圖（assets/ruins/）＋幾樣借來的草木 */
+const RUINS_FLAT={tall:1,flowers:1,roots:1,flood:1},RUINS_SWAY={rtree:1,bigtree:1,tall:1};
+const RUINS_MAPS={/* 143（19i）：失落的高文明城市（素材 assets/ruins/，不再借別區調色） */
+  entry:{n:'城外公路',gx:1,gy:2,v2:1,zebra:[[400,760,0]],
     exits:[{side:'s',c:400,w:120,to:'farm'},{side:'n',c:400,w:120,to:'plaza'},{side:'e',c:640,w:120,to:'houses'}],
-    paths:[{p:[[400,1150],[400,900],[400,640],[400,400],[400,-40]],w:84},{p:[[400,660],[560,650],[840,640]],w:52}],
-    objs:[['sign',300,960],['lamp',280,760,null,{s:0.9}],['lamp',520,520,null,{s:0.9,fl:1}],['bush',260,560],['boulder',540,860],['bush',560,880,null,{s:0.8}],['tree',180,420],['tree',640,980,null,{fl:1}],['tall',300,620],['tall',520,420]],
-    groves:[[150,300,3,50],[650,300,2,46,1],[140,850,2,40]],suns:[[400,760,230,150]],seams:[[340,1000,380,920,350,860]],
-    spawns:[[220,520],[600,520],[240,960],[640,800]],items:[[120,660]]},
-  plaza:{n:'噴泉廣場',gx:1,gy:1,v2:1,seams:[[320,820,360,760,330,700]],
+    paths:[{p:[[400,1150],[400,900],[400,640],[400,400],[400,-40]],w:96,road:1},{p:[[400,650],[600,645],[840,640]],w:60,road:1}],
+    objs:[['car',300,840],['car',560,780,null,{fl: 1}],['car',320,430],['lamp',300,980],['lamp',500,520,null,{fl: 1}],['billboard',610,920],['overpass',430,560],['rubble',180,640],['rtree',160,780],['rtree',640,400,null,{fl: 1}],['rubble',650,300]],blocks:[[566, 912, 580, 920], [640, 912, 654, 920], [272, 546, 308, 560], [470, 538, 600, 560]],
+    spawns:[[180, 480], [620, 480], [200, 980], [650, 1000]],items:[[130, 700]]},
+  plaza:{n:'噴泉廣場',gx:1,gy:1,v2:1,zebra:[[400,860,0],[400,400,0],[600,640,90]],seams:[[300,840,320,780,300,720]],
     exits:[{side:'s',c:400,w:120,to:'entry'},{side:'e',c:640,w:120,to:'greenhouse'},{side:'n',c:400,w:120,to:'avenue'}],
-    paths:[{p:[[400,1150],[400,900],[300,640],[400,420],[400,-40]],w:60},{p:[[300,640],[520,620],[840,640]],w:52}],
-    objs:[['fountain',560,860],['obelisk',200,400],['notice',600,420],['bench',470,900],['bench',650,900,null,{fl:1}],['bench',560,500,null,{fl:1}],['bush',150,900],['tree',650,960],['tall',250,880]],
-    groves:[[150,260,2,40],[660,240,2,40]],suns:[[400,640,260,180]],
-    spawns:[[200,600],[640,860],[220,1000],[600,300]],items:[[700,560]]},
-  houses:{n:'住宅區',gx:2,gy:2,v2:1,
+    paths:[{p:[[400,1150],[400,790],[285,700],[285,560],[400,470],[400,-40]],w:74,road:1},{p:[[400,790],[515,700],[515,560],[400,470]],w:74,road:1},{p:[[515,640],[680,642],[840,640]],w:70,road:1}],
+    objs:[['bigtree',400,650],['rubble',340,600],['rubble',460,600,null,{fl: 1}],['rubble',340,700,null,{fl: 1}],['rubble',460,700],['shop',170,450],['busstop',640,880],['tlight',650,500],['flood',200,960],['flood',620,330,null,{fl: 1}],['lamp',300,980],['car',190,760]],blocks:[[142, 868, 258, 934], [562, 238, 678, 304]],
+    spawns:[[150, 620], [680, 760], [160, 1010], [640, 220]],items:[[700, 520]]},
+  houses:{n:'商店街',gx:2,gy:2,v2:1,
     exits:[{side:'w',c:640,w:120,to:'entry'},{side:'n',c:400,w:120,to:'greenhouse'}],
-    paths:[{p:[[-40,640],[160,650],[400,640],[410,400],[400,-40]],w:54},{p:[[400,640],[400,900],[400,1040]],w:44,end:'dirt'}],
-    objs:[['shop',200,470],['dessert',600,470,null,{fl:1}],['appraisal',200,880],['lounge',620,900,null,{s:0.9}],['bush',300,560],['bush',500,560,null,{fl:1}],['tall',320,980],['tall',480,980],['flowers',300,700],['flowers',520,720]],
-    groves:[[690,240,2,40],[110,240,2,40]],suns:[[400,700,200,160]],
-    spawns:[[300,300],[520,300],[320,760],[500,780],[400,1010]],items:[[680,640]]},
-  greenhouse:{n:'溫室',gx:2,gy:1,v2:1,seams:[[600,1000,640,930,610,860]],
+    paths:[{p:[[-40,640],[160,645],[400,640],[402,400],[400,-40]],w:62,road:1},{p:[[400,640],[400,880],[400,1040]],w:40,end:'dirt'}],
+    objs:[['shop',220,460],['tower_b',600,470,null,{fl: 1}],['tower_b',200,860],['shop',600,840,null,{fl: 1}],['lamp',320,560],['lamp',480,760,null,{fl: 1}],['car',470,300],['rubble',300,1000]],
+    spawns:[[130, 560], [680, 600], [320, 960], [520, 960], [400, 1010]],items:[[690, 700]]},
+  greenhouse:{n:'綠蔭街區',gx:2,gy:1,v2:1,seams:[[620,1010,650,940,630,880]],
     exits:[{side:'s',c:400,w:120,to:'houses'},{side:'w',c:640,w:120,to:'plaza'},{side:'n',c:400,w:120,to:'station'}],
-    paths:[{p:[[400,1150],[400,900],[400,780],[250,700],[230,460],[400,300],[400,-40]],w:52},{p:[[-40,640],[180,650],[245,650]],w:48}],
-    objs:[['lounge',420,560,null,{s:1.25,ns:1}],['tree',190,300],['oak',640,320,null,{fl:1}],['bush',200,820],['bush',600,860],['flowers',260,700],['flowers',560,700],['tall',320,960]],
-    groves:[[150,1000,2,40],[690,1000,2,40]],suns:[[400,560,260,180]],
-    spawns:[[300,400],[500,400],[400,720],[200,960]],items:[[620,640]]},
-  station:{n:'地鐵站',gx:2,gy:0,v2:1,seams:[[200,900,260,800,230,700]],
-    exits:[{side:'s',c:400,w:120,to:'greenhouse'},{side:'w',c:300,w:120,to:'avenue'},{door:[380,300,420,326],arrive:[400,420],to:'metro'}],
-    blocks:[[140,600,560,640]],
-    paths:[{p:[[400,1150],[400,900],[620,760],[640,620],[560,480],[400,420],[400,330]],w:50},{p:[[-40,300],[140,320],[300,360],[400,400]],w:46}],
-    objs:[['hiero',400,320,null,{s:0.8}],['pillar',190,620,null,{s:0.85}],['pillar',300,630,null,{s:0.8,fl:1}],['pillar',420,620,null,{s:0.85}],['pillar',520,630,null,{s:0.75,fl:1}],['bush',650,960],['lamp',600,880],['tree',160,920]],
-    groves:[[690,250,2,40]],suns:[[400,800,220,150]],
-    spawns:[[200,800],[640,1000],[200,420],[620,320]],items:[[160,1000]]},
+    paths:[{p:[[400,1150],[400,900],[270,790],[250,560],[380,420],[400,300],[400,-40]],w:56,road:1},{p:[[-40,640],[160,650],[252,650]],w:52,road:1}],
+    objs:[['flood',420,640],['flood',500,600,null,{fl: 1}],['rtree',140,940],['rtree',560,920,null,{fl: 1}],['rtree',150,420],['rtree',520,450,null,{fl: 1}],['bigtree',620,760],['rtree',360,560],['rtree',660,300,null,{fl: 1}],['rtree',180,240],['rubble',560,1020],['car',150,820]],blocks:[[362, 548, 478, 614], [442, 508, 558, 574]],
+    spawns:[[300, 420], [480, 300], [300, 700], [200, 1000]],items:[[640, 620]]},
+  station:{n:'單軌車站',gx:2,gy:0,v2:1,seams:[[200,900,250,820,230,760]],
+    exits:[{side:'s',c:400,w:120,to:'greenhouse'},{side:'w',c:300,w:120,to:'avenue'},{door:[378,312,422,332],arrive:[400,420],to:'metro'}],
+    paths:[{p:[[400,1150],[420,900],[620,780],[640,620],[560,480],[400,420],[400,340]],w:56,road:1},{p:[[-40,300],[160,320],[300,380],[400,410]],w:50,road:1}],
+    objs:[['station',400,330],['overpass',300,700],['rubble',180,640],['rubble',420,640,null,{fl: 1}],['rubble',500,650],['lamp',660,900],['rtree',160,920],['car',200,480,null,{fl: 1}]],blocks:[[278.8076923076923, 296, 376, 330], [424, 296, 521.1923076923077, 330], [142, 686, 178, 700], [340, 678, 470, 700]],
+    spawns:[[200, 800], [640, 1000], [200, 420], [620, 320]],items:[[160, 1000]]},
   metro:{n:'地下月台',gx:3,gy:0,cave:1,rare:0.1,v2:1,tiles:'#5A5C5E',darkA:0.52,rails:[560,140,1130],seams:[[200,300,260,520,220,760],[460,900,500,700,470,500]],
     exits:[{side:'s',c:400,w:120,to:'station'}],
-    floor:[{rect:[140,140,660,1130],j:2}],blocks:[[536,140,620,1130]],
+    floor:[{rect:[140,140,660,1130],j:2}],blocks:[[536,140,620,1130],[242,608,358,674]],
     paths:[{p:[[400,1130],[380,800],[400,500],[380,220]],w:60,end:'dirt'}],
-    objs:[['roots',260,300],['roots',300,700,null,{fl:1}],['stalag',200,1000,null,{s:0.7}],['pillar',230,500,null,{s:0.6}],['pillar',230,860,null,{s:0.6,fl:1}]],
-    spawns:[[260,620],[460,400],[300,980]],items:[[460,980]]},
-  avenue:{n:'中央大道',gx:1,gy:0,v2:1,seams:[[300,1000,340,900,320,800],[480,960,450,860,470,760],[360,640,400,560,380,480],[260,520,300,440,280,360],[520,520,480,440,500,360]],
+    objs:[['roots',260,300],['roots',300,760,null,{fl:1}],['rubble',230,500],['rubble',220,920,null,{fl:1}],['flood',300,700],['tlight',460,420],['stalag',200,1040,null,{s:0.7}]],
+    spawns:[[260,620],[460,380],[300,980]],items:[[460,980]]},
+  avenue:{n:'中央大道',gx:1,gy:0,v2:1,seams:[[300,1000,340,900,320,800],[440,960,420,860,430,760],[330,640,360,560,340,480],[260,520,300,440,290,360],[420,480,400,400,410,330]],
     exits:[{side:'s',c:400,w:120,to:'plaza'},{side:'e',c:300,w:120,to:'station'},{side:'n',c:400,w:120,to:'core'}],
-    paths:[{p:[[400,1150],[400,800],[400,400],[400,-40]],w:96},{p:[[400,320],[600,300],[840,300]],w:50}],
-    objs:[['hall',170,560],['shop',640,560,null,{fl:1}],['lounge',160,900,null,{s:0.9}],['appraisal',640,900,null,{fl:1}],['hiero',300,150,null,{s:0.9}],['hiero',500,150,null,{s:0.9,fl:1}],['lamp',300,760],['lamp',500,760,null,{fl:1}],['bush',280,1020],['bush',520,1020]],
-    suns:[[400,640,200,160]],
-    spawns:[[300,300],[520,700],[280,700],[500,1000]],items:[[700,400]]},
-  core:{n:'核心',gx:1,gy:-1,v2:1,rare:0.15,seamHub:[400,300],seams:[[120,1000,250,700,400,320],[680,1000,560,700,400,320],[400,1100,400,700,400,320],[200,600,300,450,400,320],[600,600,500,450,400,320],[60,400,220,360,400,320],[740,400,580,360,400,320],[280,900,340,600,400,320],[520,900,460,600,400,320]],
-    exits:[{side:'s',c:400,w:120,to:'avenue'},{door:[380,300,420,328],arrive:[400,420],to:'secret'}],
-    paths:[{p:[[400,1150],[400,800],[400,500],[400,340]],w:60}],
-    objs:[['hiero',160,260],['hiero',270,250,null,{fl:1}],['temple',400,300,null,{ns:1}],['hiero',530,250],['hiero',640,260,null,{fl:1}],['pillar',200,560],['pillar',600,560,null,{fl:1}],['pillar',240,860,null,{s:0.85}],['pillar',560,860,null,{s:0.85,fl:1}],['boulder',640,1000]],
-    blocks:[[100,180,360,290],[440,180,700,290]],
-    groves:[[120,980,2,40]],suns:[[400,500,260,180]],
-    spawns:[[240,700],[560,700],[300,1000],[500,1000]],items:[[150,700]]},
-  secret:{n:'控制台',gx:1,gy:-2,cave:1,v2:1,secret:1,rare:0.25,tiles:'#8A8A80',darkA:0.32,seamHub:[400,460],seams:[[180,900,300,700,400,480],[620,900,500,700,400,480],[400,1100,400,800,400,480]],
+    paths:[{p:[[400,1150],[385,900],[330,700],[320,520],[380,360],[400,-40]],w:104,road:1},{p:[[380,360],[600,315],[840,300]],w:56,road:1}],
+    objs:[['tower_a',130,420],['tower_b',130,690],['lean',130,960],['tower_b',670,470,null,{fl: 1}],['tower_a',670,1000,null,{fl: 1}],['lean',540,560,null,{fl: 1}],['overpass',560,780,null,{fl: 1}],['car',300,980],['lamp',260,820],['rubble',470,640]],blocks:[[682, 766, 718, 780], [390, 758, 520, 780]],
+    spawns:[[300, 280], [250, 620], [460, 880], [260, 1000]],items:[[700, 700]]},
+  core:{n:'核心',gx:1,gy:-1,v2:1,rare:0.15,pit:[400,320,240,140],pitTrig:[400,440],seamHub:[400,330],seams:[[120,1000,250,700,400,360],[680,1000,560,700,400,360],[400,1100,400,700,400,360],[200,700,300,520,400,360],[600,700,500,520,400,360],[60,560,220,460,400,360],[740,560,580,460,400,360],[280,900,340,600,400,360],[520,900,460,600,400,360]],walks:[[376,400,424,480]],
+    exits:[{side:'s',c:400,w:120,to:'avenue'},{trig:1,arrive:[400,540],to:'secret'}],
+    paths:[{p:[[400,1150],[400,800],[400,600],[400,470]],w:70,road:1,end:'taper'}],
+    objs:[['sink',210,490],['sink',590,490,null,{fl: 1}],['sink',110,380],['sink',690,380,null,{fl: 1}],['lean',110,760],['lean',690,780,null,{fl: 1}],['tower_b',120,1000],['tower_a',680,1010,null,{fl: 1}],['rubble',300,620],['rubble',500,640,null,{fl: 1}],['car',540,900]],blocks:[[150, 220, 650, 420]],
+    spawns:[[260, 700], [560, 720], [300, 1000], [500, 1000]],items:[[160, 880]]},
+  secret:{n:'控制台',gx:1,gy:-2,cave:1,v2:1,secret:1,rare:0.25,tiles:'#8A8A80',darkA:0.32,geo:1,seamHub:[400,460],seams:[[180,900,300,700,400,480],[620,900,500,700,400,480],[400,1100,400,800,400,480]],/* 143.4：坑底，比城市更古老的遺跡；牆上只有幾何紋路 */
     exits:[{side:'s',c:400,w:120,to:'core'}],
     floor:[{rect:[120,150,680,1130],j:2}],
     paths:[{p:[[400,1130],[400,800],[400,560]],w:56,end:'dirt'}],
-    objs:[['altar',400,460],['pillar',200,600],['pillar',600,620,null,{fl:1}],['pillar',230,880,null,{s:0.9}],['pillar',570,900,null,{s:0.9,fl:1}],['hiero',220,240],['hiero',580,240,null,{fl:1}]],
+    objs:[['altar',400,460],['pillar',200,600],['pillar',600,620,null,{fl:1}],['pillar',230,880,null,{s:0.9}],['pillar',570,900,null,{s:0.9,fl:1}]],
     spawns:[[260,420],[540,420],[300,720]],items:[[180,760],[620,760]]}
 };
 /* ---- 櫻花之丘：狐火庭（神社後院，第 139.5 節） ---- */
@@ -6386,7 +6374,7 @@ const SAKURA_SECRET={n:'狐火庭',gx:3,gy:-1,v2:1,secret:1,rare:0.25,ground:'#8
   spawns:[[260,680],[540,680],[400,820]],items:[[200,960],[600,960]]};
 SAKURA_MAPS.secret=SAKURA_SECRET;
 const REGION_MAPS={volcano:VOLCANO_MAPS,canyon:CANYON_MAPS,ruins:RUINS_MAPS,snow:SNOW_MAPS,grass:GRASS_MAPS,forest:FOREST_MAPS,desert:DESERT_MAPS,marsh:MARSH_MAPS,sakura:SAKURA_MAPS,town:TOWN_MAPS};/* town 沒有 entry，所以 regHas('town') 是 false，探索流程不會用到 */
-const REGION_ART={volcano:VOLCANO_ART,canyon:CANYON_ART,ruins:RUINS_ART,snow:SNOW_ART,grass:GRASS_ART,forest:FOREST_ART,desert:DESERT_ART,marsh:MARSH_ART,sakura:SAKURA_ART,town:TOWN_ART},REGION_IMG={volcano:VOLCANO_IMG,canyon:CANYON_IMG,ruins:RUINS_IMG,snow:SNOW_IMG,grass:GRASS_IMG,forest:FOREST_IMG,desert:DESERT_IMG,marsh:MARSH_IMG,sakura:SAKURA_IMG,town:TOWN_IMG},REGION_FLAT={volcano:VOLCANO_FLAT,canyon:CANYON_FLAT,ruins:RUINS_FLAT,snow:SNOW_FLAT,grass:GRASS_FLAT,forest:FOREST_FLAT,desert:DESERT_FLAT,marsh:MARSH_FLAT,sakura:SAKURA_FLAT,town:TOWN_FLAT},REGION_SWAY={volcano:VOLCANO_SWAY,canyon:CANYON_SWAY,ruins:RUINS_SWAY,snow:SNOW_SWAY,grass:GRASS_SWAY,forest:FOREST_SWAY,desert:DESERT_SWAY,marsh:MARSH_SWAY,sakura:SAKURA_SWAY,town:TOWN_SWAY},REGION_GLOW={canyon:{lantern:1,glowtree:0.5,glowmush:1,gcrystal:0.6,crystal:0.5},volcano:{},ruins:{altar:0.8,lamp:0.86},sakura:{lantern:1,lanterns:0.7},snow:{glow:1,ped:0.8},grass:{glowflower:0.6,ped:0.8},forest:{glowmush:1,spirit:0.62,ped:0.8,campfire:0.5},desert:{altar:0.8,ped:0.8,torch:0.86},marsh:{lantern:1,glowmush:1,glotus:0.5,ped:0.8,fireflyjar:0.5},town:TOWN_GLOW};
+const REGION_ART={volcano:VOLCANO_ART,canyon:CANYON_ART,ruins:RUINS_ART,snow:SNOW_ART,grass:GRASS_ART,forest:FOREST_ART,desert:DESERT_ART,marsh:MARSH_ART,sakura:SAKURA_ART,town:TOWN_ART},REGION_IMG={volcano:VOLCANO_IMG,canyon:CANYON_IMG,ruins:RUINS_IMG,snow:SNOW_IMG,grass:GRASS_IMG,forest:FOREST_IMG,desert:DESERT_IMG,marsh:MARSH_IMG,sakura:SAKURA_IMG,town:TOWN_IMG},REGION_FLAT={volcano:VOLCANO_FLAT,canyon:CANYON_FLAT,ruins:RUINS_FLAT,snow:SNOW_FLAT,grass:GRASS_FLAT,forest:FOREST_FLAT,desert:DESERT_FLAT,marsh:MARSH_FLAT,sakura:SAKURA_FLAT,town:TOWN_FLAT},REGION_SWAY={volcano:VOLCANO_SWAY,canyon:CANYON_SWAY,ruins:RUINS_SWAY,snow:SNOW_SWAY,grass:GRASS_SWAY,forest:FOREST_SWAY,desert:DESERT_SWAY,marsh:MARSH_SWAY,sakura:SAKURA_SWAY,town:TOWN_SWAY},REGION_GLOW={canyon:{lantern:1,glowtree:0.5,glowmush:1,gcrystal:0.6,crystal:0.5},volcano:{},ruins:{altar:0.8},sakura:{lantern:1,lanterns:0.7},snow:{glow:1,ped:0.8},grass:{glowflower:0.6,ped:0.8},forest:{glowmush:1,spirit:0.62,ped:0.8,campfire:0.5},desert:{altar:0.8,ped:0.8,torch:0.86},marsh:{lantern:1,glowmush:1,glotus:0.5,ped:0.8,fireflyjar:0.5},town:TOWN_GLOW};
 const REGION_CFG={
   snow:{name:'晶霜雪原',ground:'#E9EFF4',outer:'#E3EAF0',spots:['#DDE6ED','#F3F7F9'],path:['#D3DDE6','#DEE7EE'],water:['#9DBCCD','#C7E0EC'],cliff:['#8D9299','#767B83','#FFFFFF'],
     edgeTree:'pine',edgeBush:'bush',weather:'snow',shadow:'rgba(70,95,120,.2)',glow:'#C8F4FF',footprints:true,
@@ -6413,7 +6401,7 @@ const REGION_CFG={
     edgeTree:'pine',edgeBush:'bush',weather:'stars',shadow:'rgba(5,8,25,.35)',glow:'#BFD4FF',footprints:false,tint:{desat:0.45,mul:[0.5,0.56,0.86],add:[8,10,30],skip:['../wetland/stone_lantern','../forest/glow_mushrooms','../snow/glow_crystal']},
     caveGround:'#22253A',caveOuter:'#121423',caveSpots:['#1E2034','#2C304A'],cavePath:['#33374F','#3C405A'],caveWall:'#121423',caveEdge:'#8FA8FF'},
   ruins:{name:'虹光遺城',ground:'#9DA58E',outer:'#8E9680',spots:['#939B84','#AAB29B'],path:['#7F8285','#8C8F92'],water:['#6E8C8A','#93B2AE'],cliff:['#9A9A94','#7E7E78','#9DA58E'],/* 139.4 */
-    edgeTree:'tree',edgeBush:'bush',weather:'pollen',shadow:'rgba(30,40,30,.25)',glow:'#FFFFFF',footprints:false,tint:{desat:0.5,mul:[0.88,0.94,0.86],add:[10,12,8]},
+    edgeTree:'rtree',edgeBush:'rubble',weather:'pollen',shadow:'rgba(30,40,30,.25)',glow:'#FFFFFF',footprints:false,/* 143：自己的圖，不調色 */
     caveGround:'#4A4C4E',caveOuter:'#2A2B2D',caveSpots:['#444648','#55585A'],cavePath:['#5A5D60','#64676A'],caveWall:'#2A2B2D',caveEdge:'#B8C4C8'},
   /* 15b 城鎮：暖灰米色石板（tiles＝石板細格線），外圍草地；不畫程式大門（noGate，用 gate 素材當入口拱門） */
   town:{name:'城鎮',ground:'#E6DCC6',outer:'#A8C478',spots:['#DED3BC','#ECE3CF'],path:['#D6C6A4','#DED0B2'],water:['#9DBCCD','#C7E0EC'],cliff:['#9C8A6A','#857458','#E6DCC6'],tiles:'#D3C6AA',noGate:true,
@@ -6590,8 +6578,8 @@ REG_V2.canyon={tree:'pine',big:'bigpine',hero:'glowtree',bush:'bush',tuft:'fern'
   shade:'#141830',vig:'#05061A',hi:'#5A6284',lip:'#525A7A',lipLine:'#2A2F45',
   terr:{art:'rockwall',stairs:'stairs',sa:[0.38,0.62],rock:'#3A3F5A',rockD:'#242840',shade:'#141830',drip:['#4A5070','#5A6084']},
   water:{edge:'#1A2450',sh:'#4F6BB5',deep:'#25356A',glint:'#E8F0FF',wet:'#3A4262'},shore:['reed','rocks'],pal:[['#BFD4FF','#E8F0FF','#9FB4FF']],bridge:{k:'bridge',s:1,a:[0.24,0.80],b:[0.90,0.40],hw:0.16,n:[0.56,0.83]}};
-REG_V2.ruins={tree:'tree',big:'oak',hero:'oak',bush:'bush',tuft:'tall',flower:'flowers',rock:'boulder',log:'crates',
-  path:['#76797C','#7F8285','#8C8F92','#84878A','#6A6D70'],tufts:['#86965E','#8FA066','#7E8E58'],spots:['#939B84','#AAB29B','#9DA58E'],
+REG_V2.ruins={tree:'rtree',big:'bigtree',hero:'bigtree',bush:'bush',tuft:'tall',flower:'flowers',rock:'rubble',log:'rubble',edgeFn:ruinsEdge,
+  path:['#9A9C98','#A8AAA6','#B4B6B2','#A2A4A0','#8A8C88'],tufts:['#86965E','#8FA066','#7E8E58'],spots:['#8FA06A','#A2B27C','#9AAA74'],
   shade:'#3A4632',vig:'#1E2A1E',hi:'#B4BCA4',lip:'#AAB29B',lipLine:'#7E7E78',
   terr:{art:'cliff',stairs:'stairs',sh:92,sa:[0.40,0.60],say:[0.2,0.9],rock:'#9A9A94',rockD:'#7E7E78',shade:'#3A4632',drip:['#86965E','#9AAA70']},
   water:{edge:'#4A6462',sh:'#93B2AE',deep:'#6E8C8A',glint:'#EEF6F4',wet:'#8A9680'},shore:['boulder','tall'],pal:[['#FFFFFF','#F7E68A','#F6C9DA']],bridge:{k:'bridge',s:1.42,a:[0.30,0.74],b:[0.74,0.37],hw:0.2,n:[0.9,0.44]}};
@@ -6702,7 +6690,8 @@ function regPrepV2(bk,id,M){
     sel.forEach(([x,y],i)=>{const k=b.k2&&(cnt++%4===3)?b.k2:b.k;const end=i===0||i===sel.length-1;objs.push([k,x+(R()-.5)*8,y+(R()-.5)*12,null,{s:(end?0.7:0.86+R()*0.28)*(b.s||1),fl:R()<.5,belt:1}])});
     const hw=b.w||18;for(let i=0;i<pts.length;i+=3){const [x,y]=pts[i];blk.push([x-hw,y-12,x+hw,y+4])}}
   /* 邊界 */
-  if(!M.cave){const T=V.tree,ex=M.exits.filter(e=>e.side&&(!e.hid||(e.gap&&secOpen(bk))));
+  if(!M.cave&&V.edgeFn){const ex=M.exits.filter(e=>e.side&&(!e.hid||(e.gap&&secOpen(bk))));V.edgeFn(M,R,(side,v)=>ex.some(e=>e.side===side&&Math.abs(v-e.c)<e.w/2+34),objs,W,H)}/* 143：遺城的邊界（北邊高樓天際線） */
+  else if(!M.cave){const T=V.tree,ex=M.exits.filter(e=>e.side&&(!e.hid||(e.gap&&secOpen(bk))));
     const gap=(side,v)=>ex.some(e=>e.side===side&&Math.abs(v-e.c)<e.w/2+34);
     for(let x=-10;x<W+30;x+=58)if(!gap('n',x))objs.push([T,x+(R()-.5)*20,58+(R()-.5)*16,null,{s:1+R()*0.2,br:0.9,fl:R()<.5,edge:1}]);
     for(let x=20;x<W+30;x+=64)if(!gap('n',x)&&R()<.6)objs.push([T,x+(R()-.5)*28,98+(R()-.5)*16+R()*12,null,{s:0.8+R()*0.2,fl:R()<.5,edge:1}]);
@@ -6961,6 +6950,28 @@ function regTopV2(M){const V=REG_V2[M.bk],W=M.W,H=M.H;
   return halo+`<defs><radialGradient id="cvg" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="${BR}"><stop offset="0" stop-color="${dk}" stop-opacity="0"/><stop offset="${(LR*0.55/BR).toFixed(4)}" stop-color="${dk}" stop-opacity="${(A*0.08).toFixed(3)}"/><stop offset="${(LR/BR).toFixed(4)}" stop-color="${dk}" stop-opacity="${A}"/><stop offset="1" stop-color="${dk}" stop-opacity="${A}"/></radialGradient><radialGradient id="cvl"><stop offset="0" stop-color="${gc}" stop-opacity="${(A*0.55).toFixed(3)}"/><stop offset=".5" stop-color="${gc}" stop-opacity="${(A*0.22).toFixed(3)}"/><stop offset="1" stop-color="${gc}" stop-opacity="0"/></radialGradient></defs><rect id="cvme" x="${-BR}" y="${-BR}" width="${BR*2}" height="${BR*2}" fill="url(#cvg)" transform="translate(${v2f(me.x)} ${v2f(me.y-24)})" pointer-events="none"/>${glows.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="84" fill="url(#cvl)" pointer-events="none"/>`).join('')}`}
 var regLit={};
 /* 139 */
+/* 143 */
+/* ===== 143（19i）：遺城的邊界、柏油路、斑馬線、坑洞、坑洞入口 ===== */
+function ruinsEdge(M,R,gap,objs,W,H){const T=['tower_a','tower_b','lean'];let i=Math.floor(R()*3);
+  for(let x=10;x<W+40;){const k=T[i++%3];if(!gap('n',x))objs.push([k,x+(R()-.5)*16,96+(R()-.5)*10,null,{fl:R()<.5,edge:1}]);x+=k==='tower_a'?120:150}/* 北：高樓天際線（上半截超出畫面） */
+  for(const [side,x0] of [['w',14],['e',W-14]])for(let y=200;y<H-60;y+=72){if(gap(side,y))continue;objs.push([R()<.6?'rtree':'rubble',x0+(R()-.5)*12,y+(R()-.5)*18,null,{fl:R()<.5,edge:1}])}
+  for(let x=30;x<W-20;x+=62)if(!gap('s',x))objs.push([R()<.5?'rubble':'bush',x+(R()-.5)*12,H-8,null,{s:0.8+R()*0.2,fl:R()<.5,edge:1}])}
+function ruins143(M){if(M.bk!=='ruins')return '';let s='';const f=v2f;
+  for(const p of M._P||[]){if(!p.road||!p.rb)continue;const P=p.rb.pts,d='M'+P.map(q=>f(q[0])+' '+f(q[1])).join(' L'),w=p.w||60;
+    s+=`<path d="${d}" stroke="#B4B6B2" stroke-width="${w+26}" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" stroke="#9A9C98" stroke-width="${w+26}" fill="none" stroke-dasharray="2 22" stroke-linecap="butt" opacity=".55"/>`/* 人行道：淡灰方磚 */
+      +`<path d="${d}" stroke="#55585B" stroke-width="${w}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`+(w>=60?`<path d="${d}" stroke="#E8E4D8" stroke-width="3" fill="none" stroke-dasharray="22 20" opacity=".55"/>`:'');
+    const RR=seededRnd(hashStr('crk'+M.id+P.length));for(let k=0;k<Math.floor(P.length/30);k++){const q=P[Math.floor(RR()*P.length)],a=RR()*6.28,L=12+RR()*18;s+=`<path d="M${f(q[0])} ${f(q[1])} l${f(Math.cos(a)*L)} ${f(Math.sin(a)*L)} l${f(Math.cos(a+1)*L*0.6)} ${f(Math.sin(a+1)*L*0.6)}" stroke="#3A3C3E" stroke-width="2" fill="none"/><path d="M${f(q[0])} ${f(q[1])} l${f(Math.cos(a)*L*0.6)} ${f(Math.sin(a)*L*0.6)}" stroke="#7FA054" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>`}}/* 裂縫長草 */
+  for(const [x,y,rot] of M.zebra||[]){let z='';for(let k=-3;k<=3;k++)z+=`<rect x="${k*12-4}" y="-18" width="8" height="36" fill="#EDE9DD" opacity=".7"/>`;s+=`<g transform="translate(${x} ${y}) rotate(${rot})">${z}</g>`}
+  if(M.pit){const [cx,cy,rx,ry]=M.pit;s+=`<defs><radialGradient id="pitg"><stop offset="0" stop-color="#000"/><stop offset=".75" stop-color="#0A0A10"/><stop offset="1" stop-color="#2A2A30"/></radialGradient><linearGradient id="pitl" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".5"/><stop offset=".5" stop-color="#9AE6FF" stop-opacity=".22"/><stop offset="1" stop-color="#C9A0FF" stop-opacity="0"/></linearGradient></defs><ellipse cx="${cx}" cy="${cy+10}" rx="${rx+16}" ry="${ry+12}" fill="#4A4C4E"/><ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#pitg)"/><rect class="pitlight" x="${cx-rx*0.45}" y="${cy-ry-260}" width="${rx*0.9}" height="${ry+260}" fill="url(#pitl)"/>`}
+  if(M.geo){for(let k=0;k<6;k++)s+=`<path d="M${180+k*88} 170 l30 30 l-30 30 l-30 -30z" fill="none" stroke="#C8D0D4" stroke-width="2" opacity=".5"/>`;s+=`<path d="M140 240 H660 M140 260 H660" stroke="#C8D0D4" stroke-width="1.5" opacity=".4"/>`}
+  return s}
+/* 坑洞入口：走到斷路盡頭站 5 秒 → 光柱變亮 → 進控制台 */
+let pitT=0,pitAt=null;
+function pitStep(){try{if(scene!=='explore'||exBiome!=='ruins'||regMap!=='core'||regBusy)return;const M=regCur();if(!M||!M.pitTrig)return;const m=curMe(),[x,y]=M.pitTrig;
+  if(Math.hypot(m.x-x,m.y-y)>32){pitAt=null;pitT=0;document.body.classList.remove('pitglow');return}
+  if(!pitAt||Math.hypot(m.x-pitAt[0],m.y-pitAt[1])>4){pitAt=[m.x,m.y];pitT=Date.now();return}
+  const t=Date.now()-pitT;if(t>2500)document.body.classList.add('pitglow');if(t>=5000){pitAt=null;pitT=0;document.body.classList.remove('pitglow');secEnter('ruins')}}catch(e){}}
+/* ===== 143 結束 ===== */
 /* ===== 139（19e）：後六區的地圖：開放、調色、程式畫的東西（熔岩、彩虹裂縫、鐵鏈、白煙、噴氣孔、燈籠串、壁畫、回音、鐵軌、星空） ===== */
 const REG_OPEN={volcano:0,canyon:0,ruins:0};/* 0＝還沒開放：只有測試模式看得到、進得去；各區章節做好改成 1 */
 const regOpenOk=bk=>REG_OPEN[bk]!==0||(typeof isTestMode==='function'&&isTestMode());
@@ -6976,7 +6987,7 @@ function rtDone(bk){rtPend--;clearTimeout(rtTimer);rtTimer=setTimeout(()=>{try{f
 function regTintPreload(bk){const T=(REGION_CFG[bk]||{}).tint;if(!T||!REGION_IMG[bk])return;for(const f of Object.keys(REGION_IMG[bk]))regSrc(bk,f)}
 /* 地圖上程式畫的東西（每次重畫地圖都會畫；動畫只用 CSS） */
 const SEAM_C=['#FF6B6B','#FFB347','#FFE66D','#7BE495','#5BC0EB','#9B8CFF','#F78FD8'];
-function regX139(M){let s='';const f=v2f;
+function regX139(M){let s=ruins143(M);const f=v2f;
   for(const [i,q] of (M.seams||[]).entries()){const d='M'+q.map((v,j)=>j%2?'':`${q[j]} ${q[j+1]}`).filter(Boolean).join(' L');s+=`<path d="${d}" stroke="#3A3030" stroke-width="7" fill="none" stroke-linecap="round" opacity=".35"/><path class="seam" style="animation-delay:-${(i*0.7).toFixed(1)}s" d="${d}" stroke="${SEAM_C[i%SEAM_C.length]}" stroke-width="3.2" fill="none" stroke-linecap="round"/>`}
   if(M.seamHub){const [x,y]=M.seamHub;s+=`<circle class="seamhub" cx="${x}" cy="${y}" r="16" fill="#FFFFFF" opacity=".8"/>`}
   for(const [x0,y0,x1,y1] of M.chains||[]){const L=Math.hypot(x1-x0,y1-y0),n=Math.floor(L/18);let r='';for(let i=0;i<=n;i++){const t=i/n,x=x0+(x1-x0)*t,y=y0+(y1-y0)*t;r+=`<ellipse cx="${f(x)}" cy="${f(y)}" rx="${i%2?5:8}" ry="${i%2?8:5}" fill="none" stroke="#2E2A28" stroke-width="3"/>`}s+=`<g opacity=".9">${r}</g>`}
@@ -6997,7 +7008,7 @@ function regX139(M){let s='';const f=v2f;
   return s}
 /* 機關：噴氣孔（每 6 秒噴 1.5 秒，站在上面被推開，不扣血）；回音岩壁（站在壁畫前 3 秒，浮出一句話） */
 const ECHO_L=['……還沒天亮。','……月亮在看。','……把燈點著。','……我們在等。','……往上走。'];let echoT=0,echoI=0,echoAt=null;
-function reg139Step(){try{if(scene!=='explore')return;const M=regCur();if(!M)return;const m=curMe(),now=Date.now();
+function reg139Step(){pitStep();try{if(scene!=='explore')return;const M=regCur();if(!M)return;const m=curMe(),now=Date.now();
   if(M.vents&&now%6000<1500)for(const [x,y] of M.vents){const d=Math.hypot(m.x-x,m.y-y);if(d<26){const k=(40-d)/(d||1),nx=m.x+(m.x-x||1)*k,ny=m.y+(m.y-y||0.5)*k;if(!regBlocked(M,nx,ny)){m.x=nx;m.y=ny;try{updateMe();updateCam()}catch(e){}}}}
   if(M.echo){const [x,y]=M.echo;if(Math.hypot(m.x-x,m.y-y)<60){if(!echoAt||Math.hypot(m.x-echoAt[0],m.y-echoAt[1])>4){echoAt=[m.x,m.y];echoT=now}else if(echoT&&now-echoT>=3000){echoT=0;try{fxAdd('gain',x,y-140,ECHO_L[echoI++%ECHO_L.length],3200)}catch(e){}}}else echoAt=null}}catch(e){}}
 /* ===== 51.3 機關、33＋51.4＋55.1 秘境（15t）=====
@@ -9531,14 +9542,14 @@ let wxCur=null;
 const WXN={volcano:30,canyon:22,ruins:16,snow:34,desert:26,marsh:14,forest:16,grass:7,cave:8,sakura:18,sakuraoff:8};/* 粒子數量控制在 40 個以內 */
 function wxReduced(){try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}}
 function setWeather(bk){
-  const el=document.getElementById('wx');if(!el)return;if(bk==='sakura'&&!sakuraLook())bk='sakuraoff';/* 82.2：花季外是落葉 */if(wxReduced()||!WXN[bk])bk=null;if(bk===wxCur)return;wxCur=bk;
+  const el=document.getElementById('wx');if(!el)return;if(bk==='sakura'&&!sakuraLook())bk='sakuraoff';/* 82.2：花季外是落葉 */if(wxReduced()||!WXN[bk])bk=null;{const wk=bk==='ruins'&&['avenue','core','secret'].includes(regMap)?'ruins2':bk;if(wk===wxCur)return;wxCur=wk}/* 143 */
   if(!bk){el.hidden=true;el.className='';el.innerHTML='';return}
   const r=Math.random,f=(v,d)=>v.toFixed(d==null?1:d);let h='';
   if(bk==='desert')for(let k=0;k<4;k++)h+=`<div class="sv" style="top:${f(52+k*11+r()*6)}vh;height:${f(7+r()*6)}vh;animation-duration:${f(6+r()*4)}s;animation-delay:${f(-r()*8)}s"></div>`;/* 貼地的沙幕 */
   if(bk==='marsh')h+='<div class="fog" style="top:8%"></div><div class="fog" style="top:55%;animation-duration:34s;animation-delay:-9s"></div>';
   if(bk==='volcano'||bk==='canyon'||bk==='ruins'){for(let k=0;k<WXN[bk];k++){let st;/* 139：灰燼往下飄、偶爾火星往上；星星閃、流星；花粉、彩虹光點 */
     if(bk==='volcano')st=k<4?`--x:${f(r()*100)}vw;--s:3px;--o:.9;--dx:${f(r()*10-5)}vw;--sw:0vw;--d:${f(5+r()*3)}s;--l:${f(-r()*8)}s;--a:wxRise;--c:#FF9A4D`:`--x:${f(r()*100)}vw;--s:${f(2+r()*2.5)}px;--o:.75;--dx:${f(r()*14-7)}vw;--sw:${f(r()*8-4)}vw;--d:${f(7+r()*5)}s;--l:${f(-r()*12)}s;--a:wxFall;--c:#5A5250`;
-    else st=`--x:${f(r()*100)}vw;--y:${f(5+r()*85)}vh;--dx:${f(r()*60-30,0)}px;--dy:${f(r()*50-25,0)}px;--d:${f(3+r()*4)}s;--l:${f(-r()*6)}s;--c:${bk==='canyon'?'#E8F0FF':k%3?'#C8E89A':['#FF9AA2','#FFD27A','#9AE6FF','#C9A0FF'][k%4]}`;
+    else st=`--x:${f(r()*100)}vw;--y:${f(5+r()*85)}vh;--dx:${f(r()*60-30,0)}px;--dy:${f(r()*50-25,0)}px;--d:${f(3+r()*4)}s;--l:${f(-r()*6)}s;--c:${bk==='canyon'?'#E8F0FF':wxCur==='ruins2'?['#FF9AA2','#FFD27A','#9AE6FF','#C9A0FF','#9BE59B'][k%5]:k%3?'#C8E89A':'#FFF3B0'}`;
     h+=`<i style="${st}"></i>`}if(bk==='canyon')h+='<b class="meteor"></b>';el.className='wx-'+(bk==='volcano'?'snow':'marsh')+' wx-'+bk;el.innerHTML=h;el.hidden=false;return}
   for(let k=0;k<WXN[bk];k++){let st;
     if(bk==='snow'){const near=k<12;st=near?`--x:${f(r()*100)}vw;--s:${f(5+r()*3)}px;--o:.95;--dx:${f(r()*14-7)}vw;--sw:${f(r()*8-4)}vw;--d:${f(5+r()*3)}s;--l:${f(-r()*8)}s;--a:wxFall`:`--x:${f(r()*100)}vw;--s:${f(2+r()*1.5)}px;--o:.55;--dx:${f(r()*10-5)}vw;--sw:${f(r()*6-3)}vw;--d:${f(10+r()*6)}s;--l:${f(-r()*16)}s;--a:wxFall`}

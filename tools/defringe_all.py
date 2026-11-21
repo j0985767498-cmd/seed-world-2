@@ -12,6 +12,7 @@ ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ASSETS=os.path.join(ROOT,'assets');BK=os.path.join(os.path.dirname(ROOT),'seed-world-2_asset_backup')
 REP=os.path.join(ROOT,'tools','_defringe_report')
 SKIP=('app'+os.sep,'ref'+os.sep)
+isfx=lambda f:os.path.splitext(os.path.basename(f))[0].lower().endswith('_fx')  # 水面、冰面的波紋層：白色就是內容本身，一律不處理
 def defringe(a,band=3):
     A=a[...,3];rgb=a[...,:3];mn=rgb.min(2);sat=rgb.max(2)-mn
     tr=A<8
@@ -38,7 +39,7 @@ def main():
     os.makedirs(REP,exist_ok=True);rep={};changed=[]
     for dp,_,fs in os.walk(ASSETS):
         for f in fs:
-            if not f.lower().endswith('.png'):continue
+            if not f.lower().endswith('.png') or isfx(f):continue
             p=os.path.join(dp,f);rel=os.path.relpath(p,ASSETS)
             if rel.startswith(SKIP):continue
             im=Image.open(p)
@@ -66,7 +67,7 @@ def sheets(rels,tag,rep=None):
 def clear_pockets(listfile):
     for line in open(listfile,encoding='utf8'):
         rel=line.strip()
-        if not rel:continue
+        if not rel or isfx(rel):continue
         p=os.path.join(ASSETS,rel.replace('/',os.sep));a=np.array(Image.open(p).convert('RGBA')).astype(float)
         A=a[...,3];mn=a[...,:3].min(2);sat=a[...,:3].max(2)-mn
         lab,k=nd.label((A>0)&(mn>236)&(sat<14))
@@ -83,7 +84,7 @@ def auto_pockets():
     os.makedirs(REP,exist_ok=True);changed=[]
     for dp,_,fs in os.walk(ASSETS):
         for f in fs:
-            if not f.lower().endswith('.png'):continue
+            if not f.lower().endswith('.png') or isfx(f):continue
             p=os.path.join(dp,f);rel=os.path.relpath(p,ASSETS)
             if rel.startswith(SKIP) or rel.startswith('fruits'+os.sep):continue
             im=Image.open(p)

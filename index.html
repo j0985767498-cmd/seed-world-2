@@ -911,6 +911,9 @@ details.gfold .gfb{margin-top:8px}
 #wpSwap img{max-width:70%;max-height:70%;object-fit:contain;pointer-events:none}#wpSwap i{position:absolute;right:-4px;bottom:-4px;font-style:normal;font-size:12px;font-weight:900;background:#5A3416;color:#fff;border-radius:8px;padding:0 4px;pointer-events:none}#wpSwap[hidden]{display:none}
 @media (max-width:349px){#wpSwap{bottom:calc(176px*var(--h188-cs,1) + env(safe-area-inset-bottom,0px))}}
 body:not(.wild) #wpSwap,body.vnStory #wpSwap,body.pnlOpen #wpSwap,body.shFull #wpSwap{display:none}
+/* 191 特效層：在人物、怪物上面，傷害數字（#dmgL 58）和介面下面 */#fxCv{position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:9}body:not(.wild) #fxCv{display:none}
+#fxFlash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:57}#fxFlash.on{animation:fxFl .08s linear}@keyframes fxFl{0%{opacity:.28}100%{opacity:0}}
+.fxshake{animation:fxSh .2s linear}@keyframes fxSh{25%{transform:translate(3px,-2px)}50%{transform:translate(-3px,2px)}75%{transform:translate(2px,1px)}}
 /* 184 技能按鈕（野外、秘境）：翻滾在綠色按鈕左邊，技能 1、2 往左上排（不蓋撿起、補血藥、背包、搖桿） */.skb{position:fixed;z-index:12;width:64px;height:64px;border-radius:50%;border:3px solid var(--ol,#5A3416);outline:3px solid var(--skr,transparent);outline-offset:-1px;background:#FFF6DE;box-shadow:0 3px 0 var(--ol,#5A3416);padding:0;display:flex;align-items:center;justify-content:center;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;--skc:#5A3416}.skb::after{content:'';position:absolute;inset:-5px;border-radius:50%}.skb[hidden],#skBar[hidden]{display:none}
 .skb svg{width:34px;height:34px;stroke:var(--skc);filter:drop-shadow(0 1px 0 rgba(0,0,0,.25));pointer-events:none}.skb:active{transform:translateY(2px)}
 .skb .skcd{position:absolute;inset:0;border-radius:50%;background:conic-gradient(rgba(30,20,10,.6) var(--p,0deg),transparent 0);pointer-events:none}.skb .skcd[hidden]{display:none}
@@ -2054,7 +2057,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-20s';
+const BUILD='2026-11-20t';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -8855,7 +8858,7 @@ function pDie(){try{comboReset()}catch(e){}/* 187 */const lost=tripLose();pHP=pM
   setTimeout(()=>{try{noteOpen(`<h2>你倒下了</h2><p class="note">被送回農場，血量補滿了。${lost?'這趟撿到、還沒帶回來的素材掉了一半。':''}</p><p class="note">金幣、種子、果實、道具都沒有少。</p>`)}catch(e){}},400)}
 function pRegen(){autoPotCheck();const now=Date.now();if(scene!=='explore'){if(pHP<pMax()){pHP=pMax();renderHP()}pRegAt=now;return}const dt=Math.min(5,(now-(pRegAt||now))/1000);pRegAt=now;if(pHP<pMax()&&now-pFightAt>=PHP_CALM){const ed=Math.min(dt,(now-pFightAt-PHP_CALM)/1000);if(ed>0){pHP=Math.min(pMax(),pHP+pMax()*PHP_REGEN*ed);renderHP()}}}/* 只算安靜滿 5 秒之後的時間 */
 function drinkPot(k,quiet){k=k||potPick();const T=POT_TYPES.find(x=>x.k===k)||POT_TYPES[0];const it=state.items||(state.items={}),now=Date.now(),say=m=>{if(!quiet)toast(m)};if(scene!=='explore'){say('補血藥只能在野外喝');return false}if(!(it[T.k]>0)){say(`沒有${T.n}了（到城鎮的道具行製作）`);return false}if(now<potCd){say(`還要 ${Math.ceil((potCd-now)/1000)} 秒才能再喝`);return false}
-  if(pHP>=pMax()){say('血量是滿的');return false}it[T.k]--;potCd=now+POT_CD;{const h0=pHP;pHP=Math.min(pMax(),pHP+pMax()*T.heal);try{const me=curMe();dmgShow(me.x,me.y-78,pHP-h0,{heal:1,key:'meh'})}catch(e){}}/* 152：綠字 */saveLite();renderHP();potCdRun();return true}/* 144：k＝哪一種；quiet＝自動喝藥不跳提示 */
+  if(pHP>=pMax()){say('血量是滿的');return false}it[T.k]--;potCd=now+POT_CD;{const h0=pHP;pHP=Math.min(pMax(),pHP+pMax()*T.heal);try{const me=curMe();fxT('heal',me.x,me.y,fxCommon())}catch(e){}/* 191 */try{const me=curMe();dmgShow(me.x,me.y-78,pHP-h0,{heal:1,key:'meh'})}catch(e){}}/* 152：綠字 */saveLite();renderHP();potCdRun();return true}/* 144：k＝哪一種；quiet＝自動喝藥不跳提示 */
 function renderHP(){try{let b=document.getElementById('hpBar'),pb=document.getElementById('potBtn');
   if(!b){b=document.createElement('div');b.id='hpBar';b.innerHTML='<i></i><span></span>';document.body.appendChild(b)}
   if(!pb){pb=document.createElement('button');pb.id='potBtn';pb.type='button';pb.setAttribute('aria-label','補血藥（長按換種類）');potSlotBind(pb);document.body.appendChild(pb)}
@@ -8976,7 +8979,7 @@ function monDebris(m){try{const L=document.getElementById('monSw');if(!L)return;
   for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,d=22+Math.random()*26;s+=`<circle cx="${m.x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(2.5+Math.random()*2.5).toFixed(1)}" fill="${c}" stroke="#3B2614" stroke-width="1" style="--dx:${(Math.cos(a)*d).toFixed(1)}px;--dy:${(Math.sin(a)*d-14).toFixed(1)}px"/>`}
   g.innerHTML=s;L.appendChild(g);setTimeout(()=>{try{g.remove()}catch(e){}},520)}catch(e){}}
 /* ===== 141 結束 ===== */
-function monHit(i,dmg,crit,noSw,pet){const m=MON_RT&&MON_RT.list[i];if(!m||m.dead)return;if(!pet)try{comboHit(m)}catch(e){}/* 187 */const now=Date.now();const atk=dmg!=null?dmg:pAtkNow();m.hp=Math.max(0,m.hp-atk);try{dmgShow(m.x,monHeadY(m),atk,{key:'m'+i,crit:!!crit,pet:!!pet})}catch(e){}/* 152、159；170：神之子出手的樣式 */m.lastHit=now;pFightAt=now;if(!m.aggro){m.aggro=1;m.ox=m.x;m.oy=m.y}/* 131 */if(!noSw)monSwing(m);try{sfx('pop',60)}catch(e){}
+function monHit(i,dmg,crit,noSw,pet){const m=MON_RT&&MON_RT.list[i];if(!m||m.dead)return;if(!pet)try{comboHit(m);fxOnHit(m.x,(m.y+monHeadY(m))/2,crit)}catch(e){}/* 187、191 */const now=Date.now();const atk=dmg!=null?dmg:pAtkNow();m.hp=Math.max(0,m.hp-atk);try{dmgShow(m.x,monHeadY(m),atk,{key:'m'+i,crit:!!crit,pet:!!pet})}catch(e){}/* 152、159；170：神之子出手的樣式 */m.lastHit=now;pFightAt=now;if(!m.aggro){m.aggro=1;m.ox=m.x;m.oy=m.y}/* 131 */if(!noSw)monSwing(m);try{sfx('pop',60)}catch(e){}
   const s=m.el&&m.el.querySelector('.ms'),hasHit=!!MON_IMG[m.k+'_hit'];
   if(hasHit&&s){s.innerHTML=monImgTag(m.k,m.boss,true);clearTimeout(m._ht);if(m.hp>0)m._ht=setTimeout(()=>{if(!m.dead)s.innerHTML=monImgTag(m.k,m.boss,false)},250)}
   if(hasHit)monReplay(s,'hit');else monHit2(m,s);monDebris(m);monBar(m,true);/* 141.3 */
@@ -10836,14 +10839,15 @@ function wpnDmg(w,mul){const W=w&&w.W;let d=pAtkNow()*(1+(w?wpStat('atk'):0))/* 
 function hitMon(m,o){if(!MON_RT||!m||m.dead)return false;const i=MON_RT.list.indexOf(m);if(i<0)return false;monHit(i,o.d,o.crit,true,o.pet);return true}
 /* 主、僕人受到的傷害（擋住時不算） */
 function bossDealt(b,o){if(!b||b.done)return;if(b.kind==='servant'&&!b.active){b.active=true;b.until=bossNow()+900;bossJump(b,bossNow());bossSvNet(b)}/* 162：第一次被打也開打 */const now=bossNow(),y=b.y-BOSS_HU*(b.def.h||1);if(b.mode==='guard'){try{dmgShow(b.x,y,0,{miss:1,text:'擋住了',key:'boss'})}catch(e){}return}
-  if(!o.pet)try{comboHit(b)}catch(e){}/* 187 */b.myDmg+=o.d;try{dmgShow(b.x,y,o.d,{key:'boss',crit:o.crit,pet:!!o.pet})}catch(e){}b.dmg[bossMe()]=b.myDmg;b.hitT=now;if(b.net)lordPushDmg(b)}
+  if(!o.pet)try{comboHit(b);fxOnHit(b.x,b.y-BOSS_HU*(b.def.h||1)*0.5,o.crit)}catch(e){}/* 187、191 */b.myDmg+=o.d;try{dmgShow(b.x,y,o.d,{key:'boss',crit:o.crit,pet:!!o.pet})}catch(e){}b.dmg[bossMe()]=b.myDmg;b.hitT=now;if(b.net)lordPushDmg(b)}
 const dealT=(t,o)=>t.boss?bossDealt(t.boss,o):hitMon(t.m,o);
 const tPos=t=>t.boss?[t.boss.x,t.boss.y-14]:[t.m.x,t.m.y-14];
 const monsAlive=()=>MON_RT?MON_RT.list.filter(m=>m&&!m.dead):[];
 /* 特效（世界座標，畫在 #monSw） */
-function fxW(x,y,html,ms,rot){const L=document.getElementById('monSw');if(!L)return null;const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})${rot?` rotate(${rot.toFixed(1)})`:''}`);g.setAttribute('pointer-events','none');g.innerHTML=html;L.appendChild(g);setTimeout(()=>{try{g.remove()}catch(e){}},ms);return g}
+function fxW(x,y,html,ms,rot){if(fxMute)return null;/* 191 */const L=document.getElementById('monSw');if(!L)return null;const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})${rot?` rotate(${rot.toFixed(1)})`:''}`);g.setAttribute('pointer-events','none');g.innerHTML=html;L.appendChild(g);setTimeout(()=>{try{g.remove()}catch(e){}},ms);return g}
 const angTo=(x0,y0,x1,y1)=>Math.atan2(y1-y0,x1-x0)*180/Math.PI;
-function wpnFire(w,t){skPreAtk();/* 184 */const me=curMe(),[tx,ty]=tPos(t),W=w.W,now=Date.now(),dirx=tx>=me.x?1:-1,ox=me.x,oy=me.y-24,a=angTo(ox,oy,tx,ty);c3Atk={at:now,dur:W.cd};meAct={type:'atk',at:now,dur:W.cd};if(!wpnFire._p||now-wpnFire._p>400){wpnFire._p=now;try{pushPos(true)}catch(e){}}/* 171：攻擊動作（別人用 a 看到） */pFightAt=now;wpnAnim(W.k);/* 179.1：不再拔出、收回 */
+function wpnFire(w,t){skPreAtk();/* 184 */const fpk=fxHitKind;fxHitKind='atk';try{wpnFire2(w,t)}finally{fxHitKind=fpk;fxMute=false}}/* 191：命中特效的情境 */
+function wpnFire2(w,t){const me=curMe(),[tx,ty]=tPos(t),W=w.W,now=Date.now(),dirx=tx>=me.x?1:-1,ox=me.x,oy=me.y-24,a=angTo(ox,oy,tx,ty);c3Atk={at:now,dur:W.cd};meAct={type:'atk',at:now,dur:W.cd};if(!wpnFire._p||now-wpnFire._p>400){wpnFire._p=now;try{pushPos(true)}catch(e){}}/* 171：攻擊動作（別人用 a 看到） */pFightAt=now;wpnAnim(W.k);/* 179.1：不再拔出、收回 */if(['sword','dagger','hammer','axe','scythe'].includes(W.k))fxMute=fxT('swing',me.x,me.y,fxAtkC(w));/* 191：有逐格刀光就不畫舊的 */
   if(W.k==='sword'){fxW(ox,oy,`<path class="wfx-arc" d="M8 -22 A26 26 0 0 1 8 22 A20 20 0 0 0 8 -16Z" fill="rgba(255,255,255,.85)"/>`,260,a);dealT(t,wpnDmg(w))}
   else if(W.k==='dagger'){wpnAlt=-wpnAlt;fxW(ox,oy,`<path class="wfx-arc" d="M6 ${-12*wpnAlt} L30 ${4*wpnAlt} L8 ${-2*wpnAlt}Z" fill="#FF5A4A" opacity=".9"/>`,200,a);dealT(t,wpnDmg(w))}
   else if(W.k==='hammer'){fxW(tx,ty+10,`<g class="wfx-ring"><circle r="50" fill="none" stroke="#FF9A3A" stroke-width="4"/></g><path d="M-14 2 l8 -3 l5 4 l7 -5 l8 3 M-6 -1 l2 8 M5 1 l3 7" stroke="#5A3A1A" stroke-width="1.6" fill="none" opacity=".7"/>`,450);
@@ -10882,33 +10886,34 @@ function mzMe(w,tx){try{if(!document.querySelector('#meGAv g.c3'))return null;co
 function mzFire(w,t){const W=w.W,k=W.k,c3=!!document.querySelector('#meGAv g.c3'),G=c3&&C3_WPN[w.crop]&&c3G(C3_WPN[w.crop].act),n=G?G.n:6,delay=c3?Math.round(W.cd*(MZ_FR[k]||0)/n)+(MZ_FR[k]?10:0):0;
   const go=()=>{if(scene!=='explore'||!state)return;if(k!=='fan'&&(t.boss?t.boss.done:(!t.m||t.m.dead)))return;/* 等出手那一格時目標已經倒了：扇照樣飛出去，其他不射 */
     const me=curMe(),[tx,ty]=tPos(t),ox=me.x,oy=me.y-24,dirx=tx>=me.x?1:-1,P=c3?mzMe(w,tx):null;
+    fxT('muzzle',P?P[0]:ox,P?P[1]:oy,fxAtkC(w));/* 191 */
     if(P&&mzShow)fxW(P[0],P[1],'<circle r="2.6" fill="#ff1e1e" stroke="#fff" stroke-width=".8"/>',800);
     if(k==='fan'){const x=P?P[0]:ox,y=P?P[1]:oy;wpnShot({k:'fan',x,y,a:Math.atan2(ty-y,tx-x),max:W.range*1.2,w,hit:new Set(),cx:ox,cy:oy})}
     else if(k==='staff')wpnShot({k:'star',x:P?P[0]:ox,y:P?P[1]:oy,t,w});
     else if(k==='gun')wpnShot({k:'bullet',x:P?P[0]:ox+dirx*10,y:P?P[1]:oy,t,w,tx,ty});
-    else{const PP=P||c3PodPos(),px0=PP?PP[0]:ox-dirx*12,py0=PP?PP[1]:me.y-80;for(let s=0;s<(W.shots||3)*(skSat()?2:1);s++){const pa=Math.random()*Math.PI*2,pr=Math.random()*25,px=tx+Math.cos(pa)*pr,py=ty+Math.sin(pa)*pr;/* 166：半徑 25 內 */wpnShot({k:'pod',x:px0,y:py0,x0:px0,y0:py0,px,py,u:0,dur:Math.hypot(px-ox,py-oy)/600+0.15+s*0.08,w,t})}}};
+    else{const PP=P||c3PodPos(),px0=PP?PP[0]:ox-dirx*12,py0=PP?PP[1]:me.y-80;for(let s=0;s<(W.shots||3)*(skSat()?2:1);s++){const pa=Math.random()*Math.PI*2,pr=Math.random()*25,px=tx+Math.cos(pa)*pr,py=ty+Math.sin(pa)*pr;/* 166：半徑 25 內 */wpnShot({k:'pod',x:px0,y:py0,x0:px0,y0:py0,px,py,u:0,dur:Math.hypot(px-ox,py-oy)/600+0.15+s*0.08,w,t,satC:s>=(W.shots||3)?SKB.satC:null})}}};/* 191：衛星砲多出來的那幾發落地＝pulse */
   if(delay)setTimeout(()=>{try{go()}catch(e){}},delay);else go()}
 /* 設定：測試用「顯示出手點」（之後拿掉） */
 function mzToggle(){mzShow=!mzShow;try{localStorage.setItem('sw_mz',mzShow?'1':'0')}catch(e){}}
 /* ===== 179 結束 ===== */
 /* 子彈：速度約 600／秒；飛超過距離 ×1.2 就消失；扇會穿透 */
 const WPN_PROJ=[];let wpnRaf=0,wpnLast=0;
-function wpnShot(p){const L=document.getElementById('monSw');if(L){const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('pointer-events','none');
+function wpnShot(p){p.fxk=p.mul||p.cb?'sk':'atk';const C=p.fxc||(p.w&&p.fxk==='atk'?fxAtkC(p.w):null),L=(C&&fxProj(p,C))?null:document.getElementById('monSw');/* 191：有逐格飛行物就不畫舊的 */if(L){const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('pointer-events','none');
     g.innerHTML=p.svg?p.svg:p.k==='sb'?'<circle r="2.6" fill="#FFE28A" stroke="#8A5A10" stroke-width=".8"/>':p.k==='fan'?'<path d="M-10 -6 Q4 0 -10 6 Q0 0 -10 -6Z" fill="#FF8FC0" stroke="#FFD6E8" stroke-width="1"/>':p.k==='star'?'<path d="M0 -6 L1.8 -1.8 6 0 1.8 1.8 0 6 -1.8 1.8 -6 0 -1.8 -1.8Z" fill="#C79BFF" stroke="#F0E2FF" stroke-width=".8"/>':p.k==='bullet'?'<circle r="2.6" fill="#FFE28A" stroke="#8A5A10" stroke-width=".8"/>':'<circle r="4" fill="#BFE9A8" stroke="#3E6B2E" stroke-width="1.2"/>';L.appendChild(g);p.g=g}
   p.d=0;WPN_PROJ.push(p);if(!wpnRaf&&typeof requestAnimationFrame==='function'){wpnLast=0;wpnRaf=requestAnimationFrame(wpnLoop)}}
 function wpnBoom(x,y,r,w,t){fxW(x,y,`<g class="wfx-ring"><circle r="${r}" fill="rgba(255,200,90,.35)" stroke="#FFB347" stroke-width="2"/></g>`,350);
   if(t&&t.boss){if(Math.hypot(t.boss.x-x,t.boss.y-14-y)<=r+BOSS_HU*0.5)dealT(t,wpnDmg(w))}else for(const m of monsAlive())if(Math.hypot(m.x-x,m.y-14-y)<=r)hitMon(m,wpnDmg(w))}
-function wpnStep(dt){for(let k=WPN_PROJ.length-1;k>=0;k--){const p=WPN_PROJ[k];let done=false;
+function wpnStep(dt){for(let k=WPN_PROJ.length-1;k>=0;k--){const p=WPN_PROJ[k];let done=false;const fpk=fxHitKind;fxHitKind=p.fxk||'atk';/* 191 */
     if(p.k==='fan'){const s=600*dt;p.x+=Math.cos(p.a)*s;p.y+=Math.sin(p.a)*s;p.d+=s;for(const m of monsAlive()){if(p.hit.has(m))continue;if(Math.hypot(m.x-p.x,m.y-14-p.y)<=18){p.hit.add(m);hitMon(m,wpnDmg(p.w));pHP=Math.min(pMax(),pHP+pMax()*0.02);try{renderHP()}catch(e){}}}
       if(bossRT&&bossRT.active&&!bossRT.done&&!p.hit.has(bossRT)&&Math.hypot(bossRT.x-p.x,bossRT.y-14-p.y)<=24){p.hit.add(bossRT);bossDealt(bossRT,wpnDmg(p.w))}if((p.cx!=null?Math.hypot(p.x-p.cx,p.y-p.cy):p.d)>p.max)done=true}/* 179.2：扇的距離從人物位置算 */
     else if(p.k==='sb'){const s=600*dt;p.x+=Math.cos(p.a)*s;p.y+=Math.sin(p.a)*s;p.d+=s;for(const t of skTs()){if(Math.hypot(t.x-p.x,t.y-14-p.y)<=(t.boss?24:14)){skHit(t,p.mul);done=true;break}}if(p.d>p.max)done=true}/* 184：掃射 */
     else if(p.k==='pt'){p.u+=dt/p.dur;const u=Math.min(1,p.u);p.x=p.x0+(p.x1-p.x0)*u;p.y=p.y0+(p.y1-p.y0)*u-(p.arc||0)*Math.sin(Math.PI*u);if(u>=1){try{p.cb&&p.cb()}catch(e){}done=true}}/* 184：飛到一點 */
-    else if(p.k==='pod'){p.u+=dt/p.dur;const u=Math.min(1,p.u);p.x=p.x0+(p.px-p.x0)*u;p.y=p.y0+(p.py-p.y0)*u-60*Math.sin(Math.PI*u);if(u>=1){wpnBoom(p.px,p.py,35,p.w,p.t);done=true}}
+    else if(p.k==='pod'){p.u+=dt/p.dur;const u=Math.min(1,p.u);p.x=p.x0+(p.px-p.x0)*u;p.y=p.y0+(p.py-p.y0)*u-60*Math.sin(Math.PI*u);if(u>=1){wpnBoom(p.px,p.py,35,p.w,p.t);if(p.satC)fxT('pulse',p.px,p.py,p.satC);done=true}}
     else{const alive=p.t.boss?(!p.t.boss.done):(!p.t.m.dead);const [tx,ty]=alive?tPos(p.t):[p.tx||p.x,p.ty||p.y];const dx=tx-p.x,dy=ty-p.y,dd=Math.hypot(dx,dy),s=600*dt;
       if(dd<=s+6){if(alive){const o=wpnDmg(p.w);dealT(p.t,o);if(p.k==='bullet')fxW(tx,ty,'<g class="wfx-pop"><circle cx="-4" cy="-2" r="2.4" fill="#FFFBE8"/><circle cx="3" cy="-4" r="2" fill="#FFE07A"/><circle cx="1" cy="3" r="2.2" fill="#FFFBE8"/><circle cx="-2" cy="4" r="1.6" fill="#FFE07A"/></g>',380)}done=true}
       else{p.x+=dx/dd*s;p.y+=dy/dd*s;p.d+=s;if(p.d>(p.w.W.range*1.2+40))done=true}}
     if(p.g)p.g.setAttribute('transform',`translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})${p.k==='fan'?` rotate(${(p.a*180/Math.PI).toFixed(1)})`:''}`);
-    if(done){try{p.g&&p.g.remove()}catch(e){}WPN_PROJ.splice(k,1)}}}
+    if(done){p.dead=true;try{p.g&&p.g.remove()}catch(e){}WPN_PROJ.splice(k,1)}fxHitKind=fpk;}}
 /* ===== 184（20m）：武器技能（每把 2 招＋覺醒）、翻滾閃避 =====
    數字都在 SKILLS（之後只改表；189 起翻滾 SK_ROLL 拿掉）。冷卻、狀態都在 SKC／SKB（不存檔）。普通攻擊 189 起按攻擊鍵（atkTick）；技能另外按（#skBar，只在野外、秘境）。
    傷害＝pAtk × 倍率 × 1.3^(階−1)，可以爆擊（同普通攻擊）。3 階解鎖技能 2、4 階技能 1 強化（*4 欄位）、6 階技能 2 換成覺醒（aw，冷卻照技能 2）。
@@ -10933,7 +10938,7 @@ const skV=(d,k)=>d.up&&d[k+'4']!=null?d[k+'4']:d[k];/* 4 階強化 */
 function skDmg(mul,force){const w=curWpn(),W=w&&w.W;let d=pAtkNow()*(1+wpStat('atk'))*mul*Math.pow(1.3,((w&&w.tier)||1)-1)*skStarK();/* 186：星星 */const crit=force||Math.random()<0.05+((W&&W.crit)||0)+wpStat('crit');if(crit)d*=1.5+((W&&W.critDmg)||0)+wpStat('critDmg');return {d:Math.max(1,Math.round(d)),crit}}
 /* 打得到的對象：一般怪＋主／僕人 */
 function skTs(){const L=monsAlive().map(m=>({m,x:m.x,y:m.y}));try{const b=bossRT;if(b&&b.def&&!b.done&&!b.hidden)L.push({boss:b,x:b.x,y:b.y})}catch(e){}return L}
-const skHit=(t,mul,force)=>{const o=skDmg(mul,force);try{dealT(t,o)}catch(e){}return o.d};
+const skHit=(t,mul,force)=>{const o=skDmg(mul,force),pk=fxHitKind;fxHitKind='sk';try{dealT(t,o)}catch(e){}fxHitKind=pk;return o.d};/* 191：技能的命中特效 */
 const skIn=(t,x,y,r)=>Math.hypot(t.x-x,t.y-y)<=r;
 function skInRect(t,ox,oy,dx,dy,L,W){const a=(t.x-ox)*dx+(t.y-oy)*dy,p=Math.abs(-(t.x-ox)*dy+(t.y-oy)*dx);return a>=-12&&a<=L&&p<=W/2}
 function skFaceV(){const a=(meFace|0)*Math.PI/4;return [Math.cos(a),Math.sin(a)]}
@@ -10953,14 +10958,78 @@ function skBlink(x,y,then){const g=document.getElementById('meG');try{if(g){g.st
 /* 受傷：無敵、減傷、雷霆護身（pDamage 會先問這裡；回 null＝不扣血） */
 function skHurt(n,src){const now=skNow();if(now<SKB.inv){try{const me=curMe();dmgShow(me.x,me.y-78,0,{miss:1,text:'閃避',key:'me'})}catch(e){}return null}
   SKB.red=SKB.red.filter(r=>r.until>now);for(const r of SKB.red)n*=1-r.k;n*=1-wpStat('def');/* 186：正方形 */
-  const A=SKB.aegis&&SKB.aegis.until>now?SKB.aegis:null;if(A&&src){const t=src.def?{boss:src,x:src.x,y:src.y}:{m:src,x:src.x,y:src.y};skHit(t,A.bolt);skFx.bolt({x:t.x,y:t.y})}
+  const A=SKB.aegis&&SKB.aegis.until>now?SKB.aegis:null;if(A&&src){const t=src.def?{boss:src,x:src.x,y:src.y}:{m:src,x:src.x,y:src.y};skHit(t,A.bolt);fxOr(A.c,'pulse',t.x,t.y,()=>skFx.bolt({x:t.x,y:t.y}))}
   return Math.max(1,Math.round(n))}
 const skRedAdd=(k,ms)=>SKB.red.push({k,until:skNow()+ms});
 /* 普通攻擊的掛鉤：集中砲火間隔減半、衛星砲飛彈加倍、影步必定爆擊、雷神降臨附帶落雷 */
 const skIv=()=>(skNow()<SKB.focus?0.5:1)/(1+wpStat('spd'));/* 186：甜甜圈攻速 */
 const skSat=()=>skNow()<SKB.sat;
 function skPreAtk(){skForce=false;if(SKB.crits>0){SKB.crits--;skForce=true}}
-function skPostAtk(w,t){skForce=false;const T=SKB.thor;if(T&&T.until>skNow()&&t){const [x,y]=tPos(t);skHit(t,T.bolt);skFx.bolt({x,y:y+14})}}
+function skPostAtk(w,t){skForce=false;const T=SKB.thor;if(T&&T.until>skNow()&&t){const [x,y]=tPos(t);skHit(t,T.bolt);fxOr(T.c,'pulse',x,y+14,()=>skFx.bolt({x,y:y+14}))}}
+/* ===== 191（20t）：特效層——武器的普通攻擊與技能改播逐格特效圖 =====
+   素材 assets/fx/<鍵>.webp＋assets/fx/plan.json（之後只換圖和 plan，程式不用動）。地圖上一張 #fxCv（CSS 像素 ×1，不乘 devicePixelRatio——iPhone 28→60 FPS 的關鍵），
+   在人物、怪物上面、傷害數字和介面下面；沒有特效在播時不跑迴圈。fxT(時機, 世界 x, y, 情境) 有 plan 而且圖載好就播、回 true（呼叫的地方就不畫舊的），否則回 false（照舊畫）。
+   情境 C={crop, key:'atk'|'s1'|'s2', tier, face(±1), own}；s1 三組＝1～2／3～4／5～6 階、s2 三組＝2～3／4～5／6 階（fxGrp）。
+   size／dx／dy 的單位是人物格內像素（人物高 120）→ 世界 ×(C3_HU/C3.H×1.15) → 螢幕 ×CTM。上限 FX_MAX；別人的只播 cast／target／final／proj；省電只播 target／final／proj。 ===== */
+let FXP=null,FXPst=0,fxRaf=0,fxHitKind=null,fxSkCtx=null,fxMute=false,fxHitN=0,fxHitF=0;const FXI={},FXIst={},FXQ=[],FX_MAX=40;
+function fxPlan(){if(FXPst)return FXP;FXPst=1;try{fetch('assets/fx/plan.json?v='+BUILD).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{FXP=j;fxPreloadCur()}).catch(()=>{FXPst=2})}catch(e){FXPst=2}return null}
+function fxImg(k){const s=FXIst[k];if(s)return s===1;FXIst[k]=-1;try{const im=new Image();im.onload=()=>{FXI[k]=im;FXIst[k]=1};im.onerror=()=>{FXIst[k]=2};im.src=`assets/fx/${k}.webp?v=${BUILD}`}catch(e){FXIst[k]=2}return false}
+const fxGrp=(key,t)=>key==='s1'?(t<=2?0:t<=4?1:2):(t<=3?0:t<=5?1:2);
+function fxSet(C){if(!FXP||!C)return null;if(C.key==='common')return FXP.common;const W=FXP.weapons&&FXP.weapons[C.crop];if(!W)return null;if(C.key==='atk')return W.atk;const g=W[C.key];return g?g[fxGrp(C.key,C.tier||1)]:null}
+const fxL=(S,tm)=>{const v=S&&S[tm];return !v?null:Array.isArray(v)?v:[v]};/* plan 裡單一的 proj、aura 可以直接寫物件 */
+const fxHas=(C,tm)=>{const L=fxL(fxSet(C),tm);return !!(L&&L.length)};
+function fxReady(L){let ok=true;for(const e of L)if(!fxImg(e.k)||!(FXP.fx&&FXP.fx[e.k]))ok=false;return ok}
+/* 裝備的武器：atk、s1、s2 目前這一組＋共用的，用到才載 */
+let fxPreK='';
+function fxPreloadCur(){fxPlan();const w=curWpn();if(!FXP)return;const k=w?w.crop+'|'+w.tier:'-';if(k===fxPreK)return;fxPreK=k;const want=new Set();
+  if(w)for(const key of ['atk','s1','s2']){const S=fxSet({crop:w.crop,key,tier:w.tier||1});if(S)for(const t in S)for(const e of fxL(S,t))want.add(e.k)}
+  for(const t in FXP.common||{})for(const e of fxL(FXP.common,t))want.add(e.k);for(const k2 of want)fxImg(k2)}
+/* 離開野外：放掉圖（下次用到再載） */
+function fxRelease(){for(const k in FXI){delete FXI[k];delete FXIst[k]}fxPreK='';FXQ.length=0}
+const fxK=()=>(typeof C3_HU!=='undefined'?C3_HU:57.5)/((typeof C3!=='undefined'&&C3.H)||120)*1.15;
+function fxCv(){let c=document.getElementById('fxCv');if(!c){c=document.createElement('canvas');c.id='fxCv';c.setAttribute('aria-hidden','true');document.body.appendChild(c)}const W=innerWidth,H=innerHeight;if(c.width!==W||c.height!==H){c.width=W;c.height=H}return c}
+/* 播一組：L＝plan 裡的清單 */
+function fxPlay(L,x,y,o){o=o||{};const K=fxK(),now=performance.now(),face=o.face<0?-1:1;
+  for(const e of L){const m=FXP.fx[e.k];if(!m)continue;const n=e.count||1;
+    for(let j=0;j<n;j++){const ox=e.spread?(Math.random()-.5)*2*e.spread:0,oy=e.spread?(Math.random()-.5)*e.spread:0,fps=e.fps||20;
+      if(FXQ.length>=FX_MAX){const i=FXQ.findIndex(p=>!p.own);FXQ.splice(i>=0?i:0,1)}
+      FXQ.push({k:e.k,m,x,y,dx:((e.dx||0)+ox)*K*face,dy:((e.dy||0)+oy)*K,size:(e.size||100)*K,t0:now+(e.delay||0)*1000,fps,life:o.life||Math.max(m.n/fps,e.hold||0),loop:e.loop||o.loop,only:e.only,sy:e.sy||1,rot:(e.rot||0)+(o.rot||0),sx:face<0&&o.rot==null?-1:1,follow:o.follow,own:!o.remote,a:o.a==null?1:o.a})}}
+  if(!fxRaf)fxRaf=requestAnimationFrame(fxLoop)}
+function fxLoop(){fxRaf=0;const c=fxCv(),g=c.getContext('2d');g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,c.width,c.height);if(!FXQ.length)return;fxHitN=0;
+  let M=null;try{M=sceneEl.getScreenCTM()}catch(e){}if(!M){FXQ.length=0;return}const now=performance.now();
+  for(let i=0;i<FXQ.length;i++){const p=FXQ[i],age=(now-p.t0)/1000;if(age<0)continue;let X=p.x,Y=p.y,rot=p.rot;
+    if(p.follow){const f=p.follow();if(!f||f.dead){FXQ.splice(i--,1);continue}X=f.x;Y=f.y;if(f.a!=null)rot=f.a}
+    else if(age>p.life){FXQ.splice(i--,1);continue}
+    const im=FXI[p.k];if(!im)continue;const m=p.m,fi=p.loop?Math.floor(age*p.fps)%Math.min(m.n,8):Math.min(m.n-1,Math.floor(age*p.fps)),sx=(fi%m.cols)*m.c,sy=Math.floor(fi/m.cols)*m.c;
+    const wx=X+p.dx,wy=Y+p.dy,px=M.a*wx+M.c*wy+M.e,py=M.b*wx+M.d*wy+M.f,s=p.size*M.a;
+    g.setTransform(1,0,0,1,px,py);if(rot)g.rotate(rot);if(p.sx!==1||p.sy!==1)g.scale(p.sx,p.sy);g.globalCompositeOperation=p.only?'lighter':'source-over';g.globalAlpha=p.a;g.drawImage(im,sx,sy,m.c,m.c,-s/2,-s/2,s,s)}
+  g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;g.globalCompositeOperation='source-over';if(FXQ.length)fxRaf=requestAnimationFrame(fxLoop)}
+/* 播某個時機：回 true＝播了（呼叫的地方不畫舊的） */
+function fxT(tm,x,y,C,o){try{if(!C||scene!=='explore'||!fxPlan())return false;const S=fxSet(C),L=fxL(S,tm);if(!L||!L.length)return false;
+  const eco=typeof ecoOn==='function'&&ecoOn();if(C.own===false&&!['cast','target','final','proj'].includes(tm))return false;if(eco&&!['target','final','proj'].includes(tm))return true;/* 省電：不畫新的也不畫舊的 */
+  if(!fxReady(L))return false;fxPlay(L,x,y,Object.assign({face:C.face,remote:C.own===false},o||{}));
+  if(C.own!==false&&(C.tier||1)>=5&&C.key!=='atk'&&(tm==='final'||(tm==='target'&&!(S.final&&S.final.length))))fxBoomFlash();return true}catch(e){return false}}
+/* 有 plan 就播新的、沒有就畫舊的 */
+function fxOr(C,tm,x,y,old,o){if(!fxT(tm,x,y,C,o)&&old)try{old()}catch(e){}}
+/* 5、6 階的收尾：畫面閃白 0.08 秒＋輕微震動（省電、減少動態不做） */
+function fxBoomFlash(){try{if((typeof ecoOn==='function'&&ecoOn())||RMQ.matches)return;let f=document.getElementById('fxFlash');if(!f){f=document.createElement('div');f.id='fxFlash';document.body.appendChild(f)}f.classList.remove('on');void f.offsetWidth;f.classList.add('on');
+  const h=sceneEl&&sceneEl.parentNode;if(h){h.classList.remove('fxshake');void h.offsetWidth;h.classList.add('fxshake');setTimeout(()=>h.classList.remove('fxshake'),220)}}catch(e){}}
+/* 情境 */
+function fxAtkC(w){w=w||curWpn();return w?{crop:w.crop,key:'atk',tier:w.tier||1,face:meDir<0?-1:1,own:true}:null}
+const fxCommon=()=>({key:'common',face:1,own:true});
+/* 命中：被打的怪身體中間；同一幀最多 6 個；爆擊加 common.crit */
+function fxOnHit(x,y,crit){try{if(!FXP||!fxHitKind)return;const f=performance.now()|0;if(f-fxHitF>16){fxHitF=f;fxHitN=0}if(fxHitN>=6)return;fxHitN++;
+  const C=fxHitKind==='sk'?fxSkCtx:fxAtkC();if(!C)return;if(!fxT('hit',x,y,C)&&fxHitKind==='atk')fxT('meleeHit',x,y,fxCommon());if(crit)fxT('crit',x,y-6,fxCommon())}catch(e){}}
+/* 飛行物：跟著子彈 p 走、沿飛行方向轉（p.dead 時消失） */
+function fxProj(p,C){if(!C||!fxHas(C,'proj'))return false;let lx=p.x,ly=p.y,a=p.a!=null?p.a:0;
+  return fxT('proj',p.x,p.y,C,{loop:1,life:30,rot:0,follow:()=>{if(p.dead)return null;const dx=p.x-lx,dy=p.y-ly;if(dx*dx+dy*dy>0.5)a=Math.atan2(dy,dx);lx=p.x;ly=p.y;return {x:p.x,y:p.y,a}}})}
+/* 沒有子彈的飛行物（扇的花風）：從 (x,y) 往 (dx,dy) 飛 L、ms 毫秒 */
+function fxFly(C,x,y,dx,dy,L,ms){const o={x,y,a:Math.atan2(dy,dx),dead:false},t0=performance.now();return fxT('proj',x,y,C,{loop:1,life:30,rot:0,follow:()=>{const u=(performance.now()-t0)/ms;if(u>=1){o.dead=true;return null}o.x=x+dx*L*u;o.y=y+dy*L*u;return o}})}
+/* 跟著自己（雷霆護身、雷神降臨的 aura；浮游砲的 pod） */
+function fxFollowMe(C,tm,ms,pod){const t0=Date.now();return fxT(tm,0,0,C,{loop:1,life:ms/1000,follow:()=>{if(Date.now()-t0>ms||scene!=='explore')return null;const me=curMe();if(pod){const P=typeof c3PodPos==='function'&&c3PodPos();if(P)return {x:P[0],y:P[1]}}return {x:me.x,y:me.y}}})}
+const FX_TGT_A=new Set(['thrust','gale','shadow','thousand','strafe']),FX_NO_TGT=new Set(['popshot','popstorm']),FX_OWN_FINAL=new Set(['heavenx','thousand','comet','strafe','quake','wall','jail','popshot','popstorm']);/* 主要落點用瞄準點的／target 自己在落地時播的／final 自己在最後一下播的 */
+/* ===== 191 結束 ===== */
+
 /* ===== 190（20s）：武器頁——升階、放星星、副武器、武器轉移 =====
    武器頁 sheet.wpi（背包「武器」分頁點一把）：大圖、兩招技能卡（點了展開進化路線）、星星列、按鈕（放星星、升階、主／副武器、轉移）。
    武器資料 weapons[i]：tier、st（星星造型，負數＝名品果實放的、造型加成 ×1.5）、sf（第 3 格失敗次數，每次 +10%）。
@@ -10981,7 +11050,7 @@ function wpStarFruits(e){const S=wpSlot(e);if(!S)return [];const ok=WP_SHAPES[e.
 function wpStarDo(i,fi,rnd){const e=wpE(i);if(!e)return {err:'沒有這把武器'};const S=wpSlot(e);if(!S)return {err:'這一階的星星滿了'};const F=fruitsArr(),f=F[fi],ok=WP_SHAPES[e.crop]||[];
   if(!f||f.c!==e.crop||!fCount(f))return {err:'沒有這顆果實'};const a=keyApp(f.k);if(!ok.includes(a.sp))return {err:'造型不對'};if((f.t||0)<S.tier-1)return {err:'稀有度不夠'};
   const p=wpStarP(e),mh=!!mhOf(a);fruitTake(f,1);if(!fCount(f))F.splice(fi,1);if(!Array.isArray(e.st))e.st=[];
-  const win=(rnd||Math.random)()<p;if(win){e.st.push(mh?-a.sp:a.sp);e.sf=0}else e.sf=(e.sf|0)+1;save();try{if(state.wpn===i||state.wpn2===i)pushPos(true)}catch(x){}return {ok:win,p,mh,sp:a.sp}}
+  const win=(rnd||Math.random)()<p;if(win){e.st.push(mh?-a.sp:a.sp);e.sf=0;try{const me=curMe();fxT('starOk',me.x,me.y,fxCommon())}catch(x){}}else e.sf=(e.sf|0)+1;save();try{if(state.wpn===i||state.wpn2===i)pushPos(true)}catch(x){}return {ok:win,p,mh,sp:a.sp}}
 /* 升階 */
 const wpNear=e=>(WEAPONS[e.crop]||{mats:[]}).mats.map(m=>m[0]);
 const wpFarKeys=bk=>Object.keys(MATS).filter(k=>MATS[k].reg===bk&&MATS[k].mon&&!MATS[k].sv);
@@ -11001,6 +11070,7 @@ function wpUpDo(i){const e=wpE(i);if(!e)return {err:'沒有這把武器'};const 
   if(U.gold)mtake([N[0]+'_g',U.gold,N.slice(1).map(x=>x+'_g')],U.gold);
   {let left=U.fn;const F=fruitsArr();for(const f of F.filter(f=>f.c===e.crop&&(f.t||0)>=U.ft).sort((a,b)=>(a.t||0)-(b.t||0))){const m=fruitTake(f,Math.min(left,fCount(f)));left-=m;if(!left)break}for(let k=F.length-1;k>=0;k--)if(!fCount(F[k]))F.splice(k,1)}
   state.coins-=U.c;const t0=e.tier;e.tier=R.t;save();try{pushPos(true)}catch(x){}
+  try{const me=curMe();fxT('tierUp',me.x,me.y,fxCommon())}catch(x){}/* 191 */
   if(R.t===6)try{postNews('weapon',`${myName()} 的${WEAPONS[e.crop].n}升到了神話階！`,5)}catch(x){}
   const learn=R.t===2?skName(e.crop,2,2):R.t===4?skName(e.crop,1,4)+'（技能 1 強化）':R.t===6?skName(e.crop,2,6)+'（覺醒）':'';return {ok:1,from:t0,to:R.t,learn}}
 /* 轉移：B（階比 A 低）拿到 A 的階與星星顆數（照 B 的兩種造型輪流填），A 變回 1 階 0 星 */
@@ -11159,61 +11229,65 @@ const SK_DO={
  thrust(d,a){const me=curMe(),L=skV(d,'len'),x0=me.x,y0=me.y,hit=new Set();const [ex,ey]=skMove(x0+a.dx*L,y0+a.dy*L,220,()=>{});const D=Math.hypot(ex-x0,ey-y0);
    for(const t of skTs())if(skInRect(t,x0,y0,a.dx,a.dy,D+20,d.w)&&!hit.has(t.m||t.boss)){hit.add(t.m||t.boss);skHit(t,d.mul)}return {x:x0,y:y0,dx:a.dx,dy:a.dy,len:D}},
  xcut(d,a,big){const me=curMe(),k=big?2:1,L=d.L*k,W=d.W*k,cx=me.x+a.dx*L/2,cy=me.y+a.dy*L/2;SKB.inv=Math.max(SKB.inv,skNow()+d.inv);
-   for(const t of skTs()){const ax=skInRect(t,cx-a.dx*L/2,cy-a.dy*L/2,a.dx,a.dy,L,W),ay=skInRect(t,cx+a.dy*L/2,cy-a.dx*L/2,-a.dy,a.dx,L,W);if(ax||ay)skHit(t,d.mul)}return {x:cx,y:cy,dx:a.dx,dy:a.dy,L,W}},
- heavenx(d,a){const o=SK_DO.xcut(d,a);for(let i=1;i<d.rep;i++)setTimeout(()=>{if(scene!=='explore')return;const r=SK_DO.xcut(d,skAim(160),i===d.rep-1);skFx.xcut(r)},d.gap*i);return o},
+   for(const t of skTs()){const ax=skInRect(t,cx-a.dx*L/2,cy-a.dy*L/2,a.dx,a.dy,L,W),ay=skInRect(t,cx+a.dy*L/2,cy-a.dx*L/2,-a.dy,a.dx,L,W);if(ax||ay)skHit(t,d.mul)}const fxd=fxT('pulse',cx,cy,fxSkCtx);return {x:cx,y:cy,dx:a.dx,dy:a.dy,L,W,fxd}},/* 191：每一次十字＝pulse */
+ heavenx(d,a){const FC=fxSkCtx,o=SK_DO.xcut(d,a);for(let i=1;i<d.rep;i++)setTimeout(()=>{if(scene!=='explore')return;fxSkCtx=FC;const r=SK_DO.xcut(d,skAim(160),i===d.rep-1);if(!r.fxd)skFx.xcut(r);if(i===d.rep-1)fxT('final',r.x,r.y,FC)},d.gap*i);return o},
  whirl(d){const me=curMe(),n=skV(d,'hits');for(let i=0;i<n;i++)setTimeout(()=>{if(scene!=='explore')return;const m=curMe();for(const t of skTs())if(skIn(t,m.x,m.y,d.r))skHit(t,d.mul)},i*90);return {x:me.x,y:me.y,r:d.r}},
  shadow(d,a){SKB.crits=d.crits;const t=a.t;if(t&&t.m&&Math.hypot(t.x-curMe().x,t.y-curMe().y)<=d.range){const f=t.m.face||1;skBlink(t.x-f*26,t.y)}return {x:curMe().x,y:curMe().y,tx:a.tx,ty:a.ty}},
- thousand(d){const me=curMe(),x0=me.x,y0=me.y,L=skTs().filter(t=>skIn(t,x0,y0,d.range)).slice(0,d.max);
-   L.forEach((t,i)=>setTimeout(()=>{if(scene!=='explore')return;const go=()=>{skHit(t,d.mul,true);skFx.slash({x:t.x,y:t.y})};if(t.m){const f=t.m.face||1;skBlink(t.m.x-f*26,t.m.y,go)}else go()},i*180));
-   setTimeout(()=>{if(scene==='explore')skBlink(x0,y0)},L.length*180+120);return {x:x0,y:y0,n:L.length}},
- gale(d,a){const me=curMe(),W=skV(d,'W');for(const t of skTs())if(skInRect(t,me.x,me.y,a.dx,a.dy,d.L,W)){skHit(t,d.mul);skShove(t,a.dx,a.dy,d.push)}return {x:me.x,y:me.y,dx:a.dx,dy:a.dy,L:d.L,W}},
+ thousand(d){const FC=fxSkCtx,me=curMe(),x0=me.x,y0=me.y,L=skTs().filter(t=>skIn(t,x0,y0,d.range)).slice(0,d.max);
+   L.forEach((t,i)=>setTimeout(()=>{if(scene!=='explore')return;const go=()=>{skHit(t,d.mul,true);fxOr(FC,'pulse',t.x,t.y,()=>skFx.slash({x:t.x,y:t.y}))};if(t.m){const f=t.m.face||1;skBlink(t.m.x-f*26,t.m.y,go)}else go()},i*180));
+   setTimeout(()=>{if(scene==='explore'){skBlink(x0,y0);fxT('final',x0,y0,FC)}},L.length*180+120);return {x:x0,y:y0,n:L.length}},
+ gale(d,a){const me=curMe(),W=skV(d,'W');for(const t of skTs())if(skInRect(t,me.x,me.y,a.dx,a.dy,d.L,W)){skHit(t,d.mul);skShove(t,a.dx,a.dy,d.push)}const fxd=fxFly(fxSkCtx,me.x,me.y-20,a.dx,a.dy,d.L,350);return {x:me.x,y:me.y,dx:a.dx,dy:a.dy,L:d.L,W,fxd}},/* 191：花風＝proj 飛出去 */
  heal(d){skHeal(d.heal);if(d.mul){const me=curMe();for(const t of skTs())if(skIn(t,me.x,me.y,d.r))skHit(t,d.mul)}/* 186 補：回血的同時打 r150 內的怪 */return {x:curMe().x,y:curMe().y,r:d.r}},
- bloom(d){skHeal(d.heal);if(d.mul){const me=curMe();for(const t of skTs())if(skIn(t,me.x,me.y,d.r))skHit(t,d.mul)}/* 186 補 */SKB.hot={until:skNow()+d.hotS*1000,next:skNow()+1000,k:d.hot};skCleanse();return {x:curMe().x,y:curMe().y,r:d.r}},
+ bloom(d){const FC=fxSkCtx;skHeal(d.heal);if(d.mul){const me=curMe();for(const t of skTs())if(skIn(t,me.x,me.y,d.r))skHit(t,d.mul)}/* 186 補 */SKB.hot={until:skNow()+d.hotS*1000,next:skNow()+1000,k:d.hot,c:FC};skCleanse();return {x:curMe().x,y:curMe().y,r:d.r}},
  starfall(d,a){const r=skV(d,'r');for(const t of skTs())if(skIn(t,a.tx,a.ty,r))skHit(t,d.mul);return {x:a.tx,y:a.ty,r}},
- meteor(d,a){const me=curMe(),cx=me.x+a.dx*d.area*0.55,cy=me.y+a.dy*d.area*0.55,P=[];for(let i=0;i<d.n;i++){const an=Math.random()*Math.PI*2,rr=Math.sqrt(Math.random())*d.area*0.5;P.push([cx+Math.cos(an)*rr,cy+Math.sin(an)*rr])}
-   P.forEach((p,i)=>setTimeout(()=>{if(scene!=='explore')return;for(const t of skTs())if(skIn(t,p[0],p[1],d.r))skHit(t,d.mul);skFx.star({x:p[0],y:p[1],r:d.r})},150*i));return {x:cx,y:cy,P,r:d.r}},
- comet(d,a){const x=a.tx,y=a.ty;setTimeout(()=>{if(scene!=='explore')return;for(const t of skTs())if(skIn(t,x,y,d.r))skHit(t,d.mul);skFx.boom({x,y,r:d.r,c:'#C9A8FF'})},d.delay);return {x,y,r:d.r,delay:d.delay}},
- strafe(d,a){const me0=curMe(),dur=skV(d,'dur'),n=Math.floor(dur/d.every),ang=Math.atan2(a.dy,a.dx);
-   for(let i=0;i<n;i++)setTimeout(()=>{if(scene!=='explore')return;const m=curMe(),an=ang+(Math.random()-.5)*d.arc*Math.PI/180;wpnShot({k:'sb',x:m.x+Math.cos(an)*10,y:m.y-24+Math.sin(an)*10,a:an,max:d.len,mul:d.mul,hit:null})},i*d.every);return {x:me0.x,y:me0.y,dx:a.dx,dy:a.dy,dur}},
+ meteor(d,a){const FC=fxSkCtx,me=curMe(),cx=me.x+a.dx*d.area*0.55,cy=me.y+a.dy*d.area*0.55,P=[];for(let i=0;i<d.n;i++){const an=Math.random()*Math.PI*2,rr=Math.sqrt(Math.random())*d.area*0.5;P.push([cx+Math.cos(an)*rr,cy+Math.sin(an)*rr])}
+   P.forEach((p,i)=>setTimeout(()=>{if(scene!=='explore')return;for(const t of skTs())if(skIn(t,p[0],p[1],d.r))skHit(t,d.mul);fxOr(FC,'pulse',p[0],p[1],()=>skFx.star({x:p[0],y:p[1],r:d.r}))},150*i));return {x:cx,y:cy,P,r:d.r}},
+ comet(d,a){const FC=fxSkCtx,x=a.tx,y=a.ty;setTimeout(()=>{if(scene!=='explore')return;for(const t of skTs())if(skIn(t,x,y,d.r))skHit(t,d.mul);fxOr(FC,'final',x,y,()=>skFx.boom({x,y,r:d.r,c:'#C9A8FF'}))},d.delay);return {x,y,r:d.r,delay:d.delay}},
+ strafe(d,a){const FC=fxSkCtx,me0=curMe(),dur=skV(d,'dur'),n=Math.floor(dur/d.every),ang=Math.atan2(a.dy,a.dx);
+   for(let i=0;i<n;i++)setTimeout(()=>{if(scene!=='explore')return;const m=curMe(),an=ang+(Math.random()-.5)*d.arc*Math.PI/180;if(i%2===0)fxT('muzzle',m.x+Math.cos(an)*10,m.y-24+Math.sin(an)*10,FC);wpnShot({k:'sb',x:m.x+Math.cos(an)*10,y:m.y-24+Math.sin(an)*10,a:an,max:d.len,mul:d.mul,hit:null,fxc:FC})},i*d.every);setTimeout(()=>fxT('final',a.tx,a.ty,FC),dur);return {x:me0.x,y:me0.y,dx:a.dx,dy:a.dy,dur}},
  popshot(d,a){return skPop(d,a,false)},
  popstorm(d,a){return skPop(d,a,true)},
  wisp(d){const me=curMe(),r=skV(d,'r'),bd=Math.round(pAtkNow()*0.1*Math.pow(1.3,((curWpn()||{}).tier||1)-1));for(const t of skTs())if(skIn(t,me.x,me.y,r)){skHit(t,d.mul);if(t.m&&!t.m.dead)t.m.burn={until:skNow()+3000,next:skNow()+1000,d:bd}}return {x:me.x,y:me.y,r}},
  reap(d,a){const me=curMe();for(const t of skTs())if(skIn(t,me.x,me.y,d.r)){skHit(t,d.mul);if(t.m){const fx=me.x+a.dx*28,fy=me.y+a.dy*20,dd=Math.hypot(fx-t.m.x,fy-t.m.y);if(dd>1)skShove(t,(fx-t.m.x)/dd,(fy-t.m.y)/dd,dd)}}return {x:me.x,y:me.y,r:d.r}},
- hades(d,a){const o=SK_DO.reap(d,a),gx=o.x,gy=o.y,n=Math.floor(d.gate/d.tick);for(let i=1;i<=n;i++)setTimeout(()=>{if(scene!=='explore')return;let sum=0;for(const t of skTs())if(skIn(t,gx,gy,d.gr))sum+=skHit(t,d.gmul);if(sum){pHP=Math.min(pMax(),pHP+sum*d.leech);try{renderHP()}catch(e){}}},i*d.tick);skFx.gate({x:gx,y:gy,r:d.gr,ms:d.gate});return o},
- quake(d){const me=curMe(),r=skV(d,'r');for(const t of skTs())if(skIn(t,me.x,me.y,r)){skHit(t,d.mul);skStun(t,d.stun)}return {x:me.x,y:me.y,r}},
- wall(d,a){const me=curMe(),cx=me.x+a.dx*30,cy=me.y+a.dy*30,hitF=()=>{for(const t of skTs())if(skInRect(t,cx,cy,a.dx,a.dy,d.front,d.W))skHit(t,d.mul)};
-   for(const t of skTs())if(skInRect(t,cx,cy,a.dx,a.dy,d.front,d.W)){skHit(t,d.mul);skShove(t,a.dx,a.dy,60)}skRedAdd(d.red,d.dur);setTimeout(()=>{if(scene!=='explore')return;hitF();skFx.boom({x:cx+a.dx*30,y:cy+a.dy*30,r:60,c:'#C98A3A'})},d.dur);return {x:cx,y:cy,dx:a.dx,dy:a.dy,W:d.W,ms:d.dur}},
- jail(d){const me=curMe();let best=null,bd=d.range;for(const t of skTs()){const dd=Math.hypot(t.x-me.x,t.y-me.y);if(dd<=bd){bd=dd;best=t}}if(!best)return {x:me.x,y:me.y,none:1};
+ hades(d,a){const FC=fxSkCtx,o=SK_DO.reap(d,a),gx=o.x,gy=o.y,n=Math.floor(d.gate/d.tick);for(let i=1;i<=n;i++)setTimeout(()=>{if(scene!=='explore')return;let sum=0;for(const t of skTs())if(skIn(t,gx,gy,d.gr))sum+=skHit(t,d.gmul);if(sum){pHP=Math.min(pMax(),pHP+sum*d.leech);try{renderHP()}catch(e){}}fxT('tick',gx,gy,FC)},i*d.tick);if(!fxHas(FC,'tick'))skFx.gate({x:gx,y:gy,r:d.gr,ms:d.gate});return o},
+ quake(d){const FC=fxSkCtx,me=curMe(),r=skV(d,'r');for(const t of skTs())if(skIn(t,me.x,me.y,r)){skHit(t,d.mul);skStun(t,d.stun)}
+   if(fxHas(FC,'pulse')){const x0=me.x,y0=me.y,f=FC.face,K=fxK();for(let k=0;k<5;k++)setTimeout(()=>fxT('pulse',x0+f*(50+k*55)*K,y0+(Math.random()-.5)*40*K,FC),500+k*170);setTimeout(()=>fxT('final',x0+f*140*K,y0,FC),1500)}else if(fxHas(FC,'final'))setTimeout(()=>fxT('final',me.x,me.y,FC),300);/* 191：6 階的餘震只是畫面（沒有額外傷害） */return {x:me.x,y:me.y,r}},
+ wall(d,a){const FC=fxSkCtx,me=curMe(),cx=me.x+a.dx*30,cy=me.y+a.dy*30,hitF=()=>{for(const t of skTs())if(skInRect(t,cx,cy,a.dx,a.dy,d.front,d.W))skHit(t,d.mul)};
+   for(const t of skTs())if(skInRect(t,cx,cy,a.dx,a.dy,d.front,d.W)){skHit(t,d.mul);skShove(t,a.dx,a.dy,60)}skRedAdd(d.red,d.dur);let fxd=false;for(let j=0;j<3;j++)if(fxT('pulse',cx-a.dy*(j-1)*d.W/3,cy+a.dx*(j-1)*d.W/3,FC,{life:d.dur/1000}))fxd=true;/* 191：岩壁的每一塊 */setTimeout(()=>{if(scene!=='explore')return;hitF();fxOr(FC,'final',cx+a.dx*30,cy+a.dy*30,()=>skFx.boom({x:cx+a.dx*30,y:cy+a.dy*30,r:60,c:'#C98A3A'}))},d.dur);return {x:cx,y:cy,dx:a.dx,dy:a.dy,W:d.W,ms:d.dur,fxd}},
+ jail(d){const FC=fxSkCtx,me=curMe();let best=null,bd=d.range;for(const t of skTs()){const dd=Math.hypot(t.x-me.x,t.y-me.y);if(dd<=bd){bd=dd;best=t}}if(!best)return {x:me.x,y:me.y,none:1};
    const b=best.boss,canHold=!(b&&b.kind==='lord'&&b.mode==='wind'&&BATK[b.atk]&&BATK[b.atk].wind>=1300),ms=b?d.bdur:d.dur;/* 184.5：主在長蓄力時關不住（傷害照算） */
    if(canHold){if(best.m)best.m.stun=skNow()+ms;else b.stun=bossNow()+ms}
-   setTimeout(()=>{if(scene!=='explore')return;const x=best.m?best.m.x:b.x,y=best.m?best.m.y:b.y;for(const t of skTs())if(skIn(t,x,y,d.r))skHit(t,d.mul);skFx.boom({x,y,r:d.r,c:'#C98A3A'})},ms);return {x:best.x,y:best.y,ms,hold:canHold}},
- thunder(d,a){const me=curMe(),dd=a.t?Math.min(d.jump,Math.hypot(a.tx-me.x,a.ty-me.y)-16):d.jump*0.6,tx=me.x+a.dx*dd,ty=me.y+a.dy*dd,nb=skV(d,'bolts');const [ex,ey]=skMove(tx,ty,200);
-   setTimeout(()=>{if(scene!=='explore')return;for(const t of skTs())if(skIn(t,ex,ey,d.r))skHit(t,d.mul);for(let i=0;i<nb;i++)setTimeout(()=>{if(scene!=='explore')return;const T=skTs().filter(t=>skIn(t,ex,ey,d.r)).sort((p,q)=>Math.hypot(p.x-ex,p.y-ey)-Math.hypot(q.x-ex,q.y-ey))[0];if(T){skHit(T,d.bolt);skFx.bolt({x:T.x,y:T.y})}else skFx.bolt({x:ex,y:ey})},120+i*160)},210);return {x:ex,y:ey,r:d.r}},
- aegis(d){SKB.aegis={until:skNow()+d.dur,bolt:d.bolt};skRedAdd(d.red,d.dur);return {x:curMe().x,y:curMe().y,ms:d.dur}},
- thor(d){SKB.thor={until:skNow()+d.dur,bolt:d.bolt};skRedAdd(d.red,d.dur);return {x:curMe().x,y:curMe().y,ms:d.dur}},
- focus(d){SKB.focus=skNow()+skV(d,'dur');return {x:curMe().x,y:curMe().y,ms:skV(d,'dur')}},
- saturate(d,a){const P=[];for(let i=0;i<d.n;i++){const an=Math.random()*Math.PI*2,rr=Math.sqrt(Math.random())*d.area;P.push([a.tx+Math.cos(an)*rr,a.ty+Math.sin(an)*rr])}
-   const me=curMe();P.forEach((p,i)=>setTimeout(()=>{if(scene!=='explore')return;const m=curMe();wpnShot({k:'pt',x:m.x,y:m.y-70,x0:m.x,y0:m.y-70,x1:p[0],y1:p[1],arc:50,u:0,dur:0.45,svg:'<circle r="4" fill="#BFE9A8" stroke="#3E6B2E" stroke-width="1.2"/>',cb:()=>{for(const t of skTs())if(skIn(t,p[0],p[1],d.r))skHit(t,d.mul);skFx.boom({x:p[0],y:p[1],r:d.r,c:'#FFB347'})}})},i*70));return {x:a.tx,y:a.ty,r:d.area}},
- sat(d){SKB.sat=skNow()+d.dur;try{const F=document.getElementById('meWF');if(F)F._k=''}catch(e){}return {x:curMe().x,y:curMe().y,ms:d.dur}}};
-function skPop(d,a,storm){const me=curMe(),x1=a.tx,y1=a.ty,dur=Math.max(0.12,Math.hypot(x1-me.x,y1-me.y)/600);
-  wpnShot({k:'pt',x:me.x,y:me.y-24,x0:me.x,y0:me.y-24,x1,y1,u:0,dur,svg:'<circle r="7" fill="#FFF3C0" stroke="#C99A2A" stroke-width="1.6"/><circle cx="-2" cy="-2" r="2.4" fill="#fff"/>',cb:()=>{for(const t of skTs())if(skIn(t,x1,y1,d.r)){skHit(t,d.mul);skStun(t,d.stun)}skFx.boom({x:x1,y:y1,r:d.r,c:'#FFE07A'});
-    if(storm)for(let i=0;i<d.split;i++){const an=i/d.split*Math.PI*2,px=x1+Math.cos(an)*d.sd,py=y1+Math.sin(an)*d.sd;wpnShot({k:'pt',x:x1,y:y1,x0:x1,y0:y1,x1:px,y1:py,u:0,dur:0.18,svg:'<circle r="3" fill="#FFF3C0" stroke="#C99A2A"/>',cb:()=>{for(const t of skTs())if(skIn(t,px,py,d.sr))skHit(t,d.smul);skFx.boom({x:px,y:py,r:d.sr,c:'#FFE07A'})}})}}});return {x:x1,y:y1,r:d.r}}
+   setTimeout(()=>{if(scene!=='explore')return;const x=best.m?best.m.x:b.x,y=best.m?best.m.y:b.y;for(const t of skTs())if(skIn(t,x,y,d.r))skHit(t,d.mul);fxOr(FC,'final',x,y,()=>skFx.boom({x,y,r:d.r,c:'#C98A3A'}))},ms);return {x:best.x,y:best.y,ms,hold:canHold}},
+ thunder(d,a){const FC=fxSkCtx,me=curMe(),dd=a.t?Math.min(d.jump,Math.hypot(a.tx-me.x,a.ty-me.y)-16):d.jump*0.6,tx=me.x+a.dx*dd,ty=me.y+a.dy*dd,nb=skV(d,'bolts');const [ex,ey]=skMove(tx,ty,200);
+   setTimeout(()=>{if(scene!=='explore')return;for(const t of skTs())if(skIn(t,ex,ey,d.r))skHit(t,d.mul);for(let i=0;i<nb;i++)setTimeout(()=>{if(scene!=='explore')return;const T=skTs().filter(t=>skIn(t,ex,ey,d.r)).sort((p,q)=>Math.hypot(p.x-ex,p.y-ey)-Math.hypot(q.x-ex,q.y-ey))[0];if(T){skHit(T,d.bolt);fxOr(FC,'pulse',T.x,T.y,()=>skFx.bolt({x:T.x,y:T.y}))}else fxOr(FC,'pulse',ex,ey,()=>skFx.bolt({x:ex,y:ey}))},120+i*160)},210);return {x:ex,y:ey,r:d.r}},
+ aegis(d){SKB.aegis={until:skNow()+d.dur,bolt:d.bolt,c:fxSkCtx};skRedAdd(d.red,d.dur);const fxd=fxFollowMe(fxSkCtx,'aura',d.dur);return {x:curMe().x,y:curMe().y,ms:d.dur,fxd}},
+ thor(d){SKB.thor={until:skNow()+d.dur,bolt:d.bolt,c:fxSkCtx};skRedAdd(d.red,d.dur);const fxd=fxFollowMe(fxSkCtx,'aura',d.dur);return {x:curMe().x,y:curMe().y,ms:d.dur,fxd}},
+ focus(d){SKB.focus=skNow()+skV(d,'dur');const fxd=fxFollowMe(fxSkCtx,'pod',skV(d,'dur'),true);return {x:curMe().x,y:curMe().y,ms:skV(d,'dur'),fxd}},
+ saturate(d,a){const FC=fxSkCtx,P=[];for(let i=0;i<d.n;i++){const an=Math.random()*Math.PI*2,rr=Math.sqrt(Math.random())*d.area;P.push([a.tx+Math.cos(an)*rr,a.ty+Math.sin(an)*rr])}
+   const me=curMe();P.forEach((p,i)=>setTimeout(()=>{if(scene!=='explore')return;const m=curMe();wpnShot({k:'pt',x:m.x,y:m.y-70,x0:m.x,y0:m.y-70,x1:p[0],y1:p[1],arc:50,u:0,dur:0.45,fxc:FC,svg:'<circle r="4" fill="#BFE9A8" stroke="#3E6B2E" stroke-width="1.2"/>',cb:()=>{for(const t of skTs())if(skIn(t,p[0],p[1],d.r))skHit(t,d.mul);fxOr(FC,'pulse',p[0],p[1],()=>skFx.boom({x:p[0],y:p[1],r:d.r,c:'#FFB347'}))}})},i*70));return {x:a.tx,y:a.ty,r:d.area}},
+ sat(d){SKB.sat=skNow()+d.dur;SKB.satC=fxSkCtx;try{const F=document.getElementById('meWF');if(F)F._k=''}catch(e){}const fxd=fxFollowMe(fxSkCtx,'pod',d.dur,true);return {x:curMe().x,y:curMe().y,ms:d.dur,fxd}}};
+function skPop(d,a,storm){const FC=fxSkCtx,me=curMe(),x1=a.tx,y1=a.ty,dur=Math.max(0.12,Math.hypot(x1-me.x,y1-me.y)/600);fxT('muzzle',me.x,me.y-24,FC);/* 191 */
+  wpnShot({k:'pt',x:me.x,y:me.y-24,x0:me.x,y0:me.y-24,x1,y1,u:0,dur,fxc:FC,svg:'<circle r="7" fill="#FFF3C0" stroke="#C99A2A" stroke-width="1.6"/><circle cx="-2" cy="-2" r="2.4" fill="#fff"/>',cb:()=>{for(const t of skTs())if(skIn(t,x1,y1,d.r)){skHit(t,d.mul);skStun(t,d.stun)}fxOr(FC,'target',x1,y1,()=>skFx.boom({x:x1,y:y1,r:d.r,c:'#FFE07A'}));if(!storm)fxT('final',x1,y1,FC);
+    if(storm)for(let i=0;i<d.split;i++){const an=i/d.split*Math.PI*2,px=x1+Math.cos(an)*d.sd,py=y1+Math.sin(an)*d.sd;wpnShot({k:'pt',x:x1,y:y1,x0:x1,y0:y1,x1:px,y1:py,u:0,dur:0.18,fxc:FC,svg:'<circle r="3" fill="#FFF3C0" stroke="#C99A2A"/>',cb:()=>{for(const t of skTs())if(skIn(t,px,py,d.sr))skHit(t,d.smul);fxOr(FC,'pulse',px,py,()=>skFx.boom({x:px,y:py,r:d.sr,c:'#FFE07A'}))}})}if(storm)setTimeout(()=>fxT('final',x1,y1,FC),250)}});return {x:x1,y:y1,r:d.r}}
 function skHeal(k){const h0=pHP;pHP=Math.min(pMax(),pHP+pMax()*k);try{const me=curMe();if(pHP>h0)dmgShow(me.x,me.y-78,Math.round(pHP-h0),{heal:1,key:'meh'})}catch(e){}renderHP()}
 function skCleanse(){/* 184.4 花神之舞：解除緩速、被盯住這類狀態——目前遊戲裡還沒有這些狀態（135.13 巴絲沒做），先留這個掛鉤 */try{if(typeof pStatus==='object'&&pStatus)for(const k in pStatus)delete pStatus[k]}catch(e){}}
 /* 每幀（monLoop、bossLoop）：持續回血 */
-function skTick(){const H=SKB.hot,now=skNow();if(H){if(now>H.until)SKB.hot=null;else if(now>=H.next){H.next+=1000;skHeal(H.k)}}}
+function skTick(){const H=SKB.hot,now=skNow();if(H){if(now>H.until)SKB.hot=null;else if(now>=H.next){H.next+=1000;skHeal(H.k);if(H.c)try{const me=curMe();fxT('tick',me.x,me.y,H.c)}catch(e){}}/* 191 */}}
 /* 放招 */
 function skCast(slot){if(!state||scene!=='explore'||uiBusy())return false;const d=skDef(slot),w=curWpn();if(!d||d.locked||!w)return false;const now=skNow(),k='s'+slot;if(now<SKC[k])return false;
   const a=skAim(d.range||d.jump||d.L||d.len||200),fn=SK_DO[d.id];if(!fn)return false;SKC[k]=now+d.cd*1000;
   c3Atk={at:now,dur:Math.round(Math.max(250,w.W.cd)/1.5)};meAct={type:'atk',at:now,dur:c3Atk.dur};pFightAt=now;
   try{skNameShow(w.crop,slot,slot===1?(w.tier||1):Math.max(2,w.tier||1),skName(w.crop,slot,w.tier||1))}catch(e){}/* 186：第一次放出新型態 */
-  let o=null;try{o=fn(d,a)}catch(e){logErr(e,'sk:'+d.id)}o=Object.assign({x:curMe().x,y:curMe().y,dx:a.dx,dy:a.dy,tx:a.tx,ty:a.ty},o||{});try{skFx[d.id]&&skFx[d.id](o)}catch(e){}
-  skAct={i:d.id,c:SKILLS[w.crop].c,x:Math.round(o.x),y:Math.round(o.y),dx:+o.dx.toFixed(2),dy:+o.dy.toFixed(2),tx:Math.round(o.tx),ty:Math.round(o.ty),t:now};try{pushPos(true)}catch(e){}skPaint(true);return true}
+  fxSkCtx={crop:w.crop,key:'s'+slot,tier:w.tier||1,face:a.dx<0?-1:1,own:true};const FC=fxSkCtx;/* 191 */
+  let o=null;try{o=fn(d,a)}catch(e){logErr(e,'sk:'+d.id)}o=Object.assign({x:curMe().x,y:curMe().y,dx:a.dx,dy:a.dy,tx:a.tx,ty:a.ty},o||{});
+  {const me2=curMe(),tg=FX_TGT_A.has(d.id)?[a.tx,a.ty]:[o.x,o.y];let pl=!!o.fxd;if(fxT('cast',me2.x,me2.y,FC))pl=true;if(!FX_NO_TGT.has(d.id)&&fxT('target',tg[0],tg[1],FC))pl=true;if(!FX_OWN_FINAL.has(d.id)&&fxHas(FC,'final')){setTimeout(()=>fxT('final',tg[0],tg[1],FC),300);pl=true}if(!pl)try{skFx[d.id]&&skFx[d.id](o)}catch(e){}}/* 191：plan 有的時機就不畫舊的 */
+  skAct={i:d.id,c:SKILLS[w.crop].c,cr:w.crop,tr:w.tier||1,sl:slot,x:Math.round(o.x),y:Math.round(o.y),dx:+o.dx.toFixed(2),dy:+o.dy.toFixed(2),tx:Math.round(o.tx),ty:Math.round(o.ty),t:now};try{pushPos(true)}catch(e){}skPaint(true);return true}
 /* 別人的招式：只播特效（不算傷害）；癒花、花神之舞＝同隊伍、自己在 150 內就自己回血（每次放招只算一次） */
 const SK_SEEN={};
 function skRemote(id,s,A){if(!s||typeof s.t!=='number'||SK_SEEN[id]===s.t||Date.now()-s.t>1500)return;SK_SEEN[id]=s.t;const o={x:s.x,y:s.y,dx:s.dx||1,dy:s.dy||0,tx:s.tx,ty:s.ty,c:s.c,remote:1};
-  try{if(s.i!=='roll'&&skFx[s.i])skFx[s.i](o)}catch(e){}/* 189：翻滾拿掉（舊版送來的 roll 不播） */
-  if((s.i==='heal'||s.i==='bloom')&&typeof partyHas==='function'&&partyHas(id)&&scene==='explore'){const me=curMe(),px=A?A.x:s.x,py=A?A.y:s.y,D=s.i==='bloom'?SKILLS.strawberry.aw:SKILLS.strawberry.s2;if(Math.hypot(me.x-px,me.y-py)<=D.r){skHeal(D.heal);if(s.i==='bloom'){SKB.hot={until:skNow()+D.hotS*1000,next:skNow()+1000,k:D.hot};skCleanse()}}}}
+  {let pl=false;if(s.cr&&s.sl){const RC={crop:s.cr,key:'s'+s.sl,tier:s.tr||1,face:(s.dx||1)<0?-1:1,own:false};if(fxT('cast',s.x,s.y,RC))pl=true;if(fxT('target',s.tx,s.ty,RC))pl=true;if(fxHas(RC,'final')){setTimeout(()=>fxT('final',s.tx,s.ty,RC),300);pl=true}}
+   if(!pl)try{if(s.i!=='roll'&&skFx[s.i])skFx[s.i](o)}catch(e){}}/* 191：別人的只播 cast／target／final；189：翻滾拿掉 */
+  if((s.i==='heal'||s.i==='bloom')&&typeof partyHas==='function'&&partyHas(id)&&scene==='explore'){const me=curMe(),px=A?A.x:s.x,py=A?A.y:s.y,D=s.i==='bloom'?SKILLS.strawberry.aw:SKILLS.strawberry.s2;if(Math.hypot(me.x-px,me.y-py)<=D.r){skHeal(D.heal);try{fxT('ally',me.x,me.y,{crop:'strawberry',key:'s2',tier:s.tr||2,face:1,own:true})}catch(e){}/* 191 */if(s.i==='bloom'){SKB.hot={until:skNow()+D.hotS*1000,next:skNow()+1000,k:D.hot};skCleanse()}}}}
 /* ---- 特效（程式畫；之後換圖只改這裡） ---- */
 const skC=o=>o.c||((curWpn()&&SKILLS[curWpn().crop])||{}).c||'#FFF';
 const skDeg=o=>Math.atan2(o.dy||0,o.dx||1)*180/Math.PI;
@@ -11266,12 +11340,12 @@ function skBar(){let B=document.getElementById('skBar');if(B)return B;B=document
   const up=e=>{if(!lp||e.pointerId!==lp.id)return;const L=lp;lp=null;clearTimeout(L.t);if(L.atk){atkRelease();return}if(L.long||e.type==='pointercancel')return;const d=skDef(+L.k);if(d&&d.locked){toast('第 2 階解鎖',1500);return}skCast(+L.k)};B.addEventListener('pointerup',up);B.addEventListener('pointercancel',up);
   B.addEventListener('click',e=>{e.preventDefault();e.stopPropagation()});document.body.appendChild(B);return B}
 let skPk='';
-function skPaint(force){try{const on=!!state&&scene==='explore'&&document.body.classList.contains('wild');let B=document.getElementById('skBar');if(!on){if(B&&!B.hidden)B.hidden=true;const sw=document.getElementById('wpSwap');if(sw)sw.hidden=true;return}B=skBar();if(B.hidden)B.hidden=false;
+function skPaint(force){try{const on=!!state&&scene==='explore'&&document.body.classList.contains('wild');let B=document.getElementById('skBar');if(!on){if(B&&!B.hidden)B.hidden=true;const sw=document.getElementById('wpSwap');if(sw)sw.hidden=true;if(scene!=='explore'&&fxPreK)try{fxRelease()}catch(x){}/* 191：離開野外放掉特效圖 */return}B=skBar();if(B.hidden)B.hidden=false;
   const w=curWpn(),now=skNow(),S=w&&SKILLS[w.crop],key=(w?w.crop+w.tier:'-');
   const set=(k,d,id,col,cdEnd,cdLen,lock,label)=>{const b=document.getElementById('sk'+k);if(!b)return;b.hidden=!d;if(!d)return;if(b._id!==id+lock+label){b._id=id+lock+label;b.querySelector('svg').innerHTML=SK_GLYPH[id]||'';b.style.setProperty('--skc',col);b.classList.toggle('lock',!!lock);b.querySelector('.sklk').textContent=lock?'第 2 階':label;b.setAttribute('aria-label',label+(lock?'（第 2 階解鎖）':''))}
     const left=Math.max(0,cdEnd-now),p=cdLen?left/cdLen:0,cd=b.querySelector('.skcd'),t=b.querySelector('.skt');cd.style.setProperty('--p',(p*360).toFixed(1)+'deg');cd.hidden=!(left>0);t.textContent=left>0?Math.ceil(left/1000):''};
   const d1=w?skDef(1):null,d2=w?skDef(2):null,tr=w?(w.tier||1):1;set('1',d1,d1&&d1.id,S&&S.c,SKC.s1,d1?d1.cd*1000:0,0,d1?skName(w.crop,1,tr):'');set('2',d2,d2&&d2.id,S&&S.c,SKC.s2,d2?d2.cd*1000:0,d2&&d2.locked?1:0,d2?skName(w.crop,2,tr):'');
-  if(B._r!==tr){B._r=tr;B.style.setProperty('--skr',RCOL[Math.min(5,tr-1)])}/* 186：外圈＝那一階的稀有度色 */{const a=document.getElementById('skR');if(a){const ak=w?w.crop+'|'+w.tier:'-';if(a._k!==ak){a._k=ak;a.querySelector('.skai').innerHTML=w?`<img src="${wpSrc(w.crop,w.tier)}" alt="">`:ATK_SICKLE}a.classList.toggle('held',atkHeld);if(!B._tip){B._tip=1;if(tipOnce('atk')){a.classList.add('flash');setTimeout(()=>a.classList.remove('flash'),2400)}}}}
+  if(B._r!==tr){B._r=tr;B.style.setProperty('--skr',RCOL[Math.min(5,tr-1)])}/* 186：外圈＝那一階的稀有度色 */try{fxPreloadCur()}catch(x){}/* 191 */{const a=document.getElementById('skR');if(a){const ak=w?w.crop+'|'+w.tier:'-';if(a._k!==ak){a._k=ak;a.querySelector('.skai').innerHTML=w?`<img src="${wpSrc(w.crop,w.tier)}" alt="">`:ATK_SICKLE}a.classList.toggle('held',atkHeld);if(!B._tip){B._tip=1;if(tipOnce('atk')){a.classList.add('flash');setTimeout(()=>a.classList.remove('flash'),2400)}}}}
   if(!w&&B._r!==0){B._r=0;B.style.setProperty('--skr',RCOL[0])}/* 189：攻擊鍵 */try{wpSwapPaint()}catch(x){}/* 190 */}catch(e){}}
 setInterval(()=>{try{skPaint()}catch(e){}},100);
 /* ===== 184 結束 ===== */

@@ -1355,6 +1355,16 @@ body.lordko #meGAv,body.lordko #meG{opacity:.35}
 #koBox{position:fixed;left:50%;top:38%;transform:translateX(-50%);z-index:40;padding:8px 14px;border-radius:12px;background:rgba(20,14,10,.72);color:#fff;font-weight:800;pointer-events:none}
 .dmg.sm b{font-size:82%}
 .petorb{animation:petOrb .3s linear forwards}@keyframes petOrb{to{transform:translate(var(--dx),var(--dy))}}
+
+/* ===== 202：技能鍵的圖示 ===== */
+.skb .skimg{position:absolute;inset:3px;width:calc(100% - 6px);height:calc(100% - 6px);border-radius:50%;object-fit:cover;pointer-events:none}
+.skb.hasimg svg{display:none}
+.skb.lock .skimg{opacity:.6}
+.skic40{width:40px;height:40px;border-radius:50%}
+.wpsk,#skCard{display:grid;grid-template-columns:40px 1fr;column-gap:8px;align-content:start}
+.wpsk>*,#skCard>*{grid-column:2}
+.wpsk>.skic40,#skCard>.skic40{grid-column:1;grid-row:1/span 4}
+.wpsk.lock .skic40{filter:grayscale(1);opacity:.6}
 </style>
 </head>
 <body class="game">
@@ -2119,7 +2129,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-21c';
+const BUILD='2026-11-21d';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -11776,7 +11786,7 @@ function wpn2Tick(){if(!state||state.wpn2On)return;let ok=false;try{ok=mq2Past('
 function wpOpen(i){if(!wpE(i))return;sheet={wpi:i};renderSheet();openSheetUI()}
 function wpSkCard(e,slot){const t=wpTierOk(e),d=skDefFor(e.crop,t,slot);if(!d)return '';const nm=d.locked?skName(e.crop,2,2):skName(e.crop,slot,t),k=d.mul?d.mul*Math.pow(1.3,t-1)*(1+STAR_SK*((e.st||[]).length)):0,open=sheet.wpr===slot;
   const route=slot===1?[1,2,3,4,5,6]:[2,3,4,5,6];
-  return `<button type="button" class="wpsk${d.locked?' lock':''}" data-wpr="${slot}"><b>${d.locked?'🔒 ':''}技能 ${slot}：${esc(nm)}</b><span>${esc(SK_DESC[d.id]||'')}</span><span class="meta">冷卻 ${d.cd} 秒${k?`・傷害 攻擊力 ×${k.toFixed(1)}`:''}${d.locked?'・第 2 階解鎖':''}</span>${open?`<span class="wproute">${route.map(x=>`<i class="${x===t||(slot===2&&t<2&&x===2)?'on':''}${x<=t?' got':''}">${esc(skName(e.crop,slot,x))}${slot===1&&x===4?'<em>強化</em>':''}${x===6&&slot===2?'<em>覺醒</em>':''}</i>`).join('')}</span>`:'<span class="meta wpmore">點一下看進化路線</span>'}</button>`}
+  return `<button type="button" class="wpsk${d.locked?' lock':''}" data-wpr="${slot}">${skIconHTML(e.crop,slot)}<b>${d.locked?'🔒 ':''}技能 ${slot}：${esc(nm)}</b><span>${esc(SK_DESC[d.id]||'')}</span><span class="meta">冷卻 ${d.cd} 秒${k?`・傷害 攻擊力 ×${k.toFixed(1)}`:''}${d.locked?'・第 2 階解鎖':''}</span>${open?`<span class="wproute">${route.map(x=>`<i class="${x===t||(slot===2&&t<2&&x===2)?'on':''}${x<=t?' got':''}">${esc(skName(e.crop,slot,x))}${slot===1&&x===4?'<em>強化</em>':''}${x===6&&slot===2?'<em>覺醒</em>':''}</i>`).join('')}</span>`:'<span class="meta wpmore">點一下看進化路線</span>'}</button>`}
 function wpStarRow(e){const t=wpTierOk(e),st=e.st||[],base=(t-1)*3,ok=WP_SHAPES[e.crop]||[];let h='<div class="wpstars">';
   for(let j=0;j<3;j++){const s=st[base+j];h+=s!=null?`<span class="wpst on${s<0?' mh':''}" title="${SPN[Math.abs(s)]}">${wpShapeSVG(Math.abs(s))}</span>`:`<span class="wpst">${ok.map(x=>wpShapeSVG(x,1)).join('')}</span>`}
   const tx=wpStatTxt(e);return h+`</div><p class="note">共 ${st.length} 顆・技能傷害 +${st.length*5}%${tx?`・${tx}`:''}</p>`}
@@ -11904,7 +11914,7 @@ function skNameShow(crop,slot,tier,name){const S=state.skSeen||(state.skSeen={})
 /* 長按技能按鈕：小卡 */
 function skCardShow(slot,btn){const d=skDef(slot),w=curWpn();if(!d||!w)return;let c=document.getElementById('skCard');if(!c){c=document.createElement('div');c.id='skCard';document.body.appendChild(c)}
   const t=w.tier||1,nm=d.locked?skName(w.crop,2,2):skName(w.crop,slot,t),k=d.mul?(d.mul*Math.pow(1.3,t-1)*skStarK()):0;
-  c.innerHTML=`<b>${esc(nm)}</b><span>${esc(SK_DESC[d.id]||'')}</span><span class="meta">冷卻 ${d.cd} 秒${k?`・傷害 攻擊力 ×${k.toFixed(1)}`:''}${d.locked?'・第 2 階解鎖':''}</span>`;
+  c.innerHTML=`${skIconHTML(w.crop,slot)}<b>${esc(nm)}</b><span>${esc(SK_DESC[d.id]||'')}</span><span class="meta">冷卻 ${d.cd} 秒${k?`・傷害 攻擊力 ×${k.toFixed(1)}`:''}${d.locked?'・第 2 階解鎖':''}</span>`;
   const r=btn.getBoundingClientRect();c.style.right=Math.max(8,innerWidth-r.right)+'px';c.style.bottom=(innerHeight-r.top+10)+'px';c.hidden=false;clearTimeout(c._t);c._t=setTimeout(()=>{c.hidden=true},3000)}
 /* ===== 186 結束 ===== */
 /* ---- 每一招 ---- */
@@ -12016,8 +12026,14 @@ const SK_GLYPH={thrust:'<path d="M3 21 L17 7 M13 5 L19 5 L19 11" />',xcut:'<path
  quake:'<path d="M2 18 H22 M6 18 L9 12 L12 16 L15 9 L18 18"/>',wall:'<rect x="3" y="8" width="18" height="11" rx="1"/><path d="M3 13.5 H21 M9 8 V13.5 M15 13.5 V19"/>',jail:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9.5 4 V21 M14.5 4 V21"/>',
  thunder:'<path d="M13 2 L5 13 H11 L9 22 L19 9 H13Z"/>',aegis:'<path d="M12 3 L20 6 V12 C20 17 16 20 12 21 C8 20 4 17 4 12 V6Z"/><path d="M13 7 L9 13 H12 L11 17 L15 11 H12Z"/>',thor:'<path d="M13 2 L5 13 H11 L9 22 L19 9 H13Z"/><circle cx="12" cy="12" r="10" stroke-dasharray="3 3"/>',
  focus:'<circle cx="12" cy="12" r="6"/><path d="M12 2 V6 M12 18 V22 M2 12 H6 M18 12 H22"/>',saturate:'<circle cx="7" cy="8" r="2.5"/><circle cx="16" cy="7" r="2.5"/><circle cx="12" cy="15" r="2.5"/><circle cx="19" cy="16" r="2"/><circle cx="5" cy="17" r="2"/>',sat:'<circle cx="8" cy="12" r="4"/><circle cx="17" cy="9" r="3"/><path d="M11 11 L14 10"/>'};
+/* ===== 202（21d）：技能鍵換成畫好的圖示 assets/icons/skills/<W.k>_s<1|2>.webp（160×160、已經是圓形；升階、覺醒同一張）；載不到退回線條圖示 ===== */
+const skIcon=(crop,slot)=>{const W=WEAPONS[crop];return W?`assets/icons/skills/${W.k}_s${slot}.webp?v=${BUILD}`:''};
+function skImgSet(b,crop,slot){const im=b.querySelector('.skimg');if(!im)return;const src=crop?skIcon(crop,slot):'';if(!src){im.hidden=true;b.classList.remove('hasimg');return}if(im._s===src)return;im._s=src;
+  im.onload=()=>{im.hidden=false;b.classList.add('hasimg')};im.onerror=()=>{im.hidden=true;b.classList.remove('hasimg')};im.hidden=true;b.classList.remove('hasimg');im.src=src}
+const skIconHTML=(crop,slot)=>{const s=skIcon(crop,slot);return s?`<img class="skic40" src="${s}" alt="" onerror="this.remove()">`:''};/* 武器頁、長按小卡（40px） */
+/* ===== 202 結束 ===== */
 function skBar(){let B=document.getElementById('skBar');if(B)return B;B=document.createElement('div');B.id='skBar';B.setAttribute('aria-label','技能');
-  B.innerHTML=['1','2'].map(k=>`<button type="button" class="skb" id="sk${k}" data-sk="${k}"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></svg><i class="skcd"></i><b class="skt"></b><em class="sklk"></em></button>`).join('')+`<button type="button" class="skb ska" id="skR" data-sk="A" aria-label="攻擊（按住連續打）"><span class="skai"></span></button>`;/* 189：最大顆＝攻擊鍵（位置沿用原本翻滾的 #skR） */
+  B.innerHTML=['1','2'].map(k=>`<button type="button" class="skb" id="sk${k}" data-sk="${k}"><img class="skimg" alt="" hidden><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></svg><i class="skcd"></i><b class="skt"></b><em class="sklk"></em></button>`).join('')+`<button type="button" class="skb ska" id="skR" data-sk="A" aria-label="攻擊（按住連續打）"><span class="skai"></span></button>`;/* 189：最大顆＝攻擊鍵（位置沿用原本翻滾的 #skR） */
   let lp=null;/* 186：技能鍵按下去 0.4 秒內放開＝放招，按住＝看說明（翻滾照舊按下去就滾） */
   B.addEventListener('pointerdown',e=>{const b=e.target.closest('.skb');if(!b)return;e.preventDefault();e.stopPropagation();const k=b.dataset.sk;if(k==='A'){atkPress();try{b.setPointerCapture(e.pointerId)}catch(x){}lp={k,b,id:e.pointerId,long:false,t:0,atk:1};return}try{b.setPointerCapture(e.pointerId)}catch(x){}lp={k,b,id:e.pointerId,long:false,t:setTimeout(()=>{if(lp){lp.long=true;skCardShow(+k,b)}},400)}});
   const up=e=>{if(!lp||e.pointerId!==lp.id)return;const L=lp;lp=null;clearTimeout(L.t);if(L.atk){atkRelease();return}if(L.long||e.type==='pointercancel')return;const d=skDef(+L.k);if(d&&d.locked){toast('第 2 階解鎖',1500);return}skCast(+L.k)};B.addEventListener('pointerup',up);B.addEventListener('pointercancel',up);
@@ -12025,7 +12041,7 @@ function skBar(){let B=document.getElementById('skBar');if(B)return B;B=document
 let skPk='';
 function skPaint(force){try{fyUltPaint()}catch(e){}/* 198 */try{const on=!!state&&scene==='explore'&&document.body.classList.contains('wild');let B=document.getElementById('skBar');if(!on){if(B&&!B.hidden)B.hidden=true;const sw=document.getElementById('wpSwap');if(sw)sw.hidden=true;if(scene!=='explore'&&fxPreK)try{fxRelease()}catch(x){}/* 191：離開野外放掉特效圖 */return}B=skBar();if(B.hidden)B.hidden=false;
   const w=curWpn(),now=skNow(),S=w&&SKILLS[w.crop],key=(w?w.crop+w.tier:'-');
-  const set=(k,d,id,col,cdEnd,cdLen,lock,label)=>{const b=document.getElementById('sk'+k);if(!b)return;b.hidden=!d;if(!d)return;if(b._id!==id+lock+label){b._id=id+lock+label;b.querySelector('svg').innerHTML=SK_GLYPH[id]||'';b.style.setProperty('--skc',col);b.classList.toggle('lock',!!lock);b.querySelector('.sklk').textContent=lock?'第 2 階':label;b.setAttribute('aria-label',label+(lock?'（第 2 階解鎖）':''))}
+  const set=(k,d,id,col,cdEnd,cdLen,lock,label)=>{const b=document.getElementById('sk'+k);if(!b)return;b.hidden=!d;if(!d)return;if(b._id!==id+lock+label){b._id=id+lock+label;b.querySelector('svg').innerHTML=SK_GLYPH[id]||'';skImgSet(b,w&&w.crop,+k);/* 202 */b.style.setProperty('--skc',col);b.classList.toggle('lock',!!lock);b.querySelector('.sklk').textContent=lock?'第 2 階':label;b.setAttribute('aria-label',label+(lock?'（第 2 階解鎖）':''))}
     const left=Math.max(0,cdEnd-now),p=cdLen?left/cdLen:0,cd=b.querySelector('.skcd'),t=b.querySelector('.skt');cd.style.setProperty('--p',(p*360).toFixed(1)+'deg');cd.hidden=!(left>0);t.textContent=left>0?Math.ceil(left/1000):''};
   const d1=w?skDef(1):null,d2=w?skDef(2):null,tr=w?(w.tier||1):1;set('1',d1,d1&&d1.id,S&&S.c,SKC.s1,d1?d1.cd*1000:0,0,d1?skName(w.crop,1,tr):'');set('2',d2,d2&&d2.id,S&&S.c,SKC.s2,d2?d2.cd*1000:0,d2&&d2.locked?1:0,d2?skName(w.crop,2,tr):'');
   if(B._r!==tr){B._r=tr;B.style.setProperty('--skr',RCOL[Math.min(5,tr-1)])}/* 186：外圈＝那一階的稀有度色 */try{fxPreloadCur()}catch(x){}/* 191 */{const a=document.getElementById('skR');if(a){const ak=w?w.crop+'|'+w.tier:'-';if(a._k!==ak){a._k=ak;a.querySelector('.skai').innerHTML=w?`<img src="${wpSrc(w.crop,w.tier)}" alt="">`:ATK_SICKLE}a.classList.toggle('held',atkHeld);if(!B._tip){B._tip=1;if(tipOnce('atk')){a.classList.add('flash');setTimeout(()=>a.classList.remove('flash'),2400)}}}}

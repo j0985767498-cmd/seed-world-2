@@ -1,0 +1,20 @@
+/* 第 199 節：世界地圖。由 tload.js 呼叫，也可以單獨跑：node tools/t199.js */
+const fs=require('fs'),vm=require('vm'),path=require('path');
+const ROOT=path.join(__dirname,'..'),h=fs.readFileSync(path.join(ROOT,'index.html'),'utf8');
+let js=h.slice(h.indexOf('<script>',h.indexOf('</style>'))+8,h.lastIndexOf('</script>'));
+const P=new Proxy(function(){},{get:(t,k)=>k===Symbol.toPrimitive?()=>'':(k==='then'?undefined:P),apply:()=>P,construct:()=>P,set:()=>true});
+js+=';globalThis.T={newGame,worldMapHTML,wmCardHTML,wmState,WM_PTS,setScene(v){scene=v},set wmSel(v){wmSel=v},get state(){return state}};';
+const ctx={document:P,window:P,firebase:P,navigator:P,location:{pathname:'/',search:'',hash:''},localStorage:P,console,setTimeout:()=>0,setInterval:()=>0,clearTimeout(){},clearInterval(){},requestAnimationFrame:()=>0,fetch:()=>new Promise(()=>{}),btoa:s=>Buffer.from(s,'binary').toString('base64'),atob:s=>Buffer.from(s,'base64').toString('binary'),TextEncoder,Math,Date,JSON,addEventListener(){},matchMedia:()=>({matches:false,addEventListener(){}}),performance:{now:()=>0},innerWidth:400,innerHeight:800,devicePixelRatio:1,screen:P,history:P,alert(){},confirm:()=>true,URLSearchParams};
+ctx.globalThis=ctx;ctx.self=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
+const T=ctx.T;let fails=0;const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+'[199] '+m);if(!c)fails++};
+T.newGame();T.setScene('farm');const st=T.state;st.lv=12;
+ok(fs.existsSync(path.join(ROOT,'assets/regions/world_map.webp')),'地圖圖檔在');
+let H=T.worldMapHTML();ok((H.match(/data-wm="/g)||[]).length===10&&T.WM_PTS.length===10,'九區＋城鎮 10 個熱區');
+ok(/Lv \d+ 開放/.test(H)&&/wmfog/.test(H),'等級不夠：名牌寫「Lv N 開放」、蓋雲霧');
+ok(st.wmSeen&&st.wmSeen.grass&&st.wmSeen.forest&&!st.wmSeen.snow&&!/burst/.test(H),'第一次打開：已經解鎖的直接算看過，不播散開');
+st.lv=99;H=T.worldMapHTML();ok(/wmfog[^"]*burst/.test(H)&&st.wmSeen.snow,'升級後第一次打開：雲霧散開，記進 wmSeen');
+H=T.worldMapHTML();ok(!/burst/.test(H),'之後不再播');
+ok(T.wmState('ruins').test||T.wmState('ruins').closed,'REG_OPEN=0 的區：測試模式淡一半（或尚未開放）');
+const C=T.wmCardHTML('grass');ok(/前往|回到這裡/.test(C)&&/去過 \d+／\d+ 張地圖/.test(C)&&/夢幻色/.test(C),'小卡：前往、進度、夢幻色');
+const CT=T.wmCardHTML('town');ok(/回農場/.test(CT)&&/去城鎮/.test(CT),'城鎮那一格：回農場、去城鎮');
+if(fails)process.exitCode=1;

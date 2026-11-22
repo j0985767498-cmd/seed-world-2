@@ -2,10 +2,10 @@
 
 > 程式：`index.html`。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> **目前 BUILD `2026-11-20y`，下一版 `2026-11-20z`。**
+> **目前 BUILD `2026-11-21c`，下一版 `2026-11-21d`。**
 > **用詞（第 194 節）**：舊文件（`docs/規格存檔.md`）裡的「主」＝**領主**（各區古老的守護者，被蝕的力量侵蝕而失控），「僕人」＝**眷屬**（跟隨領主的魔獸）；抽火傀儡不是眷屬。程式的鍵（`LORDS`、`SERVANTS`、`lord_*`、`servant_*`）不改。
 > **使用者要自己做的事**：Realtime Database 規則整份貼 `tools/rtdb_rules_196.txt`（含 62 的 status、135、172、173、196 的 `od`）；Firestore 規則整份貼 `tools/firestore_rules_console_114.txt`（117 那份＋`fairyFirst`）。舊的規則檔都只是紀錄。
-> **還沒做的節**：165（新版角色正面、背面走路）、108 的其他地區／農場／城鎮（3D）、135 的神寵技能、136（跟晶霜雪原那一章一起做）；未定案：14、19、69。各節做完的紀錄看下面的索引表。
+> **還沒做的節**：108 的其他地區／農場／城鎮（3D）、135 的神寵技能、136（跟晶霜雪原那一章一起做）；未定案：14、19、69、201（劇情改版）。各節做完的紀錄看下面的索引表。
 
 ---
 
@@ -256,7 +256,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 類型名稱（149）：`BASE_NAMES`／`baseName`（完整名稱）、`BASE_SHAPES`（小標籤短詞）、`gAutoName`（原始品種、野生種原的名字）、遷移 `m149`（旗標 `n149V`）、圖鑑系統名字在 `sortReg` 顯示時換；`shortApp(ph,crop)` 一定要傳作物。
 - 領主與眷屬的頭像（147）：`porHTML`／`porFail`／`porSrc`／`porC`（`POR_C`）、`porArtOfSrc`（素材圖示）；血條 `#bossBar .bpor`。
 - NPC 點擊（148）：`npcHitList`／`npcAt`／`npcGo`／`npcAtClient`（`handleTap` 最先看）、`walkTo(x,y,then,force)`；神之子資訊 `openFyInfo`／`openFyBtn`／`fyInfoHTML`（`sheet.fyinfo`）。
-- 選地區預覽圖（151）：`rgCardHTML`／`rgPrev`（`assets/regions/preview_<地區>.jpg`）。
+- 選地區預覽圖（151）：第 199 節換成世界地圖，`rgCardHTML`／`rgPrev` 已拿掉（`preview_*.jpg` 還在）。
 - 傷害數字（152）：`dmgShow`（`#dmgL`、`dmgPool` 12 個、`dmgStack`、`w2s`、`dmgFmt`、`monHeadY`、開關 `state.dmgNum`）；神之子立繪 `fyHeroHTML`／`fyGlowC`／`fyPop`。
 - 道具圖示（153）：`itemArt`（新圖＋`itemArtOld` 退路、`itFail`、`ITEM_IMG`／`ITEM_DIM`、精魄 `spTint`、金色濾鏡 `itDefs`）、`potIc`（快捷格）。
 - 小地圖（154）：`renderMini`／`regMiniSVG`／`mapQSet`／`miniFight`（`#miniMap`、`state.miniMap`）；地區地圖 `regMapSVG`（等級、任務、頭像）＋`regMapInfo`（`#rmInfo`）。
@@ -292,6 +292,9 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 神寵跟隨（193）：`petSVG(p,size,flip)`（領主 idle 圖、`pet_<地區>_<0|1>.png` 優先，`petProbe`／`PET_IMG`、`petArt`、`PET_H`／`petHW`）、`petStep`（身後、滑過去）、3D 看板 `ground`（`w3d.js`）；測試 `tools/t193.js`。
 - 後六區領主（196）：`MAP_OF`／`bossMapHere`（每隻自己的地圖）、`LAI[def.ai]`（renard／bas／urso／orth／lep／talos）、新形狀 `bossHit2`／`bossShapeSVG2`（fan／ring／multi／all／sweep，`act` 狀態 `bossActTick`、`setT0`）、`bossAfterStrike`、`bossMul`／`bossInv`／`bossSlow`（`bossSlowK`）、場上物件 `bossParts`／`PSEUDO`／`partDealt`／`bossOdApply`（`od/<uid>`）、`fsNorm`、`bossIceBlock`、`bossDevourHit`；現身 `kujiToday`／`SHRINE_LANT`／`foxL`／`lordWonOthers`／`shrineOpen`、`basSteal`／`catLoop`／`catTap`、`urso196Tick`（`URSO_ICE`）、`orth196Tick`、`fullMoonDay`／`nextFullMoons`／`RABBIT`／`rabbitMissing`、`TALOS_KEYS`；`l196Objs`／`l196Tap`／`l196HTML`／`l196Action`（`sheet.l196`）、`l196Tick`（在 `tick`）、`l196Enter`；神社後院 `SAKURA_MAPS.shrine`、神官 `kannushi`；測試開關 `lord196Tool`（`data-tool="lord196"`、`fakeFull`）；測試 `tools/t196.js`。
 - 省電的特效（197）：`fxEcoL`、`fxMax()`（`FX_ECO_MAX` 16）；測試 `tools/t197.js`。
+- 神之子的技能（198）：`FY_SK`、`FYS`、`fySkTick`（在 `fyAtkTick` 前面）、`fySkDo`、`fyDeal`／`fyEnemies`／`fyNear`／`fyE`、`fyBuf`／`fyBufK`／`fyCdK`、`fyHitMod`（在 `monHit`、`bossDealt`）、`fyHurtMod`（在 `skHurt`）、`fyMonHold`／`fyAtkK`、`fyCharge`、大招 `fyUlt`／`fyUltPaint`（`#fyUlt`，在 `skPaint`）／`fyUltCard`／`fyCutIn`（`#fyCut`）、`fySkPaint`（`#fySkG`）、特效 `fyFx`／`fyFxPre`（`plan.json` 的 `fairy`）、同步 `fyAct.s`／`fySkRemote`、隊友 `fyFb`（presence `fb`）／`fyBuffRemote`／`FY_FB_R`、資訊頁 `fySkHTML`、學會了 `.fys-learn`；數值檢查 `tools/sim198.js`（≤35%）、測試 `tools/t198.js`。
+- 世界地圖（199）：`worldMapHTML`（在 `renderMapPanel`，`WM_SRC`／`WM_PTS`／`WM_R`）、`wmState`（開放、Lv、測試）、雲霧 `wmFog`（散開 `.burst`、`state.wmSeen`）、標記 `wmMeHead`／`wmHere`／`wmQuestBk`、各區 `WM_FY`／`WM_DREAM`、小卡 `wmCardHTML`／`wmTap`（`wmSel`、`data-wm`／`data-wmx`）；測試 `tools/t199.js`。
+- 領主變難、神寵普通攻擊（200）：`LORD_HIT`／`lordDmgK`（載入時寫進 `LORDS[bk].dmgK`）、`LORD_HPK`（後四隻的 `hpK`，其他 300）、第二階段 ×`LORD_PH2`（`bossDmgOf`）、倒下 `lordKoTry`（在 `pDamage`）／`lordKoTick`（在 `bossStep`）／`lordKoOn`／`lordKoEnd`（`#koBox`、`body.lordko`）；神寵 `petAtkTick`（在 `fyAtkTick`）／`PET_ATK_PCT`／`petAtkFx`（`.petorb`）／`petLungeOff`（`petMove`）、同步 `petAct`→`pa`／`petAtkRemote`、傷害數字 `pet:{col}`→`dmgShow` 的 `color`／`sm`；表 `tools/sim200.js`、測試 `tools/t200.js`。
 - 武器頁（190）：`sheet.wpi`（`wpOpen`／`wpPageHTML`、`wpSkCard`、`wpStarRow`）、技能定義 `skDefFor`、星星 `wpSlot`／`wpStarFruits`／`wpStarP`／`wpStarDo`（`WP_STAR_P`、`e.sf`、名品存負數 `wpStatOf`）、升階 `WP_UP`／`wpUpNeed`／`wpUpDo`（`wpFarKeys`）、轉移 `wpTrCost`／`wpTrOk`／`wpTrDo`（`WP_TR_COIN`）、副武器 `state.wpn2`／`wpn2On`（`wpn2Tick`）、`wpSetMain`／`wpSetSub`／`wpnSwap`、`#wpSwap`（`wpSwapPaint`）、各把的冷卻 `SKCW`／`skCdSwap`；測試 `tools/t190.js`。
 - 攻擊鍵（189）：普通攻擊不再自動，`atkTick`（在 `monLoop`、`bossStep`）、`atkPress`／`atkRelease`（`atkHeld`、`atkTap`）、`atkLock`／`atkLockT`／`atkTs`／`atkSearch`、走過去 `moveTo`（`atkJoy` 推搖桿就取消）、空揮 `atkWhiff`、鎖定圈 `#atkRing`（`atkRingPaint`）；按鈕是 `#skR`（`.ska`）；翻滾拿掉；`TIP_TXT.atk`。
 - 畫面按鈕重排（188）：位置都在 `<style>` 最後的「188」區塊（`body.h188`、`--h188-*` 變數）、`hud188()`（選單搬進 `#rbar`、回家／幫忙照顧搬進 `#ctxBar`）、`MENU` 加朋友／圖鑑／布置、`renderFrDot` 紅點在選單；`#hpBar` 所有場景都顯示；檢查 `tools/layout188.js`。**之後加按鈕要照 188 的位置表排**。
@@ -373,7 +376,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 162 | 秘境的眷屬下來空地打 | 已完成 | docs/規格存檔.md；19w（9.161）；潟湖秘境沒有半徑 120 的空地，用 80；潟湖的領主照舊在水上；有截圖；沒測 iPhone |
 | 163 | 劇情對話改版：視覺小說式對話、劇情演出 | 已完成 | docs/規格存檔.md；19w（9.162）；背景音樂沒做（沒有音樂系統）；立繪還沒有圖，先用替代圖（裁切表在 9.162）；有截圖；沒測 iPhone |
 | 164 | 鏡頭、神之子大小、被怪物蓋住 | 已完成 | docs/規格存檔.md；19w（9.163）；有截圖；沒測 iPhone |
-| 165 | 新版角色的正面、背面走路 | 未做 | docs/待實作/第165節.md |
+| 165 | 新版角色的正面、背面走路 | 作廢 | 被 171 取代（第 200 節）；檔案已刪，`assets/char2/` 還在 |
 | 166 | 武器平衡第一次調整、平常背著武器 | 已完成 | docs/規格存檔.md；19w（9.164）、19x 修正（9.166：被打的怪以 0.85 倍追、放棄距離 400；背武器 60°、錘槍朝上）；新版角色男女截圖；沒測 iPhone |
 | 167 | 神之子新圖（三階段）、固定配色、果實顏色改成光芒顏色 | 已完成 | docs/規格存檔.md；19y（9.167）；跟隨大小照 164 ×1.0（使用者）；喚醒選色也改「光芒顏色」；有截圖；沒測 iPhone |
 | 168 | 別人也看得到新版主角（補第 156 節） | 已完成 | docs/規格存檔.md；19z（9.168）；Firestore 不用改、RTDB presence 規則不在 repo（照 w、fy 的經驗應該不用改，9.168 附上萬一要加的那段）；互看截圖用假的其他玩家；沒測多人連線、iPhone |
@@ -390,7 +393,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 179 | 舊武器畫法全部拿掉、遠程攻擊從武器射出 | 已完成 | docs/規格存檔.md；20i（9.180）；槍改取離握點最遠的像素（base 是握把方向）、高階圖換框內比例；**沒有截圖**（Browser 窗格卡住）；沒測 iPhone、兩台手機 |
 | 180 | 打扮面板改版：縮圖只放單品、版面好操作 | 已完成 | docs/規格存檔.md；20j（9.181）；選髮型不再換成預設髮色（和 177 不同）；**沒有截圖**（Browser 窗格卡住）；沒測 iPhone |
 | 181 | 撿起按鈕改版；神之子攻擊、雙色特效的問題先查 | 已完成 | docs/規格存檔.md；20k（9.182）；90～120 之間按了會走過去（規格沒寫）、「自動撿取」設定拿掉；181.2 只查：怪方塊是麥斯 `corn_2_c`／`corn_3_c` 圖裡的全息方塊、28 張圖光效碰到畫布邊；**沒有遊戲截圖**（Browser 窗格卡住）；沒測 iPhone |
-| 182 | 整理 CLAUDE.md：刪掉過時、被取代的內容 | 已完成 | 只改 CLAUDE.md；照 182.4 沒有動 `docs/規格存檔.md`、`docs/待實作/`（`第182節.md` 還在） |
+| 182 | 整理 CLAUDE.md：刪掉過時、被取代的內容 | 已完成 | 只改 CLAUDE.md；照 182.4 沒有動 `docs/規格存檔.md`、`docs/待實作/`（`第182節.md` 第 200 節刪了） |
 | 183 | 第一位神之子自己選：轉生的夢；主線不再發神之子 | 已完成 | docs/規格存檔.md；20l（9.183）；神之子類任務放在「故事」分頁、2-4／3-4 獎勵是加上去；**沒有截圖**；沒測 iPhone |
 | 184 | 武器技能（每把 2 招＋覺醒）、翻滾閃避 | 已完成 | docs/規格存檔.md；20m（9.184）；**±15% 只調技能倍率做不到（差在普通攻擊），倍率照起始值，等使用者決定**；領主沒有 ult 狀態（改看長蓄力）；測試模式武器階之後拿掉；沒有截圖；沒測 iPhone、兩台手機 |
 | 185 | 素材的取得提示（楓之谷式） | 已完成 | docs/規格存檔.md；20n（9.185）；遊戲沒有怪物資訊畫面，「會掉：」放在來源卡；8 種舊怪素材沒有來源；沒有截圖；沒測 iPhone |
@@ -406,3 +409,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 195 | 後六區領主的打法 | 已完成 | docs/規格存檔.md；由第 196 節一起做（20x，9.196）；做不到、改了做法的列在 9.196 |
 | 196 | 後六區的領主、眷屬、現身條件 | 已完成 | docs/規格存檔.md；20x（9.196）；新秘境神社後院（狐火庭在地區地圖上移到 (1,-1)）；**規則 `tools/rtdb_rules_196.txt` 要使用者自己貼**；瀏覽器看過 4 個畫面、截圖沒存；沒測 iPhone、兩台手機 |
 | 197 | 省電模式：普通攻擊的特效照樣要有 | 已完成 | docs/規格存檔.md；20y（9.197）；順便修 monLoop 的 `best`；沒有截圖、沒量每幀耗時 |
+| 198 | 神之子的技能：每位三招（喚醒、進化自動放；神化是大招鍵） | 已完成 | docs/規格存檔.md；20z（9.198）；照 35% 降了 11 個倍率（列在 9.198）；切入改成在畫面裡滑進來；幻影、麻痺對領主只有主機有用；截圖只看了蘿瑪大招、沒存；沒測 iPhone、兩台手機 |
+| 199 | 世界地圖：選地區改成一張插畫地圖 | 已完成 | docs/規格存檔.md；21a（9.199）；各區的神之子、夢幻色是我配的（列在 9.199）；雲霧加大加灰；430 寬、散開動畫沒截圖；沒測 iPhone |
+| 200 | 領主變難；神寵會普通攻擊；第 165 節作廢 | 已完成 | docs/規格存檔.md；21b（9.200）；22% 照近戰算（遠程吃滿）；21c 後四隻 hpK 照估計調到約 9 分鐘（奧索 460、歐特魯斯 610、蕾普絲 660、塔羅斯 1080；數字表在 9.200）；截圖沒存；沒測 iPhone、兩台手機 |
+| 201 | 劇情任務改版：第一季（序章～第三章）照《第一季劇情任務 v2》重寫 | 未定案 | docs/待實作/第201節.md＋第201節_劇情腳本.md；規格寫明劇情還沒定案、先不要實作（使用者 2026-11-23） |

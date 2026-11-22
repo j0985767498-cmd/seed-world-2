@@ -31,7 +31,7 @@ const reset=()=>{TREE={};LIS.length=0;TQ=[];NOW+=3600e3};
 /* ---------- 主：A 觸發、B 晚 10 秒進圖自動加入 ---------- */
 {reset();const A=client('uA','甲'),B=client('uB','乙');enter(A,'grass',400,700);A.bossRT=null;pres([A]);
   const a=A.lordSummon('grass');ok(a&&a.net&&Object.keys(a.members).length===1,'A calls the lord alone (1 member)');const max1=a.max;
-  step([A],10000);A.me().x=a.x+20;A.me().y=a.y;A.pHP=1e9;step([A],1500);const r0=A.bossHp(a)/a.max;
+  A.pHP=1e12;/* 200：領主傷害變高，10 秒站著會倒下（倒下時不打） */step([A],10000);A.me().x=a.x+20;A.me().y=a.y;A.pHP=1e9;step([A],1500);const r0=A.bossHp(a)/a.max;
   enter(B,'grass',420,700);pres([A,B]);step([A,B],1500);const b=B.bossRT;
   ok(b&&b.kind==='lord'&&b.net.fid===a.net.fid,'B enters 10 s later: joins the same fight automatically');
   ok(Object.keys(a.members).length===2&&a.members.uB,'B is written into meta/members');

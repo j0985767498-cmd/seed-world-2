@@ -1306,6 +1306,55 @@ body.l196dark::before{content:'';position:fixed;inset:0;background:rgba(10,8,30,
 .kuji{margin:8px 0;padding:10px 12px;border-radius:10px;background:#FFF8EA;border:1px solid #E0C89A;color:#5A3C1C;font-weight:700;line-height:1.8}
 .kuji p{margin:0}
 @media (prefers-reduced-motion:reduce){.l196petal ellipse,.l196fire{animation:none}}
+
+/* ===== 198：神之子的大招鍵、切入、技能區 ===== */
+#fyUlt{position:fixed;z-index:12;right:calc(22px*var(--h188-cs,1));bottom:calc(128px*var(--h188-cs,1) + var(--h188-bot,0px));width:60px;height:60px;border-radius:50%;border:none;padding:0;background:none;touch-action:none;-webkit-user-select:none;user-select:none}
+#fyUlt[hidden]{display:none}
+#fyUlt .fyu-por{position:absolute;inset:6px;border-radius:50%;overflow:hidden;background:#FFF6DE;border:2px solid var(--ol,#5A3416)}
+#fyUlt .fyu-por img{width:100%;height:170%;object-fit:cover;object-position:50% 0;display:block}
+#fyUlt svg{position:absolute;inset:0;pointer-events:none}
+#fyUlt.full{animation:fyuP 1s ease-in-out infinite}#fyUlt.full svg .r{filter:drop-shadow(0 0 4px #FFE27A)}
+#fyUlt .fyu-cd{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;text-shadow:0 1px 3px #000;font-size:18px;background:rgba(0,0,0,.35);border-radius:50%}
+@keyframes fyuP{50%{transform:scale(1.07)}}
+#fyCut{position:fixed;left:0;right:0;top:44%;height:30%;z-index:50;pointer-events:none;overflow:hidden}
+#fyCut .bd{position:absolute;left:0;right:0;top:20%;bottom:20%;background:rgba(10,8,25,.5);animation:fyCutB 1s ease-out forwards}
+#fyCut img{position:absolute;left:50%;top:0;height:100%;max-width:100%;object-fit:contain;transform:translateX(-50%);animation:fyCutA 1s ease-out forwards}
+#fyCut.eco img{height:50%;top:25%}#fyCut.eco .bd{display:none}
+@keyframes fyCutA{0%{clip-path:inset(0 0 0 100%);opacity:.4;transform:translateX(-30%)}25%{clip-path:inset(0 0 0 0);opacity:1;transform:translateX(-50%)}75%{clip-path:inset(0 0 0 0);opacity:1;transform:translateX(-50%)}100%{clip-path:inset(0 0 0 0);opacity:0;transform:translateX(-50%)}}/* 從右往左滑進來（不超出畫面，手機才不會整頁縮小） */
+@keyframes fyCutB{0%,75%{opacity:1}100%{opacity:0}}
+.fysk{display:flex;flex-direction:column;gap:6px;margin:4px 0 10px}.fysk1{padding:8px 10px;border-radius:10px;background:#FFF8EA;border:1px solid #E6D3A8}.fysk1 b{display:block;color:#5A3416}.fysk1 span{display:block;font-size:13px;color:#6A4A2A}.fysk1 em{display:block;font-style:normal;font-size:12px;color:#9A7A50;margin-top:2px}.fysk1.off{opacity:.55;filter:grayscale(.6)}
+.fys-learn{position:relative;z-index:2;margin:4px 0 0;text-align:center;color:#FFF3C4;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+@media (prefers-reduced-motion:reduce){#fyUlt.full{animation:none}}
+
+/* ===== 199：世界地圖 ===== */
+.wm{position:relative;width:min(100%,calc((100vh - 190px)*848/1264));aspect-ratio:848/1264;margin:4px auto 6px;background:#5FC6D8;border:4px solid #8A5A2B;border-radius:12px;overflow:hidden;box-shadow:0 3px 0 #5A3416}
+.wmimg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
+.wmh{position:absolute;width:22%;aspect-ratio:1;transform:translate(-50%,-50%);border:none;background:none;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wmring{position:absolute;inset:10%;border-radius:50%}.wmh.sel .wmring{box-shadow:0 0 0 3px #FFE27A,0 0 12px #FFE27A}
+.wmlab{position:absolute;left:50%;top:76%;transform:translateX(-50%);white-space:nowrap;background:rgba(30,20,10,.62);color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:9px;display:flex;align-items:center;gap:3px;line-height:1.4}
+.wmh.lock .wmlab{background:rgba(55,58,70,.72)}
+.wmq{display:inline-block;background:#FF5A3C;color:#fff;border-radius:50%;width:14px;height:14px;font-size:10px;line-height:14px;text-align:center}
+.wmfy{width:16px;height:16px;object-fit:cover;object-position:50% 8%;border-radius:50%;background:#fff;border:1px solid #fff}
+.wmme{position:absolute;left:50%;top:6%;width:32px;height:32px;margin-left:-16px;border-radius:50%;background:#fff;border:2px solid #5A3416;overflow:hidden;display:flex;align-items:center;justify-content:center;animation:wmBob 1.2s ease-in-out infinite}
+@keyframes wmBob{50%{transform:translateY(-6px)}}
+.wmfog{position:absolute;inset:-22%;pointer-events:none}
+.wmfog i{position:absolute;left:calc(50% + var(--x));top:calc(46% + var(--y));width:58%;height:44%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(248,250,252,1),rgba(232,236,242,.85) 55%,rgba(232,236,242,0));filter:drop-shadow(0 2px 3px rgba(80,90,110,.35));animation:wmDrift 6s ease-in-out infinite;animation-delay:var(--d)}
+.wmfog i.c{--x:0%;--y:0%;width:80%;height:62%;animation-delay:-2s;background:radial-gradient(closest-side,rgba(225,230,238,1),rgba(225,230,238,.9) 60%,rgba(225,230,238,0))}
+.wmfog.test{opacity:.5}
+.wmfog.burst i{animation:wmBurst 1s ease-out forwards}
+@keyframes wmDrift{50%{transform:translate(-44%,-56%)}}
+@keyframes wmBurst{to{opacity:0;transform:translate(calc(-50% + var(--x)*2),calc(-50% + var(--y)*2)) scale(1.7)}}
+.wmcard{position:relative;margin:8px 0 4px;padding:12px;border-radius:12px;background:#FFF8EA;border:2px solid #C9A46A}
+.wmx{position:absolute;right:6px;top:4px;border:none;background:none;font-size:16px;color:#7A5A30}
+.wmct{display:flex;gap:10px;align-items:center}.wmct h3{margin:0}.wmct .note{margin:2px 0 0}
+.wmsw{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;border:1px solid rgba(0,0,0,.25);margin-right:4px}
+@media (prefers-reduced-motion:reduce){.wmme,.wmfog i{animation:none}}
+
+/* ===== 200：倒下、神寵的普通攻擊 ===== */
+body.lordko #meGAv,body.lordko #meG{opacity:.35}
+#koBox{position:fixed;left:50%;top:38%;transform:translateX(-50%);z-index:40;padding:8px 14px;border-radius:12px;background:rgba(20,14,10,.72);color:#fff;font-weight:800;pointer-events:none}
+.dmg.sm b{font-size:82%}
+.petorb{animation:petOrb .3s linear forwards}@keyframes petOrb{to{transform:translate(var(--dx),var(--dy))}}
 </style>
 </head>
 <body class="game">
@@ -2070,7 +2119,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-20y';
+const BUILD='2026-11-21c';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -4919,16 +4968,45 @@ function sheetModeOff(){try{document.body.classList.remove('shOnP','shFull','shO
 function renderMapPanel(){const el=document.getElementById('mapBody');if(!el||!state)return;ensureEx();for(const bk in REGION_MAPS)regPreload(bk);
   let h='';if(scene==='explore'&&regHas(exBiome))h+=`<button class="btn" data-mp="region">${esc(REGION_CFG[exBiome].name)}的地圖（你在「${esc(REGION_MAPS[exBiome][regMap].n)}」）</button>`;
   const here=k=>(k==='farm'&&scene==='farm'&&!viewing)||(k==='town'&&scene==='market');
-  h+=`<div class="mpgrid"><button class="mpc" data-mp="farm"${here('farm')?' aria-current="true"':''}><img src="assets/icons/s/home.png" alt="" onerror="this.remove()"><b>我的農場</b></button><button class="mpc" data-mp="town"${here('town')?' aria-current="true"':''}><img src="assets/icons/s/town.png" alt="" onerror="this.remove()"><b>城鎮</b>${myLv()<LV_TOWN?`<span class="meta">Lv ${LV_TOWN}</span>`:''}</button></div>`;
-  h+=`<h3>探索</h3><p class="note">${exRefreshTxt()}${qh(exCapOn()?`每天最多撿 ${EX_LIMIT} 件道具、採 ${EX_PLANT_LIMIT} 株野生植株；今天還能撿 ${Math.max(0,EX_LIMIT-state.ex.picks)} 件、採 ${Math.max(0,EX_PLANT_LIMIT-(state.ex.plants||0))} 株。`:'目前沒有每日上限（測試模式）。')}</p>`;
-  h+=`<div class="rggrid">`+BIOME_KEYS.filter(regOpenOk).sort((a,b)=>LV_REG[a]-LV_REG[b]).map(k=>rgCardHTML(k)).join('')+`</div>`;/* 151：畫好的預覽圖卡片 */
+  h+=worldMapHTML();/* 199 */
+  h+=`<p class="note">${exRefreshTxt()}${qh(exCapOn()?`每天最多撿 ${EX_LIMIT} 件道具、採 ${EX_PLANT_LIMIT} 株野生植株；今天還能撿 ${Math.max(0,EX_LIMIT-state.ex.picks)} 件、採 ${Math.max(0,EX_PLANT_LIMIT-(state.ex.plants||0))} 株。`:'目前沒有每日上限（測試模式）。')}</p>`;
   el.innerHTML=h}
-/* ===== 151（19q）：選地區的預覽圖（assets/regions/preview_<地區>.jpg，4:5）；圖載不到就換回原本的縮圖＋說明 ===== */
-const rgPrev=k=>`assets/regions/preview_${k}.jpg?v=${BUILD}`;
-function rgCardHTML(k){const B=BIOMES[k],lk=myLv()<regLv(k)&&REG_OPEN[k]!==0,cur=scene==='explore'&&exBiome===k,test=REG_OPEN[k]===0;
-  return `<button class="rgcard${lk?' lock':''}" data-mp="${k}"${cur?' aria-current="true"':''} aria-label="${esc(B.n)}${lk?`，Lv ${regLv(k)} 開放`:''}"><img src="${rgPrev(k)}" alt="" onerror="this.parentNode.classList.add('noimg');this.remove()"><span class="rgfb">${biomeThumb(k)}<span class="meta">${esc(B.desc)}</span></span>`+
-    `<span class="rgname"><b>${esc(B.n)}</b>${test?'<i>未開放（測試）</i>':''}</span>${cur?'<span class="rgcur">你在這裡</span>':''}${lk?`<span class="rglock">Lv ${regLv(k)} 開放</span>`:''}</button>`}
-/* ===== 151 結束 ===== */
+/* 151 的預覽卡由第 199 節的世界地圖取代（assets/regions/preview_*.jpg 先留著） */
+/* ===== 199（21a）：世界地圖——選地區改成一張插畫地圖（assets/regions/world_map.webp，848×1264，以後換高解析度檔名不變） =====
+   熱區照圖片寬高的百分比（圓心）、半徑＝圖寬 11%；名牌在熱區下面；還沒開放蓋雲霧（測試模式淡一半）；第一次解鎖雲霧散開 1 秒（state.wmSeen）。
+   標記：你在的地區（頭像跳）、有任務的地區（名牌「!」）、那一區的神之子已經喚醒（小頭像）。點熱區 → 小卡（等級、夢幻色、領主頭像、去過幾張地圖）＋前往。 ===== */
+const WM_SRC='assets/regions/world_map.webp',WM_W=848,WM_H=1264,WM_R=11;
+const WM_PTS=[['snow',47,16],['volcano',80,21],['ruins',20,31],['canyon',54,36],['sakura',81,43],['forest',19,50],['grass',52,56],['marsh',84,67],['desert',22,75],['town',52,78]];
+/* 各區的夢幻色（設計名）、神之子（故事有寫的照故事：草原蘿瑪、白樺林傑柯、潟湖蜜露；其他照特色配） */
+const WM_DREAM={grass:['翡翠','#4FC98A'],forest:['銀','#C9D2DE'],marsh:['珍珠','#F2EEE4'],sakura:['櫻雪','#FFC8DC'],desert:['金','#F2C94C'],snow:['水晶','#BFEFFF'],volcano:['赤曜','#E0503A'],canyon:['星空','#5A4AA8'],ruins:['彩虹','linear-gradient(90deg,#FF7A7A,#FFD54A,#7FE38A,#6FB8FF,#B98CFF)']};
+const WM_FY={grass:'tomato',forest:'pumpkin',marsh:'melon',sakura:'strawberry',desert:'zucchini',snow:'broccoli',volcano:'chili',canyon:'eggplant',ruins:'corn'};
+let wmSel=null;
+const wmName=k=>k==='town'?'城鎮與農場':(BIOMES[k]?BIOMES[k].n:k);
+/* 開放狀態：ok＝進得去、test＝只有測試模式進得去、lv＝等級不夠 */
+function wmState(k){if(k==='town')return myLv()<LV_TOWN?{lock:1,lv:LV_TOWN}:{};if(REG_OPEN[k]===0)return regOpenOk(k)?{test:1}:{lock:1,closed:1};if(myLv()<regLv(k))return {lock:1,lv:regLv(k)};return {}}
+function wmQuestBk(){const S=new Set();try{for(const q of qList()){if(q.st!=='acc'&&q.st!=='done')continue;const w=q.where;if(w&&w.bk)S.add(w.bk);else if(w&&w.town)S.add('town')}}catch(e){}return S}
+function wmMeHead(){try{const L3=char3On()?lookNorm(state.look):null,hd=L3?c3Crop(L3,C3_HEAD,30,32):null;if(hd)return hd}catch(e){}return `<svg viewBox="-12 -12 24 24" width="30" height="30"><circle r="10" fill="#FFE2C4" stroke="#5A3416" stroke-width="2"/></svg>`}
+const wmHere=()=>scene==='explore'?exBiome:(scene==='market'||scene==='farm')?'town':null;
+function wmFog(k,st,burst){const n=6,parts=Array.from({length:n},(_,i)=>{const a=i/n*Math.PI*2,r=34;return `<i style="--x:${(Math.cos(a)*r).toFixed(0)}%;--y:${(Math.sin(a)*r*0.7).toFixed(0)}%;--d:${(i*0.6).toFixed(1)}s"></i>`}).join('');return `<span class="wmfog${st.test?' test':''}${burst?' burst':''}">${parts}<i class="c"></i></span>`}
+function worldMapHTML(){const Q=wmQuestBk(),here=wmHere(),F=fyMine();if(!state.wmSeen||typeof state.wmSeen!=='object'){state.wmSeen={};for(const [k] of WM_PTS){const st=wmState(k);if(k!=='town'&&!st.lock&&!st.test)state.wmSeen[k]=1}}/* 舊存檔、新遊戲：已經解鎖的直接算看過 */const seen=state.wmSeen;let burstAny=false;
+  let h=`<div class="wm" role="group" aria-label="世界地圖"><img class="wmimg" src="${WM_SRC}?v=${BUILD}" width="${WM_W}" height="${WM_H}" alt="" onerror="this.parentNode.classList.add('noimg')">`;
+  for(const [k,x,y] of WM_PTS){
+    const st=wmState(k),fogged=st.lock||st.test,burst=!fogged&&k!=='town'&&!seen[k];if(!fogged&&k!=='town'&&!seen[k]){seen[k]=1;burstAny=true}
+    const fk=WM_FY[k],fy=fk&&F[fk]&&F[fk].no?fk:null,lab=st.closed?'尚未開放':st.lv?`Lv ${st.lv} 開放`:wmName(k);
+    h+=`<button class="wmh${st.lock?' lock':''}${st.test?' test':''}${wmSel===k?' sel':''}" data-wm="${k}" style="left:${x}%;top:${y}%" aria-label="${esc(wmName(k))}${st.lock?'，'+lab:''}">`+
+      `<span class="wmring"></span>${fogged||burst?wmFog(k,st,burst):''}${here===k?`<span class="wmme">${wmMeHead()}</span>`:''}`+
+      `<span class="wmlab">${fy?`<img class="wmfy" src="assets/fairy2/${fy}_${fyStg(Object.assign({k:fy},F[fy]))}.png?v=${BUILD}" alt="">`:''}${esc(lab)}${Q.has(k)&&!st.lock?'<b class="wmq">!</b>':''}</span></button>`}
+  if(burstAny)try{save()}catch(e){}
+  h+=`</div>`;if(wmSel)h+=wmCardHTML(wmSel);return h}
+function wmCardHTML(k){const st=wmState(k);let h=`<div class="wmcard" role="dialog" aria-label="${esc(wmName(k))}"><button class="wmx" data-wmx="1" aria-label="關閉">✕</button>`;
+  if(k==='town'){h+=`<h3>城鎮與農場</h3><p class="note">${scene==='market'?'你在城鎮。':scene==='farm'&&!viewing?'你在農場。':''}</p><div class="row2"><button class="btn primary" data-mp="farm">回農場</button><button class="btn" data-mp="town"${st.lock?' disabled':''}>${st.lock?`Lv ${LV_TOWN} 開放`:'去城鎮'}</button></div></div>`;return h}
+  const D=WM_DREAM[k],L=LORDS[k],MS=REGION_MAPS[k]||{},ids=Object.keys(MS).filter(id=>!MS[id].secret),seenN=ids.filter(id=>regSeen(k)[id]).length;
+  h+=`<div class="wmct">${L?porHTML(L.art,44):''}<div><h3>${esc(wmName(k))}</h3><p class="note">Lv ${regLv(k)} 開放${st.test?'（還沒開放，測試模式進得去）':''}</p></div></div>`;
+  h+=`<p class="note">夢幻色：<i class="wmsw" style="background:${D?D[1]:'#ccc'}"></i>${esc(D?D[0]:'')}　去過 ${seenN}／${ids.length} 張地圖</p>`;
+  h+=`<button class="btn primary" data-mp="${k}"${st.lock?' disabled':''}>${st.closed?'尚未開放':st.lock?`Lv ${st.lv} 開放`:scene==='explore'&&exBiome===k?'回到這裡':'前往'}</button></div>`;return h}
+function wmTap(k){wmSel=wmSel===k?null:k;renderMapPanel()}
+/* ===== 199 結束 ===== */
+
 function mapPanelTap(k){if(!state)return;
   if(k==='region'){closePanel();const el=document.getElementById('mapPanel');if(el){el.hidden=false;renderRegMap()}return}
   if(k==='farm'){closePanel();if(scene!=='farm'||viewing)goFarm();return}
@@ -4971,7 +5049,7 @@ function qTabsHTML(L){return `<div class="qtabs">${[['all','全部'],['main','�
 try{document.getElementById('sheetBody').addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-qtab]');if(t&&sheet&&sheet.orders){qTab=t.dataset.qtab;renderSheet()}},true)}catch(e){}
 /* ---- 綁定 ---- */
 try{
-  document.getElementById('mapBody').addEventListener('click',e=>{const b=e.target.closest('[data-mp]');if(b)mapPanelTap(b.dataset.mp)});
+  document.getElementById('mapBody').addEventListener('click',e=>{const x=e.target.closest('[data-wmx]');if(x){wmSel=null;renderMapPanel();return}const w=e.target.closest('[data-wm]');if(w){wmTap(w.dataset.wm);return}const b=e.target.closest('[data-mp]');if(b){if(b.disabled)return;wmSel=null;mapPanelTap(b.dataset.mp)}});/* 199：點熱區先看小卡 */
   document.getElementById('menuGrid').addEventListener('click',e=>{const b=e.target.closest('[data-menu]');if(b)menuTap(b.dataset.menu)});
   document.getElementById('sheetBack').onclick=()=>closeSheet();
   document.getElementById('bagSearch').onclick=()=>{bagTab=bagTab==='search'?'bag':'search';renderBag()};
@@ -7641,7 +7719,7 @@ function regArrival(bk,id,from){
   return e.side==='n'?[e.c,B.y0+18]:e.side==='s'?[e.c,B.y1-18]:e.side==='w'?[B.x0+18,e.c]:[B.x1-18,e.c];
 }
 function regMove(m,dx,dy){
-  if(regBusy)return;const M=regCur(),nx=m.x+dx,ny=m.y+dy;
+  if(regBusy||lordKoOn())return;const M=regCur(),nx=m.x+dx,ny=m.y+dy;
   const ex=regExitAt(M,nx,ny);if(ex){regGo(ex);return}
   if(regBlocked(M,m.x,m.y)){if(!(nx<M.B.x0||nx>M.B.x1||ny<M.B.y0||ny>M.B.y1)){m.x=nx;m.y=ny}return}/* 萬一卡在障礙裡，讓角色走出來 */
   if(!regBlocked(M,nx,ny)){m.x=nx;m.y=ny}else if(!regBlocked(M,nx,m.y))m.x=nx;else if(!regBlocked(M,m.x,ny))m.y=ny;/* 撞到時沿邊緣滑開 */
@@ -7955,7 +8033,7 @@ const bossNow=()=>Date.now();
 const bossMe=()=>uid||'me';
 const lordCdOk=id=>!(state.lordCd&&state.lordCd[id]&&bossNow()-state.lordCd[id]<LORD_CD);
 const bossMonHp=bk=>(typeof MON_RHP!=='undefined'&&MON_RHP[bk])||3000;
-const bossDmgOf=b=>{const r=(typeof MON_RDMG!=='undefined'&&MON_RDMG[b.bk])||[50,80],a=BATK[b.atk]||{};return Math.round((r[0]+Math.random()*(r[1]-r[0]))*b.dmgK*(a.dmg||1)*((b.shape&&b.shape.dk)||1))};
+const bossDmgOf=b=>{const r=(typeof MON_RDMG!=='undefined'&&MON_RDMG[b.bk])||[50,80],a=BATK[b.atk]||{};return Math.round((r[0]+Math.random()*(r[1]-r[0]))*b.dmgK*(a.dmg||1)*((b.shape&&b.shape.dk)||1)*fyAtkK(b)*(b.kind==='lord'&&(b.ph===2||b.art==='lord_ruins')?LORD_PH2:1))};/* 200：第二階段、羽翼形態 ×1.3 */
 const bossHp=b=>Math.max(0,b.max-(b.adj||0)-Object.values(b.dmg||{}).reduce((s,v)=>s+(+v||0),0));/* 172：adj＝加人時為了維持血量比例補的量 */
 function bossMake(kind,bk,def,members){const M=regCur(),n=Math.max(1,Object.keys(members||{}).length),base=bossMonHp(bk)*def.hpK,max=kind==='lord'?Math.round(base*(1+LORD_HP_K*(n-1))):base;
   const c=def.c||def.at;const b={kind,bk,def,art:def.art,n:def.n,x:def.at[0],y:def.at[1],face:-1,max,mode:'idle',until:bossNow()+1500,atk:null,shape:null,seq:0,ph:1,hidden:false,rs:(hashStr(bk+kind+bossNow())>>>0)||7,
@@ -7967,13 +8045,13 @@ function bossEnter(bk,id){bossLeave();try{l196Enter(bk,id)}catch(e){}/* 196 */co
   if(sv)svNetWatch(bk);/* 172 */
   if(lh){lordSum.bk=bk;lordSum.f=0;lordSum.still=null;lordSum.path=null;lordNetWatch(bk)}
   bossStart()}
-function bossLeave(){try{dropClear()}catch(e){}/* 174：換地圖才清地上的掉落物（秘境出去時 monClear 不會跑） */const b=bossRT;if(b&&(b.kind==='lord'||(b.kind==='servant'&&b.net))&&!b.done)lordForfeit(true);bossRT=null;if(bossNetOff){try{bossNetOff()}catch(e){}bossNetOff=null}if(bossNetOff2){try{bossNetOff2()}catch(e){}bossNetOff2=null}lordSum.path=null;lordSum.f=0;
+function bossLeave(){try{lordKoEnd()}catch(e){}/* 200 */try{dropClear()}catch(e){}/* 174：換地圖才清地上的掉落物（秘境出去時 monClear 不會跑） */const b=bossRT;if(b&&(b.kind==='lord'||(b.kind==='servant'&&b.net))&&!b.done)lordForfeit(true);bossRT=null;if(bossNetOff){try{bossNetOff()}catch(e){}bossNetOff=null}if(bossNetOff2){try{bossNetOff2()}catch(e){}bossNetOff2=null}lordSum.path=null;lordSum.f=0;
   try{bossClear()}catch(e){}}
 function bossStart(){if(!bossRaf&&typeof requestAnimationFrame==='function'){bossLast=0;bossRaf=requestAnimationFrame(bossLoop)||-1}}
 function bossLoop(ts){bossRaf=0;if(!state||!bossMapHere()){if(bossRT)bossLeave();return}bossRaf=requestAnimationFrame(bossLoop)||-1;if(document.hidden===true||regBusy)return;
   const dt=bossLast?Math.min(0.2,(ts-bossLast)/1000):0;bossLast=ts;try{bossStep(dt)}catch(e){try{crumb('boss '+e.message)}catch(x){}}if(monHere())return;/* 196：這張圖也有一般怪（神社、冰洞深處）：共用的每幀工作 monLoop 已經在跑 */try{fyAtkTick()}catch(e){}/* 170 */try{skTick();comboTick()}catch(e){}/* 184、187 */try{dropTick()}catch(e){}/* 174：秘境沒有一般怪、monLoop 不會跑，掉落物（撿取按鈕、自動撿、60 秒消失）改在這裡也跑 */}
 /* 一步：現身條件、AI（主機或僕人）、自己打它、畫 */
-function bossStep(dt){lordSummonTick();const b=bossRT,now=bossNow();if(!b)return;
+function bossStep(dt){try{lordKoTick()}catch(e){}/* 200 */lordSummonTick();const b=bossRT,now=bossNow();if(!b)return;
   if(b.kind==='wait'){if(now>=b.until)bossRT=bossMake('servant',b.bk,b.def,null);else bossPaintWait(b);return}
   const me=curMe();
   if(b.kind==='servant'&&!b.active){if(Math.hypot(me.x-b.x,me.y-b.y)<150){b.active=true;b.until=now+900;bossJump(b,now);bossSvNet(b)}bossPaint(b);return}/* 靠近才站起來；162：跳到空地 */
@@ -7994,7 +8072,7 @@ function bossAI(b,dt,now){const P=bossTargets(b),T=P.reduce((a,p)=>!a||Math.hypo
   if(b.kind==='lord'){if(b.ph===1&&bossHp(b)<=b.max/2&&bossPh2Ok(b))b.ph=2;if(!b.net&&now-b.t0>LORD_LIMIT){lordEnd(b,'lost');return}}/* 第二階段；一個人打（沒有連線）也有 15 分鐘 */
   const k=b.ph===2?0.7:1;
   if(b.mode==='idle'){const d=Math.hypot(T.x-b.x,T.y-b.y);if(d>110&&!b.def.fixed){const sp=BOSS_SPD*dt*bossSpdK(b),nx=b.x+(T.x-b.x)/d*sp,ny=b.y+(T.y-b.y)/d*sp;if(b.kind==='lord'||!regBlocked(regCur(),nx,ny)){b.x=nx;b.y=ny}}if(Math.abs(T.x-b.x)>4&&!bossSlowTurn(b))b.face=T.x>b.x?1:-1;
-    if(now>=b.until){const LA=LAIof(b);let pk=LA&&LA.pick?LA.pick(b):null;if(!pk||!BATK[pk]){const L=b.def.atk.concat(b.ph===2&&b.def.atk2?[b.def.atk2]:[]);pk=L[Math.floor(bRnd(b)*L.length)]}b.atk=pk;{const RA=BATK[b.atk].rep;b.rep=(typeof RA==='function'?RA(b):RA)||1}bossBegin(b,now,k)}}
+    if(now>=b.until){const LA=LAIof(b);let pk=LA&&LA.pick?LA.pick(b):null;if(!pk||!BATK[pk]){const L=b.def.atk.concat(b.ph===2&&b.def.atk2?[b.def.atk2]:[]);pk=L[Math.floor(bRnd(b)*L.length)]}b.atk=pk;if(b.decoyNext&&b.decoyNext.until>now){b.tx=b.decoyNext.x;b.ty=b.decoyNext.y;b.decoyNext=null}/* 198：幻影 */{const RA=BATK[b.atk].rep;b.rep=(typeof RA==='function'?RA(b):RA)||1}bossBegin(b,now,k)}}
   else if(b.mode==='hidden'){const d=Math.hypot(T.x-b.x,T.y-b.y);if(d>30){const sp=BOSS_SPD*1.4*dt;b.x+=(T.x-b.x)/d*sp;b.y+=(T.y-b.y)/d*sp}if(now>=b.until){b.hidden=false;b.mode='wind';b.until=now+Math.max(800,BATK[b.atk].wind*k);b.shape=BATK[b.atk].shape(b,b.x,b.y);b.seq++}}
   else if(b.mode==='wind'){const A=BATK[b.atk];if(A.track&&now<b.until-500){const s=A.shape(b,T.x,T.y);if(b.shape&&b.shape.decoys)s.decoys=b.shape.decoys;b.shape=s}/* 影子跟著，最後 0.5 秒停住 */
     if(now>=b.until){if(A.dur){b.mode='act';b.until=now+A.dur;if(b.shape){b.shape=JSON.parse(JSON.stringify(b.shape));setT0(b.shape,now)}b.seq++;b.actHit=0}else{bossStrike(b);bossAfterStrike(b,A,now,k)}}}/* 連續幾刀之後停頓（196：bossAfterStrike）；dur＝一直判定的招 */
@@ -8022,7 +8100,7 @@ function bossHomeStep(b,dt,now){const A=bossArena(b);if(!A||b.kind!=='servant')r
 function bossBegin(b,now,k,again){const A=BATK[b.atk];b.seq++;if(A.guard){b.mode='guard';b.until=now+A.guard;b.shape=null;return}
   if(A.rest){b.mode='rest';b.until=now+(b.ph===2&&A.rest2?A.rest2:A.rest);b.shape=null;return}if(A.devour){b.mode='devour';b.until=now+A.devour;b.shape=null;b.devN=0;return}/* 196 */
   if(A.hide&&!again){b.mode='hidden';b.hidden=true;b.until=now+A.hide;b.shape=null;return}
-  b.mode='wind';b.until=now+Math.max(800,((!again&&A.wind1)||A.wind)*k);b.shape=A.shape(b,b.tx,b.ty)}
+  b.mode='wind';b.until=now+Math.max(800,((!again&&A.wind1)||A.wind)*k*(b.slowT&&now<b.slowT?1.25:1));b.shape=A.shape(b,b.tx,b.ty)}
 /* 出手：只判定自己（別人在自己的遊戲判定） */
 function bossStrike(b){const me=curMe();b.hitAt=bossNow();try{bossFx(b,'strike')}catch(e){}/* 192 */const A0=BATK[b.atk]||{},LC=LAIof(b);if(b.shape&&bossHit(b.shape,me.x,me.y)&&!(A0.cover&&LC&&LC.cover&&LC.cover(b,me))){try{pDamage(bossDmgOf(b),b);if(A0.slow)bossSlow(A0.slow,A0.mark)}catch(e){}/* 196：冰柱後面躲得掉、被打到變慢 */try{bossFxCommon('hitp',me.x,me.y-(typeof C3_HU!=='undefined'?C3_HU:57.5)*0.55)}catch(e){}return true}return false}
 /* ===== 192（20w）：領主與眷屬的招式特效（plan.json 的 boss 區塊，用第 191 節的特效層）=====
@@ -8340,7 +8418,7 @@ function setT0(s,t){if(!s)return;if(s.t==='sweep')s.t0=t;if(s.L)for(const q of s
 /* Realtime Database 會把空陣列存成沒有：收到時補回來 */
 function fsNorm(F){if(!F||typeof F!=='object')return F;for(const k of ['P','ice','pools','pil','per','route','stars','sand'])if(F[k]!=null&&!Array.isArray(F[k]))F[k]=Object.values(F[k]);else if(F[k]==null&&['P','ice','pools','pil'].includes(k))F[k]=[];return F}
 function bossPh2Ok(b){const L=LAIof(b);if(L&&L.noPh2)return false;if(L&&L.ph2ok)return !!L.ph2ok(b);return true}
-const bossSpdK=b=>{const L=LAIof(b);return L&&L.spd?L.spd(b):1};
+const bossSpdK=b=>{const L=LAIof(b);return (L&&L.spd?L.spd(b):1)*(b.slowT&&Date.now()<b.slowT?0.8:1)};/* 198：麻痺 → 慢 20% */
 const bossSlowTurn=b=>{const L=LAIof(b);return !!(L&&L.slowTurn&&L.slowTurn(b))};
 const bossVis=b=>{try{const L=LAIof(b);if(b.done)return 1;return L&&L.vis&&b.fs?+L.vis(b).toFixed(2):1}catch(e){return 1}};
 function bossFieldSVG(b){try{const L=LAIof(b);return L&&L.paint&&b.fs&&!b.done?L.paint(b):''}catch(e){return ''}}
@@ -8556,7 +8634,7 @@ function petStep(){const T=petTarget(),now=performance.now(),dt=Math.min(0.1,(no
 /* ===== 193 結束 ===== */
 /* 跟在角色旁邊 */
 function petCharG(){if(!state||!state.petOn)return '';const p=petCur();if(!p)return '';const P=petStep(),fl=faceFlip(meFace);return `<g id="petG" transform="translate(${Math.round(P.x)} ${Math.round(P.y)})" pointer-events="none"><g class="brth">${petSVG(p,petHW(),fl)}</g></g>`}/* 193 */
-function petMove(){try{const g=document.getElementById('hpHead');if(g){const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y+(char2On()?char2TagDY()*CHAR_S:0))})`)}}catch(e){}try{const g=document.getElementById('petG');if(!g)return;const P=petStep();g.setAttribute('transform',`translate(${Math.round(P.x)} ${Math.round(P.y)})`);const fl=faceFlip(meFace)?1:0;if(g._fl!==fl){g._fl=fl;const im=g.querySelector('image');if(im){if(fl)im.setAttribute('transform','scale(-1 1)');else im.removeAttribute('transform')}}}catch(e){}}/* 193：滑過去、跟著玩家轉向 */
+function petMove(){try{const g=document.getElementById('hpHead');if(g){const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y+(char2On()?char2TagDY()*CHAR_S:0))})`)}}catch(e){}try{const g=document.getElementById('petG');if(!g)return;const P=petStep(),O=petLungeOff();g.setAttribute('transform',`translate(${Math.round(P.x+O[0])} ${Math.round(P.y+O[1])})`);const fl=faceFlip(meFace)?1:0;if(g._fl!==fl){g._fl=fl;const im=g.querySelector('image');if(im){if(fl)im.setAttribute('transform','scale(-1 1)');else im.removeAttribute('transform')}}}catch(e){}}/* 193：滑過去、跟著玩家轉向 */
 /* 使用精魄 → 孵化 */
 function spiritUse(bk){const k='sp_'+bk,I=state.items||(state.items={});if(!(I[k]>0))return false;I[k]--;hatchArr().push({bk,at:Date.now()});save();toast(`${spiritName(bk)}開始孵化了，6 小時後孵出來`,4000);return true}
 function hatchLeft(h){return Math.max(0,h.at+HATCH_MS-Date.now())}
@@ -8767,7 +8845,7 @@ function fyInfoHTML(){const s=sheet.fyinfo,k=s&&s.k,F=s&&s.own?fyMine()[k]:null,
   h+=`<div><span>光芒</span><b><i class="fysw" style="background:${fySwC(f.col)}"></i>${esc(colorName(f.col,f.sb))}</b></div>`;
   h+=`<div><span>階段</span><b>${FY_STAGE[st]}</b></div>`;
   if(s.owner)h+=`<div><span>主人</span><b>${esc(s.owner)}</b></div>`;
-  h+='</div>';
+  h+='</div>'+fySkHTML(k,st);/* 198 */
   if(F){if(st<2){const op=fyOp(F),need=fyNeed(F);h+=`<h3>下一步：${FY_STAGE[st+1]}</h3><p class="note">到穗光教會的祭壇（城鎮的噴水池）獻上果實，累積到 100% 就可以${FY_STAGE[st+1]}。</p><div class="fybar"><i style="width:${Math.min(100,op.n/need*100).toFixed(1)}%"></i></div><p class="note" style="text-align:center">${fyPct(op.n,need)}</p>`}
     else h+=`<p class="note" style="text-align:center">已經神化了。</p>`;
     h+=`<button class="btn" data-act="fiall">看所有神之子</button>`}
@@ -8896,7 +8974,7 @@ function fySpringHTML(){const t=isTestMode();
       if(ex.length&&!has)B.push(['fyex','獻上專屬造型',!L])}
     if(has){const sg=fyStage(f);if(sg<2){const op=fyOp(f);B.push(['fyoff',op.n>=fyNeed(f)?(sg?'神化':'進化'):'獻上果實',1]);st=`${sg?'神化':'進化'} ${fyPct(op.n,fyNeed(f))}`}else{B.push(['fyoff','換光芒顏色',0]);st='已神化'}}/* 114：標本不再用在神之子身上 */
     h+=`<div class="fyrow"><span class="fyth">${has?fyArtHTML(k,f,72,false):fySil(k)}</span><div class="fyrc"><b>${fyN(k)}（${cr}）</b>${has?`<span class="meta">${FY_STAGE[fyStage(f)]}</span>`:''}<span class="meta">${st}</span></div>
-      <div class="fyrb">${B.map(([a,n,pri])=>a==='fyalt'||a==='fyex'||a==='fyoff'?`<button class="btn${pri?' primary':''}" data-act="${a}" data-k="${k}">${n}</button>`:`<button class="btn${pri?' primary':''}" data-act="fyuse" data-a="${a}" data-k="${k}">${n}</button>`).join('')}${t&&!(has&&fyStage(f)>=2)?`<button class="btn small" data-act="fytest" data-a="${has?'evo':'wake'}" data-k="${k}">測試：直接${has?(f.evo?'神化':'進化'):'喚醒'}</button>`:''}${t&&has?`<button class="btn small" data-act="fytest" data-a="col" data-k="${k}">測試：換色</button>`:''}</div></div>`}/* 110.3：用 FY_TESTCOL 的顏色檢查上色 */
+      <div class="fyrb">${B.map(([a,n,pri])=>a==='fyalt'||a==='fyex'||a==='fyoff'?`<button class="btn${pri?' primary':''}" data-act="${a}" data-k="${k}">${n}</button>`:`<button class="btn${pri?' primary':''}" data-act="fyuse" data-a="${a}" data-k="${k}">${n}</button>`).join('')}${t&&!(has&&fyStage(f)>=2)?`<button class="btn small" data-act="fytest" data-a="${has?'evo':'wake'}" data-k="${k}">測試：直接${has?(f.evo?'神化':'進化'):'喚醒'}</button>`:''}${t&&has&&fyStage(f)>=2?`<button class="btn small" data-act="fytest" data-a="ult" data-k="${k}">測試：大招充滿</button>`:''}${t&&has?`<button class="btn small" data-act="fytest" data-a="col" data-k="${k}">測試：換色</button>`:''}</div></div>`}/* 110.3：用 FY_TESTCOL 的顏色檢查上色 */
   return h+`<button class="btn" data-act="fygrid">看我的神之子</button>`}
 /* ===== 113（18e）：祭壇清單喚醒、專屬造型捷徑 =====
    A：清單（這一節只有蘿瑪）每項 ALT_N 顆該作物的果實，從果實袋獻上、不能拿回；進度 state.fairy.altar[鍵]={n:[每項顆數],cols:[獻過的果皮],warned,seed}。
@@ -9006,7 +9084,7 @@ function fyAction(b){const a=b.dataset.act,k=b.dataset.k,s=sheet.fy;
   if(a==='fyup'){if(!fyStageUp(k,b.dataset.c))renderSheet();return}
   if(a==='fycol'){sheet={fy:{m:'col',k}};renderSheet();return}
   if(a==='fycolgo'){if(fyRecolor(k,+b.dataset.i))sheet={fy:{m:'off',k,fi:null,pick:{}}};renderSheet();try{renderBag()}catch(e){}return}
-  if(a==='fytest'){fyDo(k,b.dataset.a,true);return}
+  if(a==='fytest'){if(b.dataset.a==='ult'){FYS.charge=FY_ULT_MAX;FYS.ultAt=0;toast('大招充滿了（要帶著她、到野外才看得到大招鍵）',1800);return}/* 198 */fyDo(k,b.dataset.a,true);return}
   if(a==='fysel'){s.sel=b.dataset.id;renderSheet();return}
   if(a==='fygo'){const act=s.act;b.disabled=true;fyUseGo(k,act,b.dataset.id);return}
   if(a==='fygrid'){sheet={fy:{m:'grid'}};renderSheet();return}
@@ -9098,12 +9176,135 @@ function fyTarget(){const me=curMe(),now=Date.now();let best=null,bd=FY_ATK_R;
   if(MON_RT)for(const m of MON_RT.list){if(!m||m.dead)continue;if(!(m.aggro||(m.lastHit&&now-m.lastHit<FY_ATK_ENG)))continue;const d=Math.hypot(m.x-me.x,m.y-me.y);if(d<=bd){bd=d;best={m}}}
   try{const b=bossRT;if(b&&b.def&&!b.done&&!bossInv(b)&&(b.kind==='lord'||(b.kind==='servant'&&b.active))){const d=Math.hypot(b.x-me.x,b.y-me.y);if(d<=bd){bd=d;best={boss:b}}}}catch(e){}
   return best}
-function fyAtkTick(){if(!state||scene!=='explore'||!fyAutoOn())return false;const f=fyMe();if(!f)return false;const now=Date.now();if(now-fyAtkAt<FY_ATK_CD*1000)return false;
+/* ===== 198（20z）：神之子的技能——每位三招（喚醒招 1、進化招 2 照冷卻自動放；神化招 3 是大招鍵） =====
+   傷害＝fyBaseDmg() 的倍數，pet:true（不算連擊、不算充能）；目標 fyTarget()，沒有目標時招 1、招 2 的冷卻不跑（花雨例外）。
+   狀態都在 FYS（不存檔）：left（招 1、2 剩下的冷卻）、charge（大招充能，主人打中一次 +1、40 滿）、ultAt（30 秒）、buf（增傷、爆擊、冷卻、護盾、減傷、回血）、分身、砲台、花宴。
+   怪身上的記號：_fyV 易傷、_fyB 鬼火燒傷（層數）、_fyD 炎龍燒傷、_fyL 星座連線、_fyM 齊射記號、calm 不攻擊、atkDn 攻擊力降低；領主、眷屬另外 slowT（麻痺→慢）、decoyNext（幻影→下一招朝分身）。
+   隊友效果：放招時 presence 帶 fb:{k,t,x,y}，別人在範圍內就套在自己身上（fyBuffRemote）。 ===== */
+const FY_SK={
+ tomato:[{id:'beam',n:'光束',cd:8,mul:0.3,vul:0.12,d:'射向目標；被打中的怪 4 秒內受到你的傷害 +12%。'},{id:'crown',n:'冠冕',cd:20,up:0.09,d:'你和附近隊友 6 秒內傷害 +9%。'},{id:'sun',n:'日輪',mul:4,d:'目標位置的大光柱；打中的怪 8 秒內受到的傷害 +30%。'}],
+ pumpkin:[{id:'wisp',n:'鬼火',pas:1,mul:0.03,d:'你每次打中怪，疊一層燒傷（最多 5 層，燒 4 秒）。'},{id:'phantom',n:'幻影',cd:15,d:'在你身後留一個分身 4 秒，附近的怪改去打分身。'},{id:'feast',n:'夜宴',mul:2,d:'場上的燒傷一次結算，燒傷中的怪再炸開周圍。'}],
+ melon:[{id:'bomb',n:'炸彈',cd:7,mul:0.55,d:'丟到目標，炸開一小圈。'},{id:'fw',n:'煙火',cd:20,mul:0.5,d:'目標附近落下 3 顆煙火。'},{id:'fest',n:'慶典',mul:3,d:'大爆炸，再一路炸到旁邊的怪（最多 4 次）。'}],
+ strawberry:[{id:'rain',n:'花雨',cd:10,d:'你和附近隊友回 4% 血量。'},{id:'scent',n:'迷香',cd:18,d:'目標 3 秒內不攻擊（領主、眷屬：攻擊力 −20%）。'},{id:'garden',n:'花宴',d:'8 秒內附近的怪攻擊力 −30%，你和附近隊友每秒回 3% 血量。'}],
+ chili:[{id:'punch',n:'火拳',cd:6,mul:0.8,d:'對目標補一拳（會爆擊）。'},{id:'heat',n:'灼熱',cd:18,crit:0.1,d:'你 6 秒內爆擊率 +10%。'},{id:'dragon',n:'炎龍',mul:6,d:'朝目標噴出一直線的火龍，之後燒 5 秒。'}],
+ zucchini:[{id:'bolt',n:'落雷',cd:8,mul:0.9,d:'打中目標，再跳到旁邊 2 隻。'},{id:'para',n:'麻痺',cd:20,d:'目標麻痺 1.5 秒（領主、眷屬：動作慢 20%）。'},{id:'drum',n:'雷鼓',mul:1.5,d:'2 秒內落下 8 道雷，打中會麻痺。'}],
+ broccoli:[{id:'shield',n:'光盾',cd:12,d:'給你一層護盾（血量上限 10%）。'},{id:'rune',n:'符文',cd:20,d:'你和附近隊友 6 秒內受到的傷害 −20%。'},{id:'giant',n:'巨人',mul:4,d:'6 秒內你和附近隊友受到的傷害 −50%，結束時砸地。'}],
+ eggplant:[{id:'dust',n:'星塵',cd:8,mul:0.4,d:'目標附近落下 3 顆星。'},{id:'const',n:'星座',cd:20,d:'把目標和附近的怪連起來 6 秒，打其中一隻其他隻也受 30%。'},{id:'night',n:'永夜',mul:1.2,d:'10 秒內一直落星，你的武器技能冷卻快 30%。'}],
+ corn:[{id:'burst',n:'連射',cd:5,mul:0.08,d:'無人機對目標連射 5 發。'},{id:'turret',n:'砲台',cd:20,mul:0.1,d:'在你旁邊放一座砲台 8 秒。'},{id:'volley',n:'齊射',mul:2.5,d:'鎖定附近最多 6 隻怪；被打中的怪，你打牠時爆擊率 +20%。'}]};
+const FY_ULT_MAX=40,FY_ULT_GAP=30e3,FY_FB_R={tomato2:150,strawberry1:150,strawberry3:160,broccoli2:150,broccoli3:200};
+const FYS={k:null,left:{1:0,2:0},charge:0,ultAt:0,chT:0,buf:{},decoy:null,turret:null,garden:null};
+let fyFb=null;const FB_SEEN={};
+/* ---- 小工具 ---- */
+function fyEnemies(){const out=[],now=Date.now();if(MON_RT)for(const m of MON_RT.list)if(m&&!m.dead)out.push({o:m,t:{m},x:m.x,y:m.y});try{const b=bossRT;if(b&&b.def&&!b.done&&!b.hidden&&!bossInv(b)&&(b.kind==='lord'||(b.kind==='servant'&&b.active)))out.push({o:b,t:{boss:b},x:b.x,y:b.y,boss:1})}catch(e){}return out}
+const fyE=t=>!t?null:t.m?{o:t.m,t,x:t.m.x,y:t.m.y}:t.boss?{o:t.boss,t,x:t.boss.x,y:t.boss.y,boss:1}:null;
+const fyNear=(x,y,r,ex)=>fyEnemies().filter(e=>e.o!==ex&&Math.hypot(e.x-x,(e.y-y)*1.2)<=r);
+function fyDeal(e,d,crit){if(!e||!e.o||e.o.dead||e.o.done)return 0;d=Math.max(1,Math.round(d));try{dealT(e.t,{d,crit:!!crit,pet:true})}catch(x){}return d}
+const fyBuf=(k,v,ms)=>{const now=Date.now(),B=FYS.buf[k];if(!B||B.until<now||v>=B.k)FYS.buf[k]={k:v,until:now+ms};else B.until=Math.max(B.until,now+ms)};/* 同類取大的、刷新時間 */
+const fyBufK=k=>{const B=FYS.buf[k];return B&&B.until>Date.now()?B.k:0};
+const fyCdK=()=>1-fyBufK('cdK');
+function fyHeal(k){if(!state||scene!=='explore')return;const h0=pHP;pHP=Math.min(pMax(),pHP+pMax()*k);const d=Math.round(pHP-h0);if(d>0)try{const me=curMe();dmgShow(me.x,me.y-78,d,{heal:1,key:'meh'})}catch(e){}try{renderHP()}catch(e){}}
+/* 受到的傷害：減傷、護盾（在 skHurt 裡） */
+function fyHurtMod(n){n*=1-fyBufK('red');const S=FYS.buf.shield;if(S&&S.until>Date.now()&&S.v>0){const a=Math.min(S.v,n);S.v-=a;n-=a;if(S.v<=0)FYS.buf.shield=null;if(n<=0){try{const me=curMe();dmgShow(me.x,me.y-78,0,{miss:1,text:'護盾',key:'me'})}catch(e){}return 0}}return n}
+/* 打到怪的時候（主人、神之子都會經過；monHit、bossDealt） */
+function fyHitMod(t,d,crit,pet){const now=Date.now();if(!pet){fyCharge(now);fyWispAdd(t,now)}
+  let k=1+fyBufK('dmgUp');if(t._fyV&&t._fyV.until>now)k*=1+t._fyV.k;
+  if(!pet&&!crit){const c=fyBufK('crit')+(t._fyM&&t._fyM>now?0.2:0);if(c&&Math.random()<c){crit=true;k*=1.5}}
+  d=Math.max(1,Math.round(d*k));
+  if(!pet&&t._fyL&&t._fyL.until>now){const g=t._fyL.g,dd=Math.round(d*0.3);setTimeout(()=>{for(const e of fyEnemies())if(e.o!==t&&e.o._fyL&&e.o._fyL.g===g&&e.o._fyL.until>Date.now())fyDeal(e,dd)},0)}
+  return {d,crit}}
+function fyCharge(now){const f=fyMe();if(!f||fyStage(f)<2)return;if(now-FYS.chT<40)return;FYS.chT=now;FYS.charge=Math.min(FY_ULT_MAX,FYS.charge+1)}/* 同一幀、同一招打中很多隻只算 1 */
+function fyWispAdd(t,now){const f=fyMe();if(!f||f.k!=='pumpkin')return;const B=t._fyB;if(B&&B.until>now){B.n=Math.min(5,B.n+1);B.until=now+4000}else t._fyB={n:1,until:now+4000,next:now+1000}}
+/* 怪不攻擊、改打分身、攻擊力降低 */
+function fyAtkK(o){const now=Date.now();let k=1;if(o.atkDn&&o.atkDn.until>now)k*=1-o.atkDn.k;const G=FYS.garden;if(G&&G.until>now){const me=curMe();if(Math.hypot(o.x-me.x,o.y-me.y)<=160)k*=0.7}return k}
+function fyMonHold(m,i,now,dt){if(m.calm&&now<m.calm){if(m.wind){m.wind=0;monWind(m,false)}if(m.moving){m.moving=false;monPaint(i,m)}return true}
+  const D=FYS.decoy;if(D&&D.until>now&&m.aggro&&Math.hypot(m.x-D.x,m.y-D.y)<=200){if(m.wind){m.wind=0;monWind(m,false)}const d=Math.hypot(D.x-m.x,D.y-m.y);if(d>24){m.x+=(D.x-m.x)/d*110*dt;m.y+=(D.y-m.y)/d*90*dt;m.moving=true;m.face=D.x>m.x?1:-1}else m.moving=false;m.lastHit=now;monPaint(i,m);return true}
+  return false}
+/* ---- 特效（plan.json 的 fairy） ---- */
+let fyFxK='';
+function fyFxPre(k){fyPlanOk();if(!FXP||!FXP.fairy||!FXP.fairy[k]||fyFxK===k)return;fyFxK=k;for(const s in FXP.fairy[k])for(const tm in FXP.fairy[k][s])for(const e of fxL(FXP.fairy[k][s],tm)||[])fxImg(e.k);try{const im=new Image();im.src=`assets/fairy2/${k}_3_c.png?v=${BUILD}`}catch(e){}}
+const fyPlanOk=()=>{try{return fxPlan()}catch(e){return null}};
+function fyFx(k,s,tm,x,y,remote,o){try{if(scene!=='explore'||!fyPlanOk()||!FXP.fairy||!FXP.fairy[k])return false;let L=fxL(FXP.fairy[k]['s'+s],tm);if(!L||!L.length)return false;
+  if(remote&&!['target','final'].includes(tm))return false;if(typeof ecoOn==='function'&&ecoOn())L=[L[0]];L=L.filter(e=>fxImg(e.k)&&FXP.fx[e.k]);if(!L.length)return false;fxPlay(L,x,y,Object.assign({face:1,remote:!!remote},o||{}));return true}catch(e){return false}}
+/* ---- 放招 ---- */
+function fyCastFx(f,tx,ty,s){try{const S=FYO.get('me');if(!S)return;fyCast('me',tx-S.x,ty-S.y);fyCastArt(S,f,tx);fyFx(f.k,s,'cast',S.x,S.y-40)}catch(e){}}
+function fySkDo(k,s,t){const D=FY_SK[k]&&FY_SK[k][s-1];if(!D||D.pas)return false;const f=fyMe();if(!f||f.k!==k)return false;const me=curMe(),now=Date.now(),B=fyBaseDmg(),e=fyE(t);
+  const fc=faceFlip(meFace)?-1:1,tx=e?e.x:me.x+fc*80,ty=e?e.y:me.y;fyCastFx(f,tx,ty,s);fyFx(k,s,'target',tx,ty-14);
+  fyAct={x:Math.round(tx),y:Math.round(ty),t:now,s};const fb=k+s;if(FY_FB_R[fb])fyFb={k:fb,t:now,x:Math.round(me.x),y:Math.round(me.y)};try{pushPos(true)}catch(x){}
+  const later=(ms,fn)=>setTimeout(()=>{try{if(scene==='explore')fn()}catch(x){}},ms),area=(x,y,r,mul,ex)=>{let n=0;for(const q of fyNear(x,y,r,ex)){fyDeal(q,B*mul);n++}return n};
+  switch(D.id){
+   case 'beam':later(300,()=>{fyDeal(e,B*D.mul);if(e)e.o._fyV={k:D.vul,until:Date.now()+4000}});break;
+   case 'crown':fyBuf('dmgUp',D.up,6000);break;
+   case 'sun':later(300,()=>{for(const q of fyNear(tx,ty,120)){fyDeal(q,B*D.mul);q.o._fyV={k:0.3,until:Date.now()+8000}}fyFx(k,3,'final',tx,ty)});break;
+   case 'phantom':FYS.decoy={x:Math.round(me.x-fc*60),y:Math.round(me.y),until:now+4000,k};try{const b=bossRT;if(b&&b.def&&!b.done)b.decoyNext={x:FYS.decoy.x,y:FYS.decoy.y,until:now+8000}}catch(x){}break;
+   case 'feast':later(300,()=>{const L=fyEnemies().filter(q=>q.o._fyB&&q.o._fyB.until>Date.now());for(const q of L){const Bn=q.o._fyB,rem=(Bn.until-Date.now())/1000;fyDeal(q,B*FY_SK.pumpkin[0].mul*Bn.n*rem*1.5);q.o._fyB=null;for(const r of fyNear(q.x,q.y,100,q.o))fyDeal(r,B*D.mul);fyFx(k,3,'final',q.x,q.y-14)}});break;
+   case 'bomb':later(350,()=>area(tx,ty,60,D.mul));break;
+   case 'fw':[[0,0],[-45,25],[45,-20]].forEach(([dx,dy],i)=>later(300+i*200,()=>{area(tx+dx,ty+dy,50,D.mul);fyFx(k,2,'target',tx+dx,ty+dy)}));break;
+   case 'fest':later(300,()=>{const hit=new Set();for(const q of fyNear(tx,ty,80)){fyDeal(q,B*D.mul);hit.add(q.o)}let cur=e||fyNear(tx,ty,80)[0];for(let i=0;i<4&&cur;i++){const nx=fyNear(cur.x,cur.y,120).filter(q=>!hit.has(q.o)).sort((a,c)=>Math.hypot(a.x-cur.x,a.y-cur.y)-Math.hypot(c.x-cur.x,c.y-cur.y))[0];if(!nx)break;hit.add(nx.o);const c2=nx;later(150*(i+1),()=>{fyDeal(c2,B*2);fyFx(k,3,'final',c2.x,c2.y-14)});cur=nx}});break;
+   case 'rain':fyHeal(0.04);break;
+   case 'scent':if(e){if(e.boss)e.o.atkDn={k:0.2,until:now+5000};else e.o.calm=now+3000}break;
+   case 'garden':FYS.garden={until:now+8000};fyBuf('regen',0.03,8000);break;
+   case 'punch':later(250,()=>{const w=curWpn(),W=w&&w.W,c=Math.random()<0.05+((W&&W.crit)||0)+(w?wpStat('crit'):0);fyDeal(e,B*D.mul*(c?1.5:1),c)});break;
+   case 'heat':fyBuf('crit',D.crit,6000);break;
+   case 'dragon':later(300,()=>{const a=Math.atan2(ty-me.y,tx-me.x),cx=Math.cos(a),cy=Math.sin(a);for(const q of fyEnemies()){const px=q.x-me.x,py=q.y-me.y,u=px*cx+py*cy,v=Math.abs(-px*cy+py*cx);if(u>=0&&u<=320&&v<=40){fyDeal(q,B*D.mul);q.o._fyD={until:Date.now()+5000,next:Date.now()+1000}}}fyFx(k,3,'final',me.x+cx*200,me.y+cy*200-14)});break;
+   case 'bolt':later(200,()=>{fyDeal(e,B*D.mul);if(e)fyNear(e.x,e.y,150,e.o).slice(0,2).forEach((q,i)=>later(120*(i+1),()=>{fyDeal(q,B*0.6);fyFx(k,1,'target',q.x,q.y-14)}))});break;
+   case 'para':if(e){if(e.boss)e.o.slowT=now+3000;else e.o.stun=Math.max(e.o.stun||0,now+1500)}break;
+   case 'drum':for(let i=0;i<8;i++)later(300+i*250,()=>{const L=fyNear(curMe().x,curMe().y,200),q=L.length?L[Math.floor(Math.random()*L.length)]:fyE(fyTarget());if(!q)return;fyDeal(q,B*D.mul);if(!q.boss)q.o.stun=Math.max(q.o.stun||0,Date.now()+1000);fyFx(k,3,'target',q.x,q.y-14)});later(2400,()=>fyFx(k,3,'final',curMe().x,curMe().y-20));break;
+   case 'shield':FYS.buf.shield={k:1,v:pMax()*0.1,until:now+12000};break;
+   case 'rune':fyBuf('red',0.2,6000);break;
+   case 'giant':fyBuf('red',0.5,6000);later(6000,()=>{const m2=curMe();area(m2.x,m2.y,140,D.mul);fyFx(k,3,'final',m2.x,m2.y)});break;
+   case 'dust':[[0,0],[-35,20],[35,-15]].forEach(([dx,dy],i)=>later(300+i*120,()=>{area(tx+dx,ty+dy,45,D.mul);fyFx(k,1,'target',tx+dx,ty+dy)}));break;
+   case 'const':if(e){const g=now,L=[e].concat(fyNear(e.x,e.y,180,e.o).slice(0,3));for(const q of L)q.o._fyL={g,until:now+6000}}break;
+   case 'night':fyBuf('cdK',0.3,10000);for(let i=0;i<20;i++)later(300+i*500,()=>{const L=fyNear(curMe().x,curMe().y,220);if(!L.length)return;const q=L[Math.floor(Math.random()*L.length)];area(q.x,q.y,45,D.mul);fyFx(k,3,'target',q.x,q.y-14)});later(10300,()=>fyFx(k,3,'final',curMe().x,curMe().y-20));break;
+   case 'burst':for(let i=0;i<5;i++)later(200+i*120,()=>{if(e&&!e.o.dead&&!e.o.done){fyDeal(e,B*D.mul);fyFx(k,1,'target',e.o.x,e.o.y-14)}});break;
+   case 'turret':FYS.turret={x:Math.round(me.x+fc*40),y:Math.round(me.y+6),until:now+8000,next:now+500};break;
+   case 'volley':later(300,()=>{const L=fyNear(curMe().x,curMe().y,260).slice(0,6);L.forEach((q,i)=>later(i*80,()=>{fyDeal(q,B*D.mul);q.o._fyM=Date.now()+8000;fyFx(k,3,'target',q.x,q.y-14)}));later(600,()=>fyFx(k,3,'final',curMe().x,curMe().y-20))});break}
+  return true}
+/* 每一幀（fyAtkTick 前面）：燒傷、砲台、回血、自動放招 1、2 */
+let fySkLast=0;
+function fySkTick(){if(!state||scene!=='explore')return;const now=Date.now(),dt=fySkLast?Math.min(0.5,(now-fySkLast)/1000):0;fySkLast=now;const f=fyMe(),B=f?fyBaseDmg():0;
+  if(!f||FYS.k!==(f&&f.k)){FYS.k=f?f.k:null;FYS.left={1:0,2:0};FYS.charge=0;FYS.ultAt=0;if(f)fyFxPre(f.k)}
+  for(const e of fyEnemies()){const o=e.o,Bn=o._fyB;if(Bn){if(Bn.until<now)o._fyB=null;else if(now>=Bn.next){Bn.next+=1000;fyDeal(e,(B||1)*FY_SK.pumpkin[0].mul*Bn.n)}}const Dn=o._fyD;if(Dn){if(Dn.until<now)o._fyD=null;else if(now>=Dn.next){Dn.next+=1000;fyDeal(e,(B||1)*0.3)}}}
+  const T=FYS.turret;if(T){if(T.until<now)FYS.turret=null;else if(now>=T.next){T.next+=500;const q=fyNear(T.x,T.y,220).sort((a,c)=>Math.hypot(a.x-T.x,a.y-T.y)-Math.hypot(c.x-T.x,c.y-T.y))[0];if(q&&f){fyDeal(q,B*FY_SK.corn[1].mul);fyFx('corn',2,'target',q.x,q.y-14)}}}
+  const R=FYS.buf.regen;if(R&&R.until>now){R.next=R.next||now+1000;if(now>=R.next){R.next+=1000;fyHeal(R.k)}}
+  if(FYS.decoy&&FYS.decoy.until<now)FYS.decoy=null;
+  try{fySkPaint()}catch(e){}
+  if(!f||!fyAutoOn())return;const st=fyStage(f),SK=FY_SK[f.k];if(!SK)return;
+  for(const s of [1,2]){if(s-1>st)continue;const D=SK[s-1];if(D.pas)continue;const t=fyTarget();if(!t&&D.id!=='rain')continue;FYS.left[s]-=dt;if(FYS.left[s]<=0){if(fySkDo(f.k,s,t))FYS.left[s]=D.cd;break}}}
+/* 分身、砲台、星座線、護盾、花宴的圈（程式畫，在 monFront） */
+function fySkPaint(){const L=document.getElementById('monFront');let g=document.getElementById('fySkG');if(!L){return}if(!g||g.parentNode!==L){if(g)g.remove();g=document.createElementNS('http://www.w3.org/2000/svg','g');g.id='fySkG';g.setAttribute('pointer-events','none');L.appendChild(g)}
+  const now=Date.now(),me=curMe(),f=fyMe();let s='';const D=FYS.decoy;
+  if(D&&D.until>now&&f)s+=`<g transform="translate(${D.x} ${D.y})"><ellipse rx="34" ry="12" fill="none" stroke="#9FFFE8" stroke-width="2"/><image href="assets/fairy2/${f.k}_${fyStg(f)}.png?v=${BUILD}" x="-30" y="-74" width="60" height="70" opacity=".5"/></g>`;
+  const T=FYS.turret;if(T&&T.until>now)s+=`<g transform="translate(${T.x} ${T.y})"><ellipse rx="14" ry="5" fill="rgba(0,0,0,.25)"/><rect x="-10" y="-14" width="20" height="12" rx="4" fill="#7C8794" stroke="#3A424C" stroke-width="1.5"/><circle cy="-18" r="5" fill="#5FE8FF" class="l196fire"/></g>`;
+  const G=fyEnemies().filter(e=>e.o._fyL&&e.o._fyL.until>now);if(G.length>1){const by={};for(const e of G)(by[e.o._fyL.g]=by[e.o._fyL.g]||[]).push(e);for(const k in by){const P=by[k];if(P.length>1)s+=`<path d="M${P.map(e=>Math.round(e.x)+' '+Math.round(e.y-20)).join(' L')}" stroke="#D8C2FF" stroke-width="2" stroke-dasharray="3 5" fill="none"/>`+P.map(e=>`<circle cx="${Math.round(e.x)}" cy="${Math.round(e.y-20)}" r="4" fill="#FFF6C8"/>`).join('')}}
+  const S=FYS.buf.shield;if(S&&S.until>now&&S.v>0)s+=`<polygon points="${[0,1,2,3,4,5].map(i=>{const a=i*Math.PI/3;return (me.x+Math.cos(a)*34).toFixed(0)+','+(me.y-38+Math.sin(a)*44).toFixed(0)}).join(' ')}" fill="rgba(255,200,90,.12)" stroke="#FFC860" stroke-width="2"/>`;
+  if(FYS.garden&&FYS.garden.until>now)s+=`<ellipse cx="${Math.round(me.x)}" cy="${Math.round(me.y)}" rx="160" ry="133" fill="rgba(255,150,190,.08)" stroke="#FF9DC0" stroke-dasharray="6 6"/>`;
+  if(g._k!==s){g._k=s;g.innerHTML=s}}
+/* ---- 大招鍵 ---- */
+const fyUltReady=()=>FYS.charge>=FY_ULT_MAX&&Date.now()-FYS.ultAt>=FY_ULT_GAP;
+function fyUlt(){const f=fyMe();if(!f||fyStage(f)<2||scene!=='explore'||!fyUltReady())return false;FYS.charge=0;FYS.ultAt=Date.now();fyCutIn(f.k);const t=fyTarget();setTimeout(()=>{try{fySkDo(f.k,3,t&&(t.m?!t.m.dead:!t.boss.done)?t:fyTarget())}catch(e){}},300);try{fyUltPaint(true)}catch(e){}return true}
+function fyCutIn(k){try{let el=document.getElementById('fyCut');if(el)el.remove();el=document.createElement('div');el.id='fyCut';if(typeof ecoOn==='function'&&ecoOn())el.className='eco';el.innerHTML=`<div class="bd"></div><img src="assets/fairy2/${k}_3_c.png?v=${BUILD}" alt="" onerror="this.remove()">`;document.body.appendChild(el);setTimeout(()=>{try{el.remove()}catch(e){}},1050)}catch(e){}}
+let fyUltLp=0;
+function fyUltPaint(force){let b=document.getElementById('fyUlt');const f=fyMe(),on=!!state&&scene==='explore'&&document.body.classList.contains('wild')&&!!f&&fyStage(f)>=2;
+  if(!b){if(!on)return;b=document.createElement('button');b.id='fyUlt';b.type='button';b.setAttribute('aria-label','神之子的大招');document.body.appendChild(b);
+    b.addEventListener('pointerdown',ev=>{ev.preventDefault();ev.stopPropagation();clearTimeout(fyUltLp);fyUltLp=setTimeout(()=>{fyUltLp=-1;fyUltCard()},500)});
+    b.addEventListener('pointerup',ev=>{ev.stopPropagation();if(fyUltLp!==-1){clearTimeout(fyUltLp);if(!fyUlt()){const left=FY_ULT_GAP-(Date.now()-FYS.ultAt);toast(FYS.charge<FY_ULT_MAX?`充能 ${FYS.charge}／${FY_ULT_MAX}：多打中幾下`:`再等 ${Math.ceil(left/1000)} 秒`,1400)}}fyUltLp=0});
+    b.addEventListener('pointerleave',()=>{if(fyUltLp>0)clearTimeout(fyUltLp);fyUltLp=0})}
+  if(b.hidden!==!on)b.hidden=!on;if(!on)return;const now=Date.now(),left=Math.max(0,FY_ULT_GAP-(now-FYS.ultAt)),p=FYS.charge/FY_ULT_MAX,full=fyUltReady(),cd=FYS.charge>=FY_ULT_MAX&&left>0?Math.ceil(left/1000):0,key=[f.k,FYS.charge,full,cd].join('|');if(b._k===key&&!force)return;b._k=key;
+  const C=2*Math.PI*27;b.classList.toggle('full',full);b.innerHTML=`<span class="fyu-por"><img src="assets/fairy2/${f.k}_3.png?v=${BUILD}" alt=""></span><svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="27" fill="none" stroke="rgba(0,0,0,.3)" stroke-width="5"/><circle class="r" cx="30" cy="30" r="27" fill="none" stroke="${full?'#FFE27A':'#FFB84A'}" stroke-width="5" stroke-linecap="round" stroke-dasharray="${(C*p).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 30 30)"/></svg>${cd?`<span class="fyu-cd">${cd}</span>`:''}`}
+function fyUltCard(){const f=fyMe();if(!f)return;const D=FY_SK[f.k][2];toast(`${D.n}：${D.d}（充能 ${FYS.charge}／${FY_ULT_MAX}）`,3200)}
+/* ---- 別人的神之子、隊友效果 ---- */
+function fySkRemote(id,f,fa){const S=FYO.get(id);if(S){try{fyCast(id,fa.x-S.x,fa.y-S.y);fyCastArt(S,f,fa.x)}catch(e){}}fyFx(f.k,fa.s,'target',fa.x,fa.y-14,true);if(fa.s===3)setTimeout(()=>fyFx(f.k,3,'final',fa.x,fa.y,true),300)}
+function fyBuffRemote(id,fb){if(!fb||!fb.k||FB_SEEN[id]===fb.t)return;FB_SEEN[id]=fb.t;const R=FY_FB_R[fb.k];if(!R||Date.now()-fb.t>3000)return;const me=curMe();if(Math.hypot(me.x-fb.x,me.y-fb.y)>R)return;
+  if(fb.k==='tomato2')fyBuf('dmgUp',FY_SK.tomato[1].up,6000);else if(fb.k==='strawberry1')fyHeal(0.04);else if(fb.k==='strawberry3')fyBuf('regen',0.03,8000);else if(fb.k==='broccoli2')fyBuf('red',0.2,6000);else if(fb.k==='broccoli3')fyBuf('red',0.5,6000)}
+/* ---- 資訊頁的技能區 ---- */
+function fySkHTML(k,st){const S=FY_SK[k];if(!S)return '';const lock=['','進化後開放','神化後開放'];return '<h3>技能</h3><div class="fysk">'+S.map((D,i)=>`<div class="fysk1${i>st?' off':''}"><b>${i===2?'大招 ':''}${esc(D.n)}</b><span>${esc(D.d)}</span><em>${i>st?'🔒 '+lock[i]:D.pas?'被動':i===2?'充能 40、至少隔 30 秒':'冷卻 '+D.cd+' 秒'}</em></div>`).join('')+'</div>'}
+/* ===== 198 結束 ===== */
+function fyAtkTick(){try{fySkTick()}catch(e){}/* 198 */try{petAtkTick()}catch(e){}/* 200 */if(!state||scene!=='explore'||!fyAutoOn())return false;const f=fyMe();if(!f)return false;const now=Date.now();if(now-fyAtkAt<FY_ATK_CD*1000)return false;
   const t=fyTarget();if(!t)return false;fyAtkAt=now;const d=Math.max(1,Math.round(fyBaseDmg()*fyAtkPct(f))),[tx,ty]=tPos(t);
   fyAct={x:Math.round(tx),y:Math.round(ty),t:now};try{pushPos(true)}catch(e){}
   fyAtkFx('me',f,tx,ty);setTimeout(()=>{try{dealT(t,{d,crit:false,pet:true})}catch(e){}},FY_BOLT_MS);return d}
 /* 別人的神之子：只播演出 */
-function fyAtkRemote(id,f,fa){if(!fa||typeof fa.x!=='number'||FY_SEEN[id]===fa.t)return;FY_SEEN[id]=fa.t;try{fyAtkFx(id,f,fa.x,fa.y)}catch(e){}}
+function fyAtkRemote(id,f,fa){if(!fa||typeof fa.x!=='number'||FY_SEEN[id]===fa.t)return;FY_SEEN[id]=fa.t;if(fa.s){try{fySkRemote(id,f,fa)}catch(e){}return}/* 198：技能只播演出 */try{fyAtkFx(id,f,fa.x,fa.y)}catch(e){}}
 /* 演出：放招圖＋能量彈＋打中的閃光 */
 function fyAtkFx(who,f,tx,ty){const S=FYO.get(who);if(!S)return;const o=fyCast(who,tx-S.x,ty-S.y)||[S.x,S.y];fyCastArt(S,f,tx);
   const [kind,c]=FY_BOLT[f.k]||['ball','#FFE27A'],eco=typeof ecoOn==='function'&&ecoOn(),L=fyLayers()[1];if(!L)return;
@@ -9246,8 +9447,8 @@ function fyShow(kind,k,f,opt,done){opt=opt||{};const el=document.createElement('
   const dots=Array.from({length:10},(_,i)=>{const a=i/10*Math.PI*2;return `<i style="--x:${(Math.cos(a)*140).toFixed(0)}px;--y:${(Math.sin(a)*110).toFixed(0)}px;animation-delay:${(0.55+i*0.03).toFixed(2)}s"></i>`}).join('');
   const P='star',burst=Array.from({length:12},(_,i)=>{const a=i/12*Math.PI*2,d=90+(i%3)*25;return `<i class="fyb-${P}" style="--x:${(Math.cos(a)*d).toFixed(0)}px;--y:${(Math.sin(a)*d).toFixed(0)}px;background:${P==='note'?'none':w}">${P==='note'?'♪':''}</i>`}).join('');
   if(kind==='wake')el.innerHTML=`<div class="fys-bg"></div><div class="fys-stage"><div class="fys-pool"></div><div class="fys-fruit">${opt.fruit||''}</div><div class="fys-dots">${dots}</div>
-      <div class="fys-fairy"><div class="fys-gray">${art(f)}</div><div class="fys-color">${art(f)}</div></div><div class="fys-ring"></div></div><h2 class="fys-title">${esc(fyN(k))}醒來了！</h2><p class="fys-skip">點一下跳過</p>`;
-  else el.innerHTML=`<div class="fys-bg"></div><div class="fys-stage"><div class="fys-pillar"></div><div class="fys-fairy fys-spin"><div class="fys-old">${art({...f,evo:kind==='god'?1:0,col:opt.oldCol||f.col,sb:opt.oldSb})}</div><div class="fys-new">${art(f)}</div></div><div class="fys-burst">${burst}</div>${kind==='god'?'<div class="fys-ring fys-ring2"></div>':''}</div><div class="fys-flash"></div><h2 class="fys-title">${esc(fyN(k))}${kind==='god'?'神化':'進化'}了！</h2><p class="fys-skip">點一下跳過</p>`;
+      <div class="fys-fairy"><div class="fys-gray">${art(f)}</div><div class="fys-color">${art(f)}</div></div><div class="fys-ring"></div></div><h2 class="fys-title">${esc(fyN(k))}醒來了！</h2><p class="fys-learn">學會了「${esc(FY_SK[k]?FY_SK[k][0].n:'')}」</p><p class="fys-skip">點一下跳過</p>`;
+  else el.innerHTML=`<div class="fys-bg"></div><div class="fys-stage"><div class="fys-pillar"></div><div class="fys-fairy fys-spin"><div class="fys-old">${art({...f,evo:kind==='god'?1:0,col:opt.oldCol||f.col,sb:opt.oldSb})}</div><div class="fys-new">${art(f)}</div></div><div class="fys-burst">${burst}</div>${kind==='god'?'<div class="fys-ring fys-ring2"></div>':''}</div><div class="fys-flash"></div><h2 class="fys-title">${esc(fyN(k))}${kind==='god'?'神化':'進化'}了！</h2><p class="fys-learn">學會了「${esc(FY_SK[k]?FY_SK[k][kind==='god'?2:1].n:'')}」</p><p class="fys-skip">點一下跳過</p>`;
   let closed=false;const close=()=>{if(closed)return;closed=true;el.classList.add('out');setTimeout(()=>{el.remove();fyShowOn=false;try{done&&done()}catch(e){}},fyRM()?0:220)};
   el.addEventListener('click',close);document.body.appendChild(el);setTimeout(close,fyRM()?600:3400)}
 
@@ -9286,7 +9487,7 @@ const monDmg=m=>{const r=MON_RDMG[exBiome]||[50,80];return Math.round((r[0]+Math
 const monCount=()=>Math.min(MON_MAXN,MON_N+2*Object.keys(others||{}).length);
 let pHP=PHP_BASE,pFightAt=0,pRegAt=0,potCd=0;
 const wpnMelee=()=>{const w=curWpn();return !!w&&w.W.ty==='近戰'};
-function pDamage(n,src){if(typeof skHurt==='function'){const r=skHurt(n,src);if(r==null)return;n=r}/* 184：無敵、減傷、雷霆護身 */c3HitAt=Date.now();/* 171：被打 */try{const a=document.getElementById('meGAv');if(a&&a.querySelector('g.c3')){a.classList.remove('c3hurt');void a.getBoundingClientRect();a.classList.add('c3hurt')}}catch(e){}/* 178.4：閃爍 2 次（只改透明度），不變白 */if(wpnMelee())n=Math.max(1,Math.round(n*0.6));/* 166：近戰受到的傷害 −40% */pHP=Math.max(0,pHP-n);pFightAt=Date.now();try{const me=curMe();dmgShow(me.x,me.y-78,n,{hurt:1,key:'me'})}catch(e){}/* 152：紅字 */renderHP();if(pHP<=0)pDie();else autoPotCheck()}
+function pDamage(n,src){if(lordKoOn())return;/* 200：倒下中 */if(typeof skHurt==='function'){const r=skHurt(n,src);if(r==null)return;n=r}/* 184：無敵、減傷、雷霆護身 */c3HitAt=Date.now();/* 171：被打 */try{const a=document.getElementById('meGAv');if(a&&a.querySelector('g.c3')){a.classList.remove('c3hurt');void a.getBoundingClientRect();a.classList.add('c3hurt')}}catch(e){}/* 178.4：閃爍 2 次（只改透明度），不變白 */if(wpnMelee())n=Math.max(1,Math.round(n*0.6));/* 166：近戰受到的傷害 −40% */pHP=Math.max(0,pHP-n);pFightAt=Date.now();try{const me=curMe();dmgShow(me.x,me.y-78,n,{hurt:1,key:'me'})}catch(e){}/* 152：紅字 */renderHP();if(pHP<=0&&!lordKoTry())pDie();else autoPotCheck()}
 function pDie(){try{comboReset()}catch(e){}/* 187 */const lost=tripLose();pHP=pMax();pFightAt=0;try{closePanel();closeSheet()}catch(e){}goFarm();renderHP();
   setTimeout(()=>{try{noteOpen(`<h2>你倒下了</h2><p class="note">被送回農場，血量補滿了。${lost?'這趟撿到、還沒帶回來的素材掉了一半。':''}</p><p class="note">金幣、種子、果實、道具都沒有少。</p>`)}catch(e){}},400)}
 function pRegen(){autoPotCheck();const now=Date.now();if(scene!=='explore'){if(pHP<pMax()){pHP=pMax();renderHP()}pRegAt=now;return}const dt=Math.min(5,(now-(pRegAt||now))/1000);pRegAt=now;if(pHP<pMax()&&now-pFightAt>=PHP_CALM){const ed=Math.min(dt,(now-pFightAt-PHP_CALM)/1000);if(ed>0){pHP=Math.min(pMax(),pHP+pMax()*PHP_REGEN*ed);renderHP()}}}/* 只算安靜滿 5 秒之後的時間 */
@@ -9370,9 +9571,10 @@ function monLoop(ts){monRaf=0;if(!monHere()){if(MON_RT)monClear();return}
   try{atkTick()}catch(e){}/* 189：不再自動打，按攻擊鍵才打 */
   const best=(typeof atkLock!=='undefined'&&atkLock&&atkLock.m&&!atkLock.m.dead)?L.indexOf(atkLock.m):-1;/* 20y 修：189 拿掉自動攻擊時 best 沒有定義，被打過的怪一還手 monLoop 就丟錯；改成攻擊鍵鎖定的那一隻 */
   L.forEach((m,i)=>{if(!m||m.dead)return;if(m.burn){if(now>=m.burn.next&&now<=m.burn.until+60){m.burn.next+=1000;hitMon(m,{d:m.burn.d,crit:false});if(m.dead)return}if(now>m.burn.until)m.burn=null}if(m.stun&&now<m.stun){if(m.moving){m.moving=false;monPaint(i,m)}return}/* 159：燒傷、暈住 */
+    if(fyMonHold(m,i,now,dt))return;/* 198：迷香、幻影 */
     if(m.aggro){const dme=Math.hypot(m.x-me.x,m.y-me.y);/* 131：被打了才還手 */
       if(now-m.lastHit>MON_GIVEUP||Math.hypot(m.x-m.ox,m.y-m.oy)>MON_LEASH){m.aggro=0;m.wind=0;monWind(m,false);m.tgt=[m.ox,m.oy];m.hp=m.max;monBar(m,false)}
-      else if(m.wind){if(now>=m.wind){m.wind=0;monWind(m,false);m.cd=now+MON_ATK_CD;const fx=m.x+m.face*18;if(Math.hypot(me.x-fx,(me.y-m.y)*1.3)<=MON_ATK_R)pDamage(monDmg(m),m)}if(i!==best){if(m.moving){m.moving=false}monPaint(i,m);return}}
+      else if(m.wind){if(now>=m.wind){m.wind=0;monWind(m,false);m.cd=now+MON_ATK_CD;const fx=m.x+m.face*18;if(Math.hypot(me.x-fx,(me.y-m.y)*1.3)<=MON_ATK_R)pDamage(Math.round(monDmg(m)*fyAtkK(m)),m)}if(i!==best){if(m.moving){m.moving=false}monPaint(i,m);return}}
       else if(dme<=MON_ATK_R+6&&now>=(m.cd||0)){m.wind=now+MON_WIND;m.face=me.x>m.x?1:-1;m.moving=false;monWind(m,true);monPaint(i,m);if(i!==best)return}
       else if(dme>MON_ATK_R-10){const dx=me.x-m.x,dy=me.y-m.y,nx=m.x+dx/dme*MON_CHASE_K*160*dt,ny=m.y+dy/dme*MON_CHASE_K*130*dt;/* 166 修正（19x）：被打過的（含正在打的那隻）都追，玩家走路速度 0.85 倍 */if(!regBlocked(M,nx,ny)){m.x=nx;m.y=ny;m.moving=true;m.ph+=dt*2;if(Math.abs(dx)>2)m.face=dx>0?1:-1}m.tgt=null;monPaint(i,m);return}
       else if(i!==best){if(m.moving){m.moving=false;monPaint(i,m)}return}}
@@ -9413,7 +9615,7 @@ function monDebris(m){try{const L=document.getElementById('monSw');if(!L)return;
   for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,d=22+Math.random()*26;s+=`<circle cx="${m.x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(2.5+Math.random()*2.5).toFixed(1)}" fill="${c}" stroke="#3B2614" stroke-width="1" style="--dx:${(Math.cos(a)*d).toFixed(1)}px;--dy:${(Math.sin(a)*d-14).toFixed(1)}px"/>`}
   g.innerHTML=s;L.appendChild(g);setTimeout(()=>{try{g.remove()}catch(e){}},520)}catch(e){}}
 /* ===== 141 結束 ===== */
-function monHit(i,dmg,crit,noSw,pet){const m=MON_RT&&MON_RT.list[i];if(!m||m.dead)return;if(!pet)try{comboHit(m);fxOnHit(m.x,(m.y+monHeadY(m))/2,crit)}catch(e){}/* 187、191 */const now=Date.now();const atk=dmg!=null?dmg:pAtkNow();m.hp=Math.max(0,m.hp-atk);try{dmgShow(m.x,monHeadY(m),atk,{key:'m'+i,crit:!!crit,pet:!!pet})}catch(e){}/* 152、159；170：神之子出手的樣式 */m.lastHit=now;pFightAt=now;if(!m.aggro){m.aggro=1;m.ox=m.x;m.oy=m.y}/* 131 */if(!noSw)monSwing(m);try{sfx('pop',60)}catch(e){}
+function monHit(i,dmg,crit,noSw,pet){const m=MON_RT&&MON_RT.list[i];if(!m||m.dead)return;if(dmg!=null){const r=fyHitMod(m,dmg,crit,pet);dmg=r.d;crit=r.crit}/* 198 */if(!pet)try{comboHit(m);fxOnHit(m.x,(m.y+monHeadY(m))/2,crit)}catch(e){}/* 187、191 */const now=Date.now();const atk=dmg!=null?dmg:pAtkNow();m.hp=Math.max(0,m.hp-atk);try{dmgShow(m.x,monHeadY(m),atk,Object.assign({key:'m'+i,crit:!!crit,pet:!!pet},pet&&pet.col?{color:pet.col,sm:1}:{}))}catch(e){}/* 152、159；170：神之子出手的樣式 */m.lastHit=now;pFightAt=now;if(!m.aggro){m.aggro=1;m.ox=m.x;m.oy=m.y}/* 131 */if(!noSw)monSwing(m);try{sfx('pop',60)}catch(e){}
   const s=m.el&&m.el.querySelector('.ms'),hasHit=!!MON_IMG[m.k+'_hit'];
   if(hasHit&&s){s.innerHTML=monImgTag(m.k,m.boss,true);clearTimeout(m._ht);if(m.hp>0)m._ht=setTimeout(()=>{if(!m.dead)s.innerHTML=monImgTag(m.k,m.boss,false)},250)}
   if(hasHit)monReplay(s,'hit');else monHit2(m,s);monDebris(m);monBar(m,true);/* 141.3 */
@@ -9738,7 +9940,7 @@ function joinFarm(key){
 function leavePresence(){try{if(rtdbRef)rtdbRef.remove()}catch(e){}rtdbRef=null;if(rtdbOff){rtdbOff();rtdbOff=null}if(hb){clearInterval(hb);hb=null}others={}}
 function pushPos(force){
   if(!rtdbRef)return;const now=Date.now();if(!force&&now-lastPush<150)return;lastPush=now;const m=curMe();
-  rtdbRef.set({x:Math.round(m.x),y:Math.round(m.y),d:meDir,name:myName(),lv:myLv(),ch:champOn()?1:0,av:avPack(state.avatar),w:wpnTag(),...(char2On()?{c2:char2Sex()}:{}),...(char3On()?{ap:lookPack(lookNorm(state.look))}:{}),/* 171 */...(fyAct&&Date.now()-fyAct.t<1500?{fa:fyAct}:{}),...(skAct&&Date.now()-skAct.t<1500?{sk:skAct}:{}),/* 184：招式、翻滾 *//* 170：神之子最近一次出手（1.5 秒內才送） */fy:fyPack(fyMe()),/* 168：新版主角 m／f，沒開不送 */a:meAct&&Date.now()-meAct.at<1500?meAct:null,f:meFace,t:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});
+  rtdbRef.set({x:Math.round(m.x),y:Math.round(m.y),d:meDir,name:myName(),lv:myLv(),ch:champOn()?1:0,av:avPack(state.avatar),w:wpnTag(),...(char2On()?{c2:char2Sex()}:{}),...(char3On()?{ap:lookPack(lookNorm(state.look))}:{}),/* 171 */...(fyAct&&Date.now()-fyAct.t<1500?{fa:fyAct}:{}),...(fyFb&&Date.now()-fyFb.t<1500?{fb:fyFb}:{}),/* 198 */...(petAct&&Date.now()-petAct.t<1500?{pa:petAct}:{}),/* 200 */...(skAct&&Date.now()-skAct.t<1500?{sk:skAct}:{}),/* 184：招式、翻滾 *//* 170：神之子最近一次出手（1.5 秒內才送） */fy:fyPack(fyMe()),/* 168：新版主角 m／f，沒開不送 */a:meAct&&Date.now()-meAct.at<1500?meAct:null,f:meFace,t:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});
 }
 let meDir=1,walkPh=0,meFace=2;
 const VIEWS=['side','fq','front','fq','side','bq','back','bq'];
@@ -10041,7 +10243,7 @@ function renderChars(){
   if(!state)return;const L=document.getElementById('charLayer');let s='';
   const t=performance.now()/1000,list=[];
   for(const [id,o] of Object.entries(others)){if(!o||typeof o.x!=='number')continue;const A=animO[id]||{x:o.x,y:o.y,ph:0};
-    const ps=poseFor(false,{a:o.a,_aStart:A.aStart,_seed:A.seed},t);if(A.moving)ps.ph=A.ph;else if(!ps.act)ps.t=0;/* 99.8：站著不動時姿勢不跟時間變（呼吸交給 CSS .brth），內容不變就不用重建 */const of=o.f!=null?o.f:(o.d<0?3:1);ps.view=VIEWS[of];ps.face=of;ps.mv=!!A.moving;ps.o=o;const ofy=fyUnpack(o.fy);list.push({y:A.y,h:charG('',A.x,A.y,o.av,faceFlip(of),ps,o.name||'朋友',o.lv,ofy,id,!!o.ch,scene==='explore'&&typeof o.w==='string'?o.w:null,o.c2,o.ap)+`<circle cx="${Math.round(A.x)}" cy="${Math.round(A.y-30)}" r="17" fill="transparent" style="pointer-events:auto" data-ply="${esc(id)}"/>`});if(ofy)fyRegister(id,ofy,()=>{const B=animO[id]||o,F=o.f!=null?o.f:(o.d<0?3:1);return {x:B.x,y:B.y,flip:faceFlip(F),face:F}});if(ofy&&o.fa)fyAtkRemote(id,ofy,o.fa);if(o.sk)try{skRemote(id,o.sk,A)}catch(e){}/* 184 */}
+    const ps=poseFor(false,{a:o.a,_aStart:A.aStart,_seed:A.seed},t);if(A.moving)ps.ph=A.ph;else if(!ps.act)ps.t=0;/* 99.8：站著不動時姿勢不跟時間變（呼吸交給 CSS .brth），內容不變就不用重建 */const of=o.f!=null?o.f:(o.d<0?3:1);ps.view=VIEWS[of];ps.face=of;ps.mv=!!A.moving;ps.o=o;const ofy=fyUnpack(o.fy);list.push({y:A.y,h:charG('',A.x,A.y,o.av,faceFlip(of),ps,o.name||'朋友',o.lv,ofy,id,!!o.ch,scene==='explore'&&typeof o.w==='string'?o.w:null,o.c2,o.ap)+`<circle cx="${Math.round(A.x)}" cy="${Math.round(A.y-30)}" r="17" fill="transparent" style="pointer-events:auto" data-ply="${esc(id)}"/>`});if(ofy)fyRegister(id,ofy,()=>{const B=animO[id]||o,F=o.f!=null?o.f:(o.d<0?3:1);return {x:B.x,y:B.y,flip:faceFlip(F),face:F}});if(ofy&&o.fa)fyAtkRemote(id,ofy,o.fa);if(o.fb)try{fyBuffRemote(id,o.fb)}catch(e){}/* 198：隊友效果 */if(o.pa)try{petAtkRemote(id,o.pa,A)}catch(e){}/* 200 */if(o.sk)try{skRemote(id,o.sk,A)}catch(e){}/* 184 */}
   const m=curMe(),mp=poseFor(true,null,t);if(raf)mp.ph=walkPh;else if(!mp.act)mp.t=0;mp.view=VIEWS[meFace];const mfy=fyMe();/* 97：拜訪朋友、城鎮、各地區都帶著自己的精靈 */list.push({y:m.y-1,h:petCharG()});list.push({y:m.y+1,h:hpHeadG()});list.push({y:m.y,h:charG('meG',m.x,m.y,state.avatar,faceFlip(meFace),mp,'你',myLv(),mfy,'me',champOn(),wpnTag())});if(mfy)fyRegister('me',mfy,()=>{const q=curMe();return {x:q.x,y:q.y,flip:faceFlip(meFace),face:meFace}});{const H=fyHomeSet();if(H)fyRegister('home',H.f,fyHomePos)}fyStart();
   list.sort((a,b)=>a.y-b.y);s=list.map(x=>x.h).join('');
   const key=s.replace(/(id="|url\(#|href="#)([A-Za-z_-]*)\d+/g,'$1$2').replace(/animation-delay:-?[\d.]+s/g,'').replace(/<g class="c2"[^]*?<\/g>/g,'<c2/>').replace(/<g class="c3"[^]*?<!--\/c3-->/g,'<c3/>').replace(/ class="wsw[^"]*"/g,'');/* 156：新版角色的走路格由 char2Paint 換，不算內容改變 *//* 圖層 id、眨眼的延遲每次都不一樣，比較時拿掉 */
@@ -10424,7 +10626,7 @@ function dmgShow(x,y,val,o){o=o||{};if(!dmgOn())return null;const p=w2s(x,y);if(
   const dx=k?(k%2?1:-1)*(6+(k%3)*5):0,dy=-k*15;
   const txt=o.text||(o.miss?'MISS':o.heal?'+'+dmgFmt(val):o.hurt?'-'+dmgFmt(val):dmgFmt(val));
   d.className='';void d.offsetWidth;/* 重新開始動畫 */
-  d.className='dmg'+(o.crit?' crit':'')+(o.hurt?' hurt':'')+(o.heal?' heal':'')+(o.miss?' miss':'')+(o.pet?' pet':'')+(o.tm?' tm':'');
+  d.className='dmg'+(o.crit?' crit':'')+(o.hurt?' hurt':'')+(o.heal?' heal':'')+(o.miss?' miss':'')+(o.pet?' pet':'')+(o.sm?' sm':'')+(o.tm?' tm':'');
   d.style.left=(p[0]+dx).toFixed(1)+'px';d.style.top=(p[1]+dy).toFixed(1)+'px';
   if(o.color)d.style.setProperty('--dc',o.color);else d.style.removeProperty('--dc');
   d.innerHTML=(o.crit?'<i>爆擊</i>':'')+'<b>'+txt+'</b>';return d}
@@ -11205,6 +11407,44 @@ document.getElementById('ordersBtn').onclick=()=>{sheet={orders:true};renderShee
    fav／favGot（好感度與領過的階段）、titles（稱號徽章）、pname／pnameAt（自訂名字）。旗標 lvV（lvMigrate，newGame 同步）。 */
 const LV_CROP={tomato:1,chili:4,strawberry:6,eggplant:8,corn:10,pumpkin:10,zucchini:14,melon:20,broccoli:20};/* 120.2：南瓜跟銀霧白樺林 Lv 10、甜瓜跟珍珠潟湖 Lv 20 */
 const LV_REG={grass:2,forest:10,marsh:20,sakura:30,desert:40,snow:50,volcano:60,canyon:70,ruins:80},LV_TOWN=1,LV_COMM=6;/* 120.2：十級一區；城鎮 Lv 1、翠風草原 Lv 2 */
+/* ===== 200（21b）：領主變難；神寵會普通攻擊 =====
+   領主一招（dmg 1 的招）打中，扣「剛好到那一區入口等級（LV_REG）的近戰玩家」血量上限的 22%（近戰受傷 ×0.6，所以招本身＝36.7%；遠程吃滿）；
+   第二階段、塔羅斯羽翼形態再 ×1.3。dmgK 照 MON_RDMG 的平均反推（lordDmgK）。hpK 300（塔羅斯 360）。
+   倒下：15 秒後在戰場邊緣站起來（血量 50%），一場最多站起來 2 次，第 3 次倒下照舊放棄（回農場）。 ===== */
+const LORD_HIT=0.22,LORD_MELEE=0.6,LORD_PH2=1.3,LORD_KO_MS=15000,LORD_UPS=2;
+const lordDmgK=bk=>{const r=MON_RDMG[bk]||[50,80];return +(LORD_HIT/LORD_MELEE*pHpMax(LV_REG[bk]||1)/((r[0]+r[1])/2)).toFixed(2)};
+const LORD_HPK={snow:460,volcano:610,canyon:660,ruins:1080};/* 21c：後四隻照 tools/sim200.js 的估計調到一個人約 9 分鐘（原本 300／塔羅斯 360 只要 3～6 分鐘） */
+for(const bk in LORDS){LORDS[bk].dmgK=lordDmgK(bk);LORDS[bk].hpK=LORD_HPK[bk]||300}
+let lordKO=null;
+const lordKoOn=()=>!!lordKO&&Date.now()<lordKO.until;
+/* pDamage 血量歸零時先問這裡：領主戰、還有站起來的次數 → 倒下 15 秒 */
+function lordKoTry(){const b=bossRT;if(!b||b.kind!=='lord'||b.done||scene!=='explore')return false;b.ups=b.ups||0;if(b.ups>=LORD_UPS)return false;b.ups++;
+  lordKO={until:Date.now()+LORD_KO_MS,b};pHP=0;try{renderHP();document.body.classList.add('lordko');comboReset()}catch(e){}koPaint();
+  try{toast(`倒下了……15 秒後可以站起來（這場還能再站起來 ${LORD_UPS-b.ups} 次）`,3000)}catch(e){}return true}
+function lordKoTick(){if(!lordKO)return;const b=bossRT;if(!b||b!==lordKO.b||b.done||scene!=='explore'){lordKoEnd(false);return}if(Date.now()<lordKO.until){koPaint();return}
+  const me=curMe(),A=bossArena(b)||[b.cx,b.cy],R=bossArenaR(b)+90,d=Math.hypot(me.x-A[0],me.y-A[1])||1,M=regCur(),B=M&&M.B||b.B;
+  let x=A[0]+(me.x-A[0])/d*R,y=A[1]+(me.y-A[1])/d*R;x=Math.max(B.x0+30,Math.min(B.x1-30,x));y=Math.max(B.y0+30,Math.min(B.y1-30,y));
+  if(!M||!regBlocked(M,x,y)){me.x=x;me.y=y}pHP=Math.round(pMax()*0.5);lordKoEnd(true);try{renderHP();updateCam();toast('站起來了！',1500)}catch(e){}}
+function lordKoEnd(up){lordKO=null;try{document.body.classList.remove('lordko');const e=document.getElementById('koBox');if(e)e.remove()}catch(e){}}
+function koPaint(){try{let e=document.getElementById('koBox');if(!e){e=document.createElement('div');e.id='koBox';document.body.appendChild(e)}e.textContent=`倒下了　${Math.max(0,Math.ceil((lordKO.until-Date.now())/1000))} 秒後站起來`}catch(e){}}
+/* ---- 神寵的普通攻擊（照第 170 節） ---- */
+const PET_ATK_R=200,PET_ATK_CD=3000,PET_ATK_PCT=[0.15,0.25,0.4],PET_ORB_MS=300;
+let petAtkAt=0,petAct=null,petLunge=null;const PA_SEEN={};
+const petGlow=p=>(LORDS[p.bk]||{}).glow||'#FFE6A8';
+function petAtkTick(){if(!state||scene!=='explore'||!fyAutoOn()||!state.petOn)return false;const p=petCur();if(!p)return false;const now=Date.now();if(now-petAtkAt<PET_ATK_CD)return false;
+  const t=fyTarget();if(!t)return false;const [tx,ty]=tPos(t),P0=petPos||curMe();if(Math.hypot(tx-P0.x,ty-P0.y)>PET_ATK_R)return false;petAtkAt=now;
+  const d=Math.max(1,Math.round(fyBaseDmg()*(PET_ATK_PCT[p.st]||PET_ATK_PCT[0]))),c=petGlow(p);
+  petAct={x:Math.round(tx),y:Math.round(ty),t:now,c};try{pushPos(true)}catch(e){}
+  petAtkFx(P0.x,P0.y-petHW()*0.5,tx,ty,c,true,p);setTimeout(()=>{try{dealT(t,{d,crit:false,pet:{col:c}})}catch(e){}},PET_ORB_MS);return d}
+/* 演出：換成領主的 attack 圖 0.3 秒、往目標衝 12、光球飛過去、打中一圈光環 */
+function petAtkFx(x,y,tx,ty,c,mine,p){try{const dx=tx-x,dy=ty-y,L=Math.hypot(dx,dy)||1;
+  if(mine&&p){petLunge={t0:Date.now(),dx:dx/L*12,dy:dy/L*12};const g=document.getElementById('petG'),im=g&&g.querySelector('image'),art=petArtK(p.bk);if(im&&art){const old=im.getAttribute('href');im.setAttribute('href',bossSrc(art,'attack'));setTimeout(()=>{try{im.setAttribute('href',old)}catch(e){}},300)}}
+  fxW(x,y,`<g class="petorb" style="--dx:${dx.toFixed(0)}px;--dy:${dy.toFixed(0)}px"><circle r="7" fill="${c}" opacity=".9"/><circle r="3.5" fill="#fff"/></g>`,PET_ORB_MS);
+  setTimeout(()=>{try{fxW(tx,ty,`<g class="wfx-ring"><ellipse rx="22" ry="8" fill="none" stroke="${c}" stroke-width="3"/></g>`,400)}catch(e){}},PET_ORB_MS)}catch(e){}}
+function petAtkRemote(id,pa,A){if(!pa||typeof pa.x!=='number'||PA_SEEN[id]===pa.t)return;PA_SEEN[id]=pa.t;if(Date.now()-pa.t>2000)return;try{petAtkFx(A.x+(A.x>pa.x?30:-30),A.y-30,pa.x,pa.y,String(pa.c||'#FFE6A8').slice(0,9),false)}catch(e){}}
+/* 衝 12 再回原位（在 petMove 裡加位移） */
+const petLungeOff=()=>{const L=petLunge;if(!L)return [0,0];const u=(Date.now()-L.t0)/300;if(u>=1){petLunge=null;return [0,0]}const k=Math.sin(Math.PI*u);return [L.dx*k,L.dy*k]};
+/* ===== 200 結束 ===== */
 /* 120.2：改版前（119）的表；舊玩家當時進得去的地區、解鎖的作物記在 state.lvKeep，之後一律算已解鎖（地區照舊的等級算裡面的地圖） */
 const LV_REG_119={grass:2,forest:8,marsh:12,sakura:15,desert:16,snow:20},LV_CROP_119={pumpkin:8,melon:12};
 const regLv=bk=>{const k=state&&state.lvKeep&&state.lvKeep.reg&&state.lvKeep.reg[bk];return k!=null?Math.min(LV_REG[bk],k):LV_REG[bk]};
@@ -11275,8 +11515,8 @@ const wpnTag=()=>{const w=curWpn();return w?w.crop+'|'+w.tier:null};
 function wpnDmg(w,mul){const W=w&&w.W;let d=pAtkNow()*(1+(w?wpStat('atk'):0))/* 186：星星 */*(W?W.mul:0.5)/* 166：野外鐮刀 ×0.5 */*Math.pow(1.3,((w&&w.tier)||1)-1)*(mul||1);const crit=skForce||Math.random()<0.05+((W&&W.crit)||0)+(w?wpStat('crit'):0);if(crit)d*=1.5+((W&&W.critDmg)||0)+(w?wpStat('critDmg'):0);return {d:Math.max(1,Math.round(d)),crit}}
 function hitMon(m,o){if(!MON_RT||!m||m.dead)return false;const i=MON_RT.list.indexOf(m);if(i<0)return false;monHit(i,o.d,o.crit,true,o.pet);return true}
 /* 主、僕人受到的傷害（擋住時不算） */
-function bossDealt(b,o){if(!b||b.done)return;if(b.part){partDealt(b,o);return}/* 196 */if(b.kind==='servant'&&!b.active){b.active=true;b.until=bossNow()+900;bossJump(b,bossNow());bossSvNet(b)}/* 162：第一次被打也開打 */const now=bossNow(),y=b.y-BOSS_HU*(b.def.h||1);if(b.mode==='guard'&&!(BATK[b.atk]||{}).guardK){try{dmgShow(b.x,y,0,{miss:1,text:'擋住了',key:'boss'})}catch(e){}return}if(bossInv(b)){try{dmgShow(b.x,y,0,{miss:1,text:'打不到',key:'boss'})}catch(e){}return}{let d=Math.round(o.d*bossMul(b,o));const LA=LAIof(b),fl=LA&&LA.floor?LA.floor(b):0;if(fl)d=Math.max(0,Math.min(d,Math.floor(bossHp(b)-b.max*fl)));o=Object.assign({},o,{d});if(b.mode==='devour'&&!o.pet){if(bossIsHost(b))bossDevourHit(b,1);else{b.od=b.od||{};b.od.devour=(b.od.devour||0)+1;if(b.net)bossNet.set(bpath(b)+'/od/'+uid,b.od)}}}/* 196 */
-  if(!o.pet)try{comboHit(b);fxOnHit(b.x,b.y-BOSS_HU*(b.def.h||1)*0.5,o.crit)}catch(e){}/* 187、191 */b.myDmg+=o.d;try{dmgShow(b.x,y,o.d,{key:'boss',crit:o.crit,pet:!!o.pet})}catch(e){}b.dmg[bossMe()]=b.myDmg;b.hitT=now;if(b.net)lordPushDmg(b)}
+function bossDealt(b,o){if(!b||b.done)return;if(b.part){partDealt(b,o);return}/* 196 */{const r=fyHitMod(b,o.d,o.crit,o.pet);o=Object.assign({},o,r)}/* 198 */if(b.kind==='servant'&&!b.active){b.active=true;b.until=bossNow()+900;bossJump(b,bossNow());bossSvNet(b)}/* 162：第一次被打也開打 */const now=bossNow(),y=b.y-BOSS_HU*(b.def.h||1);if(b.mode==='guard'&&!(BATK[b.atk]||{}).guardK){try{dmgShow(b.x,y,0,{miss:1,text:'擋住了',key:'boss'})}catch(e){}return}if(bossInv(b)){try{dmgShow(b.x,y,0,{miss:1,text:'打不到',key:'boss'})}catch(e){}return}{let d=Math.round(o.d*bossMul(b,o));const LA=LAIof(b),fl=LA&&LA.floor?LA.floor(b):0;if(fl)d=Math.max(0,Math.min(d,Math.floor(bossHp(b)-b.max*fl)));o=Object.assign({},o,{d});if(b.mode==='devour'&&!o.pet){if(bossIsHost(b))bossDevourHit(b,1);else{b.od=b.od||{};b.od.devour=(b.od.devour||0)+1;if(b.net)bossNet.set(bpath(b)+'/od/'+uid,b.od)}}}/* 196 */
+  if(!o.pet)try{comboHit(b);fxOnHit(b.x,b.y-BOSS_HU*(b.def.h||1)*0.5,o.crit)}catch(e){}/* 187、191 */b.myDmg+=o.d;try{dmgShow(b.x,y,o.d,Object.assign({key:'boss',crit:o.crit,pet:!!o.pet},o.pet&&o.pet.col?{color:o.pet.col,sm:1}:{}))}catch(e){}b.dmg[bossMe()]=b.myDmg;b.hitT=now;if(b.net)lordPushDmg(b)}
 const dealT=(t,o)=>t.boss?bossDealt(t.boss,o):hitMon(t.m,o);
 const tPos=t=>t.boss?[t.boss.x,t.boss.y-14]:[t.m.x,t.m.y-14];
 const monsAlive=()=>MON_RT?MON_RT.list.filter(m=>m&&!m.dead):[];
@@ -11394,7 +11634,7 @@ function skBlink(x,y,then){const g=document.getElementById('meG');try{if(g){g.st
   setTimeout(()=>{const m=curMe(),[ex,ey]=skReach(x,y);if(!regBlocked(regCur(),x,y)){m.x=x;m.y=y}else{m.x=ex;m.y=ey}try{updateMe();updateCam();pushPos(true)}catch(e){}try{if(g&&g.isConnected){g.style.opacity='1'}else{const g2=document.getElementById('meG');if(g2)g2.style.opacity='1'}}catch(e){}if(then)then()},100)}
 /* 受傷：無敵、減傷、雷霆護身（pDamage 會先問這裡；回 null＝不扣血） */
 function skHurt(n,src){const now=skNow();if(now<SKB.inv){try{const me=curMe();dmgShow(me.x,me.y-78,0,{miss:1,text:'閃避',key:'me'})}catch(e){}return null}
-  SKB.red=SKB.red.filter(r=>r.until>now);for(const r of SKB.red)n*=1-r.k;n*=1-wpStat('def');/* 186：正方形 */
+  SKB.red=SKB.red.filter(r=>r.until>now);for(const r of SKB.red)n*=1-r.k;n*=1-wpStat('def');/* 186：正方形 */n=fyHurtMod(n);if(n<=0)return null;/* 198：符文、巨人、光盾 */
   const A=SKB.aegis&&SKB.aegis.until>now?SKB.aegis:null;if(A&&src){const t=src.def?{boss:src,x:src.x,y:src.y}:{m:src,x:src.x,y:src.y};skHit(t,A.bolt);fxOr(A.c,'pulse',t.x,t.y,()=>skFx.bolt({x:t.x,y:t.y}))}
   return Math.max(1,Math.round(n))}
 const skRedAdd=(k,ms)=>SKB.red.push({k,until:skNow()+ms});
@@ -11597,7 +11837,7 @@ function atkStopWalk(){if(atkWalk){atkWalk=false;moveTo=null}}
 function atkPress(){if(!state||scene!=='explore')return;atkHeld=true;atkTap=1;atkTapAt=Date.now();try{atkTick()}catch(e){}}
 function atkRelease(){atkHeld=false}
 function atkWhiff(){const w=curWpn(),now=Date.now(),dur=w?w.W.cd:MON_SWING;c3Atk={at:now,dur};meAct={type:'atk',at:now,dur};try{if(w)wpnAnim(w.W.k)}catch(e){}try{pushPos(true)}catch(e){}}
-function atkTick(){if(!state||scene!=='explore'){atkLock=null;atkRingPaint();return}const now=Date.now(),me=curMe();
+function atkTick(){if(lordKoOn())return;/* 200 */if(!state||scene!=='explore'){atkLock=null;atkRingPaint();return}const now=Date.now(),me=curMe();
   if(atkTap&&now-atkTapAt>4000)atkTap=0;
   let T=atkLockT();if(atkLock&&(!T||Math.hypot(T.x-me.x,T.y-me.y)>atkSearch()*1.5||(!atkHeld&&!atkTap&&now-atkAt>4000))){atkLock=null;T=null;atkStopWalk()}
   if(!(atkHeld||atkTap)){atkRingPaint();return}
@@ -11718,7 +11958,7 @@ function skCleanse(){/* 184.4 花神之舞：解除緩速、被盯住這類狀�
 function skTick(){const H=SKB.hot,now=skNow();if(H){if(now>H.until)SKB.hot=null;else if(now>=H.next){H.next+=1000;skHeal(H.k);if(H.c)try{const me=curMe();fxT('tick',me.x,me.y,H.c)}catch(e){}}/* 191 */}}
 /* 放招 */
 function skCast(slot){if(!state||scene!=='explore'||uiBusy())return false;const d=skDef(slot),w=curWpn();if(!d||d.locked||!w)return false;const now=skNow(),k='s'+slot;if(now<SKC[k])return false;
-  const a=skAim(d.range||d.jump||d.L||d.len||200),fn=SK_DO[d.id];if(!fn)return false;SKC[k]=now+d.cd*1000;
+  const a=skAim(d.range||d.jump||d.L||d.len||200),fn=SK_DO[d.id];if(!fn)return false;SKC[k]=now+d.cd*1000*fyCdK();/* 198：永夜 */
   c3Atk={at:now,dur:Math.round(Math.max(250,w.W.cd)/1.5)};meAct={type:'atk',at:now,dur:c3Atk.dur};pFightAt=now;
   try{skNameShow(w.crop,slot,slot===1?(w.tier||1):Math.max(2,w.tier||1),skName(w.crop,slot,w.tier||1))}catch(e){}/* 186：第一次放出新型態 */
   fxSkCtx={crop:w.crop,key:'s'+slot,tier:w.tier||1,face:a.dx<0?-1:1,own:true};const FC=fxSkCtx;/* 191 */
@@ -11783,7 +12023,7 @@ function skBar(){let B=document.getElementById('skBar');if(B)return B;B=document
   const up=e=>{if(!lp||e.pointerId!==lp.id)return;const L=lp;lp=null;clearTimeout(L.t);if(L.atk){atkRelease();return}if(L.long||e.type==='pointercancel')return;const d=skDef(+L.k);if(d&&d.locked){toast('第 2 階解鎖',1500);return}skCast(+L.k)};B.addEventListener('pointerup',up);B.addEventListener('pointercancel',up);
   B.addEventListener('click',e=>{e.preventDefault();e.stopPropagation()});document.body.appendChild(B);return B}
 let skPk='';
-function skPaint(force){try{const on=!!state&&scene==='explore'&&document.body.classList.contains('wild');let B=document.getElementById('skBar');if(!on){if(B&&!B.hidden)B.hidden=true;const sw=document.getElementById('wpSwap');if(sw)sw.hidden=true;if(scene!=='explore'&&fxPreK)try{fxRelease()}catch(x){}/* 191：離開野外放掉特效圖 */return}B=skBar();if(B.hidden)B.hidden=false;
+function skPaint(force){try{fyUltPaint()}catch(e){}/* 198 */try{const on=!!state&&scene==='explore'&&document.body.classList.contains('wild');let B=document.getElementById('skBar');if(!on){if(B&&!B.hidden)B.hidden=true;const sw=document.getElementById('wpSwap');if(sw)sw.hidden=true;if(scene!=='explore'&&fxPreK)try{fxRelease()}catch(x){}/* 191：離開野外放掉特效圖 */return}B=skBar();if(B.hidden)B.hidden=false;
   const w=curWpn(),now=skNow(),S=w&&SKILLS[w.crop],key=(w?w.crop+w.tier:'-');
   const set=(k,d,id,col,cdEnd,cdLen,lock,label)=>{const b=document.getElementById('sk'+k);if(!b)return;b.hidden=!d;if(!d)return;if(b._id!==id+lock+label){b._id=id+lock+label;b.querySelector('svg').innerHTML=SK_GLYPH[id]||'';b.style.setProperty('--skc',col);b.classList.toggle('lock',!!lock);b.querySelector('.sklk').textContent=lock?'第 2 階':label;b.setAttribute('aria-label',label+(lock?'（第 2 階解鎖）':''))}
     const left=Math.max(0,cdEnd-now),p=cdLen?left/cdLen:0,cd=b.querySelector('.skcd'),t=b.querySelector('.skt');cd.style.setProperty('--p',(p*360).toFixed(1)+'deg');cd.hidden=!(left>0);t.textContent=left>0?Math.ceil(left/1000):''};

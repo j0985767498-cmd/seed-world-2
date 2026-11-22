@@ -5,7 +5,7 @@ const src=process.argv[2]||require('path').join(__dirname,'..','index.html');
 const h=fs.readFileSync(src,'utf8');
 let js=h.slice(h.indexOf('<script>',h.indexOf('</style>'))+8,h.lastIndexOf('</script>'));
 const P=new Proxy(function(){},{get:(t,k)=>k===Symbol.toPrimitive?()=>'':(k==='then'?undefined:P),apply:()=>P,construct:()=>P,set:()=>true});
-js+=';globalThis.T={newGame,makeWild,plantFromLot,packState,loadSave,repairState,lookNorm,lookPack,lookUnpack,char3On,charG,get state(){return state},set state(v){state=v}};';
+js+=';globalThis.T={newGame,makeWild,plantFromLot,packState,loadSave,repairState,lookNorm,lookPack,lookUnpack,char3On,charG,c3MfSet,c3Layers,c3G,get state(){return state},set state(v){state=v}};';
 const ctx={document:P,window:P,firebase:P,navigator:P,location:{pathname:'/',search:'',hash:''},localStorage:P,console,setTimeout:()=>0,setInterval:()=>0,clearTimeout(){},clearInterval(){},requestAnimationFrame:()=>0,fetch:()=>new Promise(()=>{}),btoa:s=>Buffer.from(s,'binary').toString('base64'),atob:s=>Buffer.from(s,'base64').toString('binary'),TextEncoder,Math,Date,JSON,addEventListener(){},matchMedia:()=>({matches:false,addEventListener(){}}),performance:{now:()=>0},innerWidth:400,innerHeight:800,devicePixelRatio:1,screen:P,history:P,alert(){},confirm:()=>true,URLSearchParams};
 ctx.globalThis=ctx;ctx.self=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
 const T=ctx.T;let fails=0;const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)fails++};
@@ -28,13 +28,25 @@ ok(a.lots.find(l=>l.id===2).count===12&&a.lots.find(l=>l.id===1).seeds.length===
 /* 同名函式：同一個名字的 function 宣告只能有一個（後面的會蓋掉前面的） */
 const names={};for(const x of js.matchAll(/(?:^|[;}\s])(?:async\s+)?function\s+([A-Za-z_\$][\w\$]*)\s*\(/g))names[x[1]]=(names[x[1]]||0)+1;
 const dup=Object.keys(names).filter(k=>names[k]>1&&k!=='openBuild');ok(!dup.length,'no duplicate function names (openBuild is old dead code, known)'+(dup.length?': '+dup.join(','):''));
-/* 第 171 節：新版人物的開關開／關都能讀舊存檔；look 缺欄位補預設值 */
-{const old=J(T.packState(st));for(const sw of [undefined,false,true]){const o=JSON.parse(old);const S=load(typeof o==='string'?o:JSON.stringify(o));S.char3=sw;const S2=load(T.packState(S));ok(JSON.stringify(genes(S2))===JSON.stringify(want)&&S2.look&&S2.look.top==='t01',`171: switch ${sw===undefined?'(not set = on)':sw?'on':'off'}: old save loads, genes intact, look filled in`)}
-  const S=load(T.packState(st));S.look={top:'t02'};const S2=load(T.packState(S));ok(S2.look.top==='t02'&&S2.look.shoes==='s01'&&S2.look.hair==='h01'&&S2.look.hairColor===0,'171: look with missing fields → defaults filled, chosen top kept');
-  S.look={top:'zzz',hairColor:99};ok(JSON.stringify(T.lookNorm(S.look))===JSON.stringify({hair:'h01',hairColor:0,top:'t01',bottom:'b01',shoes:'s01'}),'171: unknown values → defaults');
-  ok(T.lookPack(T.lookNorm({top:'t02',hairColor:3}))==='f.h01.3.t02.b01.s01'&&T.lookUnpack('f.h01.3.t02.b01.s01').top==='t02'&&T.lookUnpack('m.x')===null,'171: ap string packs / unpacks; bad strings ignored');
-  T.state=S;S.char2Sex='f';S.char3=undefined;ok(T.char3On()===true,'171: girl, switch not set → new character on');S.char3=false;ok(T.char3On()===false,'…switched off → old drawing');S.char3=true;S.char2Sex='m';ok(T.char3On()===false,'…boy → old drawing (only girl art for now)');
-  let g='';try{g=T.charG('',10,10,S.avatar,false,{view:'front',face:2},'朋友',3,null,'u9',false,null,null,'f.h01.0.t01.b01.s01')}catch(e){g='ERR '+e.message}ok(g&&!/^ERR/.test(g),'171: other player with ap while the art is still loading → falls back to the old drawing, no error')}
+/* 第 171、177 節：新版人物的開關開／關都能讀舊存檔；177：照 manifest，舊測試編號 → 預設、男女都能讀、看不懂的 ap 不會壞 */
+{const MF=JSON.parse(fs.readFileSync(require('path').join(__dirname,'..','assets','char3','manifest.json'),'utf8')),DF=MF.bodies.f.default,DM=MF.bodies.m.default;
+  const old=J(T.packState(st));for(const sw of [undefined,false,true]){const o=JSON.parse(old);const S=load(typeof o==='string'?o:JSON.stringify(o));S.char3=sw;S.look={hair:'h01',hairColor:0,top:'t01',bottom:'b01',shoes:'s01'};const S2=load(T.packState(S));ok(JSON.stringify(genes(S2))===JSON.stringify(want)&&S2.look&&S2.look.top==='t01',`171: switch ${sw===undefined?'(not set = on)':sw?'on':'off'}: old save loads, genes intact, look kept as-is until the list is read`)}
+  const S=load(T.packState(st));S.look={hair:'h01',hairColor:0,top:'t01',bottom:'b01',shoes:'s01'};S.char2Sex='f';T.state=S;ok(T.c3MfSet(MF)===true,'177: manifest accepted');
+  const L=T.state.look;ok(L.hair===DF.hair&&L.top===DF.top&&L.bottom===DF.bottom&&L.shoes===DF.shoes&&L.hairColor===DF.hairColor&&!('b' in L),'177: old test look (t01, b01) on a girl → girl default, stored without body');
+  S.look={hair:'h03',hairColor:3,top:'t04',bottom:'b03',shoes:'s02'};ok(T.lookPack(T.lookNorm(S.look))==='f.h03.3.t04.b03.s02','177: valid girl look packs as f.h03.3.t04.b03.s02');
+  S.char2Sex='m';const LM=T.lookNorm(S.look);ok(LM.b==='m'&&LM.top===DM.top&&LM.hair===DM.hair,'177: same look on a boy (t04 is not a boy item) → boy default');
+  ok(T.lookNorm({hair:'h02',hairColor:2,top:'o02',bottom:'b03',shoes:'s03'}).top==='o02','177: boy suit (cape) is valid');
+  ok(T.lookNorm({hair:'h01',hairColor:99,top:'t01',bottom:'b01',shoes:'s01'}).hairColor===DM.hairColor,'177: hair colour out of range → default colour only');
+  ok(T.char3On()===true,'177: boy → new character on (body m)');S.char3=false;ok(T.char3On()===false,'…switched off → old drawing');S.char3=undefined;
+  const U=T.lookUnpack('m.h03.1.t03.b03.s03');ok(U&&U.b==='m'&&U.top==='t03','177: boy ap unpacks');
+  const U2=T.lookUnpack('f.h99.0.zz.b01.s01');ok(U2&&U2.b==='f'&&U2.top===DF.top,'177: unreadable item ids → their body default');
+  ok(T.lookUnpack('x.h01.0.t01.b01.s01')===null&&T.lookUnpack('m.x')===null&&T.lookUnpack(5)===null,'177: unknown body / broken strings → old drawing');
+  const ly=T.c3Layers(T.lookNorm({hair:'h01',hairColor:0,top:'o01',bottom:'b03',shoes:'s01'},'f'),'move').map(l=>l.src);ok(ly.length===5&&!ly.some(s=>/bottom/.test(s))&&/f\/hair\/h01\/move_hb\.png$/.test(ly[0])&&/move_hf\.png$/.test(ly[4]),'177: wearing a one-piece → no bottom layer; hair hb first, hf last');
+  const ly2=T.c3Layers(T.lookNorm({hair:'h01',hairColor:0,top:'t04',bottom:'b03',shoes:'s01'},'f'),'atkA').map(l=>l.src);ok(ly2.length===6&&ly2[3]==='assets/char3/f/bottom/b03/atkA.png','177: normal top → bottom drawn, paths use the group name');
+  const G=T.c3G('chop');ok(G&&G.g==='atkA'&&G.row===12&&G.n===6&&T.c3G('cast').g==='atkB'&&T.c3G('hit').g==='move','177: actions map to groups from the manifest');
+  for(const ap of ['f.h01.0.t01.b01.s01','m.h01.0.t01.b01.s01','m.???.x.y.z.w','junk']){let g='';try{g=T.charG('',10,10,S.avatar,false,{view:'front',face:2},'朋友',3,null,'u9',false,null,null,ap)}catch(e){g='ERR '+e.message}ok(g&&!/^ERR/.test(g),`177: other player with ap "${ap}" while the art is still loading → no error`)}
+  const miss=[];for(const b of ['f','m']){const B=MF.bodies[b];for(const k of ['hair','top','bottom','shoes'])for(const o of B[k])for(const gp of Object.keys(MF.groups)){const fs2=k==='hair'?[`${gp}_hb`,`${gp}_hf`]:[gp];for(const f of fs2){const pth=require('path').join(__dirname,'..','assets','char3',b,k,o[0],f+'.png');if(!fs.existsSync(pth))miss.push(`${b}/${k}/${o[0]}/${f}`)}}for(const gp of Object.keys(MF.groups))if(!fs.existsSync(require('path').join(__dirname,'..','assets','char3',b,'body','base',gp+'.png')))miss.push(`${b}/body/base/${gp}`);if(!fs.existsSync(require('path').join(__dirname,'..','assets','char3',b,MF.anchors)))miss.push(b+'/'+MF.anchors)}
+  ok(!miss.length,'177: every file the manifest lists exists'+(miss.length?': '+miss.slice(0,8).join(', '):''))}
 console.log(fails?('FAILS '+fails):'ALL PASS');
 /* 第 172 節：主、僕人共鬥（兩到三個假玩家共用假的 Realtime Database） */
 try{require('./tcoop.js')}catch(e){console.log('FAIL tcoop.js crashed: '+e.message);process.exitCode=1}

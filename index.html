@@ -889,7 +889,7 @@ details.gfold .gfb{margin-top:8px}
 .offfx{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);z-index:60;display:flex;gap:14px;pointer-events:auto;animation:offfx .9s ease-out forwards}.offfx b{font-size:30px;text-shadow:0 0 8px #fff}.offok{color:#E8B400}.offbad{color:#8A8A8A}.offfx .offbad::before{content:'✕ '}@keyframes offfx{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-80%) scale(1)}}/* 114 */
 .mwind{animation:mwind .5s ease-in-out}.mwind .ms{filter:drop-shadow(0 0 6px #FF2A2A) drop-shadow(0 0 2px #FF2A2A) brightness(1.15) sepia(.5) saturate(4) hue-rotate(-30deg)}@keyframes mwind{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 /* 135 */#bossBar{position:fixed;left:50%;transform:translateX(-50%);top:calc(122px + env(safe-area-inset-top,0px));z-index:11;width:min(300px,82vw);display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;pointer-events:none}#bossBar[hidden]{display:none}#bossBar b{width:100%;text-align:center;font-size:14px;color:#fff;text-shadow:0 0 3px #3B2614,0 0 3px #3B2614}#bossBar .bbw{position:relative;flex:1;height:14px;border-radius:8px;border:2px solid #3B2614;background:#4A2A18;overflow:hidden}#bossBar .bbw i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#E8504A,#B8282A);transition:width .2s}#bossBar .bbw em{position:absolute;left:50%;top:0;bottom:0;width:2px;background:#FFF6DE;opacity:.85}#bossBar.ph2 .bbw i{background:linear-gradient(#F0A040,#C8501A)}#bossBar .bbq{pointer-events:auto;font-size:12px;padding:2px 8px;border-radius:8px;border:2px solid #5A3416;background:#FFF6DE;color:#5A3416}#bossBar .bbq[hidden]{display:none}
-/* 172.3：成員列、隊友的傷害數字 */#bossBar .bmem{flex-basis:100%;display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}#bossBar .bmem[hidden]{display:none}#bossBar .bm{font-size:11px;padding:1px 6px;border-radius:8px;background:rgba(255,255,255,.18);color:#fff}#bossBar .bm.me{background:rgba(255,226,122,.35)}#bossBar .bm.dn{opacity:.5}.c3in{animation:c3in .15s ease-out}@keyframes c3in{from{opacity:0}to{opacity:1}}/* 176 */#bossBar .bm.pt{color:#4FE3C1;font-weight:700}
+/* 172.3：成員列、隊友的傷害數字 */#bossBar .bmem{flex-basis:100%;display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}#bossBar .bmem[hidden]{display:none}#bossBar .bm{font-size:11px;padding:1px 6px;border-radius:8px;background:rgba(255,255,255,.18);color:#fff}#bossBar .bm.me{background:rgba(255,226,122,.35)}#bossBar .bm.dn{opacity:.5}.c3in{animation:c3in .15s ease-out}@keyframes c3in{from{opacity:0}to{opacity:1}}/* 176 */.lkp{display:flex;align-items:center;justify-content:center;gap:4px;background:var(--card,#FFF8E8);border-radius:14px;margin:4px 0 8px}.lka{width:44px;height:44px;border-radius:50%;border:2.5px solid var(--ol);background:var(--pn);color:var(--ol);font-size:24px;font-weight:900;line-height:1;padding:0}.lkt{display:flex;gap:5px;margin-bottom:8px}.lktb{flex:1;min-height:40px;padding:0;border-radius:10px;border:2.5px solid var(--ol);background:var(--pn);color:var(--tx);font:inherit;font-size:14px;font-weight:800}.lktb.on{background:var(--tabon);color:var(--tabtx)}.lktb.off{opacity:.5}.lkg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.lkc{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:12px;border:2.5px solid var(--ol);background:var(--pn);color:var(--tx);font:inherit;font-size:12px;font-weight:700;min-height:44px}.lkc.on{background:var(--tabon);color:var(--tabtx)}.lkc.off{opacity:.45;filter:grayscale(.7)}.lkc em{position:absolute;right:3px;top:3px;font-style:normal;font-size:10px;background:#C8455A;color:#fff;border-radius:6px;padding:0 4px}.lkc .lkw{display:block;width:64px;height:84px}.lkg.hc i{display:block;width:34px;height:34px;border-radius:50%;border:2px solid var(--ol)}.lkn{margin:0 0 6px}/* 177 */#bossBar .bm.pt{color:#4FE3C1;font-weight:700}
 /* 175：任務提示收合 */#mqWrap{position:fixed;left:12px;top:calc(166px + env(safe-area-inset-top,0px));z-index:24;max-width:calc(100vw - 136px);transition:transform .2s ease,opacity .2s ease}#mqWrap[hidden]{display:none}
 #mqWrap #mqLine{position:relative;left:auto;top:auto;transform:none;max-width:none;padding-right:22px;z-index:1}
 #mqWrap.mqc{transform:translateX(calc(-100% - 24px));opacity:0;pointer-events:none}
@@ -1802,7 +1802,7 @@ function exMigrate(o){
   }catch(e){}
   o.exV=2;
 }
-function migrate(o){try{o.look=lookNorm(o.look)}catch(e){}/* 171：外觀缺欄位補預設值（不用旗標，每次讀檔都整理） */if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fairy))o.fairy={};for(const k of Object.keys(o.fairy)){if(k==='follow'||k==='mj'||k==='altar')continue;const f=o.fairy[k];if(!FY[k]||!f||typeof f!=='object'||!f.no)delete o.fairy[k]}if(o.fairy.follow&&!o.fairy[o.fairy.follow])o.fairy.follow=null;/* 93：精靈 */if(!o.fairy.altar||typeof o.fairy.altar!=='object'||Array.isArray(o.fairy.altar))o.fairy.altar={};/* 113.7：祭壇清單的進度 */if(!o.wardrobe||typeof o.wardrobe!=='object')o.wardrobe={};if(!o.meihin||typeof o.meihin!=='object')o.meihin={};/* 86.5：衣櫃（特殊取得的衣服），用到才建立 */
+function migrate(o){try{if(o.look&&typeof o.look==='object'){const L=o.look,s=v=>typeof v==='string'?v.slice(0,8):'';o.look={hair:s(L.hair),hairColor:+L.hairColor|0,top:s(L.top),bottom:s(L.bottom),shoes:s(L.shoes)}}}catch(e){}/* 177：讀到 manifest 後才換成預設（c3MfSet） *//* 171：外觀缺欄位補預設值（不用旗標，每次讀檔都整理） */if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fairy))o.fairy={};for(const k of Object.keys(o.fairy)){if(k==='follow'||k==='mj'||k==='altar')continue;const f=o.fairy[k];if(!FY[k]||!f||typeof f!=='object'||!f.no)delete o.fairy[k]}if(o.fairy.follow&&!o.fairy[o.fairy.follow])o.fairy.follow=null;/* 93：精靈 */if(!o.fairy.altar||typeof o.fairy.altar!=='object'||Array.isArray(o.fairy.altar))o.fairy.altar={};/* 113.7：祭壇清單的進度 */if(!o.wardrobe||typeof o.wardrobe!=='object')o.wardrobe={};if(!o.meihin||typeof o.meihin!=='object')o.meihin={};/* 86.5：衣櫃（特殊取得的衣服），用到才建立 */
   if(!o.nextLid)o.nextLid=1;if(!o.counts)o.counts={};
   while(o.plots.length<64)o.plots.push(null);
   geneMigrate(o);exMigrate(o);
@@ -1937,7 +1937,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-20f';
+const BUILD='2026-11-20g';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -9160,58 +9160,83 @@ function char2Paint(a,face,moving,sex){let g=a.querySelector&&a.querySelector('g
   g.setAttribute('transform',`translate(0 ${F.bob.toFixed(1)})`);if(im.getAttribute('href')!==src){try{imgHref(im,src)}catch(e){im.setAttribute('href',src)}}
   im.setAttribute('x',G.x.toFixed(1));im.setAttribute('width',G.W.toFixed(1));if(F.mir)im.setAttribute('transform','scale(-1 1)');else im.removeAttribute('transform')}
 function renderChar2Box(){const el=document.getElementById('char2Box');if(!el||!state)return;const on=char2On(),s=char2Sex();
-  el.innerHTML=`<h3>新版角色（測試）</h3><button class="btn${on?' primary':''}" data-c2="tog">新版角色（測試）：${on?'開':'關'}</button>${on?`<div class="row2" style="margin-top:6px"><button class="mini" data-c2="m" aria-pressed="${s==='m'}" style="${s==='m'?'background:var(--tabon);color:var(--tabtx)':''}">男生</button><button class="mini" data-c2="f" aria-pressed="${s==='f'}" style="${s==='f'?'background:var(--tabon);color:var(--tabtx)':''}">女生</button></div>`:''}<p class="note">只換你自己的樣子；衣服、髮型、神之翼這一版還不會顯示。</p><h3 style="margin-top:10px">新版人物（測試）</h3><button class="btn${state.char3!==false?' primary':''}" data-c3="tog">新版人物（測試）：${state.char3!==false?'開':'關'}</button>${state.char3!==false?`<div class="row2" style="margin-top:6px"><button class="mini" data-c2="m" aria-pressed="${s==='m'}">男生</button><button class="mini" data-c2="f" aria-pressed="${s==='f'}">女生</button><button class="mini" data-c3="look">造型</button></div><p class="note">目前只有女生的身形；選男生的話照舊。</p>`:''}`}
-try{document.getElementById('char2Box').addEventListener('click',e=>{const b=e.target.closest('[data-c3]');if(!b||!state)return;if(b.dataset.c3==='look'){sheet={look:1};renderSheet();openSheetUI();return}state.char3=state.char3===false?true:false;save();renderChar2Box();try{const L=document.getElementById('charLayer');if(L)L._s='';renderChars();fyMeasured=false;fyScaleSet(AV_HU0);fyScaleMeasure();pushPos(true)}catch(x){}})}catch(e){}/* 171 */
+  el.innerHTML=`<h3>新版角色（測試）</h3><button class="btn${on?' primary':''}" data-c2="tog">新版角色（測試）：${on?'開':'關'}</button>${on?`<div class="row2" style="margin-top:6px"><button class="mini" data-c2="m" aria-pressed="${s==='m'}" style="${s==='m'?'background:var(--tabon);color:var(--tabtx)':''}">男生</button><button class="mini" data-c2="f" aria-pressed="${s==='f'}" style="${s==='f'?'background:var(--tabon);color:var(--tabtx)':''}">女生</button></div>`:''}<p class="note">只換你自己的樣子；衣服、髮型、神之翼這一版還不會顯示。</p><h3 style="margin-top:10px">新版人物（測試）</h3><button class="btn${state.char3!==false?' primary':''}" data-c3="tog">新版人物（測試）：${state.char3!==false?'開':'關'}</button>${state.char3!==false?`<div class="row2" style="margin-top:6px"><button class="mini" data-c2="m" aria-pressed="${s==='m'}">男生</button><button class="mini" data-c2="f" aria-pressed="${s==='f'}">女生</button><button class="mini" data-c3="look">打扮</button></div>`:''}`}
+try{document.getElementById('char2Box').addEventListener('click',e=>{const b=e.target.closest('[data-c3]');if(!b||!state)return;if(b.dataset.c3==='look'){openLook();return}state.char3=state.char3===false?true:false;save();renderChar2Box();try{const L=document.getElementById('charLayer');if(L)L._s='';renderChars();fyMeasured=false;fyScaleSet(AV_HU0);fyScaleMeasure();pushPos(true)}catch(x){}})}catch(e){}/* 171 */
 try{document.getElementById('char2Box').addEventListener('click',e=>{const b=e.target.closest('[data-c2]');if(!b||!state)return;const v=b.dataset.c2;if(v==='tog'){state.char2=!state.char2;if(state.char2)char2Preload()}else state.char2Sex=v;save();renderChar2Box();try{pushPos(true);pushProfile()}catch(e){}/* 168：別人馬上看到 */try{const L=document.getElementById('charLayer');if(L)L._s='';renderChars();fyMeasured=false;fyScaleMeasure()}catch(e){}})}catch(e){}/* 155：神之子跟著新角色的高度 */
 /* 158.3：主角腳下的影子（寬約身體 70%、高為寬的 30%、黑 25%）；新版角色身體約畫布寬的 60% */
 function charShadow(c2s){const bw=c2s?char2Geo(c2s).W*0.6:24,rx=bw*0.35,ry=rx*0.3;return `<ellipse class="psh" cx="0" cy="-0.5" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="#000" opacity=".25"/>`}
 /* ===== 156 結束 ===== */
-/* ===== 171（20d）：分層人物（3D 拍成 2D）=====
-   assets/char3/f/<槽位>/<編號>/<動作>.png（格 128×192，欄＝方向 0 正面～4 背面、列＝格序；朝右鏡射），疊放 hb→body→shoes→bottom→top→hf；anchors.json 是每格的手的位置。
-   外觀＋動作第一次用到時合成一張（加 1px 深褐外輪廓）轉成 blob 網址，之後每格只改 <svg viewBox>（手機上不會每幀重新合成）；快取 24 張。武器照 C3_WPN（握法）＋anchors 疊在手上，攻擊照 159 的間隔播完一次動作。
-   只有女性體型 f；男生照舊。設定「新版人物（測試）」預設開（state.char3===false 才關）；外觀 state.look；別人用位置同步的 ap（f.h01.0.t01.b01.s01）。 */
-const C3={CW:128,CH:192,FX:64,FY:157,H:122},C3_HU=57.5;/* 人物 122px＝舊角色的高度（神之子等高照舊） */
+/* ===== 171（20d）＋177（20g）：分層人物（3D 拍成 2D）=====
+   177 起一切照 assets/char3/manifest.json（清單、檔名、列數、疊放順序、腳底、人物高度都不寫死）：
+   assets/char3/<體型 f／m>/<槽位>/<編號>/<組>.png，頭髮是 <組>_hb.png、<組>_hf.png；組＝move（stand、walk、hit）／atkA（slash、dual、chop）／atkB（sweep、cast、shoot），
+   每個動作在組裡從第幾列開始、幾格看 manifest.groups；格 128×192，欄＝方向 0 正面～4 背面（朝右鏡射）。錨點 assets/char3/<體型>/<manifest.anchors>。
+   外觀＋組第一次用到時合成一張（加 1px 深褐外輪廓）轉成 blob 網址，合成完放掉來源圖；之後每格只改 <svg viewBox>；快取 24 張。
+   體型跟著角色性別（char2Sex）；外觀 state.look={hair,hairColor,top,bottom,shoes}；別人用位置同步的 ap（f.h03.3.t04.b03.s02，第一段是體型）。
+   套服（top 第三欄 1）穿著時不畫 bottom。髮色＝對 hb、hf 做 HSV 位移（manifest.hairColors）。 */
+const C3={CW:128,CH:192,FX:64,FY:157,H:120},C3_HU=57.5;/* 人物高度換成舊角色的 57.5（神之子等高照舊）；manifest 讀到後照 foot、charH、cell 改 */
 const C3_DIR={0:[2,1],1:[1,1],2:[0,0],3:[1,0],4:[2,0],5:[3,0],6:[4,0],7:[3,1]};/* 遊戲的 8 方向 → [圖的欄, 是否鏡射] */
-const C3_HAIRS=[[0,1,1,'#7a4a36'],[0,.15,.45,'#2a2626'],[.08,1.1,1.5,'#e8c170'],[.92,1.1,1.25,'#d9788c'],[.55,1.2,1.1,'#4a7fd0'],[0,0,1.7,'#e6e3ea']];
-const C3_LOOK={top:[['t01','連帽衫'],['t02','開襟衫']],shoes:[['s01','球鞋'],['s02','靴子']],hair:[['h01','短髮']],bottom:[['b01','短褲']]};/* 之後加衣服只加這張清單和圖 */
-const C3_WPN={tomato:{act:'slash',mode:'hand',gx:.5,gy:.86,h:.49},chili:{act:'dual',mode:'dual',gy:.86,h:.34},broccoli:{act:'chop',mode:'hand',gx:.5,gy:.80,h:.60},zucchini:{act:'chop',mode:'hand',gx:.5,gy:.82,h:.56},pumpkin:{act:'sweep',mode:'hand',gx:.36,gy:.78,h:.73},strawberry:{act:'slash',mode:'hand',gx:.26,gy:.88,h:.42},eggplant:{act:'cast',mode:'upright',gx:.5,gy:.60,h:.64},corn:{act:'shoot',mode:'aim',gx:.70,gy:.78,h:.29,base:-52},melon:{act:'cast',mode:'float',h:.30}};/* 握法（聊天室之後只改這裡和 anchors.json） */
-function lookNorm(l){const L=l&&typeof l==='object'?l:{},ok=(k,v)=>C3_LOOK[k].some(o=>o[0]===v),hc=L.hairColor|0;return {hair:ok('hair',L.hair)?L.hair:'h01',hairColor:hc>=0&&hc<C3_HAIRS.length?hc:0,top:ok('top',L.top)?L.top:'t01',bottom:ok('bottom',L.bottom)?L.bottom:'b01',shoes:ok('shoes',L.shoes)?L.shoes:'s01'}}
-const char3On=()=>!!(state&&state.char3!==false&&char2Sex()==='f');
-const lookPack=L=>['f',L.hair,L.hairColor,L.top,L.bottom,L.shoes].join('.');
-function lookUnpack(s){if(typeof s!=='string')return null;const p=s.split('.');if(p.length!==6||p[0]!=='f')return null;return lookNorm({hair:p[1],hairColor:+p[2],top:p[3],bottom:p[4],shoes:p[5]})}
+const C3_WPN={tomato:{act:'slash',mode:'hand',gx:.5,gy:.86,h:.49},chili:{act:'dual',mode:'dual',gy:.86,h:.34},broccoli:{act:'chop',mode:'hand',gx:.5,gy:.80,h:.60},zucchini:{act:'chop',mode:'hand',gx:.5,gy:.82,h:.56},pumpkin:{act:'sweep',mode:'hand',gx:.36,gy:.78,h:.73},strawberry:{act:'slash',mode:'hand',gx:.26,gy:.88,h:.42},eggplant:{act:'cast',mode:'upright',gx:.5,gy:.60,h:.64},corn:{act:'shoot',mode:'aim',gx:.70,gy:.78,h:.29,base:-52},melon:{act:'cast',mode:'float',h:.30}};/* 握法（聊天室之後只改這裡和錨點） */
+/* manifest：進遊戲讀一次 */
+let C3_MF=null,C3_MFst=0;
+function c3MfSet(j){if(!j||!j.bodies||!j.groups)return false;C3_MF=j;if(Array.isArray(j.cell)){C3.CW=j.cell[0];C3.CH=j.cell[1]}if(Array.isArray(j.foot)){C3.FX=j.foot[0];C3.FY=j.foot[1]}if(j.charH)C3.H=j.charH;
+  try{if(state&&state.look)state.look=lookStore(lookNorm(state.look))}catch(e){}/* 177.4：舊測試編號、這個體型沒有的編號 → 預設 */c3Kick();return true}
+function c3Mf(){if(C3_MFst)return C3_MF;C3_MFst=1;try{fetch('assets/char3/manifest.json?v='+BUILD).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{if(!c3MfSet(j))C3_MFst=2}).catch(()=>{C3_MFst=2})}catch(e){C3_MFst=2}return null}
+const c3Body=()=>char2Sex()==='m'?'m':'f';
+const c3B=b=>C3_MF&&C3_MF.bodies[b];
+const c3Opt=(b,k,v)=>{const B=c3B(b);return B&&Array.isArray(B[k])?B[k].find(o=>o[0]===v):null};
+const c3Suit=(b,top)=>{const o=c3Opt(b,'top',top);return !!(o&&o[2])};
+/* 動作 → 組、起始列、格數 */
+function c3G(act){const G=C3_MF&&C3_MF.groups;if(!G)return null;for(const g in G)if(G[g][act])return {g,row:G[g][act].row,n:G[g][act].n};return null}
+/* 外觀：manifest 還沒讀到只整理型別；讀到後有任何一件看不懂 → 整套換預設 */
+function lookNorm(l,b){const L=l&&typeof l==='object'?l:{};b=b==='m'||b==='f'?b:c3Body();const s=v=>typeof v==='string'?v.slice(0,8):'';let hc=Number.isFinite(+L.hairColor)?(+L.hairColor|0):0;
+  const o={b,hair:s(L.hair),hairColor:hc,top:s(L.top),bottom:s(L.bottom),shoes:s(L.shoes)},B=c3B(b);if(!B)return o;
+  if(!['hair','top','bottom','shoes'].every(k=>c3Opt(b,k,o[k]))){const D=B.default||{};return {b,hair:D.hair,hairColor:D.hairColor|0,top:D.top,bottom:D.bottom,shoes:D.shoes}}
+  if(!(hc>=0&&hc<(C3_MF.hairColors||[]).length))o.hairColor=(B.default&&B.default.hairColor)|0;return o}
+const lookStore=L=>({hair:L.hair,hairColor:L.hairColor,top:L.top,bottom:L.bottom,shoes:L.shoes});
+const char3On=()=>!!(state&&state.char3!==false);/* 177.3：男生也用新版人物（體型 m） */
+const lookPack=L=>[L.b||'f',L.hair,L.hairColor,L.top,L.bottom,L.shoes].join('.');
+function lookUnpack(s){if(typeof s!=='string')return null;const p=s.split('.');if(p.length!==6||(p[0]!=='f'&&p[0]!=='m'))return null;return lookNorm({hair:p[1],hairColor:+p[2],top:p[3],bottom:p[4],shoes:p[5]},p[0])}/* 看不懂的編號 → 對方體型的預設 */
 /* 素材：用到才載 */
-const C3_IM={};let C3_ANC=null,C3_ANCst=0,c3KickT=0;
-function c3Kick(){if(c3KickT)return;c3KickT=setTimeout(()=>{c3KickT=0;try{const L=document.getElementById('charLayer');if(L)L._s='';renderChars()}catch(e){}try{meKey='';renderMe();if(sheet&&sheet.me)renderSheet()}catch(e){}},60)}/* 176：頭像、名片也跟著換 */
+const C3_IM={},C3_ANCB={},C3_ANCS={};let c3KickT=0;
+function c3Kick(){if(c3KickT)return;c3KickT=setTimeout(()=>{c3KickT=0;try{const L=document.getElementById('charLayer');if(L)L._s='';renderChars()}catch(e){}try{meKey='';renderMe();if(sheet&&(sheet.me||sheet.look))renderSheet()}catch(e){}},60)}/* 176：頭像、名片也跟著換；177：打扮面板的縮圖 */
 function c3Im(src){let o=C3_IM[src];if(o)return o;o=C3_IM[src]={st:0,im:null};try{const im=new Image();im.onload=()=>{o.st=1;o.im=im;c3Kick()};im.onerror=()=>{o.st=2};im.src=src+'?v='+BUILD}catch(e){o.st=2}return o}
-function c3Anc(){if(C3_ANCst)return C3_ANC;C3_ANCst=1;try{fetch('assets/char3/f/anchors.json?v='+BUILD).then(r=>r.json()).then(j=>{C3_ANC=j.actions;c3Kick()}).catch(()=>{C3_ANCst=2})}catch(e){C3_ANCst=2}return null}
-const c3Src=(slot,id,act,suf)=>`assets/char3/f/${slot}/${id}/${act}${suf||''}.png`;
-const c3Layers=(L,act)=>[c3Src('hair',L.hair,act,'_hb'),c3Src('body','base',act),c3Src('shoes',L.shoes,act),c3Src('bottom',L.bottom,act),c3Src('top',L.top,act),c3Src('hair',L.hair,act,'_hf')];
-function c3Hue(im,hs){const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const g=c.getContext('2d');g.drawImage(im,0,0);if(hs[0]===0&&hs[1]===1&&hs[2]===1)return c;
+function c3Anc(b){b=b||'f';if(!c3Mf())return null;if(C3_ANCS[b])return C3_ANCB[b]||null;C3_ANCS[b]=1;
+  try{fetch(`assets/char3/${b}/${C3_MF.anchors||'anchors2.json'}?v=${BUILD}`).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{C3_ANCB[b]=j.actions;C3_ANCS[b]=3;c3Kick()}).catch(()=>{C3_ANCS[b]=2})}catch(e){C3_ANCS[b]=2}return null}
+const c3Src=(b,slot,id,grp,suf)=>`assets/char3/${b}/${slot}/${id}/${grp}${suf||''}.png`;
+/* 疊放順序照 manifest.order；套服不畫 bottom */
+function c3Layers(L,grp){const b=L.b||'f',ord=(C3_MF&&C3_MF.order)||['hb','body','shoes','bottom','top','hf'],suit=c3Suit(b,L.top),out=[];
+  for(const k of ord){if(k==='hb'||k==='hf')out.push({src:c3Src(b,'hair',L.hair,grp,'_'+k),hair:1});else if(k==='body')out.push({src:c3Src(b,'body','base',grp)});else if(k==='bottom'&&suit)continue;else if(L[k])out.push({src:c3Src(b,k,L[k],grp)})}return out}
+function c3Hue(im,hs,sx,sy,w,h){const c=document.createElement('canvas');w=w||im.width;h=h||im.height;c.width=w;c.height=h;const g=c.getContext('2d');g.drawImage(im,sx||0,sy||0,w,h,0,0,w,h);if(!hs||(hs[0]===0&&hs[1]===1&&hs[2]===1))return c;
   const id=g.getImageData(0,0,c.width,c.height),d=id.data;for(let i=0;i<d.length;i+=4){if(!d[i+3])continue;let r=d[i]/255,gg=d[i+1]/255,b=d[i+2]/255;const mx=Math.max(r,gg,b),mn=Math.min(r,gg,b),df=mx-mn;let hh=0;
     if(df){if(mx===r)hh=((gg-b)/df)%6;else if(mx===gg)hh=(b-r)/df+2;else hh=(r-gg)/df+4;hh/=6;if(hh<0)hh+=1}let s=mx?df/mx:0,v=mx;hh=(hh+hs[0])%1;s=Math.min(1,s*hs[1]);v=Math.min(1,v*hs[2]);
     const k=Math.floor(hh*6),f=hh*6-k,p=v*(1-s),q=v*(1-f*s),t=v*(1-(1-f)*s);[r,gg,b]=[[v,t,p],[q,v,p],[p,v,t],[p,q,v],[t,p,v],[v,p,q]][k%6];d[i]=r*255;d[i+1]=gg*255;d[i+2]=b*255}
   g.putImageData(id,0,0);return c}
-/* 合成：6 層＋1px 深褐外輪廓 → blob 網址（快取 24 張，最久沒用的先丟） */
+const c3HS=L=>{const H=C3_MF&&C3_MF.hairColors,c=H&&(H[L.hairColor]||H[0]);return c?[+c[1]||0,c[2]==null?1:+c[2],c[3]==null?1:+c[3]]:[0,1,1]};
+/* 疊層＋1px 深褐外輪廓（sx,sy,w,h：只合成其中一塊，縮圖用） */
+function c3Comp(lay,ims,hs,sx,sy,w,h){const W=w||ims[0].im.width,H=h||ims[0].im.height;sx=sx||0;sy=sy||0;
+  const t=document.createElement('canvas');t.width=W;t.height=H;const g=t.getContext('2d');lay.forEach((l,i)=>{const im=ims[i].im;if(l.hair)g.drawImage(c3Hue(im,hs,sx,sy,W,H),0,0);else g.drawImage(im,sx,sy,W,H,0,0,W,H)});
+  const sl=document.createElement('canvas');sl.width=W;sl.height=H;const sg=sl.getContext('2d');sg.drawImage(t,0,0);sg.globalCompositeOperation='source-in';sg.fillStyle='rgb(70,48,40)';sg.fillRect(0,0,W,H);
+  const c=document.createElement('canvas');c.width=W;c.height=H;const og=c.getContext('2d');for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]])og.drawImage(sl,dx,dy);og.drawImage(t,0,0);return c}
+/* 一組合成成一張 → blob 網址（快取 24 張，最久沒用的先丟；合成完放掉來源圖） */
 const C3_SH=new Map();let c3LastMs=0;
-function c3Sheet(L,act){const key=lookPack(L)+'|'+act;let s=C3_SH.get(key);if(s){C3_SH.delete(key);C3_SH.set(key,s);return s.url?s:null}
-  const ims=c3Layers(L,act).map(c3Im);if(!ims.every(o=>o.st===1))return null;
+function c3Sheet(L,grp){if(!C3_MF)return null;const key=lookPack(L)+'|'+grp;let s=C3_SH.get(key);if(s){C3_SH.delete(key);C3_SH.set(key,s);return s.url?s:null}
+  const lay=c3Layers(L,grp),ims=lay.map(l=>c3Im(l.src));if(!ims.every(o=>o.st===1))return null;
   s={url:null,w:0,h:0};C3_SH.set(key,s);if(C3_SH.size>24){const k0=C3_SH.keys().next().value,o=C3_SH.get(k0);C3_SH.delete(k0);try{o.url&&URL.revokeObjectURL(o.url)}catch(e){}}
-  try{const t0=performance.now(),base=ims[1].im,W=base.width,H=base.height,hs=C3_HAIRS[L.hairColor]||C3_HAIRS[0];
-    const t=document.createElement('canvas');t.width=W;t.height=H;const g=t.getContext('2d');g.drawImage(c3Hue(ims[0].im,hs),0,0);for(const i of [1,2,3,4])g.drawImage(ims[i].im,0,0);g.drawImage(c3Hue(ims[5].im,hs),0,0);
-    const sl=document.createElement('canvas');sl.width=W;sl.height=H;const sg=sl.getContext('2d');sg.drawImage(t,0,0);sg.globalCompositeOperation='source-in';sg.fillStyle='rgb(70,48,40)';sg.fillRect(0,0,W,H);
-    const c=document.createElement('canvas');c.width=W;c.height=H;const og=c.getContext('2d');for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]])og.drawImage(sl,dx,dy);og.drawImage(t,0,0);
-    c3LastMs=performance.now()-t0;s.w=W;s.h=H;c.toBlob(b=>{if(b){s.url=URL.createObjectURL(b);c3Kick()}},'image/png')}catch(e){s.err=1}
+  try{const t0=performance.now(),c=c3Comp(lay,ims,c3HS(L));c3LastMs=performance.now()-t0;s.w=c.width;s.h=c.height;
+    if(!sheet||!sheet.look)for(const l of lay)delete C3_IM[l.src];/* 177.1：合成完放掉來源圖（打扮面板開著時留著給縮圖用） */
+    c.toBlob(b=>{if(b){s.url=URL.createObjectURL(b);c3Kick()}},'image/png')}catch(e){s.err=1}
   return null}
 /* 現在的動作、格 */
 let c3Walk=0,c3Last=null,c3Atk=null,c3HitAt=0;const C3_OA={};
 function c3Act(isMe,id,o,moving,wtag){const now=Date.now(),crop=wtag?String(wtag).split('|')[0]:null,W=crop&&C3_WPN[crop];
   let a=isMe?c3Atk:null;if(!isMe&&o&&o.a&&o.a.type==='atk'){const A=o.a;if(!C3_OA[id]||C3_OA[id].at!==A.at)C3_OA[id]={at:A.at,t:now,dur:A.dur||500};a={at:C3_OA[id].t,dur:C3_OA[id].dur}}
-  if(a&&W){const u=(now-a.at)/(a.dur||500);if(u>=0&&u<1){const n=C3_ANC&&C3_ANC[W.act]?C3_ANC[W.act].n:6;return {act:W.act,fr:Math.min(n-1,Math.floor(u*n))}}}/* 間隔短的（雙刀、槍）照時間取樣跳格 */
+  if(a&&W){const u=(now-a.at)/(a.dur||500);if(u>=0&&u<1){const G=c3G(W.act),n=G?G.n:6;return {act:W.act,fr:Math.min(n-1,Math.floor(u*n))}}}/* 間隔短的（雙刀、槍）照時間取樣跳格 */
   if(isMe&&now-c3HitAt<200)return {act:'hit',fr:Math.min(1,Math.floor((now-c3HitAt)/100))};
   if(moving)return {act:'walk',fr:isMe?Math.floor(c3Walk/11)%8:Math.floor(now/69)%8};
   return {act:'stand',fr:0}}
-function c3State(L,face,moving,wtag,isMe,id,o){const A=c3Anc();if(!A)return null;if(wtag){const W=C3_WPN[String(wtag).split('|')[0]];if(W)c3Sheet(L,W.act)}/* 176：有武器才載攻擊動作 */let {act,fr}=c3Act(isMe,id,o,moving,wtag);let S=A[act]?c3Sheet(L,act):null;if(!S){act='stand';fr=0;S=c3Sheet(L,'stand')}if(!S||!A[act])return null;
-  const [dir,mir]=C3_DIR[((face|0)%8+8)%8]||[0,0];fr=Math.min(fr,A[act].n-1);return {S,act,fr,dir,mir,anc:A[act].a[fr][dir],wtag}}
+function c3State(L,face,moving,wtag,isMe,id,o){if(!c3Mf()||!L)return null;const A=c3Anc(L.b);if(!A)return null;if(wtag){const W=C3_WPN[String(wtag).split('|')[0]],G=W&&c3G(W.act);if(G)c3Sheet(L,G.g)}/* 177：裝備的武器用到那一組才載 */
+  let {act,fr}=c3Act(isMe,id,o,moving,wtag),G=c3G(act),S=G&&A[act]?c3Sheet(L,G.g):null;if(!S){act='stand';fr=0;G=c3G('stand');S=G?c3Sheet(L,G.g):null}if(!S||!G||!A[act])return null;
+  const [dir,mir]=C3_DIR[((face|0)%8+8)%8]||[0,0];fr=Math.min(fr,G.n-1,A[act].a.length-1);return {S,act,fr,row:G.row+fr,dir,mir,anc:A[act].a[fr][dir],wtag}}
 /* 武器：照握點疊上去（座標是格內像素） */
 function c3Part(src,D,x,y,ang,gx,gy,hk,flip,half){const hh=C3.H*hk,iw=D[0]*(half?0.5:1),w=hh*iw/D[1];
   const img=half?`<svg x="${f1(-gx*w)}" y="${f1(-gy*hh)}" width="${f1(w)}" height="${f1(hh)}" viewBox="${half==='R'?D[0]/2:0} 0 ${iw} ${D[1]}" preserveAspectRatio="none"><image href="${src}" width="${D[0]}" height="${D[1]}"/></svg>`:`<image href="${src}" x="${f1(-gx*w)}" y="${f1(-gy*hh)}" width="${f1(w)}" height="${f1(hh)}"/>`;
@@ -9222,25 +9247,46 @@ function c3Wpn(tag,A,front){if(!tag||!A)return '';const [crop,tier]=String(tag).
   if(!!A[3]!==front)return '';if(W.mode==='hand')return c3Part(src,D,A[0],A[1],A[2],W.gx,W.gy,W.h);if(W.mode==='upright')return c3Part(src,D,A[0],A[1],0,W.gx,W.gy,W.h);
   if(W.mode==='aim'){const fl=A[8]>0;return c3Part(src,D,A[0],A[1],A[8]-(fl?-W.base:W.base),W.gx,W.gy,W.h,fl)}return ''}
 const c3Tr=st=>{const k=C3_HU/C3.H;return `scale(${f3(st.mir?-k:k)} ${f3(k)}) translate(${-C3.FX} ${-C3.FY})`};
-function c3SVG(st,wid,fade){return `<g class="c3${fade?' c3in':''}"${wid?` data-c3w="${esc(String(wid))}"`:''}><g class="c3t" transform="${c3Tr(st)}"><g class="c3wb">${c3Wpn(st.wtag,st.anc,false)}</g><svg class="c3c" x="0" y="0" width="${C3.CW}" height="${C3.CH}" viewBox="${st.dir*C3.CW} ${st.fr*C3.CH} ${C3.CW} ${C3.CH}" overflow="hidden"><image href="${st.S.url}" width="${st.S.w}" height="${st.S.h}"/></svg><g class="c3wf">${c3Wpn(st.wtag,st.anc,true)}</g></g></g><!--/c3-->`}
+const c3VB=st=>`${st.dir*C3.CW} ${st.row*C3.CH} ${C3.CW} ${C3.CH}`;
+function c3SVG(st,wid,fade){return `<g class="c3${fade?' c3in':''}"${wid?` data-c3w="${esc(String(wid))}"`:''}><g class="c3t" transform="${c3Tr(st)}"><g class="c3wb">${c3Wpn(st.wtag,st.anc,false)}</g><svg class="c3c" x="0" y="0" width="${C3.CW}" height="${C3.CH}" viewBox="${c3VB(st)}" overflow="hidden"><image href="${st.S.url}" width="${st.S.w}" height="${st.S.h}"/></svg><g class="c3wf">${c3Wpn(st.wtag,st.anc,true)}</g></g></g><!--/c3-->`}
 /* 換格：只改 viewBox、鏡射、網址、武器（不重建整個角色） */
 function c3Paint(a,st,wid){if(!a||!st)return;const g=a.querySelector&&a.querySelector('g.c3');if(!g){a.innerHTML=c3SVG(st,wid);return}
   const t=g.querySelector('.c3t'),sv=g.querySelector('svg.c3c'),im=sv&&sv.querySelector('image');if(!t||!sv||!im){a.innerHTML=c3SVG(st,wid);return}
-  const key=[st.S.url,st.act,st.fr,st.dir,st.mir,st.wtag].join('|');if(g._k===key)return;g._k=key;
-  t.setAttribute('transform',c3Tr(st));sv.setAttribute('viewBox',`${st.dir*C3.CW} ${st.fr*C3.CH} ${C3.CW} ${C3.CH}`);if(im.getAttribute('href')!==st.S.url){im.setAttribute('href',st.S.url);im.setAttribute('width',st.S.w);im.setAttribute('height',st.S.h)}
+  const key=[st.S.url,st.act,st.row,st.dir,st.mir,st.wtag].join('|');if(g._k===key)return;g._k=key;
+  t.setAttribute('transform',c3Tr(st));sv.setAttribute('viewBox',c3VB(st));if(im.getAttribute('href')!==st.S.url){im.setAttribute('href',st.S.url);im.setAttribute('width',st.S.w);im.setAttribute('height',st.S.h)}
   const wb=g.querySelector('.c3wb'),wf=g.querySelector('.c3wf');if(wb)wb.innerHTML=c3Wpn(st.wtag,st.anc,false);if(wf)wf.innerHTML=c3Wpn(st.wtag,st.anc,true)}
 /* 每次 renderChars（約 80ms）：自己和別人都換格 */
 function c3PaintAll(){try{if(char3On()){const a=document.getElementById('meGAv');if(a&&a.querySelector&&a.querySelector('g.c3')){const st=c3State(lookNorm(state.look),meFace,!!raf,scene==='explore'?wpnTag():null,true,'me');if(st)c3Paint(a,st)}}
   for(const [id,o] of Object.entries(others||{})){const L=o&&lookUnpack(o.ap);if(!L)continue;const a=document.querySelector(`[data-c3w="${CSS.escape(id)}"]`);if(!a)continue;const A=animO[id]||{};const st=c3State(L,o.f!=null?o.f:(o.d<0?3:1),!!A.moving,scene==='explore'&&typeof o.w==='string'?o.w:null,false,id,o);if(st)c3Paint(a.parentNode&&a.classList.contains('c3')?a.parentNode:a,st,id)}}catch(e){}}
-/* 造型面板（測試：拿到全部武器） */
-function lookHTML(){const L=lookNorm(state.look),st=c3State(L,2,false,null,true,'me');
-  const row=(k,n)=>`<div class="row2" style="flex-wrap:wrap;gap:6px;margin:6px 0"><b style="min-width:3em">${n}</b>${C3_LOOK[k].map(([v,t])=>`<button class="mini" data-lk="${k}|${v}" aria-pressed="${L[k]===v}" style="${L[k]===v?'background:var(--tabon);color:var(--tabtx)':''}">${t}</button>`).join('')}</div>`;
-  return `<h2>造型</h2><div style="text-align:center"><svg viewBox="-34 -70 68 76" width="120" height="134" aria-hidden="true">${st?c3SVG(st):'<text x="0" y="-30" text-anchor="middle" font-size="7">載入中…</text>'}</svg></div>${row('top','上衣')}${row('shoes','鞋子')}
-    <div class="row2" style="flex-wrap:wrap;gap:6px;margin:6px 0"><b style="min-width:3em">髮色</b>${C3_HAIRS.map((c,i)=>`<button class="mini" data-lkc="${i}" aria-label="髮色 ${i+1}" aria-pressed="${L.hairColor===i}" style="width:30px;height:30px;border-radius:50%;padding:0;background:${c[3]};${L.hairColor===i?'box-shadow:0 0 0 3px var(--tabon)':''}"></button>`).join('')}</div>
-    <p class="note">新版人物（測試）目前只有女生的身形；之後會加更多衣服、髮型。</p>
-    <button class="btn" data-lkt="1">測試：拿到全部武器</button><button class="btn" data-act="close">關閉</button>`}
-function lookAction(b){const L=lookNorm(state.look);if(b.dataset.lk){const [k,v]=b.dataset.lk.split('|');L[k]=v}else if(b.dataset.lkc!=null)L.hairColor=+b.dataset.lkc;
-  else if(b.dataset.lkt){c3TestWeapons();return}/* 測試按鈕，之後拿掉 */state.look=lookNorm(L);save();renderSheet();try{pushPos(true);pushProfile()}catch(e){}c3Kick()}
+/* 177.5 縮圖：只合成 stand 正面那一格（128×192），不合成整張 */
+const C3_TH=new Map();
+function c3Thumb(L){const key=lookPack(L);let u=C3_TH.get(key);if(u)return u;const G=c3G('stand');if(!G)return null;const lay=c3Layers(L,G.g),ims=lay.map(l=>c3Im(l.src));if(!ims.every(o=>o.st===1))return null;
+  try{const c=c3Comp(lay,ims,c3HS(L),0,G.row*C3.CH,C3.CW,C3.CH);u=c.toDataURL('image/png');C3_TH.set(key,u);if(C3_TH.size>80)C3_TH.delete(C3_TH.keys().next().value);return u}catch(e){return null}}
+/* 打扮面板關掉：放掉為縮圖留著的來源圖 */
+function c3Release(){for(const k in C3_IM)if(C3_IM[k].st===1)delete C3_IM[k]}
+/* 177.5 打扮面板（sheet.look；草稿 sheet.ld，按「確定」才寫進 state.look） */
+const LOOK_TABS=[['hair','髮型'],['hc','髮色'],['top','上衣'],['bottom','下身'],['shoes','鞋']],LOOK_RING=[2,3,4,5,6,7,0,1];
+function lookHTML(){c3Mf();const b=c3Body(),B=c3B(b);if(!B)return `<h2>打扮</h2><p class="note">衣櫃載入中…</p><button class="btn" data-act="close">關閉</button>`;
+  if(!sheet.ld)sheet.ld=lookNorm(state.look,b);const L=sheet.ld,tab=sheet.lt||'hair',ri=sheet.lr|0,st=c3State(L,LOOK_RING[ri],false,null,false,'lookprev'),suit=c3Suit(b,L.top),D=lookNorm({},b);
+  const cell=(k,o)=>{const on=L[k]===o[0],T=lookNorm({...D,[k]:o[0],...(k==='hair'?{hairColor:on?L.hairColor:o[2]|0}:{})},b)/* 髮型縮圖用那個髮型的預設髮色（點了就換成那個顏色）；選中的那格用現在的髮色 */,u=c3Thumb(T),box=k==='hair'?C3_HEAD:C3_BODY;
+    return `<button class="lkc${on?' on':''}${k==='bottom'&&suit?' off':''}" data-lk="${k}|${esc(o[0])}" aria-pressed="${on}">${u?`<svg viewBox="${box.join(' ')}" width="64" height="${k==='hair'?64:84}" aria-hidden="true"><image href="${u}" width="${C3.CW}" height="${C3.CH}"/></svg>`:'<span class="lkw"></span>'}<span>${esc(o[1])}</span>${k==='top'&&o[2]?'<em>套服</em>':''}</button>`};
+  let body;if(tab==='hc')body=`<div class="lkg hc">${(C3_MF.hairColors||[]).map((c,i)=>`<button class="lkc${L.hairColor===i?' on':''}" data-lkc="${i}" aria-pressed="${L.hairColor===i}"><i style="background:${esc(String(c[4]||'#888'))}"></i><span>${esc(String(c[0]))}</span></button>`).join('')}</div>`;
+  else body=(tab==='bottom'&&suit?'<p class="note lkn">穿著套服時不能換下身（點下面的選項會換回一般上衣）。</p>':'')+`<div class="lkg">${(B[tab]||[]).map(o=>cell(tab,o)).join('')}</div>`;
+  return `<h2>打扮</h2><div class="lkp"><button class="lka" data-lkr="-1" aria-label="往左轉">‹</button><svg viewBox="-36 -72 72 80" width="200" height="222" aria-hidden="true">${st?c3SVG(st):'<text x="0" y="-30" text-anchor="middle" font-size="7">載入中…</text>'}</svg><button class="lka" data-lkr="1" aria-label="往右轉">›</button></div>
+    <div class="tabs lkt">${LOOK_TABS.map(([k,n])=>`<button class="lktb${tab===k?' on':''}${k==='bottom'&&suit?' off':''}" data-lkt2="${k}" aria-pressed="${tab===k}">${n}</button>`).join('')}</div>${body}
+    <div class="row2" style="margin-top:10px"><button class="btn primary" data-lok="1">確定</button><button class="btn" data-lkx="1">取消</button></div>
+    <button class="btn" data-lkt="1" style="margin-top:8px">測試：拿到全部武器</button>`}
+function lookAction(b){const bd=c3Body();if(!sheet.ld)sheet.ld=lookNorm(state.look,bd);const L=sheet.ld;
+  if(b.dataset.lkt){c3TestWeapons();return}/* 測試按鈕，之後拿掉 */
+  if(b.dataset.lkx){closeSheet();return}
+  if(b.dataset.lok){state.look=lookStore(lookNorm(L,bd));save();try{pushPos(true);pushProfile()}catch(e){}closeSheet();c3Kick();toast('換好了',1500);return}
+  if(b.dataset.lkr){sheet.lr=((sheet.lr|0)+(+b.dataset.lkr)+8)%8;renderSheet();return}
+  if(b.dataset.lkt2){sheet.lt=b.dataset.lkt2;renderSheet();return}
+  if(b.dataset.lkc!=null)L.hairColor=+b.dataset.lkc;
+  else if(b.dataset.lk){const [k,v]=b.dataset.lk.split('|');
+    if(k==='bottom'&&c3Suit(bd,L.top)){const B=c3B(bd),D=B.default||{},nt=!c3Suit(bd,D.top)?D.top:((B.top||[]).find(o=>!o[2])||[])[0];if(nt){L.top=nt;toast(`穿著套服不能換下身，上衣換成「${(c3Opt(bd,'top',nt)||[])[1]||''}」`,3000)}}
+    L[k]=v;if(k==='hair'){const o=c3Opt(bd,'hair',v);if(o&&o[2]!=null)L.hairColor=o[2]|0}}
+  sheet.ld=lookNorm(L,bd);renderSheet()}
 function c3TestWeapons(){const W=Array.isArray(state.weapons)?state.weapons:(state.weapons=[]);let n=0;for(const c of WP_ORDER)if(!W.some(w=>w&&w.crop===c)){wpnGive(c,1);n++}save();toast(n?`拿到 ${n} 把武器（普通階），到背包的武器分頁換。`:'九把武器都有了。',3500)}
 /* ===== 171 結束 ===== */
 /* ===== 176（20e）：新版人物的三個修正 =====
@@ -9248,14 +9294,17 @@ function c3TestWeapons(){const W=Array.isArray(state.weapons)?state.weapons:(sta
    圖檔 404、anchors 讀不到、或 5 秒還沒好才退回舊人物（crumb('char3 fallback')，之後好了照樣換成新版）。
    頭像、名片改用合成圖裁：頭 (64,52) 為中心邊長 56、全身 x34～94／y26～160。 */
 const C3_WAIT={},C3_SHOWN={};let c3FbLogged=false;
-const C3_HEAD=[36,24,56,56],C3_BODY=[34,26,60,134];
-function c3Preload(L){const k=lookPack(L);if(!C3_WAIT[k])C3_WAIT[k]=Date.now();c3Anc();c3Sheet(L,'stand');c3Sheet(L,'walk')}
-function c3Ready(L){const s=C3_SH.get(lookPack(L)+'|stand');return !!(s&&s.url&&C3_ANC)}
-function c3Fail(L){if(c3Ready(L))return false;const k=lookPack(L),bad=C3_ANCst===2||c3Layers(L,'stand').some(src=>C3_IM[src]&&C3_IM[src].st===2),late=C3_WAIT[k]&&Date.now()-C3_WAIT[k]>5000;
+const C3_HEAD=[42,26,44,44],C3_BODY=[34,30,60,132];/* 177.5：新素材的頭約在格內 y 37～62 */
+function c3Preload(L){const k=lookPack(L);if(!C3_WAIT[k])C3_WAIT[k]=Date.now();if(!c3Mf())return;c3Anc(L.b);c3Sheet(L,'move')}/* 177：先載 move 那一組 */
+function c3Ready(L){const s=C3_SH.get(lookPack(L)+'|move');return !!(s&&s.url&&C3_ANCB[L.b])}
+function c3Fail(L){if(c3Ready(L))return false;const k=lookPack(L),bad=C3_MFst===2||C3_ANCS[L.b]===2||(!!C3_MF&&c3Layers(L,'move').some(l=>C3_IM[l.src]&&C3_IM[l.src].st===2)),late=C3_WAIT[k]&&Date.now()-C3_WAIT[k]>5000;
   if((bad||late)&&!c3FbLogged){c3FbLogged=true;try{crumb('char3 fallback')}catch(e){}}if(late&&!bad&&!C3_WAIT['_t'+k]){C3_WAIT['_t'+k]=1;setTimeout(c3Kick,50)}return bad||!!late}
 /* 頭像（圓）、全身縮圖：從 stand 正面那一格裁；還沒好回 null */
-function c3Crop(L,box,w,hh,extra){const S=c3Sheet(L,'stand');if(!S)return null;return `<svg viewBox="${box.join(' ')}" width="${w}" height="${hh}" preserveAspectRatio="xMidYMid meet"${extra||''} aria-hidden="true"><image href="${S.url}" width="${S.w}" height="${S.h}"/></svg>`}
+function c3Crop(L,box,w,hh,extra){const G=c3G('stand'),S=G&&c3Sheet(L,G.g);if(!S)return null;return `<svg viewBox="${box[0]} ${box[1]+G.row*C3.CH} ${box[2]} ${box[3]}" width="${w}" height="${hh}" preserveAspectRatio="xMidYMid meet"${extra||''} aria-hidden="true"><image href="${S.url}" width="${S.w}" height="${S.h}"/></svg>`}
 /* ===== 176 結束 ===== */
+/* 177.5：打扮面板的入口；關掉時放掉縮圖用的來源圖 */
+function openLook(){c3Mf();sheet={look:1,lt:'hair',lr:0};renderSheet();openSheetUI()}
+closeSheet=(f=>function(){const w=sheet&&sheet.look;const r=f.apply(this,arguments);if(w)try{c3Release()}catch(e){}return r})(closeSheet);
 
 /* ===== 173（20d）：組隊邀請 =====
    party/<pid>：{leader,t0,members:{<uid>:{n,lv,hp,hpMax,map,t,j,off?}},ev}；partyInv/<被邀請的人>/<邀請人>：{pid,n,t}。一隊最多 PARTY_MAX 人、一個人一隊。
@@ -10463,7 +10512,7 @@ function avatarAction(b){
   if(b.dataset.avc){d[b.dataset.avc]=+b.dataset.v;renderSheet();return}
   if(b.dataset.act==='avsave'){state.avatar=avNorm(d);save();db.collection('profiles').doc(uid).set({avatar:state.avatar},{merge:true}).catch(()=>{});pushPos(true);renderChars();closeSheet();toast('角色已更新')}
 }
-sb.addEventListener('click',e=>{if(!sheet||!sheet.look)return;const b=e.target.closest('[data-lk],[data-lkc],[data-lkt]');if(b){e.stopPropagation();lookAction(b)}},true);/* 171 */
+sb.addEventListener('click',e=>{if(!sheet||!sheet.look)return;const b=e.target.closest('[data-lk],[data-lkc],[data-lkt],[data-lkt2],[data-lkr],[data-lok],[data-lkx]');if(b){e.stopPropagation();lookAction(b)}},true);/* 171 */
 sb.addEventListener('click',e=>{if(!sheet||!sheet.avatar)return;const b=e.target.closest('[data-avk],[data-avc],[data-avtab],[data-avdir],[data-avfc]');if(b){e.stopPropagation();avatarAction(b)}},true);
 const avB=document.getElementById('avatarBtn2');if(avB)avB.onclick=()=>{closePanel();openAvatar()};
 
@@ -11552,7 +11601,7 @@ function meAction(b){if(b.dataset.act==='frinv'){frInvite(b.dataset.u);renderShe
   if(a==='meren'){sheet.ren=1;sheet.err='';sheet.d=null;renderSheet();return}
   if(a==='merenx'){sheet.ren=0;renderSheet();return}
   if(a==='merenok'){const el=document.getElementById('meName'),v=el?el.value:'';sheet.d=v;renameMe(v).then(err=>{if(!sheet||!sheet.me)return;if(err){sheet.err=err;renderSheet();return}const first=sheet.first;sheet.ren=0;sheet.first=0;if(first){closeSheet();noteFlush()}else{renderSheet();toast('名字改好了')}});return}
-  if(a==='medress'){closeSheet();openAvatar();return}
+  if(a==='medress'){closeSheet();if(char3On())openLook();else openAvatar();return}/* 177.5 */
   if(a==='medex'){dexTab=b.dataset.k;closeSheet();openPanel('dex');return}
   if(a==='mevisit'){const id=sheet.me;closeSheet();closePanel();enterVisit(id);return}
   orderAction(b);

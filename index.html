@@ -898,6 +898,9 @@ details.gfold .gfb{margin-top:8px}
 /* 187 連擊數（右側中間；只動 transform／opacity） */#combo{position:fixed;right:14px;top:40%;z-index:13;display:flex;flex-direction:column;align-items:flex-end;pointer-events:none;opacity:0;transition:opacity .4s;--cc:#fff;will-change:transform}#combo.on{opacity:1;transition:opacity .12s}
 #combo b{font-size:44px;font-weight:900;line-height:1;color:var(--cc);-webkit-text-stroke:2px #3B2A18;paint-order:stroke fill;text-shadow:0 3px 0 rgba(59,42,24,.55);font-variant-numeric:tabular-nums}#combo span{font-size:14px;font-weight:900;color:var(--cc);-webkit-text-stroke:1px #3B2A18;margin-top:-2px}
 #combo.bump{animation:cbBump .12s ease-out}#combo.big{animation:cbBig .3s ease-out}@keyframes cbBump{50%{transform:scale(1.25)}}@keyframes cbBig{30%{transform:scale(1.5)}60%{transform:scale(.95)}}body:not(.wild) #combo,body.vnStory #combo,body.pnlOpen #combo{display:none}
+/* 189 攻擊鍵 */.skb.ska{background:radial-gradient(circle at 40% 35%,#FFF6DE,#F1DFB8)}.skb.ska .skai{display:flex;align-items:center;justify-content:center;width:70%;height:70%;pointer-events:none}.skb.ska .skai img{max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 2px 0 rgba(0,0,0,.25))}
+.skb.ska.held{box-shadow:0 0 0 4px rgba(255,90,60,.45),0 3px 0 var(--ol,#5A3416)}.skb.ska.flash{animation:atkFlash .6s ease-in-out 4}@keyframes atkFlash{50%{box-shadow:0 0 0 10px rgba(255,226,122,.85),0 3px 0 var(--ol,#5A3416)}}
+#atkRing .atkr{animation:atkRingA 1s ease-in-out infinite}@keyframes atkRingA{50%{stroke-opacity:.45}}@media (prefers-reduced-motion:reduce){#atkRing .atkr,.skb.ska.flash{animation:none}}
 /* 184 技能按鈕（野外、秘境）：翻滾在綠色按鈕左邊，技能 1、2 往左上排（不蓋撿起、補血藥、背包、搖桿） */.skb{position:fixed;z-index:12;width:64px;height:64px;border-radius:50%;border:3px solid var(--ol,#5A3416);outline:3px solid var(--skr,transparent);outline-offset:-1px;background:#FFF6DE;box-shadow:0 3px 0 var(--ol,#5A3416);padding:0;display:flex;align-items:center;justify-content:center;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;--skc:#5A3416}.skb::after{content:'';position:absolute;inset:-5px;border-radius:50%}.skb[hidden],#skBar[hidden]{display:none}
 .skb svg{width:34px;height:34px;stroke:var(--skc);filter:drop-shadow(0 1px 0 rgba(0,0,0,.25));pointer-events:none}.skb:active{transform:translateY(2px)}
 .skb .skcd{position:absolute;inset:0;border-radius:50%;background:conic-gradient(rgba(30,20,10,.6) var(--p,0deg),transparent 0);pointer-events:none}.skb .skcd[hidden]{display:none}
@@ -2041,7 +2044,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-20q';
+const BUILD='2026-11-20r';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -7789,7 +7792,7 @@ function goMarket(){try{bossLeave()}catch(e){}/* 135 */
 /* 135 */
 /* ===== 135（19b）第一階段：主的僕人（三個秘境，各人各自）、主（第一季三隻：克洛諾斯、米涅瓦、艾克希爾）、主的多人同步。
    bossRT＝現在這張地圖上的那一隻（僕人或主）。招式是資料（BATK：蓄力時間、地上的範圍、傷害倍率）；蓄力時在地上畫紅色範圍（至少 0.8 秒），
-   出手那一刻每個人用自己的位置判定有沒有中。靠近就自動用鐮刀打（和一般怪一樣每 0.35 秒），自己打的量記在 myDmg。
+   出手那一刻每個人用自己的位置判定有沒有中。189 起按攻擊鍵才打（atkTick；沒武器用鐮刀，每 0.35 秒），自己打的量記在 myDmg。
    多人（只有主）：Realtime Database fight/<地區>：meta｛fid,host,max,members,t0,st｝、s（主機每 150ms 寫一次位置與招式）、dmg/<uid>（各自累計的傷害）、
    hb/<uid>（每秒心跳，伺服器時間）、down/<uid>（倒下或離開）。血量＝max－所有人 dmg 加總。主機心跳超過 4 秒沒更新 → 還在的成員裡 uid 最小的接手。
    成員＝主現身那一刻在同一張地圖（presence）的人；之後才進來的看不到、不算。只有觸發的人消耗東西。輸贏由主機判斷（血量歸零贏；15 分鐘或全員倒下輸）。
@@ -7878,9 +7881,7 @@ function bossStep(dt){lordSummonTick();const b=bossRT,now=bossNow();if(!b)return
   if(host&&(bossJumpStep(b,now)||bossHomeStep(b,dt,now))){if(b.net)lordPushState(b,now);bossPaint(b);return}
   if(host){if(!(b.stun&&now<b.stun))bossAI(b,dt,now);/* 184：暈、岩之牢 */bossClamp(b)}else bossFollow(b,dt);
   if(b.done){bossPaint(b);return}
-  /* 自己打：靠近、沒躲起來 */
-  const wb=curWpn(),reach=(wb?wb.W.range:BOSS_REACH)+b.def.h*10;/* 159：武器距離 */if(!b.hidden&&Math.hypot(me.x-b.x,(me.y-b.y)*1.2)<=reach&&now>=bossSwingAt&&now>=wpnLock){bossSwingAt=now+(wb?wb.W.cd*skIv():(typeof MON_SWING!=='undefined'?MON_SWING:350));try{pFightAt=now}catch(e){}
-    if(wb)wpnFire(wb,{boss:b});else bossDealt(b,wpnDmg(null))}
+  try{atkTick()}catch(e){}/* 189：攻擊鍵 */
   if(host&&bossHp(b)<=0&&!b.done)bossWin(b);
   bossPaint(b)}
 const bossIsHost=b=>!b.net||b.net.host===uid;/* 172：僕人連線時也只有主機算 AI */
@@ -8919,10 +8920,7 @@ function monLoop(ts){monRaf=0;if(!monHere()){if(MON_RT)monClear();return}
   const dt=monLast?Math.min(0.3,(ts-monLast)/1000):0;if(dt<Math.max(1/31,frameCap()/1000)-0.004&&monLast)return;monLast=ts;/* 閒置每秒 4 次、省電 30 次 */
   const M=regCur(),me=curMe(),now=Date.now(),L=MON_RT.list;try{(()=>{try{fyAtkTick()}catch(e){}})(),/* 170 */dropTick()}catch(e){}/* 161 */try{skTick();comboTick()}catch(e){}/* 184、187 */try{ghostTick()}catch(e){}/* 164 */
   {const S=monSlots(),X=MON_RT.xs||(MON_RT.xs=[]),N=monCount();for(let i=0;i<N;i++){if(L[i])continue;const due=MON_RT.due[i];if(!due){MON_RT.due[i]=now+monDelay();continue}if(now>=due){if(i<MON_N){S[i]=monRoll(S,i);monSpawnRT(M,i,S[i],true);monSaveSoon()}else{X[i]=monRoll(S.concat(X.slice(MON_N)),i);monSpawnRT(M,i,X[i],true)}}}}/* 131：同一張圖多 1 人 +2 隻（多的不存檔） *//* 105.10：打倒 1–3 秒後在遠處重生 */
-  /* 打：角色腳底 30px 內最近的那隻 */
-  const wq=curWpn(),rng=wq?wq.W.range:MON_RANGE;/* 159：武器距離 */let best=-1,bd=1e9;L.forEach((m,i)=>{if(!m||m.dead||(m.born&&now-m.born<MON_SAFE))return;const d=Math.hypot(m.x-me.x,m.y-me.y);/* 剛出現 0.5 秒內不會被打 */if(d<=rng&&d<bd){bd=d;best=i}});
-  if(best!==monFightI){monFightI=best;if(best>=0)monSwingAt=now+120}
-  if(best>=0&&now>=monSwingAt&&now>=wpnLock){monSwingAt=now+(wq?wq.W.cd*skIv():MON_SWING);if(wq)wpnFire(wq,{m:L[best],i:best});else{const o=wpnDmg(null);monHit(best,o.d,o.crit)}}/* 159 */
+  try{atkTick()}catch(e){}/* 189：不再自動打，按攻擊鍵才打 */
   L.forEach((m,i)=>{if(!m||m.dead)return;if(m.burn){if(now>=m.burn.next&&now<=m.burn.until+60){m.burn.next+=1000;hitMon(m,{d:m.burn.d,crit:false});if(m.dead)return}if(now>m.burn.until)m.burn=null}if(m.stun&&now<m.stun){if(m.moving){m.moving=false;monPaint(i,m)}return}/* 159：燒傷、暈住 */
     if(m.aggro){const dme=Math.hypot(m.x-me.x,m.y-me.y);/* 131：被打了才還手 */
       if(now-m.lastHit>MON_GIVEUP||Math.hypot(m.x-m.ox,m.y-m.oy)>MON_LEASH){m.aggro=0;m.wind=0;monWind(m,false);m.tgt=[m.ox,m.oy];m.hp=m.max;monBar(m,false)}
@@ -10800,7 +10798,7 @@ function addXp(n,quiet){
 }
 /* ===== 159（19v）：武器接進戰鬥（第一版） =====
    state.weapons＝[{crop,tier}]（第一版 tier 都是 1）、state.wpn＝裝備中那把的索引。野外有裝備就用武器，沒有才用鐮刀；農場照舊當工具。
-   傷害＝pAtk × 每下倍率 × 1.3^(階−1)；爆擊 5%（雙刀 +15%）、爆擊傷害 ×1.5（法杖 +0.5）。全部自動攻擊：範圍內有怪就朝最近的一隻出手。
+   傷害＝pAtk × 每下倍率 × 1.3^(階−1)；爆擊 5%（雙刀 +15%）、爆擊傷害 ×1.5（法杖 +0.5）。189 起要按攻擊鍵才打（atkTick）。
    程式裡沒有的素材換成同主題、現在真的會掉的（報告 9.158）。 */
 const WEAPONS={
   tomato:{n:'番茄劍',k:'sword',ty:'近戰',range:40,cd:400,mul:1.15*1.3,desc:'向前斬，打最近的一隻',mats:[['bud',5],['twig',5]]},
@@ -10901,11 +10899,10 @@ function wpnStep(dt){for(let k=WPN_PROJ.length-1;k>=0;k--){const p=WPN_PROJ[k];l
     if(p.g)p.g.setAttribute('transform',`translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})${p.k==='fan'?` rotate(${(p.a*180/Math.PI).toFixed(1)})`:''}`);
     if(done){try{p.g&&p.g.remove()}catch(e){}WPN_PROJ.splice(k,1)}}}
 /* ===== 184（20m）：武器技能（每把 2 招＋覺醒）、翻滾閃避 =====
-   數字都在 SKILLS／SK_ROLL（之後只改表）。冷卻、狀態都在 SKC／SKB（不存檔）。普通攻擊照舊自動打；技能另外按（#skBar，只在野外、秘境）。
+   數字都在 SKILLS（之後只改表；189 起翻滾 SK_ROLL 拿掉）。冷卻、狀態都在 SKC／SKB（不存檔）。普通攻擊 189 起按攻擊鍵（atkTick）；技能另外按（#skBar，只在野外、秘境）。
    傷害＝pAtk × 倍率 × 1.3^(階−1)，可以爆擊（同普通攻擊）。3 階解鎖技能 2、4 階技能 1 強化（*4 欄位）、6 階技能 2 換成覺醒（aw，冷卻照技能 2）。
    對主、僕人：推開、拉近、瞬移到背後無效（傷害照算）；暈減半；岩之牢只關 1.5 秒、主在長蓄力（wind≥1300ms）時關不住。
    特效 skFx[招式 id](o)：o={x,y,dx,dy,tx,ty,...}，自己和別人都呼叫同一個（之後換圖只改這裡）。同步：pushPos 的 sk（1.5 秒內）。 */
-const SK_ROLL={d:90,ms:300,inv:350,cd:3};
 /* 186.1：倍率照定位調過（改前→改後見規格存檔 9.186）；tools/sim184.js 跑真的 wpnFire／skCast 驗證 */
 const SKILLS={
  tomato:{c:'#E8574A',s1:{id:'thrust',n:'突刺',cd:6,mul:3,len:120,len4:180,w:44},s2:{id:'xcut',n:'十字斬',cd:12,mul:5,L:140,W:40,inv:400},aw:{id:'heavenx',n:'天十字',mul:3.4,L:140,W:40,inv:400,rep:3,gap:300}},
@@ -10932,7 +10929,7 @@ const skIn=(t,x,y,r)=>Math.hypot(t.x-x,t.y-y)<=r;
 function skInRect(t,ox,oy,dx,dy,L,W){const a=(t.x-ox)*dx+(t.y-oy)*dy,p=Math.abs(-(t.x-ox)*dy+(t.y-oy)*dx);return a>=-12&&a<=L&&p<=W/2}
 function skFaceV(){const a=(meFace|0)*Math.PI/4;return [Math.cos(a),Math.sin(a)]}
 /* 瞄準：範圍內最近的對象；沒有就照面向 */
-function skAim(range){const me=curMe();let best=null,bd=range||220;for(const t of skTs()){const d=Math.hypot(t.x-me.x,t.y-me.y);if(d<=bd){bd=d;best=t}}
+function skAim(range){const me=curMe();{const L=atkLockT();if(L){const d=Math.max(1,Math.hypot(L.x-me.x,L.y-me.y));return {t:L,dx:(L.x-me.x)/d,dy:(L.y-me.y)/d,tx:L.x,ty:L.y}}}/* 189：有鎖定就打鎖定的 */let best=null,bd=range||220;for(const t of skTs()){const d=Math.hypot(t.x-me.x,t.y-me.y);if(d<=bd){bd=d;best=t}}
   if(best){const d=Math.max(1,Math.hypot(best.x-me.x,best.y-me.y));return {t:best,dx:(best.x-me.x)/d,dy:(best.y-me.y)/d,tx:best.x,ty:best.y}}
   const [dx,dy]=skFaceV(),R=Math.min(range||120,120);return {t:null,dx,dy,tx:me.x+dx*R,ty:me.y+dy*R}}
 /* 推開／拉近：只對一般怪，撞到擋路的東西就停 */
@@ -10955,6 +10952,39 @@ const skIv=()=>(skNow()<SKB.focus?0.5:1)/(1+wpStat('spd'));/* 186：甜甜圈攻
 const skSat=()=>skNow()<SKB.sat;
 function skPreAtk(){skForce=false;if(SKB.crits>0){SKB.crits--;skForce=true}}
 function skPostAtk(w,t){skForce=false;const T=SKB.thor;if(T&&T.until>skNow()&&t){const [x,y]=tPos(t);skHit(t,T.bolt);skFx.bolt({x,y:y+14})}}
+/* ===== 189（20r）：攻擊鍵（鎖定最近的怪）、拿掉自動開打、拿掉翻滾 =====
+   按下：鎖定搜尋範圍（武器距離 ×1.8，至少 120）內最近的敵人（一般怪、僕人、主），腳下出現鎖定圈；在武器距離外就自己走過去（推搖桿以搖桿為準）；
+   按住＝照武器間隔連續打、點一下＝打一下（atkTap 保證至少一下）；鎖定到：目標倒下、離開搜尋範圍 ×1.5、或 4 秒沒攻擊。範圍內沒有敵人＝照面向空揮。
+   atkTick 在 monLoop、bossLoop 裡跑（取代原本的自動打）。技能的目標看 atkLockT()。 ===== */
+let atkHeld=false,atkTap=0,atkTapAt=0,atkLock=null,atkAt=0,atkSwingAt=0,atkWalk=false;
+const ATK_SICKLE='<svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true" fill="none" stroke="#5A3416" stroke-width="2.2" stroke-linecap="round"><path d="M5 20 L13 9"/><path d="M13 9 C14 4 20 3 21 7 C17 6 15 8 13 9Z" fill="#D8DCE0"/></svg>';
+const atkRng=()=>{const w=curWpn();return w?w.W.range:MON_RANGE};
+const atkSearch=()=>Math.max(120,atkRng()*1.8);
+function atkTs(){const now=Date.now(),L=[];if(MON_RT)MON_RT.list.forEach((m,i)=>{if(m&&!m.dead&&!(m.born&&now-m.born<MON_SAFE))L.push({m,x:m.x,y:m.y})});try{const b=bossRT;if(b&&b.def&&!b.done&&!b.hidden&&b.kind!=='wait')L.push({boss:b,x:b.x,y:b.y})}catch(e){}return L}
+function atkLockT(){const t=atkLock;if(!t)return null;if(t.m){if(t.m.dead||!MON_RT||MON_RT.list.indexOf(t.m)<0)return null;return {m:t.m,x:t.m.x,y:t.m.y}}const b=t.boss;if(!b||b.done||b.hidden||bossRT!==b)return null;return {boss:b,x:b.x,y:b.y}}
+const atkJoy=()=>Math.hypot(joy.vx,joy.vy)>0.12||joy.id!=null||!!(keys.ArrowLeft||keys.ArrowRight||keys.ArrowUp||keys.ArrowDown||keys.a||keys.d||keys.w||keys.s);
+function atkStopWalk(){if(atkWalk){atkWalk=false;moveTo=null}}
+function atkPress(){if(!state||scene!=='explore')return;atkHeld=true;atkTap=1;atkTapAt=Date.now();try{atkTick()}catch(e){}}
+function atkRelease(){atkHeld=false}
+function atkWhiff(){const w=curWpn(),now=Date.now(),dur=w?w.W.cd:MON_SWING;c3Atk={at:now,dur};meAct={type:'atk',at:now,dur};try{if(w)wpnAnim(w.W.k)}catch(e){}try{pushPos(true)}catch(e){}}
+function atkTick(){if(!state||scene!=='explore'){atkLock=null;atkRingPaint();return}const now=Date.now(),me=curMe();
+  if(atkTap&&now-atkTapAt>4000)atkTap=0;
+  let T=atkLockT();if(atkLock&&(!T||Math.hypot(T.x-me.x,T.y-me.y)>atkSearch()*1.5||(!atkHeld&&!atkTap&&now-atkAt>4000))){atkLock=null;T=null;atkStopWalk()}
+  if(!(atkHeld||atkTap)){atkRingPaint();return}
+  if(!T){let best=null,bd=atkSearch();for(const t of atkTs()){const d=Math.hypot(t.x-me.x,t.y-me.y);if(d<=bd){bd=d;best=t}}
+    if(best){atkLock=best.m?{m:best.m}:{boss:best.boss};T=atkLockT()}
+    else{if(now>=atkSwingAt&&now>=wpnLock){const w=curWpn();atkSwingAt=now+(w?w.W.cd*skIv():MON_SWING);atkTap=0;atkWhiff()}atkRingPaint();return}}
+  const w=curWpn(),b=T.boss,reach=b?(w?w.W.range:BOSS_REACH)+b.def.h*10:atkRng(),d=b?Math.hypot(T.x-me.x,(T.y-me.y)*1.2):Math.hypot(T.x-me.x,T.y-me.y);
+  if(d>reach){if(!atkJoy()){const D=Math.max(1,Math.hypot(T.x-me.x,T.y-me.y)),k=Math.max(0,(D-reach*0.7)/D);moveTo={x:me.x+(T.x-me.x)*k,y:me.y+(T.y-me.y)*k,then:null,force:true};atkWalk=true;startLoop()}else atkStopWalk()}
+  else{atkStopWalk();if(now>=atkSwingAt&&now>=wpnLock){atkSwingAt=now+(w?w.W.cd*skIv():MON_SWING);atkTap=0;atkAt=now;pFightAt=now;if(!atkJoy()){meFace=dirIdx(T.x-me.x,T.y-me.y);meDir=faceFlip(meFace)?-1:1}
+    if(T.m){const i=MON_RT.list.indexOf(T.m);monFightI=i;if(w)wpnFire(w,{m:T.m,i});else{const o=wpnDmg(null);monHit(i,o.d,o.crit)}}else{if(w)wpnFire(w,{boss:b});else bossDealt(b,wpnDmg(null))}}}
+  atkRingPaint()}
+/* 鎖定圈（世界座標，畫在怪物前景層下面） */
+function atkRingPaint(){try{const T=atkLockT();let g=document.getElementById('atkRing');if(!T){if(g)g.style.display='none';return}
+  if(!g){const F=document.getElementById('monFront');if(!F||!F.parentNode)return;g=document.createElementNS('http://www.w3.org/2000/svg','g');g.id='atkRing';g.setAttribute('pointer-events','none');g.innerHTML='<ellipse class="atkr" rx="24" ry="9" fill="none" stroke="#FF5A3C" stroke-width="3"/><ellipse rx="24" ry="9" fill="#FF5A3C" fill-opacity=".14"/>';F.parentNode.insertBefore(g,F)}
+  if(g.parentNode!==(document.getElementById('monFront')||{}).parentNode){const F=document.getElementById('monFront');if(F&&F.parentNode)F.parentNode.insertBefore(g,F)}
+  const s=T.boss?1.8:1;g.style.display='';g.setAttribute('transform',`translate(${T.x.toFixed(1)} ${T.y.toFixed(1)}) scale(${s})`)}catch(e){}}
+/* ===== 189 結束 ===== */
 /* ===== 188（20q）：畫面按鈕整體重排 =====
    左上：頭像（名字、等級、血條、經驗條、金幣）→ 任務提示（上 66）→ 功能鍵直排（背包、任務、神之子、選單；左 8、上 104，每顆 38、間距 6）；隊伍名單在直排右邊（左 54）。
    右上：小地圖（野外）／地圖按鈕（農場、城鎮），點小地圖＝地圖面板。上方中間：主、僕人的血條。右下：戰鬥鍵弧形（野外、秘境）；農場的綠色大按鈕和翻滾同一位置。
@@ -11062,14 +11092,10 @@ function skCast(slot){if(!state||scene!=='explore'||uiBusy())return false;const 
   try{skNameShow(w.crop,slot,slot===1?(w.tier||1):Math.max(2,w.tier||1),skName(w.crop,slot,w.tier||1))}catch(e){}/* 186：第一次放出新型態 */
   let o=null;try{o=fn(d,a)}catch(e){logErr(e,'sk:'+d.id)}o=Object.assign({x:curMe().x,y:curMe().y,dx:a.dx,dy:a.dy,tx:a.tx,ty:a.ty},o||{});try{skFx[d.id]&&skFx[d.id](o)}catch(e){}
   skAct={i:d.id,c:SKILLS[w.crop].c,x:Math.round(o.x),y:Math.round(o.y),dx:+o.dx.toFixed(2),dy:+o.dy.toFixed(2),tx:Math.round(o.tx),ty:Math.round(o.ty),t:now};try{pushPos(true)}catch(e){}skPaint(true);return true}
-/* 翻滾：朝搖桿方向（沒推就照面向）滑 90、0.3 秒；0.35 秒不受傷害；冷卻 3 秒 */
-function skRoll(){if(!state||scene!=='explore'||uiBusy())return false;const now=skNow();if(now<SKC.roll)return false;let dx=joy.vx,dy=joy.vy;if(Math.hypot(dx,dy)<0.15)[dx,dy]=skFaceV();const L=Math.hypot(dx,dy)||1;dx/=L;dy/=L;
-  SKC.roll=now+SK_ROLL.cd*1000;SKB.inv=Math.max(SKB.inv,now+SK_ROLL.inv);meFace=dirIdx(dx,dy);meDir=faceFlip(meFace)?-1:1;const me=curMe(),x0=me.x,y0=me.y;
-  skFx.roll({x:x0,y:y0,dx,dy,me:1});skMove(x0+dx*SK_ROLL.d,y0+dy*SK_ROLL.d,SK_ROLL.ms);skAct={i:'roll',x:Math.round(x0),y:Math.round(y0),dx:+dx.toFixed(2),dy:+dy.toFixed(2),tx:0,ty:0,t:now};try{pushPos(true)}catch(e){}skPaint(true);return true}
 /* 別人的招式：只播特效（不算傷害）；癒花、花神之舞＝同隊伍、自己在 150 內就自己回血（每次放招只算一次） */
 const SK_SEEN={};
 function skRemote(id,s,A){if(!s||typeof s.t!=='number'||SK_SEEN[id]===s.t||Date.now()-s.t>1500)return;SK_SEEN[id]=s.t;const o={x:s.x,y:s.y,dx:s.dx||1,dy:s.dy||0,tx:s.tx,ty:s.ty,c:s.c,remote:1};
-  try{if(s.i==='roll')skFx.roll(o);else if(skFx[s.i])skFx[s.i](o)}catch(e){}
+  try{if(s.i!=='roll'&&skFx[s.i])skFx[s.i](o)}catch(e){}/* 189：翻滾拿掉（舊版送來的 roll 不播） */
   if((s.i==='heal'||s.i==='bloom')&&typeof partyHas==='function'&&partyHas(id)&&scene==='explore'){const me=curMe(),px=A?A.x:s.x,py=A?A.y:s.y,D=s.i==='bloom'?SKILLS.strawberry.aw:SKILLS.strawberry.s2;if(Math.hypot(me.x-px,me.y-py)<=D.r){skHeal(D.heal);if(s.i==='bloom'){SKB.hot={until:skNow()+D.hotS*1000,next:skNow()+1000,k:D.hot};skCleanse()}}}}
 /* ---- 特效（程式畫；之後換圖只改這裡） ---- */
 const skC=o=>o.c||((curWpn()&&SKILLS[curWpn().crop])||{}).c||'#FFF';
@@ -11106,8 +11132,7 @@ const skFx={
  thor:o=>fxW(o.x,o.y-30,`<circle r="38" fill="#9FB6FF" fill-opacity=".12" stroke="#FFE34A" stroke-width="3" stroke-dasharray="8 6"/>`,o.ms||8000),
  focus:o=>fxW(o.x,o.y-60,`<circle r="16" fill="none" stroke="#8FD06E" stroke-width="3"/><path d="M-22 0 h10 M12 0 h10 M0 -22 v10 M0 12 v10" stroke="#8FD06E" stroke-width="3"/>`,800),
  saturate:o=>fxW(o.x,o.y,`<circle r="${o.r||120}" fill="none" stroke="#FFB347" stroke-width="2" stroke-dasharray="8 8" opacity=".8"/>`,1200),
- sat:o=>fxW(o.x,o.y-80,`<circle r="10" fill="#BFE9A8" stroke="#3E6B2E" stroke-width="2"/>`,600),
- roll:o=>{const L=SK_ROLL.d,src=o.me?(document.getElementById('meGAv')||{}).innerHTML||'':'';[0.35,0.2,0.1].forEach((op,i)=>setTimeout(()=>{const x=o.x+o.dx*L*i/3,y=o.y+o.dy*L*i/3;const g=fxW(x,y,src?`<g transform="scale(1.15)" opacity="${op}">${src}</g>`:`<ellipse cx="0" cy="-26" rx="12" ry="26" fill="#fff" opacity="${op}"/>`,250+30);if(g){g.style.transition='opacity .25s';requestAnimationFrame(()=>{g.style.opacity='0'})}},i*SK_ROLL.ms/3))}};
+ sat:o=>fxW(o.x,o.y-80,`<circle r="10" fill="#BFE9A8" stroke="#3E6B2E" stroke-width="2"/>`,600)};
 /* ---- 按鈕（只在野外、秘境；pointerdown 就放） ---- */
 const SK_GLYPH={thrust:'<path d="M3 21 L17 7 M13 5 L19 5 L19 11" />',xcut:'<path d="M4 4 L20 20 M20 4 L4 20"/>',heavenx:'<path d="M4 4 L20 20 M20 4 L4 20 M12 2 V22 M2 12 H22"/>',whirl:'<path d="M12 4 A8 8 0 1 1 4 12 M4 12 L2 8 M4 12 L8 10"/>',shadow:'<circle cx="12" cy="9" r="4"/><path d="M5 21 C5 15 19 15 19 21"/>',thousand:'<circle cx="7" cy="9" r="3"/><circle cx="17" cy="9" r="3"/><path d="M2 20 C3 15 11 15 12 20 M12 20 C13 15 21 15 22 20"/>',
  gale:'<path d="M3 9 H15 A3 3 0 1 0 12 6 M3 15 H18 A3 3 0 1 1 15 18"/>',heal:'<path d="M12 20 C4 14 4 7 8 6 C10 5.5 12 8 12 8 C12 8 14 5.5 16 6 C20 7 20 14 12 20Z"/>',bloom:'<circle cx="12" cy="12" r="3"/><path d="M12 3 V7 M12 17 V21 M3 12 H7 M17 12 H21 M6 6 L8.5 8.5 M15.5 15.5 L18 18 M18 6 L15.5 8.5 M8.5 15.5 L6 18"/>',
@@ -11116,13 +11141,12 @@ const SK_GLYPH={thrust:'<path d="M3 21 L17 7 M13 5 L19 5 L19 11" />',xcut:'<path
  wisp:'<circle cx="12" cy="12" r="8" stroke-dasharray="4 3"/><path d="M12 8 C14 11 10 12 12 16"/>',reap:'<path d="M20 4 C10 4 4 10 4 18 M4 18 L9 15 M4 18 L6 13"/>',hades:'<ellipse cx="12" cy="16" rx="9" ry="4"/><path d="M8 16 V8 A4 4 0 0 1 16 8 V16"/>',
  quake:'<path d="M2 18 H22 M6 18 L9 12 L12 16 L15 9 L18 18"/>',wall:'<rect x="3" y="8" width="18" height="11" rx="1"/><path d="M3 13.5 H21 M9 8 V13.5 M15 13.5 V19"/>',jail:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9.5 4 V21 M14.5 4 V21"/>',
  thunder:'<path d="M13 2 L5 13 H11 L9 22 L19 9 H13Z"/>',aegis:'<path d="M12 3 L20 6 V12 C20 17 16 20 12 21 C8 20 4 17 4 12 V6Z"/><path d="M13 7 L9 13 H12 L11 17 L15 11 H12Z"/>',thor:'<path d="M13 2 L5 13 H11 L9 22 L19 9 H13Z"/><circle cx="12" cy="12" r="10" stroke-dasharray="3 3"/>',
- focus:'<circle cx="12" cy="12" r="6"/><path d="M12 2 V6 M12 18 V22 M2 12 H6 M18 12 H22"/>',saturate:'<circle cx="7" cy="8" r="2.5"/><circle cx="16" cy="7" r="2.5"/><circle cx="12" cy="15" r="2.5"/><circle cx="19" cy="16" r="2"/><circle cx="5" cy="17" r="2"/>',sat:'<circle cx="8" cy="12" r="4"/><circle cx="17" cy="9" r="3"/><path d="M11 11 L14 10"/>',
- roll:'<path d="M20 12 A8 8 0 1 1 15 4.6 M15 4.6 L14 1 M15 4.6 L18.6 4"/>'};
+ focus:'<circle cx="12" cy="12" r="6"/><path d="M12 2 V6 M12 18 V22 M2 12 H6 M18 12 H22"/>',saturate:'<circle cx="7" cy="8" r="2.5"/><circle cx="16" cy="7" r="2.5"/><circle cx="12" cy="15" r="2.5"/><circle cx="19" cy="16" r="2"/><circle cx="5" cy="17" r="2"/>',sat:'<circle cx="8" cy="12" r="4"/><circle cx="17" cy="9" r="3"/><path d="M11 11 L14 10"/>'};
 function skBar(){let B=document.getElementById('skBar');if(B)return B;B=document.createElement('div');B.id='skBar';B.setAttribute('aria-label','技能');
-  B.innerHTML=['1','2','R'].map(k=>`<button type="button" class="skb" id="sk${k}" data-sk="${k}"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></svg><i class="skcd"></i><b class="skt"></b><em class="sklk"></em></button>`).join('');
+  B.innerHTML=['1','2'].map(k=>`<button type="button" class="skb" id="sk${k}" data-sk="${k}"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></svg><i class="skcd"></i><b class="skt"></b><em class="sklk"></em></button>`).join('')+`<button type="button" class="skb ska" id="skR" data-sk="A" aria-label="攻擊（按住連續打）"><span class="skai"></span></button>`;/* 189：最大顆＝攻擊鍵（位置沿用原本翻滾的 #skR） */
   let lp=null;/* 186：技能鍵按下去 0.4 秒內放開＝放招，按住＝看說明（翻滾照舊按下去就滾） */
-  B.addEventListener('pointerdown',e=>{const b=e.target.closest('.skb');if(!b)return;e.preventDefault();e.stopPropagation();const k=b.dataset.sk;if(k==='R'){skRoll();return}try{b.setPointerCapture(e.pointerId)}catch(x){}lp={k,b,id:e.pointerId,long:false,t:setTimeout(()=>{if(lp){lp.long=true;skCardShow(+k,b)}},400)}});
-  const up=e=>{if(!lp||e.pointerId!==lp.id)return;const L=lp;lp=null;clearTimeout(L.t);if(L.long||e.type==='pointercancel')return;const d=skDef(+L.k);if(d&&d.locked){toast('第 2 階解鎖',1500);return}skCast(+L.k)};B.addEventListener('pointerup',up);B.addEventListener('pointercancel',up);
+  B.addEventListener('pointerdown',e=>{const b=e.target.closest('.skb');if(!b)return;e.preventDefault();e.stopPropagation();const k=b.dataset.sk;if(k==='A'){atkPress();try{b.setPointerCapture(e.pointerId)}catch(x){}lp={k,b,id:e.pointerId,long:false,t:0,atk:1};return}try{b.setPointerCapture(e.pointerId)}catch(x){}lp={k,b,id:e.pointerId,long:false,t:setTimeout(()=>{if(lp){lp.long=true;skCardShow(+k,b)}},400)}});
+  const up=e=>{if(!lp||e.pointerId!==lp.id)return;const L=lp;lp=null;clearTimeout(L.t);if(L.atk){atkRelease();return}if(L.long||e.type==='pointercancel')return;const d=skDef(+L.k);if(d&&d.locked){toast('第 2 階解鎖',1500);return}skCast(+L.k)};B.addEventListener('pointerup',up);B.addEventListener('pointercancel',up);
   B.addEventListener('click',e=>{e.preventDefault();e.stopPropagation()});document.body.appendChild(B);return B}
 let skPk='';
 function skPaint(force){try{const on=!!state&&scene==='explore'&&document.body.classList.contains('wild');let B=document.getElementById('skBar');if(!on){if(B&&!B.hidden)B.hidden=true;return}B=skBar();if(B.hidden)B.hidden=false;
@@ -11130,7 +11154,8 @@ function skPaint(force){try{const on=!!state&&scene==='explore'&&document.body.c
   const set=(k,d,id,col,cdEnd,cdLen,lock,label)=>{const b=document.getElementById('sk'+k);if(!b)return;b.hidden=!d;if(!d)return;if(b._id!==id+lock+label){b._id=id+lock+label;b.querySelector('svg').innerHTML=SK_GLYPH[id]||'';b.style.setProperty('--skc',col);b.classList.toggle('lock',!!lock);b.querySelector('.sklk').textContent=lock?'第 2 階':label;b.setAttribute('aria-label',label+(lock?'（第 2 階解鎖）':''))}
     const left=Math.max(0,cdEnd-now),p=cdLen?left/cdLen:0,cd=b.querySelector('.skcd'),t=b.querySelector('.skt');cd.style.setProperty('--p',(p*360).toFixed(1)+'deg');cd.hidden=!(left>0);t.textContent=left>0?Math.ceil(left/1000):''};
   const d1=w?skDef(1):null,d2=w?skDef(2):null,tr=w?(w.tier||1):1;set('1',d1,d1&&d1.id,S&&S.c,SKC.s1,d1?d1.cd*1000:0,0,d1?skName(w.crop,1,tr):'');set('2',d2,d2&&d2.id,S&&S.c,SKC.s2,d2?d2.cd*1000:0,d2&&d2.locked?1:0,d2?skName(w.crop,2,tr):'');
-  if(B._r!==tr){B._r=tr;B.style.setProperty('--skr',RCOL[Math.min(5,tr-1)])}/* 186：外圈＝那一階的稀有度色 */set('R',{},'roll','#E8E2D0',SKC.roll,SK_ROLL.cd*1000,0,'翻滾')}catch(e){}}
+  if(B._r!==tr){B._r=tr;B.style.setProperty('--skr',RCOL[Math.min(5,tr-1)])}/* 186：外圈＝那一階的稀有度色 */{const a=document.getElementById('skR');if(a){const ak=w?w.crop+'|'+w.tier:'-';if(a._k!==ak){a._k=ak;a.querySelector('.skai').innerHTML=w?`<img src="${wpSrc(w.crop,w.tier)}" alt="">`:ATK_SICKLE}a.classList.toggle('held',atkHeld);if(!B._tip){B._tip=1;if(tipOnce('atk')){a.classList.add('flash');setTimeout(()=>a.classList.remove('flash'),2400)}}}}
+  if(!w&&B._r!==0){B._r=0;B.style.setProperty('--skr',RCOL[0])}/* 189：攻擊鍵 */}catch(e){}}
 setInterval(()=>{try{skPaint()}catch(e){}},100);
 /* ===== 184 結束 ===== */
 
@@ -11169,7 +11194,7 @@ function wpnAnim(k){try{const g=document.getElementById('meWpnI');if(!g)return;c
 function wpnEquip(i){const e=weaponsArr()[i];if(!e)return false;state.wpn=i;if(scene==='explore')wpnLock=Date.now()+WP_SWAP_MS;save();try{const F=document.getElementById('meWF');if(F)F._k='';wpnPaintMe();pushPos(true)}catch(e){}return true}
 function wpnGive(crop,tier){const A=weaponsArr();A.push({crop,tier:tier||1,st:[]});return A.length-1}
 /* 新手選武器 */
-function wpickHTML(){return `<h2>選一把武器</h2><p class="note">送你一把普通階的武器，之後可以在城鎮的道具行做別把。全部自動攻擊：範圍內有怪就會出手。</p><div class="wpgrid">`+WP_ORDER.map(c=>{const W=WEAPONS[c];return `<button class="wpcard" data-act="wpick" data-k="${c}"><span class="wpimg"><img src="${wpSrc(c,1)}" alt=""></span><b>${W.n}</b><span class="wptag ${W.ty==='近戰'?'m':'r'}">${W.ty}</span><span class="meta">${W.desc}</span></button>`}).join('')+`</div>`}
+function wpickHTML(){return `<h2>選一把武器</h2><p class="note">送你一把普通階的武器，之後可以在城鎮的道具行做別把。普通攻擊要按右下角最大顆的攻擊鍵：會打最近的怪，按住就連續打。</p><div class="wpgrid">`+WP_ORDER.map(c=>{const W=WEAPONS[c];return `<button class="wpcard" data-act="wpick" data-k="${c}"><span class="wpimg"><img src="${wpSrc(c,1)}" alt=""></span><b>${W.n}</b><span class="wptag ${W.ty==='近戰'?'m':'r'}">${W.ty}</span><span class="meta">${W.desc}</span></button>`}).join('')+`</div>`}
 function wpickDo(crop){if(!WEAPONS[crop])return;const i=wpnGive(crop,1);state.wpnPick=1;state.wpn=i;save();closeSheet();try{const F=document.getElementById('meWF');if(F)F._k='';wpnPaintMe()}catch(e){}toast(`拿到了${WEAPONS[crop].n}！`)}
 /* 背包：武器分頁 */
 function wpnBagHTML(){const A=weaponsArr();if(!A.length)return '<p class="note">還沒有武器。第一次到野外會送你一把。</p>';
@@ -11719,7 +11744,7 @@ function mqLineTap(){{const q=qTracked();if(q){qGo(q);return}}/* 133 */const T=m
 function mqGoHTML(){const id=sheet.mqgo,p=String(id).startsWith('npc:')?TOWN_NPC.find(q=>'npc:'+q.id===id):null,b=!p&&TOWN_BLD.find(q=>q.id===id);
   return `<h2>要去城鎮嗎？</h2><p class="note">${p?`${esc(p.n)}在城鎮等你。`:b?`${esc(b.n)}在城鎮的噴水池。`:''}到了會用箭頭指給你看。</p><div class="row2"><button class="btn primary" data-act="mqgo">去城鎮</button><button class="btn" data-act="close">先不要</button></div>`}
 /* 116.5：第一次才出現的一句話（state.tips 記住，各只一次） */
-const TIP_TXT={hv:'果實在背包的「果實」分頁，可以賣，也可以拿去獻給祭壇。',alt:'每一項要 3 顆。點一項，從果實袋選要獻的。',ex:'點一個地方就能出發。野外的植物可以採種子，也可以摘果實。',fl2:'點開花的植株，選「雜交」，再點另一株。',acc:'生長加速劑：用一次，少等 10 分鐘。',bag:'用不到的種子可以丟掉，或放進種原庫。'};
+const TIP_TXT={atk:'按住攻擊鍵，會打最近的怪',hv:'果實在背包的「果實」分頁，可以賣，也可以拿去獻給祭壇。',alt:'每一項要 3 顆。點一項，從果實袋選要獻的。',ex:'點一個地方就能出發。野外的植物可以採種子，也可以摘果實。',fl2:'點開花的植株，選「雜交」，再點另一株。',acc:'生長加速劑：用一次，少等 10 分鐘。',bag:'用不到的種子可以丟掉，或放進種原庫。'};
 function tipOnce(k){try{if(!state)return false;const T=state.tips||(state.tips={});if(T[k]||!TIP_TXT[k])return false;T[k]=1;save();setTimeout(()=>{try{toast(TIP_TXT[k],6000)}catch(e){}},700);return true}catch(e){return false}}
 /* ===== 118（18j）：蘿瑪的台詞、蘿瑪的故事、翠風草原的地區故事 =====
    台詞：fyLinesFor 依地點（農場／翠風草原／其他地區）與階段（進化、神化）挑；只有蘿瑪換，其他八位照 FY_LINES。

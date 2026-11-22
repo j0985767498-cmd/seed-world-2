@@ -29,7 +29,7 @@ function run(crop,tier,stars,lay,secs){secs=secs||60;E.clearQ();E.reseed(777);T.
   return L.reduce((s,m)=>s+(HP-m.hp),0)}
 function measure(patch){if(patch)patch(T);const out={};for(const [tier,stars] of CFG){const k=tier+'/'+stars;out[k]={};for(const lay of ['single','group']){const R={};for(const c of Object.keys(T.WP_TARGET))R[c]=run(c,tier,stars,lay);const ref=R.tomato;out[k][lay]={};for(const c in R)out[k][lay][c]=R[c]/ref*100}}return out}
 module.exports={measure,T,run,CFG};
-if(require.main===module){const M=measure();const lines=[];let bad=0;
+if(require.main===module){const LIMIT=15;/* 186 補：合格線 ±15% */const M=measure();const lines=[];let bad=0;
   for(const [tier,stars] of CFG){const k=tier+'/'+stars;for(const [lay,li] of [['single',0],['group',1]]){lines.push(`\n=== ${tier} 階 ${stars} 星・${lay==='single'?'單一目標':'怪群 3 隻'}（劍＝100）===`);
-    for(const c of Object.keys(T.WP_TARGET)){const a=M[k][lay][c],g=T.WP_TARGET[c][li],d=(a/g-1)*100;if(Math.abs(d)>10)bad++;lines.push(`${T.WEAPONS[c].n.padEnd(6,'　')} 實際 ${a.toFixed(0).padStart(4)}  目標 ${String(g).padStart(4)}  差距 ${(d>=0?'+':'')+d.toFixed(0)}%${Math.abs(d)>10?'  ✗':''}`)}}}
-  lines.push(`\n${bad?`有 ${bad} 格超出 ±10%`:'全部在 ±10% 內'}`);console.log(lines.join('\n'))}
+    for(const c of Object.keys(T.WP_TARGET)){const a=M[k][lay][c],g=T.WP_TARGET[c][li],d=(a/g-1)*100;if(Math.abs(d)>LIMIT)bad++;lines.push(`${T.WEAPONS[c].n.padEnd(6,'　')} 實際 ${a.toFixed(0).padStart(4)}  目標 ${String(g).padStart(4)}  差距 ${(d>=0?'+':'')+d.toFixed(0)}%${Math.abs(d)>LIMIT?'  ✗':''}`)}}}
+  lines.push(`\n${bad?`有 ${bad} 格超出 ±${LIMIT}%`:`全部在 ±${LIMIT}% 內`}`);console.log(lines.join('\n'))}

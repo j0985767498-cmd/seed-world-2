@@ -2129,7 +2129,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-21d';
+const BUILD='2026-11-21e';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -8634,17 +8634,21 @@ function petArt(p){if(p.st<2){const ps=`assets/boss/pet_${p.bk}_${p.st}.png?v=${
   const art=petArtK(p.bk);if(!art)return null;const src=bossSrc(art,'idle'),st=petProbe(src);if(st===2)return null;const I=BOSS_IMG[art]||(PET_IMG[src].w?[PET_IMG[src].w,PET_IMG[src].h]:[400,400]);return {src,w:I[0],h:I[1]}}
 const petHW=()=>(typeof C3_HU!=='undefined'?C3_HU:57.5)*1.15*PET_H;/* 跟隨時的高度（地圖座標） */
 function petSVG(p,size,flip){const bk=p.bk,c=(LORDS[bk]||{}).glow||'#FFE6A8',A=petArt(p);
-  if(A){const H=size,W=H*A.w/A.h,rx=W*0.36,ry=rx*0.32,op=p.st>=1?.45:.25;
-    return `<ellipse cy="0" rx="${(rx).toFixed(1)}" ry="${ry.toFixed(1)}" fill="${c}" opacity="${op}"/>${p.st>=2?`<ellipse cy="0" rx="${(rx*1.45).toFixed(1)}" ry="${(ry*1.45).toFixed(1)}" fill="none" stroke="${c}" stroke-width="${(size*0.03).toFixed(1)}" opacity=".45"/>`:''}<image href="${A.src}" x="${(-W/2).toFixed(1)}" y="${(-H).toFixed(1)}" width="${W.toFixed(1)}" height="${H.toFixed(1)}"${flip?` transform="scale(-1 1)"`:''}/>`}
+  if(A){const H=size,W=H*A.w/A.h,rx=W*0.3,ry=rx*0.28,sw=Math.max(1,size*0.025).toFixed(1),lift=petLift(p,size),ring=k=>`<ellipse cy="0" rx="${(rx*k).toFixed(1)}" ry="${(ry*k).toFixed(1)}" fill="none" stroke="${c}" stroke-width="${sw}" opacity="${p.st>=1?.7:.35}"/>`;
+    return `<ellipse cy="0" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="rgba(40,25,10,.25)"/>${ring(1.25)}${p.st>=2?ring(1.55):''}<g class="pwk" transform="translate(0 ${-lift})"><g class="brth"><image href="${A.src}" x="${(-W/2).toFixed(1)}" y="${(-H).toFixed(1)}" width="${W.toFixed(1)}" height="${H.toFixed(1)}"${flip?` transform="scale(-1 1)"`:''}/></g></g>`}/* 203：影子＋細光環（幼獸淡、成獸亮、完全體兩圈） */
   const s=(p.st>=1?1.3:1)*size/34;return `<g transform="scale(${s.toFixed(3)})"><ellipse cy="-1" rx="12" ry="3.5" fill="rgba(40,25,10,.22)"/><path d="M-9 -20 l-3 -10 l8 5z M9 -20 l3 -10 l-8 5z" fill="${c}" stroke="#5A3416" stroke-width="1.5" stroke-linejoin="round"/><ellipse cy="-13" rx="12" ry="11" fill="${c}" stroke="#5A3416" stroke-width="1.8"/><circle cx="-4.5" cy="-14" r="1.9" fill="#3A2414"/><circle cx="4.5" cy="-14" r="1.9" fill="#3A2414"/><path d="M-2 -9.5 q2 1.6 4 0" stroke="#3A2414" stroke-width="1.3" fill="none" stroke-linecap="round"/><circle cx="-8" cy="-10" r="2" fill="#FF9DB0" opacity=".6"/><circle cx="8" cy="-10" r="2" fill="#FF9DB0" opacity=".6"/></g>`}/* 佔位（圖載不到才用） */
 /* 跟隨：站在玩家身後一點（面向的反方向），換方向時約 0.25 秒滑過去；面向跟玩家一樣 */
-let petPos=null,petT=0;
-function petTarget(){const m=curMe(),back=faceFlip(meFace)?1:-1;return {x:m.x+back*30,y:m.y-6}}
-function petStep(){const T=petTarget(),now=performance.now(),dt=Math.min(0.1,(now-(petT||now))/1000);petT=now;if(!petPos||Math.hypot(T.x-petPos.x,T.y-petPos.y)>200)petPos={x:T.x,y:T.y};else{const k=1-Math.pow(0.5,dt/0.07);petPos.x+=(T.x-petPos.x)*k;petPos.y+=(T.y-petPos.y)*k}return petPos}
+let petPos=null,petT=0,petMoved=false,petWalk=0,petWasW=false,petRaf=0;
+const PET_SPD=160*1.15,PET_STEP=0.3;
+const petLift=(p,size)=>p&&p.bk==='ruins'?8:0;/* 塔羅斯（機甲、有翼）離地 8，影子照樣在地上 */
+/* 走路：每 0.3 秒一步，往上 3 再落下、落地壓扁一點（0.08 秒）、左右輕微傾斜 ±3° 交替；停下來只留呼吸 */
+function petWalkTf(p){const lift=petLift(p);if(!petMoved)return `translate(0 ${-lift})`;const t=petWalk/PET_STEP,n=Math.floor(t),u=t-n,bob=3*Math.sin(Math.PI*u),sy=u*PET_STEP<0.08?0.96:1,tilt=(n%2?3:-3)*Math.sin(Math.PI*u);return `translate(0 ${(-lift-bob).toFixed(2)}) rotate(${tilt.toFixed(2)}) scale(1 ${sy})`}
+function petTarget(){const m=curMe(),back=faceFlip(meFace)?1:-1;return {x:m.x+back*30,y:m.y}}/* 203：腳底和主人同一條地面線 */
+function petStep(){const T=petTarget(),now=performance.now(),dt=Math.min(0.1,(now-(petT||now))/1000);petT=now;petMoved=false;if(!petPos||Math.hypot(T.x-petPos.x,T.y-petPos.y)>200)petPos={x:T.x,y:T.y};else{const d=Math.hypot(T.x-petPos.x,T.y-petPos.y);if(d>=8){const sp=Math.min(d,PET_SPD*dt);petPos.x+=(T.x-petPos.x)/d*sp;petPos.y+=(T.y-petPos.y)/d*sp;petMoved=sp>0.01}}if(petMoved)petWalk+=dt;return petPos}/* 203：用走的（上限＝主人走路 ×1.15），8 以內停 */
 /* ===== 193 結束 ===== */
 /* 跟在角色旁邊 */
-function petCharG(){if(!state||!state.petOn)return '';const p=petCur();if(!p)return '';const P=petStep(),fl=faceFlip(meFace);return `<g id="petG" transform="translate(${Math.round(P.x)} ${Math.round(P.y)})" pointer-events="none"><g class="brth">${petSVG(p,petHW(),fl)}</g></g>`}/* 193 */
-function petMove(){try{const g=document.getElementById('hpHead');if(g){const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y+(char2On()?char2TagDY()*CHAR_S:0))})`)}}catch(e){}try{const g=document.getElementById('petG');if(!g)return;const P=petStep(),O=petLungeOff();g.setAttribute('transform',`translate(${Math.round(P.x+O[0])} ${Math.round(P.y+O[1])})`);const fl=faceFlip(meFace)?1:0;if(g._fl!==fl){g._fl=fl;const im=g.querySelector('image');if(im){if(fl)im.setAttribute('transform','scale(-1 1)');else im.removeAttribute('transform')}}}catch(e){}}/* 193：滑過去、跟著玩家轉向 */
+function petCharG(){if(!state||!state.petOn)return '';const p=petCur();if(!p)return '';const P=petStep(),fl=faceFlip(meFace);return `<g id="petG" transform="translate(${Math.round(P.x)} ${Math.round(P.y)})" pointer-events="none">${petSVG(p,petHW(),fl)}</g>`}/* 193 */
+function petMove(){try{const g=document.getElementById('hpHead');if(g){const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y+(char2On()?char2TagDY()*CHAR_S:0))})`)}}catch(e){}try{const g=document.getElementById('petG');if(!g)return;const P=petStep(),O=petLungeOff();g.setAttribute('transform',`translate(${Math.round(P.x+O[0])} ${Math.round(P.y+O[1])})`);{const w=g.querySelector('.pwk');if(w&&(petMoved||petWasW)){w.setAttribute('transform',petWalkTf(petCur()));petWasW=petMoved}}/* 203：踏步 */if(petMoved&&!petRaf&&typeof requestAnimationFrame==='function')petRaf=requestAnimationFrame(()=>{petRaf=0;petMove()})||0;/* 主人停了也走到位 */const fl=faceFlip(meFace)?1:0;if(g._fl!==fl){g._fl=fl;const im=g.querySelector('image');if(im){if(fl)im.setAttribute('transform','scale(-1 1)');else im.removeAttribute('transform')}}}catch(e){}}/* 193：滑過去、跟著玩家轉向 */
 /* 使用精魄 → 孵化 */
 function spiritUse(bk){const k='sp_'+bk,I=state.items||(state.items={});if(!(I[k]>0))return false;I[k]--;hatchArr().push({bk,at:Date.now()});save();toast(`${spiritName(bk)}開始孵化了，6 小時後孵出來`,4000);return true}
 function hatchLeft(h){return Math.max(0,h.at+HATCH_MS-Date.now())}

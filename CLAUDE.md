@@ -2,7 +2,7 @@
 
 > 程式：`index.html`。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> **目前 BUILD `2026-11-21d`，下一版 `2026-11-21e`。**
+> **目前 BUILD `2026-11-21e`，下一版 `2026-11-21f`。**
 > **用詞（第 194 節）**：舊文件（`docs/規格存檔.md`）裡的「主」＝**領主**（各區古老的守護者，被蝕的力量侵蝕而失控），「僕人」＝**眷屬**（跟隨領主的魔獸）；抽火傀儡不是眷屬。程式的鍵（`LORDS`、`SERVANTS`、`lord_*`、`servant_*`）不改。
 > **使用者要自己做的事**：Realtime Database 規則整份貼 `tools/rtdb_rules_196.txt`（含 62 的 status、135、172、173、196 的 `od`）；Firestore 規則整份貼 `tools/firestore_rules_console_114.txt`（117 那份＋`fairyFirst`）。舊的規則檔都只是紀錄。
 > **還沒做的節**：108 的其他地區／農場／城鎮（3D）、135 的神寵技能、136（跟晶霜雪原那一章一起做）；未定案：14、19、69、201（劇情改版）。各節做完的紀錄看下面的索引表。
@@ -289,7 +289,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 武器平衡、184 新版（186）：目標 `WP_TARGET`、錘與鐮刀 `W.splash`、`SK_NAMES`／`skName`／`skNameShow`（`state.skSeen`）、`SK_DESC`／`skCardShow`（長按）、星星 `weapons[i].st`／`WP_SHAPES`／`STAR_FX`／`wpStat`／`skStarK`；`tools/sim184.js` 跑真的 `wpnFire`／`skCast`（186 補：合格線 `LIMIT` ±15%，結果 `tools/sim186b_20p.txt`）、測試 `tools/t186.js`。
 - 特效層（191）：`#fxCv`（CSS 像素 ×1，不乘 DPR）、`fxPlan`（`assets/fx/plan.json`）／`fxImg`／`fxSet`／`fxL`／`fxGrp`、`fxPlay`／`fxLoop`（`FXQ`、`FX_MAX`）、`fxT(時機,x,y,情境)`／`fxOr`／`fxHas`、情境 `fxAtkC`／`fxSkCtx`／`fxCommon`、命中 `fxOnHit`（`fxHitKind`）、`fxProj`／`fxFly`／`fxFollowMe`、`fxBoomFlash`、`fxPreloadCur`／`fxRelease`、`wpnFire`→`wpnFire2`（`fxMute`）、`FX_TGT_A`／`FX_NO_TGT`／`FX_OWN_FINAL`、`skAct` 的 `cr`／`tr`／`sl`；**之後換特效只換 `assets/fx/` 的圖和 plan.json**；測試 `tools/t191.js`。
 - 領主、眷屬的招式特效（192）：`bossFx(b,時機)`（`plan.json` 的 `boss`：at／fit／along／ringN／each）、`bossFxGeo`、`bossFxAlong`、`bossFxCommon`（hitp／phase2／calm）、`bossFxWatch`（在 `bossPaint`，同一個 seq 播一次）、`bossFxPre`；測試 `tools/t192.js`。
-- 神寵跟隨（193）：`petSVG(p,size,flip)`（領主 idle 圖、`pet_<地區>_<0|1>.png` 優先，`petProbe`／`PET_IMG`、`petArt`、`PET_H`／`petHW`）、`petStep`（身後、滑過去）、3D 看板 `ground`（`w3d.js`）；測試 `tools/t193.js`。
+- 神寵跟隨（193）：`petSVG(p,size,flip)`（領主 idle 圖、`pet_<地區>_<0|1>.png` 優先，`petProbe`／`PET_IMG`、`petArt`、`PET_H`／`petHW`）、`petStep`（身後、203 起等速走 `PET_SPD`、`petMoved`）、踏步 `petWalkTf`（`.pwk`、`petRaf`）、`petLift`（塔羅斯離地 8）、3D 看板 `ground`（`w3d.js`）；測試 `tools/t193.js`。
 - 後六區領主（196）：`MAP_OF`／`bossMapHere`（每隻自己的地圖）、`LAI[def.ai]`（renard／bas／urso／orth／lep／talos）、新形狀 `bossHit2`／`bossShapeSVG2`（fan／ring／multi／all／sweep，`act` 狀態 `bossActTick`、`setT0`）、`bossAfterStrike`、`bossMul`／`bossInv`／`bossSlow`（`bossSlowK`）、場上物件 `bossParts`／`PSEUDO`／`partDealt`／`bossOdApply`（`od/<uid>`）、`fsNorm`、`bossIceBlock`、`bossDevourHit`；現身 `kujiToday`／`SHRINE_LANT`／`foxL`／`lordWonOthers`／`shrineOpen`、`basSteal`／`catLoop`／`catTap`、`urso196Tick`（`URSO_ICE`）、`orth196Tick`、`fullMoonDay`／`nextFullMoons`／`RABBIT`／`rabbitMissing`、`TALOS_KEYS`；`l196Objs`／`l196Tap`／`l196HTML`／`l196Action`（`sheet.l196`）、`l196Tick`（在 `tick`）、`l196Enter`；神社後院 `SAKURA_MAPS.shrine`、神官 `kannushi`；測試開關 `lord196Tool`（`data-tool="lord196"`、`fakeFull`）；測試 `tools/t196.js`。
 - 省電的特效（197）：`fxEcoL`、`fxMax()`（`FX_ECO_MAX` 16）；測試 `tools/t197.js`。
 - 神之子的技能（198）：`FY_SK`、`FYS`、`fySkTick`（在 `fyAtkTick` 前面）、`fySkDo`、`fyDeal`／`fyEnemies`／`fyNear`／`fyE`、`fyBuf`／`fyBufK`／`fyCdK`、`fyHitMod`（在 `monHit`、`bossDealt`）、`fyHurtMod`（在 `skHurt`）、`fyMonHold`／`fyAtkK`、`fyCharge`、大招 `fyUlt`／`fyUltPaint`（`#fyUlt`，在 `skPaint`）／`fyUltCard`／`fyCutIn`（`#fyCut`）、`fySkPaint`（`#fySkG`）、特效 `fyFx`／`fyFxPre`（`plan.json` 的 `fairy`）、同步 `fyAct.s`／`fySkRemote`、隊友 `fyFb`（presence `fb`）／`fyBuffRemote`／`FY_FB_R`、資訊頁 `fySkHTML`、學會了 `.fys-learn`；數值檢查 `tools/sim198.js`（≤35%）、測試 `tools/t198.js`。
@@ -415,3 +415,4 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 200 | 領主變難；神寵會普通攻擊；第 165 節作廢 | 已完成 | docs/規格存檔.md；21b（9.200）；22% 照近戰算（遠程吃滿）；21c 後四隻 hpK 照估計調到約 9 分鐘（奧索 460、歐特魯斯 610、蕾普絲 660、塔羅斯 1080；數字表在 9.200）；截圖沒存；沒測 iPhone、兩台手機 |
 | 201 | 劇情任務改版：第一季（序章～第三章）照《第一季劇情任務 v2》重寫 | 未定案 | docs/待實作/第201節.md＋第201節_劇情腳本.md；規格寫明劇情還沒定案、先不要實作（使用者 2026-11-23） |
 | 202 | 技能鍵換成畫好的圖示 | 已完成 | docs/規格存檔.md；21d（9.201）；技能鍵是暫時往上移才拍到（窗格拍不到最下面）、截圖沒存；長按小卡沒看；沒測 iPhone |
+| 203 | 神寵改成在地上走 | 已完成 | docs/規格存檔.md；21e（9.202）；主人停下來時神寵也會走到位（加了 `petRaf`）；3D 沒有踏步；截圖沒存；沒測 iPhone |

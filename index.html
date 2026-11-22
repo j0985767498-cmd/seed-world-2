@@ -1294,6 +1294,18 @@ body.h188.pnlOpen #hpBar,body.h188.shFull #hpBar,body.h188.pnlOpen #partyBox,bod
 /* 188.5 連擊數 */
 body.h188 #combo{right:14px;top:40%}
 /* ===== 188 結束 ===== */
+
+/* ===== 196：後六區的領主 ===== */
+.l196petal ellipse{animation:l196fall 3.2s linear infinite}
+@keyframes l196fall{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(-60px,900px) rotate(540deg)}}
+.l196fire{animation:l196fl .5s ease-in-out infinite alternate}
+@keyframes l196fl{0%{opacity:.75}100%{opacity:1}}
+body.l196fog #scene::after,body.l196dark #scene::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:3}
+body.l196fog::before{content:'';position:fixed;inset:0;background:rgba(236,244,250,.72);pointer-events:none;z-index:4}
+body.l196dark::before{content:'';position:fixed;inset:0;background:rgba(10,8,30,.5);pointer-events:none;z-index:4}
+.kuji{margin:8px 0;padding:10px 12px;border-radius:10px;background:#FFF8EA;border:1px solid #E0C89A;color:#5A3C1C;font-weight:700;line-height:1.8}
+.kuji p{margin:0}
+@media (prefers-reduced-motion:reduce){.l196petal ellipse,.l196fire{animation:none}}
 </style>
 </head>
 <body class="game">
@@ -1809,7 +1821,7 @@ function packKeys(l){
 }
 let DRAW_MU=null;/* 96：剛抽到的那顆是不是新突變（{k,v}），發芽判定時用 */
 function drawSeed(l){if(l.zs)unzipLot(l);DRAW_MU=null;{const m=lcMu(l);if(m&&rnd()*lc(l)<m){const k=Math.floor(rnd()*m),g=l.mseeds.splice(k,1)[0],md=(l.mmd||[]).splice(k,1)[0];DRAW_MU=md||{k:'?'};if(!l.mseeds.length){delete l.mseeds;delete l.mmd}return g}}if(l.seeds&&l.seeds.length)return l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0];l.count--;return child(l.m,l.f).g}
-function newGame(){state={wpn2:null,comboMax:0,mq183V:1,rv98:1,patV:1,fyopV:1,notes:{},rs134V:1,themeV:1,spV:1,nameV:1,n149V:1,dmgNum:true,miniMap:true,char2:false,rx157V:1,outfitRx:{},outfits:{},weapons:[],wpn:null,cam164V:1,autoPick:false,vnSpeed:'mid',potSel:'pot',autoPot:true,autoPotAt:0.3,fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
+function newGame(){state={wpn2:null,comboMax:0,mq183V:1,rv98:1,patV:1,fyopV:1,notes:{},rs134V:1,themeV:1,spV:1,lordWon:{},nameV:1,n149V:1,dmgNum:true,miniMap:true,char2:false,rx157V:1,outfitRx:{},outfits:{},weapons:[],wpn:null,cam164V:1,autoPick:false,vnSpeed:'mid',potSel:'pot',autoPot:true,autoPotAt:0.3,fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
 const WILD={tomato:'red',strawberry:'red',zucchini:'green',corn:'yellow',broccoli:'white',melon:'yellow',chili:'red',pumpkin:'yellow',eggplant:'purple'};
 function originalFor(crop){
   const wild=rnd()<0.7,col=wild?WILD[crop]:pk(['red','yellow','green','white','purple'].filter(c=>c!==WILD[crop]));
@@ -1944,6 +1956,7 @@ function migrate(o){try{m183(o)}catch(e){}/* 183 */if(typeof o.comboMax!=='numbe
   if(!o.rx157V){o.rx157V=1;try{m157(o)}catch(e){}}/* 157 */
   if(!o.cam164V){o.cam164V=1;if(typeof o.camZoom==='number')o.camZoom=1.15}/* 164：存過的野外鏡頭重設成 1.15 一次 */
   if(o.potSel==null)o.potSel='pot';if(o.autoPot==null)o.autoPot=true;if(o.autoPotAt==null)o.autoPotAt=0.3;/* 144 */
+  if(!o.lordWon||typeof o.lordWon!=='object')o.lordWon={};/* 196：讓各領主平靜下來的次數（列那的後院要看；從這版開始算） */
   if(!o.spV){o.spV=1;if(o.spirits&&typeof o.spirits==='object'){if(!o.items)o.items={};for(const bk in o.spirits)if(o.spirits[bk]>0)o.items['sp_'+bk]=(o.items['sp_'+bk]||0)+o.spirits[bk];delete o.spirits}}/* 135 第二階段：精魄改成道具（可以上架市集） *//* 137：田園小屋全部是免費裝飾，新舊玩家都直接「已擁有」（不用另外記） */
   if(!o.rs134V){o.rs134V=1;try{for(const k of Object.keys(o.rs||{})){const r=o.rs[k];if(r&&r.d>=3){r.paid=1;r.t=0}}}catch(e){}}/* 134：舊玩家第 3 步的 rw 已經給過，第 4 步不重複；第 4 步不用等 */
   try{if(o.rs&&o.rs.grass&&o.rs.grass.d>=3){if(!o.notes||typeof o.notes!=='object')o.notes={};if(!o.notes.L_grass){o.notes.L_grass=Date.now();o.noteNew=1}}}catch(e){}/* 130：割早的田已經完成的人補上「裂風」 */
@@ -2057,7 +2070,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-20t';
+const BUILD='2026-11-20y';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -3363,6 +3376,7 @@ function renderSheet(){
   if(sheet.give){sb.innerHTML=giveHTML();return}/* 117.2 */
   if(sheet.rnpc){sb.innerHTML=rnpcHTML();return}/* 121 */
   if(sheet.hatsuho){sb.innerHTML=hatsuhoHTML();return}/* 135 */
+  if(sheet.l196){sb.innerHTML=l196HTML();return}/* 196 */
   if(sheet.look){const o=sb.querySelector('.lks'),y=o?o.scrollTop:0,same=sheet._lt===(sheet.lt||'hair');sb.innerHTML=lookHTML();const n=sb.querySelector('.lks');if(n&&same)n.scrollTop=y;sheet._lt=sheet.lt||'hair';return}/* 171；180.2：格子重畫時捲動位置不跳 */
   if(sheet.me){sb.innerHTML=meSheetHTML();return}
   if(sheet.sellOld){sb.innerHTML=sellOldHTML();return}
@@ -3455,6 +3469,7 @@ sb.addEventListener('click',e=>{
   if(sheet.give)return giveAction(b);
   if(sheet.rnpc){if(b.dataset.act==='vdopen'){openVD();return}if(orderAction(b)&&sheet&&sheet.rnpc)renderSheet();return}/* 121 */
   if(sheet.hatsuho)return hatsuhoAction(b);/* 135 */
+  if(sheet.l196)return l196Action(b);/* 196 */
   if(sheet.wpick){if(b.dataset.act==='wpick')wpickDo(b.dataset.k);return}/* 159 */
   if(sheet.fyinfo){if(b.dataset.act==='fiall'){closeSheet();openFyPage()}else if(b.dataset.act==='fipop')fyPop(b);return}/* 148.2 */
   if(sheet.theme){if(b.dataset.act==='thgo'){const r=themeApply(b.dataset.k);if(r){closeSheet();closePanel()}else renderSheet()}else if(b.dataset.act==='close')closeSheet();return}/* 137 */
@@ -3674,7 +3689,7 @@ function tick(){
   try{rsvTick()}catch(e){}
   try{fixTick()}catch(e){}/* 115.5 */
   try{mq2Tick()}catch(e){}/* 116 */
-  try{fsTickAll();rsTick();noteTick();try{fyqTick()}catch(e){}/* 183 */try{comboTick()}catch(e){}/* 187 */try{wpn2Tick()}catch(e){}/* 190 */reg139Step();hatchTick();nestTick();qArrowCheck();qScan();pRegen();renderHP()}catch(e){}/* 118 */
+  try{fsTickAll();rsTick();noteTick();try{fyqTick()}catch(e){}/* 183 */try{comboTick()}catch(e){}/* 187 */try{wpn2Tick()}catch(e){}/* 190 */reg139Step();hatchTick();nestTick();l196Tick();/* 196 */qArrowCheck();qScan();pRegen();renderHP()}catch(e){}/* 118 */
   try{mq2KidTick()}catch(e){}/* 121 */
   try{mq2MarshTick()}catch(e){}/* 122 */
   try{roamWatch()}catch(e){}/* 91 */
@@ -3703,8 +3718,8 @@ function renderSpeed(){
   const el=document.getElementById('testBox');if(!el)return;
   if(!TEST_MODE){el.innerHTML='';return}
   const on=isTestMode();testTagUpd();
-  let h=`<h3 style="margin-top:0">回報問題</h3>${crashHTML()}<h3>音效</h3><button class="btn${SFX_ON?' primary':''}" data-tool="sfx">音效：${SFX_ON?'開':'關'}（按一下切換）</button><h3>省電模式</h3><button class="btn${ecoOn()?' primary':''}" data-tool="eco">省電模式：${ecoOn()?'開':'關'}（按一下切換）</button><p class="note">減少動畫，手機比較不會熱、比較省電${RMQ.matches?'（手機設定了「減少動態效果」，已經自動開啟）':''}</p><h3>3D 畫面</h3><button class="btn${W3D_USER?' primary':''}" data-tool="w3d">3D 畫面：${W3D_USER?'開':'關'}（按一下切換）</button><p class="note">目前只有翠風草原是 3D${W3D_ST===-1?'（這台裝置不能用 3D，已經用原本的畫法）':''}</p>${isTestMode()?`<button class="btn${W3D_SVG?' primary':''}" data-tool="w3dsvg">測試：強制 SVG：${W3D_SVG?'開':'關'}</button>`:''}${isStandalone()?'':`<h3>加到主畫面</h3><p class="note">把遊戲加到主畫面，打開就是全螢幕。${qh('iPhone：用 Safari 開，按下方的分享 → 加入主畫面。Android：Chrome 右上角選單 → 安裝應用程式（或加到主畫面）。')}</p>`}<h3>遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'標出機關和秘境，可以傳送。'+qh('只存在這台裝置，別人看不到。'):'和正式玩家看到的一樣。'}</p>`;
-  if(on){const e2=weaponsArr()[state.wpn];h+=`<h3>測試：武器階</h3><p class="note">直接改目前裝備的那把（${e2?WEAPONS[e2.crop].n+'，現在第 '+(e2.tier||1)+' 階':'沒有裝備武器'}）。3 階解鎖技能 2、4 階技能 1 強化、6 階覺醒。</p><div class="row2">${[1,2,3,4,5,6].map(v=>`<button class="mini${e2&&(e2.tier||1)===v?' on':''}" data-tool="wtier" data-v="${v}">${v}</button>`).join('')}</div><h3>測試：星星</h3><p class="note">照那把的兩種造型輪流塞（${e2?(WP_SHAPES[e2.crop]||[]).map(x=>SPN[x]).join('、')+'，現在 '+((e2.st||[]).length)+' 顆':'沒有裝備武器'}）。</p><div class="row2">${[0,3,6,9,12,15,18].map(v=>`<button class="mini${e2&&(e2.st||[]).length===v?' on':''}" data-tool="wstar" data-v="${v}">${v}</button>`).join('')}</div>`}/* 184、186 */
+  let h=`<h3 style="margin-top:0">回報問題</h3>${crashHTML()}<h3>音效</h3><button class="btn${SFX_ON?' primary':''}" data-tool="sfx">音效：${SFX_ON?'開':'關'}（按一下切換）</button><h3>省電模式</h3><button class="btn${ecoOn()?' primary':''}" data-tool="eco">省電模式：${ecoOn()?'開':'關'}（按一下切換）</button><p class="note">特效和動畫變少，比較不燙、比較省電。${RMQ.matches?'（手機設定了「減少動態效果」，已經自動開啟）':''}</p><h3>3D 畫面</h3><button class="btn${W3D_USER?' primary':''}" data-tool="w3d">3D 畫面：${W3D_USER?'開':'關'}（按一下切換）</button><p class="note">目前只有翠風草原是 3D${W3D_ST===-1?'（這台裝置不能用 3D，已經用原本的畫法）':''}</p>${isTestMode()?`<button class="btn${W3D_SVG?' primary':''}" data-tool="w3dsvg">測試：強制 SVG：${W3D_SVG?'開':'關'}</button>`:''}${isStandalone()?'':`<h3>加到主畫面</h3><p class="note">把遊戲加到主畫面，打開就是全螢幕。${qh('iPhone：用 Safari 開，按下方的分享 → 加入主畫面。Android：Chrome 右上角選單 → 安裝應用程式（或加到主畫面）。')}</p>`}<h3>遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'標出機關和秘境，可以傳送。'+qh('只存在這台裝置，別人看不到。'):'和正式玩家看到的一樣。'}</p>`;
+  if(on){const e2=weaponsArr()[state.wpn];h+=`<h3>測試：武器階</h3><p class="note">直接改目前裝備的那把（${e2?WEAPONS[e2.crop].n+'，現在第 '+(e2.tier||1)+' 階':'沒有裝備武器'}）。3 階解鎖技能 2、4 階技能 1 強化、6 階覺醒。</p><div class="row2">${[1,2,3,4,5,6].map(v=>`<button class="mini${e2&&(e2.tier||1)===v?' on':''}" data-tool="wtier" data-v="${v}">${v}</button>`).join('')}</div><h3>測試：領主（196）</h3><p class="note">到領主住的那張圖按「叫出來」（不看條件、清掉冷卻）。</p><div class="row2"><button class="mini" data-tool="lord196" data-v="summon">叫出來</button><button class="mini${fakeFull?' on':''}" data-tool="lord196" data-v="moon">假裝今天是滿月</button><button class="mini" data-tool="lord196" data-v="open">打開神社後院</button></div><h3>測試：星星</h3><p class="note">照那把的兩種造型輪流塞（${e2?(WP_SHAPES[e2.crop]||[]).map(x=>SPN[x]).join('、')+'，現在 '+((e2.st||[]).length)+' 顆':'沒有裝備武器'}）。</p><div class="row2">${[0,3,6,9,12,15,18].map(v=>`<button class="mini${e2&&(e2.st||[]).length===v?' on':''}" data-tool="wstar" data-v="${v}">${v}</button>`).join('')}</div>`}/* 184、186 */
   if(on)h+=`<h3>遠緣雜交</h3><button class="btn" data-tool="xc">跨界機率 100%：${(()=>{try{return localStorage.getItem('sw_xc')==='1'}catch(e){return false}})()?'開啟':'關閉'}（按一下切換）</button>`;
   if(on)h+=`<h3>櫻花之丘</h3><button class="btn" data-tool="sklook">花季外觀：${sakuraLook()?'櫻花（花季）':'綠葉（花季外）'}（按一下切換，只換畫面）</button><p class="note">測試模式沒有季節限制。<button type="button" class="qh" aria-expanded="false" aria-label="說明">？</button><span class="qhx" hidden>今天實際${sakuraBloom()?'是':'不是'}花季（每年 ${SAKURA_SEASON.from.join('/')}～${SAKURA_SEASON.to.join('/')}）。</span></p>`;
   if(on)h+=`<h3>會影響存檔的測試工具</h3><p class="note">用了存檔會和一般玩家不一樣。${qh('切回一般模式時，時間加速當 ×1、探索上限當開啟。')}</p><p class="note" style="margin:6px 0 2px">時間加速</p><div class="row2" style="grid-template-columns:repeat(4,1fr)">${SPEEDS.map(v=>`<button class="btn${state.speed===v?' primary':''}" data-spd="${v}">×${v}</button>`).join('')}</div>
@@ -4997,7 +5012,7 @@ function potChoose(k){if(!POT_TYPES.some(x=>x.k===k))return;state.potSel=k;save(
 function autoPotCheck(){try{if(!state||state.autoPot===false||scene!=='explore'||pHP<=0)return false;const at=state.autoPotAt||0.3;if(pHP>=pMax()*at||Date.now()<potCd)return false;const k=potPick();if(!((state.items||{})[k]>0))return false;
   if(!drinkPot(k,true))return false;const pb=document.getElementById('potBtn');if(pb){pb.classList.remove('flash');void pb.offsetWidth;pb.classList.add('flash')}return true}catch(e){return false}}
 function renderPotBox(){const el=document.getElementById('potBox');if(!el||!state)return;const on=state.autoPot!==false,at=state.autoPotAt||0.3;
-  el.innerHTML=`<h3>自動喝補血藥</h3><button class="btn${on?' primary':''}" data-ap="tog">自動喝補血藥：${on?'開':'關'}</button><div class="row2" style="margin-top:6px">${[0.2,0.3,0.5].map(v=>`<button class="mini" data-ap="${v}" aria-pressed="${at===v}" style="${at===v?'background:var(--tabon);color:var(--tabtx)':''}">血量低於 ${Math.round(v*100)}%</button>`).join('')}</div><p class="note">在野外（包括打主的時候），血量低於這條線就自動喝一瓶。</p><h3>傷害數字</h3><button class="btn${state.dmgNum!==false?' primary':''}" data-ap="dmg">顯示傷害數字：${state.dmgNum!==false?'開':'關'}</button><h3>顯示出手點（測試）</h3><button class="btn${mzShow?' primary':''}" data-ap="mz">遠程武器的出手點畫紅點：${mzShow?'開':'關'}</button>`}/* 179.2 *//* 152 */
+  el.innerHTML=`<h3>自動喝補血藥</h3><button class="btn${on?' primary':''}" data-ap="tog">自動喝補血藥：${on?'開':'關'}</button><div class="row2" style="margin-top:6px">${[0.2,0.3,0.5].map(v=>`<button class="mini" data-ap="${v}" aria-pressed="${at===v}" style="${at===v?'background:var(--tabon);color:var(--tabtx)':''}">血量低於 ${Math.round(v*100)}%</button>`).join('')}</div><p class="note">在野外（包括打領主的時候），血量低於這條線就自動喝一瓶。</p><h3>傷害數字</h3><button class="btn${state.dmgNum!==false?' primary':''}" data-ap="dmg">顯示傷害數字：${state.dmgNum!==false?'開':'關'}</button><h3>顯示出手點（測試）</h3><button class="btn${mzShow?' primary':''}" data-ap="mz">遠程武器的出手點畫紅點：${mzShow?'開':'關'}</button>`}/* 179.2 *//* 152 */
 try{document.getElementById('potBox').addEventListener('click',e=>{const b=e.target.closest('[data-ap]');if(!b||!state)return;if(b.dataset.ap==='tog')state.autoPot=state.autoPot===false;else if(b.dataset.ap==='dmg')state.dmgNum=state.dmgNum===false;else if(b.dataset.ap==='pick')state.autoPick=!state.autoPick;else if(b.dataset.ap==='mz'){mzToggle();renderPotBox();return}else state.autoPotAt=+b.dataset.ap;save();renderPotBox()})}catch(e){}
 /* 頭上的細血條（野外、血量不滿才有） */
 function hpHeadG(){if(!state||scene!=='explore'||pHP>=pMax())return '';const m=curMe(),w=40,f=Math.max(0,pHP/pMax());return `<g id="hpHead" transform="translate(${Math.round(m.x)} ${Math.round(m.y+(char2On()?char2TagDY()*CHAR_S:0))})" pointer-events="none"><rect x="${-w/2}" y="-108" width="${w}" height="5" rx="2.5" fill="#3B2614"/><rect id="hpHeadF" x="${-w/2+1}" y="-107" width="${((w-2)*f).toFixed(1)}" height="3" rx="1.5" fill="${f<0.3?'#E0463B':'#7FBF4A'}"/></g>`}
@@ -6236,6 +6251,7 @@ const TOWN_NPC=[
   {id:'cguard',n:'教團守衛',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:1,face:4,hair:10,hairC:0,hat:0,top:3,topC:7,bottom:0,bottomC:7,shoe:6,shoeC:12},line:'外人不准靠近。'},
   {id:'granny',n:'聚落的老婆婆',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:1,face:1,hair:14,hairC:7,hat:0,top:11,topC:9,bottom:7,bottomC:9,shoe:1,shoeC:12},line:'外面來的人，都說這裡會天亮。'},
   {id:'pounder',n:'搗藥的人',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:0,face:4,hair:2,hairC:7,hat:0,top:20,topC:9,bottom:7,bottomC:9,shoe:1,shoeC:12},line:'兔子還在搗，我們就還在。'},
+  {id:'kannushi',n:'神社的神官',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:0,face:1,hair:10,hairC:0,hat:0,top:20,topC:0,bottom:7,bottomC:6,shoe:1,shoeC:6},line:'後院是狐大人住的地方。'},/* 196：男、狩衣（換裝沒有狩衣，先用白色斗篷＋寬褲） */
   {id:'miko',n:'神社的巫女',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:0,face:5,hair:14,hairC:0,hat:0,top:20,topC:6,bottom:7,bottomC:2,shoe:1,shoeC:6},line:'這裡不歡迎教會的人。'},
   {id:'oasisp',n:'綠洲的住民',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:4,face:1,hair:6,hairC:0,hat:5,hatC:6,top:11,topC:6,bottom:7,bottomC:6,shoe:3,shoeC:12},line:'水越來越少了。'},
   {id:'miner',n:'礦工',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:3,face:6,hair:6,hairC:0,hat:1,hatC:12,top:19,topC:12,bottom:3,bottomC:7,shoe:0,shoeC:12},line:'再往下挖一點就好。'},
@@ -6450,7 +6466,7 @@ const SAKURA_MAPS={
     suns:[[410,600,220,160]],petal:[[680,600],[120,950],[600,200]],
     spawns:[[680,480],[600,950],[110,560],[250,1000]],items:[[720,780]]},
   pagoda:{n:'神社',gx:2,gy:-1,v2:1,/* 139.6：古寺改名神社（id 不變）；中央拜殿、五重塔移到旁邊、拜殿後面的小門通狐火庭 */
-    exits:[{side:'s',c:420,w:120,to:'garden'},{side:'n',c:400,w:120,to:'ancient'},{door:[384,300,416,324],arrive:[400,250],to:'secret'}],
+    exits:[{side:'s',c:420,w:120,to:'garden'},{side:'n',c:400,w:120,to:'ancient'},{door:[384,300,416,324],arrive:[400,250],to:'secret'},{side:'e',c:632,w:120,to:'shrine',gate:'shrine'}],
     paths:[{p:[[420,1150],[410,900],[400,700],[400,470]],w:50,end:'dirt'},{p:[[400,700],[580,610],[610,360],[490,200],[400,90],[400,-40]],w:46},{p:[[490,220],[400,250],[400,300]],w:34,end:'dirt'}],
     objs:[['haiden',400,440],['pagoda',180,470],['lantern',340,560],['lantern',460,560],['lantern',340,760],['lantern',460,760],['sakura_big',120,760],['sakura_big',640,860,null,{fl:1}],['sakura_big',190,940]],
     groves:[[690,230,2,40]],
@@ -6668,13 +6684,21 @@ const RUINS_MAPS={/* 143（19i）：失落的高文明城市（素材 assets/rui
     spawns:[[260,420],[540,420],[300,720]],items:[[180,760],[620,760]]}
 };
 /* ---- 櫻花之丘：狐火庭（神社後院，第 139.5 節） ---- */
-const SAKURA_SECRET={n:'狐火庭',gx:3,gy:-1,v2:1,secret:1,rare:0.25,ground:'#8FAE72',foxLanterns:[400,560,170],grave:[400,250],
+const SAKURA_SECRET={n:'狐火庭',gx:1,gy:-1,/* 196：(3,-1) 給神社後院，狐火庭在地區地圖上移到神社左邊（入口照舊是神社的門） */v2:1,secret:1,rare:0.25,ground:'#8FAE72',foxLanterns:[400,560,170],grave:[400,250],
   exits:[{side:'s',c:400,w:120,to:'pagoda'}],
   paths:[{p:[[400,1150],[400,900],[400,720]],w:44}],
   objs:[['lantern',230,560],['lantern',280,430],['lantern',400,390],['lantern',520,430],['lantern',570,560],['sakura_weep',140,320],['sakura_weep',660,320,null,{fl:1}],['sakura_big',150,900],['sakura_big',650,900,null,{fl:1}],['boulder',260,760,null,{s:0.6}],['boulder',560,780,null,{s:0.55}]],
   groves:[[150,600,2,40],[660,620,2,40]],meadows:[[400,560,8,160,80,1]],suns:[[400,560,260,180]],
   spawns:[[260,680],[540,680],[400,820]],items:[[200,960],[600,960]]};
 SAKURA_MAPS.secret=SAKURA_SECRET;
+/* 196：神社後院（列那、gx3 gy-1，接在神社右邊；竹籬門要神官開）。石燈籠 5 盞排成半圓、老櫻樹、竹籬，中間半徑 140 的空地是戰場 */
+SAKURA_MAPS.shrine={n:'神社後院',gx:3,gy:-1,v2:1,secret:1,rare:0.25,ground:'#7E9C6C',foxLanterns:[400,640,210],
+  exits:[{side:'w',c:632,w:120,to:'pagoda'}],
+  paths:[{p:[[50,632],[200,640],[400,640]],w:40}],
+  objs:[['lantern',190,640],['lantern',251,520],['lantern',400,470],['lantern',549,520],['lantern',610,640],['sakura_ancient',400,250],['bamboo',110,250],['bamboo',690,250],['bamboo',110,1000],['bamboo',690,1000],['boulder',230,880,null,{s:0.55}],['boulder',580,900,null,{s:0.5}],['sakura_weep',660,420,null,{fl:1}]],
+  groves:[[150,900,2,40],[650,880,2,40]],meadows:[[400,640,6,160,80,1]],suns:[[400,640,260,180]],
+  spawns:[],items:[[300,960],[520,980]]};
+
 const REGION_MAPS={volcano:VOLCANO_MAPS,canyon:CANYON_MAPS,ruins:RUINS_MAPS,snow:SNOW_MAPS,grass:GRASS_MAPS,forest:FOREST_MAPS,desert:DESERT_MAPS,marsh:MARSH_MAPS,sakura:SAKURA_MAPS,town:TOWN_MAPS};/* town 沒有 entry，所以 regHas('town') 是 false，探索流程不會用到 */
 const REGION_ART={volcano:VOLCANO_ART,canyon:CANYON_ART,ruins:RUINS_ART,snow:SNOW_ART,grass:GRASS_ART,forest:FOREST_ART,desert:DESERT_ART,marsh:MARSH_ART,sakura:SAKURA_ART,town:TOWN_ART},REGION_IMG={volcano:VOLCANO_IMG,canyon:CANYON_IMG,ruins:RUINS_IMG,snow:SNOW_IMG,grass:GRASS_IMG,forest:FOREST_IMG,desert:DESERT_IMG,marsh:MARSH_IMG,sakura:SAKURA_IMG,town:TOWN_IMG},REGION_FLAT={volcano:VOLCANO_FLAT,canyon:CANYON_FLAT,ruins:RUINS_FLAT,snow:SNOW_FLAT,grass:GRASS_FLAT,forest:FOREST_FLAT,desert:DESERT_FLAT,marsh:MARSH_FLAT,sakura:SAKURA_FLAT,town:TOWN_FLAT},REGION_SWAY={volcano:VOLCANO_SWAY,canyon:CANYON_SWAY,ruins:RUINS_SWAY,snow:SNOW_SWAY,grass:GRASS_SWAY,forest:FOREST_SWAY,desert:DESERT_SWAY,marsh:MARSH_SWAY,sakura:SAKURA_SWAY,town:TOWN_SWAY},REGION_GLOW={canyon:{lantern:1,glowtree:0.5,glowmush:1,gcrystal:0.6,crystal:0.5},volcano:{},ruins:{altar:0.8},sakura:{lantern:1,lanterns:0.7},snow:{glow:1,ped:0.8},grass:{glowflower:0.6,ped:0.8},forest:{glowmush:1,spirit:0.62,ped:0.8,campfire:0.5},desert:{altar:0.8,ped:0.8,torch:0.86},marsh:{lantern:1,glowmush:1,glotus:0.5,ped:0.8,fireflyjar:0.5},town:TOWN_GLOW};
 const REGION_CFG={
@@ -7477,7 +7501,7 @@ function regTestHTML(M){
   if(M.slick){tag(M.slick[0],M.slick[1]-M.slick[2]-6,'機關：特別滑的冰（從南邊往北滑，停在冰岩下，再往西）');tag(M.island[0],M.island[1]-34,'小島（缺口在東邊）')}
   if(M._stn&&M._stn.length)tag(M._stn[0][0],M._stn[0][1]-30,'機關：踏腳石漣漪');
   return L.join('')}
-function regTap(k){if(k==='lordoffer'){lordOfferTap();return}/* 135 */if(k==='rnpc'){riddleTap();return}/* 66 */if(String(k).startsWith('npc:')){regNpcTap(String(k).slice(4));return}/* 121 */if(k==='roam'){roamTap();return}/* 91 */
+function regTap(k){if(k==='lordoffer'){lordOfferTap();return}/* 135 */if(String(k).startsWith('l196:')){l196Tap(k);return}/* 196 */if(k==='rnpc'){riddleTap();return}/* 66 */if(String(k).startsWith('npc:')){regNpcTap(String(k).slice(4));return}/* 121 */if(k==='roam'){roamTap();return}/* 91 */
   if(k==='shrine'){const M=regCur(),T=M.secTrig;if(!T||!T.shrine)return;const m=curMe(),[x,y]=T.shrine,go=()=>{sheet={shr:1};renderSheet();openSheetUI()};
     if(Math.hypot(m.x-x,m.y-(y+30))<90)go();else walkTo(x,y+34,go)}
 }
@@ -7583,6 +7607,7 @@ function regWorld(){
 function regBlocked(M,x,y){
   const B=M.B;if(x<B.x0||x>B.x1||y<B.y0||y>B.y1)return true;
   if(bossWalkOk(M,x,y))return false;/* 135：艾克希爾的荷葉路 */
+  if(bossIceBlock(M,x,y))return true;/* 196：奧索的冰柱 */
   if(M._FL&&!M._FL.some(p=>v2pip(p,x,y)))return true;
   {const R=M.id===(RIDDLE[M.bk]||{}).map?RIDDLE[M.bk]:null;if(R&&Math.abs(x-R.x)<14&&Math.abs(y-R.y)<6)return true}/* 66：謎語 NPC 擋路 */
   for(const r of M.wlk)if(x>=r[0]&&x<=r[2]&&y>=r[1]&&y<=r[3])return false;/* 橋、石階、木棧道上可以走 */
@@ -7602,7 +7627,7 @@ function regBlocked(M,x,y){
 function regExitAt(M,x,y){
   const B=M.B;if(regSealed(M))return null;/* 135：主的戰鬥中、神隱之森起霧時出口封住 */
   for(const e of M.exits){
-    if(e.trig||(e.need&&!secOpen(M.bk)))continue;
+    if(e.trig||(e.need&&!secOpen(M.bk))||(e.gate==='shrine'&&!shrineOpen()))continue;/* 196：神社後院的竹籬門 */
     if(e.door){if(x>=e.door[0]&&x<=e.door[2]&&y>=e.door[1]&&y<=e.door[3])return e;continue}
     const h=e.w/2;
     if(e.side==='n'&&y<B.y0&&Math.abs(x-e.c)<=h)return e;if(e.side==='s'&&y>B.y1&&Math.abs(x-e.c)<=h)return e;
@@ -7811,17 +7836,31 @@ function goMarket(){try{bossLeave()}catch(e){}/* 135 */
    hb/<uid>（每秒心跳，伺服器時間）、down/<uid>（倒下或離開）。血量＝max－所有人 dmg 加總。主機心跳超過 4 秒沒更新 → 還在的成員裡 uid 最小的接手。
    成員＝主現身那一刻在同一張地圖（presence）的人；之後才進來的看不到、不算。只有觸發的人消耗東西。輸贏由主機判斷（血量歸零贏；15 分鐘或全員倒下輸）。
    全服第一次：fairyFirst/lord_<主id>（沿用第 114 節的規則，不用改規則）。精魄孵化、神寵、卡包、米涅瓦的巢是第二階段。 ===== */
-const BOSS_IMG={servant_grass:[414,465],servant_forest:[468,415],servant_marsh:[557,414],lord_grass:[363,343],lord_forest:[401,397],lord_marsh:[338,420]};
+const BOSS_IMG={servant_grass:[414,465],servant_forest:[468,415],servant_marsh:[557,414],lord_grass:[363,343],lord_forest:[401,397],lord_marsh:[338,420],lord_sakura:[321,387],lord_desert:[338,365],lord_snow:[357,427],lord_volcano:[326,393],lord_canyon:[349,487],lord_ruins:[360,404],lord_ruins1:[463,459],lord_ruins2:[478,459],servant_sakura:[483,404],servant_desert:[438,438],servant_snow:[467,311],servant_volcano:[471,423],servant_canyon:[431,349],servant_ruins:[447,374]};/* 196 */
 const BOSS_HU=62;/* 角色的顯示高度（px），僕人、主照倍數 h */
 const BOSS_RESPAWN=5*60e3,LORD_LIMIT=15*60e3,LORD_CD=20*3600e3,LORD_HP_K=0.7,BOSS_REACH=46,BOSS_SPD=60,LORD_HB_DEAD=4000,LORD_STALE=30e3;
 const SERVANTS={
  grass:{art:'servant_grass',n:'刈穗螳',h:1.5,at:[560,700],arena:[556,696],mat:'jadeblade',gold:'jadesickle',hpK:25,dmgK:1.5,atk:['cross','hide','spin'],noHit:1,bye:'刈穗螳碎成一地翡翠色的穗。'},
  forest:{art:'servant_forest',n:'喚名鴉',h:1.4,at:[400,960],arena:[372,936],mat:'ravenfeather',gold:'silvereye',hpK:25,dmgK:1.5,atk:['dive','flock','fake'],call:1,bye:'喚名鴉飛走了，留下幾根黑羽。'},
- marsh:{art:'servant_marsh',n:'鷺守',h:2.0,at:[400,338],arena:[436,600],arenaR:80,/* 162：潟湖秘境沒有半徑 120 的空地，最近的是半徑 80 */mat:'pearlplume',gold:'heroncrest',hpK:25,dmgK:1.5,atk:['thrust','wave','guard'],fixed:1,bye:'鷺守飛走了，留下幾根羽毛。'}};
+ marsh:{art:'servant_marsh',n:'鷺守',h:2.0,at:[400,338],arena:[436,600],arenaR:80,/* 162：潟湖秘境沒有半徑 120 的空地，最近的是半徑 80 */mat:'pearlplume',gold:'heroncrest',hpK:25,dmgK:1.5,atk:['thrust','wave','guard'],fixed:1,bye:'鷺守飛走了，留下幾根羽毛。'},
+ /* 196：後六區。鎮社獅在神社（後院門口），門還沒開也打得到；抽火傀儡不是眷屬（puppet） */
+ sakura:{art:'servant_sakura',n:'鎮社獅',h:1.4,map:'pagoda',at:[700,632],arena:[596,632],mat:'sakuramoss',gold:'shrinebell',hpK:25,dmgK:1.5,atk:['lpounce','roar','stone'],bye:'鎮社獅變回石像，腳邊落下幾塊長著青苔的石片。'},
+ desert:{art:'servant_desert',n:'金蛇衛',h:1.6,at:[396,560],arena:[396,640],mat:'snakescale',gold:'snakeeye',hpK:25,dmgK:1.5,atk:['hood','sandl','coil'],bye:'金蛇衛鑽回沙裡，留下幾片金色的鱗。'},
+ snow:{art:'servant_snow',n:'晶脊蜥',h:1.2,at:[404,700],arena:[404,760],mat:'crystalspine',gold:'icecore',hpK:25,dmgK:1.5,atk:['tail','spikes','spring'],bye:'晶脊蜥鑽進溫泉不見了，水面浮著幾根透明的刺。'},
+ volcano:{art:'servant_volcano',n:'抽火傀儡',h:1.8,at:[404,700],arena:[404,792],mat:'ironlink',gold:'redshard',hpK:25,dmgK:1.5,atk:['chainl','furnace','siphon'],puppet:1,bye:'抽火傀儡散成一地黑鐵零件……過一會兒，零件又自己爬回去組了起來。'},
+ canyon:{art:'servant_canyon',n:'玉蟾',h:1.2,at:[396,520],arena:[396,600],mat:'toadskin',gold:'moonpearl',hpK:25,dmgK:1.5,atk:['jpress','mbeam','shell'],bye:'玉蟾縮進殼裡，慢慢沉進地底，留下一片玉色的皮。'},
+ ruins:{art:'servant_ruins',n:'虹眼哨兵',h:1.3,at:[392,640],arena:[392,728],mat:'oldpart',gold:'rainbowcore',hpK:25,dmgK:1.5,atk:['scan','split','overheat'],bye:'虹眼哨兵的眼睛暗了下來，掉下幾個古代零件。'}};
 const LORDS={
  grass:{id:'kronos',art:'lord_grass',n:'裂風的克洛諾斯',title:'草原的風神',h:1.5,arena:[396,648],glow:'#7FE3B0',hpK:250,dmgK:2,atk:['combo','cross','spin'],atk2:'gale',cons:1,at:[400,650]},
  forest:{id:'minerva',art:'lord_forest',n:'霧隱的米涅瓦',title:'霧裡的梟',h:1.7,arena:[404,704],glow:'#C9D8FF',hpK:250,dmgK:2,atk:['decoy','dive','flock'],atk2:'fogdive',at:[400,600]},
- marsh:{id:'exhir',art:'lord_marsh',n:'凝露的艾克希爾',title:'水上的白鹿',h:2.0,glow:'#9FE7FF',hpK:250,dmgK:2,atk:['charge','wave','tide'],atk2:'tide2',at:[400,250],c:[400,520]}};
+ marsh:{id:'exhir',art:'lord_marsh',n:'凝露的艾克希爾',title:'水上的白鹿',h:2.0,glow:'#9FE7FF',hpK:250,dmgK:2,atk:['charge','wave','tide'],atk2:'tide2',at:[400,250],c:[400,520]},
+ /* 196：後六區（打法照第 195 節、巴絲 135.13；各自的規則在 LAI[ai]） */
+ sakura:{id:'renard',art:'lord_sakura',n:'緋尾的列那',title:'櫻花之丘的白狐',h:1.7,map:'shrine',arena:[400,640],glow:'#FFC8DC',hpK:250,dmgK:2,atk:['fbolt','blink'],atk2:'hanaarashi',cons:1,at:[400,620],ai:'renard'},
+ desert:{id:'bastet',art:'lord_desert',n:'金瞳的巴絲',title:'沙海的黑貓',h:1.5,arena:[396,640],glow:'#F2D08A',hpK:250,dmgK:2,atk:['gaze','pounce3','dim'],atk2:'gaze2',at:[396,600],ai:'bas'},
+ snow:{id:'urso',art:'lord_snow',n:'永凍的奧索',title:'冰洞裡的白熊',h:2.0,map:'cave2',arena:[400,704],glow:'#D6ECFF',hpK:250,dmgK:2,atk:['stomp','icharge','breath'],atk2:'blizzard',at:[400,660],ai:'urso'},
+ volcano:{id:'orthrus',art:'lord_volcano',n:'噬火的歐特魯斯',title:'被鎖住的獒犬',h:1.8,arena:[404,792],glow:'#FFA27A',hpK:250,dmgK:2,atk:['csweep','ffan','frain','bite','dcharge'],atk2:'devour',at:[404,792],ai:'orth'},
+ canyon:{id:'leporis',art:'lord_canyon',n:'不眠的蕾普絲',title:'月下的星座兔',h:1.6,arena:[396,600],glow:'#E8D7FF',hpK:250,dmgK:2,atk:['kick','land','crescent','lrest'],atk2:'fullmoon',at:[396,600],ai:'lep'},
+ ruins:{id:'talos',art:'lord_ruins1',n:'太古的塔羅斯',title:'遺城的神兵',h:2.3,arena:[392,728],glow:'#C7B8FF',hpK:300,dmgK:2,atk:['sbash','quake','clock','frag','tdash','blades'],atk2:'wingult',cons:1,at:[392,700],ai:'talos'}};
 const bossSrc=(art,pose)=>`assets/boss/${art}_${pose}.png?v=${BUILD}`;
 /* ---- 招式：shape(b,tx,ty) 回傳地上的範圍；wind＝蓄力毫秒（≥800） ---- */
 const BATK={
@@ -7840,11 +7879,61 @@ const BATK={
  fogdive:{wind:1000,dmg:1.3,track:600,shape:(b,tx,ty)=>({t:'circle',x:tx,y:ty,r:70,shadow:1,decoys:bDecoys(b,tx,ty,3)})},
  charge:{wind:1000,dmg:1.2,move:1,shape:(b,tx,ty)=>bLine(b.x,b.y,tx,ty,520,70)},/* 艾克希爾：在水面上奔跑 */
  tide:{wind:1500,dmg:1,shape:b=>({t:'out',x:b.cx,y:b.cy,r:210})},/* 漲潮：島中間才安全 */
- tide2:{wind:1200,dmg:1.2,shape:b=>({t:'circle',x:b.cx,y:b.cy,r:200})}};/* 退潮：島中間被打，要站到邊上或荷葉路 */
+ tide2:{wind:1200,dmg:1.2,shape:b=>({t:'circle',x:b.cx,y:b.cy,r:200})},
+ /* ---- 196：後六區眷屬（抽火傀儡）的招 ---- */
+ lpounce:{wind:900,dmg:1.1,move:1,shape:(b,tx,ty)=>circ(tx,ty,75)},/* 鎮社獅：撲擊（前腳抬起才撲） */
+ roar:{wind:1000,dmg:1,shape:b=>circ(b.x,b.y,150)},/* 吼聲：一圈花瓣往外推 */
+ stone:{wind:0,guard:3000,dmg:0,shape:()=>null},/* 石化：3 秒打不動 */
+ hood:{wind:900,dmg:1.1,shape:(b,tx,ty)=>bLine(b.x,b.y,tx,ty,260,60)},/* 金蛇衛：張帽突咬 */
+ sandl:{wind:1000,dmg:1,shape:(b,tx,ty)=>bLine(b.x,b.y,tx,ty,620,80)},/* 噴沙 */
+ coil:{wind:0,guard:2500,guardK:0.35,dmg:0,shape:()=>null},/* 盤身防禦：從縫隙打（傷害 ×0.35） */
+ tail:{wind:900,dmg:1.1,shape:b=>({t:'half',x:Math.round(b.x),y:Math.round(b.y),w:170,h:150,side:-b.face})},/* 晶脊蜥：甩尾（打後面） */
+ spikes:{wind:1000,dmg:1,shape:(b,tx,ty)=>fanTo(b,tx,ty,300,0.35)},/* 晶刺射擊 */
+ spring:{wind:900,dmg:1.2,hide:2500,shape:b=>circ(b.x,b.y,85)},/* 鑽進溫泉：冒泡的地方竄出 */
+ chainl:{wind:1000,dmg:1,shape:(b,tx,ty)=>bLine(b.x,b.y,tx,ty,420,50)},/* 抽火傀儡：甩鏈 */
+ furnace:{wind:1300,dmg:1.2,shape:(b,tx,ty)=>fanTo(b,tx,ty,260,0.4)},/* 爐火噴發 */
+ siphon:{wind:1200,dmg:0,heal:0.04,shape:()=>null},/* 抽取：回一點血 */
+ jpress:{wind:1100,dmg:1.2,move:1,shape:(b,tx,ty)=>circ(tx,ty,85,{shadow:1})},/* 玉蟾：跳壓 */
+ mbeam:{wind:1000,dmg:1,shape:(b,tx,ty)=>bLine(b.x,b.y,tx,ty,620,60)},/* 吐月光 */
+ shell:{wind:0,guard:2500,dmg:0,shape:()=>null},/* 縮進玉殼 */
+ scan:{wind:900,dmg:1,dur:1500,shape:(b,tx,ty)=>{const a=A2(b.x,b.y,tx,ty);return {t:'sweep',x:Math.round(b.x),y:Math.round(b.y),r:320,w:46,a0:a-Math.PI/2,dir:1,span:Math.PI,dur:1500}}},/* 虹眼哨兵：掃射 */
+ split:{wind:1000,dmg:0.9,shape:(b,tx,ty)=>({t:'multi',L:[0,1,2].map(i=>{const a=i*Math.PI*2/3+bRnd(b);return circ(tx+Math.cos(a)*60,ty+Math.sin(a)*48,55)})})},/* 分裂：三個小球 */
+ overheat:{rest:4000,dmg:0,shape:()=>null},/* 過熱：停機 4 秒 */
+ /* ---- 196：後六區領主 ---- */
+ fbolt:{wind:1000,dmg:1,shape:(b,tx,ty)=>{const F=b.fs?LAI.renard.lit(b):[];const f=F.length?F[Math.floor(bRnd(b)*F.length)]:b;return bLine(f.x,f.y,tx,ty,520,60)}},/* 列那：狐火彈（從亮著的狐火吐） */
+ blink:{wind:900,dmg:1.2,move:1,shape:b=>{const F=((b.fs&&b.fs.P)||[]).filter(f=>Math.hypot(f.x-b.x,f.y-b.y)>40);const f=F.length?F[Math.floor(bRnd(b)*F.length)]:{x:b.cx,y:b.cy};return {t:'line',x0:Math.round(b.x),y0:Math.round(b.y),x1:Math.round(f.x),y1:Math.round(f.y+20),w:56}}},/* 穿梭：移到另一盞狐火，路上劃一刀 */
+ hanaarashi:{wind:1600,dmg:1.3,ult:1,shape:b=>({t:'all',safe:((b.fs&&b.fs.P)||[]).filter(f=>f.hp<=0).map(f=>[f.x,f.y,70])})},/* 花嵐：只有熄掉的狐火留下的灰燼圈安全 */
+ gaze:{wind:900,dmg:0.6,dur:2000,slow:3000,mark:1,shape:(b,tx,ty)=>{const a=A2(b.x,b.y,tx,ty),d=bRnd(b)<0.5?1:-1;return {t:'sweep',x:Math.round(b.x),y:Math.round(b.y),r:340,w:70,a0:a-d*1.1,dir:d,span:2.2,dur:2000}}},/* 巴絲：凝視（金光掃過去，被掃到變慢、被盯住） */
+ gaze2:{wind:1100,dmg:0.8,dur:2200,slow:3000,mark:1,ult:1,shape:(b,tx,ty)=>{const a=A2(b.x,b.y,tx,ty),x=Math.round(b.x),y=Math.round(b.y);return {t:'multi',L:[{t:'sweep',x,y,r:340,w:64,a0:a-1.2,dir:1,span:2.4,dur:2200},{t:'sweep',x,y,r:340,w:64,a0:a+Math.PI+1.2,dir:-1,span:2.4,dur:2200}]}}},/* 雙重凝視 */
+ pounce3:{wind:800,dmg:1,rep:3,move:1,shape:(b,tx,ty)=>circ(tx,ty,70)},/* 撲三下 */
+ dim:{rest:3000,rest2:2000,dmg:0,shape:()=>null},/* 金瞳暗下來 */
+ stomp:{wind:1200,dmg:1,shape:b=>{const n=b.ph===2?7+Math.floor(bRnd(b)*3):4+Math.floor(bRnd(b)*3);return {t:'multi',L:Array.from({length:n},()=>{const p=arenaPt(b,200);return circ(p[0],p[1],40,{shadow:1})})}}},/* 奧索：踩踏落冰柱 */
+ icharge:{wind:1500,dmg:1.3,move:1,rep:b=>b.ph===2?2:1,shape:(b,tx,ty)=>bLine(b.x,b.y,tx,ty,520,80)},/* 衝撞 */
+ breath:{wind:1100,dmg:1,slow:3000,cover:1,shape:(b,tx,ty)=>fanTo(b,tx,ty,280,0.45)},/* 冰息 */
+ blizzard:{wind:1000,dmg:0,ult:1,shape:()=>null},/* 暴風雪 */
+ csweep:{wind:1100,dmg:1,shape:b=>circ(b.x,b.y,Math.min(260,LAI.orth.chain(b)))},/* 歐特魯斯：鏈掃 */
+ ffan:{wind:1000,dmg:1.1,shape:(b,tx,ty)=>fanTo(b,tx,ty,260,0.4)},/* 噴火（留火池） */
+ frain:{wind:1100,dmg:0.9,shape:b=>{const n=Math.max(1,Math.round(8*(1-LAI.orth.broken(b)/4)));return {t:'multi',L:Array.from({length:n},()=>{const p=arenaPt(b,220);return circ(p[0],p[1],45)})}}},/* 火雨 */
+ bite:{wind:800,dmg:1.3,move:1,shape:(b,tx,ty)=>circ(tx,ty,70)},/* 撲咬 */
+ dcharge:{wind:800,dmg:1.2,rep:2,move:1,shape:(b,tx,ty)=>bLine(b.x,b.y,tx,ty,480,70)},/* 連續兩次衝撞 */
+ devour:{devour:5000,dmg:0,ult:1,shape:()=>null},/* 噬火：吞火池回血，20 連擊打斷 */
+ kick:{wind:800,wind1:1000,dmg:1.2,move:1,rep:b=>b.fs&&b.fs.route&&b.fs.route.length||3,shape:b=>{const R=(b.fs&&b.fs.route)||[],p=R[b.fs?b.fs.ri:0]||[b.cx,b.cy];return {t:'line',x0:Math.round(b.x),y0:Math.round(b.y),x1:p[0],y1:p[1],w:60}}},/* 蕾普絲：流星踢（沿星座線） */
+ land:{wind:900,dmg:1.2,move:1,shape:b=>circ(b.cx,b.cy,90)},/* 落地 */
+ lrest:{rest:2500,rest2:2000,dmg:0,shape:()=>null},/* 落地後停住：只有這時候打得到 */
+ crescent:{wind:900,dmg:0.9,shape:(b,tx,ty)=>({t:'multi',L:[-1,0,1].map(i=>circ(tx+i*70,ty+(i?30:0),55))})},/* 月牙 */
+ fullmoon:{wind:800,wind1:2500,dmg:1.3,ult:1,move:1,rep:5,shape:b=>{const S=(b.fs&&b.fs.stars)||[],p=S[b.fs?b.fs.ri:0]||[b.cx,b.cy];return circ(p[0],p[1],70)}},/* 滿月：五顆星依序亮、依序踢 */
+ sbash:{wind:1100,dmg:1.3,shape:b=>({t:'half',x:Math.round(b.x),y:Math.round(b.y),w:230,h:180,side:b.face})},/* 塔羅斯石盾：盾擊 */
+ quake:{wind:1300,dmg:1.2,shape:b=>{const x=Math.round(b.x),y=Math.round(b.y);return {t:'multi',L:[{t:'ring',x,y,r0:0,r1:110},{t:'ring',x,y,r0:190,r1:290}]}}},/* 踏步：站在兩圈之間 */
+ clock:{wind:1000,dmg:1.1,dur:2600,shape:b=>{const d=bRnd(b)<0.5?1:-1,a=bRnd(b)*Math.PI*2;return {t:'sweep',x:Math.round(b.x),y:Math.round(b.y),r:300,w:50,a0:a,dir:d,span:Math.PI*2,dur:2600}}},/* 光環：碎片像時鐘指針掃一圈 */
+ frag:{wind:1000,dmg:1.1,shape:(b,tx,ty)=>({t:'multi',L:Array.from({length:6},(_,i)=>{if(i<2)return circ(tx+(i?40:-40),ty,55);const p=arenaPt(b,220);return circ(p[0],p[1],55)})})},/* 碎片砸落 */
+ tdash:{wind:900,dmg:1.2,move:1,shape:(b,tx,ty)=>bLine(b.x,b.y,tx,ty,360,80)},/* 短距離衝刺 */
+ blades:{wind:1000,dmg:1.2,shape:(b,tx,ty)=>{const a=A2(b.x,b.y,tx,ty),x=Math.round(b.x),y=Math.round(b.y);return {t:'multi',L:[-0.7,0,0.7].map(o=>({t:'fan',x,y,a:a+o,w:0.16,r:340}))}}},/* 羽翼：羽刃 */
+ wingult:{wind:3000,dmg:1.6,ult:1,shape:b=>{const S=LAI.talos.shadow(b);return S.length?{t:'all',safe:S}:{t:'all',safe:[],dk:0.5/1.6}}}/* 翼板張開：躲殘柱的影子；柱子都沒了改成全場 ×0.5 */
+};/* 退潮：島中間被打，要站到邊上或荷葉路 */
 function bRnd(b){b.rs=((b.rs||7)*1103515245+12345)>>>0;return (b.rs>>>8)/16777216}
 function bLine(x0,y0,tx,ty,L,w){const dx=tx-x0,dy=ty-y0,d=Math.hypot(dx,dy)||1;return {t:'line',x0,y0,x1:x0+dx/d*L,y1:y0+dy/d*L,w}}
 function bDecoys(b,tx,ty,n){const o=[];for(let i=0;i<n;i++){const a=bRnd(b)*Math.PI*2,d=110+bRnd(b)*70;o.push([Math.round(tx+Math.cos(a)*d),Math.round(ty+Math.sin(a)*d*0.8)])}return o}
-function bossHit(s,x,y){if(!s)return false;
+function bossHit(s,x,y,now){if(!s)return false;{const r=bossHit2(s,x,y,now);if(r!==null)return r}/* 196 */
   if(s.t==='circle')return Math.hypot(x-s.x,(y-s.y)*1.2)<=s.r;
   if(s.t==='out')return Math.hypot(x-s.x,(y-s.y)*1.2)>s.r;
   if(s.t==='cross')return (Math.abs(x-s.x)<=s.w/2&&Math.abs(y-s.y)<=s.L/2)||(Math.abs(y-s.y)<=s.w/2&&Math.abs(x-s.x)<=s.L/2);
@@ -7852,7 +7941,7 @@ function bossHit(s,x,y){if(!s)return false;
   if(s.t==='band')return Math.abs(y-s.y)<=s.h/2&&!(x>=s.g0&&x<=s.g1);
   if(s.t==='half')return Math.abs(y-s.y)<=s.h/2&&(s.side<0?(x<=s.x&&x>=s.x-s.w):(x>=s.x&&x<=s.x+s.w));
   return false}
-function bossShapeSVG(s){if(!s)return '';const F='rgba(230,40,30,.28)',S='#E0321F';
+function bossShapeSVG(s){if(!s)return '';{const r=bossShapeSVG2(s,bossRT);if(r!==null)return r}/* 196 */const F='rgba(230,40,30,.28)',S='#E0321F';
   if(s.t==='circle')return (s.decoys||[]).map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="${s.r}" ry="${(s.r/1.2).toFixed(1)}" fill="rgba(230,40,30,.12)" stroke="${S}" stroke-dasharray="6 5" stroke-width="1.5"/>`).join('')+`<ellipse cx="${s.x}" cy="${s.y}" rx="${s.r}" ry="${(s.r/1.2).toFixed(1)}" fill="${F}" stroke="${S}" stroke-width="2"/>${s.shadow?`<ellipse cx="${s.x}" cy="${s.y}" rx="${s.r*0.45}" ry="${s.r*0.18}" fill="rgba(20,10,10,.45)"/>`:''}`;
   if(s.t==='out')return `<path d="M-2000 -2000 H4000 V4000 H-2000Z M${s.x-s.r} ${s.y} a${s.r} ${(s.r/1.2).toFixed(1)} 0 1 0 ${2*s.r} 0 a${s.r} ${(s.r/1.2).toFixed(1)} 0 1 0 ${-2*s.r} 0Z" fill="${F}" fill-rule="evenodd"/>`;
   if(s.t==='cross')return `<rect x="${s.x-s.w/2}" y="${s.y-s.L/2}" width="${s.w}" height="${s.L}" fill="${F}" stroke="${S}" stroke-width="2"/><rect x="${s.x-s.L/2}" y="${s.y-s.w/2}" width="${s.L}" height="${s.w}" fill="${F}" stroke="${S}" stroke-width="2"/>`;
@@ -7866,49 +7955,51 @@ const bossNow=()=>Date.now();
 const bossMe=()=>uid||'me';
 const lordCdOk=id=>!(state.lordCd&&state.lordCd[id]&&bossNow()-state.lordCd[id]<LORD_CD);
 const bossMonHp=bk=>(typeof MON_RHP!=='undefined'&&MON_RHP[bk])||3000;
-const bossDmgOf=b=>{const r=(typeof MON_RDMG!=='undefined'&&MON_RDMG[b.bk])||[50,80],a=BATK[b.atk]||{};return Math.round((r[0]+Math.random()*(r[1]-r[0]))*b.dmgK*(a.dmg||1))};
+const bossDmgOf=b=>{const r=(typeof MON_RDMG!=='undefined'&&MON_RDMG[b.bk])||[50,80],a=BATK[b.atk]||{};return Math.round((r[0]+Math.random()*(r[1]-r[0]))*b.dmgK*(a.dmg||1)*((b.shape&&b.shape.dk)||1))};
 const bossHp=b=>Math.max(0,b.max-(b.adj||0)-Object.values(b.dmg||{}).reduce((s,v)=>s+(+v||0),0));/* 172：adj＝加人時為了維持血量比例補的量 */
 function bossMake(kind,bk,def,members){const M=regCur(),n=Math.max(1,Object.keys(members||{}).length),base=bossMonHp(bk)*def.hpK,max=kind==='lord'?Math.round(base*(1+LORD_HP_K*(n-1))):base;
-  const c=def.c||def.at;return {kind,bk,def,art:def.art,n:def.n,x:def.at[0],y:def.at[1],face:-1,max,mode:'idle',until:bossNow()+1500,atk:null,shape:null,seq:0,ph:1,hidden:false,rs:(hashStr(bk+kind+bossNow())>>>0)||7,
-    B:M&&M.B?{x0:M.B.x0,x1:M.B.x1,y0:M.B.y0,y1:M.B.y1}:{x0:0,x1:800,y0:0,y1:1200},cx:c[0],cy:c[1],dmgK:def.dmgK,dmg:{[bossMe()]:0},myDmg:0,members:members||null,active:kind==='lord',t0:bossNow(),done:false,base,adj:0,mcount:n}}
+  const c=def.c||def.at;const b={kind,bk,def,art:def.art,n:def.n,x:def.at[0],y:def.at[1],face:-1,max,mode:'idle',until:bossNow()+1500,atk:null,shape:null,seq:0,ph:1,hidden:false,rs:(hashStr(bk+kind+bossNow())>>>0)||7,
+    B:M&&M.B?{x0:M.B.x0,x1:M.B.x1,y0:M.B.y0,y1:M.B.y1}:{x0:0,x1:800,y0:0,y1:1200},cx:c[0],cy:c[1],dmgK:def.dmgK,dmg:{[bossMe()]:0},myDmg:0,members:members||null,active:kind==='lord',t0:bossNow(),done:false,base,adj:0,mcount:n};{const L=LAIof(b);if(L&&L.init)L.init(b)}/* 196 */return b}
 /* ---- 進出地圖 ---- */
-function bossEnter(bk,id){bossLeave();if(id!=='secret'||!(SERVANTS[bk]||LORDS[bk]))return;const sv=SERVANTS[bk];
+function bossEnter(bk,id){bossLeave();try{l196Enter(bk,id)}catch(e){}/* 196 */const sv=SERVANTS[bk]&&MAP_OF('servant',bk)===id?SERVANTS[bk]:null,lh=!!(LORDS[bk]&&MAP_OF('lord',bk)===id);if(!sv&&!lh)return;
   if(sv){const at=(state.servantAt||{})[bk]||0;bossRT=bossNow()-at>=BOSS_RESPAWN?bossMake('servant',bk,sv,null):{kind:'wait',bk,until:at+BOSS_RESPAWN,def:sv}}
   if(sv&&sv.call&&!bossCalled[bk]){bossCalled[bk]=1;setTimeout(()=>{try{if(scene==='explore'&&exBiome===bk&&regMap==='secret')toast(`${myName()}……`,2500)}catch(e){}},1500)}/* 喚名鴉：像有人在叫你的名字 */
   if(sv)svNetWatch(bk);/* 172 */
-  if(LORDS[bk]){lordSum.bk=bk;lordSum.f=0;lordSum.still=null;lordSum.path=null;lordNetWatch(bk)}
+  if(lh){lordSum.bk=bk;lordSum.f=0;lordSum.still=null;lordSum.path=null;lordNetWatch(bk)}
   bossStart()}
 function bossLeave(){try{dropClear()}catch(e){}/* 174：換地圖才清地上的掉落物（秘境出去時 monClear 不會跑） */const b=bossRT;if(b&&(b.kind==='lord'||(b.kind==='servant'&&b.net))&&!b.done)lordForfeit(true);bossRT=null;if(bossNetOff){try{bossNetOff()}catch(e){}bossNetOff=null}if(bossNetOff2){try{bossNetOff2()}catch(e){}bossNetOff2=null}lordSum.path=null;lordSum.f=0;
   try{bossClear()}catch(e){}}
 function bossStart(){if(!bossRaf&&typeof requestAnimationFrame==='function'){bossLast=0;bossRaf=requestAnimationFrame(bossLoop)||-1}}
-function bossLoop(ts){bossRaf=0;if(!state||scene!=='explore'||regMap!=='secret'){if(bossRT)bossLeave();return}bossRaf=requestAnimationFrame(bossLoop)||-1;if(document.hidden===true||regBusy)return;
-  const dt=bossLast?Math.min(0.2,(ts-bossLast)/1000):0;bossLast=ts;try{bossStep(dt)}catch(e){try{crumb('boss '+e.message)}catch(x){}}try{fyAtkTick()}catch(e){}/* 170 */try{skTick();comboTick()}catch(e){}/* 184、187 */try{dropTick()}catch(e){}/* 174：秘境沒有一般怪、monLoop 不會跑，掉落物（撿取按鈕、自動撿、60 秒消失）改在這裡也跑 */}
+function bossLoop(ts){bossRaf=0;if(!state||!bossMapHere()){if(bossRT)bossLeave();return}bossRaf=requestAnimationFrame(bossLoop)||-1;if(document.hidden===true||regBusy)return;
+  const dt=bossLast?Math.min(0.2,(ts-bossLast)/1000):0;bossLast=ts;try{bossStep(dt)}catch(e){try{crumb('boss '+e.message)}catch(x){}}if(monHere())return;/* 196：這張圖也有一般怪（神社、冰洞深處）：共用的每幀工作 monLoop 已經在跑 */try{fyAtkTick()}catch(e){}/* 170 */try{skTick();comboTick()}catch(e){}/* 184、187 */try{dropTick()}catch(e){}/* 174：秘境沒有一般怪、monLoop 不會跑，掉落物（撿取按鈕、自動撿、60 秒消失）改在這裡也跑 */}
 /* 一步：現身條件、AI（主機或僕人）、自己打它、畫 */
 function bossStep(dt){lordSummonTick();const b=bossRT,now=bossNow();if(!b)return;
   if(b.kind==='wait'){if(now>=b.until)bossRT=bossMake('servant',b.bk,b.def,null);else bossPaintWait(b);return}
   const me=curMe();
   if(b.kind==='servant'&&!b.active){if(Math.hypot(me.x-b.x,me.y-b.y)<150){b.active=true;b.until=now+900;bossJump(b,now);bossSvNet(b)}bossPaint(b);return}/* 靠近才站起來；162：跳到空地 */
-  if(b.done){if(b.kind==='lord'&&b.fade&&now>b.fade){bossRT=null;try{bossClear();renderWorld()}catch(e){}return}bossPaint(b);return}
+  if(b.done){if(b.kind==='lord'&&b.fade&&now>b.fade){bossRT=null;try{bossClear();renderWorld()}catch(e){}try{if(monHere())monEnter()}catch(e){}/* 196：冰洞深處打完，一般怪回來 */return}bossPaint(b);return}
   const host=bossIsHost(b);
   if(host&&!b.inArena&&!b.jump&&bossArena(b)&&b.kind==='lord')bossJump(b,now);/* 162：主也下來空地 */
   if(host&&bossHp(b)<=0&&!b.done){bossWin(b);bossPaint(b);return}
   if(host&&(bossJumpStep(b,now)||bossHomeStep(b,dt,now))){if(b.net)lordPushState(b,now);bossPaint(b);return}
-  if(host){if(!(b.stun&&now<b.stun))bossAI(b,dt,now);/* 184：暈、岩之牢 */bossClamp(b)}else bossFollow(b,dt);
+  try{bossActTick(b,now);bossLocal(b,now)}catch(e){}/* 196 */
+  if(host){const LA=LAIof(b);let blk=false;try{blk=!!(LA&&LA.tick&&LA.tick(b,dt,now))}catch(e){}if(!blk&&!(b.stun&&now<b.stun))bossAI(b,dt,now);/* 184：暈、岩之牢 */else if(blk&&b.net)lordPushState(b,now);bossClamp(b)}else bossFollow(b,dt);
   if(b.done){bossPaint(b);return}
-  try{atkTick()}catch(e){}/* 189：攻擊鍵 */
+  if(!monHere())try{atkTick()}catch(e){}/* 189：攻擊鍵（196：有一般怪的圖由 monLoop 跑） */
   if(host&&bossHp(b)<=0&&!b.done)bossWin(b);
   bossPaint(b)}
 const bossIsHost=b=>!b.net||b.net.host===uid;/* 172：僕人連線時也只有主機算 AI */
 function bossTargets(b){const me=curMe(),out=[{u:bossMe(),x:me.x,y:me.y}];if(b.kind==='lord'&&b.members)for(const u of Object.keys(b.members)){if(u===uid)continue;const o=others&&others[u];if(o&&!(b.downs&&b.downs[u]))out.push({u,x:o.x,y:o.y})}return out}
 function bossAI(b,dt,now){const P=bossTargets(b),T=P.reduce((a,p)=>!a||Math.hypot(p.x-b.x,p.y-b.y)<Math.hypot(a.x-b.x,a.y-b.y)?p:a,null);b.tx=T.x;b.ty=T.y;
-  if(b.kind==='lord'){if(b.ph===1&&bossHp(b)<=b.max/2)b.ph=2;if(!b.net&&now-b.t0>LORD_LIMIT){lordEnd(b,'lost');return}}/* 第二階段；一個人打（沒有連線）也有 15 分鐘 */
+  if(b.kind==='lord'){if(b.ph===1&&bossHp(b)<=b.max/2&&bossPh2Ok(b))b.ph=2;if(!b.net&&now-b.t0>LORD_LIMIT){lordEnd(b,'lost');return}}/* 第二階段；一個人打（沒有連線）也有 15 分鐘 */
   const k=b.ph===2?0.7:1;
-  if(b.mode==='idle'){const d=Math.hypot(T.x-b.x,T.y-b.y);if(d>110&&!b.def.fixed){const sp=BOSS_SPD*dt,nx=b.x+(T.x-b.x)/d*sp,ny=b.y+(T.y-b.y)/d*sp;if(b.kind==='lord'||!regBlocked(regCur(),nx,ny)){b.x=nx;b.y=ny}}if(Math.abs(T.x-b.x)>4)b.face=T.x>b.x?1:-1;
-    if(now>=b.until){const L=b.def.atk.concat(b.ph===2&&b.def.atk2?[b.def.atk2]:[]);b.atk=L[Math.floor(bRnd(b)*L.length)];b.rep=BATK[b.atk].rep||1;bossBegin(b,now,k)}}
+  if(b.mode==='idle'){const d=Math.hypot(T.x-b.x,T.y-b.y);if(d>110&&!b.def.fixed){const sp=BOSS_SPD*dt*bossSpdK(b),nx=b.x+(T.x-b.x)/d*sp,ny=b.y+(T.y-b.y)/d*sp;if(b.kind==='lord'||!regBlocked(regCur(),nx,ny)){b.x=nx;b.y=ny}}if(Math.abs(T.x-b.x)>4&&!bossSlowTurn(b))b.face=T.x>b.x?1:-1;
+    if(now>=b.until){const LA=LAIof(b);let pk=LA&&LA.pick?LA.pick(b):null;if(!pk||!BATK[pk]){const L=b.def.atk.concat(b.ph===2&&b.def.atk2?[b.def.atk2]:[]);pk=L[Math.floor(bRnd(b)*L.length)]}b.atk=pk;{const RA=BATK[b.atk].rep;b.rep=(typeof RA==='function'?RA(b):RA)||1}bossBegin(b,now,k)}}
   else if(b.mode==='hidden'){const d=Math.hypot(T.x-b.x,T.y-b.y);if(d>30){const sp=BOSS_SPD*1.4*dt;b.x+=(T.x-b.x)/d*sp;b.y+=(T.y-b.y)/d*sp}if(now>=b.until){b.hidden=false;b.mode='wind';b.until=now+Math.max(800,BATK[b.atk].wind*k);b.shape=BATK[b.atk].shape(b,b.x,b.y);b.seq++}}
   else if(b.mode==='wind'){const A=BATK[b.atk];if(A.track&&now<b.until-500){const s=A.shape(b,T.x,T.y);if(b.shape&&b.shape.decoys)s.decoys=b.shape.decoys;b.shape=s}/* 影子跟著，最後 0.5 秒停住 */
-    if(now>=b.until){bossStrike(b);if(A.move&&b.shape&&b.shape.t==='line'){b.x=Math.max(b.B.x0+30,Math.min(b.B.x1-30,b.shape.x1));b.y=Math.max(b.B.y0+40,Math.min(b.B.y1-30,b.shape.y1))}
-      b.rep--;if(b.rep>0)bossBegin(b,now,k,true);else{b.mode='rec';b.until=now+(A.rep?1600:700)*k;b.shape=null;b.seq++}}}/* 連續幾刀之後停頓 */
+    if(now>=b.until){if(A.dur){b.mode='act';b.until=now+A.dur;if(b.shape){b.shape=JSON.parse(JSON.stringify(b.shape));setT0(b.shape,now)}b.seq++;b.actHit=0}else{bossStrike(b);bossAfterStrike(b,A,now,k)}}}/* 連續幾刀之後停頓（196：bossAfterStrike）；dur＝一直判定的招 */
+  else if(b.mode==='act'){if(now>=b.until)bossAfterStrike(b,BATK[b.atk],now,k)}
+  else if(b.mode==='rest'){if(now>=b.until){b.mode='idle';b.until=now+700*k;b.seq++}}/* 196：休息（三盞狐火熄、眼睛暗、落地） */
   else if(b.mode==='guard'){if(now>=b.until){b.mode='rec';b.until=now+500;b.seq++}}
   else if(b.mode==='rec'){if(now>=b.until){b.mode='idle';b.until=now+(b.kind==='lord'?1500:1400)*k;b.seq++}}
   if(b.net)lordPushState(b,now)}
@@ -7929,26 +8020,352 @@ function bossHomeStep(b,dt,now){const A=bossArena(b);if(!A||b.kind!=='servant')r
   const sp=Math.min(d,BOSS_SPD*dt);b.x+=(hx-b.x)/d*sp;b.y+=(hy-b.y)/d*sp;b.face=hx>b.x?1:-1;return true}
 /* ===== 162 結束 ===== */
 function bossBegin(b,now,k,again){const A=BATK[b.atk];b.seq++;if(A.guard){b.mode='guard';b.until=now+A.guard;b.shape=null;return}
+  if(A.rest){b.mode='rest';b.until=now+(b.ph===2&&A.rest2?A.rest2:A.rest);b.shape=null;return}if(A.devour){b.mode='devour';b.until=now+A.devour;b.shape=null;b.devN=0;return}/* 196 */
   if(A.hide&&!again){b.mode='hidden';b.hidden=true;b.until=now+A.hide;b.shape=null;return}
-  b.mode='wind';b.until=now+Math.max(800,A.wind*k);b.shape=A.shape(b,b.tx,b.ty)}
+  b.mode='wind';b.until=now+Math.max(800,((!again&&A.wind1)||A.wind)*k);b.shape=A.shape(b,b.tx,b.ty)}
 /* 出手：只判定自己（別人在自己的遊戲判定） */
-function bossStrike(b){const me=curMe();b.hitAt=bossNow();if(b.shape&&bossHit(b.shape,me.x,me.y)){try{pDamage(bossDmgOf(b),b)}catch(e){}return true}return false}
+function bossStrike(b){const me=curMe();b.hitAt=bossNow();try{bossFx(b,'strike')}catch(e){}/* 192 */const A0=BATK[b.atk]||{},LC=LAIof(b);if(b.shape&&bossHit(b.shape,me.x,me.y)&&!(A0.cover&&LC&&LC.cover&&LC.cover(b,me))){try{pDamage(bossDmgOf(b),b);if(A0.slow)bossSlow(A0.slow,A0.mark)}catch(e){}/* 196：冰柱後面躲得掉、被打到變慢 */try{bossFxCommon('hitp',me.x,me.y-(typeof C3_HU!=='undefined'?C3_HU:57.5)*0.55)}catch(e){}return true}return false}
+/* ===== 192（20w）：領主與眷屬的招式特效（plan.json 的 boss 區塊，用第 191 節的特效層）=====
+   boss[招式]={wind（蓄力開始，透明度 ×0.6）、strike（出手那一刻，rep 每一刀都播）、aura（guard 期間）}；boss.common：hitp（玩家被打到）、phase2、calm。
+   位置 at：boss／shape（預設，範圍中心）／end（直線尾端）／decoys（每個假身影）；fit＝顯示邊長＝範圍直徑（circle、out）或寬度（line、band、half、cross）×fit；
+   along＋rot:"dir"＋step 沿直線放（cross 兩條、band 跳過缺口）；ringN＋ringR 繞圓周。省電只播 strike 第一筆。所有人都看得到（招式本來就同步）。 ===== */
+const BFX_WIND_A=0.6;
+const bossFxSet=atk=>FXP&&FXP.boss&&FXP.boss[atk]||null;
+/* 這一隻用得到的圖：開打前先載（沒載完的那筆就不播） */
+function bossFxPre(b){if(b._fxPre||!fxPlan()||!FXP.boss)return;b._fxPre=1;const want=new Set(),add=S=>{if(S)for(const t in S)for(const e of (fxL(S,t)||[]))want.add(e.k)};
+  for(const a of (b.def.atk||[]).concat(b.def.atk2?[b.def.atk2]:[]))add(bossFxSet(a));add(FXP.boss.common);for(const k of want)fxImg(k)}
+/* 範圍的幾何：中心、寬度、直線（along 用） */
+function bossFxGeo(s,b){if(!s)return {c:[b.x,b.y],d:120,lines:[]};
+  if(s.t==='circle'||s.t==='out')return {c:[s.x,s.y],d:2*s.r,lines:[],r:s.r};
+  if(s.t==='line')return {c:[(s.x0+s.x1)/2,(s.y0+s.y1)/2],d:s.w,end:[s.x1,s.y1],lines:[[s.x0,s.y0,s.x1,s.y1]]};
+  if(s.t==='cross')return {c:[s.x,s.y],d:s.w,lines:[[s.x,s.y-s.L/2,s.x,s.y+s.L/2],[s.x-s.L/2,s.y,s.x+s.L/2,s.y]]};
+  if(s.t==='band')return {c:[(s.x0+s.x1)/2,s.y],d:s.h,band:s,lines:[[s.x0,s.y,s.x1,s.y]]};
+  if(s.t==='half')return {c:[s.x+s.side*s.w/2,s.y],d:s.w,lines:[]};
+  if(s.t==='fan')return {c:[s.x+Math.cos(s.a)*s.r/2,s.y+Math.sin(s.a)*s.r/2.4],d:s.r,lines:[[s.x,s.y,s.x+Math.cos(s.a)*s.r,s.y+Math.sin(s.a)*s.r/1.2]]};
+  if(s.t==='ring')return {c:[s.x,s.y],d:2*s.r1,lines:[],r:s.r1};if(s.t==='sweep')return {c:[s.x,s.y],d:2*s.r,lines:[],r:s.r};
+  if(s.t==='multi'){const G=bossFxGeo((s.L||[])[0],b);G.lines=[].concat(...(s.L||[]).map(q=>bossFxGeo(q,b).lines));return G}if(s.t==='all')return {c:[b.cx,b.cy],d:400,lines:[]};/* 196 */
+  return {c:[s.x||b.x,s.y||b.y],d:120,lines:[]}}
+/* 沿直線放 n 個（band 跳過缺口）：回 [x,y,角度] */
+function bossFxAlong(G,n){const out=[];for(const L of G.lines){const [x0,y0,x1,y1]=L,a=Math.atan2(y1-y0,x1-x0);
+    if(G.band){const B=G.band,len=(B.g0-B.x0)+(B.x1-B.g1);for(let i=0;i<n;i++){let u=(i+0.5)/n*len,x=B.x0+u;if(x>B.g0)x=B.g1+(u-(B.g0-B.x0));out.push([x,y0,a])}}
+    else for(let i=0;i<n;i++){const u=(i+0.5)/n;out.push([x0+(x1-x0)*u,y0+(y1-y0)*u,a])}}return out}
+/* 播一個時機 */
+function bossFx(b,tm,S){try{if(scene!=='explore'||!fxPlan()||!FXP.boss)return false;bossFxPre(b);S=S||bossFxSet(b.atk);let L=fxL(S,tm);if(!L||!L.length)return false;
+  const eco=typeof ecoOn==='function'&&ecoOn();if(eco){if(tm!=='strike')return false;L=L.slice(0,1)}
+  const K=fxK(),G=bossFxGeo(b.shape,b),a=tm==='wind'?BFX_WIND_A:1,remote=!bossIsHost(b);let n=0;
+  for(const e of L){if(!fxImg(e.k)||!FXP.fx[e.k])continue;/* 沒載完：這一筆不播 */
+    const size=e.fit?G.d*e.fit/K:(e.size||100),one=(x,y,rot,i)=>{const e2=Object.assign({},e,{size,rot:0,delay:(e.delay||0)+(e.step||0)*(i||0)});n++;fxPlay([e2],x,y,{face:b.face<0?-1:1,rot:rot==null?undefined:rot,a,remote})};
+    if(e.each&&b.shape&&b.shape.L){b.shape.L.forEach((q,i)=>{const g=bossFxGeo(q,b),e2=Object.assign({},e,{size:e.fit?g.d*e.fit/K:(e.size||100),rot:0,delay:(e.delay||0)+(e.step||0)*i});n++;fxPlay([e2],g.c[0],g.c[1],{face:1,rot:0,a,remote})});continue}/* 196：multi 的每一個都放 */
+    if(e.along&&G.lines.length){bossFxAlong(G,e.along).forEach(([x,y,ang],i)=>one(x,y,e.rot==='dir'?ang:0,i));continue}
+    if(e.ringN&&G.r){const R=G.r*(e.ringR||1);for(let i=0;i<e.ringN;i++){const t=i/e.ringN*Math.PI*2;one(G.c[0]+Math.cos(t)*R,G.c[1]+Math.sin(t)*R/1.2,0,i)}continue}
+    const at=e.at||'shape';
+    if(at==='decoys'){const D=(b.shape&&b.shape.decoys)||[];D.forEach(([x,y],i)=>one(x,y,0,i));continue}
+    if(at==='boss'){one(b.x,b.y,0,0);continue}
+    if(at==='end'){const E=G.end||G.c;one(E[0],E[1],0,0);continue}
+    one(G.c[0],G.c[1],0,0)}
+  return n>0}catch(e){return false}}
+function bossFxCommon(tm,x,y,b){try{if(scene!=='explore'||!fxPlan()||!FXP.boss||!FXP.boss.common)return false;const L=fxL(FXP.boss.common,tm);if(!L)return false;if(typeof ecoOn==='function'&&ecoOn()&&tm!=='hitp')return true;
+  for(const e of L){if(!fxImg(e.k)||!FXP.fx[e.k])continue;const X=e.at==='boss'&&b?b.x:x,Y=e.at==='boss'&&b?b.y:y;fxPlay([e],X,Y,{face:1})}return true}catch(e){return false}}
+/* 每次畫的時候看：蓄力開始（wind、躲起來）、守（aura）、第二階段、平靜——同一個 seq 只播一次 */
+function bossFxWatch(b){bossFxPre(b);const S=bossFxSet(b.atk);
+  if((b.mode==='wind'||b.mode==='hidden')&&b._fxW!==b.seq){b._fxW=b.seq;bossFx(b,'wind',S)}
+  if(b.mode==='act'&&b._fxS!==b.seq){b._fxS=b.seq;bossFx(b,'strike',S)}/* 196：一直判定的招，開始掃的那一刻 */
+  if(b.mode==='guard'&&b._fxA!==b.seq){if(bossFx(b,'aura',S))b._fxA=b.seq;else b._fxA=-1}
+  if(b.kind==='lord'&&b.ph===2&&!b._fxP2&&!b.done){b._fxP2=1;bossFxCommon('phase2',b.x,b.y,b)}
+  if(b.kind==='lord'&&b.done&&!b._fxC){b._fxC=1;bossFxCommon('calm',b.x,b.y,b)}}
+/* ===== 192 結束 ===== */
+/* ===== 196（20x）：後六區的領主、眷屬、現身條件（打法照第 195 節、巴絲照 135.13） =====
+   每隻的地圖 def.map（預設 secret；列那、鎮社獅在櫻花之丘「神社後院」shrine／神社 pagoda，奧索在冰洞深處 cave2）→ MAP_OF。
+   招式照舊寫在 BATK；新的範圍形狀 fan（扇形）／ring（環）／multi（好幾個）／all（全場，safe 是安全的圓）／sweep（會轉的光，act 期間每一幀判定）。
+   各領主自己的規則寫在 LAI[def.ai]：init（場上物件 b.fs）、tick（主機：場上物件、休息）、pick（選招）、mul（受到的傷害倍率）、floor（血量下限）、paint（場上物件）、post（出手之後）、vis（透明度）、inv（打不到）、local（每個人自己：火池、小金蛇咬人）。
+   場上物件的狀態 b.fs 跟著 fight/<區>/s 由主機寫；別人打場上物件（狐火、鐵樁、殘柱以外的可打物件）寫 od/<uid>，主機加總。 ===== */
+const MAP_OF=(kind,bk)=>{const d=kind==='lord'?LORDS[bk]:SERVANTS[bk];return d?(d.map||'secret'):null};
+const bossMapHere=()=>scene==='explore'&&(MAP_OF('lord',exBiome)===regMap||MAP_OF('servant',exBiome)===regMap);
+const LAIof=b=>b&&b.def&&b.def.ai&&LAI[b.def.ai]||null;
+const A2=(x0,y0,x1,y1)=>Math.atan2(y1-y0,x1-x0);
+const angD=(a,b)=>{let d=(a-b)%(Math.PI*2);if(d>Math.PI)d-=Math.PI*2;if(d<-Math.PI)d+=Math.PI*2;return Math.abs(d)};
+const bossHpR=b=>bossHp(b)/Math.max(1,b.max);
+/* ---- 新的範圍形狀 ---- */
+function bossHit2(s,x,y,now){if(!s)return false;
+  if(s.t==='fan'){const d=Math.hypot(x-s.x,(y-s.y)*1.2);return d<=s.r&&d>=(s.r0||0)&&angD(A2(s.x,s.y,x,y),s.a)<=s.w}
+  if(s.t==='ring'){const d=Math.hypot(x-s.x,(y-s.y)*1.2);return d>=s.r0&&d<=s.r1}
+  if(s.t==='multi')return (s.L||[]).some(q=>bossHit(q,x,y,now));
+  if(s.t==='all')return !(s.safe||[]).some(([cx,cy,r])=>Math.hypot(x-cx,(y-cy)*1.2)<=r);
+  if(s.t==='sweep'){const a=sweepA(s,now);if(a==null)return false;const L=sweepLines(s,a);return L.some(([x1,y1])=>{const vx=x1-s.x,vy=y1-s.y,L2=vx*vx+vy*vy||1,t=Math.max(0,Math.min(1,((x-s.x)*vx+(y-s.y)*vy)/L2));return Math.hypot(x-s.x-vx*t,y-s.y-vy*t)<=s.w/2})}
+  return null}
+const sweepA=(s,now)=>{if(!s.t0)return null;const u=((now||bossNow())-s.t0)/s.dur;if(u<0||u>1)return null;return s.a0+s.dir*s.span*u};
+const sweepLines=(s,a)=>[[s.x+Math.cos(a)*s.r,s.y+Math.sin(a)*s.r/1.2]].concat(s.two?[[s.x+Math.cos(a+Math.PI)*s.r,s.y+Math.sin(a+Math.PI)*s.r/1.2]]:[]);
+function fanPath(s){const n=14,P=[];for(let i=0;i<=n;i++){const a=s.a-s.w+2*s.w*i/n;P.push([s.x+Math.cos(a)*s.r,s.y+Math.sin(a)*s.r/1.2])}const r0=s.r0||0;const Q=[];if(r0)for(let i=n;i>=0;i--){const a=s.a-s.w+2*s.w*i/n;Q.push([s.x+Math.cos(a)*r0,s.y+Math.sin(a)*r0/1.2])}else Q.push([s.x,s.y]);return 'M'+P.concat(Q).map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L')+'Z'}
+function bossShapeSVG2(s,b){const F='rgba(230,40,30,.28)',S='#E0321F';
+  if(s.t==='fan')return `<path d="${fanPath(s)}" fill="${F}" stroke="${S}" stroke-width="2"/>`;
+  if(s.t==='ring'){const e=r=>`M${s.x-r} ${s.y} a${r} ${(r/1.2).toFixed(1)} 0 1 0 ${2*r} 0 a${r} ${(r/1.2).toFixed(1)} 0 1 0 ${-2*r} 0Z`;return `<path d="${e(s.r1)} ${e(s.r0)}" fill="${F}" fill-rule="evenodd" stroke="${S}" stroke-width="1.5"/>`}
+  if(s.t==='multi')return (s.L||[]).map(q=>bossShapeSVG(q,b)).join('');
+  if(s.t==='all'){const B=b&&b.B||{x0:0,x1:800,y0:0,y1:1200},e=([cx,cy,r])=>` M${cx-r} ${cy} a${r} ${(r/1.2).toFixed(1)} 0 1 0 ${2*r} 0 a${r} ${(r/1.2).toFixed(1)} 0 1 0 ${-2*r} 0Z`;return `<path d="M${B.x0} ${B.y0} H${B.x1} V${B.y1} H${B.x0}Z${(s.safe||[]).map(e).join('')}" fill="rgba(230,40,30,.24)" fill-rule="evenodd"/>${(s.safe||[]).map(([cx,cy,r])=>`<ellipse cx="${cx}" cy="${cy}" rx="${r}" ry="${(r/1.2).toFixed(1)}" fill="rgba(120,220,255,.18)" stroke="#BFF0FF" stroke-width="2" stroke-dasharray="6 4"/>`).join('')}`}
+  if(s.t==='sweep'){const a=sweepA(s);if(a==null){const f={t:'fan',x:s.x,y:s.y,r:s.r,a:s.a0+s.dir*s.span/2,w:Math.min(Math.PI,s.span/2)};return s.span>=Math.PI*1.9?`<ellipse cx="${s.x}" cy="${s.y}" rx="${s.r}" ry="${(s.r/1.2).toFixed(1)}" fill="rgba(230,40,30,.14)" stroke="${S}" stroke-dasharray="6 5"/>`:`<path d="${fanPath(f)}" fill="rgba(230,40,30,.14)" stroke="${S}" stroke-dasharray="6 5"/>${s.two?`<path d="${fanPath(Object.assign({},f,{a:f.a+Math.PI}))}" fill="rgba(230,40,30,.14)" stroke="${S}" stroke-dasharray="6 5"/>`:''}`}
+    return sweepLines(s,a).map(([x1,y1])=>`<line x1="${s.x}" y1="${s.y}" x2="${x1.toFixed(1)}" y2="${y1.toFixed(1)}" stroke="rgba(255,200,60,.75)" stroke-width="${s.w}" stroke-linecap="round"/>`).join('')}
+  return null}
+/* ---- 場上物件可以打：每個物件一個「假的 boss」，攻擊鍵、技能都照打 boss 的方式找得到 ---- */
+const PSEUDO=new Map();
+function bossParts(){const out=[];const b=bossRT,add=(q,owner,pre)=>{let o=PSEUDO.get(q.id);if(!o){o={part:1,pid:q.id,kind:'part',def:{h:q.h||0.6},done:false,hidden:false,dmg:{},max:1};PSEUDO.set(q.id,o)}o.x=q.x;o.y=q.y;o.owner=owner;o.pre=pre;o.q=q;o.done=false;out.push(o)};
+  if(b&&b.fs&&b.fs.P&&!b.done)for(const q of b.fs.P)if(q.hp>0&&!q.off)add(q,b,false);
+  if(lordSum.P&&scene==='explore'&&regMap===MAP_OF('lord',exBiome))for(const q of lordSum.P)if(q.hp>0)add(q,null,true);
+  return out}
+function partDealt(o,hit){const q=o.q;if(!q||q.hp<=0)return;const now=bossNow();try{comboHit(o);fxOnHit(o.x,o.y-20,hit.crit)}catch(e){}
+  if(o.pre){q.hp-=1;try{dmgShow(o.x,o.y-40,1,{key:'p'+q.id,text:q.hp>0?`${q.hp}`:'碎了'})}catch(e){}if(q.hp<=0)try{(LAI[q.ai]||{}).preBreak(q)}catch(e){}return}
+  const b=o.owner;if(!b)return;const d=Math.round(hit.d);try{dmgShow(o.x,o.y-40,d,{key:'p'+q.id,crit:hit.crit})}catch(e){}
+  if(bossIsHost(b)){q.hp=Math.max(0,q.hp-d);if(q.hp<=0){const L=LAIof(b);if(L&&L.partDown)L.partDown(b,q,now)}if(b.net){b._ps=0;lordPushState(b,now)}}
+  else{q.hp=Math.max(0,q.hp-d);b.od=b.od||{};b.od[q.id]=(b.od[q.id]||0)+d;if(b.net&&(!b._pod||now-b._pod>250||q.hp<=0)){b._pod=now;bossNet.set(bpath(b)+'/od/'+uid,b.od)}}}
+/* 主機：把別人打場上物件的量加進來 */
+function bossOdApply(b,od){if(!b||!od||!bossIsHost(b)||!b.fs||!b.fs.P)return;const seen=b.odSeen||(b.odSeen={}),now=bossNow();
+  for(const u of Object.keys(od)){if(u===uid)continue;const D=od[u]||{},S=seen[u]||(seen[u]={});for(const id of Object.keys(D)){const v=+D[id]||0,dlt=v-(S[id]||0);if(dlt<=0)continue;S[id]=v;
+    if(id==='devour'){if(b.mode==='devour')bossDevourHit(b,dlt);continue}
+    const q=b.fs.P.find(p=>p.id===id);if(!q||q.hp<=0)continue;q.hp=Math.max(0,q.hp-dlt);if(q.hp<=0){const L=LAIof(b);if(L&&L.partDown)L.partDown(b,q,now)}}}}
+/* ---- 共通：受到的傷害、打不到、休息、一直判定的招（act）、噬火 ---- */
+function bossMul(b,o){let k=1;const A=BATK[b.atk]||{};if(b.mode==='guard'&&A.guardK)k*=A.guardK;const L=LAIof(b);if(L&&L.mul)k*=L.mul(b,o);return k}
+function bossInv(b){const L=LAIof(b);return !!(L&&L.inv&&L.inv(b))||b.mode==='sand'}
+const bossSlowK=()=>bossSlowT&&bossNow()<bossSlowT?0.55:1;let bossSlowT=0,bossMarkT=0;
+function bossSlow(ms,mark){bossSlowT=Math.max(bossSlowT,bossNow()+ms);if(mark)bossMarkT=bossNow()+ms;try{toast(mark?'被金色的眼睛盯住了……':'腳步變慢了',1400)}catch(e){}}
+function bossAfterStrike(b,A,now,k){if(A.move&&b.shape){const s=b.shape,tx=s.t==='line'?s.x1:s.x,ty=s.t==='line'?s.y1:s.y;if(tx!=null){b.x=Math.max(b.B.x0+30,Math.min(b.B.x1-30,tx));b.y=Math.max(b.B.y0+40,Math.min(b.B.y1-30,ty))}}
+  if(A.heal){const D=b.max-bossHp(b);b.adj=(b.adj||0)-Math.min(D,b.max*A.heal);if(b.net)bossNet.update(bpath(b)+'/meta',{adj:Math.round(b.adj*100)/100})}
+  const L=LAIof(b);if(L&&L.post)try{L.post(b,A,now)}catch(e){}if(b.mode!=='wind'&&b.mode!=='act')return;/* post 可能已經換了狀態（衝撞撞到冰柱、暈） */
+  b.rep--;if(b.rep>0)bossBegin(b,now,k,true);else{b.mode='rec';b.until=now+(A.rep?1600:700)*k;b.shape=null;b.seq++}}
+function bossActTick(b,now){if(b.mode!=='act'||!b.shape)return;if(b.actHit===b.seq)return;const me=curMe();if(bossHit(b.shape,me.x,me.y,now)){b.actHit=b.seq;try{pDamage(bossDmgOf(b),b);const A=BATK[b.atk]||{};if(A.slow)bossSlow(A.slow,A.mark)}catch(e){}}}
+function bossDevourHit(b,n){b.devN=(b.devN||0)+n;if(b.devN>=20&&bossIsHost(b)){b.mode='rest';b.until=bossNow()+4000;b.shape=null;b.seq++;b.devN=0;try{toast(`${b.n}嗆到了！`,1800)}catch(e){}}}
+/* ---- 地圖上要跑的東西（所有人）：小金蛇、火池、白霧 ---- */
+function bossLocal(b,now){const L=LAIof(b);if(L&&L.local)try{L.local(b,now)}catch(e){}}
+/* 圓形邊界、隨機點 */
+const arenaC=b=>[b.cx,b.cy];
+function arenaPt(b,R){const a=bRnd(b)*Math.PI*2,r=Math.sqrt(bRnd(b))*R;return [Math.round(b.cx+Math.cos(a)*r),Math.round(b.cy+Math.sin(a)*r*0.8)]}
+const circ=(x,y,r,o)=>Object.assign({t:'circle',x:Math.round(x),y:Math.round(y),r},o||{});
+const fanTo=(b,tx,ty,r,w,o)=>Object.assign({t:'fan',x:Math.round(b.x),y:Math.round(b.y),a:A2(b.x,b.y,tx,ty),w,r},o||{});
+/* ---- 各領主 ---- */
+const LAI={};
+/* 列那：三盞狐火是燈也是安全區。花雨裡只有在狐火光圈（110）裡才看得到她、打得到；三盞都熄 → 現形坐下 5 秒 */
+LAI.renard={
+  init(b){const [cx,cy]=arenaC(b),hp=bossMonHp('sakura')*4;b.fs={P:[0,1,2].map(i=>{const a=-Math.PI/2+i*Math.PI*2/3;return {id:'f'+i,x:Math.round(cx+Math.cos(a)*170),y:Math.round(cy+Math.sin(a)*130),hp,mx:hp,t:0,a,h:0.5}}),rest:0}},
+  lit:b=>(b.fs.P||[]).filter(f=>f.hp>0),
+  tick(b,dt,now){const F=b.fs.P;if(b.ph===2){const [cx,cy]=arenaC(b);for(const f of F){f.a+=0.22*dt;f.x=Math.round(cx+Math.cos(f.a)*170);f.y=Math.round(cy+Math.sin(f.a)*130)}}
+    for(const f of F)if(f.hp<=0&&now>=f.t){f.hp=f.mx;f.ash=0}
+    if(F.every(f=>f.hp<=0)&&b.mode!=='rest'){b.mode='rest';b.until=now+5000;b.shape=null;b.seq++;b.fs.rest=now+5000}},
+  partDown(b,q,now){q.t=now+(b.ph===2?6000:8000);q.ash=[q.x,q.y]},
+  pick(b){return b.ph===2&&bRnd(b)<0.3?'hanaarashi':bRnd(b)<0.55?'fbolt':'blink'},
+  near(b){return b.mode==='rest'||LAI.renard.lit(b).some(f=>Math.hypot(f.x-b.x,f.y-b.y)<=110)},
+  vis(b){return LAI.renard.near(b)?1:0.15},
+  inv(b){return !LAI.renard.near(b)},
+  paint(b){const now=bossNow();let s='';if(b.mode!=='rest')s+=`<g class="l196petal">${[0,1,2,3,4,5,6,7,8,9].map(i=>`<ellipse cx="${b.B.x0+((i*97)%(b.B.x1-b.B.x0))}" cy="${b.B.y0+40}" rx="5" ry="3" fill="#FFC8DC" style="animation-delay:${(-i*0.37).toFixed(2)}s"/>`).join('')}</g>`;
+    for(const f of b.fs.P){if(f.hp>0)s+=`<g transform="translate(${f.x} ${f.y})"><ellipse rx="110" ry="92" fill="rgba(255,170,90,.10)" stroke="rgba(255,190,120,.45)" stroke-dasharray="5 6"/><path d="M0 -6 C-14 -18 -8 -36 0 -50 C8 -36 14 -18 0 -6Z" fill="#FFB35C" stroke="#FFF1C2" stroke-width="2" class="l196fire"/><rect x="-24" y="-8" width="48" height="5" rx="2" fill="rgba(0,0,0,.35)"/><rect x="-24" y="-8" width="${(48*f.hp/f.mx).toFixed(1)}" height="5" rx="2" fill="#FFB35C"/></g>`;
+      else{s+=`<g transform="translate(${f.x} ${f.y})"><ellipse rx="70" ry="58" fill="rgba(140,140,150,.22)" stroke="#BBB" stroke-dasharray="4 4"/><circle r="6" fill="#777"/><text y="-14" text-anchor="middle" font-size="12" fill="#eee" stroke="#333" stroke-width="2.5" paint-order="stroke">${Math.max(0,Math.ceil((f.t-now)/1000))}</text></g>`}}
+    return s}};
+/* 巴絲：看眼睛。凝視（掃過去的金光，被掃到變慢）→ 撲三下 → 眼睛暗下來（休息）；每掉三分之一血化沙；第二階段雙重凝視、化沙時冒出兩條小金蛇 */
+LAI.bas={
+  init(b){b.fs={eye:1,step:0,sand:[],P:[]}},
+  tick(b,dt,now){const r=bossHpR(b);if(b.ph===1&&r<=0.5)b.ph=2;/* 化沙期間 AI 不跑，第二階段在這裡也判斷 */for(const th of [2/3,1/3])if(r<=th&&!b.fs.sand.includes(th)&&b.mode!=='sand'){b.fs.sand.push(th);const p=arenaPt(b,150);b.fs.sx=p;b.mode='sand';b.until=now+2000;b.shape=null;b.seq++;return true}
+    if(b.mode==='sand'){if(now>=b.until){b.x=b.fs.sx[0];b.y=b.fs.sx[1];b.fs.sx=null;b.mode='rec';b.until=now+400;b.seq++;if(b.ph===2){const hp=bossMonHp('desert')*3;for(let i=0;i<2;i++){const id='s'+(b.seq*10+i);b.fs.P.push({id,x:b.x+(i?60:-60),y:b.y+30,hp,mx:hp,h:0.45,snake:1,bt:0})}}}return true}
+    b.fs.eye=b.mode==='rest'?0:1;
+    for(const q of b.fs.P)if(q.snake&&q.hp>0){const T=bossTargets(b).reduce((a,p)=>!a||Math.hypot(p.x-q.x,p.y-q.y)<Math.hypot(a.x-q.x,a.y-q.y)?p:a,null);if(T){const d=Math.hypot(T.x-q.x,T.y-q.y);if(d>30){q.x=Math.round(q.x+(T.x-q.x)/d*70*dt);q.y=Math.round(q.y+(T.y-q.y)/d*70*dt)}}}
+    b.fs.P=b.fs.P.filter(q=>q.hp>0)},
+  pick(b){const L=b.ph===2?['gaze2','pounce3','dim']:['gaze','pounce3','dim'],k=L[b.fs.step%3];b.fs.step++;return k},
+  local(b,now){const me=curMe();for(const q of (b.fs&&b.fs.P)||[])if(q.snake&&q.hp>0&&Math.hypot(me.x-q.x,me.y-q.y)<38&&now-(q._bite||0)>1300){q._bite=now;try{pDamage(Math.round(bossDmgOf(b)*0.35),b)}catch(e){}}},
+  paint(b){let s='';for(const q of b.fs.P)if(q.snake)s+=`<g transform="translate(${q.x} ${q.y})"><image href="${bossSrc('servant_desert','idle')}" x="-22" y="-44" width="44" height="44"/><rect x="-18" y="-50" width="36" height="4" fill="rgba(0,0,0,.35)"/><rect x="-18" y="-50" width="${(36*q.hp/q.mx).toFixed(1)}" height="4" fill="#E8C060"/></g>`;
+    if(b.fs.sx)s+=`<g transform="translate(${b.fs.sx[0]} ${b.fs.sx[1]})"><ellipse rx="26" ry="12" fill="rgba(240,200,80,.35)"/><path d="M0 -10 C10 -10 12 4 0 8 C-12 4 -10 -10 0 -10Z M-12 -4 l-8 -6 M12 -4 l8 -6 M-12 4 l-8 6 M12 4 l8 6" fill="#E8B830" stroke="#7A5A10" stroke-width="1.5"/></g>`;
+    if(bossMarkT>bossNow()){const me=curMe();s+=`<g transform="translate(${Math.round(me.x)} ${Math.round(me.y-92)})"><ellipse rx="13" ry="8" fill="#FFE27A" stroke="#7A5A10" stroke-width="1.5"/><circle r="4" fill="#3A2A08"/></g>`}
+    return s},
+  vis(b){return b.mode==='sand'?0:1}};
+/* 奧索：三層冰甲（傷害 ×0.3），踩踏落冰柱，衝撞撞到冰柱 → 暈 4 秒、冰甲裂一層；冰息被吹到變慢，冰柱後面躲得掉；第二階段暴風雪 */
+LAI.urso={
+  init(b){b.fs={arm:3,armT:0,ice:[],fog:0}},
+  mul(b){return b.fs&&b.fs.arm>0?0.3:1},
+  tick(b,dt,now){const F=b.fs;F.ice=F.ice.filter(i=>i.t>now);if(F.arm<=0&&F.armT&&now>F.armT){F.arm=3;F.armT=0}},
+  pick(b){const L=['stomp','icharge','breath'];if(b.ph===2&&bRnd(b)<0.25)return 'blizzard';return L[Math.floor(bRnd(b)*3)]},
+  post(b,A,now){const F=b.fs;if(b.atk==='stomp'&&b.shape)for(const q of b.shape.L||[])F.ice.push({x:q.x,y:q.y,t:now+10000});
+    if(b.atk==='blizzard')F.fog=now+6000;
+    if(b.atk==='icharge'&&b.shape){const s=b.shape;let hit=null,best=1e9;for(const i of F.ice){const vx=s.x1-s.x0,vy=s.y1-s.y0,L2=vx*vx+vy*vy||1,t=((i.x-s.x0)*vx+(i.y-s.y0)*vy)/L2;if(t<0||t>1)continue;const d=Math.hypot(i.x-s.x0-vx*t,i.y-s.y0-vy*t);if(d<44&&t<best){best=t;hit=i}}
+      if(hit){F.ice=F.ice.filter(i=>i!==hit);b.x=hit.x;b.y=hit.y-10;b.stun=now+4000;F.arm=Math.max(0,F.arm-1);if(!F.arm)F.armT=now+8000+4000;b.mode='rec';b.until=now+4000;b.shape=null;b.seq++;try{fxW(hit.x,hit.y-20,`<g class="wfx-ring"><ellipse rx="40" ry="14" fill="rgba(200,240,255,.6)" stroke="#fff" stroke-width="2"/></g>`,500)}catch(e){}}}},
+  cover(b,me){const F=b.fs;for(const i of F.ice){const vx=me.x-b.x,vy=me.y-b.y,L2=vx*vx+vy*vy||1,t=((i.x-b.x)*vx+(i.y-b.y)*vy)/L2;if(t>0&&t<1&&Math.hypot(i.x-b.x-vx*t,i.y-b.y-vy*t)<28)return true}return false},
+  paint(b){const F=b.fs,now=bossNow();let s=F.ice.map(i=>`<g transform="translate(${i.x} ${i.y})"><ellipse rx="22" ry="8" fill="rgba(40,60,80,.3)"/><path d="M-12 0 L-6 -46 L0 -58 L6 -44 L12 0Z" fill="#DDF4FF" stroke="#7FB8D8" stroke-width="1.5"/></g>`).join('');
+    s+=`<g transform="translate(${Math.round(b.x)} ${Math.round(b.y+14)})">${[0,1,2].map(i=>`<path d="M${-22+i*16} 0 l6 -9 l6 9z" fill="${i<F.arm?'#BFE8FF':'rgba(255,255,255,.2)'}" stroke="#4A7A9A" stroke-width="1"/>`).join('')}</g>`;
+    return s},
+  local(b,now){const on=b.fs&&b.fs.fog>now;document.body.classList.toggle('l196fog',!!on)}};
+/* 歐特魯斯：四條鎖鏈拴在四角的鐵樁，鎖鏈還在時血量不會低於 50%；每斷一條範圍變大、變快、火雨變少；四條都斷才進第二階段；噬火（吞火池回血）時 20 連擊打斷 */
+LAI.orth={
+  init(b){const [cx,cy]=arenaC(b),hp=bossMonHp('volcano')*6;b.fs={P:[[-1,-1],[1,-1],[-1,1],[1,1]].map(([sx,sy],i)=>({id:'k'+i,x:cx+sx*170,y:cy+sy*130,hp,mx:hp,h:0.7})),pools:[]}},
+  broken:b=>(b.fs.P||[]).filter(q=>q.hp<=0).length,
+  floor(b){return b.fs&&b.fs.P.some(q=>q.hp>0)?0.5:0},
+  ph2ok(b){return LAI.orth.broken(b)>=4},
+  spd(b){return 1+0.1*LAI.orth.broken(b)},
+  chain(b){return 150+40*LAI.orth.broken(b)},
+  tick(b,dt,now){const F=b.fs,[cx,cy]=arenaC(b),R=LAI.orth.chain(b),d=Math.hypot(b.x-cx,b.y-cy);if(d>R){b.x=cx+(b.x-cx)/d*R;b.y=cy+(b.y-cy)/d*R}F.pools=F.pools.filter(p=>p.t>now);
+    if(b.mode==='devour'){const D=b.max-bossHp(b);b.adj=(b.adj||0)-Math.min(D,b.max*0.01*dt);if(b.net&&(!b._ah||now-b._ah>500)){b._ah=now;bossNet.update(bpath(b)+'/meta',{adj:Math.round(b.adj*100)/100})}if(now>=b.until){b.mode='rec';b.until=now+600;b.seq++}return true}},
+  pick(b){const n=LAI.orth.broken(b);if(b.ph===2){if(bRnd(b)<0.2&&b.fs.pools.length)return 'devour';return ['bite','ffan','dcharge'][Math.floor(bRnd(b)*3)]}const L=['csweep','ffan'].concat(n<4?['frain']:[]);return L[Math.floor(bRnd(b)*L.length)]},
+  post(b,A,now){if(b.atk==='ffan'&&b.shape){const s=b.shape;b.fs.pools.push({x:Math.round(s.x+Math.cos(s.a)*150),y:Math.round(s.y+Math.sin(s.a)*125),r:60,t:now+6000})}},
+  local(b,now){const me=curMe();for(const p of (b.fs&&b.fs.pools)||[])if(Math.hypot(me.x-p.x,(me.y-p.y)*1.2)<p.r&&now-(bossLocal._pt||0)>1000){bossLocal._pt=now;try{pDamage(Math.round(bossDmgOf(b)*0.3),b)}catch(e){}}},
+  paint(b){const F=b.fs;let s=F.pools.map(p=>`<ellipse cx="${p.x}" cy="${p.y}" rx="${p.r}" ry="${(p.r/1.2).toFixed(1)}" fill="rgba(255,110,40,.35)" stroke="#FFB070" class="l196fire"/>`).join('');
+    for(const q of F.P){const on=q.hp>0;if(on)s+=`<path d="M${q.x} ${q.y-20} Q${(q.x+b.x)/2} ${(q.y+b.y)/2+30} ${Math.round(b.x)} ${Math.round(b.y-20)}" stroke="#5A4A40" stroke-width="5" fill="none" stroke-dasharray="7 4"/>`;
+      s+=`<g transform="translate(${q.x} ${q.y})"><rect x="-9" y="-40" width="18" height="40" rx="3" fill="${on?'#4A4048':'#2A2428'}" stroke="#1A1418" stroke-width="2"/>${on?`<rect x="-20" y="-50" width="40" height="5" fill="rgba(0,0,0,.35)"/><rect x="-20" y="-50" width="${(40*q.hp/q.mx).toFixed(1)}" height="5" fill="#FF8A4A"/>`:''}</g>`}
+    return s}};
+/* 蕾普絲：場邊六個落腳點，一輪三跳（第二階段五跳），路線先畫成星座線；跳的時候打不到，落在場中那顆星上停 2.5 秒才打得到；第二階段大招滿月 */
+LAI.lep={
+  init(b){const [cx,cy]=arenaC(b);b.fs={per:[0,1,2,3,4,5].map(i=>{const a=i*Math.PI/3;return [Math.round(cx+Math.cos(a)*220),Math.round(cy+Math.sin(a)*170)]}),route:[],ri:0,seq:0,stars:[],dark:0}},
+  inv(b){return !(b.mode==='rest'&&b.fs&&b.fs.land)},
+  pick(b){const F=b.fs,s=F.seq%3;F.seq++;
+    if(s===0){if(b.ph===2&&bRnd(b)<0.35){const [cx,cy]=arenaC(b);F.stars=[0,1,2,3,4].map(()=>arenaPt(b,150));F.ri=0;F.dark=1;return 'fullmoon'}
+      const n=b.ph===2?5:3,R=[];let last=-1;for(let i=0;i<n;i++){let j;do j=Math.floor(bRnd(b)*6);while(j===last);last=j;R.push(F.per[j])}F.route=R;F.ri=0;F.land=0;return 'kick'}
+    if(s===1)return bRnd(b)<0.3?'crescent':'land';
+    return 'lrest'},
+  post(b,A){const F=b.fs;if(b.atk==='kick'||b.atk==='fullmoon')F.ri++;if(b.atk==='fullmoon'&&b.rep<=1)F.dark=0},
+  tick(b){b.fs.land=b.mode==='rest'&&b.atk==='lrest'?1:0},
+  paint(b){const F=b.fs;let s=F.per.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="9" fill="rgba(230,215,255,.5)" stroke="#fff"/>`).join('');
+    if(b.atk==='kick'&&F.route.length&&(b.mode==='wind'||b.mode==='rec')){let px=b.x,py=b.y,d='';for(let i=F.ri;i<F.route.length;i++){d+=`M${Math.round(px)} ${Math.round(py)} L${F.route[i][0]} ${F.route[i][1]} `;px=F.route[i][0];py=F.route[i][1]}s+=`<path d="${d}" stroke="#F4ECFF" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round" fill="none"/>`}
+    if(b.atk==='fullmoon')s+=F.stars.map(([x,y],i)=>`<g transform="translate(${x} ${y})" opacity="${i<F.ri?0.25:1}"><path d="M0 -14 L4 -4 L14 -4 L6 2 L9 12 L0 6 L-9 12 L-6 2 L-14 -4 L-4 -4Z" fill="#FFF6C8" stroke="#C9A6FF"/><text y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" stroke="#3A2A5A" stroke-width="3" paint-order="stroke">${i+1}</text></g>`).join('');
+    if(F.land&&b.mode==='rest')s+=`<ellipse cx="${Math.round(b.x)}" cy="${Math.round(b.y)}" rx="60" ry="22" fill="rgba(255,246,200,.35)" stroke="#FFF6C8" stroke-width="2"/>`;
+    return s},
+  local(b){document.body.classList.toggle('l196dark',!!(b.fs&&b.fs.dark))}};
+/* 塔羅斯：三個形態。石盾（正面 ×0.2、轉身 3 秒）→ 光環（碎片時鐘、砸落、衝刺）→ 羽翼（羽刃、大招翼板張開，躲殘柱的影子；每次大招轟掉一根；之後胸口核心露出 6 秒 ×2） */
+const TALOS_ART=['lord_ruins1','lord_ruins2','lord_ruins'];
+LAI.talos={
+  init(b){const [cx,cy]=arenaC(b);b.fs={form:0,pil:[[-150,-90],[150,-90],[0,150]].map(([dx,dy])=>[cx+dx,cy+dy]),core:0,turn:0,nw:0}},
+  formOf:b=>{const r=bossHpR(b);return r>0.66?0:r>0.33?1:2},
+  tick(b,dt,now){const F=b.fs,f=LAI.talos.formOf(b);if(f>F.form){F.form=f;b.art=TALOS_ART[f];b.mode='rest';b.until=now+2000;b.shape=null;b.seq++;F.flash=now;return true}
+    b.art=TALOS_ART[F.form];
+    if(F.form===0){const T=bossTargets(b)[0],want=T&&T.x>b.x?1:-1;if(want!==b.face){F.turn=F.turn||now;if(now-F.turn>3000){b.face=want;F.turn=0}}else F.turn=0}},
+  slowTurn(b){return b.fs&&b.fs.form===0},
+  mul(b){const F=b.fs;if(!F)return 1;let k=1;if(F.core>bossNow())k*=2;if(F.form===0){const me=curMe();if((me.x-b.x)*b.face>0)k*=0.2}return k},
+  pick(b){const F=b.fs;if(F.form===0)return bRnd(b)<0.5?'sbash':'quake';if(F.form===1)return ['clock','frag','tdash'][Math.floor(bRnd(b)*3)];F.nw=(F.nw||0)+1;return F.nw%3===0?'wingult':'blades'},
+  post(b,A,now){if(b.atk==='wingult'){const F=b.fs;if(F.pil.length)F.pil.shift();F.core=now+6000}},
+  shadow(b){return b.fs.pil.map(([x,y])=>{const d=Math.hypot(x-b.x,y-b.y)||1;return [Math.round(x+(x-b.x)/d*60),Math.round(y+(y-b.y)/d*50),52]})},
+  paint(b){const F=b.fs,now=bossNow();let s=F.pil.map(([x,y])=>`<g transform="translate(${x} ${y})"><ellipse rx="24" ry="9" fill="rgba(30,20,40,.3)"/><rect x="-16" y="-70" width="32" height="70" fill="#B8B0C8" stroke="#5A5068" stroke-width="2"/><rect x="-20" y="-76" width="40" height="8" fill="#CFC8DC" stroke="#5A5068" stroke-width="1.5"/></g>`).join('');
+    if(F.core>now)s+=`<circle cx="${Math.round(b.x)}" cy="${Math.round(b.y-BOSS_HU*b.def.h*0.55)}" r="14" fill="#FFF2A8" stroke="#FFB030" stroke-width="3" class="l196fire"/>`;
+    if(F.form===0&&F.turn)s+=`<text x="${Math.round(b.x)}" y="${Math.round(b.y+30)}" text-anchor="middle" font-size="12" fill="#fff" stroke="#333" stroke-width="2.5" paint-order="stroke">轉身中…</text>`;
+    return s},
+  noPh2:1};
+/* ---- 現身條件 ---- */
+const twDay=(ms)=>{const d=new Date((ms==null?bossNow():ms)+8*3600e3);return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0')+'-'+String(d.getUTCDate()).padStart(2,'0')};
+const dayRnd=(tag,day)=>{let s=(hashStr(tag+'|'+(day||twDay()))>>>0)||7;return ()=>{s=(s*1103515245+12345)>>>0;return (s>>>8)/16777216}};
+/* 列那：籤詩（全服相同）、五盞石燈籠 */
+const KUJI_SH=[[2,['山的尖頂','帆的影子']],[4,['夜裡最亮的那一顆','五個尖角的光']],[5,['缺了一角的月','彎彎的鐮']],[6,['中間是空的圓','套在指上的環']],[3,['放不下的那個人','兩瓣合成一顆']],[1,['四邊一樣長','方方正正的石磚']]];
+const KUJI_NO=['第一盞','第二盞','第三盞','第四盞','第五盞'];
+function kujiToday(day){const R=dayRnd('kuji',day);return KUJI_NO.map((no,i)=>{const e=KUJI_SH[Math.floor(R()*6)];return {no,sp:e[0],hint:e[1][Math.floor(R()*2)]}})}
+const SHRINE_LANT=()=>{const L=LORDS.sakura,[cx,cy]=L.arena;return [0,1,2,3,4].map(i=>{const a=Math.PI+i*Math.PI/4;return [Math.round(cx+Math.cos(a)*210),Math.round(cy+Math.sin(a)*170)]})};
+function foxL(){const d=twDay();let F=state.foxL;if(!F||F.d!==d)F=state.foxL={d,ok:[0,0,0,0,0]};return F}
+const lordWonOthers=bk=>{const W=state.lordWon||{},me=LORDS[bk]&&LORDS[bk].id;return Object.keys(W).filter(id=>id!==me&&W[id]>0).length};
+const shrineOpen=()=>!!state.shrineOpen;
+/* 奧索：冰洞深處 8 根冰柱，各 3 下，30 秒內打碎 5 根 */
+const URSO_ICE=[[200,420],[300,330],[500,330],[600,420],[190,860],[320,960],[480,960],[610,860]];
+/* 蕾普絲：滿月（月齡 14.77 ±3 天，台灣日期中午算） */
+const MOON_NEW=Date.UTC(2000,0,6,18,14),MOON_P=29.530589;
+const moonAge=ms=>{const a=((ms-MOON_NEW)/86400000)%MOON_P;return a<0?a+MOON_P:a};
+let fakeFull=false;
+function fullMoonDay(ms){if(fakeFull)return true;const d=twDay(ms),[y,m,dd]=d.split('-').map(Number),noon=Date.UTC(y,m-1,dd,4);return Math.abs(moonAge(noon)-14.77)<=3}
+function nextFullMoons(n,from){const out=[];let t=from==null?bossNow():from,last='';for(let i=0;i<400&&out.length<n;i++){const ok=fullMoonDay(t),d=twDay(t);if(ok&&!last){out.push(d)}last=ok?d:'';t+=86400000}return out}
+const RABBIT=[[300,190],[330,150],[350,175],[372,140],[392,180],[420,205],[460,215],[500,210],[530,230],[515,265],[470,270],[430,262],[400,290]];
+function rabbitMissing(day){const R=dayRnd('rabbit',day),S=new Set();while(S.size<3)S.add(Math.floor(R()*RABBIT.length));return [...S]}
+/* 塔羅斯：九區眷屬的金色素材各 1 個 */
+const TALOS_KEYS=()=>Object.keys(SERVANTS).map(bk=>SERVANTS[bk].gold);
+/* 巴絲：小黑貓 */
+const BAS_STEAL_P=0.08;
+const basGold=()=>Object.keys(matsObj()).filter(k=>matGold(k)&&MATS[matBase(k)]&&MATS[matBase(k)].reg==='desert'&&!MATS[matBase(k)].sv&&matCount(k)>0);
+/* 每秒（tick）：巴絲偷東西、奧索的冰柱重長 */
+let basMin=0,basMoved=0;
+function l196Tick(){try{if(scene!=='explore'||!state)return;const now=bossNow(),me=curMe();
+  if(exBiome==='desert'&&!lordSum.cat&&lordCdOk(LORDS.desert.id)&&!lordBusy('desert')&&!(bossRT&&bossRT.kind==='lord')){if(basMoved&&Math.hypot(me.x-basMoved[0],me.y-basMoved[1])>20)basMoved.m=1;
+    if(!basMin){basMin=now;basMoved=[me.x,me.y]}else if(now-basMin>=60e3){const moved=basMoved.m;basMin=now;basMoved=[me.x,me.y];const G=basGold();if(moved&&G.length&&Math.random()<BAS_STEAL_P)basSteal(G[Math.floor(Math.random()*G.length)])}}
+  if(exBiome==='snow'&&regMap===MAP_OF('lord','snow'))urso196Tick(now)}catch(e){}}
+function basSteal(k){const S=matsObj();S[k]--;if(S[k]<=0)delete S[k];save();const me=curMe(),fx=faceFlip(meFace)?-1:1;lordSum.cat={k,map:regMap,x:me.x+fx*150,y:me.y,far:0,t:bossNow()};try{sfx&&sfx('pop')}catch(e){}try{toast('叮——',1200)}catch(e){}catStart()}
+let catRaf=0,catLast=0;
+function catStart(){if(!catRaf&&typeof requestAnimationFrame==='function'){catLast=0;catRaf=requestAnimationFrame(catLoop)}}
+function catLoop(ts){catRaf=0;const C=lordSum.cat;if(!C||scene!=='explore'||exBiome!=='desert'){catPaint();return}catRaf=requestAnimationFrame(catLoop);const dt=catLast?Math.min(0.2,(ts-catLast)/1000):0;catLast=ts;if(regBusy)return;
+  if(C.map!==regMap){catPaint();return}const me=curMe(),now=bossNow(),d=Math.hypot(me.x-C.x,me.y-C.y);
+  if(C.sit){catPaint();return}
+  if(d>400){C.far=C.far||now;if(now-C.far>8000){lordSum.cat=null;catPaint();try{toast('小黑貓不見了。',2000)}catch(e){}return}}else C.far=0;
+  let tx,ty;if(regMap==='secret'){[tx,ty]=LORDS.desert.at}else{const e=regNextExit('desert',regMap,'secret'),p=e&&exitPos?exitPos(regCur(),e):null;if(p){tx=p[0];ty=p[1]}else{tx=C.x;ty=C.y}}
+  const dd=Math.hypot(tx-C.x,ty-C.y);if(d<=260&&dd>6){const sp=Math.min(dd,150*dt);C.x+=(tx-C.x)/dd*sp;C.y+=(ty-C.y)/dd*sp}
+  if(dd<=8){if(regMap==='secret')C.sit=1;else{const e=regNextExit('desert',regMap,'secret');if(e&&d<300){C.map=e.to==='secret'?'secret':e.to;C.enter=1}}}
+  catPaint()}
+/* 換地圖時：貓在你要去的那張圖，出現在入口往前一點 */
+function catArrive(id){const C=lordSum.cat;if(!C)return;if(C.map===id&&C.enter){const me=curMe();C.enter=0;C.x=me.x+(400-me.x)*0.25;C.y=me.y+(600-me.y)*0.25;C.far=0;catStart()}else if(C.map!==id){C.far=C.far||bossNow()}}
+function catPaint(){let g=document.getElementById('catG');const C=lordSum.cat,L=document.getElementById('monFront');if(!C||C.map!==regMap||scene!=='explore'||exBiome!=='desert'){if(g)g.remove();return}if(!L)return;if(!g||g.parentNode!==L){if(g)g.remove();g=document.createElementNS('http://www.w3.org/2000/svg','g');g.id='catG';L.appendChild(g)}
+  g.innerHTML=`<g transform="translate(${Math.round(C.x)} ${Math.round(C.y)})"><ellipse rx="12" ry="4" fill="rgba(0,0,0,.25)"/><path d="M-10 0 C-12 -12 -8 -20 0 -20 C8 -20 12 -12 10 0Z" fill="#1E1A22"/><path d="M-8 -18 l-2 -9 l7 5z M8 -18 l2 -9 l-7 5z" fill="#1E1A22"/><circle cx="-3.5" cy="-14" r="1.6" fill="#FFD24A"/><circle cx="3.5" cy="-14" r="1.6" fill="#FFD24A"/><path d="M10 -4 q10 -2 8 -14" stroke="#1E1A22" stroke-width="3" fill="none" stroke-linecap="round"/></g>${C.sit?`<rect data-reg="l196:cat" x="${Math.round(C.x-26)}" y="${Math.round(C.y-40)}" width="52" height="52" fill="transparent" style="cursor:pointer" pointer-events="all"/>`:''}`}
+function catTap(){const C=lordSum.cat;if(!C||!C.sit)return;const me=curMe();if(Math.hypot(me.x-C.x,me.y-C.y)>90){walkTo(C.x,C.y+30,catTap);return}matAdd(C.k,1);save();lordSum.cat=null;catPaint();try{toast(`牠把${matName(C.k)}還給你了。`,1800)}catch(e){}if(lordCdOk(LORDS.desert.id)&&!lordBusy('desert'))setTimeout(()=>{try{lordSummon('desert')}catch(e){}},600)}
+function urso196Tick(now){const S=lordSum;if(!lordCdOk(LORDS.snow.id)||lordBusy('snow')||(bossRT&&bossRT.kind==='lord')){S.P=null;return}
+  if(S.iceReset&&now<S.iceReset){S.P=null;return}if(!S.P){S.iceReset=0;S.iceT=0;S.P=URSO_ICE.map(([x,y],i)=>({id:'ui'+i,x,y,hp:3,h:0.6,ai:'urso'}));try{renderWorld()}catch(e){}}
+  if(S.iceT&&now-S.iceT>30e3){S.P=null;S.iceT=0;S.iceReset=now+20e3;try{renderWorld();toast('冰柱又慢慢長回來了。',2000)}catch(e){}}}
+LAI.urso.preBreak=function(q){const S=lordSum,now=bossNow();if(!S.iceT)S.iceT=now;try{const h=sceneEl&&sceneEl.parentNode;if(h){h.classList.remove('fxshake');void h.offsetWidth;h.classList.add('fxshake');setTimeout(()=>h.classList.remove('fxshake'),220)}fxW(q.x,q.y,`<g class="wfx-ring"><ellipse rx="60" ry="22" fill="none" stroke="#DDF4FF" stroke-width="3"/></g>`,700)}catch(e){}
+  const n=(S.P||[]).filter(p=>p.hp<=0).length;try{renderWorld()}catch(e){}if(n>=5){S.P=null;S.iceT=0;try{toast('種子庫門前的冰層裂開了……',2200)}catch(e){}setTimeout(()=>{try{lordSummon('snow')}catch(e){}},800)}};
+/* 地圖上的東西（不只領主那張圖）：神社的竹籬門、後院的石燈籠、冰柱、抽火傀儡的鎖鏈、兔子星座、控制台 */
+function l196Objs(){const out=[];if(scene!=='explore')return out;const bk=exBiome,fight=bossRT&&bossRT.kind==='lord'&&!bossRT.done;
+  if(bk==='sakura'&&regMap==='pagoda'){const op=shrineOpen();out.push({y:640,h:`<g transform="translate(748 632)" pointer-events="none">${op?'':`<rect x="-10" y="-62" width="20" height="124" fill="#B89A5A" stroke="#6A5228" stroke-width="2"/>${[-48,-24,0,24,48].map(y=>`<line x1="-14" y1="${y}" x2="14" y2="${y}" stroke="#6A5228" stroke-width="3"/>`).join('')}`}</g>`})}
+  if(bk==='sakura'&&regMap==='shrine'&&!fight){const F=foxL();SHRINE_LANT().forEach(([x,y],i)=>out.push({y:y+1,h:`<g transform="translate(${x} ${y})" pointer-events="none">${F.ok[i]?`<circle cy="-46" r="20" fill="rgba(255,170,90,.45)" class="l196fire"/><path d="M0 -40 C-8 -48 -5 -58 0 -66 C5 -58 8 -48 0 -40Z" fill="#FFB35C"/>`:''}</g><rect data-reg="l196:lant:${i}" x="${x-26}" y="${y-70}" width="52" height="80" fill="transparent" style="cursor:pointer"/>`}))}
+  if(bk==='snow'&&lordSum.P&&regMap===MAP_OF('lord','snow')&&!fight)for(const q of lordSum.P)out.push({y:q.y,h:q.hp>0?`<g transform="translate(${q.x} ${q.y})" pointer-events="none"><ellipse rx="16" ry="6" fill="rgba(40,60,80,.3)"/><path d="M-10 -80 L10 -80 L0 -12Z" fill="#DDF4FF" stroke="#7FB8D8" stroke-width="1.5"/>${[0,1,2].map(i=>`<circle cx="${-8+i*8}" cy="-88" r="2.5" fill="${i<q.hp?'#7FB8D8':'rgba(255,255,255,.3)'}"/>`).join('')}</g>`:`<g transform="translate(${q.x} ${q.y})" pointer-events="none"><path d="M-12 0 l6 -6 l5 4 l6 -5 l7 7z" fill="#DDF4FF" opacity=".8"/></g>`});
+  if(bk==='volcano'&&regMap==='secret'&&bossRT&&bossRT.kind==='servant'&&bossRT.def.puppet&&!bossRT.done){const b=bossRT,h=lordSum.heat||0,c=h>=50?'#FFE27A':h>=30?'#FF6A2A':h>=10?'#C0442A':'#4A4048';out.push({y:b.y-1,h:`<path d="M${Math.round(b.x)} ${Math.round(b.y-30)} Q${Math.round(b.x)+80} ${Math.round(b.y)-200} ${Math.round(b.x)+20} ${b.B.y0}" stroke="${c}" stroke-width="${h>=10?6:4}" fill="none" stroke-dasharray="9 4"${h>=30?' class="l196fire"':''} pointer-events="none"/>`})}
+  if(bk==='canyon'&&regMap==='secret'&&!fight&&fullMoonDay()&&lordCdOk(LORDS.canyon.id)){const miss=rabbitMissing(),got=lordSum.stars&&lordSum.stars.d===twDay()?lordSum.stars.g:[];let s='';RABBIT.forEach(([x,y],i)=>{const m=miss.includes(i)&&!got.includes(i);s+=m?`<circle cx="${x}" cy="${y}" r="9" fill="none" stroke="#E8D7FF" stroke-dasharray="3 3" stroke-width="1.5"/><rect data-reg="l196:star:${i}" x="${x-20}" y="${y-20}" width="40" height="40" fill="transparent" style="cursor:pointer"/>`:`<circle cx="${x}" cy="${y}" r="4" fill="#FFF6C8"/>`});
+    out.push({y:-2,h:`<g>${s}</g>`})}
+  if(bk==='ruins'&&regMap==='secret'&&!fight){const [x,y]=LORDS.ruins.at;out.push({y:y-60,h:`<g transform="translate(${x} ${y-80})" pointer-events="none"><rect x="-46" y="-26" width="92" height="40" rx="6" fill="#3A3448" stroke="#C7B8FF" stroke-width="2"/>${[0,1,2,3,4,5,6,7,8].map(i=>`<circle cx="${-36+i*9}" cy="-6" r="3.2" fill="#6A6080"/>`).join('')}</g><rect data-reg="l196:panel" x="${x-50}" y="${y-110}" width="100" height="60" fill="transparent" style="cursor:pointer"/>`})}
+  return out}
+/* 點地圖上的東西 */
+function l196Tap(k){const [,what,i]=String(k).split(':');
+  if(what==='cat'){catTap();return}
+  if(what==='lant'){const P=SHRINE_LANT()[+i];const me=curMe();if(Math.hypot(me.x-P[0],me.y-P[1])>90){walkTo(P[0],P[1]+30,()=>l196Tap(k));return}if(foxL().ok[+i]){toast('這一盞已經點亮了。',1500);return}sheet={l196:'lant',i:+i};renderSheet();openSheetUI();return}
+  if(what==='star'){const d=twDay();let G=lordSum.stars;if(!G||G.d!==d)G=lordSum.stars={d,g:[]};if(!G.g.includes(+i))G.g.push(+i);try{renderWorld()}catch(e){}if(rabbitMissing().every(j=>G.g.includes(j))&&lordCdOk(LORDS.canyon.id)&&!lordBusy('canyon')){G.g=[];setTimeout(()=>{try{lordSummon('canyon')}catch(e){}},700)}return}
+  if(what==='panel'){const [x,y]=LORDS.ruins.at,me=curMe();if(Math.hypot(me.x-x,me.y-y+80)>120){walkTo(x,y-20,()=>l196Tap(k));return}sheet={l196:'panel'};renderSheet();openSheetUI();return}}
+/* 面板：石燈籠放果實、控制台、神官 */
+function l196Fruits(){return fruitsArr().map((f,i)=>({f,i})).filter(o=>{const a=keyApp(o.f.k);return a&&!a.legacy&&a.skin&&/^[ps]$/.test(colParts(a.skin).t)&&fCount(o.f)>=1})}
+function fruitTake1(i){const F=fruitsArr(),f=F[i];if(!f)return false;const qk=Object.keys(f.q).sort((a,c)=>fqSplit(a)[1]-fqSplit(c)[1])[0];if(!qk)return false;f.q[qk]--;if(f.q[qk]<=0)delete f.q[qk];if(!fCount(f))F.splice(i,1);return true}
+function l196HTML(){const S=sheet;
+  if(S.l196==='lant'){const L=l196Fruits();let h=`<h2>${KUJI_NO[S.i]}石燈籠</h2><p class="note">燈籠裡是空的，好像在等一顆果實。${qh('放一顆果實（任何作物、純色）。放對了燈籠會亮，放錯的那顆會被狐火燒掉。亮了的燈籠留到今天結束。')}</p>`;
+    h+=L.length?L.map(o=>{let ic='';try{ic=fruitSVG(fruitPh(o.f),o.f.c,40)}catch(e){}const a=keyApp(o.f.k);return `<button class="pick" data-act="lantput" data-i="${o.i}"><span class="seedic">${ic}</span><span><b>${esc(shortApp?shortApp(fruitPh(o.f),o.f.c):'')}</b><span class="meta">${fCount(o.f)} 顆，放 1 顆</span></span></button>`}).join(''):'<p class="note">果實袋裡沒有純色的果實。</p>';
+    return h+'<button class="btn" data-act="close">關閉</button>'}
+  if(S.l196==='panel'){const K=TALOS_KEYS(),ok=K.every(k=>matCount(k)>=1)&&!lordBusy('ruins');let h=`<h2>控制台</h2><p class="note">九個凹槽，各自刻著不同的紋路。${qh('放入九區眷屬的金色素材各 1 個就能啟動。只有你會用掉東西。')}</p>`;
+    h+=K.map(k=>`<p class="note">${matIcon(k,22)} ${esc(matName(k))}　${matCount(k)>=1?'✔':'0／1'}</p>`).join('')+`<button class="btn" data-act="panelgo"${ok?'':' disabled'}>啟動</button>`;return h+'<button class="btn" data-act="close">關閉</button>'}
+  if(S.l196==='kan'){const won=lordWonOthers('sakura')>=3;if(won&&!state.shrineOpen){state.shrineOpen=1;save();try{renderWorld()}catch(e){}}
+    let h=`<h2>神社的神官</h2><p class="note">${won?'狐大人想見你。後院的門，我已經打開了。':'後院是狐大人住的地方，平常不讓人進去。'}</p>`;
+    if(S.kuji){const day=twDay(),K=kujiToday(day);state.kuji=day;h+=`<div class="kuji">${K.map(k=>`<p>${k.no}——${esc(k.hint)}</p>`).join('')}</div>`}else h+=`<button class="btn" data-act="kuji">求籤</button>`;
+    return h+'<button class="btn" data-act="close">關閉</button>'}
+  return '<button class="btn" data-act="close">關閉</button>'}
+function l196Action(btn){const a=btn.dataset.act,S=sheet;
+  if(a==='kuji'){S.kuji=1;renderSheet();return}
+  if(a==='panelgo'){const K=TALOS_KEYS();if(!K.every(k=>matCount(k)>=1)||lordBusy('ruins')||(bossRT&&bossRT.kind==='lord'))return;const M=matsObj();for(const k of K){M[k]--;if(M[k]<=0)delete M[k]}save();closeSheet();lordSummon('ruins');return}
+  if(a==='lantput'){const i=+btn.dataset.i,f=fruitsArr()[i];if(!f)return;const ap=keyApp(f.k),want=kujiToday()[S.i].sp,F=foxL();if(!fruitTake1(i))return;
+    if(ap&&ap.sp===want){F.ok[S.i]=1;save();closeSheet();try{renderWorld();toast('燈籠亮了。',1500)}catch(e){}
+      if(F.ok.every(Boolean)&&!lordBusy('sakura')&&!(bossRT&&bossRT.kind==='lord')){F.ok=[0,0,0,0,0];save();setTimeout(()=>{try{lordSummon('sakura')}catch(e){}},700)}}
+    else{save();closeSheet();try{toast('狐火把它燒掉了。',1800)}catch(e){}}return}}
+/* 進地圖 */
+function l196Enter(bk,id){try{if(bk==='desert')catArrive(id);if(lordSum.P&&!(bk==='snow'&&id===MAP_OF('lord','snow')))lordSum.P=null}catch(e){}}
+/* 歐特魯斯：對抽火傀儡打出 50 連擊（中斷時鎖鏈每秒冷卻 2） */
+function orth196Tick(dt){const b=bossRT;if(!b||b.kind!=='servant'||!b.def.puppet||b.done||!b.active){lordSum.heat=0;return}const c=(typeof comboNow==='function'?comboNow():0)||0,h0=lordSum.heat||0;
+  const h=Math.max(c,h0-2*dt);if(Math.floor(h/10)!==Math.floor(h0/10)||(h>=30)!==(h0>=30))try{renderWorld()}catch(e){}lordSum.heat=h;
+  if(c>=50&&lordCdOk(LORDS.volcano.id)&&!lordBusy('volcano')){lordSum.heat=0;b.done=true;if(b.net&&b.net.host===uid)try{bossNet.remove(bpath(b))}catch(e){}try{toast('鎖鏈燒斷了！',1800)}catch(e){}bossRT=null;try{bossClear()}catch(e){}lordSummon('volcano')}}
+/* ===== 196 結束 ===== */
+/* ---- 196 的小工具 ---- */
+function setT0(s,t){if(!s)return;if(s.t==='sweep')s.t0=t;if(s.L)for(const q of s.L)setT0(q,t)}
+/* Realtime Database 會把空陣列存成沒有：收到時補回來 */
+function fsNorm(F){if(!F||typeof F!=='object')return F;for(const k of ['P','ice','pools','pil','per','route','stars','sand'])if(F[k]!=null&&!Array.isArray(F[k]))F[k]=Object.values(F[k]);else if(F[k]==null&&['P','ice','pools','pil'].includes(k))F[k]=[];return F}
+function bossPh2Ok(b){const L=LAIof(b);if(L&&L.noPh2)return false;if(L&&L.ph2ok)return !!L.ph2ok(b);return true}
+const bossSpdK=b=>{const L=LAIof(b);return L&&L.spd?L.spd(b):1};
+const bossSlowTurn=b=>{const L=LAIof(b);return !!(L&&L.slowTurn&&L.slowTurn(b))};
+const bossVis=b=>{try{const L=LAIof(b);if(b.done)return 1;return L&&L.vis&&b.fs?+L.vis(b).toFixed(2):1}catch(e){return 1}};
+function bossFieldSVG(b){try{const L=LAIof(b);return L&&L.paint&&b.fs&&!b.done?L.paint(b):''}catch(e){return ''}}
+const bossIceBlock=(M,x,y)=>{const b=bossRT;if(!b||!b.fs||!b.fs.ice||b.done||!M||M.bk!=='snow'||M.id!==MAP_OF('lord','snow'))return false;return b.fs.ice.some(i=>Math.abs(x-i.x)<14&&Math.abs(y-i.y)<8)};
+let lsT=0;const lsDt=()=>{const n=bossNow(),d=lsT?Math.min(0.5,(n-lsT)/1000):0;lsT=n;return d};
+/* 測試模式：叫出這張圖的領主、假裝今天是滿月 */
+function lord196Tool(v){if(v==='moon'){fakeFull=!fakeFull;try{toast(fakeFull?'假裝今天是滿月':'照真的月相',1500);renderWorld()}catch(e){}return}
+  if(v==='summon'){const bk=exBiome;if(scene!=='explore'||!LORDS[bk]){toast('先到有領主的地區');return}if(regMap!==MAP_OF('lord',bk)){toast('到「'+((REGION_MAPS[bk][MAP_OF('lord',bk)]||{}).n||'')+'」才叫得出來');return}if(state.lordCd)delete state.lordCd[LORDS[bk].id];lordSummon(bk);return}
+  if(v==='open'){state.shrineOpen=1;save();toast('神社後院的門打開了',1500);try{renderWorld()}catch(e){}}}
 /* 不是主機：照收到的狀態走；蓄力時間到了自己判定一次 */
-function bossFollow(b,dt){const S=b.net&&b.net.s;if(!S)return;const k=Math.min(1,dt*10);b.x+=(S.x-b.x)*k;b.y+=(S.y-b.y)*k;b.face=S.face;b.hidden=!!S.hid;b.ph=S.ph||1;
-  if(S.seq!==b.seq){if(b.mode==='wind'&&b.struck!==b.seq)bossStrike(b);/* 漏掉的那一下補判 */b.seq=S.seq;b.mode=S.mode;b.atk=S.atk;b.shape=S.shape||null;b.until=bossNow()+(S.left||0);b.struck=0}
-  if(b.mode==='wind'&&bossNow()>=b.until&&b.struck!==b.seq){b.struck=b.seq;bossStrike(b)}}
+function bossFollow(b,dt){const S=b.net&&b.net.s;if(!S)return;if(S.fs)b.fs=fsNorm(S.fs);if(S.art)b.art=S.art;/* 196 */const k=Math.min(1,dt*10);b.x+=(S.x-b.x)*k;b.y+=(S.y-b.y)*k;b.face=S.face;b.hidden=!!S.hid;b.ph=S.ph||1;
+  if(S.seq!==b.seq){if(b.mode==='wind'&&b.struck!==b.seq&&!(BATK[b.atk]||{}).dur)bossStrike(b);/* 漏掉的那一下補判 */b.seq=S.seq;b.mode=S.mode;b.atk=S.atk;b.shape=S.shape||null;b.until=bossNow()+(S.left||0);b.struck=0;if(b.mode==='act'&&b.shape){const A=BATK[b.atk]||{};setT0(b.shape,bossNow()-((A.dur||0)-(S.left||0)))}}
+  if(b.mode==='wind'&&bossNow()>=b.until&&b.struck!==b.seq){b.struck=b.seq;if(!(BATK[b.atk]||{}).dur)bossStrike(b)}}
 /* ---- 畫 ---- */
-function bossPose(b){if(b.done)return b.kind==='lord'?'calm':'idle';if(b.mode==='wind')return 'windup';if(b.hitT&&bossNow()-b.hitT<220&&!b.def.noHit)return 'hit';if(b.hitAt&&bossNow()-b.hitAt<350)return 'attack';return 'idle'}
-function bossClear(){for(const id of ['bossG','bossTel']){const g=document.getElementById(id);if(g&&g.remove)g.remove()}bossBar(null)}
+function bossPose(b){if(b.done)return b.kind==='lord'?'calm':'idle';{const A=BATK[b.atk]||{},u=A.ult&&b.kind==='lord'&&!/ruins[12]$/.test(b.art);if(b.mode==='wind')return u?'ult':'windup';if(b.mode==='act')return u?'ult':'attack';if(b.mode==='devour')return 'ult'}/* 196 */if(b.hitT&&bossNow()-b.hitT<220&&!b.def.noHit)return 'hit';if(b.hitAt&&bossNow()-b.hitAt<350)return 'attack';return 'idle'}
+function bossClear(){try{document.body.classList.remove('l196fog','l196dark')}catch(e){}/* 196 */for(const id of ['bossG','bossTel']){const g=document.getElementById(id);if(g&&g.remove)g.remove()}bossBar(null)}
 function bossLayer(id,par,first){let g=document.getElementById(id);const P=document.getElementById(par);if(!P)return null;if(!g||g.parentNode!==P){if(g&&g.remove)g.remove();g=document.createElementNS('http://www.w3.org/2000/svg','g');g.id=id;g.setAttribute('pointer-events','none');if(first&&P.firstChild)P.insertBefore(g,P.firstChild);else P.appendChild(g)}return g}
-function bossPaint(b){const me=curMe(),g=bossLayer('bossG',b.y<=me.y?'monBack':'monFront'),t=bossLayer('bossTel','monBack',true);if(!g||!t)return;
+function bossPaint(b){const me=curMe(),g=bossLayer('bossG',b.y<=me.y?'monBack':'monFront'),t=bossLayer('bossTel','monBack',true);if(!g||!t)return;try{bossFxWatch(b)}catch(e){}/* 192 */
   const I=BOSS_IMG[b.art]||[400,400],H=BOSS_HU*b.def.h,W=H*I[0]/I[1],pose=bossPose(b),now=bossNow(),flash=b.def.noHit&&b.hitT&&now-b.hitT<160,
-    fade=b.done&&b.fade?Math.max(0,Math.min(1,(b.fade-now)/1500)):1,key=[pose,Math.round(b.x),Math.round(b.y),b.face,b.hidden,b.ph,b.mode==='guard',flash,fade.toFixed(2)].join('|');
+    fade=b.done&&b.fade?Math.max(0,Math.min(1,(b.fade-now)/1500)):1,key=[pose,Math.round(b.x),Math.round(b.y),b.face,b.hidden,b.ph,b.mode==='guard',b._fxA===b.seq,flash,fade.toFixed(2),bossVis(b),b.art].join('|');
   if(g._k!==key){g._k=key;const glow=b.kind==='lord'&&b.ph===2&&!b.done?`filter:drop-shadow(0 0 8px ${b.def.glow}) drop-shadow(0 0 16px ${b.def.glow})`:flash?'filter:brightness(1.8)':'';
     g.innerHTML=b.hidden?`<g transform="translate(${b.x.toFixed(1)} ${b.y.toFixed(1)})"><g class="bgrass"><path d="M-18 0 q4 -18 0 -30 M0 0 q-4 -24 2 -38 M18 0 q-4 -18 0 -28" stroke="#4E8A36" stroke-width="3" fill="none" stroke-linecap="round"/></g></g>`:
-      `<g transform="translate(${b.x.toFixed(1)} ${b.y.toFixed(1)})" opacity="${fade}"><ellipse rx="${(W*0.3).toFixed(1)}" ry="${(W*0.09).toFixed(1)}" fill="rgba(30,20,10,.25)"/><g transform="scale(${-b.face} 1)${flash?' scale(1.04 .94)':''}" style="${glow}"><image href="${bossSrc(b.art,pose)}" x="${(-W/2).toFixed(1)}" y="${(-H).toFixed(1)}" width="${W.toFixed(1)}" height="${H.toFixed(1)}"/></g>${b.mode==='guard'?`<ellipse cy="${(-H/2).toFixed(1)}" rx="${(W*0.45).toFixed(1)}" ry="${(H*0.55).toFixed(1)}" fill="rgba(200,230,255,.18)" stroke="#BFE3FF" stroke-width="2"/>`:''}${b.kind==='servant'?`<text y="${(-H-8).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" stroke="#3B2614" stroke-width="3" paint-order="stroke">${esc(b.n)}</text>`:''}</g>`}
+      `<g transform="translate(${b.x.toFixed(1)} ${b.y.toFixed(1)})" opacity="${(fade*bossVis(b)).toFixed(2)}"><ellipse rx="${(W*0.3).toFixed(1)}" ry="${(W*0.09).toFixed(1)}" fill="rgba(30,20,10,.25)"/><g transform="scale(${-b.face} 1)${flash?' scale(1.04 .94)':''}" style="${glow}"><image href="${bossSrc(b.art,pose)}" x="${(-W/2).toFixed(1)}" y="${(-H).toFixed(1)}" width="${W.toFixed(1)}" height="${H.toFixed(1)}"/></g>${b.mode==='guard'&&b._fxA!==b.seq?`<ellipse cy="${(-H/2).toFixed(1)}" rx="${(W*0.45).toFixed(1)}" ry="${(H*0.55).toFixed(1)}" fill="rgba(200,230,255,.18)" stroke="#BFE3FF" stroke-width="2"/>`:''}${b.kind==='servant'?`<text y="${(-H-8).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" stroke="#3B2614" stroke-width="3" paint-order="stroke">${esc(b.n)}</text>`:''}</g>`}
   const wall=b.kind==='lord'&&!b.done?`<rect x="${b.B.x0}" y="${b.B.y0}" width="${b.B.x1-b.B.x0}" height="${b.B.y1-b.B.y0}" fill="none" stroke="${b.def.glow}" stroke-opacity=".55" stroke-width="14" class="lordwall"/>`:'';/* 戰場邊界：一圈光牆 */
-  const sk=(b.mode==='wind'?JSON.stringify(b.shape):'')+wall.length;if(t._k!==sk){t._k=sk;t.innerHTML=wall+(b.mode==='wind'?bossShapeSVG(b.shape)+(b.shape&&b.shape.fake?`<text x="${b.shape.x}" y="${b.shape.y-90}" text-anchor="middle" font-size="18" font-weight="700" fill="#9A9A9A" stroke="#fff" stroke-width="3" paint-order="stroke">${b.shape.fake}</text>`:''):'')}
+  const fp=bossFieldSVG(b),wa=b.mode==='wind'||b.mode==='act',sk=(wa?JSON.stringify(b.shape)+(b.mode==='act'?Math.floor(bossNow()/40):''):'')+wall.length+fp;if(t._k!==sk){t._k=sk;t.innerHTML=wall+fp+(wa?bossShapeSVG(b.shape)+(b.shape&&b.shape.fake?`<text x="${b.shape.x}" y="${b.shape.y-90}" text-anchor="middle" font-size="18" font-weight="700" fill="#9A9A9A" stroke="#fff" stroke-width="3" paint-order="stroke">${b.shape.fake}</text>`:''):'')}
   bossBar(b.active?b:null)}
 function bossPaintWait(b){const g=bossLayer('bossG','monBack');if(!g)return;const s=Math.max(0,Math.ceil((b.until-bossNow())/1000)),txt=`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
   if(g._k!==txt){g._k=txt;const [x,y]=b.def.at;g.innerHTML=`<text x="${x}" y="${y-20}" text-anchor="middle" font-size="15" font-weight="700" fill="#fff" stroke="#3B2614" stroke-width="3" paint-order="stroke">${esc(b.def.n)} ${txt}</text>`}bossBar(null)}
@@ -7974,7 +8391,7 @@ function bossReward(b){const bk=b.bk,lord=b.kind==='lord',sv=SERVANTS[bk],got=[]
 /* 1%：該區作物的專屬造型種子（接替第 134 節拿掉的種子台座） */
 function lordSeed(bk){const cs=(BIOMES[bk]&&BIOMES[bk].crops||[]).map(c=>Array.isArray(c)?c[0]:c).filter(c=>EX_OF[c]);const k=cs[Math.floor(Math.random()*cs.length)];if(!k||(typeof bagCap==='function'&&state.lots.length>=bagCap()))return null;
   const ex=Array.isArray(EX_OF[k])?EX_OF[k][Math.floor(Math.random()*EX_OF[k].length)]:EX_OF[k],g=makeWild(k,bk,false);g.sp=[ex,ex];
-  const L={id:state.nextLot++,lid:'L'+(state.nextLid++),crop:k,name:`${EXN[ex]||''}${CROPS[k].n}`,source:'主留下的種子',m:g,f:clone(g),count:10,gen:0,germ:1};state.lots.unshift(L);try{lotNew(L)}catch(e){}return L}
+  const L={id:state.nextLot++,lid:'L'+(state.nextLid++),crop:k,name:`${EXN[ex]||''}${CROPS[k].n}`,source:'領主留下的種子',m:g,f:clone(g),count:10,gen:0,germ:1};state.lots.unshift(L);try{lotNew(L)}catch(e){}return L}
 async function lordFirst(b){if(!uid)return;try{const ref=db.collection('fairyFirst').doc('lord_'+b.def.id);let first=false;await db.runTransaction(async tx=>{const d=await tx.get(ref);if(d.exists)return;tx.set(ref,{u:uid,name:myName(),at:Date.now()});first=true});if(first)postNews('fairy',`${myName()} 是第一個讓${b.def.n}平靜下來的人`,4)}catch(e){}}
 /* 結束：st＝won／lost。主機（或一個人）判斷；連線時寫進 meta，大家在 lordNetSync 收到 */
 function lordEnd(b,st){if(b.done)return;b.done=true;b.shape=null;b.mode='idle';b.fade=bossNow()+(st==='won'?6000:1500);
@@ -7991,7 +8408,7 @@ const twNow=()=>{const d=new Date(bossNow()+8*3600e3);return {h:d.getUTCHours(),
 const minervaFog=()=>{const t=twNow();return t.h%2===0&&t.m<20};/* 台灣時間偶數整點起霧 20 分鐘 */
 const MIN_FEATHERS=[[250,860],[600,760],[400,620]];
 const EXH_STILL=30e3;
-function lordSummonTick(){if(scene!=='explore'||regMap!=='secret')return;const bk=exBiome,L=LORDS[bk];if(!L||(bossRT&&bossRT.kind==='lord'))return;const me=curMe(),now=bossNow(),S=lordSum;
+function lordSummonTick(){if(scene!=='explore')return;if(exBiome==='volcano'&&regMap==='secret')try{orth196Tick(lsDt())}catch(e){}/* 196 */if(regMap!==MAP_OF('lord',exBiome))return;const bk=exBiome,L=LORDS[bk];if(!L||(bossRT&&bossRT.kind==='lord'))return;const me=curMe(),now=bossNow(),S=lordSum;
   if(bk==='forest'){if(!minervaFog()||!lordCdOk(L.id)||lordBusy(bk)){if(S.f){S.f=0;try{renderWorld()}catch(e){}}return}const f=MIN_FEATHERS[S.f||0];if(f&&Math.hypot(me.x-f[0],me.y-f[1])<50){S.f=(S.f||0)+1;try{renderWorld()}catch(e){}if(S.f>=3)lordSummon('forest')}}
   if(bk==='marsh'){if(!lordCdOk(L.id)||lordBusy(bk))return;
     if(S.path){if(Math.hypot(me.x-L.at[0],me.y-L.at[1])<50){lordSummon('marsh');return}if(!bossOnPath(me.x,me.y,60)){S.path=null;try{renderWorld()}catch(e){}}return}/* 中途離開荷葉路就重來 */
@@ -8003,7 +8420,7 @@ function bossOnPath(x,y,w){const S=lordSum.path;if(!S)return false;const [bx,by]
 /* 荷葉路可以走（regBlocked 會先問這裡） */
 const bossWalkOk=(M,x,y)=>!!lordSum.path&&!!M&&M.bk==='marsh'&&M.id==='secret'&&scene==='explore'&&exBiome==='marsh'&&bossOnPath(x,y,30);
 /* 地圖上的東西：割草圈（點了放初穗）、羽毛、倒影與荷葉 */
-function lordObjs(){const out=[];if(scene!=='explore'||regMap!=='secret')return out;const bk=exBiome,L=LORDS[bk];if(!L)return out;const fight=bossRT&&bossRT.kind==='lord';if(bk==='forest')out.push(nestObj());
+function lordObjs(){const out=l196Objs();if(scene!=='explore'||regMap!==MAP_OF('lord',exBiome))return out;const bk=exBiome,L=LORDS[bk];if(!L)return out;const fight=bossRT&&bossRT.kind==='lord';if(bk==='forest')out.push(nestObj());
   if(bk==='grass'&&!fight){const [x,y]=L.at;out.push({y:y-30,h:`<rect data-reg="lordoffer" x="${x-50}" y="${y-36}" width="100" height="60" fill="transparent" style="cursor:pointer"/>`})}
   if(bk==='forest'&&!fight&&minervaFog()&&lordCdOk(L.id)){const f=MIN_FEATHERS[lordSum.f||0];if(f)out.push({y:f[1],h:`<g transform="translate(${f[0]} ${f[1]})" pointer-events="none" class="feather"><path d="M0 0 C-7 -14 -5 -36 6 -50 C11 -32 8 -14 0 0Z" fill="#F4F6FA" stroke="#9AA6B8" stroke-width="1.2"/><path d="M0 0 L5 -46" stroke="#9AA6B8" stroke-width="1"/></g>`})}
   if(bk==='marsh'&&lordSum.path){const S=lordSum.path,[bx,by]=L.at,n=Math.max(4,Math.round(Math.hypot(bx-S.x0,by-S.y0)/44));let s='';for(let i=1;i<=n;i++){const t=i/(n+1),x=S.x0+(bx-S.x0)*t,y=S.y0+(by-S.y0)*t;s+=`<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="24" ry="10" fill="#5FA04A" stroke="#3E7A2E" stroke-width="1.2"/>`}
@@ -8011,7 +8428,7 @@ function lordObjs(){const out=[];if(scene!=='explore'||regMap!=='secret')return 
   if(bk==='forest'&&!fight&&minervaFog()&&lordCdOk(L.id))out.push({y:-1,h:`<rect x="-200" y="-200" width="1200" height="1600" fill="#E8EEF4" opacity=".35" pointer-events="none" class="lordfog"/>`});/* 起霧 */
   return out}
 /* 出口封住：主的戰鬥中；神隱之森起霧時 */
-const regSealed=M=>!!M&&M.id==='secret'&&scene==='explore'&&((bossRT&&bossRT.kind==='lord'&&!bossRT.done)||(M.bk==='forest'&&minervaFog()&&lordCdOk(LORDS.forest.id)&&!lordBusy('forest')));
+const regSealed=M=>!!M&&scene==='explore'&&((M.id===MAP_OF('lord',M.bk)&&bossRT&&bossRT.kind==='lord'&&!bossRT.done)||(M.id==='secret'&&M.bk==='forest'&&minervaFog()&&lordCdOk(LORDS.forest.id)&&!lordBusy('forest')));
 /* ---- 克洛諾斯的初穗：同一種作物的果實 3 顆（純色、基本造型）＋翡翠鐮片 3 個 ---- */
 function hatsuhoSlots(){return fruitsArr().map((f,i)=>({f,i})).filter(o=>{const a=keyApp(o.f.k);return a&&!a.legacy&&!a.sp&&a.skin&&/^[ps]$/.test(colParts(a.skin).t)&&fCount(o.f)>=3})}
 function lordOfferTap(){const me=curMe(),[x,y]=LORDS.grass.at;if(Math.hypot(me.x-x,me.y-y)>110){walkTo(x,y+40,lordOfferTap);return}sheet={hatsuho:1};renderSheet();openSheetUI()}
@@ -8042,7 +8459,7 @@ const bpath=b=>fpath(b.kind==='servant'?b.bk+'_sv':b.bk);/* 172：主 fight/<區
 const svNetState={};let bossNetOff2=null;
 function lordNetWatch(bk){if(!uid||!(rtdb||bossNet.fake))return;if(bossNetOff){try{bossNetOff()}catch(e){}}bossNetOff=bossNet.on(fpath(bk),v=>{lordNetState[bk]=v||null;try{lordNetSync(bk,v)}catch(e){try{crumb('lordsync '+e.message)}catch(x){}}})}
 function lordNetStart(b){try{partyFightEv(b.kind,b.bk)}catch(e){}/* 173：隊友收到開打提示 */const fid=uid+'_'+bossNow();b.net.fid=fid;b.hbs={};b.seen={};bossNet.set(bpath(b),{meta:{fid,host:uid,max:b.max,base:b.base,adj:0,members:b.members,t0:bossNow(),st:'on',kind:b.kind},s:lordState(b)});lordHeartbeat(b)}
-function lordState(b){return {x:Math.round(b.x),y:Math.round(b.y),face:b.face,mode:b.mode,atk:b.atk||'',seq:b.seq,shape:b.shape||null,left:Math.max(0,Math.round(b.until-bossNow())),ph:b.ph,hid:b.hidden?1:0}}
+function lordState(b){return {x:Math.round(b.x),y:Math.round(b.y),face:b.face,mode:b.mode,atk:b.atk||'',seq:b.seq,shape:b.shape||null,left:Math.max(0,Math.round(b.until-bossNow())),ph:b.ph,hid:b.hidden?1:0,fs:b.fs||null,art:b.art}}
 function lordPushState(b,now){if(!b.net||b.net.host!==uid||b.done)return;if(b._ps&&now-b._ps<150&&b._pseq===b.seq)return;b._ps=now;b._pseq=b.seq;bossNet.set(bpath(b)+'/s',lordState(b))}
 function lordPushDmg(b){const now=bossNow();if(b._pd&&now-b._pd<250&&bossHp(b)>0)return;b._pd=now;bossNet.set(bpath(b)+'/dmg/'+uid,b.myDmg)}
 /* 每秒：自己的心跳（斷線時 onDisconnect 記 down）＋檢查主機、輸贏 */
@@ -8082,7 +8499,7 @@ function svResult(b,next){if(b.res)return;b.res='won';b.done=true;b.mode='idle';
   if(!(b.downs&&b.downs[uid])&&b.myDmg>0)bossReward(b);else if(b.myDmg<=0)setTimeout(()=>{try{toast('這一場你沒有打到牠，沒有獎勵。',3500)}catch(e){}},700);
   (state.servantAt||(state.servantAt={}))[b.bk]=next-BOSS_RESPAWN;save();setTimeout(()=>{if(bossRT===b)bossRT={kind:'wait',bk:b.bk,until:next,def:b.def}},1200)}
 /* 收到同步（主、僕人共用）：加入、更新、結束 */
-function bossNetSync(kind,bk,v){const b=bossRT;if(!v||!v.meta)return;const m=v.meta,here=exBiome===bk&&regMap==='secret'&&scene==='explore',now=bossNow();
+function bossNetSync(kind,bk,v){const b=bossRT;if(!v||!v.meta)return;const m=v.meta,here=exBiome===bk&&regMap===MAP_OF(kind,bk)&&scene==='explore',now=bossNow();
   const busy=kind==='lord'?lordBusy(bk):svBusy(bk),def=kind==='lord'?LORDS[bk]:SERVANTS[bk];if(!def)return;
   const mine=b&&b.kind===kind&&b.net&&b.net.fid===m.fid;
   /* 加入：這張圖有進行中的那一場、自己還沒在裡面 */
@@ -8095,7 +8512,7 @@ function bossNetSync(kind,bk,v){const b=bossRT;if(!v||!v.meta)return;const m=v.m
   /* 僕人倒下後的重生倒數：大家照 next */
   if(kind==='servant'&&m.st==='won'&&m.next&&now<m.next&&here&&(!b||b.kind==='wait'||(b.kind==='servant'&&!b.active&&!b.net))){bossRT={kind:'wait',bk,until:m.next,def};(state.servantAt||(state.servantAt={}))[bk]=m.next-BOSS_RESPAWN;return}
   if(!mine)return;
-  const old=b.dmg;b.net.host=m.host;if(v.s)b.net.s=v.s;b.hbs=v.hb||{};b.downs=v.down||{};b.members=m.members||b.members;if(m.max)b.max=m.max;b.adj=+m.adj||0;b.dmg=Object.assign({},v.dmg||{});b.dmg[uid]=Math.max(b.myDmg,b.dmg[uid]||0);
+  const old=b.dmg;b.net.host=m.host;if(v.s)b.net.s=v.s;b.hbs=v.hb||{};b.downs=v.down||{};b.members=m.members||b.members;if(m.max)b.max=m.max;if(b.net.host!==uid)b.adj=+m.adj||0;if(v.od)try{bossOdApply(b,v.od)}catch(e){}/* 196 */b.dmg=Object.assign({},v.dmg||{});b.dmg[uid]=Math.max(b.myDmg,b.dmg[uid]||0);
   try{tmDmg(b,old,b.dmg);bossEvents(b,m,v)}catch(e){}
   if(m.st!=='on'&&b.res!=='left'){if(kind==='lord'){lordSum.gone=m.fid;lordResult(b,m.st)}else if(m.st==='won')svResult(b,m.next||now+BOSS_RESPAWN)}}
 /* ===== 135 結束 ===== */
@@ -8118,12 +8535,28 @@ const petCur=()=>petsArr().find(p=>p.id===state.petOn)||null;
 /* 精魄圖示（程式畫的佔位：那一區主的光色的光球） */
 function spiritArt(x,y,k){const bk=String(k).slice(3),c=(LORDS[bk]||{}).glow||'#FFE6A8';return `<g transform="translate(${x} ${y})"><circle cy="-14" r="13" fill="${c}" opacity=".35"/><circle cy="-14" r="9" fill="${c}" stroke="#5A3416" stroke-width="1.6"/><path d="M-3 -18 q3 -4 6 0" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="-2" cy="-12" r="1.4" fill="#fff"/></g>`}
 /* 神寵的圖（佔位）：幼獸＝圓圓的小獸；成獸＝×1.3；完全體＝主的圖縮小 */
-function petSVG(p,size){const bk=p.bk,c=(LORDS[bk]||{}).glow||'#FFE6A8';
-  if(p.st>=2&&LORDS[bk]){const I=BOSS_IMG[LORDS[bk].art]||[400,400],H=size,W=H*I[0]/I[1];return `<image href="${bossSrc(LORDS[bk].art,'idle')}" x="${(-W/2).toFixed(1)}" y="${(-H).toFixed(1)}" width="${W.toFixed(1)}" height="${H.toFixed(1)}"/>`}
-  const s=(p.st>=1?1.3:1)*size/34;return `<g transform="scale(${s.toFixed(3)})"><ellipse cy="-1" rx="12" ry="3.5" fill="rgba(40,25,10,.22)"/><path d="M-9 -20 l-3 -10 l8 5z M9 -20 l3 -10 l-8 5z" fill="${c}" stroke="#5A3416" stroke-width="1.5" stroke-linejoin="round"/><ellipse cy="-13" rx="12" ry="11" fill="${c}" stroke="#5A3416" stroke-width="1.8"/><circle cx="-4.5" cy="-14" r="1.9" fill="#3A2414"/><circle cx="4.5" cy="-14" r="1.9" fill="#3A2414"/><path d="M-2 -9.5 q2 1.6 4 0" stroke="#3A2414" stroke-width="1.3" fill="none" stroke-linecap="round"/><circle cx="-8" cy="-10" r="2" fill="#FF9DB0" opacity=".6"/><circle cx="8" cy="-10" r="2" fill="#FF9DB0" opacity=".6"/></g>`}
+/* ===== 193（20v）：神寵三個階段都用那隻領主的 idle 圖（有 assets/boss/pet_<地區>_<0|1>.png 就優先用）、高度＝人物的 PET_H；
+   腳下的光用領主的 glow：幼獸一圈淡光、成獸亮一點、完全體再加第二圈；圖載不到才退回佔位圓球。 ===== */
+const PET_H=.85,PET_IMG={};
+const petArtK=bk=>bk==='ruins'?'lord_ruins':((LORDS[bk]||{}).art||'');
+function petProbe(src){let o=PET_IMG[src];if(o)return o.st;o=PET_IMG[src]={st:0,w:0,h:0};try{const im=new Image();im.onload=()=>{o.st=1;o.w=im.naturalWidth;o.h=im.naturalHeight;petDirty()};im.onerror=()=>{o.st=2;petDirty()};im.src=src}catch(e){o.st=2}return 0}
+function petDirty(){try{const L=document.getElementById('charLayer');if(L)L._s='';renderChars();if(sheet&&sheet.pet)renderSheet()}catch(e){}}
+/* 用哪張圖：pet_<地區>_<階段>.png（幼獸、成獸，有才用）→ 領主 idle → null（佔位） */
+function petArt(p){if(p.st<2){const ps=`assets/boss/pet_${p.bk}_${p.st}.png?v=${BUILD}`;if(petProbe(ps)===1){const o=PET_IMG[ps];return {src:ps,w:o.w||400,h:o.h||400}}}
+  const art=petArtK(p.bk);if(!art)return null;const src=bossSrc(art,'idle'),st=petProbe(src);if(st===2)return null;const I=BOSS_IMG[art]||(PET_IMG[src].w?[PET_IMG[src].w,PET_IMG[src].h]:[400,400]);return {src,w:I[0],h:I[1]}}
+const petHW=()=>(typeof C3_HU!=='undefined'?C3_HU:57.5)*1.15*PET_H;/* 跟隨時的高度（地圖座標） */
+function petSVG(p,size,flip){const bk=p.bk,c=(LORDS[bk]||{}).glow||'#FFE6A8',A=petArt(p);
+  if(A){const H=size,W=H*A.w/A.h,rx=W*0.36,ry=rx*0.32,op=p.st>=1?.45:.25;
+    return `<ellipse cy="0" rx="${(rx).toFixed(1)}" ry="${ry.toFixed(1)}" fill="${c}" opacity="${op}"/>${p.st>=2?`<ellipse cy="0" rx="${(rx*1.45).toFixed(1)}" ry="${(ry*1.45).toFixed(1)}" fill="none" stroke="${c}" stroke-width="${(size*0.03).toFixed(1)}" opacity=".45"/>`:''}<image href="${A.src}" x="${(-W/2).toFixed(1)}" y="${(-H).toFixed(1)}" width="${W.toFixed(1)}" height="${H.toFixed(1)}"${flip?` transform="scale(-1 1)"`:''}/>`}
+  const s=(p.st>=1?1.3:1)*size/34;return `<g transform="scale(${s.toFixed(3)})"><ellipse cy="-1" rx="12" ry="3.5" fill="rgba(40,25,10,.22)"/><path d="M-9 -20 l-3 -10 l8 5z M9 -20 l3 -10 l-8 5z" fill="${c}" stroke="#5A3416" stroke-width="1.5" stroke-linejoin="round"/><ellipse cy="-13" rx="12" ry="11" fill="${c}" stroke="#5A3416" stroke-width="1.8"/><circle cx="-4.5" cy="-14" r="1.9" fill="#3A2414"/><circle cx="4.5" cy="-14" r="1.9" fill="#3A2414"/><path d="M-2 -9.5 q2 1.6 4 0" stroke="#3A2414" stroke-width="1.3" fill="none" stroke-linecap="round"/><circle cx="-8" cy="-10" r="2" fill="#FF9DB0" opacity=".6"/><circle cx="8" cy="-10" r="2" fill="#FF9DB0" opacity=".6"/></g>`}/* 佔位（圖載不到才用） */
+/* 跟隨：站在玩家身後一點（面向的反方向），換方向時約 0.25 秒滑過去；面向跟玩家一樣 */
+let petPos=null,petT=0;
+function petTarget(){const m=curMe(),back=faceFlip(meFace)?1:-1;return {x:m.x+back*30,y:m.y-6}}
+function petStep(){const T=petTarget(),now=performance.now(),dt=Math.min(0.1,(now-(petT||now))/1000);petT=now;if(!petPos||Math.hypot(T.x-petPos.x,T.y-petPos.y)>200)petPos={x:T.x,y:T.y};else{const k=1-Math.pow(0.5,dt/0.07);petPos.x+=(T.x-petPos.x)*k;petPos.y+=(T.y-petPos.y)*k}return petPos}
+/* ===== 193 結束 ===== */
 /* 跟在角色旁邊 */
-function petCharG(){if(!state||!state.petOn)return '';const p=petCur();if(!p)return '';const m=curMe(),fl=faceFlip(meFace)?1:-1;return `<g id="petG" transform="translate(${Math.round(m.x+fl*34)} ${Math.round(m.y+2)})" pointer-events="none"><g class="brth">${petSVG(p,30)}</g></g>`}
-function petMove(){try{const g=document.getElementById('hpHead');if(g){const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y+(char2On()?char2TagDY()*CHAR_S:0))})`)}}catch(e){}try{const g=document.getElementById('petG');if(!g)return;const m=curMe(),fl=faceFlip(meFace)?1:-1;g.setAttribute('transform',`translate(${Math.round(m.x+fl*34)} ${Math.round(m.y+2)})`)}catch(e){}}
+function petCharG(){if(!state||!state.petOn)return '';const p=petCur();if(!p)return '';const P=petStep(),fl=faceFlip(meFace);return `<g id="petG" transform="translate(${Math.round(P.x)} ${Math.round(P.y)})" pointer-events="none"><g class="brth">${petSVG(p,petHW(),fl)}</g></g>`}/* 193 */
+function petMove(){try{const g=document.getElementById('hpHead');if(g){const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y+(char2On()?char2TagDY()*CHAR_S:0))})`)}}catch(e){}try{const g=document.getElementById('petG');if(!g)return;const P=petStep();g.setAttribute('transform',`translate(${Math.round(P.x)} ${Math.round(P.y)})`);const fl=faceFlip(meFace)?1:0;if(g._fl!==fl){g._fl=fl;const im=g.querySelector('image');if(im){if(fl)im.setAttribute('transform','scale(-1 1)');else im.removeAttribute('transform')}}}catch(e){}}/* 193：滑過去、跟著玩家轉向 */
 /* 使用精魄 → 孵化 */
 function spiritUse(bk){const k='sp_'+bk,I=state.items||(state.items={});if(!(I[k]>0))return false;I[k]--;hatchArr().push({bk,at:Date.now()});save();toast(`${spiritName(bk)}開始孵化了，6 小時後孵出來`,4000);return true}
 function hatchLeft(h){return Math.max(0,h.at+HATCH_MS-Date.now())}
@@ -8138,7 +8571,7 @@ function petEvolve(id){const p=petsArr().find(x=>x.id===id);if(!p||!petEvoOk(p))
   setTimeout(()=>{try{noteOpen(`<h2>${esc(petName(p))}</h2><div style="text-align:center"><svg viewBox="-50 -76 100 82" width="130" height="108">${petSVG(p,60)}</svg></div><p class="note">長大了！</p>`);renderChars()}catch(e){}},200);return true}
 /* 背包「道具」分頁裡的精魄、孵化中、神寵、卡包 */
 function spiritLine(){const I=state.items||{},sp=SPK.filter(k=>I[k]>0),H=hatchArr(),P=packsObj(),pk=Object.keys(P).filter(k=>P[k]>0);let h='';
-  if(sp.length)h+=`<h3>精魄${qh('主平靜下來後留下的東西。用了就開始孵，6 小時（不在線上也算）孵出神寵。可以上架市集。')}</h3>`+sp.map(k=>`<div class="itm">${itemIcon(k)}<span class="lr"><b>${esc(spiritName(k.slice(3)))}</b><span class="meta">持有 ${I[k]} 個</span></span><button class="mini" data-spuse="${k.slice(3)}">孵化</button></div>`).join('');
+  if(sp.length)h+=`<h3>精魄${qh('領主平靜下來後留下的東西。用了就開始孵，6 小時（不在線上也算）孵出神寵。可以上架市集。')}</h3>`+sp.map(k=>`<div class="itm">${itemIcon(k)}<span class="lr"><b>${esc(spiritName(k.slice(3)))}</b><span class="meta">持有 ${I[k]} 個</span></span><button class="mini" data-spuse="${k.slice(3)}">孵化</button></div>`).join('');
   if(H.length)h+=`<h3>孵化中</h3>`+H.map(x=>{const m=Math.ceil(hatchLeft(x)/60e3);return `<div class="itm">${itemIcon('sp_'+x.bk)}<span class="lr"><b>${esc(spiritName(x.bk))}</b><span class="meta">還要 ${m>=60?Math.floor(m/60)+' 小時 '+(m%60)+' 分':m+' 分鐘'}</span></span></div>`}).join('');
   const PS=petsArr();if(PS.length)h+=`<h3>神寵${qh('帶著的那一隻會跟著你，打怪時你拿到多少經驗，牠也拿多少。神寵不能交易。')}</h3>`+PS.map(p=>`<button class="itm pick" data-pet="${p.id}"><svg viewBox="-26 -46 52 50" width="44" height="44" aria-hidden="true">${petSVG(p,34)}</svg><span class="lr"><b>${esc(petName(p))}</b><span class="meta">Lv ${p.lv}・${PET_ST[p.st]}${state.petOn===p.id?'・帶著':''}${petEvoOk(p)?'・可以進化了':''}</span></span></button>`).join('');
   if(pk.length)h+=`<h3>夢幻色卡包</h3>`+pk.map(k=>`<div class="itm">${itemIcon('pack')}<span class="lr"><b>夢幻色卡包（${esc(BIOMES[k]?BIOMES[k].n:k)}）</b><span class="meta">${P[k]} 包・規則還沒定，先收著</span></span></div>`).join('');
@@ -8663,7 +9096,7 @@ let fyAtkAt=0,fyAct=null;const FY_SEEN={};
 /* 正在和主人交手的敵人（最近的一隻） */
 function fyTarget(){const me=curMe(),now=Date.now();let best=null,bd=FY_ATK_R;
   if(MON_RT)for(const m of MON_RT.list){if(!m||m.dead)continue;if(!(m.aggro||(m.lastHit&&now-m.lastHit<FY_ATK_ENG)))continue;const d=Math.hypot(m.x-me.x,m.y-me.y);if(d<=bd){bd=d;best={m}}}
-  try{const b=bossRT;if(b&&b.def&&!b.done&&(b.kind==='lord'||(b.kind==='servant'&&b.active))){const d=Math.hypot(b.x-me.x,b.y-me.y);if(d<=bd){bd=d;best={boss:b}}}}catch(e){}
+  try{const b=bossRT;if(b&&b.def&&!b.done&&!bossInv(b)&&(b.kind==='lord'||(b.kind==='servant'&&b.active))){const d=Math.hypot(b.x-me.x,b.y-me.y);if(d<=bd){bd=d;best={boss:b}}}}catch(e){}
   return best}
 function fyAtkTick(){if(!state||scene!=='explore'||!fyAutoOn())return false;const f=fyMe();if(!f)return false;const now=Date.now();if(now-fyAtkAt<FY_ATK_CD*1000)return false;
   const t=fyTarget();if(!t)return false;fyAtkAt=now;const d=Math.max(1,Math.round(fyBaseDmg()*fyAtkPct(f))),[tx,ty]=tPos(t);
@@ -8873,7 +9306,7 @@ function monWind(m,on){try{const g=m.el&&m.el.querySelector('.mb');if(g)g.classL
 
 const monKey=()=>exBiome+'|'+regMap;
 function monTable(){return ((MON_MAP[exBiome]||{})[regMap])||null}
-function monHere(){return state&&scene==='explore'&&typeof regIn==='function'&&regIn()&&!!monTable()}/* 17t：不看 regBusy。走出口換圖時 regEnter 是在 regBusy=true 的時候呼叫的，原本因此一隻都不生 */
+function monHere(){return state&&scene==='explore'&&typeof regIn==='function'&&regIn()&&!!monTable()&&!(typeof bossRT!=='undefined'&&bossRT&&bossRT.kind==='lord'&&!bossRT.done&&regMap===MAP_OF('lord',exBiome))}/* 196：冰洞深處和奧索打的時候一般怪先退開 *//* 17t：不看 regBusy。走出口換圖時 regEnter 是在 regBusy=true 的時候呼叫的，原本因此一隻都不生 */
 function monSrc(k){return `assets/monsters/${(REGION_CFG[exBiome]||{}).dir||exBiome}/s/${k}.png?v=${BUILD}`}/* 濕地的資料夾叫 wetland */
 function monScale(k,boss){const d=MON_DEF[k],I=monDim(k);return (d.w?d.w/I[0]:d.h/I[1])*(boss?MON_BOSS_K:1)}
 function monPreload(){const T=monTable();if(!T)return;for(const [k] of T)for(const n of [k,k+'_hit'])if(MON_IMG[n]){const im=new Image();im.src=monSrc(n)}}
@@ -8935,6 +9368,7 @@ function monLoop(ts){monRaf=0;if(!monHere()){if(MON_RT)monClear();return}
   const M=regCur(),me=curMe(),now=Date.now(),L=MON_RT.list;try{(()=>{try{fyAtkTick()}catch(e){}})(),/* 170 */dropTick()}catch(e){}/* 161 */try{skTick();comboTick()}catch(e){}/* 184、187 */try{ghostTick()}catch(e){}/* 164 */
   {const S=monSlots(),X=MON_RT.xs||(MON_RT.xs=[]),N=monCount();for(let i=0;i<N;i++){if(L[i])continue;const due=MON_RT.due[i];if(!due){MON_RT.due[i]=now+monDelay();continue}if(now>=due){if(i<MON_N){S[i]=monRoll(S,i);monSpawnRT(M,i,S[i],true);monSaveSoon()}else{X[i]=monRoll(S.concat(X.slice(MON_N)),i);monSpawnRT(M,i,X[i],true)}}}}/* 131：同一張圖多 1 人 +2 隻（多的不存檔） *//* 105.10：打倒 1–3 秒後在遠處重生 */
   try{atkTick()}catch(e){}/* 189：不再自動打，按攻擊鍵才打 */
+  const best=(typeof atkLock!=='undefined'&&atkLock&&atkLock.m&&!atkLock.m.dead)?L.indexOf(atkLock.m):-1;/* 20y 修：189 拿掉自動攻擊時 best 沒有定義，被打過的怪一還手 monLoop 就丟錯；改成攻擊鍵鎖定的那一隻 */
   L.forEach((m,i)=>{if(!m||m.dead)return;if(m.burn){if(now>=m.burn.next&&now<=m.burn.until+60){m.burn.next+=1000;hitMon(m,{d:m.burn.d,crit:false});if(m.dead)return}if(now>m.burn.until)m.burn=null}if(m.stun&&now<m.stun){if(m.moving){m.moving=false;monPaint(i,m)}return}/* 159：燒傷、暈住 */
     if(m.aggro){const dme=Math.hypot(m.x-me.x,m.y-me.y);/* 131：被打了才還手 */
       if(now-m.lastHit>MON_GIVEUP||Math.hypot(m.x-m.ox,m.y-m.oy)>MON_LEASH){m.aggro=0;m.wind=0;monWind(m,false);m.tgt=[m.ox,m.oy];m.hp=m.max;monBar(m,false)}
@@ -9006,7 +9440,8 @@ const MATS={hay:{n:'乾草束',mon:'haybale',reg:'grass'},mane:{n:'鬃毛',mon:'
   bubshell:{n:'泡殼',mon:'bubble_snail',reg:'marsh'},batwing:{n:'網紋翼膜',mon:'eave_bat',reg:'marsh'},
   /* 142.4：第一季三區新怪的素材 */x_wind_boar:{n:'風鬃',mon:'wind_boar',reg:'grass'},x_bloom_log:{n:'繁花枝',mon:'bloom_log',reg:'grass'},x_thunder_rock:{n:'雷紋石',mon:'thunder_rock',reg:'grass'},x_shade_xiao:{n:'影魈毛',mon:'shade_xiao',reg:'grass'},x_frost_fern:{n:'霜蕨葉',mon:'frost_fern',reg:'forest'},x_venom_fern:{n:'毒孢',mon:'venom_fern',reg:'forest'},x_silver_stone:{n:'銀晶',mon:'silver_stone',reg:'forest'},x_torrent_stone:{n:'激流石',mon:'torrent_stone',reg:'forest'},x_moss_stump:{n:'苔岩根',mon:'moss_stump',reg:'forest'},x_mist_shroom:{n:'霧菇傘',mon:'mist_shroom',reg:'forest'},x_shade_burl:{n:'影瘤',mon:'shade_burl',reg:'forest'},x_thunder_moth:{n:'雷鱗粉',mon:'thunder_moth',reg:'forest'},x_fiddler_crab:{n:'蟹螯',mon:'fiddler_crab',reg:'marsh'},x_pearl_crab:{n:'珠光螯',mon:'pearl_crab',reg:'marsh'},x_fire_urchin:{n:'紅棘',mon:'fire_urchin',reg:'marsh'},x_thunder_urchin:{n:'雷棘',mon:'thunder_urchin',reg:'marsh'},x_leaf_frog:{n:'傘葉',mon:'leaf_frog',reg:'marsh'},x_bloom_frog:{n:'扶桑花',mon:'bloom_frog',reg:'marsh'},x_venom_snail:{n:'毒泡殼',mon:'venom_snail',reg:'marsh'},
   /* 141.4：後六區每隻怪一種素材（鍵＝x_怪物 id），金色版照舊 _g */x_dream_tapir:{n:'夢獏毛',mon:'dream_tapir',reg:'sakura'},x_night_tapir:{n:'夜夢絨',mon:'night_tapir',reg:'sakura'},x_wild_rose:{n:'薔薇刺',mon:'wild_rose',reg:'sakura'},x_white_rose:{n:'白薔薇瓣',mon:'white_rose',reg:'sakura'},x_bamboo_rat:{n:'竹鼠牙',mon:'bamboo_rat',reg:'sakura'},x_bell_cricket:{n:'鈴翅',mon:'bell_cricket',reg:'sakura'},x_antlion:{n:'蟻獅顎',mon:'antlion',reg:'sakura'},x_sakura_golem:{n:'櫻木心',mon:'sakura_golem',reg:'sakura'},x_sakura_aphid:{n:'櫻露',mon:'sakura_aphid',reg:'sakura'},x_blossom_twig:{n:'櫻枝',mon:'blossom_twig',reg:'sakura'},x_ripple_wraith:{n:'水鏡片',mon:'ripple_wraith',reg:'sakura'},x_bamboo_beetle:{n:'筍殼',mon:'bamboo_beetle',reg:'sakura'},x_glow_bamboo:{n:'光竹節',mon:'glow_bamboo',reg:'sakura'},x_sand_ripple:{n:'白砂',mon:'sand_ripple',reg:'sakura'},x_root_crab:{n:'櫻根',mon:'root_crab',reg:'sakura'},x_old_sakura_spirit:{n:'古櫻皮',mon:'old_sakura_spirit',reg:'sakura'},x_sand_whale:{n:'沙鯨鬚',mon:'sand_whale',reg:'desert'},x_jackal_shade:{n:'影紗',mon:'jackal_shade',reg:'desert'},x_ammit:{n:'吞心牙',mon:'ammit',reg:'desert'},x_spine_beast:{n:'背刺',mon:'spine_beast',reg:'desert'},x_sand_eye_worm:{n:'沙眼石',mon:'sand_eye_worm',reg:'desert'},x_sun_scarab:{n:'聖甲殼',mon:'sun_scarab',reg:'desert'},x_pad_cactus:{n:'仙人掌片',mon:'pad_cactus',reg:'desert'},x_barrel_ball:{n:'刺球花',mon:'barrel_ball',reg:'desert'},x_horned_lizard:{n:'角蜥鱗',mon:'horned_lizard',reg:'desert'},x_coconut_hopper:{n:'椰殼',mon:'coconut_hopper',reg:'desert'},x_rock_hermit:{n:'砂岩殼',mon:'rock_hermit',reg:'desert'},x_hoodoo_rock:{n:'風化石',mon:'hoodoo_rock',reg:'desert'},x_obelisk_imp:{n:'碑文片',mon:'obelisk_imp',reg:'desert'},x_coffin_beetle:{n:'石棺殼',mon:'coffin_beetle',reg:'desert'},x_bell_scorpion:{n:'駝鈴',mon:'bell_scorpion',reg:'desert'},x_crystal_scorpion:{n:'沙晶',mon:'crystal_scorpion',reg:'desert'},x_baby_mammoth:{n:'冰牙',mon:'baby_mammoth',reg:'snow'},x_crystal_leopard:{n:'晶豹毛',mon:'crystal_leopard',reg:'snow'},x_snow_pile:{n:'雪團',mon:'snow_pile',reg:'snow'},x_snow_whirl:{n:'吹雪結晶',mon:'snow_whirl',reg:'snow'},x_frost_bellgrass:{n:'冰鈴花',mon:'frost_bellgrass',reg:'snow'},x_frost_wolf:{n:'霜鬃',mon:'frost_wolf',reg:'snow'},x_ice_crab:{n:'冰甲殼',mon:'ice_crab',reg:'snow'},x_ice_bubbles:{n:'冰泡',mon:'ice_bubbles',reg:'snow'},x_ice_prism:{n:'冰稜',mon:'ice_prism',reg:'snow'},x_snow_badger:{n:'獾毛',mon:'snow_badger',reg:'snow'},x_yeti_cub:{n:'雪怪毛',mon:'yeti_cub',reg:'snow'},x_ice_spider:{n:'冰絲',mon:'ice_spider',reg:'snow'},x_aurora_jelly:{n:'極光膜',mon:'aurora_jelly',reg:'snow'},x_ice_golem:{n:'冰岩心',mon:'ice_golem',reg:'snow'},x_fire_rat:{n:'火浣毛',mon:'fire_rat',reg:'volcano'},x_volcano_snail:{n:'火山殼',mon:'volcano_snail',reg:'volcano'},x_obsidian_rhino:{n:'黑曜角',mon:'obsidian_rhino',reg:'volcano'},x_ash_mole:{n:'燼爪',mon:'ash_mole',reg:'volcano'},x_sulfur_shroom:{n:'硫磺粉',mon:'sulfur_shroom',reg:'volcano'},x_sulfur_hedgehog:{n:'硫晶刺',mon:'sulfur_hedgehog',reg:'volcano'},x_lava_serpent:{n:'海蛇鱗',mon:'lava_serpent',reg:'volcano'},x_lava_lizard:{n:'熔岩鱗',mon:'lava_lizard',reg:'volcano'},x_lava_armadillo:{n:'熔甲片',mon:'lava_armadillo',reg:'volcano'},x_ember_golem:{n:'燼鐵塊',mon:'ember_golem',reg:'volcano'},x_crater_eagle:{n:'焰羽',mon:'crater_eagle',reg:'volcano'},x_flame_sprite:{n:'焰心',mon:'flame_sprite',reg:'volcano'},x_ore_ant:{n:'礦晶',mon:'ore_ant',reg:'volcano'},x_ember_bat:{n:'紅晶翼',mon:'ember_bat',reg:'volcano'},x_night_antelope:{n:'夜羚角',mon:'night_antelope',reg:'canyon'},x_glow_scorpion:{n:'螢光尾針',mon:'glow_scorpion',reg:'canyon'},x_star_puffer:{n:'星刺',mon:'star_puffer',reg:'canyon'},x_glow_dragonfly:{n:'夜光翅',mon:'glow_dragonfly',reg:'canyon'},x_flytrap:{n:'捕蟲葉',mon:'flytrap',reg:'canyon'},x_star_hummingbird:{n:'蜂鳥羽',mon:'star_hummingbird',reg:'canyon'},x_cliff_antelope:{n:'彎角',mon:'cliff_antelope',reg:'canyon'},x_silver_moth:{n:'銀鱗粉',mon:'silver_moth',reg:'canyon'},x_chime_beast:{n:'鳴晶',mon:'chime_beast',reg:'canyon'},x_amethyst_star:{n:'紫晶尖',mon:'amethyst_star',reg:'canyon'},x_moon_moth:{n:'月光粉',mon:'moon_moth',reg:'canyon'},x_laurel_sprite:{n:'桂花',mon:'laurel_sprite',reg:'canyon'},x_star_stag:{n:'星晶顎',mon:'star_stag',reg:'canyon'},x_crystal_star:{n:'星晶腕',mon:'crystal_star',reg:'canyon'},x_mech_scorpion:{n:'鏽尾針',mon:'mech_scorpion',reg:'ruins'},x_mech_bee:{n:'蜂機翼',mon:'mech_bee',reg:'ruins'},x_moss_bee:{n:'苔蜂芯',mon:'moss_bee',reg:'ruins'},x_mech_raptor:{n:'機龍爪',mon:'mech_raptor',reg:'ruins'},x_black_raptor:{n:'黑鋼片',mon:'black_raptor',reg:'ruins'},x_three_head_bird:{n:'三首羽',mon:'three_head_bird',reg:'ruins'},x_mech_centipede:{n:'蜈蚣節',mon:'mech_centipede',reg:'ruins'},x_mech_spider:{n:'蛛機腳',mon:'mech_spider',reg:'ruins'},x_steel_python:{n:'鋼鱗片',mon:'steel_python',reg:'ruins'},x_mech_ptero:{n:'翼骨架',mon:'mech_ptero',reg:'ruins'},x_mech_croc:{n:'鱷機齒',mon:'mech_croc',reg:'ruins'},x_mech_crab:{n:'鱟殼',mon:'mech_crab',reg:'ruins'},x_rune_tablet:{n:'碑石片',mon:'rune_tablet',reg:'ruins'},x_mech_ankylo:{n:'鎚尾鐵',mon:'mech_ankylo',reg:'ruins'},x_prism_beetle:{n:'虹紋殼',mon:'prism_beetle',reg:'ruins'},x_stone_doll:{n:'古石偶片',mon:'stone_doll',reg:'ruins'},
-  jadeblade:{n:'翡翠鐮片',mon:'',reg:'grass',sv:1},jadesickle:{n:'翠玉鐮',mon:'',reg:'grass',sv:1,gold:1},ravenfeather:{n:'鴉羽',mon:'',reg:'forest',sv:1},silvereye:{n:'銀眼石',mon:'',reg:'forest',sv:1,gold:1},pearlplume:{n:'珠光羽',mon:'',reg:'marsh',sv:1},heroncrest:{n:'鷺冠羽',mon:'',reg:'marsh',sv:1,gold:1}};/* 135.3：主的僕人的素材（金色 15% 是另一種，不加「金色的」） *//* 131.5：白樺林、潟湖「之後不會換」的怪 */
+  jadeblade:{n:'翡翠鐮片',mon:'',reg:'grass',sv:1},jadesickle:{n:'翠玉鐮',mon:'',reg:'grass',sv:1,gold:1},ravenfeather:{n:'鴉羽',mon:'',reg:'forest',sv:1},silvereye:{n:'銀眼石',mon:'',reg:'forest',sv:1,gold:1},pearlplume:{n:'珠光羽',mon:'',reg:'marsh',sv:1},heroncrest:{n:'鷺冠羽',mon:'',reg:'marsh',sv:1,gold:1},
+  /* 196：後六區眷屬（抽火傀儡）的素材 */sakuramoss:{n:'櫻苔石',mon:'',reg:'sakura',sv:1},shrinebell:{n:'鎮社鈴',mon:'',reg:'sakura',sv:1,gold:1},snakescale:{n:'金蛇鱗',mon:'',reg:'desert',sv:1},snakeeye:{n:'蛇眼石',mon:'',reg:'desert',sv:1,gold:1},crystalspine:{n:'晶脊刺',mon:'',reg:'snow',sv:1},icecore:{n:'冰晶心',mon:'',reg:'snow',sv:1,gold:1},ironlink:{n:'黑鐵鏈節',mon:'',reg:'volcano',sv:1},redshard:{n:'赤曜碎片',mon:'',reg:'volcano',sv:1,gold:1},toadskin:{n:'玉蟾皮',mon:'',reg:'canyon',sv:1},moonpearl:{n:'月光珠',mon:'',reg:'canyon',sv:1,gold:1},oldpart:{n:'古代零件',mon:'',reg:'ruins',sv:1},rainbowcore:{n:'虹光核心',mon:'',reg:'ruins',sv:1,gold:1}};/* 135.3：主的僕人的素材（金色 15% 是另一種，不加「金色的」） *//* 131.5：白樺林、潟湖「之後不會換」的怪 */
 /* ===== 147（19m）：主與僕人的頭像 ===== */
 const POR_C={grass:'#7FE3B0',forest:'#C9D8FF',marsh:'#9FE7FF',snow:'#D6ECFF',desert:'#F2D08A',sakura:'#FFC8DC',volcano:'#FFA27A',canyon:'#E8B07E',ruins:'#C7B8FF'};/* 各地區的主色（第一季三區＝主的光色） */
 const porSrc=art=>`assets/boss/portrait/${art}.png?v=${BUILD}`;
@@ -9016,7 +9451,7 @@ function porHTML(art,px){if(!art)return '';return `<span class="bpor" style="--p
 function porFail(im){try{const fb=im.getAttribute('data-fb'),s=im.parentNode;im.onerror=null;if(fb){im.src=fb;s.classList.remove('por')}else if(s)s.hidden=true}catch(e){}}
 const porArtOfSrc=src=>{const m=/assets\/boss\/((?:lord|servant)_[a-z]+)_idle\.png/.exec(src||'');return m?m[1]:''};
 /* ===== 147 結束 ===== */
-const MAT_ICON={jadeblade:'assets/boss/servant_grass_idle.png',jadesickle:'assets/boss/servant_grass_idle.png',ravenfeather:'assets/boss/servant_forest_idle.png',silvereye:'assets/boss/servant_forest_idle.png',pearlplume:'assets/boss/servant_marsh_idle.png',heroncrest:'assets/boss/servant_marsh_idle.png'};/* 正式圖示：{鍵:'assets/...png'}，空的就用怪物縮圖 */
+const MAT_ICON={jadeblade:'assets/boss/servant_grass_idle.png',jadesickle:'assets/boss/servant_grass_idle.png',ravenfeather:'assets/boss/servant_forest_idle.png',silvereye:'assets/boss/servant_forest_idle.png',pearlplume:'assets/boss/servant_marsh_idle.png',heroncrest:'assets/boss/servant_marsh_idle.png',sakuramoss:'assets/boss/servant_sakura_idle.png',shrinebell:'assets/boss/servant_sakura_idle.png',snakescale:'assets/boss/servant_desert_idle.png',snakeeye:'assets/boss/servant_desert_idle.png',crystalspine:'assets/boss/servant_snow_idle.png',icecore:'assets/boss/servant_snow_idle.png',ironlink:'assets/boss/servant_volcano_idle.png',redshard:'assets/boss/servant_volcano_idle.png',toadskin:'assets/boss/servant_canyon_idle.png',moonpearl:'assets/boss/servant_canyon_idle.png',oldpart:'assets/boss/servant_ruins_idle.png',rainbowcore:'assets/boss/servant_ruins_idle.png'};/* 196 *//* 正式圖示：{鍵:'assets/...png'}，空的就用怪物縮圖 */
 const MON_MAT={};for(const b in MATS)if(MATS[b].mon)MON_MAT[MATS[b].mon]=b;
 const matBase=k=>String(k).replace(/_g$/,''),matGold=k=>/_g$/.test(k);
 const matName=k=>{const M=MATS[matBase(k)];return M?(matGold(k)?'金色的':'')+M.n:'素材'};
@@ -9046,7 +9481,7 @@ function matBagHTML(){const S=matsObj(),regs={};for(const b in MATS)(regs[MATS[b
 function openMat(k){if(!MATS[matBase(k)])return;sheet={mat:k};renderSheet();openSheetUI()}
 function matHTML(){const k=sheet.mat,M=MATS[matBase(k)];if(!M)return '<button class="btn" data-act="close">關閉</button>';
   const uses=RECIPES.filter(r=>r.mats.some(e=>e[0]===k||(e[2]||[]).includes(k)));
-  return `<div class="lot-top">${matIcon(k,56)}<div><div class="lot-name">${esc(matName(k))}</div><div class="meta">持有 ${matCount(k)} 個</div></div></div>${(()=>{const S=matSrc(k);return '<h3>取得方式</h3>'+(S.length?S.map((x,i)=>{const lk=myLv()<x.lv;return `<div class="mscard">${matSrcPic(x,44)}<span class="msmid"><b>${esc(x.who)}</b><span class="meta">${esc(BIOMES[x.reg]?BIOMES[x.reg].n:x.reg)}・${esc(x.mapN)}・Lv ${x.lv}</span><span><i class="mstag r-${x.rare}">${MAT_RARE_N[x.rare]}</i>${x.kind==='lord'?'<i class="mstag">主</i>':x.kind==='sv'?'<i class="mstag">主的僕人</i>':''}</span>${x.cond?'<span class="meta">要滿足條件才會出現</span>':''}</span><button type="button" class="btn small" data-mgo="${i}"${lk?' disabled':''}>${lk?`Lv ${x.lv} 才能去`:'帶我去'}</button></div>`}).join(''):'<p class="note">目前還沒有地方掉這個素材。</p>')})()}/* 185.3 */<h3>可以做什麼</h3>${uses.length?uses.map(r=>`<p class="note">・<b>${r.n}</b>：${r.mats.map(([x,c])=>esc(matName(x))+' ×'+c).join('、')}、${fruitReqTxt(r.fruit)}的果實 ×${r.fruit.n}、${r.coins} 金幣（到城鎮的道具行製作）</p>`).join(''):'<p class="note">目前還沒有用到它的配方。</p>'}<p class="note">素材不能賣，也不能上架市集。</p><button class="btn" data-act="close">關閉</button>`}
+  return `<div class="lot-top">${matIcon(k,56)}<div><div class="lot-name">${esc(matName(k))}</div><div class="meta">持有 ${matCount(k)} 個</div></div></div>${(()=>{const S=matSrc(k);return '<h3>取得方式</h3>'+(S.length?S.map((x,i)=>{const lk=myLv()<x.lv;return `<div class="mscard">${matSrcPic(x,44)}<span class="msmid"><b>${esc(x.who)}</b><span class="meta">${esc(BIOMES[x.reg]?BIOMES[x.reg].n:x.reg)}・${esc(x.mapN)}・Lv ${x.lv}</span><span><i class="mstag r-${x.rare}">${MAT_RARE_N[x.rare]}</i>${x.kind==='lord'?'<i class="mstag">領主</i>':x.kind==='sv'?'<i class="mstag">眷屬</i>':''}</span>${x.cond?'<span class="meta">要滿足條件才會出現</span>':''}</span><button type="button" class="btn small" data-mgo="${i}"${lk?' disabled':''}>${lk?`Lv ${x.lv} 才能去`:'帶我去'}</button></div>`}).join(''):'<p class="note">目前還沒有地方掉這個素材。</p>')})()}/* 185.3 */<h3>可以做什麼</h3>${uses.length?uses.map(r=>`<p class="note">・<b>${r.n}</b>：${r.mats.map(([x,c])=>esc(matName(x))+' ×'+c).join('、')}、${fruitReqTxt(r.fruit)}的果實 ×${r.fruit.n}、${r.coins} 金幣（到城鎮的道具行製作）</p>`).join(''):'<p class="note">目前還沒有用到它的配方。</p>'}<p class="note">素材不能賣，也不能上架市集。</p><button class="btn" data-act="close">關閉</button>`}
 /* ===== 185（20n）：素材的取得提示（楓之谷式） =====
    matSrc(k)：從 MATS／MON_MAP／SERVANTS／LORDS 自動算出所有來源 {kind:'mon'|'sv'|'lord', who, mon|art, reg, map, lv, rare}；
    製作畫面每一項素材一行 matRowHTML（持有／需要、最主要的來源、等級鎖），點了開「取得方式」小卡（sheet.msrc，蓋在原本的畫面上，關掉回原本）；
@@ -9055,9 +9490,9 @@ const MAT_RARE_N={c:'常見',l:'較少',r:'很少見'};
 function matSrc(k){const b=matBase(k),M=MATS[b];if(!M)return [];const gold=matGold(k),out=[];
   if(M.mon){for(const bk in MON_MAP)for(const id in MON_MAP[bk]){const e=(MON_MAP[bk][id]||[]).find(x=>x[0]===M.mon);if(!e)continue;const T=REGION_MAPS[bk]&&REGION_MAPS[bk][id];
     out.push({kind:'mon',mon:M.mon,who:(MON_DEF[M.mon]||{}).n||M.mon,reg:bk,map:id,mapN:T?T.n:id,lv:mapLv(bk,id),rare:gold?'r':e[1]>=50?'c':'l'})}}
-  if(M.sv){const sv=SERVANTS[M.reg],L=typeof LORDS!=='undefined'&&LORDS[M.reg];const sm=REGION_MAPS[M.reg]&&REGION_MAPS[M.reg].secret,mn=sm?sm.n:'秘境';
-    if(sv)out.push({kind:'sv',art:sv.art,who:sv.n,reg:M.reg,map:'secret',mapN:mn,lv:mapLv(M.reg,'secret'),rare:M.gold?'r':'c'});
-    if(L)out.push({kind:'lord',art:L.art,who:L.n,reg:M.reg,map:'secret',mapN:mn,lv:mapLv(M.reg,'secret'),rare:M.gold?'l':'c',cond:1})}
+  if(M.sv){const sv=SERVANTS[M.reg],L=typeof LORDS!=='undefined'&&LORDS[M.reg];const svm=MAP_OF('servant',M.reg)||'secret',lm=MAP_OF('lord',M.reg)||'secret',sm=REGION_MAPS[M.reg]&&REGION_MAPS[M.reg][svm],lmm=REGION_MAPS[M.reg]&&REGION_MAPS[M.reg][lm],mn=sm?sm.n:'秘境',ln=lmm?lmm.n:mn;/* 196：每隻自己的地圖 */
+    if(sv)out.push({kind:'sv',art:sv.art,who:sv.n,reg:M.reg,map:svm,mapN:mn,lv:mapLv(M.reg,svm),rare:M.gold?'r':'c'});
+    if(L)out.push({kind:'lord',art:L.art,who:L.n,reg:M.reg,map:lm,mapN:ln,lv:mapLv(M.reg,lm),rare:M.gold?'l':'c',cond:1})}
   const ord={c:0,l:1,r:2};return out.sort((a,c)=>(a.kind==='lord')-(c.kind==='lord')||ord[a.rare]-ord[c.rare]||a.lv-c.lv)}
 const matSrcNm=x=>`${x.who}・${BIOMES[x.reg]?BIOMES[x.reg].n:x.reg} ${x.mapN}`;
 const matSrcPic=(x,px)=>x.kind==='mon'?`<span class="msav" style="width:${px}px;height:${px}px"><img src="${monSrcB(x.reg,x.mon)}" alt="" aria-hidden="true" onerror="this.style.visibility='hidden'"></span>`:porHTML(x.art,px);
@@ -9071,7 +9506,7 @@ function matRowHTML(e,have,want){const k0=e[0],k=matSrc(k0).length?k0:((e[2]||[]
   return `<button type="button" class="crow mrow${ok?'':' short'}" data-msrc="${esc(k)}">${matIcon(k0,32)}<span><span class="mrn">${esc(matName(k0))}${alt}</span>${src}</span><b>${ok?'<i class="mok">✓</i>':''}${have}／${want}</b></button>`}
 function msrcHTML(){const k=sheet.msrc,S=matSrc(k);
   let h=`<div class="lot-top">${matIcon(k,56)}<div><div class="lot-name">${esc(matName(k))}</div><div class="meta">持有 ${matCount(k)} 個</div></div></div><h3>取得方式</h3>`;
-  h+=S.length?S.map((x,i)=>{const lk=myLv()<x.lv;return `<div class="mscard">${matSrcPic(x,44)}<span class="msmid"><b>${esc(x.who)}</b><span class="meta">${esc(BIOMES[x.reg]?BIOMES[x.reg].n:x.reg)}・${esc(x.mapN)}・Lv ${x.lv}</span><span><i class="mstag r-${x.rare}">${MAT_RARE_N[x.rare]}</i>${x.kind==='sv'?'<i class="mstag">主的僕人</i>':x.kind==='lord'?'<i class="mstag">主</i>':''}</span>${x.cond?'<span class="meta">要滿足條件才會出現</span>':''}${monDropsHTML(x)}</span><button type="button" class="btn small" data-msgo="${i}"${lk?' disabled':''}>${lk?`Lv ${x.lv} 才能去`:'帶我去'}</button></div>`}).join(''):'<p class="note">目前還沒有地方掉這個素材。</p>';
+  h+=S.length?S.map((x,i)=>{const lk=myLv()<x.lv;return `<div class="mscard">${matSrcPic(x,44)}<span class="msmid"><b>${esc(x.who)}</b><span class="meta">${esc(BIOMES[x.reg]?BIOMES[x.reg].n:x.reg)}・${esc(x.mapN)}・Lv ${x.lv}</span><span><i class="mstag r-${x.rare}">${MAT_RARE_N[x.rare]}</i>${x.kind==='sv'?'<i class="mstag">眷屬</i>':x.kind==='lord'?'<i class="mstag">領主</i>':''}</span>${x.cond?'<span class="meta">要滿足條件才會出現</span>':''}${monDropsHTML(x)}</span><button type="button" class="btn small" data-msgo="${i}"${lk?' disabled':''}>${lk?`Lv ${x.lv} 才能去`:'帶我去'}</button></div>`}).join(''):'<p class="note">目前還沒有地方掉這個素材。</p>';
   return h+`<button class="btn" data-msx="1">返回</button>`}
 function msrcGo(i){const S=matSrc(sheet.msrc),x=S[i];if(!x||myLv()<x.lv)return;closeSheet();try{qGo({where:{bk:x.reg,map:x.map},hint:matSrcNm(x)})}catch(e){}}
 sb.addEventListener('click',e=>{if(!sheet)return;const g=e.target.closest('[data-mgo]');if(g&&sheet.mat){e.stopPropagation();sheet.msrc=sheet.mat;msrcGo(+g.dataset.mgo);return}const r=e.target.closest('[data-msrc],[data-msx],[data-msgo]');if(!r)return;e.stopPropagation();e.preventDefault();
@@ -9276,6 +9711,7 @@ const W3D_HOST={
       w3dSetPlants(L)}
     {const L=[];const add=(id,f,x,y,flip)=>{if(!f)return;const H=FY_FH,svg=fyArt(f.k,f,H,0);if(!svg)return;const tk='fy|'+f.k+'|'+f.col+'|'+(f.sb||'')+'|'+f.evo+'|'+FRUIT_VER;const T=fyTalk&&fyTalk.who===id&&Date.now()<fyTalk.until?{name:fyTalk.name,text:fyTalk.text}:null;
       const k3=H/FY_CV.body;L.push({id,key:tk,svg,vb:`${f3(-FY_CV.fx*k3)} ${f3(H/2-FY_CV.fy*k3)} ${f3(FY_CV.w*k3)} ${f3(FY_CV.h*k3)}`,pw:180,ph:230,vh:FY_CV.h*k3*1.36,x,y,flip,talk:T,glow:null})};/* 110：整張畫布；光環、特效在圖上 */
+      {const pp=state.petOn&&petCur();if(pp){const H=petHW(),A=petArt(pp),W=A?H*A.w/A.h:H;const svg=petSVG(pp,H,false);L.push({id:'pet',key:'pet|'+pp.bk+'|'+pp.st+'|'+(A?A.src:'ph'),svg,vb:`${f3(-W*0.8)} ${f3(-H*1.05)} ${f3(W*1.6)} ${f3(H*1.15)}`,pw:200,ph:Math.round(200*H*1.15/(W*1.6)),vh:H*1.15,x:m.x,y:m.y,flip:faceFlip(meFace),ground:1,talk:null,glow:null})}}/* 193：神寵在 3D 也畫（站在地上） */
       add('me',fyMe(),m.x,m.y,faceFlip(meFace));for(const [id,o] of Object.entries(others)){if(!o||typeof o.x!=='number')continue;const A=animO[id]||o;add(id,fyUnpack(o.fy),A.x,A.y,faceFlip(o.f!=null?o.f:(o.d<0?3:1)))}
       w3dSetFairies(L)}},
   /* 點到植株、道具：和 SVG 畫面點到時一樣（近就打開、遠就先走過去）；點到地面就走過去 */
@@ -10606,7 +11042,7 @@ function walkLoop(t){
   const mv=Math.hypot(vx,vy)>0.12&&state&&!curPanel;
   if(mv){
     const m=curMe(),{W,H}=scene==='market'?WORLD.market:WORLD.farm,len=Math.max(1,Math.hypot(vx,vy));
-    if(scene==='explore'){const ik=iceAt(m.x,m.y)?1.6:quickAt(m.x,m.y)?0.5:1,ddx=vx/len*Math.min(1,len)*160*dt*ik,ddy=vy/len*Math.min(1,len)*130*dt*ik;if(regHas(exBiome)){if(!skMv)regMove(m,ddx,ddy);/* 184：翻滾、衝刺中 */iceV=ik>1&&dt>0?{x:ddx/dt,y:ddy/dt,s:0.25}:null;if(!regBusy&&regCur().slick&&slickZone(regCur(),m.x,m.y))slickStart(vx,vy)}else{m.x+=ddx;m.y+=ddy}}/* 37.5：冰面上 ×1.6 */
+    if(scene==='explore'){const ik=(iceAt(m.x,m.y)?1.6:quickAt(m.x,m.y)?0.5:1)*bossSlowK(),/* 196：被盯住、冰息 */ddx=vx/len*Math.min(1,len)*160*dt*ik,ddy=vy/len*Math.min(1,len)*130*dt*ik;if(regHas(exBiome)){if(!skMv)regMove(m,ddx,ddy);/* 184：翻滾、衝刺中 */iceV=ik>1&&dt>0?{x:ddx/dt,y:ddy/dt,s:0.25}:null;if(!regBusy&&regCur().slick&&slickZone(regCur(),m.x,m.y))slickStart(vx,vy)}else{m.x+=ddx;m.y+=ddy}}/* 37.5：冰面上 ×1.6 */
     else if(scene==='market')townMove(m,vx/len*Math.min(1,len)*160*dt,vy/len*Math.min(1,len)*130*dt);
     else{m.x=clamp(m.x+vx/len*Math.min(1,len)*160*dt,24,W-24);m.y=clamp(m.y+vy/len*Math.min(1,len)*130*dt,74,H-26)}
     if(moveTo){const mm=curMe();if(mm._lx!=null&&Math.hypot(mm.x-mm._lx,mm.y-mm._ly)<0.01){const fn=moveTo.then,mt=moveTo;moveTo=null;if(fn){if(!mt.force&&(regIn()||scene==='market')&&Math.hypot(mm.x-mt.x,mm.y-mt.y)>60)toast('前面被擋住了，換條路走過去吧');else setTimeout(fn,0)}}mm._lx=mm.x;mm._ly=mm.y}
@@ -10717,6 +11153,7 @@ document.getElementById('testBox').addEventListener('click',e=>{
   const sp=e.target.closest('[data-spd]');if(sp){tick();state.speed=+sp.dataset.spd;save();renderSpeed();toast(`時間加速 ×${state.speed}`);return}
   const t=e.target.closest('[data-tool]');if(!t)return;const k=t.dataset.tool;
   if(k==='wstar'){const e2=weaponsArr()[state.wpn];if(!e2){toast('先裝備一把武器');return}const S2=WP_SHAPES[e2.crop]||[2,4];e2.st=Array.from({length:+t.dataset.v},(_,i)=>S2[i%2]);save();renderSpeed();toast(`${WEAPONS[e2.crop].n}放了 ${e2.st.length} 顆星星`,1800);return}/* 186：測試用 */
+  if(k==='lord196'){lord196Tool(t.dataset.v);renderSpeed();return}/* 196 */
   if(k==='wtier'){const e2=weaponsArr()[state.wpn];if(!e2){toast('先裝備一把武器');return}e2.tier=+t.dataset.v;save();try{const F=document.getElementById('meWF');if(F)F._k='';pushPos(true)}catch(x){}renderSpeed();toast(`${WEAPONS[e2.crop].n}改成第 ${e2.tier} 階`,1800);return}/* 184：測試用，之後拿掉 */
   if(k==='crashclr'){try{localStorage.removeItem('sw_err');localStorage.removeItem('sw_crash')}catch(x){}renderSpeed();toast('已清除');return}
   if(k==='w3d'){W3D_USER=!W3D_USER;try{localStorage.setItem('sw_3d',W3D_USER?'1':'0')}catch(x){}w3dSync();renderSpeed();toast(W3D_USER?'3D 畫面開了':'3D 畫面關了');return}
@@ -10838,7 +11275,7 @@ const wpnTag=()=>{const w=curWpn();return w?w.crop+'|'+w.tier:null};
 function wpnDmg(w,mul){const W=w&&w.W;let d=pAtkNow()*(1+(w?wpStat('atk'):0))/* 186：星星 */*(W?W.mul:0.5)/* 166：野外鐮刀 ×0.5 */*Math.pow(1.3,((w&&w.tier)||1)-1)*(mul||1);const crit=skForce||Math.random()<0.05+((W&&W.crit)||0)+(w?wpStat('crit'):0);if(crit)d*=1.5+((W&&W.critDmg)||0)+(w?wpStat('critDmg'):0);return {d:Math.max(1,Math.round(d)),crit}}
 function hitMon(m,o){if(!MON_RT||!m||m.dead)return false;const i=MON_RT.list.indexOf(m);if(i<0)return false;monHit(i,o.d,o.crit,true,o.pet);return true}
 /* 主、僕人受到的傷害（擋住時不算） */
-function bossDealt(b,o){if(!b||b.done)return;if(b.kind==='servant'&&!b.active){b.active=true;b.until=bossNow()+900;bossJump(b,bossNow());bossSvNet(b)}/* 162：第一次被打也開打 */const now=bossNow(),y=b.y-BOSS_HU*(b.def.h||1);if(b.mode==='guard'){try{dmgShow(b.x,y,0,{miss:1,text:'擋住了',key:'boss'})}catch(e){}return}
+function bossDealt(b,o){if(!b||b.done)return;if(b.part){partDealt(b,o);return}/* 196 */if(b.kind==='servant'&&!b.active){b.active=true;b.until=bossNow()+900;bossJump(b,bossNow());bossSvNet(b)}/* 162：第一次被打也開打 */const now=bossNow(),y=b.y-BOSS_HU*(b.def.h||1);if(b.mode==='guard'&&!(BATK[b.atk]||{}).guardK){try{dmgShow(b.x,y,0,{miss:1,text:'擋住了',key:'boss'})}catch(e){}return}if(bossInv(b)){try{dmgShow(b.x,y,0,{miss:1,text:'打不到',key:'boss'})}catch(e){}return}{let d=Math.round(o.d*bossMul(b,o));const LA=LAIof(b),fl=LA&&LA.floor?LA.floor(b):0;if(fl)d=Math.max(0,Math.min(d,Math.floor(bossHp(b)-b.max*fl)));o=Object.assign({},o,{d});if(b.mode==='devour'&&!o.pet){if(bossIsHost(b))bossDevourHit(b,1);else{b.od=b.od||{};b.od.devour=(b.od.devour||0)+1;if(b.net)bossNet.set(bpath(b)+'/od/'+uid,b.od)}}}/* 196 */
   if(!o.pet)try{comboHit(b);fxOnHit(b.x,b.y-BOSS_HU*(b.def.h||1)*0.5,o.crit)}catch(e){}/* 187、191 */b.myDmg+=o.d;try{dmgShow(b.x,y,o.d,{key:'boss',crit:o.crit,pet:!!o.pet})}catch(e){}b.dmg[bossMe()]=b.myDmg;b.hitT=now;if(b.net)lordPushDmg(b)}
 const dealT=(t,o)=>t.boss?bossDealt(t.boss,o):hitMon(t.m,o);
 const tPos=t=>t.boss?[t.boss.x,t.boss.y-14]:[t.m.x,t.m.y-14];
@@ -10937,7 +11374,7 @@ function skDef(slot){const w=curWpn();if(!w)return null;return skDefFor(w.crop,w
 const skV=(d,k)=>d.up&&d[k+'4']!=null?d[k+'4']:d[k];/* 4 階強化 */
 function skDmg(mul,force){const w=curWpn(),W=w&&w.W;let d=pAtkNow()*(1+wpStat('atk'))*mul*Math.pow(1.3,((w&&w.tier)||1)-1)*skStarK();/* 186：星星 */const crit=force||Math.random()<0.05+((W&&W.crit)||0)+wpStat('crit');if(crit)d*=1.5+((W&&W.critDmg)||0)+wpStat('critDmg');return {d:Math.max(1,Math.round(d)),crit}}
 /* 打得到的對象：一般怪＋主／僕人 */
-function skTs(){const L=monsAlive().map(m=>({m,x:m.x,y:m.y}));try{const b=bossRT;if(b&&b.def&&!b.done&&!b.hidden)L.push({boss:b,x:b.x,y:b.y})}catch(e){}return L}
+function skTs(){const L=monsAlive().map(m=>({m,x:m.x,y:m.y}));try{const b=bossRT;if(b&&b.def&&!b.done&&!b.hidden&&!bossInv(b))L.push({boss:b,x:b.x,y:b.y});for(const q of bossParts())L.push({boss:q,x:q.x,y:q.y})}catch(e){}return L}
 const skHit=(t,mul,force)=>{const o=skDmg(mul,force),pk=fxHitKind;fxHitKind='sk';try{dealT(t,o)}catch(e){}fxHitKind=pk;return o.d};/* 191：技能的命中特效 */
 const skIn=(t,x,y,r)=>Math.hypot(t.x-x,t.y-y)<=r;
 function skInRect(t,ox,oy,dx,dy,L,W){const a=(t.x-ox)*dx+(t.y-oy)*dy,p=Math.abs(-(t.x-ox)*dy+(t.y-oy)*dx);return a>=-12&&a<=L&&p<=W/2}
@@ -10970,7 +11407,7 @@ function skPostAtk(w,t){skForce=false;const T=SKB.thor;if(T&&T.until>skNow()&&t)
    素材 assets/fx/<鍵>.webp＋assets/fx/plan.json（之後只換圖和 plan，程式不用動）。地圖上一張 #fxCv（CSS 像素 ×1，不乘 devicePixelRatio——iPhone 28→60 FPS 的關鍵），
    在人物、怪物上面、傷害數字和介面下面；沒有特效在播時不跑迴圈。fxT(時機, 世界 x, y, 情境) 有 plan 而且圖載好就播、回 true（呼叫的地方就不畫舊的），否則回 false（照舊畫）。
    情境 C={crop, key:'atk'|'s1'|'s2', tier, face(±1), own}；s1 三組＝1～2／3～4／5～6 階、s2 三組＝2～3／4～5／6 階（fxGrp）。
-   size／dx／dy 的單位是人物格內像素（人物高 120）→ 世界 ×(C3_HU/C3.H×1.15) → 螢幕 ×CTM。上限 FX_MAX；別人的只播 cast／target／final／proj；省電只播 target／final／proj。 ===== */
+   size／dx／dy 的單位是人物格內像素（人物高 120）→ 世界 ×(C3_HU/C3.H×1.15) → 螢幕 ×CTM。上限 FX_MAX；別人的只播 cast／target／final／proj；省電＝特效變少（第 197 節 fxEcoL）。 ===== */
 let FXP=null,FXPst=0,fxRaf=0,fxHitKind=null,fxSkCtx=null,fxMute=false,fxHitN=0,fxHitF=0;const FXI={},FXIst={},FXQ=[],FX_MAX=40;
 function fxPlan(){if(FXPst)return FXP;FXPst=1;try{fetch('assets/fx/plan.json?v='+BUILD).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{FXP=j;fxPreloadCur()}).catch(()=>{FXPst=2})}catch(e){FXPst=2}return null}
 function fxImg(k){const s=FXIst[k];if(s)return s===1;FXIst[k]=-1;try{const im=new Image();im.onload=()=>{FXI[k]=im;FXIst[k]=1};im.onerror=()=>{FXIst[k]=2};im.src=`assets/fx/${k}.webp?v=${BUILD}`}catch(e){FXIst[k]=2}return false}
@@ -10992,7 +11429,7 @@ function fxCv(){let c=document.getElementById('fxCv');if(!c){c=document.createEl
 function fxPlay(L,x,y,o){o=o||{};const K=fxK(),now=performance.now(),face=o.face<0?-1:1;
   for(const e of L){const m=FXP.fx[e.k];if(!m)continue;const n=e.count||1;
     for(let j=0;j<n;j++){const ox=e.spread?(Math.random()-.5)*2*e.spread:0,oy=e.spread?(Math.random()-.5)*e.spread:0,fps=e.fps||20;
-      if(FXQ.length>=FX_MAX){const i=FXQ.findIndex(p=>!p.own);FXQ.splice(i>=0?i:0,1)}
+      if(FXQ.length>=fxMax()){const i=FXQ.findIndex(p=>!p.own);FXQ.splice(i>=0?i:0,1)}
       FXQ.push({k:e.k,m,x,y,dx:((e.dx||0)+ox)*K*face,dy:((e.dy||0)+oy)*K,size:(e.size||100)*K,t0:now+(e.delay||0)*1000,fps,life:o.life||Math.max(m.n/fps,e.hold||0),loop:e.loop||o.loop,only:e.only,sy:e.sy||1,rot:(e.rot||0)+(o.rot||0),sx:face<0&&o.rot==null?-1:1,follow:o.follow,own:!o.remote,a:o.a==null?1:o.a})}}
   if(!fxRaf)fxRaf=requestAnimationFrame(fxLoop)}
 function fxLoop(){fxRaf=0;const c=fxCv(),g=c.getContext('2d');g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,c.width,c.height);if(!FXQ.length)return;fxHitN=0;
@@ -11004,9 +11441,15 @@ function fxLoop(){fxRaf=0;const c=fxCv(),g=c.getContext('2d');g.setTransform(1,0
     const wx=X+p.dx,wy=Y+p.dy,px=M.a*wx+M.c*wy+M.e,py=M.b*wx+M.d*wy+M.f,s=p.size*M.a;
     g.setTransform(1,0,0,1,px,py);if(rot)g.rotate(rot);if(p.sx!==1||p.sy!==1)g.scale(p.sx,p.sy);g.globalCompositeOperation=p.only?'lighter':'source-over';g.globalAlpha=p.a;g.drawImage(im,sx,sy,m.c,m.c,-s/2,-s/2,s,s)}
   g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;g.globalCompositeOperation='source-over';if(FXQ.length)fxRaf=requestAnimationFrame(fxLoop)}
+/* ===== 197（20y）：省電模式＝特效變少。普通攻擊（swing／muzzle／hit／meleeHit／crit）只播第一筆、count 當 1、不散開；技能 cast／pulse／tick／ally 只播第一筆；
+   target／final／proj、heal／starOk／tierUp 照舊；別人的只播 target／final／proj 的第一筆。同時最多 16 個（平常 FX_MAX 40）。 ===== */
+const FX_ECO_MAX=16,fxMax=()=>(typeof ecoOn==='function'&&ecoOn())?FX_ECO_MAX:FX_MAX;
+const FX_ECO_ATK=['swing','muzzle','hit','meleeHit','crit'],FX_ECO_FULL=['target','final','proj','heal','starOk','tierUp'];
+function fxEcoL(L,tm,remote){if(!L||!L.length)return null;if(remote)return ['target','final','proj'].includes(tm)?[L[0]]:null;if(FX_ECO_FULL.includes(tm))return L;
+  if(FX_ECO_ATK.includes(tm))return [Object.assign({},L[0],{count:1,spread:0})];return [L[0]]}
 /* 播某個時機：回 true＝播了（呼叫的地方不畫舊的） */
-function fxT(tm,x,y,C,o){try{if(!C||scene!=='explore'||!fxPlan())return false;const S=fxSet(C),L=fxL(S,tm);if(!L||!L.length)return false;
-  const eco=typeof ecoOn==='function'&&ecoOn();if(C.own===false&&!['cast','target','final','proj'].includes(tm))return false;if(eco&&!['target','final','proj'].includes(tm))return true;/* 省電：不畫新的也不畫舊的 */
+function fxT(tm,x,y,C,o){try{if(!C||scene!=='explore'||!fxPlan())return false;const S=fxSet(C);let L=fxL(S,tm);if(!L||!L.length)return false;
+  const eco=typeof ecoOn==='function'&&ecoOn();if(C.own===false&&!['cast','target','final','proj'].includes(tm))return false;if(eco){L=fxEcoL(L,tm,C.own===false);if(!L)return false}/* 197：省電＝特效變少，不是沒有 *//* 省電：不畫新的也不畫舊的 */
   if(!fxReady(L))return false;fxPlay(L,x,y,Object.assign({face:C.face,remote:C.own===false},o||{}));
   if(C.own!==false&&(C.tier||1)>=5&&C.key!=='atk'&&(tm==='final'||(tm==='target'&&!(S.final&&S.final.length))))fxBoomFlash();return true}catch(e){return false}}
 /* 有 plan 就播新的、沒有就畫舊的 */
@@ -11147,8 +11590,8 @@ let atkHeld=false,atkTap=0,atkTapAt=0,atkLock=null,atkAt=0,atkSwingAt=0,atkWalk=
 const ATK_SICKLE='<svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true" fill="none" stroke="#5A3416" stroke-width="2.2" stroke-linecap="round"><path d="M5 20 L13 9"/><path d="M13 9 C14 4 20 3 21 7 C17 6 15 8 13 9Z" fill="#D8DCE0"/></svg>';
 const atkRng=()=>{const w=curWpn();return w?w.W.range:MON_RANGE};
 const atkSearch=()=>Math.max(120,atkRng()*1.8);
-function atkTs(){const now=Date.now(),L=[];if(MON_RT)MON_RT.list.forEach((m,i)=>{if(m&&!m.dead&&!(m.born&&now-m.born<MON_SAFE))L.push({m,x:m.x,y:m.y})});try{const b=bossRT;if(b&&b.def&&!b.done&&!b.hidden&&b.kind!=='wait')L.push({boss:b,x:b.x,y:b.y})}catch(e){}return L}
-function atkLockT(){const t=atkLock;if(!t)return null;if(t.m){if(t.m.dead||!MON_RT||MON_RT.list.indexOf(t.m)<0)return null;return {m:t.m,x:t.m.x,y:t.m.y}}const b=t.boss;if(!b||b.done||b.hidden||bossRT!==b)return null;return {boss:b,x:b.x,y:b.y}}
+function atkTs(){const now=Date.now(),L=[];if(MON_RT)MON_RT.list.forEach((m,i)=>{if(m&&!m.dead&&!(m.born&&now-m.born<MON_SAFE))L.push({m,x:m.x,y:m.y})});try{const b=bossRT;if(b&&b.def&&!b.done&&!b.hidden&&b.kind!=='wait'&&!bossInv(b))L.push({boss:b,x:b.x,y:b.y});for(const q of bossParts())L.push({boss:q,x:q.x,y:q.y})}catch(e){}return L}
+function atkLockT(){const t=atkLock;if(!t)return null;if(t.m){if(t.m.dead||!MON_RT||MON_RT.list.indexOf(t.m)<0)return null;return {m:t.m,x:t.m.x,y:t.m.y}}const b=t.boss;if(!b||b.done||b.hidden||(bossRT!==b&&!(b.part&&bossParts().includes(b)))||(!b.part&&bossInv(b)))return null;return {boss:b,x:b.x,y:b.y}}
 const atkJoy=()=>Math.hypot(joy.vx,joy.vy)>0.12||joy.id!=null||!!(keys.ArrowLeft||keys.ArrowRight||keys.ArrowUp||keys.ArrowDown||keys.a||keys.d||keys.w||keys.s);
 function atkStopWalk(){if(atkWalk){atkWalk=false;moveTo=null}}
 function atkPress(){if(!state||scene!=='explore')return;atkHeld=true;atkTap=1;atkTapAt=Date.now();try{atkTick()}catch(e){}}
@@ -12103,7 +12546,7 @@ function mq2MarshTick(){try{if(scene!=='explore'||exBiome!=='marsh'||!state.mq2)
 }catch(e){}}
 /* ===== 121（18l）：銀霧白樺林的野外 NPC、霧裡的白南瓜路標 =====
    REG_NPCS：岳哥、槿姨站在獵人小屋；交完白南瓜之後，前三張地圖（入口、松林小徑、青苔谷）的路邊各掛一顆白南瓜（程式畫的果實），青苔谷那顆旁邊有採菇的孩子，走到旁邊就完成 2-3。 */
-const REG_NPCS=[{id:'smith',bk:'volcano',map:'forge',x:300,y:560},{id:'appr',bk:'volcano',map:'forge',x:500,y:580},{id:'cguard',bk:'volcano',map:'cult_camp',x:470,y:800},{id:'granny',bk:'canyon',map:'village',x:300,y:600},{id:'pounder',bk:'canyon',map:'village',x:500,y:600},{id:'miko',bk:'sakura',map:'pagoda',x:460,y:510},{id:'oasisp',bk:'desert',map:'oasis',x:230,y:420},{id:'miner',bk:'snow',map:'cabin',x:520,y:560},{id:'yue',bk:'forest',map:'cabin',x:470,y:520},{id:'jin',bk:'forest',map:'cabin',x:330,y:540},{id:'duo',bk:'marsh',map:'frog',x:540,y:560},{id:'wien',bk:'marsh',map:'frog',x:690,y:580,show:()=>wienAway()}];
+const REG_NPCS=[{id:'smith',bk:'volcano',map:'forge',x:300,y:560},{id:'appr',bk:'volcano',map:'forge',x:500,y:580},{id:'cguard',bk:'volcano',map:'cult_camp',x:470,y:800},{id:'granny',bk:'canyon',map:'village',x:300,y:600},{id:'pounder',bk:'canyon',map:'village',x:500,y:600},{id:'miko',bk:'sakura',map:'pagoda',x:460,y:510},{id:'kannushi',bk:'sakura',map:'pagoda',x:640,y:560},{id:'oasisp',bk:'desert',map:'oasis',x:230,y:420},{id:'miner',bk:'snow',map:'cabin',x:520,y:560},{id:'yue',bk:'forest',map:'cabin',x:470,y:520},{id:'jin',bk:'forest',map:'cabin',x:330,y:540},{id:'duo',bk:'marsh',map:'frog',x:540,y:560},{id:'wien',bk:'marsh',map:'frog',x:690,y:580,show:()=>wienAway()}];
 /* 122.2：所長在 3-3、3-4 期間站在漁村（城鎮暫時看不到他） */
 const wienAway=()=>{try{const s=mq2Cur();return !!s&&(s.id==='3-3'||s.id==='3-4')}catch(e){return false}};
 const MIERU_AT={map:'frog',x:600,y:650};
@@ -12121,7 +12564,7 @@ function regNpcObjs(){if(scene!=='explore')return [];const out=[];
     if(regMap==='glen'&&kidOn()){const p=TOWN_NPC.find(q=>q.id==='kid');out.push({y:L[1]+4,h:regNpcSVG(p,L[0]-34,L[1]+4,false)})}}}
   return out}
 function regNpcSVG(p,x,y,bang){return `<g transform="translate(${x} ${y}) scale(1.15)" pointer-events="none">${npcBodySVG(p)}${nameTag(p.n)}${bang==='done'||bang==='acc'?qMarkSVG(bang):bang?qMarkSVG('acc'):''}</g><rect data-reg="npc:${p.id}" x="${x-22}" y="${y-106}" width="44" height="114" fill="transparent" style="cursor:pointer"/>`}
-function regNpcTap(id){const R0=REG_NPCS.find(r=>r.id===id&&r.bk===exBiome),L=id==='kid'?lampPos('glen'):null,x=R0?R0.x:L?L[0]-34:0,y=R0?R0.y:L?L[1]:0;const go=()=>{const line=mq2Talk(id);sheet={rnpc:id,line};renderSheet();openSheetUI()};const m=curMe();if(Math.hypot(m.x-x,m.y-y)<80)go();else walkTo(x,y+16,go,true)}
+function regNpcTap(id){if(id==='kannushi'){const R0=REG_NPCS.find(r=>r.id===id),m=curMe(),go=()=>{sheet={l196:'kan'};renderSheet();openSheetUI()};if(Math.hypot(m.x-R0.x,m.y-R0.y)<80)go();else walkTo(R0.x,R0.y+16,go,true);return}/* 196：神官 */const R0=REG_NPCS.find(r=>r.id===id&&r.bk===exBiome),L=id==='kid'?lampPos('glen'):null,x=R0?R0.x:L?L[0]-34:0,y=R0?R0.y:L?L[1]:0;const go=()=>{const line=mq2Talk(id);sheet={rnpc:id,line};renderSheet();openSheetUI()};const m=curMe();if(Math.hypot(m.x-x,m.y-y)<80)go();else walkTo(x,y+16,go,true)}
 function rnpcHTML(){const id=sheet.rnpc,p=TOWN_NPC.find(q=>q.id===id);if(!p)return '<button class="btn" data-act="close">關閉</button>';const s=mq2Cur();
   return `<h2>${esc(p.n)}</h2>`+npcTalk(id,sheet.line||p.line)+npcExtraHTML(id)+'<button class="btn" data-act="close">關閉</button>'}/* 148：和城鎮同一份（有記號的任務一定看得到） */
 function mq2KidTick(){try{if(scene!=='explore'||exBiome!=='forest'||regMap!=='glen'||!kidOn())return;const L=lampPos('glen');if(!L||Math.hypot(exMe.x-(L[0]-34),exMe.y-L[1])>90)return;const s=mq2Cur(),u=mq2Sub(s,'2-3'),F=mq2SF('2-3');F.ok=1;save();

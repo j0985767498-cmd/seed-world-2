@@ -422,8 +422,8 @@ function w3dSetFairies(list){if(!W)return;const seen=new Set(),now=performance.n
     else if(tex&&tex!==o.tex){o.bb.m.material.uniforms.map.value=tex;o.tex=tex}
     W.inUse.add(o.tex);
     /* 跟隨：延遲追上（約 0.15 秒追一半），在主人背對的那一側 */
-    const tx=f.x+(f.flip?1:-1)*24*1.15*CK,ty=f.y-6,k=1-Math.pow(0.5,(W.dt||0.016)/0.15);if(Math.hypot(tx-o.cx,ty-o.cy)>220){o.cx=tx;o.cy=ty}else{o.cx+=(tx-o.cx)*k;o.cy+=(ty-o.cy)*k}
-    o.bb.lift=1.75+0.12*Math.sin(now*2.4+o.ph);o.bb.m.material.uniforms.uFlip.value=f.flip?1:0;placeBB(o.bb,o.cx*U,o.cy*U,0);
+    const tx=f.x+(f.flip?1:-1)*(f.ground?30:24)*1.15*CK,ty=f.y-6,k=1-Math.pow(0.5,(W.dt||0.016)/0.15);if(Math.hypot(tx-o.cx,ty-o.cy)>220){o.cx=tx;o.cy=ty}else{o.cx+=(tx-o.cx)*k;o.cy+=(ty-o.cy)*k}
+    o.bb.lift=f.ground?0:1.75+0.12*Math.sin(now*2.4+o.ph);/* 193：神寵站在地上 */o.bb.m.material.uniforms.uFlip.value=f.flip?1:0;placeBB(o.bb,o.cx*U,o.cy*U,0);
     if(o.gl){o.gl.position.set(o.cx*U,o.bb.m.position.y+o.bb.h*0.45,o.cy*U-0.02);o.gl.scale.setScalar(o.bb.h*1.5);o.gl.material.opacity=0.35+0.15*Math.sin(now*2.1+o.ph)}
     const bk=f.talk?f.talk.name+'|'+f.talk.text:'';if(bk!==o.bk){o.bk=bk;if(o.bub){dropSpr(o.bub);o.bub=null}if(bk){o.bub=new T3.Sprite(new T3.SpriteMaterial({map:bubbleTex(f.talk.name,f.talk.text),transparent:true,depthTest:false}));o.bub.renderOrder=9;W.scene.add(o.bub)}}
     if(o.bub){o.bub.position.set(o.cx*U,o.bb.m.position.y+o.bb.h+0.55,o.cy*U);o.bub.scale.set(2.7,0.9,1)}}

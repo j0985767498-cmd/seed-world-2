@@ -1,0 +1,97 @@
+第 196 節（20x）：Realtime Database 規則「整份」（包含第 62、135、172、173 節；196 多了 fight/<地區>/od/<uid>）。Firebase 主控台 → Realtime Database → 規則，把原本的內容全部刪掉、貼上下面 { 到 } 的整段，按「發布」。
+貼了這一份就不用再貼 tools/rtdb_rules_172.txt、rtdb_rules_173.txt。
+
+這一份包含遊戲現在用到的全部地方：
+  presence/<場景>/<uid>   角色位置（每個人只能寫自己的）
+  status/<uid>           上線狀態（每個人只能寫自己的）
+  fight/<地區>、fight/<地區>_sv   領主、眷屬的共鬥（第 135、172 節）；od/<uid> 是自己打場上物件（狐火、鐵樁、噬火的連擊）的量（第 196 節，每個人只能寫自己的）
+  party/<隊伍>            組隊（第 173 節）：只有隊員讀得到；建隊的人寫整份；自己那一格只有自己能寫（被邀請時可以把自己加進去）；隊員可以把別人移出（隊長移人、清掉斷線太久的人）、改隊長、寫開打提示；剩一個人時隊員可以整份刪掉（解散）
+  partyInv/<被邀請的人>/<邀請人>   邀請：只有被邀請的人讀得到；邀請人寫、被邀請的人回應後刪
+如果主控台上原本還有這些以外的東西，貼上前先把那一段抄下來，貼完再補回去。
+
+{
+  "rules": {
+    "presence": {
+      ".read": "auth != null",
+      "$scene": {
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid"
+        }
+      }
+    },
+    "status": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "fight": {
+      "$bk": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() || data.child('meta/host').val() === auth.uid || data.child('meta/st').val() !== 'on' || now - data.child('meta/t0').val() > 960000)",
+        "meta": {
+          ".write": "auth != null",
+          "members": {
+            "$uid": {
+              ".write": "auth != null && auth.uid === $uid",
+              ".validate": "newData.isString() && newData.val().length <= 40"
+            }
+          }
+        },
+        "s": {
+          ".write": "auth != null && (data.parent().child('meta/host').val() === auth.uid || newData.parent().child('meta/host').val() === auth.uid)"
+        },
+        "dmg": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid",
+            ".validate": "newData.isNumber()"
+          }
+        },
+        "hb": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid"
+          }
+        },
+        "down": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid"
+          }
+        },
+        "od": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid"
+          }
+        }
+      }
+    },
+    "party": {
+      "$pid": {
+        ".read": "auth != null && (data.child('members').child(auth.uid).exists() || root.child('partyInv').child(auth.uid).exists())",
+        ".write": "auth != null && ((!data.exists() && newData.child('leader').val() === auth.uid && newData.child('members').child(auth.uid).exists()) || (data.child('members').child(auth.uid).exists() && !newData.exists()))",
+        "leader": {
+          ".write": "auth != null && data.parent().child('members').child(auth.uid).exists()"
+        },
+        "ev": {
+          ".write": "auth != null && data.parent().child('members').child(auth.uid).exists()"
+        },
+        "members": {
+          "$uid": {
+            ".write": "auth != null && (($uid === auth.uid && (data.exists() || root.child('partyInv').child(auth.uid).exists())) || (data.parent().child(auth.uid).exists() && !newData.exists()))"
+          }
+        }
+      }
+    },
+    "partyInv": {
+      "$to": {
+        ".read": "auth != null && auth.uid === $to",
+        "$from": {
+          ".write": "auth != null && (auth.uid === $from || auth.uid === $to)"
+        }
+      }
+    }
+  }
+}
+
+說明：
+- 隊伍人數上限 4 是程式擋的（規則沒有限制人數）。
+- 沒貼這份時：按「邀請組隊」會跳「組隊功能還沒開」；共鬥照第 172 節的提示各打各的，不會卡住。

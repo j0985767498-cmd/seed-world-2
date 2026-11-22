@@ -2,9 +2,10 @@
 
 > 程式：`index.html`。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> **目前 BUILD `2026-11-20t`，下一版 `2026-11-20u`。**
-> **使用者要自己做的事**：Realtime Database 規則整份貼 `tools/rtdb_rules_173.txt`（含 62 的 status、135、172、173）；Firestore 規則整份貼 `tools/firestore_rules_console_114.txt`（117 那份＋`fairyFirst`）。舊的規則檔都只是紀錄。
-> **還沒做的節**：165（新版角色正面、背面走路）、108 的其他地區／農場／城鎮（3D）、135 的後六區與神寵技能、136（跟晶霜雪原那一章一起做）；未定案：14、19、69。各節做完的紀錄看下面的索引表。
+> **目前 BUILD `2026-11-20y`，下一版 `2026-11-20z`。**
+> **用詞（第 194 節）**：舊文件（`docs/規格存檔.md`）裡的「主」＝**領主**（各區古老的守護者，被蝕的力量侵蝕而失控），「僕人」＝**眷屬**（跟隨領主的魔獸）；抽火傀儡不是眷屬。程式的鍵（`LORDS`、`SERVANTS`、`lord_*`、`servant_*`）不改。
+> **使用者要自己做的事**：Realtime Database 規則整份貼 `tools/rtdb_rules_196.txt`（含 62 的 status、135、172、173、196 的 `od`）；Firestore 規則整份貼 `tools/firestore_rules_console_114.txt`（117 那份＋`fairyFirst`）。舊的規則檔都只是紀錄。
+> **還沒做的節**：165（新版角色正面、背面走路）、108 的其他地區／農場／城鎮（3D）、135 的神寵技能、136（跟晶霜雪原那一章一起做）；未定案：14、19、69。各節做完的紀錄看下面的索引表。
 
 ---
 
@@ -217,7 +218,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 畫好的地面（150）：地圖的 `ground` 是圖片路徑才算（`gndImg`；秘境的 `ground` 是顏色）、`gndLoad`（fetch 成 blob、`REG_GND_IM` 留住參考、逾時重試）／`REG_GND_ST`／`gndHref`（在 `regGroundEl`）、接地陰影 `gndShadowSVG`；先做 `RUINS_MAPS.plaza`（`assets/ground/ruins_plaza.jpg`、1100×1100）。
 - 遺城重排（143）：`RUINS_ART`（assets/ruins/ 自己的圖）、v2 邊界掛鉤 `REG_V2.<區>.edgeFn`（`ruinsEdge`）、地面 `ruins143`（`road:1` 人行道＋柏油、`zebra`、`pit`、`geo`）、坑洞入口 `pitStep`（`pitTrig`、`body.pitglow`）。
 - 素材、製作、定型（115）：`MATS`／`MON_MAT`、`matDrop`（`MAT_P`、`MAT_GOLD_P`）、`matIcon`（`MAT_ICON`）、`state.mats`、種子袋「素材」分頁 `matBagHTML`／`matHTML`；道具行「製作」`RECIPES`、`craftEntries`／`craftPlan`／`craftDo`／`craftHTML`；定型 `fixWhy`／`fixBlock`／`fixToGeno`／`fixStart`／`fixTick`（`FIX_MIN`、`FIX_MAX`、`state.fixq`）。
-- 主與僕人（135 第一階段）：`SERVANTS`／`LORDS`／`BATK`（招式資料）、`bossRT`、`bossEnter`／`bossLeave`／`bossLoop`→`bossStep`、`bossAI`／`bossFollow`（不是主機）、`bossStrike`／`bossHit`、畫 `bossPaint`（`bossG`、範圍 `bossTel`）、`#bossBar`；掉落 `bossReward`（`state.servantAt`、`state.lordCd`、`state.spirits`／`spiritLine`、`lordSeed`、`lordFirst`）；現身 `lordSummonTick`（`minervaFog`／`MIN_FEATHERS`、`exhShore`／`lordSum.path`／`bossWalkOk`）、初穗 `sheet.hatsuho`（`hatsuhoHTML`／`hatsuhoGo`）、`lordSummon`、出口封住 `regSealed`；同步 `bossNet`、`fight/<地區>`（`lordNetStart`／`lordNetSync`／`lordHeartbeat`／`lordHostCheck`／`lordEnd`／`lordResult`／`lordForfeit`、`lordBusy`）。
+- 領主與眷屬（135 第一階段）：`SERVANTS`／`LORDS`／`BATK`（招式資料）、`bossRT`、`bossEnter`／`bossLeave`／`bossLoop`→`bossStep`、`bossAI`／`bossFollow`（不是主機）、`bossStrike`／`bossHit`、畫 `bossPaint`（`bossG`、範圍 `bossTel`）、`#bossBar`；掉落 `bossReward`（`state.servantAt`、`state.lordCd`、`state.spirits`／`spiritLine`、`lordSeed`、`lordFirst`）；現身 `lordSummonTick`（`minervaFog`／`MIN_FEATHERS`、`exhShore`／`lordSum.path`／`bossWalkOk`）、初穗 `sheet.hatsuho`（`hatsuhoHTML`／`hatsuhoGo`）、`lordSummon`、出口封住 `regSealed`；同步 `bossNet`、`fight/<地區>`（`lordNetStart`／`lordNetSync`／`lordHeartbeat`／`lordHostCheck`／`lordEnd`／`lordResult`／`lordForfeit`、`lordBusy`）。
 - 精魄與神寵（135 第二階段）：精魄是道具 `sp_<地區>`（`SPK`／`isSpK`、`spiritArt`）、孵化 `spiritUse`／`hatchTick`（`state.hatch`、`HATCH_MS`）、神寵 `state.pets`／`state.petOn`（`petsArr`、`petCur`、`petName`、`petSVG` 佔位、`petCharG`／`petMove`、`petXp`、`petEvoNeed`／`petEvoOk`／`petEvolve`、頁面 `sheet.pet` `petHTML`／`petAction`）、卡包 `state.packs`（`packsObj`）、背包道具分頁 `spiritLine`；米涅瓦的巢 `NEST_AT`／`nestObj`／`nestTick`（`state.lordWon`、筆記 `R6`，`x:1` 不算進五件）；旗標 `spV`。
 - 主題布置（137）：`THEMES`（相對 `THEME_A`）、`themePrice`、`themeApply`（`decoCollectAll`、`decoPlaceList`）、`themeUndo`（`state.themePrev`）、我的布置 `state.layouts`（`layoutSave`／`layoutApply`／`layoutRename`／`layoutDel`）、面板 `themeBoxHTML`／`themeSVG`、預覽 `sheet.theme`／`themeHTML`、`state.themeUsed`（名片 `th`）、旗標 `themeV`。
 - 戰鬥（131）：血量 `pHP`（上限 `pMax`，158）、`pDamage`／`pDie`／`pRegen`、`#hpBar`（`renderHP`）；怪物 `MON_RHP`／`MON_RDMG`／`SICKLE_DMG`、還手（`aggro`、`MON_WIND`／`MON_ATK_R`／`MON_LEASH`／`MON_GIVEUP`、`.mwind`）、數量 `monCount`（`MON_RT.xs`）；小補血藥 `pot`（`drinkPot`、`#potBtn`、`state.potGift`）；這趟素材 `state.trip`（`tripAdd`／`tripSave`／`tripLose`）；經驗 `monXp`（`MON_XP_ON=false`）。
@@ -253,7 +254,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 主畫面重排（140）：右上 `#tbar`（`#ibFr`／`#frDot` `frDotOn`、`#ibDex`、`#ibLay`、`#mapBtn`、`#ibMenu`）、右下 `#rbar`（column-reverse：背包、任務、神之子）、布置模式 `layMode`／`renderLay`／`layTap`（`#layBar`）、背包分頁 種子／果實／素材（含道具 `itemBagHTML`）／武器／種原庫、`MENU` 三格。
 - 自然命名（145）：`appName`（`nameCol`／`patWord`／`shapeWord`／`cropWord`）、`appTags`／`appTagsHTML`、`nmIc`、`shortApp(ph,crop)`、`lotAppOf`／`lotAutoName`、`lotsVarietySync`、玩家改名 `l.nm`／`p.nm`、遷移 `m145`（旗標 `nameV`）；地名兩層 `#sceneName.two`、`regBanner(地區,地圖)`。地圖版面色塊圖 `tools/export_layout.js`（146）。
 - 類型名稱（149）：`BASE_NAMES`／`baseName`（完整名稱）、`BASE_SHAPES`（小標籤短詞）、`gAutoName`（原始品種、野生種原的名字）、遷移 `m149`（旗標 `n149V`）、圖鑑系統名字在 `sortReg` 顯示時換；`shortApp(ph,crop)` 一定要傳作物。
-- 主與僕人的頭像（147）：`porHTML`／`porFail`／`porSrc`／`porC`（`POR_C`）、`porArtOfSrc`（素材圖示）；血條 `#bossBar .bpor`。
+- 領主與眷屬的頭像（147）：`porHTML`／`porFail`／`porSrc`／`porC`（`POR_C`）、`porArtOfSrc`（素材圖示）；血條 `#bossBar .bpor`。
 - NPC 點擊（148）：`npcHitList`／`npcAt`／`npcGo`／`npcAtClient`（`handleTap` 最先看）、`walkTo(x,y,then,force)`；神之子資訊 `openFyInfo`／`openFyBtn`／`fyInfoHTML`（`sheet.fyinfo`）。
 - 選地區預覽圖（151）：`rgCardHTML`／`rgPrev`（`assets/regions/preview_<地區>.jpg`）。
 - 傷害數字（152）：`dmgShow`（`#dmgL`、`dmgPool` 12 個、`dmgStack`、`w2s`、`dmgFmt`、`monHeadY`、開關 `state.dmgNum`）；神之子立繪 `fyHeroHTML`／`fyGlowC`／`fyPop`。
@@ -266,7 +267,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 武器（159）：`WEAPONS`／`WP_ORDER`／`WP_DIM`、`state.weapons`／`state.wpn`／`state.wpnPick`、`curWpn`／`wpnTag`／`wpnDmg`／`wpnFire`（`dealT`、`hitMon`、`bossDealt`、`m.stun`、`m.burn`）、子彈 `wpnShot`／`wpnStep`／`wpnLoop`（`WPN_PROJ`）、特效 `fxW`、拿在手上 `wpnHTML`／`wpnPaintMe`／`wpnAnim`（`#meWB`／`#meWF`、`WP_HAND`；171／179 起只在退回舊人物時用，新版人物的武器是 `c3Wpn`）、`wpnEquip`／`wpnLock`、新手 `wpickHTML`／`wpickDo`、背包 `wpnBagHTML`、製作 `wpCraftHTML`／`wpMake`（`fruitCropTake`）。
 - 補血藥（160）：`POT_TYPES` 三種（pot／pot_m／pot_l）、配方在 `RECIPES`。
 - 掉落物在地上（161）：`GDROP`（`DROP_LIFE`、`PICK_R` 90、`PICK_SHOW_R` 120／`PICK_HIDE_R` 132、`AUTO_PICK_R` 28，181）、`dropLayer`（`#dropL`）、`dropArt`、`dropSpawn`、`dropTake`→`dropFly`（181）、`dropPick`、`dropPickBtn`（181：90 內沒有就走過去）、`dropTick`（在 `monLoop`；181 起一律自動撿）、`dropClear`（在 `monClear`）、撿起按鈕 `#pickBtn`（`dropBtnPaint({d,n})`，pointerdown）；`state.autoPick` 181 起不用；`matDrop(m,p,ground)`；`bossReward` 的素材、金幣也掉地上；傷害數字 28／36px。
-- 僕人下來空地（162）：`SERVANTS`／`LORDS` 的 `arena`（`arenaR`）、`ARENA_R`／`ARENA_JUMP`／`ARENA_LEAVE`、`bossArena`／`bossArenaR`、`bossJump`／`bossJumpStep`／`bossArenaSet`、`bossClamp`、`bossHomeStep`。
+- 眷屬下來空地（162）：`SERVANTS`／`LORDS` 的 `arena`（`arenaR`）、`ARENA_R`／`ARENA_JUMP`／`ARENA_LEAVE`、`bossArena`／`bossArenaR`、`bossJump`／`bossJumpStep`／`bossArenaSet`、`bossClamp`、`bossHomeStep`。
 - 劇情對話（163）：`VN_REG`／`VN_STORY`、`vnParse`（「名字(表情)：台詞」、「｜」分頁、「旁白：」）、`vnPlay`／`vnNext`／`vnTap`／`vnLog`／`vnEnd`／`vnFromNote`、立繪 `vnPortrait`（`assets/portrait/`、`VN_PID`／`FY_PID`）＋替代 `vnFallback`／`vnImgFail`（神之子裁切 `FY_CROP2`）、鏡頭 `vnCamP`／`vnZ`／`vnCamTo`、章節卡 `chapterCard`（`CH_BK`、`state.chSeen`）、設定 `renderVnBox`（`state.vnSpeed`）；`npcTalk`／`fyTalkHTML` 用 `<!--vnS:id-->…<!--vnE-->` 包台詞，`noteOpen` 看到就先播。
 - 鏡頭、神之子大小（164）：`EX_ZOOM` 1.15（遷移 `cam164V`）、`FY_REL` 1.0、`FY_DX`／`FY_DY`；被擋住的白色剪影 178 拿掉，現在的做法見 178 那條（`meOccluded` 還在但沒人呼叫）。
 - 武器平衡（166）：`wpnMelee`（受傷 ×0.6）；背武器（166.1）已由第 179 節刪掉；野外鐮刀 `wpnDmg(null)` ×0.5。怪物追擊（19x）：`MON_CHASE_K` 0.85×玩家走路、`MON_LEASH` 400，正在打的那隻也追。
@@ -274,7 +275,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 別人看得到新版主角（168）：`pushPos` 的 `c2`、`profiles.c2`（`pushProfile`）、`charG(…,c2)`、`char2SVG(face,moving,sex)`／`char2Paint(…,sex)`、`char2PaintOthers`（`[data-c2w]`）、`charShadow(c2s)`、名片 `spinC2`。
 - 神之子背面（169）：`fy2Src(k,st,b)`、`fyBackReady`／`FY_BK`、`fyUp`／`fyWantBack`、`fyFace`、`S.sq`（壓扁翻面）；`getPos` 回傳 `face`。
 - 神之子的普通攻擊（170）：`FY_ATK_R`／`FY_ATK_CD`／`FY_ATK_PCT`／`FY_ATK_ENG`／`FY_BOLT`、`fyAtkTick`（`monLoop`、`bossLoop`）、`fyTarget`、`fyBaseDmg`、`fyAutoOn`（`state.fyAuto`）、演出 `fyAtkFx`／`fyCastArt`（`_c` 圖、`FY_CK`、`S.castFlip`）、同步 `fyAct`→`pushPos` 的 `fa`、`fyAtkRemote`（`FY_SEEN`）；`monHit(…,pet)`、`bossDealt` 的 `o.pet`。170 補：`FY_BOLT_MS` 380、`FY_LINE_HOLD`、打中 `fyHitFx`（`.fyp-ring`）、出手光環 `.fyp-cring`。
-- 主、僕人共鬥（172）：`bpath`（`fight/<區>`／`fight/<區>_sv`）、`bossNetSync`（加入、更新、結束，`lordNetSync` 轉呼叫）、`svNetWatch`／`svNetState`／`svBusy`／`bossSvNet`、`bossScaleUp`（`BOSS_JOIN_K`、`b.base`／`b.adj`／`b.mcount`，`bossHp` 扣 `adj`）、`svResult`、`bossMemHTML`（`.bmem`）、`tmDmg`（`.dmg.tm`）、`bossEvents`、`fightDenied`；測試 `tools/tcoop.js`（`tload.js` 會跑）。
+- 領主、眷屬共鬥（172）：`bpath`（`fight/<區>`／`fight/<區>_sv`）、`bossNetSync`（加入、更新、結束，`lordNetSync` 轉呼叫）、`svNetWatch`／`svNetState`／`svBusy`／`bossSvNet`、`bossScaleUp`（`BOSS_JOIN_K`、`b.base`／`b.adj`／`b.mcount`，`bossHp` 扣 `adj`）、`svResult`、`bossMemHTML`（`.bmem`）、`tmDmg`（`.dmg.tm`）、`bossEvents`、`fightDenied`；測試 `tools/tcoop.js`（`tload.js` 會跑）。
 - 秘境掉落物（174）：`bossLoop` 也跑 `dropTick`、`bossLeave` 先 `dropClear`。
 - 分層人物（171，177 改讀 manifest）：`C3`／`C3_HU`／`C3_DIR`／`C3_WPN`、`char3On`（`state.char3`）、`lookNorm`／`lookPack`／`lookUnpack`（`state.look`、同步 `ap`）、`c3Im`／`c3Anc`、`c3Sheet`（合成＋外輪廓→blob，LRU 24，`c3LastMs`）、`c3Act`／`c3State`、`c3SVG`／`c3Paint`／`c3PaintAll`、`c3Wpn`／`c3Part`、`c3Atk`／`c3HitAt`／`c3Walk`、造型 `sheet.look`（`lookHTML`／`lookAction`、`c3TestWeapons`）；參考實作在 `docs/規格存檔_附件/第171節_參考實作.html`。
 - 新版人物修正（176）：`c3Preload`／`c3Ready`／`c3Fail`（`C3_WAIT`，404 或 5 秒才退回舊人物）、等素材時 `<g class="c3w">`、淡入 `c3in`（`C3_SHOWN`）、頭像與名片裁圖 `c3Crop`（`C3_HEAD`／`C3_BODY`，`renderMe`、`spinSVG`／`spinC3`、`profiles.ap`）。
@@ -287,11 +288,15 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 素材的取得提示（185）：`matSrc`（`MAT_RARE_N`、`matSrcNm`／`matSrcPic`）、製作畫面一行 `matRowHTML`、取得方式小卡 `sheet.msrc`／`msrcHTML`／`msrcGo`（`qGo`）、`monDropsHTML`、`matHTML` 的來源清單；測試 `tools/t185.js`。
 - 武器平衡、184 新版（186）：目標 `WP_TARGET`、錘與鐮刀 `W.splash`、`SK_NAMES`／`skName`／`skNameShow`（`state.skSeen`）、`SK_DESC`／`skCardShow`（長按）、星星 `weapons[i].st`／`WP_SHAPES`／`STAR_FX`／`wpStat`／`skStarK`；`tools/sim184.js` 跑真的 `wpnFire`／`skCast`（186 補：合格線 `LIMIT` ±15%，結果 `tools/sim186b_20p.txt`）、測試 `tools/t186.js`。
 - 特效層（191）：`#fxCv`（CSS 像素 ×1，不乘 DPR）、`fxPlan`（`assets/fx/plan.json`）／`fxImg`／`fxSet`／`fxL`／`fxGrp`、`fxPlay`／`fxLoop`（`FXQ`、`FX_MAX`）、`fxT(時機,x,y,情境)`／`fxOr`／`fxHas`、情境 `fxAtkC`／`fxSkCtx`／`fxCommon`、命中 `fxOnHit`（`fxHitKind`）、`fxProj`／`fxFly`／`fxFollowMe`、`fxBoomFlash`、`fxPreloadCur`／`fxRelease`、`wpnFire`→`wpnFire2`（`fxMute`）、`FX_TGT_A`／`FX_NO_TGT`／`FX_OWN_FINAL`、`skAct` 的 `cr`／`tr`／`sl`；**之後換特效只換 `assets/fx/` 的圖和 plan.json**；測試 `tools/t191.js`。
+- 領主、眷屬的招式特效（192）：`bossFx(b,時機)`（`plan.json` 的 `boss`：at／fit／along／ringN／each）、`bossFxGeo`、`bossFxAlong`、`bossFxCommon`（hitp／phase2／calm）、`bossFxWatch`（在 `bossPaint`，同一個 seq 播一次）、`bossFxPre`；測試 `tools/t192.js`。
+- 神寵跟隨（193）：`petSVG(p,size,flip)`（領主 idle 圖、`pet_<地區>_<0|1>.png` 優先，`petProbe`／`PET_IMG`、`petArt`、`PET_H`／`petHW`）、`petStep`（身後、滑過去）、3D 看板 `ground`（`w3d.js`）；測試 `tools/t193.js`。
+- 後六區領主（196）：`MAP_OF`／`bossMapHere`（每隻自己的地圖）、`LAI[def.ai]`（renard／bas／urso／orth／lep／talos）、新形狀 `bossHit2`／`bossShapeSVG2`（fan／ring／multi／all／sweep，`act` 狀態 `bossActTick`、`setT0`）、`bossAfterStrike`、`bossMul`／`bossInv`／`bossSlow`（`bossSlowK`）、場上物件 `bossParts`／`PSEUDO`／`partDealt`／`bossOdApply`（`od/<uid>`）、`fsNorm`、`bossIceBlock`、`bossDevourHit`；現身 `kujiToday`／`SHRINE_LANT`／`foxL`／`lordWonOthers`／`shrineOpen`、`basSteal`／`catLoop`／`catTap`、`urso196Tick`（`URSO_ICE`）、`orth196Tick`、`fullMoonDay`／`nextFullMoons`／`RABBIT`／`rabbitMissing`、`TALOS_KEYS`；`l196Objs`／`l196Tap`／`l196HTML`／`l196Action`（`sheet.l196`）、`l196Tick`（在 `tick`）、`l196Enter`；神社後院 `SAKURA_MAPS.shrine`、神官 `kannushi`；測試開關 `lord196Tool`（`data-tool="lord196"`、`fakeFull`）；測試 `tools/t196.js`。
+- 省電的特效（197）：`fxEcoL`、`fxMax()`（`FX_ECO_MAX` 16）；測試 `tools/t197.js`。
 - 武器頁（190）：`sheet.wpi`（`wpOpen`／`wpPageHTML`、`wpSkCard`、`wpStarRow`）、技能定義 `skDefFor`、星星 `wpSlot`／`wpStarFruits`／`wpStarP`／`wpStarDo`（`WP_STAR_P`、`e.sf`、名品存負數 `wpStatOf`）、升階 `WP_UP`／`wpUpNeed`／`wpUpDo`（`wpFarKeys`）、轉移 `wpTrCost`／`wpTrOk`／`wpTrDo`（`WP_TR_COIN`）、副武器 `state.wpn2`／`wpn2On`（`wpn2Tick`）、`wpSetMain`／`wpSetSub`／`wpnSwap`、`#wpSwap`（`wpSwapPaint`）、各把的冷卻 `SKCW`／`skCdSwap`；測試 `tools/t190.js`。
 - 攻擊鍵（189）：普通攻擊不再自動，`atkTick`（在 `monLoop`、`bossStep`）、`atkPress`／`atkRelease`（`atkHeld`、`atkTap`）、`atkLock`／`atkLockT`／`atkTs`／`atkSearch`、走過去 `moveTo`（`atkJoy` 推搖桿就取消）、空揮 `atkWhiff`、鎖定圈 `#atkRing`（`atkRingPaint`）；按鈕是 `#skR`（`.ska`）；翻滾拿掉；`TIP_TXT.atk`。
 - 畫面按鈕重排（188）：位置都在 `<style>` 最後的「188」區塊（`body.h188`、`--h188-*` 變數）、`hud188()`（選單搬進 `#rbar`、回家／幫忙照顧搬進 `#ctxBar`）、`MENU` 加朋友／圖鑑／布置、`renderFrDot` 紅點在選單；`#hpBar` 所有場景都顯示；檢查 `tools/layout188.js`。**之後加按鈕要照 188 的位置表排**。
 - 連擊數（187）：`comboHit`（在 `monHit`／`bossDealt`，神之子不算）、`COMBO_GAP`、`comboTick`／`comboReset`、`#combo`（`comboPaint`）、`state.comboMax`、`comboNow()`、`onCombo(n,t)`（`COMBO_FNS`）；測試 `tools/t187.js`。
-- 武器技能、翻滾（184）：表 `SKILLS`／`SK_ROLL`、`skDef`／`skV`／`skDmg`、`skCast`→`SK_DO[招式]`＋特效 `skFx[招式]`（之後換圖只改這裡）、`skAim`／`skTs`／`skIn`／`skInRect`／`skShove`／`skStun`／`skMove`／`skBlink`、冷卻 `SKC`、狀態 `SKB`（不存檔）、受傷 `skHurt`（`pDamage(n,src)`）、普通攻擊掛鉤 `skIv`／`skPreAtk`／`skPostAtk`／`skSat`（`c3Wpn` 第 4 參數）、`skTick`、子彈 `sb`／`pt`（`wpnStep`）、按鈕 `#skBar`（`skBar`／`skPaint`、`SK_GLYPH`）、同步 `pushPos` 的 `sk`／`skRemote`、主僕 `b.stun`；測試模式武器階 `data-tool="wtier"`；模擬 `tools/sim184.js`、測試 `tools/t184.js`。
+- 武器技能、翻滾（184）：表 `SKILLS`／`SK_ROLL`、`skDef`／`skV`／`skDmg`、`skCast`→`SK_DO[招式]`＋特效 `skFx[招式]`（之後換圖只改這裡）、`skAim`／`skTs`／`skIn`／`skInRect`／`skShove`／`skStun`／`skMove`／`skBlink`、冷卻 `SKC`、狀態 `SKB`（不存檔）、受傷 `skHurt`（`pDamage(n,src)`）、普通攻擊掛鉤 `skIv`／`skPreAtk`／`skPostAtk`／`skSat`（`c3Wpn` 第 4 參數）、`skTick`、子彈 `sb`／`pt`（`wpnStep`）、按鈕 `#skBar`（`skBar`／`skPaint`、`SK_GLYPH`）、同步 `pushPos` 的 `sk`／`skRemote`、領主、眷屬 `b.stun`；測試模式武器階 `data-tool="wtier"`；模擬 `tools/sim184.js`、測試 `tools/t184.js`。
 - 第一位神之子、轉生的夢（183）：`state.anchor`（`mq2First`）、夢 `dreamNeed`／`dreamOpen`／`dreamAfter`（`#dream`、`DREAM_L`）、1-5 `altWho`／`mq2FirstBody`（`FIRST_L`）、`state.cropEarly`（`cropKept`）、清單 `altL(k)`（取代 `ALT_LIST[k]`；番茄第二份 `ALT_LIST.tomato2`、`altObj('tomato').l2`）；主線 17 步（2-5、2-6、3-5、3-6 拿掉），神之子類任務 `FYQ`／`fyqTick`（`state.fyq`，kind `fyq`）；遷移 `m183`（旗標 `mq183V`）；測試 `tools/t183.js`。
 - 個人介面 `openMe`／`meSheetHTML`、通知 `noteOpen`、慶祝卡 `celShow`、提示 `toast`、「？」小說明 `qh`。
 
@@ -338,7 +343,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 120 | 修正：十級一區、支線「失落的種子庫」的結尾、新手前三株加速 | 已完成 | docs/規格存檔.md；18k（9.117）；探險家大衣之後補發（`coatDue`）；沒測 iPhone |
 | 131 | 戰鬥改版第一步：血量、怪物會還手、小補血藥、打怪經驗、白樺林與潟湖的素材 | 已完成 | docs/規格存檔.md；18z（9.132）；打怪經驗先 0（使用者）；怪物仍是各人各自的；**要請使用者 iPhone 實機試邊走邊打邊躲**；沒有截圖 |
 | 133 | 任務的指引、「可以完成了」的提示、提醒（擴到所有任務） | 已完成 | docs/規格存檔.md；18y（9.131）；難判斷的四類列在 9.131；**要請使用者在 iPhone 上看那一行和箭頭**；沒有截圖 |
-| 135 | 主、主的僕人、精魄、神寵：九隻主的現身條件、重生、掉落、神寵三階段 | 進行中 | docs/待實作/第135節.md；第一、二階段已做（19b、19d）；後六區、27 個神寵技能未做；135.13 巴絲打法已定未做；要兩支手機實測 |
+| 135 | 領主、眷屬、精魄、神寵：九隻領主的現身條件、重生、掉落、神寵三階段 | 進行中 | docs/待實作/第135節.md；第一、二階段已做（19b、19d）；後六區由第 196 節做了（20x）；27 個神寵技能未做；要兩支手機實測 |
 | 136 | 冰封種子庫的由來（門禁卡、館藏重開、古老的種子） | 未做（設計定案） | docs/待實作/第136節.md；跟晶霜雪原那一章一起做 |
 | 137 | 主題布置：一鍵套用、存自己的布置 | 已完成 | docs/規格存檔.md；19a（9.133）；田園小屋是「已擁有」、沒有開局自動擺；**要請使用者 iPhone 看四套套用後的畫面** |
 | 138 | 介面改版第一步：共用樣式、主畫面、背包、種子詳細、任務面板 | 已完成 | docs/規格存檔.md；19c（9.135）；農場上的抽屜照舊是抽屜、野生不含雜交第一代、道具放背包第四分頁（和規格不同的地方列在 9.135）；果實、素材詳細只換樣式；沒有截圖；**要請使用者 iPhone 看主畫面與面板** |
@@ -350,13 +355,13 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 144 | 野外的戰鬥按鈕：補血藥快捷格、自動喝藥（修改 131、140） | 已完成 | docs/規格存檔.md；19j（9.142）、2026-11-22 修正 19l（9.145：按鈕到哪裡都不動、快捷格在背包左邊）、19m（9.146：右上布置在別處留空位）；量了位置、沒截圖；**要請使用者 iPhone 試長按換藥水** |
 | 145 | 介面上不用「・」：地點兩層字、種子與果實自然命名 | 已完成 | docs/規格存檔.md；19k（9.143）；剩下 194 處分隔用的「・」列在 9.143 等使用者決定；截圖會切邊、另外量了位置；沒測 iPhone |
 | 146 | 地圖版面色塊圖（給 AI 畫地面用；只做工具） | 已完成 | docs/規格存檔.md；9.144；先輸出 tools/layout/ruins_plaza.png／.json，其他地圖等試完 |
-| 147 | 主與僕人的頭像 | 已完成 | docs/規格存檔.md；19m（9.146）；圖鑑沒有主的清單（截圖改拍素材）；有截圖；沒測 iPhone |
+| 147 | 領主與眷屬的頭像 | 已完成 | docs/規格存檔.md；19m（9.146）；圖鑑沒有領主的清單（截圖改拍素材）；有截圖；沒測 iPhone |
 | 148 | NPC 驚嘆號點了沒反應；點神之子改成看資訊 | 已完成 | docs/規格存檔.md；19m（9.147）；原因四個列在 9.147；神之子沒有等級、數值、技能資料先不顯示；有截圖；**要請使用者 iPhone 試點驚嘆號** |
 | 149 | 原始品種改用現實的類型名稱；甘藍家族改叫甘藍 | 已完成 | docs/規格存檔.md；19n（9.148）；詳細頁的來源那行改成「來源：…」；順便修好名字裡形狀一律用番茄；開發用頁面還有「甘藍家族」；有截圖；沒測 iPhone |
 | 150 | 地圖用一整張畫好的地面當底（先做虹光遺城噴泉廣場） | 已完成 | docs/規格存檔.md；19o（9.149）、19p 修 iPhone 上地面圖沒換上去（19s WebKit 實測：新版正常，但舊版在電腦 WebKit 也正常，原因沒證實，要 iPhone 再看）；`ground` 照副檔名分辨（秘境用它寫顏色）；手機上會有點糊，建議放大 2 倍；有截圖；沒測 iPhone |
 | 151 | 選地區的預覽圖換成畫好的圖 | 已完成 | docs/規格存檔.md；19q（9.150）；有截圖；沒測 iPhone |
 | 152 | 傷害數字（楓之谷式）；神之子資訊面板放大、會動 | 已完成 | docs/規格存檔.md；19q（9.151）；爆擊、MISS、神之子出手的樣式做好但遊戲裡還沒有這些傷害；順便修玩家被打的數字位置；有截圖；沒測 iPhone |
-| 153 | 道具圖示換新 | 已完成 | docs/規格存檔.md；19q（9.152）；功能按鈕的舊圖示沒動（列在 9.152）；精魄目前只有三隻主；有截圖；沒測 iPhone |
+| 153 | 道具圖示換新 | 已完成 | docs/規格存檔.md；19q（9.152）；功能按鈕的舊圖示沒動（列在 9.152）；精魄目前只有三隻領主；有截圖；沒測 iPhone |
 | 154 | 野外常駐的地區小地圖 | 已完成 | docs/規格存檔.md；19q（9.153）；共用原本的地區地圖；截圖右邊被切（瀏覽器隱藏），量了位置；沒測 iPhone |
 | 155 | 神之子在遊戲裡放大 | 已完成 | docs/規格存檔.md；19r（9.154）；遊戲裡還沒有神之子技能，放招動作 `fyCast` 先做好沒人呼叫；有截圖；沒測 iPhone |
 | 156 | 新版主角素材（測試接入） | 已完成 | docs/規格存檔.md；19s（9.155）；沒有性別設定，開關旁加男生／女生；鐮刀錨點先用固定值等使用者看；舊衣服等不疊；有截圖；沒測 iPhone |
@@ -364,8 +369,8 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 158 | 等級成長、野外鏡頭、影子 | 已完成 | docs/規格存檔.md；19u（9.157）；Lv 40 攻擊 3,075／血量 2,856、Lv 80 攻擊 10,030／血量 8,619；有截圖；沒測 iPhone |
 | 159 | 武器接進戰鬥（第一版） | 已完成 | docs/規格存檔.md；19v（9.158）；素材替代、雙刀一張圖、鐮刀和劍差不多強都列在 9.158 等使用者確認；手的位置固定偏移等看截圖；有截圖；沒測 iPhone |
 | 160 | 中、大補血藥 | 已完成 | docs/規格存檔.md；19v（9.159）；苔殼的怪不在地圖上，中補血藥也收苔岩根；沒有截圖、沒測 iPhone |
-| 161 | 掉落物撿取、傷害數字放大 | 已完成 | docs/規格存檔.md；19w（9.160）；主、僕人的素材和金幣也掉地上，精魄、卡包、種子照舊直接給；有截圖；沒測 iPhone |
-| 162 | 秘境的僕人下來空地打 | 已完成 | docs/規格存檔.md；19w（9.161）；潟湖秘境沒有半徑 120 的空地，用 80；潟湖的主照舊在水上；有截圖；沒測 iPhone |
+| 161 | 掉落物撿取、傷害數字放大 | 已完成 | docs/規格存檔.md；19w（9.160）；領主、眷屬的素材和金幣也掉地上，精魄、卡包、種子照舊直接給；有截圖；沒測 iPhone |
+| 162 | 秘境的眷屬下來空地打 | 已完成 | docs/規格存檔.md；19w（9.161）；潟湖秘境沒有半徑 120 的空地，用 80；潟湖的領主照舊在水上；有截圖；沒測 iPhone |
 | 163 | 劇情對話改版：視覺小說式對話、劇情演出 | 已完成 | docs/規格存檔.md；19w（9.162）；背景音樂沒做（沒有音樂系統）；立繪還沒有圖，先用替代圖（裁切表在 9.162）；有截圖；沒測 iPhone |
 | 164 | 鏡頭、神之子大小、被怪物蓋住 | 已完成 | docs/規格存檔.md；19w（9.163）；有截圖；沒測 iPhone |
 | 165 | 新版角色的正面、背面走路 | 未做 | docs/待實作/第165節.md |
@@ -375,9 +380,9 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 169 | 神之子的背面（補第 167 節） | 已完成 | docs/規格存檔.md；19z（9.169）；朝上先用正上方（165 還沒做）；順便修省電時換不到圖、換階段用錯圖；有截圖；沒測 iPhone |
 | 170 | 神之子的普通攻擊（要同步給別人看）；170 補：演出加強 | 已完成 | docs/規格存檔.md；20a（9.170）；傷害佔比：喚醒約 6%、神化 14～18%；有出手截圖、互看要兩個帳號沒拍；沒測 iPhone、多人連線；170 補 20b（9.171），九隻的畫面使用者自己進遊戲看（不截圖） |
 | 171 | 分層人物（3D 拍成 2D）：換裝、動作、武器拿在手上 | 已完成 | docs/規格存檔.md；20d（9.174）；參考實作移到 docs/規格存檔_附件/；法杖在左前方被身體擋住、握角等聊天室調；總覽截圖（在頁面裡畫）；沒測 iPhone 掉幀 |
-| 172 | 主、僕人改成同一張地圖只有一隻、大家一起打 | 已完成 | docs/規格存檔.md；20c（9.172）；**規則 `tools/rtdb_rules_172.txt` 要使用者自己貼**；2 人 5 分鐘約 4,800 次寫入、320 KB；沒測兩台手機、iPhone |
+| 172 | 領主、眷屬改成同一張地圖只有一隻、大家一起打 | 已完成 | docs/規格存檔.md；20c（9.172）；**規則 `tools/rtdb_rules_172.txt` 要使用者自己貼**；2 人 5 分鐘約 4,800 次寫入、320 KB；沒測兩台手機、iPhone |
 | 173 | 組隊邀請 | 已完成 | docs/規格存檔.md；20d（9.175）；**規則 `tools/rtdb_rules_173.txt`（含 172）要使用者自己貼**；4 人掛 10 分鐘約 7 次寫入；沒測兩台手機 |
-| 174 | 主、僕人的掉落物撿不到（使用者回報，先修） | 已完成 | docs/規格存檔.md；20d（9.173）；原因：秘境沒有一般怪、monLoop 不跑、dropTick 跑不到；有截圖 |
+| 174 | 領主、眷屬的掉落物撿不到（使用者回報，先修） | 已完成 | docs/規格存檔.md；20d（9.173）；原因：秘境沒有一般怪、monLoop 不跑、dropTick 跑不到；有截圖 |
 | 175 | 左邊的任務提示可以收合 | 已完成 | docs/規格存檔.md；20f（9.177）；紅點是改 `mqSig` 觸發測的；有截圖；沒測 iPhone |
 | 176 | 新版人物的三個修正（素材換新、不先閃舊人物、頭像和名片） | 已完成 | docs/規格存檔.md；20e（9.176）；朋友名單本來就沒有角色縮圖；有截圖；沒測 iPhone |
 | 177 | 打扮功能：正式素材（女 6 套、男 3 套）、新的素材格式、打扮面板 | 已完成 | docs/規格存檔.md；20g（9.178）；髮型預設髮色拿來用；地圖上各套拍成合併的兩張、互看用假玩家；舊測試素材已刪；沒測 iPhone、兩台手機 |
@@ -387,11 +392,17 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 181 | 撿起按鈕改版；神之子攻擊、雙色特效的問題先查 | 已完成 | docs/規格存檔.md；20k（9.182）；90～120 之間按了會走過去（規格沒寫）、「自動撿取」設定拿掉；181.2 只查：怪方塊是麥斯 `corn_2_c`／`corn_3_c` 圖裡的全息方塊、28 張圖光效碰到畫布邊；**沒有遊戲截圖**（Browser 窗格卡住）；沒測 iPhone |
 | 182 | 整理 CLAUDE.md：刪掉過時、被取代的內容 | 已完成 | 只改 CLAUDE.md；照 182.4 沒有動 `docs/規格存檔.md`、`docs/待實作/`（`第182節.md` 還在） |
 | 183 | 第一位神之子自己選：轉生的夢；主線不再發神之子 | 已完成 | docs/規格存檔.md；20l（9.183）；神之子類任務放在「故事」分頁、2-4／3-4 獎勵是加上去；**沒有截圖**；沒測 iPhone |
-| 184 | 武器技能（每把 2 招＋覺醒）、翻滾閃避 | 已完成 | docs/規格存檔.md；20m（9.184）；**±15% 只調技能倍率做不到（差在普通攻擊），倍率照起始值，等使用者決定**；主沒有 ult 狀態（改看長蓄力）；測試模式武器階之後拿掉；沒有截圖；沒測 iPhone、兩台手機 |
+| 184 | 武器技能（每把 2 招＋覺醒）、翻滾閃避 | 已完成 | docs/規格存檔.md；20m（9.184）；**±15% 只調技能倍率做不到（差在普通攻擊），倍率照起始值，等使用者決定**；領主沒有 ult 狀態（改看長蓄力）；測試模式武器階之後拿掉；沒有截圖；沒測 iPhone、兩台手機 |
 | 185 | 素材的取得提示（楓之谷式） | 已完成 | docs/規格存檔.md；20n（9.185）；遊戲沒有怪物資訊畫面，「會掉：」放在來源卡；8 種舊怪素材沒有來源；沒有截圖；沒測 iPhone |
 | 186 | 武器平衡照定位重調；第 184 節補成新版 | 已完成 | docs/規格存檔.md；20o（9.186）；186 補 20p（9.187）：合格線 ±15%，5／54 格超出（雙刀、斧），之後照試玩改；鐮刀也加 splash；技能改放開才放（長按看說明）；沒有截圖；沒測 iPhone |
-| 187 | 連擊數；三隻主的現身條件改版 | 已完成 | docs/規格存檔.md；20p（9.188）；187.2 只改第 135 節文件；100 連擊用粉紅；沒有截圖；沒測 iPhone |
-| 188 | 畫面按鈕整體重排：功能鍵固定在左邊、戰鬥鍵弧形在右下 | 已完成 | docs/規格存檔.md；20q（9.189）；樣稿移到 docs/規格存檔_附件/；主僕血條上 110、地名放地圖按鈕左邊（規格沒寫）；照數字算沒有重疊（`tools/layout188.js`）；**沒有截圖**；沒測 iPhone |
+| 187 | 連擊數；三隻領主的現身條件改版 | 已完成 | docs/規格存檔.md；20p（9.188）；187.2 只改第 135 節文件；100 連擊用粉紅；沒有截圖；沒測 iPhone |
+| 188 | 畫面按鈕整體重排：功能鍵固定在左邊、戰鬥鍵弧形在右下 | 已完成 | docs/規格存檔.md；20q（9.189）；樣稿移到 docs/規格存檔_附件/；領主、眷屬血條上 110、地名放地圖按鈕左邊（規格沒寫）；照數字算沒有重疊（`tools/layout188.js`）；**沒有截圖**；沒測 iPhone |
 | 189 | 攻擊鍵（鎖定最近的怪）、拿掉自動開打、拿掉翻滾 | 已完成 | docs/規格存檔.md；20r（9.190）；`tcoop.js` 假玩家改成一直按住攻擊鍵；**沒有截圖**；**要請使用者 iPhone 試按住、邊走邊打、自動走過去** |
 | 190 | 武器頁：升階、放星星、副武器、武器轉移 | 已完成 | docs/規格存檔.md；20s（9.191）；神話公告用現有的 `news`（規則不用改）；目前沒有拿不到的升階素材；**沒有截圖**；沒測 iPhone |
 | 191 | 特效層：武器的普通攻擊與技能改播逐格特效圖 | 已完成 | docs/規格存檔.md；20t（9.192）；爆米花彈 4～5 階的 pulse 沒有對應事件；震地 6 階餘震只是畫面；參考實作移到 docs/規格存檔_附件/；**沒有截圖、沒量每幀耗時**；**要請使用者 iPhone 開 ?perf=1 連放技能看幀數** |
+| 192 | 領主與眷屬的招式特效 | 已完成 | docs/規格存檔.md；20w（9.195）；程式裡是 16 招（規格寫 17）；**沒有截圖**；沒測 iPhone |
+| 193 | 神寵跟隨時看不到 | 已完成 | docs/規格存檔.md；20v（9.194）；別人看不到你的神寵（沒同步）；沒有截圖；沒測 iPhone |
+| 194 | 用詞統一：領主、眷屬 | 已完成 | docs/規格存檔.md；20u（9.193）；介面 5 處、文件 70 行；規格存檔沒動 |
+| 195 | 後六區領主的打法 | 已完成 | docs/規格存檔.md；由第 196 節一起做（20x，9.196）；做不到、改了做法的列在 9.196 |
+| 196 | 後六區的領主、眷屬、現身條件 | 已完成 | docs/規格存檔.md；20x（9.196）；新秘境神社後院（狐火庭在地區地圖上移到 (1,-1)）；**規則 `tools/rtdb_rules_196.txt` 要使用者自己貼**；瀏覽器看過 4 個畫面、截圖沒存；沒測 iPhone、兩台手機 |
+| 197 | 省電模式：普通攻擊的特效照樣要有 | 已完成 | docs/規格存檔.md；20y（9.197）；順便修 monLoop 的 `best`；沒有截圖、沒量每幀耗時 |

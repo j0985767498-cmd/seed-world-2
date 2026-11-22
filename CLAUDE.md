@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-19x'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-19y'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-19y`。第 161～164、166 節（19w）已做，第 166 節修正（19x：怪物追擊、背武器 60°）已做；第 165 節還沒做。第 141 節（19g）、第 142 節（19h）、第 143 節（19i）、第 144 節（19j）、第 145 節（19k）、第 144 節修正（19l、19m）、第 147、148 節（19m）、第 149 節（19n）、第 150 節（19o，19p 修 iPhone 地面圖）、第 151～154 節（19q）、第 155 節（19r）、第 156 節（19s）、第 157 節（19t）、第 158 節（19u）、第 159、160 節（19v）已做；第 146 節（色塊圖工具）已做。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）、第 140 節（19f）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-19z`。第 167 節（19y：神之子新圖、光芒顏色）已做。第 161～164、166 節（19w）已做，第 166 節修正（19x：怪物追擊、背武器 60°）已做；第 165 節還沒做。第 141 節（19g）、第 142 節（19h）、第 143 節（19i）、第 144 節（19j）、第 145 節（19k）、第 144 節修正（19l、19m）、第 147、148 節（19m）、第 149 節（19n）、第 150 節（19o，19p 修 iPhone 地面圖）、第 151～154 節（19q）、第 155 節（19r）、第 156 節（19s）、第 157 節（19t）、第 158 節（19u）、第 159、160 節（19v）已做；第 146 節（色塊圖工具）已做。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）、第 140 節（19f）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -246,7 +246,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 故事引擎（126）：`FY_STORY[作物]` 每段 `steps`（deep／regions／talk／give／gives／altar／show，進度 `s.f.i`），`fsStep`／`fsNext`／`fsMap`／`fsCheck`（`fsTickAll`）／`fsAnswer`／`fsGiveSpec`（交付 id＝作物或「作物|第幾種」）、`FY_STORY_LATER`；台詞 `FY_LTAB`（`ROMA_L`／`JACK_L`／`MIERU_L`）；煙火 `fwShow`；地區故事 `RS[地區]`（grass／forest／marsh；步驟 `npc`／`spot`／`wait`／`ask`），`rsObj(bk)`／`rsAccept(bk)`／`rsDone(bk)`／`rsTick`、`rsNpcHTML`／`rsAskHTML`／`rsAllCardsHTML`；`mq2Past`。
 - 蘿瑪與地區故事（118）：台詞 `fyLinesFor`（`ROMA_L`、`fyGod`）；`FY_STORY`／`fsObj`／`fsAccept`／`fsDone`／`fsMap`／`fsCheck`／`fsCardHTML`（`state.fyst`）；地區故事 `RS_GRASS`／`rsObj`／`rsTick`／`rsCardHTML`／`rsTheoHTML`（`state.rs`）；交付 `giveSpec` 的 kind `fs`、`rs`。
 - 標本名額照組（127）：`specGroup`／`specGid`、`sgTally`／`sgFetch`／`sgCounts`／`sgN`、`sgFullTxt`。
-- 標本與精靈：`claimSpec`、`rightsTx`、`specUse`、收藏櫃 `cabListHTML`；精靈 `fyWake`／`fyEvolve`、`fySpringHTML`、跟隨 `fyLoop`、演出 `fyShow`、圖 `fyArt`／`fyArtHTML`（新畫布 `FY_CV`、上色開關 `FY_RECOLOR`）。
+- 標本與精靈：`claimSpec`、`rightsTx`、`specUse`、收藏櫃 `cabListHTML`；精靈 `fyWake`／`fyEvolve`、`fySpringHTML`、跟隨 `fyLoop`、演出 `fyShow`、圖 `fyArt`／`fyArtHTML`（167 起 `assets/fairy2/<鍵>_<階段>.png`，`fyStg`／`fy2Src`、畫布 `FY_CV`，不再上色）。
 - 角色：`avatarSVG`→`avV3SVG`（`av3.js`、`av3_heads.js`、衣服 `avOutfitParts`）、`avNorm`／`avPack`、打扮頁 `avatarEditorHTML`、衣櫃 `WARD`／`wardCheck`；`renderChars`、`updateMe`、`charG`、`poseFor`、`walkLoop`、`walkTo`。
 - 介面改版（138）：共用樣式 CSS 變數 `--tx`／`--ol`／`--pn`…、稀有度色 `RCOL`（`--r0`～`--r5`）；一套面板 `sheetMode`／`sheetModeOff`（`body.shOnP`、`shFull`、`SHEET_FULL`、`#sheetBack`）、`body.pnlOpen`；主畫面 `#rbar`、`#mapBtn`→`p-map`（`renderMapPanel`／`mapPanelTap`）、選單 `p-menu`（`MENU`／`menuTap`）、神之子 `openFyPage`、`#syncDot`；背包 `bagTabsHTML`（種子／果實／素材／道具 `itemBagHTML`）、`bagCatOf`（野生）、`slotCell`／`lotIc`／`lotTier`、`bagSel`／`bagInfoHTML`、`bagTidy`、`bagVaultReq`；種子詳細 `lotHeroHTML`／`lotParentsTxt`／`rbtn`；任務面板 `ordersHTML`（`qTab`／`qCatOf`／`Q_GRP`／`qCardHTML2`／`qProgHTML`）。
 - 主畫面重排（140）：右上 `#tbar`（`#ibFr`／`#frDot` `frDotOn`、`#ibDex`、`#ibLay`、`#mapBtn`、`#ibMenu`）、右下 `#rbar`（column-reverse：背包、任務、神之子）、布置模式 `layMode`／`renderLay`／`layTap`（`#layBar`）、背包分頁 種子／果實／素材（含道具）／種原庫、`MENU` 三格。
@@ -266,9 +266,10 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 補血藥（160）：`POT_TYPES` 三種（pot／pot_m／pot_l）、配方在 `RECIPES`。
 - 掉落物在地上（161）：`GDROP`（`DROP_LIFE`、`PICK_R`、`AUTO_PICK_R`）、`dropLayer`（`#dropL`）、`dropArt`、`dropSpawn`、`dropTake`、`dropPick`、`dropTick`（在 `monLoop`）、`dropClear`（在 `monClear`）、撿取按鈕 `#pickBtn`（`dropBtnPaint`）、`state.autoPick`；`matDrop(m,p,ground)`；`bossReward` 的素材、金幣也掉地上；傷害數字 28／36px。
 - 僕人下來空地（162）：`SERVANTS`／`LORDS` 的 `arena`（`arenaR`）、`ARENA_R`／`ARENA_JUMP`／`ARENA_LEAVE`、`bossArena`／`bossArenaR`、`bossJump`／`bossJumpStep`／`bossArenaSet`、`bossClamp`、`bossHomeStep`。
-- 劇情對話（163）：`VN_REG`／`VN_STORY`、`vnParse`（「名字(表情)：台詞」、「｜」分頁、「旁白：」）、`vnPlay`／`vnNext`／`vnTap`／`vnLog`／`vnEnd`／`vnFromNote`、立繪 `vnPortrait`（`assets/portrait/`、`VN_PID`／`FY_PID`）＋替代 `vnFallback`／`vnImgFail`（神之子裁切 `FY_CROP`／`FY_CROP_EVO`）、鏡頭 `vnCamP`／`vnZ`／`vnCamTo`、章節卡 `chapterCard`（`CH_BK`、`state.chSeen`）、設定 `renderVnBox`（`state.vnSpeed`）；`npcTalk`／`fyTalkHTML` 用 `<!--vnS:id-->…<!--vnE-->` 包台詞，`noteOpen` 看到就先播。
+- 劇情對話（163）：`VN_REG`／`VN_STORY`、`vnParse`（「名字(表情)：台詞」、「｜」分頁、「旁白：」）、`vnPlay`／`vnNext`／`vnTap`／`vnLog`／`vnEnd`／`vnFromNote`、立繪 `vnPortrait`（`assets/portrait/`、`VN_PID`／`FY_PID`）＋替代 `vnFallback`／`vnImgFail`（神之子裁切 `FY_CROP2`）、鏡頭 `vnCamP`／`vnZ`／`vnCamTo`、章節卡 `chapterCard`（`CH_BK`、`state.chSeen`）、設定 `renderVnBox`（`state.vnSpeed`）；`npcTalk`／`fyTalkHTML` 用 `<!--vnS:id-->…<!--vnE-->` 包台詞，`noteOpen` 看到就先播。
 - 被擋住的剪影（164）：`meBox`／`boxOver`／`meOccluded`、`ghostTick`（`#meGhost`、濾鏡 `#ghostF`）；`EX_ZOOM` 1.15（遷移 `cam164V`）、`FY_REL` 1.0、`FY_DX`／`FY_DY`。
 - 武器平衡、背著（166）：`wpnMelee`（受傷 ×0.6）、`wpnDrawnUntil`、`wpnBackHTML`（19x：60°、錘槍朝上、背面左右相反）、`wpnHTML(…,drawn)`；野外鐮刀 `wpnDmg(null)` ×0.5。怪物追擊（19x）：`MON_CHASE_K` 0.85×玩家走路、`MON_LEASH` 400，正在打的那隻也追。
+- 神之子新圖、光芒顏色（167）：`fyStg`／`fy2Src`、`FY_CV`（420×424、身體 88%）、`fyCols`（`fyGlowC`→暗色換紫綠反光／往白混、動態色列）、`fyBodySVG`（背光 `.fy7bl.s1～s3`、神化腳下 `.fy7ring`）、`fyLoop` 的光點（`S.cols`）、`FY_CROP2`；拿掉 `FAIRY_BASE_READY`／`FY_RECOLOR`／`fyBase`／`FY_PART`。
 - 個人介面 `openMe`／`meSheetHTML`、通知 `noteOpen`、慶祝卡 `celShow`、提示 `toast`、「？」小說明 `qh`。
 
 **效能、模式、其他**
@@ -453,3 +454,4 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 164 | 鏡頭、神之子大小、被怪物蓋住 | 已完成 | docs/規格存檔.md；19w（9.163）；有截圖；沒測 iPhone |
 | 165 | 新版角色的正面、背面走路 | 未做 | docs/待實作/第165節.md |
 | 166 | 武器平衡第一次調整、平常背著武器 | 已完成 | docs/規格存檔.md；19w（9.164）、19x 修正（9.166：被打的怪以 0.85 倍追、放棄距離 400；背武器 60°、錘槍朝上）；新版角色男女截圖；沒測 iPhone |
+| 167 | 神之子新圖（三階段）、固定配色、果實顏色改成光芒顏色 | 已完成 | docs/規格存檔.md；19y（9.167）；跟隨大小照 164 ×1.0（使用者）；喚醒選色也改「光芒顏色」；有截圖；沒測 iPhone |

@@ -855,6 +855,8 @@ details.gfold .gfb{margin-top:8px}
 .fyp-glow{animation:fypglow 1.4s ease-in-out forwards}@keyframes fypglow{0%,100%{opacity:0}50%{opacity:.45}}
 .fyp-burst{animation:fypburst .6s ease-out forwards}@keyframes fypburst{0%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate(var(--dx),var(--dy))}}
 @media (prefers-reduced-motion:reduce){.fybl,.fyorb{animation:none}}
+/* 167：背光三階段、神化腳下光圈 */.fy7bl.s1{animation:fy7a 3s ease-in-out infinite}.fy7bl.s2{animation:fy7b 3s ease-in-out infinite}.fy7bl.s3{animation:fy7c 3s ease-in-out infinite}@keyframes fy7a{0%,100%{opacity:.2}50%{opacity:.35}}@keyframes fy7b{0%,100%{opacity:.35}50%{opacity:.6}}@keyframes fy7c{0%,100%{opacity:.55}50%{opacity:.85}}.fy7ring{animation:fy7r 9s linear infinite;transform-origin:0 0}@keyframes fy7r{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.fy7bl,.fy7ring{animation:none}}
 /* 97.2／97.3 演出 */
 .fyshow{position:fixed;inset:0;z-index:95;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:opacity .2s}
 .fyshow.out{opacity:0}
@@ -886,7 +888,7 @@ details.gfold .gfb{margin-top:8px}
 .offfx{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);z-index:60;display:flex;gap:14px;pointer-events:auto;animation:offfx .9s ease-out forwards}.offfx b{font-size:30px;text-shadow:0 0 8px #fff}.offok{color:#E8B400}.offbad{color:#8A8A8A}.offfx .offbad::before{content:'✕ '}@keyframes offfx{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-80%) scale(1)}}/* 114 */
 .mwind{animation:mwind .5s ease-in-out}.mwind .ms{filter:drop-shadow(0 0 6px #FF2A2A) drop-shadow(0 0 2px #FF2A2A) brightness(1.15) sepia(.5) saturate(4) hue-rotate(-30deg)}@keyframes mwind{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 /* 135 */#bossBar{position:fixed;left:50%;transform:translateX(-50%);top:calc(122px + env(safe-area-inset-top,0px));z-index:11;width:min(300px,82vw);display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;pointer-events:none}#bossBar[hidden]{display:none}#bossBar b{width:100%;text-align:center;font-size:14px;color:#fff;text-shadow:0 0 3px #3B2614,0 0 3px #3B2614}#bossBar .bbw{position:relative;flex:1;height:14px;border-radius:8px;border:2px solid #3B2614;background:#4A2A18;overflow:hidden}#bossBar .bbw i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#E8504A,#B8282A);transition:width .2s}#bossBar .bbw em{position:absolute;left:50%;top:0;bottom:0;width:2px;background:#FFF6DE;opacity:.85}#bossBar.ph2 .bbw i{background:linear-gradient(#F0A040,#C8501A)}#bossBar .bbq{pointer-events:auto;font-size:12px;padding:2px 8px;border-radius:8px;border:2px solid #5A3416;background:#FFF6DE;color:#5A3416}#bossBar .bbq[hidden]{display:none}
-.fyhero{position:relative;width:75%;margin:0 auto 4px;aspect-ratio:348/445;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.fyhero{position:relative;width:75%;margin:0 auto 4px;aspect-ratio:420/424;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .fyhero .fyglow{position:absolute;left:50%;top:52%;width:105%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,var(--g1) 0%,transparent 64%);opacity:.55;filter:blur(6px);animation:fyGlowA 7s ease-in-out infinite}
 .fyhero.god .fyglow{background:conic-gradient(from 0deg,var(--g1),var(--g2),var(--g1),var(--g2),var(--g1));-webkit-mask:radial-gradient(circle,#000 0,#000 30%,transparent 66%);mask:radial-gradient(circle,#000 0,#000 30%,transparent 66%);opacity:.6;filter:blur(10px)}
 @keyframes fyGlowA{0%{transform:translate(-50%,-50%) rotate(0) scale(.96);opacity:.6}50%{transform:translate(-50%,-50%) rotate(180deg) scale(1.04);opacity:.9}100%{transform:translate(-50%,-50%) rotate(360deg) scale(.96);opacity:.6}}
@@ -1921,7 +1923,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-19x';
+const BUILD='2026-11-19y';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -8080,11 +8082,9 @@ function fplotHTML(){const p=sheet.fplot,ph=phen(p.g,p.crop),lvl=p.stage==='seed
 
 /* ===== 93（16u）：精靈 =====
    傳說標本→喚醒、神話標本→進化；全服名額 fairy/<鍵>={base:[{u,no,at}],evo:[…]}（transaction 領取，編號不重複使用）。
-   圖：assets/fairy/fairy_<鍵>[_evo].png，頭髮、衣服、鞋子是灰色，照 26.2／85 用果實上色（fruitPrep／fruitPaint／光層），綠色部分（蒂頭遮罩）維持原色。
+   圖：167 起 assets/fairy2/<鍵>_<1|2|3>.png（固定顏色，不上色；col＝光芒顏色）。
    存檔 state.fairy={<鍵>:{name,col,sb,no,evo,evoNo,at},follow:'<鍵>',mj:甜瓜吃醋旗標}。精靈之泉＝城鎮噴水池（TOWN_BLD 的 spring）。 */
-const FAIRY_BASE_READY=true;/* 110：基本型的圖到了 */
-const FY_RECOLOR=true;/* 110（修訂）：新圖的頭髮、衣服、鞋子是中性灰，照 26.2 上色；設成 false 會改用原圖、精靈之泉的「換色」變灰 */
-const FY_CV={w:348,h:445,fx:174,fy:407,body:360};/* 110（修訂）：新圖的畫布 348×445（腳底 y=407、中心 x=174、身體高 360） *//* 95：精靈自己的全服名額拿掉，限量跟著標本走 */
+const FY_CV={w:420,h:424,fx:210,fy:424,body:424*0.88};/* 167（19y）：assets/fairy2/<鍵>_<階段>.png，420×424，三個階段、九位用同一個倍數：喚醒圖人物高約圖高 88% 當身體高；圖的底部中間對齊原本腳底的位置。頭髮衣服是固定顏色，不再上色 *//* 95：精靈自己的全服名額拿掉，限量跟著標本走 */
 const FY_KEYS=['tomato','eggplant','chili','strawberry','corn','pumpkin','broccoli','zucchini','melon'];
 const FY={tomato:{g:'f',p:'開朗大姊頭'},eggplant:{g:'f',p:'文靜優雅'},chili:{g:'m',p:'熱血急性子'},strawberry:{g:'f',p:'甜美愛撒嬌'},corn:{g:'m',p:'愛幻想的小發明家'},pumpkin:{g:'m',p:'偷偷惡作劇'},broccoli:{g:'m',p:'外冷內熱'},zucchini:{g:'f',p:'酷酷的運動少女'},melon:{g:'f',p:'瘋狂愛爆炸'}};
 /* 113.2（18e）：九位神之子固定的名字（玩家不再取名；舊存檔的 name 欄位留著但不顯示） */
@@ -8101,29 +8101,19 @@ const FY_LINES={
   melon:['嘿嘿，要不要看看會爆炸的那種？','砰！……嚇到了嗎？','好無聊～來點刺激的嘛！','這顆一定會開出很大的花火！','主人只能看我喔～']};
 const FY_JEALOUS=['你剛剛帶誰出門了？','哼，我才沒有生氣呢。','下次不准丟下我喔！'];
 const fyN=k=>FY_NM[k]||'神之子',fyPron=k=>FY[k]&&FY[k].g==='m'?'他':'她';
-const fyImgName=(k,evo)=>'fairy_'+k+(evo||!FAIRY_BASE_READY?'_evo':'');
+const fyStg=f=>Math.max(1,Math.min(3,1+((f&&f.evo)|0))),fy2Src=(k,st)=>'assets/fairy2/'+k+'_'+st+'.png?v='+BUILD;/* 167：階段 1 喚醒、2 進化、3 神化 */
 const fyMine=()=>{const F=state&&state.fairy;return F&&typeof F==='object'?F:{}};
 const fyHas=k=>{const f=fyMine()[k];return !!(f&&typeof f==='object'&&f.no)};
-/* 素材：用到才載入；載好後清掉「蒂頭」遮罩（綠色部分維持原色，不調灰綠） */
-function fyBase(nm){const key='fy:'+nm,b=FB[key];if(b)return b.st===1?b:null;
-  const nb=FB[key]={st:0};
-  try{const im=new Image();im.onload=()=>{try{const cv=document.createElement('canvas');cv.width=im.naturalWidth;cv.height=im.naturalHeight;const cx=cv.getContext('2d');cx.drawImage(im,0,0);const id=cx.getImageData(0,0,cv.width,cv.height);Object.assign(nb,fruitPrep(id.width,id.height,id.data));nb.stem.fill(0);nb.st=1;FY_SVG.clear();fruitLoaded();try{if(dexTab==='fy'&&curPanel==='dex')renderDex()}catch(e){}}catch(e){nb.st=2}};
-    im.onerror=()=>{nb.st=2};im.src='assets/fairy/'+nm+'.png?v='+BUILD}catch(e){nb.st=2}
-  return null}
-const fyApp=f=>{const a={skin:f&&f.col&&fruitColSpecOk(f.col)?f.col:'white',pat:null,perfCls:2,seed:7};if(f&&f.sb&&a.skin.startsWith('l-'))a.sb=f.sb;return a};
 function fruitColSpecOk(c){try{fruitColSpec(c,0);return true}catch(e){return false}}
-/* 精靈圖（座標：高 H、中心在原點）。anim＝夢幻色光層強度（true＝完整、數字＝透明度、false＝不播） */
-const FY_SVG=new Map();
-function fyArt(k,f,H,anim){
-  const nm=fyImgName(k,f&&f.evo),B=fyBase(nm);
-  if(!B)return `<g><ellipse rx="${f3(H*0.2)}" ry="${f3(H*0.42)}" fill="#FFF6CF" opacity=".55"/><path d="M0 ${f3(-H*0.12)} L${f3(H*0.04)} ${f3(-H*0.02)} 0 ${f3(H*0.08)} ${f3(-H*0.04)} ${f3(-H*0.02)}Z" fill="#fff"/></g>`;
-  const a=fyApp(f),key='fy:'+nm+'|'+a.skin+(a.sb?'/'+a.sb:''),ck=key+'|'+H+'|'+anim+'|'+FRUIT_VER;
-  let s=FY_SVG.get(ck);if(s)return s;
-  let url;try{url=FY_RECOLOR?fruitURL(B,a,1,key):'assets/fairy/'+nm+'.png?v='+BUILD}catch(e){return ''}
-  const nc=B.w===FY_CV.w&&B.h===FY_CV.h,k3=3.2/(nc?FY_CV.body:B.h),w=B.w*k3,h=B.h*k3,x0=nc?-FY_CV.fx*k3:-w/2,y0=nc?1.6-FY_CV.fy*k3:-h/2;/* 110：腳底在身體範圍的最下面，所以精靈飄在原本的位置 */
-  let out=`<image href="${url}" x="${f3(x0)}" y="${f3(y0)}" width="${f3(w)}" height="${f3(h)}" preserveAspectRatio="none"/>`;
-  if(FY_RECOLOR&&anim&&!(typeof RMQ!=='undefined'&&RMQ.matches)){try{const ov=dreamLightHTML(B,a,key,x0,y0,w,h);if(ov)out+=anim===true?ov:`<g opacity="${anim}">${ov}</g>`}catch(e){}}
-  s=`<g transform="scale(${f3(H/3.2)})">${out}</g>`;FY_SVG.set(ck,s);if(FY_SVG.size>80)FY_SVG.delete(FY_SVG.keys().next().value);return s}
+/* 精靈圖（座標：身體高 H、中心在原點、腳底在 +H/2）。167：照階段直接畫 fairy2 的圖，不上色（anim 不再用） */
+function fyArt(k,f,H,anim){const k3=H/FY_CV.body;return `<image href="${fy2Src(k,fyStg(f))}" x="${f3(-FY_CV.fx*k3)}" y="${f3(H/2-FY_CV.fy*k3)}" width="${f3(FY_CV.w*k3)}" height="${f3(FY_CV.h*k3)}" preserveAspectRatio="none"/>`}
+/* 167.3：光芒顏色（果實顏色只影響程式畫的特效）。回傳 [色1, 色2, 動態色列]；太暗的（黑曜、黑）改成紫綠反光，其他太暗的往白混 */
+function fyRGB(c){const m=String(c).match(/^#([0-9a-f]{6})$/i);if(m){const n=parseInt(m[1],16);return [n>>16,n>>8&255,n&255]}const q=String(c).match(/(\d+)\D+(\d+)\D+(\d+)/);return q?[+q[1],+q[2],+q[3]]:null}
+function fyLum(c){const v=fyRGB(c);return v?.299*v[0]+.587*v[1]+.114*v[2]:255}
+function fyLift(c){const v=fyRGB(c);return v?`rgb(${v.map(x=>Math.round(x+(255-x)*0.5)).join(',')})`:c}
+function fyCols(f){const c=f&&f.col||'white';let [a,b]=(()=>{try{return fyGlowC(f)}catch(e){return ['#FFE6A8','#FFE6A8']}})();
+  const dark=/(^|-)(obsidian|black)(-|$)/.test(c);if(dark&&fyLum(a)<110&&fyLum(b)<110){a='#A57BEA';b='#4FD1A0'}else{if(fyLum(a)<70)a=fyLift(a);if(fyLum(b)<70)b=fyLift(b)}
+  let dyn=null;try{const p=colParts(c);if(c==='rainbow')dyn=RAINBOW.slice();else if((p.t==='s'||p.t==='d'||dark)&&a!==b)dyn=[a,b]}catch(e){}return [a,b,dyn]}
 /* HTML 用：一張 svg（高 px）；evo 時加光環與翅膀光 */
 function fyArtHTML(k,f,px,anim){const H=3.2,k3=H/FY_CV.body,vw=FY_CV.w*k3,vh=FY_CV.h*k3,x0=-FY_CV.fx*k3,y0=1.6-FY_CV.fy*k3;/* 110：360:456 的畫布整張放進來；光環、特效圖上已經有，不再另外畫 */
   return `<svg class="fyart" viewBox="${f3(x0)} ${f3(y0)} ${f3(vw)} ${f3(vh)}" width="${Math.round(px*vw/vh)}" height="${px}" aria-hidden="true">${fyArt(k,f,H,anim)}</svg>`}
@@ -8135,7 +8125,7 @@ const fyHit=(x,y,flip,who)=>{const [cx,cy]=fyPos(flip);return `<circle cx="${Mat
 let fyTalk=null;const fyLineI={};
 function fyFollowSVG(f,flip,who){if(!f||!FY[f.k])return '';const [cx,cy]=fyPos(flip),H=FY_FH,dl=-((hashStr(String(who))%260)/100);
   let s=`<g transform="translate(${cx} ${cy})"><g class="fybob" style="animation-delay:${dl}s"><g transform="scale(${flip?-1:1} 1)">${fyArt(f.k,f,H,0.7)}</g>`;
-  if(f.evo&&!(typeof RMQ!=='undefined'&&RMQ.matches))s+=[0,1,2].map(j=>`<circle class="fysp" cx="${(flip?1:-1)*(3+j*3)}" cy="${-4+j*6}" r="0.9" fill="#FFF6C2" style="animation-delay:${-j*0.6}s"/>`).join('');/* 進化：飛過留下光點 */
+  if(f.evo&&!(typeof RMQ!=='undefined'&&RMQ.matches))s+=[0,1,2].map(j=>`<circle class="fysp" cx="${(flip?1:-1)*(3+j*3)}" cy="${-4+j*6}" r="0.9" fill="${fyCols(f)[0]}" style="animation-delay:${-j*0.6}s"/>`).join('');/* 進化：飛過留下光點（167：光芒顏色） */
   s+='</g>';
   return s+'</g>'}
 /* 位置同步：[鍵, 衣服顏色, 另一半, 是否進化, 名字] */
@@ -8154,12 +8144,12 @@ function openFyBtn(){const f=fyMe();if(f&&openFyInfo('me',f))return;openFyPage()
 const fySwC=c=>{try{const p=colParts(c);if(p.t==='s')return c==='rainbow'?`linear-gradient(135deg,${RAINBOW.join(',')})`:`linear-gradient(135deg,${SPGRAD[c][0]},${SPGRAD[c][1]})`;return rgbS(RGBC[c]||RGBC.white)}catch(e){return '#fff'}};
 /* 152.2（19q）：神之子資訊面板的立繪：呼吸、漂浮、背後的光、光點、閃光、點一下會彈；神化後雙色光、光點變多 */
 function fyGlowC(f){const c=f&&f.col||'white';try{const p=colParts(c);if(c==='rainbow')return [RAINBOW[0],RAINBOW[4]];if(p.t==='s')return [SPGRAD[c][0],SPGRAD[c][1]];if(p.t==='d'||p.t==='l'){const a=p.a||p.s||c,b=p.b||a;return [SPGRAD[a]?SPGRAD[a][1]:rgbS(RGBC[a]||RGBC.white),SPGRAD[b]?SPGRAD[b][0]:rgbS(RGBC[b]||RGBC.white)]}return [rgbS(RGBC[c]||RGBC.white),rgbS(RGBC[c]||RGBC.white)]}catch(e){return ['#FFE6A8','#FFE6A8']}}
-function fyHeroHTML(k,f){const [c1,c2]=fyGlowC(f),god=fyStage(f)>=2,n=god?14:8;let m='';for(let i=0;i<n;i++)m+=`<i style="left:${(8+((i*37)%84))}%;animation-delay:${(-(i*0.73)%5).toFixed(2)}s;animation-duration:${(4+(i%3)*0.9).toFixed(1)}s"></i>`;
+function fyHeroHTML(k,f){const [c1,c2]=fyCols(f),god=fyStage(f)>=2,n=god?14:8;let m='';for(let i=0;i<n;i++)m+=`<i style="left:${(8+((i*37)%84))}%;animation-delay:${(-(i*0.73)%5).toFixed(2)}s;animation-duration:${(4+(i%3)*0.9).toFixed(1)}s"></i>`;
   return `<div class="fyhero${god?' god':''}" data-act="fipop" role="button" aria-label="${esc(fyN(k))}" style="--g1:${c1};--g2:${god?c2:c1}"><div class="fyglow"></div><div class="fymotes">${m}</div><div class="fyfloat"><div class="fybreath">${fyArtHTML(k,f,300,true)}</div><div class="fyshine"></div></div><div class="fyburst"></div></div>`}
 function fyPop(el){try{const h=el.closest('.fyhero');if(!h)return;h.classList.remove('pop');void h.offsetWidth;h.classList.add('pop');const B=h.querySelector('.fyburst');if(B){let s='';for(let i=0;i<12;i++){const a=i/12*6.283;s+=`<i style="--bx:${(Math.cos(a)*70).toFixed(0)}px;--by:${(Math.sin(a)*70).toFixed(0)}px"></i>`}B.innerHTML=s}}catch(e){}}
 function fyInfoHTML(){const s=sheet.fyinfo,k=s&&s.k,F=s&&s.own?fyMine()[k]:null,f=F?Object.assign({k},F):s&&s.f;if(!f||!FY[k])return '<button class="btn" data-act="close">關閉</button>';const st=fyStage(f);
   let h=`${fyHeroHTML(k,f)}<h2 style="text-align:center">${esc(fyN(k))}</h2><div class="fyinfo">`;
-  h+=`<div><span>夢幻色</span><b><i class="fysw" style="background:${fySwC(f.col)}"></i>${esc(colorName(f.col,f.sb))}</b></div>`;
+  h+=`<div><span>光芒</span><b><i class="fysw" style="background:${fySwC(f.col)}"></i>${esc(colorName(f.col,f.sb))}</b></div>`;
   h+=`<div><span>階段</span><b>${FY_STAGE[st]}</b></div>`;
   if(s.owner)h+=`<div><span>主人</span><b>${esc(s.owner)}</b></div>`;
   h+='</div>';
@@ -8207,7 +8197,7 @@ function fyApply(k,act,c){const F=state.fairy||(state.fairy={});
   const f=F[k],oldCol=f.col,oldSb=f.sb;f.col=c.col;f.sb=c.sb||undefined;Object.assign(f,sp);if(act==='evo')f.evo=1;save();try{pushPos(true)}catch(e){}
   sheet={fy:{m:'one',k}};renderSheet();openSheetUI();
   if(act==='evo'){fyShow('evo',k,f,{oldCol,oldSb});return}
-  celShow({th:'dream',kicker:'換色',title:`${fyN(k)}換了新顏色！`,sub:'',fruit:fyArtHTML(k,f,200,true),chips:[colorName(c.col,c.sb)]})}
+  celShow({th:'dream',kicker:'換光芒顏色',title:`${fyN(k)}的光芒換了顏色！`,sub:'',fruit:fyArtHTML(k,f,200,true),chips:[colorName(c.col,c.sb)]})}
 /* ===== 114（18s）：神之子的供奉（進化、神化、換色）。標本不再用在神之子身上（95.2 作廢）。
    階段放在 f.evo：0 喚醒、1 進化、2 神化（118 的 fyGod 本來就看 evo>=2）。進度 f.op={n:這一階段成功的顆數, cols:[這一階段成功過的果皮]}。
    供品：那一位作物的專屬造型＋完整夢幻色（進化）／雙夢幻色（神化）；花紋、大小不影響；買來的果實也可以（114 沒有限制，和祭壇清單不同）。
@@ -8251,7 +8241,7 @@ function recolorSlots(k){const f=fyMine()[k];if(!f)return [];const st=fyStage(f)
 function fyRecolor(k,fi){const f=fyMine()[k];if(!fyHas(k)||!f)return false;const F=fruitsArr(),x=F[fi];if(!x||x.c!==k||fCount(x)<RECOLOR_N||!recolorOk(k,keyApp(x.k),fyStage(f)))return false;
   let left=RECOLOR_N;for(const qk of Object.keys(x.q).sort((a,b)=>fqSplit(a)[1]-fqSplit(b)[1]||fqSplit(a)[0]-fqSplit(b)[0])){const m=Math.min(left,x.q[qk]);x.q[qk]-=m;left-=m;if(x.q[qk]<=0)delete x.q[qk];if(!left)break}
   if(!fCount(x))F.splice(fi,1);const col=x.k.split('|')[1];f.col=col;f.sb=col.startsWith('l-')?HALF_DEF:undefined;save();try{pushPos(true)}catch(e){}
-  try{celShow({th:'dream',kicker:'換色',title:`${fyN(k)}換了新顏色！`,sub:'',fruit:fyArtHTML(k,f,200,true),chips:[colorName(f.col,f.sb)]})}catch(e){}return true}
+  try{celShow({th:'dream',kicker:'換光芒顏色',title:`${fyN(k)}的光芒換了顏色！`,sub:'',fruit:fyArtHTML(k,f,200,true),chips:[colorName(f.col,f.sb)]})}catch(e){}return true}
 /* 供奉的畫面 */
 function fyOffHTML(s){const k=s.k,f=fyMine()[k],st=fyStage(f),op=fyOp(f),need=fyNeed(f);
   let h=`<h2>${fyN(k)}・${FY_STAGE[st]}</h2><div class="fybig">${fyArtHTML(k,f,170,true)}</div>`;
@@ -8270,16 +8260,16 @@ function fyOffHTML(s){const k=s.k,f=fyMine()[k],st=fyStage(f),op=fyOp(f),need=fy
   const tot=Object.values(s.pick||{}).reduce((a,b)=>a+(b|0),0);
   if(!(state.tips||{}).fyoff&&s.arm)h+='<p class="note"><b>獻上的果實不會還回來。沒有成功的那幾顆也一樣。</b></p>';
   h+=`<button class="btn primary" data-act="fyoffgo" data-k="${k}"${tot?'':' disabled'}>獻上果實${tot?`（${tot} 顆）`:''}</button>`;
-  const RC=recolorSlots(k);if(RC.length)h+=`<button class="btn" data-act="fycol" data-k="${k}">換色（${RECOLOR_N} 顆專屬造型果實）</button>`;
+  const RC=recolorSlots(k);if(RC.length)h+=`<button class="btn" data-act="fycol" data-k="${k}">換光芒顏色（${RECOLOR_N} 顆專屬造型果實）</button>`;
   return h+'<button class="btn" data-act="fyback">返回</button>'}
-function fyUpColHTML(k){const f=fyMine()[k],op=fyOp(f),st=fyStage(f);let h=`<h2>${st?'神化':'進化'}${fyN(k)}</h2><p class="note">選一種顏色（${st?'這次神化':'這次進化'}獻上成功過的）。</p>`;
+function fyUpColHTML(k){const f=fyMine()[k],op=fyOp(f),st=fyStage(f);let h=`<h2>${st?'神化':'進化'}${fyN(k)}</h2><p class="note">選光芒顏色（${st?'這次神化':'這次進化'}獻上成功過的）。光芒的顏色來自你獻上的果實。</p>`;
   h+=op.cols.map(c=>{let ic='';try{ic=fruitSVG({level:0,sp:EX_OF[k],skin:c,pat:null,perfCls:2,seed:7},k,44,1,'',true)}catch(e){}return `<button class="pick" data-act="fyup" data-k="${k}" data-c="${esc(c)}"><span class="seedic">${ic}</span><span><b>${esc(colorName(c))}</b></span></button>`}).join('');
   return h+`<button class="btn" data-act="fyoff" data-k="${k}">返回</button>`}
-function fyColHTML(k){const L=recolorSlots(k),st=fyStage(fyMine()[k]);let h=`<h2>${fyN(k)}換色</h2><p class="note">獻上同一格 ${RECOLOR_N} 顆${EXN[EX_OF[k]]}${CROPS[k].n}，顏色換成那一格的果皮顏色，不會失敗。${st===1?'進化之後要完整的夢幻色。':st===2?'神化之後要雙夢幻色。':''}</p>`;
+function fyColHTML(k){const L=recolorSlots(k),st=fyStage(fyMine()[k]);let h=`<h2>${fyN(k)}換光芒顏色</h2><p class="note">獻上同一格 ${RECOLOR_N} 顆${EXN[EX_OF[k]]}${CROPS[k].n}，光芒換成那一格的果皮顏色，不會失敗。光芒的顏色來自你獻上的果實。${st===1?'進化之後要完整的夢幻色。':st===2?'神化之後要雙夢幻色。':''}</p>`;
   h+=L.length?L.map(o=>{let ic='';try{ic=fruitSVG(fruitPh(o.x),k,44)}catch(e){}return `<button class="pick" data-act="fycolgo" data-k="${k}" data-i="${o.i}"><span class="seedic">${ic}</span><span><b>${esc(colorName(o.x.k.split('|')[1]))}</b><span class="meta">${fCount(o.x)} 顆</span></span></button>`}).join(''):'<p class="note">果實袋裡沒有符合的果實。</p>';
   return h+`<button class="btn" data-act="fyoff" data-k="${k}">返回</button>`}
 /* ---- 畫面 ---- */
-const fySil=k=>`<img class="fysil" src="assets/fairy/${fyImgName(k,1)}.png?v=${BUILD}" alt="" aria-hidden="true">`;
+const fySil=k=>`<img class="fysil" src="${fy2Src(k,1)}" alt="" aria-hidden="true">`;
 const fyNoTxt=f=>f&&f.sid&&f.sno?`${esc(f.sname||'')} #${f.sno}／${f.scap}`:'';
 function fySpringHTML(){const t=isTestMode();
   let h=`<h2>穗光教會的祭壇</h2><p class="note">把指定的果實獻上祭壇，喚醒神之子。${qh('兩條路：把那一位的清單獻滿；或獻上果實袋同一格的 '+WAKE_EX_N+' 顆專屬造型果實。每人每位只能喚醒一次。喚醒之後在這裡獻上果實讓他們進化、神化。')}</p>`;
@@ -8288,9 +8278,9 @@ function fySpringHTML(){const t=isTestMode();
     if(!has){const L=ALT_LIST[k],ex=fyExSlots(k),exn=`${WAKE_EX_N} 顆${EXN[EX_OF[k]]}${cr}`;
       if(L&&altDark(k))st=`永生的果實還沒回來・或 ${exn}`;/* 121.3 */else if(L){const A=altObj(k);st=`清單 ${L.filter((_,j)=>(A.n[j]||0)>=altNeed(k,j)).length}／${L.length}・或 ${exn}`;B.push(['fyalt','清單',1])}else st=`清單還沒開放・可以用 ${exn}`;
       if(ex.length)B.push(['fyex','獻上專屬造型',!L])}
-    else{const sg=fyStage(f);if(sg<2){const op=fyOp(f);B.push(['fyoff',op.n>=fyNeed(f)?(sg?'神化':'進化'):'獻上果實',1]);st=`${sg?'神化':'進化'} ${fyPct(op.n,fyNeed(f))}`}else{B.push(['fyoff','換色',0]);st='已神化'}}/* 114：標本不再用在神之子身上 */
+    else{const sg=fyStage(f);if(sg<2){const op=fyOp(f);B.push(['fyoff',op.n>=fyNeed(f)?(sg?'神化':'進化'):'獻上果實',1]);st=`${sg?'神化':'進化'} ${fyPct(op.n,fyNeed(f))}`}else{B.push(['fyoff','換光芒顏色',0]);st='已神化'}}/* 114：標本不再用在神之子身上 */
     h+=`<div class="fyrow"><span class="fyth">${has?fyArtHTML(k,f,72,false):fySil(k)}</span><div class="fyrc"><b>${fyN(k)}（${cr}）</b>${has?`<span class="meta">${FY_STAGE[fyStage(f)]}</span>`:''}<span class="meta">${st}</span></div>
-      <div class="fyrb">${B.map(([a,n,pri])=>a==='col'&&!FY_RECOLOR?`<button class="btn" disabled aria-disabled="true">${n}</button>`:a==='fyalt'||a==='fyex'||a==='fyoff'?`<button class="btn${pri?' primary':''}" data-act="${a}" data-k="${k}">${n}</button>`:`<button class="btn${pri?' primary':''}" data-act="fyuse" data-a="${a}" data-k="${k}">${n}</button>`).join('')}${t&&!(has&&fyStage(f)>=2)?`<button class="btn small" data-act="fytest" data-a="${has?'evo':'wake'}" data-k="${k}">測試：直接${has?(f.evo?'神化':'進化'):'喚醒'}</button>`:''}${t&&has?`<button class="btn small" data-act="fytest" data-a="col" data-k="${k}">測試：換色</button>`:''}</div></div>`}/* 110.3：用 FY_TESTCOL 的顏色檢查上色 */
+      <div class="fyrb">${B.map(([a,n,pri])=>a==='fyalt'||a==='fyex'||a==='fyoff'?`<button class="btn${pri?' primary':''}" data-act="${a}" data-k="${k}">${n}</button>`:`<button class="btn${pri?' primary':''}" data-act="fyuse" data-a="${a}" data-k="${k}">${n}</button>`).join('')}${t&&!(has&&fyStage(f)>=2)?`<button class="btn small" data-act="fytest" data-a="${has?'evo':'wake'}" data-k="${k}">測試：直接${has?(f.evo?'神化':'進化'):'喚醒'}</button>`:''}${t&&has?`<button class="btn small" data-act="fytest" data-a="col" data-k="${k}">測試：換色</button>`:''}</div></div>`}/* 110.3：用 FY_TESTCOL 的顏色檢查上色 */
   return h+`<button class="btn" data-act="fygrid">看我的神之子</button>`}
 /* ===== 113（18e）：祭壇清單喚醒、專屬造型捷徑 =====
    A：清單（這一節只有蘿瑪）每項 ALT_N 顆該作物的果實，從果實袋獻上、不能拿回；進度 state.fairy.altar[鍵]={n:[每項顆數],cols:[獻過的果皮],warned,seed}。
@@ -8357,7 +8347,7 @@ function fyAltPickHTML(s){const k=s.k,it=ALT_LIST[k][s.j],A=altObj(k),need=altNe
     h+=`<div class="regbox"><div class="fqsel"><button class="btn" data-act="fyaltm" data-k="${k}" aria-label="少一顆">－</button><b>${s.n} 顆</b><button class="btn" data-act="fyaltp" data-k="${k}" aria-label="多一顆">＋</button><button class="btn" data-act="fyalta" data-k="${k}">${mx} 顆</button></div>${A.warned?'':'<p class="note" style="color:var(--danger);font-weight:700">獻上的果實會從果實袋扣掉，不能拿回。</p>'}<button class="btn primary" data-act="fyaltgo" data-k="${k}">獻上 ${s.n} 顆</button></div>`}
   return h+`<button class="btn" data-act="fyalt" data-k="${k}">返回清單</button>`}
 function fyAltColHTML(k){const A=altObj(k);
-  let h=`<h2>喚醒${fyN(k)}</h2><p class="note">選一種顏色（從這份清單獻過的果皮裡選）。</p>`;
+  let h=`<h2>喚醒${fyN(k)}</h2><p class="note">選一種光芒顏色（從這份清單獻過的果皮裡選）。光芒的顏色來自你獻上的果實。</p>`;
   h+=A.cols.map(c=>`<button class="pick" data-act="fyaltc" data-k="${k}" data-c="${esc(c)}"><span class="seedic">${(()=>{try{return fruitSVG(fruitPh({c:k,k:'b0|'+c+'|-',t:0}),k,44)}catch(e){return ''}})()}</span><span><b>${esc(colorName(c))}</b></span></button>`).join('');
   return h+`<button class="btn" data-act="fyalt" data-k="${k}">返回清單</button>`}
 function fyExPickHTML(k){const L=fyExSlots(k);
@@ -8367,7 +8357,7 @@ function fyExPickHTML(k){const L=fyExSlots(k);
 function fyOneHTML(k){const f=fyMine()[k];if(!fyHas(k))return `<p class="note">還沒有${fyN(k)}。</p>`;const F=fyMine(),fol=F.follow===k,no=fyNoTxt(f);
   return `<h2>${esc(fyN(k))}</h2><div class="fybig">${fyArtHTML(k,f,240,true)}</div><p class="note" style="text-align:center">${FY_STAGE[fyStage(f)]}${no?'<br>'+no:''}</p>
     ${fyRunning(k)?`<p class="note" style="text-align:center">${fyPron(k)}跑出去了。</p>`:`<button class="btn primary" data-act="fyfol" data-k="${k}">${fol?'不要跟隨':'讓'+fyPron(k)+'跟隨'}</button>`}
-    ${fsCardHTML(k)}<p class="note">供奉、換色到穗光教會的祭壇（城鎮的噴水池）。</p><button class="btn" data-act="fygrid">返回</button>`}
+    ${fsCardHTML(k)}<p class="note">供奉、換光芒顏色到穗光教會的祭壇（城鎮的噴水池）。</p><button class="btn" data-act="fygrid">返回</button>`}
 function fyPickHTML(k,act,sel){const A=FY_ACT[act],L=fyQual(k,A.t),e=sel&&L.find(x=>x.id===sel);
   let h=`<h2>${A.n}${fyN(k)}</h2><p class="note">選一個${A.t>=5?'神話':'傳說以上'}的標本。</p>`;
   h+=L.length?L.map(x=>{const a=specApp(x);return `<button class="pick${sel===x.id?' sel':''}" data-act="fysel" data-k="${k}" data-id="${esc(x.id)}">${fruitSVG(a,x.crop,44,1,'',true)}<span><b>${esc(x.auto||CROPS[x.crop].n)}</b><span class="meta">${rbE(x)}</span></span></button>`}).join(''):'<p class="note">沒有可以用的標本。</p>';
@@ -8456,7 +8446,6 @@ function spStallMini(l,gx,cy){const a=specApp({key:l.key,sb:l.sb,cb:l.cb});retur
    進化型另有光環（繞圈的亮點）、背光（翅膀主色）、專屬粒子。只動 transform、opacity；畫面外的不更新；減少動態效果時只留靜態位置。 */
 const FY_WING={tomato:'#FF8A3D',eggplant:'#5B4BC0',chili:'#FF5A2A',strawberry:'#FF7FB3',corn:'#FFC23A',pumpkin:'#9A4FD0',broccoli:'#3F9A4E',zucchini:'#27C08F',melon:'#FF8DC8'};
 /* 專屬粒子：種類、冒出的位置（圖寬、圖高的比例，左上角為 0） */
-const FY_PART={tomato:['star',[[0.40,0.04]]],eggplant:['note',[[0.62,0.30]]],chili:['ember',[[0.12,0.05],[0.88,0.05]]],strawberry:['spark4',[[0.50,0.05],[0.50,0.30]]],corn:['smoke',[[0.88,0.36]]],pumpkin:['lantern',[[0.15,0.45]]],broccoli:['volcano',[[0.22,0.07]]],zucchini:['swing',[[0.06,0.14]]],melon:['sparkler',[[0.90,0.16]]]};
 /* 155（19r）：跟著的神之子＝玩家角色顯示高度的 1.3 倍（照比例算：量到的角色高度 AV_HU × 角色縮放 CHAR_S）；
    玩家斜後方、腳底比玩家腳底高約玩家身高的 20%。角色重畫、高度改變時 fyScaleMeasure 會重新量 */
 const CHAR_S=1.15,FY_REL=1.0,AV_HU0=57.5;/* 164：神之子和主角一樣高 */let AV_HU=AV_HU0,FY_S=1.15,FY_DX=24,FY_DY=-42,FY_HW=44,FY_Q=1,fyMeasured=false;
@@ -8475,20 +8464,20 @@ const fyRM=()=>typeof RMQ!=='undefined'&&RMQ.matches;
 function fyRegister(who,f,getPos){if(f&&FY[f.k])fyOwners.set(who,{f,getPos,gen:fyGen})}
 function fyLayers(){return [document.getElementById('fyBack'),document.getElementById('fyFront')]}
 function fyArtKey(f){return f.k+'|'+(f.col||'')+'|'+(f.sb||'')+'|'+(f.evo|0)+'|'+FRUIT_VER}
-function fyBodySVG(f){const H=FY_FH,ev=f.evo,w=FY_WING[f.k]||'#FFE6A0';
-  let s='';
-  if(ev&&!FAIRY_BASE_READY)s+=`<defs><radialGradient id="fyblg-${f.k}"><stop offset="0" stop-color="${w}" stop-opacity="1"/><stop offset=".55" stop-color="${w}" stop-opacity=".55"/><stop offset="1" stop-color="${w}" stop-opacity="0"/></radialGradient></defs><ellipse class="fybl" cx="0" cy="${f3(-H*0.1)}" rx="${f3(H*0.42)}" ry="${f3(H*0.5)}" fill="url(#fyblg-${f.k})"/>`;/* 97.4 背光：翅膀主色 */
-  if(ev>=2)s+=`<defs><radialGradient id="fygd-${f.k}"><stop offset="0" stop-color="${w}" stop-opacity="1"/><stop offset=".55" stop-color="${w}" stop-opacity=".75"/><stop offset="1" stop-color="${w}" stop-opacity="0"/></radialGradient></defs><ellipse class="fybl" cx="0" cy="${f3(-H*0.1)}" rx="${f3(H*0.5)}" ry="${f3(H*0.6)}" fill="url(#fygd-${f.k})"/>`;/* 114：神化的背光（比 97.4 大一圈、亮一級） */
+function fyBodySVG(f){const H=FY_FH,st=fyStg(f),[a,b,dyn]=fyCols(f),id='fy7-'+f.k+'-'+st+'-'+hashStr(String(f.col||''));
+  /* 167.3：背光（三階段越來越亮；神化兩色漸層、夢幻色會流動）、神化腳下淡光圈；程式畫的光環拿掉（圖裡有） */
+  const an=dyn&&!(typeof RMQ!=='undefined'&&RMQ.matches)?`<animate attributeName="stop-color" values="${[...dyn,dyn[0]].join(';')}" dur="${dyn.length>2?6:3.4}s" repeatCount="indefinite"/>`:'';
+  const c2=st>=3?b:a,rx=H*(st>=3?0.5:st===2?0.44:0.38),ry=H*(st>=3?0.6:st===2?0.52:0.46);
+  let s=`<defs><radialGradient id="${id}"><stop offset="0" stop-color="${a}" stop-opacity="1">${an}</stop><stop offset=".55" stop-color="${c2}" stop-opacity="${st>=3?.8:.55}"/><stop offset="1" stop-color="${c2}" stop-opacity="0"/></radialGradient></defs><ellipse class="fy7bl s${st}" cx="0" cy="${f3(-H*0.1)}" rx="${f3(rx)}" ry="${f3(ry)}" fill="url(#${id})" opacity="${st>=3?.7:st===2?.48:.28}"/>`;
+  if(st>=3){const r=f3(H*0.36);s+=`<g transform="translate(0 ${f3(H*0.5)}) scale(1 .3)"><g class="fy7ring"><circle r="${r}" fill="none" stroke="${a}" stroke-width="1.4" stroke-dasharray="5 4" opacity=".5"/><circle r="${r}" fill="none" stroke="${b}" stroke-width="1.4" stroke-dasharray="5 4" stroke-dashoffset="4.5" opacity=".5"/></g></g>`}
   s+=fyArt(f.k,f,H,0.7);
-  if(ev>=2)s+=`<g transform="translate(0 ${f3(-H*0.53)}) scale(1 .3)"><circle r="${f3(H*0.12)}" fill="none" stroke="#FFD54A" stroke-width="2.2"/><circle r="${f3(H*0.17)}" fill="none" stroke="#FFF0A0" stroke-width="1.6" opacity=".85"/><g class="fyorb">${[0,72,144,216,288].map(a=>`<circle cx="${f3(H*0.17*Math.cos(a*Math.PI/180))}" cy="${f3(H*0.17*Math.sin(a*Math.PI/180))}" r="1.9" fill="#FFF8D0"/>`).join('')}</g></g>`;/* 114：兩圈光環、五顆亮點 */
-  if(ev&&!FAIRY_BASE_READY)s+=`<g transform="translate(0 ${f3(-H*0.53)}) scale(1 .3)"><circle r="${f3(H*0.12)}" fill="none" stroke="#FFD54A" stroke-width="2.2"/><g class="fyorb">${[0,120,240].map(a=>`<circle cx="${f3(H*0.12*Math.cos(a*Math.PI/180))}" cy="${f3(H*0.12*Math.sin(a*Math.PI/180))}" r="1.9" fill="#FFF8D0"/>`).join('')}</g></g>`;/* 97.4 光環：細金環＋三顆繞圈的亮點 */
   return s+`<rect x="${-H*0.28}" y="${-H*0.5}" width="${H*0.56}" height="${H}" fill="transparent"/>`}
 function fyNode(who,o){const [B]=fyLayers();if(!B)return null;let S=FYO.get(who);
   if(!S){const ns='http://www.w3.org/2000/svg';const sh=document.createElementNS(ns,'ellipse');sh.setAttribute('class','fysh');sh.setAttribute('rx',fyShRx().toFixed(1));sh.setAttribute('ry',(fyShRx()*0.3).toFixed(1));sh.setAttribute('fill','#000');
     const g=document.createElementNS(ns,'g');g.setAttribute('class','fyo');g.setAttribute('data-fy',who);g.style.pointerEvents='auto';
     const p=o.getPos();fyScaleMeasure();S={who,x:p.x+(p.flip?FY_DX:-FY_DX),y:p.y+FY_DY,sx:p.flip?-1:1,tilt:0,lx:p.x,ly:p.y,still:0,next:performance.now()/1000+8+Math.random()*7,idle:null,side:null,trail:0,part:0,parts:0,key:'',g,sh,front:false,ph:(hashStr(who)%628)/100};
     B.appendChild(sh);B.appendChild(g);FYO.set(who,S)}
-  const k=fyArtKey(o.f);if(S.key!==k){S.key=k;S.g.innerHTML=fyBodySVG(o.f)}S.f=o.f;return S}
+  const k=fyArtKey(o.f);if(S.key!==k){S.key=k;S.g.innerHTML=fyBodySVG(o.f);S.cols=fyCols(o.f)}S.f=o.f;return S}
 function fyDrop(who){const S=FYO.get(who);if(!S)return;try{S.g.remove();S.sh.remove();if(S.bub)S.bub.remove()}catch(e){}FYO.delete(who)}
 function fyClear(){for(const w of [...FYO.keys()])fyDrop(w);fyOwners.clear()}
 function fyInView(x,y){try{const v=sceneEl.viewBox.baseVal;return x>v.x-60&&x<v.x+v.width+60&&y>v.y-80&&y<v.y+v.height+80}catch(e){return true}}
@@ -8537,11 +8526,10 @@ function fyLoop(ts){if(!fyOwners.size){fyRaf=0;fyLastT=0;return}/* 106.4：畫�
     if(rm)continue;
     /* 移動時的光點（進化型更多、帶翅膀主色） */
     const sp=Math.hypot(vx,(S.y-py)/dt);S.trail-=dt;
-    if(sp>25&&S.trail<=0){S.trail=o.f.evo>=2?0.07:o.f.evo?0.11:0.24;fyPuff('fyp-fade',S.x-Math.sign(vx||1)*5+(Math.random()-.5)*4,S.y+fl+4,`<circle r="${o.f.evo>=2?1.6:o.f.evo?1.3:1}" fill="${o.f.evo?FY_WING[o.f.k]:'#FFFFFF'}" opacity=".85"/>`,600,0)}
-    /* 97.4 專屬粒子：約每 1.5 秒一個（同時最多 3 個）；玉米、甜瓜移動時多一些 */
-    if(o.f.evo){const P=FY_PART[o.f.k];if(P){S.part-=dt;const fast=(o.f.k==='corn'&&moving)||o.f.k==='melon';if(S.part<=0){S.part=o.f.evo>=2?(fast?0.25:0.9):(fast?0.35:1.5);const B=FB['fy:'+fyImgName(o.f.k,1)],ar=B&&B.st===1&&!(B.w===FY_CV.w&&B.h===FY_CV.h)?B.w/B.h:0.42,H=FY_FH,W=H*ar,A=P[1][Math.floor(Math.random()*P[1].length)];
-      const lx=(A[0]-0.5)*W,ly=(A[1]-0.5)*H,c=Math.cos(rot*Math.PI/180),s2=Math.sin(rot*Math.PI/180),wx=lx*sxx*FY_S,wy=ly*FY_S;
-      if(S.parts<3||fast){S.parts++;setTimeout(()=>{S.parts=Math.max(0,S.parts-1)},1400);fyEmit(S,P[0],S.x+wx*c-wy*s2,S.y+fl+wx*s2+wy*c,moving)}}}}
+    if(sp>25&&S.trail<=0){S.trail=o.f.evo>=2?0.07:o.f.evo?0.11:0.24;S.tq=(S.tq|0)+1;const C=S.cols||fyCols(o.f),tc=o.f.evo>=2&&S.tq%2?C[1]:C[0];fyPuff('fyp-fade',S.x-Math.sign(vx||1)*5+(Math.random()-.5)*4,S.y+fl+4,`<circle r="${o.f.evo>=2?1.6:o.f.evo?1.3:1.1}" fill="${tc}" opacity=".85"/>`,600,0)}/* 167：光芒顏色；神化兩色交錯 */
+    /* 167.3：97.4 的專屬粒子作廢；改成人物周圍隨機冒出光芒顏色的小光點（每隻最多 3 個、約 1.5 秒一個；神化約 0.9 秒、兩色交錯） */
+    if(o.f.evo){S.part-=dt;if(S.part<=0){S.part=o.f.evo>=2?0.9:1.5;if(S.parts<3){S.parts++;setTimeout(()=>{S.parts=Math.max(0,S.parts-1)},1400);const C=S.cols||fyCols(o.f),HH=FY_FH*FY_S,pc=o.f.evo>=2&&Math.random()<.5?C[1]:C[0];
+      fyPuff('fyp-tw',S.x+(Math.random()-.5)*0.6*HH,S.y+fl+(Math.random()*0.8-0.45)*HH,FY_STAR(2.3,pc)+'<circle r=".8" fill="#fff"/>',1000,1)}}}
     /* 說話泡泡跟著精靈 */
     fyBubbleTick(S,who,fl)}
   for(const w of [...FYO.keys()])if(!fyOwners.has(w))fyDrop(w)}
@@ -8576,9 +8564,9 @@ function fyStart(){for(const [w,o] of [...fyOwners])if(o.gen!==fyGen){fyOwners.d
 let fyShowOn=false;
 function fyOfferFx(r){if(fyRM())return;const el=document.createElement('div');el.className='offfx';el.innerHTML=`${r.ok?`<b class="offok">✦ ${r.ok}</b>`:''}${r.bad?`<b class="offbad">${r.bad}</b>`:''}`;el.addEventListener('click',()=>el.remove());document.body.appendChild(el);setTimeout(()=>{try{el.remove()}catch(e){}},900)}
 function fyShow(kind,k,f,opt,done){opt=opt||{};const el=document.createElement('div');el.className='fyshow fy-'+(kind==='god'?'evo fy-god':kind);el.setAttribute('role','dialog');el.setAttribute('aria-label',kind==='wake'?`${fyN(k)}醒來了`:kind==='god'?`${fyN(k)}神化了`:`${fyN(k)}進化了`);fyShowOn=true;
-  const art=x=>fyArtHTML(k,x,230,false),w=FY_WING[k]||'#FFE6A0';
+  const art=x=>fyArtHTML(k,x,230,false),w=fyCols(f)[0];/* 167：演出的光點用光芒顏色 */
   const dots=Array.from({length:10},(_,i)=>{const a=i/10*Math.PI*2;return `<i style="--x:${(Math.cos(a)*140).toFixed(0)}px;--y:${(Math.sin(a)*110).toFixed(0)}px;animation-delay:${(0.55+i*0.03).toFixed(2)}s"></i>`}).join('');
-  const P=FY_PART[k]?FY_PART[k][0]:'star',burst=Array.from({length:12},(_,i)=>{const a=i/12*Math.PI*2,d=90+(i%3)*25;return `<i class="fyb-${P}" style="--x:${(Math.cos(a)*d).toFixed(0)}px;--y:${(Math.sin(a)*d).toFixed(0)}px;background:${P==='note'?'none':w}">${P==='note'?'♪':''}</i>`}).join('');
+  const P='star',burst=Array.from({length:12},(_,i)=>{const a=i/12*Math.PI*2,d=90+(i%3)*25;return `<i class="fyb-${P}" style="--x:${(Math.cos(a)*d).toFixed(0)}px;--y:${(Math.sin(a)*d).toFixed(0)}px;background:${P==='note'?'none':w}">${P==='note'?'♪':''}</i>`}).join('');
   if(kind==='wake')el.innerHTML=`<div class="fys-bg"></div><div class="fys-stage"><div class="fys-pool"></div><div class="fys-fruit">${opt.fruit||''}</div><div class="fys-dots">${dots}</div>
       <div class="fys-fairy"><div class="fys-gray">${art(f)}</div><div class="fys-color">${art(f)}</div></div><div class="fys-ring"></div></div><h2 class="fys-title">${esc(fyN(k))}醒來了！</h2><p class="fys-skip">點一下跳過</p>`;
   else el.innerHTML=`<div class="fys-bg"></div><div class="fys-stage"><div class="fys-pillar"></div><div class="fys-fairy fys-spin"><div class="fys-old">${art({...f,evo:kind==='god'?1:0,col:opt.oldCol||f.col,sb:opt.oldSb})}</div><div class="fys-new">${art(f)}</div></div><div class="fys-burst">${burst}</div>${kind==='god'?'<div class="fys-ring fys-ring2"></div>':''}</div><div class="fys-flash"></div><h2 class="fys-title">${esc(fyN(k))}${kind==='god'?'神化':'進化'}了！</h2><p class="fys-skip">點一下跳過</p>`;
@@ -10485,8 +10473,7 @@ const VN_REG=new Map();let vnSeq=0,VN_STORY=0;
 const VN_PID={wien:'vien',theo:'theo',tu:'tu',yue:'yue',jin:'jin',duo:'duo',mei:'mei',mo:'mo',kai:'kai',res:'res'};
 const FY_PID={tomato:'roma',pumpkin:'jacko',melon:'milu',strawberry:'fleur',chili:'cayen',zucchini:'zucchi',broccoli:'kale',eggplant:'oberin',corn:'maize'};
 /* 神之子的頭像裁切框（相對 348×445 的畫布：top、高，寬取正中間）；之後有正式頭像就不用 */
-const FY_CROP={tomato:[0.08,0.27],pumpkin:[0.27,0.25],melon:[0.08,0.27],strawberry:[0.08,0.27],chili:[0.08,0.27],zucchini:[0.07,0.27],broccoli:[0.07,0.27],eggplant:[0.08,0.27],corn:[0.09,0.27]};/* 163：頭到胸口；[上緣, 高度]（佔圖高的比例），照 assets/fairy 每張頭頂的位置量的 */
-const FY_CROP_EVO={tomato:[0.01,0.29],pumpkin:[0.01,0.29],melon:[0.02,0.29],strawberry:[0.02,0.29],chili:[0.06,0.28],zucchini:[0.05,0.28],broccoli:[0.04,0.28],eggplant:[0.04,0.28],corn:[0.02,0.29]};
+const FY_CROP2={tomato:[0.069,0.06,0.034],pumpkin:[0.006,0.05,0.029],melon:[0.02,0,0.015],strawberry:[0.036,0.029,0.041],chili:[0.043,0.003,0.015],zucchini:[0.034,0.034,0.027],broccoli:[0.043,0.022,0.01],eggplant:[0.083,0.124,0.128],corn:[0.067,0.06,0.05]};/* 167：fairy2 頭到胸口，[喚醒, 進化, 神化] 的上緣（佔圖高），高度 0.3；照每張頭頂的位置量 */
 const VN_EMO={'笑':'smile','嚴肅':'serious'};
 const VN_SPD={slow:15,mid:30,fast:60,inst:0};
 function vnMark(who,kind,text){const id=++vnSeq;VN_REG.set(id,{who,kind,text:String(text)});if(VN_REG.size>80){const k=VN_REG.keys().next().value;VN_REG.delete(k)}return id}
@@ -10499,7 +10486,7 @@ function vnParse(text,def){const out=[];let cur=def||{kind:'narr'},emo='normal';
     if(m){const w=vnWho(m[1]);if(w){cur=w;emo=VN_EMO[m[2]]||'normal';raw=m[3].trim()}}out.push({...cur,emo,text:raw})}return out}
 function vnName(pg){if(pg.kind==='narr')return '';if(pg.kind==='fy')return fyN(pg.who);const p=TOWN_NPC.find(q=>q.id===pg.who);return p?p.n:(pg.name||'')}
 /* 頭像：正式圖 assets/portrait/<id>_<表情>.png → normal → 替代（NPC 全身圖上 55%、神之子裁頭到胸口、主與僕人用 147 的頭像） */
-function vnFallback(pg){if(pg.kind==='fy'){const f=fyMine()[pg.who]||{evo:0},src=`assets/fairy/${fyImgName(pg.who,f.evo)}.png?v=${BUILD}`,[t,hh]=(f.evo>=1?FY_CROP_EVO:FY_CROP)[pg.who]||[0.08,0.27],W=348/445/hh*100;return `<div class="vnfb fy" style="background-image:url('${src}');background-size:${W.toFixed(1)}% auto;background-position:50% ${(t/(1-hh)*100).toFixed(1)}%"></div>`}
+function vnFallback(pg){if(pg.kind==='fy'){const f=fyMine()[pg.who]||{evo:0},st=fyStg(f),src=fy2Src(pg.who,st),t=(FY_CROP2[pg.who]||[0.05,0.05,0.05])[st-1],hh=0.3,W=420/424/hh*100;return `<div class="vnfb fy" style="background-image:url('${src}');background-size:${W.toFixed(1)}% auto;background-position:50% ${(t/(1-hh)*100).toFixed(1)}%"></div>`}
   const p=TOWN_NPC.find(q=>q.id===pg.who);if(!p)return '';if(NPC_IMG[p.id]&&npcSt[p.id]!==-1)return `<div class="vnfb npc"><img src="${npcSrc(p.id)}" alt=""></div>`;
   return `<div class="vnfb av"><svg viewBox="-19 -60 38 34" width="150" height="134" aria-hidden="true">${avatarSVG(p.av,false,{view:'front'})}</svg></div>`}
 function vnPortrait(pg){if(!pg||pg.kind==='narr')return '';const pid=pg.kind==='fy'?FY_PID[pg.who]:VN_PID[pg.who]||pg.who;if(!pid)return vnFallback(pg);

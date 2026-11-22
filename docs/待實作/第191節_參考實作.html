@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>技能特效試玩：劍、槍、錘</title>
+<style>
+  html,body{margin:0;background:#2b2a24;color:#fff4e0;font-family:-apple-system,"PingFang TC","Noto Sans TC",sans-serif;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+  #wrap{max-width:480px;margin:0 auto}
+  #stage{position:relative}
+  #stage canvas{display:block;width:100%;touch-action:none}
+  #fx,#top{position:absolute;left:0;top:0;pointer-events:none}
+  #hud{position:absolute;left:8px;top:8px;font:600 12px/1.4 ui-monospace,Menlo,monospace;background:rgba(0,0,0,.45);padding:4px 7px;border-radius:6px;pointer-events:none}
+  .row{display:flex;gap:8px;padding:8px 10px 0;justify-content:center}
+  .op{flex:1;min-height:42px;border-radius:12px;border:2px solid #7d6a52;background:#3a3129;color:#fff4e0;font:600 14px inherit}
+  .op.on{background:#8a5a2e;border-color:#ffd9a0}
+  .sk{flex:1;min-height:62px;border-radius:16px;border:3px solid #c9a46a;background:linear-gradient(#5a4433,#3a2b20);color:#fff4e0;font:700 15px/1.2 inherit;padding:6px 4px;box-shadow:0 3px 0 #1d150f}
+  .sk small{display:block;font-weight:500;font-size:11px;opacity:.75;margin-top:3px}
+  .sk:active{transform:translateY(2px);box-shadow:0 1px 0 #1d150f}
+  .sk.atk{background:linear-gradient(#6aa84a,#3f7d2a);border-color:#fff4e0}
+  #note{font-size:12.5px;line-height:1.6;padding:10px 14px 18px;opacity:.85}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="stage"><canvas id="cv"></canvas><canvas id="fx"></canvas><canvas id="top"></canvas><div id="hud">FPS --</div></div>
+  <div class="row" id="wps"><button class="op on" data-w="sword">劍</button><button class="op" data-w="gun">槍</button><button class="op" data-w="hammer">錘</button></div>
+  <div class="row" id="tiers"><button class="op on" data-t="0">1～2 階</button><button class="op" data-t="1">3～4 階</button><button class="op" data-t="2">5～6 階</button></div>
+  <div class="row"><button class="sk atk" data-k="atk"><span>攻擊</span><small>按住連打</small></button><button class="sk" data-k="s1"><span class="nm"></span><small>技能 1</small></button><button class="sk" data-k="s2"><span class="nm"></span><small>技能 2</small></button></div>
+  <div class="row"><button class="op" id="stress">壓力測試（連續放招 6 秒）</button></div>
+  <div id="note">特效來自 Effekseer 的免費特效（CC0），先拍成逐格圖再播放；特效層用一半解析度畫（省效能畫法）。上面選武器和階，下面三顆是攻擊、技能 1、技能 2。每兩階換一套不同的特效組合。</div>
+</div>
+<script>
+const FXM=__FXM__,FXS=__FXS__,FXI={};
+const IMG_SHEET='__SHEET__',IMG_MON='__MON__',IMG_MONH='__MONH__';
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),fxc=document.getElementById('fx'),fx=fxc.getContext('2d'),tpc=document.getElementById('top'),tp=tpc.getContext('2d'),hud=document.getElementById('hud');
+let W=375,H=520,DPR=Math.min(2,window.devicePixelRatio||1);
+const load=s=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.src=s});
+function mk(w,h,f){const c=document.createElement('canvas');c.width=w;c.height=h;f(c.getContext('2d'),w,h);return c}
+let bg,sheet,monI,monH;
+function resize(){W=Math.min(480,document.getElementById('wrap').clientWidth);H=Math.round(W*1.3);for(const [c,d] of [[cv,DPR],[fxc,1],[tpc,DPR]]){c.width=W*d;c.height=H*d;c.style.width=W+'px';c.style.height=H+'px'}
+  bg=mk(W*DPR,H*DPR,(g)=>{g.scale(DPR,DPR);const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#8cc56a');gr.addColorStop(1,'#69a84f');g.fillStyle=gr;g.fillRect(0,0,W,H);
+    for(let i=0;i<240;i++){g.fillStyle=`rgba(${Math.random()<.5?'50,110,45':'180,225,135'},${.10+Math.random()*.12})`;g.beginPath();g.ellipse(Math.random()*W,Math.random()*H,6+Math.random()*26,3+Math.random()*9,0,0,7);g.fill()}
+    for(let i=0;i<110;i++){const x=Math.random()*W,y=Math.random()*H;g.strokeStyle=`rgba(45,100,38,${.35+Math.random()*.3})`;g.lineWidth=1.4;for(let k=-2;k<=2;k++){g.beginPath();g.moveTo(x,y);g.quadraticCurveTo(x+k*2,y-6,x+k*3.5,y-9-Math.random()*4);g.stroke()}}})}
+const S=()=>W/375,now=()=>performance.now()/1000;
+const ME={x:0,y:0,dx:0};let mons=[];
+function layout(){ME.x=W*.25;ME.y=H*.64;mons=[{x:W*.64,y:H*.64,sc:.6},{x:W*.82,y:H*.47,sc:.42},{x:W*.84,y:H*.82,sc:.42}].map(m=>Object.assign({hitT:-9,stunT:-9,dn:0},m))}
+let WP='sword',TG=0;const ROW={sword:0,gun:3,hammer:6},SEQ={sword:[0,1,2,3,4,5],gun:[0,1,2,3,4,5],hammer:[4,5,0,1,2,3]};
+const NAMES={sword:[['突刺','閃刺','天光一閃'],['十字斬','聖十字','天十字']],gun:[['掃射','彈幕','黃金暴雨'],['爆米花彈','連鎖爆彈','爆米花風暴']],hammer:[['震地','崩山','天崩地裂'],['岩壁','磐石壁','岩之牢']]};
+const RC=['#5DAF34','#8D5BD1','#E0466B'],PW=[1,1.69,3.71];
+let anim=null;const parts=[],texts=[],timers=[];let shakeT=-9,shakeA=0,flashT=-9;
+function later(dt,f){timers.push({t:now()+dt,f})}
+function play(ms,rep){anim={seq:SEQ[WP],ms:ms||70,t0:now(),rep:rep||1}}
+function F(k,x,y,size,o){o=o||{};const m=FXM[k];if(!m||!FXI[k])return;const p={k,x,y,size:size*S(),t0:now()+(o.delay||0),life:o.life||m.n/(o.fps||20),a:o.a==null?1:o.a,rot:o.rot||0,sy:o.sy||1,sx:o.flip?-1:1,vx:o.vx||0,vy:o.vy||0,only:o.only||0,loop:o.loop||0,end:o.end};parts.push(p);return p}
+function dmg(m,mul,crit){const v=Math.round(mul*1240*PW[TG]*(.9+Math.random()*.2));m.dn++;texts.push({x:m.x+(Math.random()-.5)*16,y:m.y-230*m.sc*S()*.95-((m.dn%4)*20*S()),v,crit:crit||Math.random()<.2,t0:now()});m.hitT=now()}
+function near(x,y,R){return mons.filter(m=>Math.hypot(m.x-x,(m.y-y)*1.8)<R*S())}
+function boomShake(a,fl){shakeT=now();shakeA=a;if(fl)flashT=now()}
+const mid=m=>({x:m.x,y:m.y-105*m.sc*S()});
+/* ---------- sword ---------- */
+function swordAtk(){play(55);later(.13,()=>{F('slash',ME.x+50*S(),ME.y-62*S(),170,{fps:26});const m=mons[0];later(.04,()=>{dmg(m,1.15);const c=mid(m);F('hit',c.x,c.y,110,{fps:30})})})}
+function swordS1(){play(60);const s=S(),tg=mons[0],y=ME.y-58*s;const t0=now();ME.dash={t0,dur:.16,dist:120*s,back:.5};
+  later(.05,()=>{F('thrust',ME.x+150*s,y,360,{fps:24});F('cone',ME.x+130*s,y,300,{fps:26})});
+  later(.16,()=>{mons.forEach(m=>{if(Math.abs(m.y-ME.y)<110*s){dmg(m,3);const c=mid(m);F('hit2',c.x,c.y,130,{fps:28})}})});
+  if(TG>=1)later(.18,()=>{const c=mid(tg);F('pierce',c.x,c.y,300,{fps:22});boomShake(3)});
+  if(TG>=2)later(.3,()=>{const c=mid(tg);F('sacred',c.x,c.y-30*s,460,{only:1,fps:22});F('nova',c.x,c.y,300);boomShake(8,1);mons.forEach(m=>dmg(m,2,1))})}
+function swordS2(){play(60,TG>=2?3:1);const s=S(),tg=mons[0],c=mid(tg);const one=(d,k)=>later(d,()=>{F('xcross',c.x,c.y,(300+TG*40)*k,{fps:26,rot:Math.random()*.4});F('cross',c.x,c.y,(260+TG*40)*k,{fps:28});boomShake(3+TG*2);near(c.x,tg.y,170*k).forEach(m=>dmg(m,TG>=2?3.4:5,1))});
+  if(TG<2){one(.15,1);if(TG===1)later(.3,()=>F('nova',c.x,c.y,280))}
+  else{one(.15,1);one(.5,1.1);one(.85,1.5);later(.95,()=>{F('pillar',c.x,c.y-90*s,520,{only:1,fps:18});F('nova',c.x,c.y,420);boomShake(10,1)})}}
+/* ---------- gun ---------- */
+const tip=()=>({x:ME.x+44*S()*1.15,y:ME.y-108*S()*1.15});
+function shot(m,mul,popK,size){const t=tip(),c=mid(m),d=Math.hypot(c.x-t.x,c.y-t.y),dur=d/(900*S());F('bullet',t.x,t.y,70,{life:dur,vx:(c.x-t.x)/dur,vy:(c.y-t.y)/dur,rot:Math.atan2(c.y-t.y,c.x-t.x),loop:1,fps:30,end:()=>{dmg(m,mul);F(popK,c.x+(Math.random()-.5)*20*S(),c.y+(Math.random()-.5)*20*S(),size||80,{fps:30})}})}
+function gunAtk(){play(25);const t=tip();F('muzzle',t.x+8*S(),t.y,60,{fps:40});shot(mons[0],.47,'pop',80)}
+function gunS1(){const dur=TG>=1?3:2,n=Math.round(dur/.08);anim={seq:SEQ.gun,ms:28,t0:now(),rep:Math.ceil(dur/.168)};const pk=['pop','hex','gold'][TG],sz=[80,100,120][TG];
+  for(let i=0;i<n;i++)later(i*.08,()=>{const t=tip();if(i%2===0)F('muzzle',t.x+8*S(),t.y,60,{fps:40});shot(mons[i%3],.33,pk,sz)});
+  if(TG>=2)later(dur,()=>{mons.forEach(m=>{const c=mid(m);F('gold',c.x,c.y,220);dmg(m,1.5,1)});boomShake(6,1)})}
+function gunS2(){play(50);const s=S(),tg=mons[0],t=tip(),c=mid(tg),dur=.3;F('muzzle',t.x+8*s,t.y,110,{fps:30});
+  F('shell',t.x,t.y,110,{life:dur,vx:(c.x-t.x)/dur,vy:(c.y-t.y)/dur,loop:1,fps:24,end:()=>{F('boom',c.x,c.y,300+TG*50);boomShake(5+TG*2,TG>=2);for(let i=0;i<4+TG*2;i++)F('puff',c.x+(Math.random()-.5)*150*s,c.y+(Math.random()-.5)*90*s,110,{delay:Math.random()*.15});near(c.x,tg.y,170).forEach(m=>{dmg(m,TG>=2?5.2:2.8,1);m.stunT=now()});
+    if(TG>=1)for(let i=0;i<(TG>=2?8:4);i++){const a=i/(TG>=2?8:4)*6.283,ex=c.x+Math.cos(a)*110*s,ey=c.y+Math.sin(a)*60*s;F('bullet',c.x,c.y,60,{life:.22,vx:(ex-c.x)/.22,vy:(ey-c.y)/.22,rot:a,loop:1,delay:.1,end:()=>{F('mini',ex,ey,140);near(ex,ey+60*s,120).forEach(m=>dmg(m,.94))}})}}})}
+/* ---------- hammer ---------- */
+const hp=()=>({x:ME.x+72*S(),y:ME.y+4});
+function hamAtk(){play(70);later(.26,()=>{const p=hp();F('ripple',p.x,p.y-10*S(),240);boomShake(2);near(p.x,p.y,170).forEach((m,i)=>{dmg(m,i?2.84*.25:2.84);const c=mid(m);F('crit',c.x,c.y,120,{fps:30})})})}
+function hamS1(){play(80);const s=S(),p=hp();
+  later(.27,()=>{boomShake(4+TG*2,TG>=2);F('crack',p.x,p.y,300+TG*60,{fps:14});F('ring',p.x,p.y,300+TG*80,{sy:.5});F('dust',p.x,p.y-30*s,260+TG*40);near(p.x,p.y,150+TG*40).forEach(m=>{dmg(m,3.25,1);m.stunT=now()});
+    if(TG>=1)F('rocks',p.x+20*s,p.y-60*s,340)});
+  if(TG>=2){for(let k=0;k<5;k++)later(.5+k*.17,()=>{const ex=p.x+(50+k*55)*s,ey=p.y+(Math.random()-.5)*70*s;boomShake(6);F('golem',ex,ey-70*s,300);F('lava',ex,ey-10*s,240);F('burst',ex,ey-40*s,280,{delay:.16});later(.2,()=>near(ex,ey,150).forEach(m=>dmg(m,1.2)))});
+    later(1.5,()=>{const x=p.x+140*s;boomShake(10,1);F('crit',x,p.y-50*s,520);F('ring',x,p.y,640,{sy:.5});F('soil',x,p.y-80*s,420);mons.forEach(m=>{dmg(m,3,1);m.stunT=now()})})}}
+function hamS2(){play(80);const s=S(),tg=mons[0];
+  if(TG<2){const n=3+TG;later(.27,()=>{boomShake(4);for(let i=0;i<n;i++){const x=ME.x+120*s,y=ME.y+(i-(n-1)/2)*46*s;F('wall',x,y-50*s,170+TG*30,{delay:i*.05,life:1.5});F('dust',x,y-10*s,140,{delay:i*.05});later(1.5+i*.05,()=>F('break',x,y-50*s,220+TG*40))}
+      near(ME.x+120*s,ME.y,170).forEach(m=>dmg(m,2.56))});later(1.8,()=>{boomShake(5);near(ME.x+120*s,ME.y,190).forEach(m=>dmg(m,2.56,1))})}
+  else{const c={x:tg.x,y:tg.y};later(.27,()=>{boomShake(5);F('cage',c.x,c.y-70*s,340,{life:1.6});F('totem',c.x,c.y-90*s,300,{delay:.1});F('crack',c.x,c.y,360,{fps:10});tg.stunT=now()+.6});
+    later(1.9,()=>{boomShake(12,1);F('boom',c.x,c.y-60*s,520);F('break',c.x,c.y-70*s,460);F('crit',c.x,c.y-60*s,420);for(let i=0;i<6;i++)F('puff',c.x+(Math.random()-.5)*200*s,c.y-60*s+(Math.random()-.5)*120*s,120,{delay:Math.random()*.2});dmg(tg,19.5,1);near(c.x,c.y,150).forEach(m=>m!==tg&&dmg(m,3))})}}
+const ACT={sword:{atk:swordAtk,s1:swordS1,s2:swordS2,iv:.4},gun:{atk:gunAtk,s1:gunS1,s2:gunS2,iv:.15},hammer:{atk:hamAtk,s1:hamS1,s2:hamS2,iv:.8}};
+/* ---------- loop ---------- */
+let fps=60,fpsMin=99,frames=0,fpsT=now(),stressUntil=0,stressNext=0,holdAtk=false,nextAtk=0;
+function drawMon(m,t){const s=S()*m.sc,hit=t-m.hitT<.16,img=hit?monH:monI,w=img.width*s,h=img.height*s,bob=Math.sin(t*3+m.x)*2;ctx.fillStyle='rgba(0,0,0,.18)';ctx.beginPath();ctx.ellipse(m.x,m.y,w*.32,10*s+4,0,0,7);ctx.fill();ctx.drawImage(img,m.x-w/2+(hit?6*s:0),m.y+bob-h,w,h);
+  if(t<m.stunT+1&&t>m.stunT){tp.fillStyle='#fff3a0';for(let i=0;i<3;i++){const a=t*6+i*2.1;tp.beginPath();tp.arc(m.x+Math.cos(a)*22*S(),m.y-h-6+Math.sin(a)*6,3.5,0,7);tp.fill()}}}
+function drawMe(t){const s=S()*1.15;let f=0;if(anim){const i=Math.floor((t-anim.t0)*1000/anim.ms),L=anim.seq.length;if(i>=L*anim.rep)anim=null;else f=anim.seq[i%L]}if(!anim)f=WP==='hammer'?4:0;
+  let dx=0;if(ME.dash){const u=t-ME.dash.t0,d=ME.dash;dx=u<d.dur?d.dist*(u/d.dur):u<d.back?d.dist:u<d.back+.15?d.dist*(1-(u-d.back)/.15):(ME.dash=null,0)}ME.dx=dx;
+  ctx.fillStyle='rgba(0,0,0,.2)';ctx.beginPath();ctx.ellipse(ME.x+dx,ME.y,24*s,7*s,0,0,7);ctx.fill();ctx.drawImage(sheet,f*128,(ROW[WP]+TG)*192,128,192,ME.x+dx-64*s,ME.y-157*s,128*s,192*s)}
+function frame(){const t=now();
+  let ox=0,oy=0;if(t-shakeT<.18){const k=(1-(t-shakeT)/.18)*shakeA;ox=(Math.random()-.5)*k;oy=(Math.random()-.5)*k}
+  ctx.setTransform(DPR,0,0,DPR,ox*DPR,oy*DPR);ctx.drawImage(bg,0,0,W,H);tp.setTransform(DPR,0,0,DPR,0,0);tp.clearRect(0,0,W,H);
+  [...mons.map(m=>({y:m.y,d:()=>drawMon(m,t)})),{y:ME.y,d:()=>drawMe(t)}].sort((a,b)=>a.y-b.y).forEach(e=>e.d());
+  for(let i=timers.length-1;i>=0;i--)if(t>=timers[i].t){const f=timers[i].f;timers.splice(i,1);f()}
+  if(holdAtk&&t>=nextAtk){nextAtk=t+ACT[WP].iv;ACT[WP].atk()}
+  fx.setTransform(1,0,0,1,ox,oy);fx.clearRect(-20,-20,W+40,H+40);
+  for(let i=parts.length-1;i>=0;i--){const p=parts[i],age=t-p.t0;if(age<0)continue;const u=age/p.life;if(u>=1){parts.splice(i,1);if(p.end)p.end();continue}
+    const m=FXM[p.k],im=FXI[p.k],fi=p.loop?Math.floor(age*30)%Math.min(m.n,8):Math.min(m.n-1,Math.floor(u*m.n)),sx=(fi%m.cols)*m.c,sy=Math.floor(fi/m.cols)*m.c;
+    fx.save();fx.translate(p.x+p.vx*age,p.y+p.vy*age);if(p.rot)fx.rotate(p.rot);fx.scale(p.sx,p.sy);fx.globalCompositeOperation=p.only?'lighter':'source-over';fx.globalAlpha=p.a;fx.drawImage(im,sx,sy,m.c,m.c,-p.size/2,-p.size/2,p.size,p.size);fx.restore()}
+  for(let i=texts.length-1;i>=0;i--){const d=texts[i],u=(t-d.t0)/.9;if(u>=1){texts.splice(i,1);continue}const y=d.y-u*40,sc=u<.12?1.5-u*4:1;tp.globalAlpha=u<.7?1:1-(u-.7)/.3;tp.font=`900 ${Math.round((d.crit?25:20)*sc*S())}px -apple-system,sans-serif`;tp.textAlign='center';tp.lineWidth=5;tp.strokeStyle='#3a1a10';tp.strokeText(d.v.toLocaleString(),d.x,y);tp.fillStyle=d.crit?'#ff7a3a':'#fff3d6';tp.fillText(d.v.toLocaleString(),d.x,y)}tp.globalAlpha=1;
+  if(t-flashT<.09){tp.fillStyle=`rgba(255,255,255,${.26*(1-(t-flashT)/.09)})`;tp.fillRect(0,0,W,H)}
+  if(stressUntil>t&&t>stressNext){stressNext=t+.5;const ws=['sword','gun','hammer'];const w0=WP;WP=ws[Math.floor(Math.random()*3)];ACT[WP][Math.random()<.5?'s1':'s2']();setUI()}
+  frames++;if(t-fpsT>=.5){fps=frames/(t-fpsT);frames=0;fpsT=t;if(stressUntil>t)fpsMin=Math.min(fpsMin,fps)}
+  hud.textContent=`FPS ${fps.toFixed(0)}  特效 ${parts.length}`+(stressUntil>t?'  壓力測試中…':(fpsMin<99?`  壓力測試最低 ${fpsMin.toFixed(0)}`:''));
+  requestAnimationFrame(frame)}
+/* ---------- ui ---------- */
+function setUI(){document.querySelectorAll('#wps .op').forEach(b=>b.classList.toggle('on',b.dataset.w===WP));document.querySelectorAll('#tiers .op').forEach(b=>b.classList.toggle('on',+b.dataset.t===TG));document.querySelectorAll('.sk').forEach(b=>{const k=b.dataset.k;if(k!=='atk'){b.querySelector('.nm').textContent=NAMES[WP][k==='s1'?0:1][TG];b.style.borderColor=RC[TG]}})}
+document.querySelectorAll('#wps .op').forEach(b=>b.onclick=()=>{WP=b.dataset.w;anim=null;setUI()});
+document.querySelectorAll('#tiers .op').forEach(b=>b.onclick=()=>{TG=+b.dataset.t;setUI()});
+document.querySelectorAll('.sk').forEach(b=>{const k=b.dataset.k;b.addEventListener('pointerdown',e=>{e.preventDefault();if(k==='atk'){holdAtk=true;nextAtk=0}else ACT[WP][k]()});if(k==='atk')for(const ev of ['pointerup','pointerleave','pointercancel'])b.addEventListener(ev,()=>holdAtk=false)});
+document.getElementById('stress').onclick=()=>{fpsMin=99;stressUntil=now()+6;stressNext=0;TG=2;setUI()};
+(async()=>{resize();layout();window.addEventListener('resize',()=>{resize();layout()});setUI();[sheet,monI,monH]=await Promise.all([load(IMG_SHEET),load(IMG_MON),load(IMG_MONH)]);
+  await Promise.all(Object.keys(FXS).map(async k=>{FXI[k]=await load(FXS[k])}));
+  const TINT={pillar:'#ffe9a0',sacred:'#fff0c0'};for(const k in TINT){const s=FXI[k];if(s)FXI[k]=mk(s.width,s.height,g=>{g.drawImage(s,0,0);g.globalCompositeOperation='multiply';g.fillStyle=TINT[k];g.fillRect(0,0,s.width,s.height);g.globalCompositeOperation='destination-in';g.drawImage(s,0,0)})}
+  requestAnimationFrame(frame)})();
+</script>
+</body>
+</html>

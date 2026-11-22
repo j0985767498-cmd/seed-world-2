@@ -52,3 +52,5 @@ console.log(fails?('FAILS '+fails):'ALL PASS');
 /* 第 172 節：主、僕人共鬥（兩到三個假玩家共用假的 Realtime Database） */
 try{require('./tcoop.js')}catch(e){console.log('FAIL tcoop.js crashed: '+e.message);process.exitCode=1}
 try{require('./t183.js')}catch(e){console.log('FAIL t183.js crashed: '+e.message);process.exitCode=1}
+try{require('./t184.js')}catch(e){console.log('FAIL t184.js crashed: '+e.message);process.exitCode=1}
+try{require('./t185.js')}catch(e){console.log('FAIL t185.js crashed: '+e.message);process.exitCode=1}

@@ -1924,7 +1924,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-20b';
+const BUILD='2026-11-20c';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -7895,7 +7895,10 @@ function lordSummon(bk){const L=LORDS[bk];if(!L||(bossRT&&bossRT.kind==='lord')|
   if(rtdb&&uid){b.net={host:uid,s:null};lordNetStart(b)}try{renderWorld()}catch(e){}return b}
 function lordShow(L){try{const el=document.createElement('div');el.className='lordshow';el.innerHTML=`<div class="ls-n">${esc(L.n)}</div><div class="ls-t">${esc(L.title)}</div>`;document.body.appendChild(el);setTimeout(()=>{try{el.remove()}catch(e){}},2200)}catch(e){}}
 /* ---- 多人同步（Realtime Database）。bossNet 是一層介面，測試換成假的 ---- */
-let bossNet={on:(p,cb)=>{const r=rtdb.ref(p),f=s=>cb(s.val());r.on('value',f,()=>{});return ()=>r.off('value',f)},set:(p,v)=>rtdb.ref(p).set(v).catch(()=>{}),update:(p,v)=>rtdb.ref(p).update(v).catch(()=>{}),remove:p=>rtdb.ref(p).remove().catch(()=>{}),
+/* 172.0：寫入／讀取 fight/ 被 Realtime Database 規則擋掉時，不再默默失敗：跳一次提示＋記 crumb（這一次開遊戲只跳一次） */
+let fightDeniedShown=false;
+function fightDenied(e){const s=String((e&&(e.code||e.message))||e||'');if(!/permission|denied/i.test(s))return false;try{crumb('fight denied')}catch(x){}if(!fightDeniedShown){fightDeniedShown=true;try{toast('共鬥連線沒開，現在是各打各的（請管理者更新資料庫規則）',6000)}catch(x){}}return true}
+let bossNet={on:(p,cb)=>{const r=rtdb.ref(p),f=s=>cb(s.val());r.on('value',f,fightDenied);return ()=>r.off('value',f)},set:(p,v)=>rtdb.ref(p).set(v).catch(fightDenied),update:(p,v)=>rtdb.ref(p).update(v).catch(fightDenied),remove:p=>rtdb.ref(p).remove().catch(fightDenied),
   stamp:()=>firebase.database.ServerValue.TIMESTAMP,onDis:p=>{try{rtdb.ref(p).onDisconnect().set(1)}catch(e){}}};
 const fpath=bk=>`fight/${bk}`;
 function lordNetWatch(bk){if(!uid||!(rtdb||bossNet.fake))return;if(bossNetOff){try{bossNetOff()}catch(e){}}bossNetOff=bossNet.on(fpath(bk),v=>{lordNetState[bk]=v||null;try{lordNetSync(bk,v)}catch(e){try{crumb('lordsync '+e.message)}catch(x){}}})}

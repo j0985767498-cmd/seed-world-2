@@ -1923,7 +1923,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-19z';
+const BUILD='2026-11-20a';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -7742,7 +7742,7 @@ function bossLeave(){const b=bossRT;if(b&&b.kind==='lord'&&!b.done)lordForfeit(t
   try{bossClear()}catch(e){}}
 function bossStart(){if(!bossRaf&&typeof requestAnimationFrame==='function'){bossLast=0;bossRaf=requestAnimationFrame(bossLoop)||-1}}
 function bossLoop(ts){bossRaf=0;if(!state||scene!=='explore'||regMap!=='secret'){if(bossRT)bossLeave();return}bossRaf=requestAnimationFrame(bossLoop)||-1;if(document.hidden===true||regBusy)return;
-  const dt=bossLast?Math.min(0.2,(ts-bossLast)/1000):0;bossLast=ts;try{bossStep(dt)}catch(e){try{crumb('boss '+e.message)}catch(x){}}}
+  const dt=bossLast?Math.min(0.2,(ts-bossLast)/1000):0;bossLast=ts;try{bossStep(dt)}catch(e){try{crumb('boss '+e.message)}catch(x){}}try{fyAtkTick()}catch(e){}/* 170 */}
 /* 一步：現身條件、AI（主機或僕人）、自己打它、畫 */
 function bossStep(dt){lordSummonTick();const b=bossRT,now=bossNow();if(!b)return;
   if(b.kind==='wait'){if(now>=b.until)bossRT=bossMake('servant',b.bk,b.def,null);else bossPaintWait(b);return}
@@ -8359,6 +8359,7 @@ function fyExPickHTML(k){const L=fyExSlots(k);
 function fyOneHTML(k){const f=fyMine()[k];if(!fyHas(k))return `<p class="note">還沒有${fyN(k)}。</p>`;const F=fyMine(),fol=F.follow===k,no=fyNoTxt(f);
   return `<h2>${esc(fyN(k))}</h2><div class="fybig">${fyArtHTML(k,f,240,true)}</div><p class="note" style="text-align:center">${FY_STAGE[fyStage(f)]}${no?'<br>'+no:''}</p>
     ${fyRunning(k)?`<p class="note" style="text-align:center">${fyPron(k)}跑出去了。</p>`:`<button class="btn primary" data-act="fyfol" data-k="${k}">${fol?'不要跟隨':'讓'+fyPron(k)+'跟隨'}</button>`}
+    <button class="btn${fyAutoOn()?' primary':''}" data-act="fyauto" data-k="${k}" aria-pressed="${fyAutoOn()}">自動攻擊：${fyAutoOn()?'開':'關'}</button><p class="note" style="text-align:center">跟隨時會幫你打正在和你交手的敵人（${FY_ATK_CD} 秒一次，傷害是你的 ${Math.round(fyAtkPct(f)*100)}%）。</p>
     ${fsCardHTML(k)}<p class="note">供奉、換光芒顏色到穗光教會的祭壇（城鎮的噴水池）。</p><button class="btn" data-act="fygrid">返回</button>`}
 function fyPickHTML(k,act,sel){const A=FY_ACT[act],L=fyQual(k,A.t),e=sel&&L.find(x=>x.id===sel);
   let h=`<h2>${A.n}${fyN(k)}</h2><p class="note">選一個${A.t>=5?'神話':'傳說以上'}的標本。</p>`;
@@ -8386,6 +8387,7 @@ function fyAction(b){const a=b.dataset.act,k=b.dataset.k,s=sheet.fy;
   if(a==='fygrid'){sheet={fy:{m:'grid'}};renderSheet();return}
   if(a==='fyone'){sheet={fy:{m:'one',k}};renderSheet();return}
   if(a==='fyfol'){fyFollow(k);renderSheet();return}
+  if(a==='fyauto'){state.fyAuto=!fyAutoOn();save();renderSheet();return}/* 170 */
   if(a==='fsacc'){fsAccept(k);if(sheet&&sheet.fy)renderSheet();return}/* 118.3 */
   if(a==='fsans'){fsAnswer(k,+b.dataset.j);if(sheet&&sheet.fy)renderSheet();return}/* 126 */
   if(a==='fyback'){sheet={fy:{m:'spring'}};renderSheet();return}
@@ -8456,6 +8458,45 @@ function fyScaleSet(hu){AV_HU=hu;const PH=AV_HU*CHAR_S;FY_S=FY_REL*PH/FY_FH;FY_D
 function fyShRx(){return FY_FH*0.42*FY_S*0.35}/* 158.3：神之子身體寬約 FY_FH×0.42 */
 fyScaleSet(AV_HU0);
 function fyScaleMeasure(){if(fyMeasured)return;try{const e=document.getElementById('meGAv')||document.getElementById('meAv');if(!e||!e.getBBox)return;const hh=e.getBBox().height;if(hh>20&&hh<200){fyMeasured=true;if(Math.abs(hh-AV_HU)>0.5)fyScaleSet(hh)}}catch(e){}}
+/* ===== 170（20a）：神之子的普通攻擊 =====
+   跟隨中、主人在野外（含秘境）才出手；目標＝正在和主人交手的（主人 6 秒內打過、或正在追／打主人）一般怪、僕人、主，離主人 FY_ATK_R 內最近的一隻；
+   FY_ATK_CD 秒一次；傷害＝主人普通攻擊的基礎傷害（等級、武器，不含爆擊）× FY_ATK_PCT[階段]，不爆擊、不 MISS；擊殺、掉落、主的傷害都算主人的。
+   出手：放招圖 _c 約 0.4 秒（fyCast）＋能量彈飛 0.25 秒（顏色照各位的屬性 FY_BOLT，不跟光芒顏色）；省電時拿掉尾巴和閃光。同步：pushPos 的 fa＝{x,y,t}（1.5 秒內才送），別人只播演出、不扣血、不跳數字。 */
+const FY_ATK_R=240,FY_ATK_CD=2.5,FY_ATK_PCT=[0.3,0.5,0.8],FY_ATK_ENG=6000,FY_BOLT_MS=250,FY_CAST_MS=400;
+const FY_BOLT={tomato:['ball','#FFD45A'],pumpkin:['wisp','#4FE3C1'],melon:['fire','#FF9A6E'],strawberry:['petal','#FF8FB8'],chili:['ball','#FF6A2A'],zucchini:['bolt','#9FB6FF'],broccoli:['rune','#FFB84A'],eggplant:['star','#C9A8FF'],corn:['beam','#5FE8FF']};
+const fyAutoOn=()=>!(state&&state.fyAuto===false);
+const fyAtkPct=f=>FY_ATK_PCT[fyStg(f)-1]||FY_ATK_PCT[0];
+function fyBaseDmg(){const w=curWpn(),W=w&&w.W;return pAtkNow()*(W?W.mul:0.5)*Math.pow(1.3,((w&&w.tier)||1)-1)}/* 和 wpnDmg 一樣，但不含爆擊 */
+let fyAtkAt=0,fyAct=null;const FY_SEEN={};
+/* 正在和主人交手的敵人（最近的一隻） */
+function fyTarget(){const me=curMe(),now=Date.now();let best=null,bd=FY_ATK_R;
+  if(MON_RT)for(const m of MON_RT.list){if(!m||m.dead)continue;if(!(m.aggro||(m.lastHit&&now-m.lastHit<FY_ATK_ENG)))continue;const d=Math.hypot(m.x-me.x,m.y-me.y);if(d<=bd){bd=d;best={m}}}
+  try{const b=bossRT;if(b&&b.def&&!b.done&&(b.kind==='lord'||(b.kind==='servant'&&b.active))){const d=Math.hypot(b.x-me.x,b.y-me.y);if(d<=bd){bd=d;best={boss:b}}}}catch(e){}
+  return best}
+function fyAtkTick(){if(!state||scene!=='explore'||!fyAutoOn())return false;const f=fyMe();if(!f)return false;const now=Date.now();if(now-fyAtkAt<FY_ATK_CD*1000)return false;
+  const t=fyTarget();if(!t)return false;fyAtkAt=now;const d=Math.max(1,Math.round(fyBaseDmg()*fyAtkPct(f))),[tx,ty]=tPos(t);
+  fyAct={x:Math.round(tx),y:Math.round(ty),t:now};try{pushPos(true)}catch(e){}
+  fyAtkFx('me',f,tx,ty);setTimeout(()=>{try{dealT(t,{d,crit:false,pet:true})}catch(e){}},FY_BOLT_MS);return d}
+/* 別人的神之子：只播演出 */
+function fyAtkRemote(id,f,fa){if(!fa||typeof fa.x!=='number'||FY_SEEN[id]===fa.t)return;FY_SEEN[id]=fa.t;try{fyAtkFx(id,f,fa.x,fa.y)}catch(e){}}
+/* 演出：放招圖＋能量彈＋打中的閃光 */
+function fyAtkFx(who,f,tx,ty){const S=FYO.get(who);if(!S)return;const o=fyCast(who,tx-S.x,ty-S.y)||[S.x,S.y];fyCastArt(S,f,tx);
+  const [kind,c]=FY_BOLT[f.k]||['ball','#FFE27A'],eco=typeof ecoOn==='function'&&ecoOn(),L=fyLayers()[1];if(!L)return;
+  const ns='http://www.w3.org/2000/svg',dx=tx-o[0],dy=ty-o[1],ang=Math.atan2(dy,dx)*180/Math.PI;
+  if(kind==='bolt'||kind==='beam'){const g=document.createElementNS(ns,'g');g.setAttribute('pointer-events','none');let d=`M${f1(o[0])} ${f1(o[1])}`;
+    if(kind==='bolt'){const n=5;for(let i=1;i<n;i++){const u=i/n,px=-dy/Math.hypot(dx,dy)||0,py=dx/Math.hypot(dx,dy)||0,j=(i%2?1:-1)*8;d+=` L${f1(o[0]+dx*u+px*j)} ${f1(o[1]+dy*u+py*j)}`}}
+    d+=` L${f1(tx)} ${f1(ty)}`;g.innerHTML=`<path d="${d}" fill="none" stroke="${c}" stroke-width="${kind==='beam'?2:2.6}" stroke-linecap="round" stroke-linejoin="round" opacity=".95"/>${eco?'':`<path d="${d}" fill="none" stroke="#fff" stroke-width="${kind==='beam'?0.8:1}" stroke-linecap="round" opacity=".9"/>`}`;
+    g.style.transition=`opacity ${FY_BOLT_MS}ms ease-in`;L.appendChild(g);requestAnimationFrame(()=>{g.style.opacity='0'});setTimeout(()=>{try{g.remove()}catch(e){}},FY_BOLT_MS+60)}
+  else{const g=document.createElementNS(ns,'g');g.setAttribute('pointer-events','none');g.setAttribute('class','fybolt');
+    const head=kind==='petal'?`<ellipse rx="4.2" ry="2.4" fill="${c}"/><ellipse rx="2" ry="1.1" fill="#fff" opacity=".8"/>`:kind==='star'?FY_STAR(4.2,c)+'<circle r="1.3" fill="#fff"/>':kind==='rune'?`<path d="M0 -4.5 L4 0 0 4.5 -4 0Z" fill="none" stroke="${c}" stroke-width="1.6"/><circle r="1.2" fill="${c}"/>`:`<circle r="${kind==='wisp'?3.6:3.2}" fill="${c}"/><circle r="1.5" fill="#fff" opacity=".9"/>`;
+    const tail=eco?'':`<path d="M0 -2.2 L-14 0 L0 2.2Z" fill="${c}" opacity=".55"/>`;
+    g.innerHTML=`<g transform="rotate(${f1(ang)})">${tail}${head}</g>`;g.style.transform=`translate(${f1(o[0])}px,${f1(o[1])}px)`;g.style.transition=`transform ${FY_BOLT_MS}ms linear`;L.appendChild(g);
+    void g.getBoundingClientRect;requestAnimationFrame(()=>{g.style.transform=`translate(${f1(tx)}px,${f1(ty)}px)`});setTimeout(()=>{try{g.remove()}catch(e){}},FY_BOLT_MS+30)}
+  if(!eco)setTimeout(()=>{try{if(kind==='fire'){for(let i=0;i<8;i++){const a=i/8*Math.PI*2;fyPuff('fyp-burst',tx,ty,`<circle r="1.3" fill="${['#FF9A6E','#FFE27A','#7FE3FF','#FF8FD8'][i%4]}"/>`,600,1,`--dx:${(Math.cos(a)*12).toFixed(1)}px;--dy:${(Math.sin(a)*12).toFixed(1)}px`)}}
+    fyPuff('fyp-glow',tx,ty,`<circle r="8" fill="${c}" opacity=".7"/>`,320,1)}catch(e){}},FY_BOLT_MS)}
+/* 放招圖：_c 約 0.4 秒，照目標在左右鏡像；結束換回正面／背面（169） */
+const FY_CK={};function fyCastReady(k,st){const n=k+'_'+st,s=FY_CK[n];if(s!=null)return s===1;FY_CK[n]=0;try{const im=new Image();im.onload=()=>{FY_CK[n]=1};im.onerror=()=>{FY_CK[n]=2};im.src='assets/fairy2/'+k+'_'+st+'_c.png?v='+BUILD}catch(e){FY_CK[n]=2}return false}
+function fyCastArt(S,f,tx){const st=fyStg(f);if(!fyCastReady(f.k,st))return;try{const im=S.g.querySelector('image');if(!im)return;imgHref(im,'assets/fairy2/'+f.k+'_'+st+'_c.png?v='+BUILD);S.castFlip=tx<S.x?-1:1;clearTimeout(S._ct);S._ct=setTimeout(()=>{S.castFlip=0;fyFace(S,!!S.back)},FY_CAST_MS)}catch(e){}}
 /* 放招：往技能方向前移一小段、放大到 1.15 倍、亮一下夢幻色光，0.4 秒後回原位；回傳技能特效該從哪裡發出（神之子身上） */
 function fyCast(who,dx,dy){const S=FYO.get(who);if(!S)return null;const L=Math.hypot(dx||0,dy||0)||1;S.cast={t0:performance.now()/1000,dx:(dx||0)/L,dy:(dy||0)/L};
   try{const [c1]=fyGlowC(S.f||{});fyPuff('fyp-glow',S.x,S.y-FY_HW*0.45,`<circle r="${(FY_HW*0.42).toFixed(1)}" fill="${c1}" opacity=".7"/>`,450,1)}catch(e){}return fyCastOrigin(who)}
@@ -8523,7 +8564,7 @@ function fyLoop(ts){if(!fyOwners.size){fyRaf=0;fyLastT=0;return}/* 106.4：畫�
     /* 169：主人朝上 → 背面圖（停下維持；小動作時、看家的一律正面）；換面 0.2 秒壓扁再翻 */
     {const wb=fyWantBack(who,S.idle,p.face,o.f);if(rm){if(!!S.back!==wb)fyFace(S,wb);S.sq=null}else if(!S.sq&&!!S.back!==wb)S.sq={t0:t,to:wb}}
     let sq=1;if(S.sq){const u=(t-S.sq.t0)/0.2;if(u>=1){if(!!S.back!==S.sq.to)fyFace(S,S.sq.to);S.sq=null}else{sq=Math.max(0.04,Math.abs(1-2*u));if(u>=0.5&&!!S.back!==S.sq.to)fyFace(S,S.sq.to)}}
-    const sx0=S.back?1:(Math.abs(S.sx)<0.04?0.04*Math.sign(S.sx||1):S.sx),sxx=sx0*sq;/* 背面圖左右對稱、不鏡像 */
+    const sx0=S.castFlip?S.castFlip:S.back?1:(Math.abs(S.sx)<0.04?0.04*Math.sign(S.sx||1):S.sx),sxx=sx0*sq;/* 170：放招時照目標在左右 *//* 背面圖左右對稱、不鏡像 */
     let cx=0,cy=0,cs=1;if(S.cast){const u=(t-S.cast.t0)/0.4;if(u>=1||u<0)S.cast=null;else{const e=Math.sin(Math.PI*u);cx=S.cast.dx*14*FY_Q*e;cy=S.cast.dy*14*FY_Q*e;cs=1+0.15*e}}/* 155：放招 */
     S.g.setAttribute('transform',`translate(${f1(S.x+cx)} ${f1(S.y+fl+cy)}) rotate(${f1(rot)}) scale(${(sxx*FY_S*cs).toFixed(3)} ${(FY_S*cs).toFixed(3)})`);
     {const fr=front||S.y>p.y+2;if(fr!==S.fade){S.fade=fr;S.g.style.opacity=fr?'0.7':''}}/* 155：在玩家前面時 70% 不透明 */
@@ -8693,7 +8734,7 @@ function monLoop(ts){monRaf=0;if(!monHere()){if(MON_RT)monClear();return}
   if(!MON_RT||MON_RT.key!==monKey()){monEnter();return}
   {const c=frameCap();if(c>0&&c<1e9){monRaf=-1;setTimeout(()=>{monRaf=requestAnimationFrame(monLoop)},c<250?Math.max(0,c-18):c)}else monRaf=requestAnimationFrame(monLoop)}/* 閒置：真的每 250ms 才排下一幀，不是每幀跑起來再跳過 */if(document.hidden||regBusy)return;/* 換圖的淡出淡入期間先不動 */
   const dt=monLast?Math.min(0.3,(ts-monLast)/1000):0;if(dt<Math.max(1/31,frameCap()/1000)-0.004&&monLast)return;monLast=ts;/* 閒置每秒 4 次、省電 30 次 */
-  const M=regCur(),me=curMe(),now=Date.now(),L=MON_RT.list;try{dropTick()}catch(e){}/* 161 */try{ghostTick()}catch(e){}/* 164 */
+  const M=regCur(),me=curMe(),now=Date.now(),L=MON_RT.list;try{(()=>{try{fyAtkTick()}catch(e){}})(),/* 170 */dropTick()}catch(e){}/* 161 */try{ghostTick()}catch(e){}/* 164 */
   {const S=monSlots(),X=MON_RT.xs||(MON_RT.xs=[]),N=monCount();for(let i=0;i<N;i++){if(L[i])continue;const due=MON_RT.due[i];if(!due){MON_RT.due[i]=now+monDelay();continue}if(now>=due){if(i<MON_N){S[i]=monRoll(S,i);monSpawnRT(M,i,S[i],true);monSaveSoon()}else{X[i]=monRoll(S.concat(X.slice(MON_N)),i);monSpawnRT(M,i,X[i],true)}}}}/* 131：同一張圖多 1 人 +2 隻（多的不存檔） *//* 105.10：打倒 1–3 秒後在遠處重生 */
   /* 打：角色腳底 30px 內最近的那隻 */
   const wq=curWpn(),rng=wq?wq.W.range:MON_RANGE;/* 159：武器距離 */let best=-1,bd=1e9;L.forEach((m,i)=>{if(!m||m.dead||(m.born&&now-m.born<MON_SAFE))return;const d=Math.hypot(m.x-me.x,m.y-me.y);/* 剛出現 0.5 秒內不會被打 */if(d<=rng&&d<bd){bd=d;best=i}});
@@ -8743,7 +8784,7 @@ function monDebris(m){try{const L=document.getElementById('monSw');if(!L)return;
   for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,d=22+Math.random()*26;s+=`<circle cx="${m.x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(2.5+Math.random()*2.5).toFixed(1)}" fill="${c}" stroke="#3B2614" stroke-width="1" style="--dx:${(Math.cos(a)*d).toFixed(1)}px;--dy:${(Math.sin(a)*d-14).toFixed(1)}px"/>`}
   g.innerHTML=s;L.appendChild(g);setTimeout(()=>{try{g.remove()}catch(e){}},520)}catch(e){}}
 /* ===== 141 結束 ===== */
-function monHit(i,dmg,crit,noSw){const m=MON_RT&&MON_RT.list[i];if(!m||m.dead)return;const now=Date.now();const atk=dmg!=null?dmg:pAtkNow();m.hp=Math.max(0,m.hp-atk);try{dmgShow(m.x,monHeadY(m),atk,{key:'m'+i,crit:!!crit})}catch(e){}/* 152、159 */m.lastHit=now;pFightAt=now;if(!m.aggro){m.aggro=1;m.ox=m.x;m.oy=m.y}/* 131 */if(!noSw)monSwing(m);try{sfx('pop',60)}catch(e){}
+function monHit(i,dmg,crit,noSw,pet){const m=MON_RT&&MON_RT.list[i];if(!m||m.dead)return;const now=Date.now();const atk=dmg!=null?dmg:pAtkNow();m.hp=Math.max(0,m.hp-atk);try{dmgShow(m.x,monHeadY(m),atk,{key:'m'+i,crit:!!crit,pet:!!pet})}catch(e){}/* 152、159；170：神之子出手的樣式 */m.lastHit=now;pFightAt=now;if(!m.aggro){m.aggro=1;m.ox=m.x;m.oy=m.y}/* 131 */if(!noSw)monSwing(m);try{sfx('pop',60)}catch(e){}
   const s=m.el&&m.el.querySelector('.ms'),hasHit=!!MON_IMG[m.k+'_hit'];
   if(hasHit&&s){s.innerHTML=monImgTag(m.k,m.boss,true);clearTimeout(m._ht);if(m.hp>0)m._ht=setTimeout(()=>{if(!m.dead)s.innerHTML=monImgTag(m.k,m.boss,false)},250)}
   if(hasHit)monReplay(s,'hit');else monHit2(m,s);monDebris(m);monBar(m,true);/* 141.3 */
@@ -9024,7 +9065,7 @@ function joinFarm(key){
 function leavePresence(){try{if(rtdbRef)rtdbRef.remove()}catch(e){}rtdbRef=null;if(rtdbOff){rtdbOff();rtdbOff=null}if(hb){clearInterval(hb);hb=null}others={}}
 function pushPos(force){
   if(!rtdbRef)return;const now=Date.now();if(!force&&now-lastPush<150)return;lastPush=now;const m=curMe();
-  rtdbRef.set({x:Math.round(m.x),y:Math.round(m.y),d:meDir,name:myName(),lv:myLv(),ch:champOn()?1:0,av:avPack(state.avatar),w:wpnTag(),...(char2On()?{c2:char2Sex()}:{}),fy:fyPack(fyMe()),/* 168：新版主角 m／f，沒開不送 */a:meAct&&Date.now()-meAct.at<1500?meAct:null,f:meFace,t:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});
+  rtdbRef.set({x:Math.round(m.x),y:Math.round(m.y),d:meDir,name:myName(),lv:myLv(),ch:champOn()?1:0,av:avPack(state.avatar),w:wpnTag(),...(char2On()?{c2:char2Sex()}:{}),...(fyAct&&Date.now()-fyAct.t<1500?{fa:fyAct}:{}),/* 170：神之子最近一次出手（1.5 秒內才送） */fy:fyPack(fyMe()),/* 168：新版主角 m／f，沒開不送 */a:meAct&&Date.now()-meAct.at<1500?meAct:null,f:meFace,t:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});
 }
 let meDir=1,walkPh=0,meFace=2;
 const VIEWS=['side','fq','front','fq','side','bq','back','bq'];
@@ -9069,7 +9110,7 @@ function renderChars(){
   if(!state)return;const L=document.getElementById('charLayer');let s='';
   const t=performance.now()/1000,list=[];
   for(const [id,o] of Object.entries(others)){if(!o||typeof o.x!=='number')continue;const A=animO[id]||{x:o.x,y:o.y,ph:0};
-    const ps=poseFor(false,{a:o.a,_aStart:A.aStart,_seed:A.seed},t);if(A.moving)ps.ph=A.ph;else if(!ps.act)ps.t=0;/* 99.8：站著不動時姿勢不跟時間變（呼吸交給 CSS .brth），內容不變就不用重建 */const of=o.f!=null?o.f:(o.d<0?3:1);ps.view=VIEWS[of];ps.face=of;ps.mv=!!A.moving;const ofy=fyUnpack(o.fy);list.push({y:A.y,h:charG('',A.x,A.y,o.av,faceFlip(of),ps,o.name||'朋友',o.lv,ofy,id,!!o.ch,scene==='explore'&&typeof o.w==='string'?o.w:null,o.c2)+`<circle cx="${Math.round(A.x)}" cy="${Math.round(A.y-30)}" r="17" fill="transparent" style="pointer-events:auto" data-ply="${esc(id)}"/>`});if(ofy)fyRegister(id,ofy,()=>{const B=animO[id]||o,F=o.f!=null?o.f:(o.d<0?3:1);return {x:B.x,y:B.y,flip:faceFlip(F),face:F}})}
+    const ps=poseFor(false,{a:o.a,_aStart:A.aStart,_seed:A.seed},t);if(A.moving)ps.ph=A.ph;else if(!ps.act)ps.t=0;/* 99.8：站著不動時姿勢不跟時間變（呼吸交給 CSS .brth），內容不變就不用重建 */const of=o.f!=null?o.f:(o.d<0?3:1);ps.view=VIEWS[of];ps.face=of;ps.mv=!!A.moving;const ofy=fyUnpack(o.fy);list.push({y:A.y,h:charG('',A.x,A.y,o.av,faceFlip(of),ps,o.name||'朋友',o.lv,ofy,id,!!o.ch,scene==='explore'&&typeof o.w==='string'?o.w:null,o.c2)+`<circle cx="${Math.round(A.x)}" cy="${Math.round(A.y-30)}" r="17" fill="transparent" style="pointer-events:auto" data-ply="${esc(id)}"/>`});if(ofy)fyRegister(id,ofy,()=>{const B=animO[id]||o,F=o.f!=null?o.f:(o.d<0?3:1);return {x:B.x,y:B.y,flip:faceFlip(F),face:F}});if(ofy&&o.fa)fyAtkRemote(id,ofy,o.fa)}
   const m=curMe(),mp=poseFor(true,null,t);if(raf)mp.ph=walkPh;else if(!mp.act)mp.t=0;mp.view=VIEWS[meFace];const mfy=fyMe();/* 97：拜訪朋友、城鎮、各地區都帶著自己的精靈 */list.push({y:m.y-1,h:petCharG()});list.push({y:m.y+1,h:hpHeadG()});list.push({y:m.y,h:charG('meG',m.x,m.y,state.avatar,faceFlip(meFace),mp,'你',myLv(),mfy,'me',champOn(),wpnTag())});if(mfy)fyRegister('me',mfy,()=>{const q=curMe();return {x:q.x,y:q.y,flip:faceFlip(meFace),face:meFace}});{const H=fyHomeSet();if(H)fyRegister('home',H.f,fyHomePos)}fyStart();
   list.sort((a,b)=>a.y-b.y);s=list.map(x=>x.h).join('');
   const key=s.replace(/(id="|url\(#|href="#)([A-Za-z_-]*)\d+/g,'$1$2').replace(/animation-delay:-?[\d.]+s/g,'').replace(/<g class="c2"[^]*?<\/g>/g,'<c2/>').replace(/ class="wsw[^"]*"/g,'');/* 156：新版角色的走路格由 char2Paint 換，不算內容改變 *//* 圖層 id、眨眼的延遲每次都不一樣，比較時拿掉 */
@@ -10294,10 +10335,10 @@ let wpnLock=0,wpnAsked=false,wpnAlt=1;
 function curWpn(){if(!state||scene!=='explore')return null;const e=weaponsArr()[state.wpn];if(!e||!WEAPONS[e.crop])return null;return {crop:e.crop,tier:e.tier||1,W:WEAPONS[e.crop]}}
 const wpnTag=()=>{const w=curWpn();return w?w.crop+'|'+w.tier:null};
 function wpnDmg(w,mul){const W=w&&w.W;let d=pAtkNow()*(W?W.mul:0.5)/* 166：野外鐮刀 ×0.5 */*Math.pow(1.3,((w&&w.tier)||1)-1)*(mul||1);const crit=Math.random()<0.05+((W&&W.crit)||0);if(crit)d*=1.5+((W&&W.critDmg)||0);return {d:Math.max(1,Math.round(d)),crit}}
-function hitMon(m,o){if(!MON_RT||!m||m.dead)return false;const i=MON_RT.list.indexOf(m);if(i<0)return false;monHit(i,o.d,o.crit,true);return true}
+function hitMon(m,o){if(!MON_RT||!m||m.dead)return false;const i=MON_RT.list.indexOf(m);if(i<0)return false;monHit(i,o.d,o.crit,true,o.pet);return true}
 /* 主、僕人受到的傷害（擋住時不算） */
 function bossDealt(b,o){if(!b||b.done)return;if(b.kind==='servant'&&!b.active){b.active=true;b.until=bossNow()+900;bossJump(b,bossNow())}/* 162：第一次被打也開打 */const now=bossNow(),y=b.y-BOSS_HU*(b.def.h||1);if(b.mode==='guard'){try{dmgShow(b.x,y,0,{miss:1,text:'擋住了',key:'boss'})}catch(e){}return}
-  b.myDmg+=o.d;try{dmgShow(b.x,y,o.d,{key:'boss',crit:o.crit})}catch(e){}b.dmg[bossMe()]=b.myDmg;b.hitT=now;if(b.net)lordPushDmg(b)}
+  b.myDmg+=o.d;try{dmgShow(b.x,y,o.d,{key:'boss',crit:o.crit,pet:!!o.pet})}catch(e){}b.dmg[bossMe()]=b.myDmg;b.hitT=now;if(b.net)lordPushDmg(b)}
 const dealT=(t,o)=>t.boss?bossDealt(t.boss,o):hitMon(t.m,o);
 const tPos=t=>t.boss?[t.boss.x,t.boss.y-14]:[t.m.x,t.m.y-14];
 const monsAlive=()=>MON_RT?MON_RT.list.filter(m=>m&&!m.dead):[];

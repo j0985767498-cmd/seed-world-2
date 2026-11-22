@@ -2,7 +2,7 @@
 
 > 程式：`index.html`。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> **目前 BUILD `2026-11-20m`，下一版 `2026-11-20n`。**
+> **目前 BUILD `2026-11-20o`，下一版 `2026-11-20p`。**
 > **使用者要自己做的事**：Realtime Database 規則整份貼 `tools/rtdb_rules_173.txt`（含 62 的 status、135、172、173）；Firestore 規則整份貼 `tools/firestore_rules_console_114.txt`（117 那份＋`fairyFirst`）。舊的規則檔都只是紀錄。
 > **還沒做的節**：165（新版角色正面、背面走路）、108 的其他地區／農場／城鎮（3D）、135 的後六區與神寵技能、136（跟晶霜雪原那一章一起做）；未定案：14、19、69。各節做完的紀錄看下面的索引表。
 
@@ -284,6 +284,8 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 遠程從武器射出（179）：`wpnHTML` 只在退回舊人物時用；`mzFire`（取代 `wpnFire` 的遠程四段、`MZ_FR` 第幾格）、出手點 `mzOf`／`mzCalc`（`MZ`，高階圖照 `WP_DIM` 換框內比例）、`mzCell`／`mzToW`／`mzMe`；測試開關 `mzShow`（`sw_mz`、`c3Part` 的 `mz`、設定 `data-ap="mz"`）。
 - 任務提示收合（175）：`#mqWrap`（`mqColInit` 把 `#mqLine` 搬進去）、`#mqCol`「‹」、左邊緣標籤 `#mqTab`（紅點 `dot`、`bump`）、`mqColSet`（本機 `sw_mqcol`）、`mqColSync`（包在 `renderMqLine` 外面，`mqSig`）、`mqLay`（隊伍名單在上、任務提示在下，`body.mqParty`；也包在 `renderParty` 外面）。
 - 組隊（173）：`party/<pid>`／`partyInv`、`partyNet`／`partyDenied`、`partyBoot`／`partyWatch`／`partySync`／`partyTick`（3 秒、沒變不寫）、`partyInvite`／`partyCanInvite`／`partyInvSync`／`partyInvCard`／`partyAccept`、`partyLeave`／`partyDrop`、`partyFightEv`（在 `lordNetStart`）／`partyFightPrompt`／`partyGo`、`renderParty`（`#partyBox`）、`partyHas`（名牌、172.3 成員列、隊友傷害數字用 `PARTY_COLOR`）。
+- 素材的取得提示（185）：`matSrc`（`MAT_RARE_N`、`matSrcNm`／`matSrcPic`）、製作畫面一行 `matRowHTML`、取得方式小卡 `sheet.msrc`／`msrcHTML`／`msrcGo`（`qGo`）、`monDropsHTML`、`matHTML` 的來源清單；測試 `tools/t185.js`。
+- 武器平衡、184 新版（186）：目標 `WP_TARGET`、錘與鐮刀 `W.splash`、`SK_NAMES`／`skName`／`skNameShow`（`state.skSeen`）、`SK_DESC`／`skCardShow`（長按）、星星 `weapons[i].st`／`WP_SHAPES`／`STAR_FX`／`wpStat`／`skStarK`；`tools/sim184.js` 跑真的 `wpnFire`／`skCast`（結果 `tools/sim186_20o.txt`）、測試 `tools/t186.js`。
 - 武器技能、翻滾（184）：表 `SKILLS`／`SK_ROLL`、`skDef`／`skV`／`skDmg`、`skCast`→`SK_DO[招式]`＋特效 `skFx[招式]`（之後換圖只改這裡）、`skAim`／`skTs`／`skIn`／`skInRect`／`skShove`／`skStun`／`skMove`／`skBlink`、`skRoll`、冷卻 `SKC`、狀態 `SKB`（不存檔）、受傷 `skHurt`（`pDamage(n,src)`）、普通攻擊掛鉤 `skIv`／`skPreAtk`／`skPostAtk`／`skSat`（`c3Wpn` 第 4 參數）、`skTick`、子彈 `sb`／`pt`（`wpnStep`）、按鈕 `#skBar`（`skBar`／`skPaint`、`SK_GLYPH`）、同步 `pushPos` 的 `sk`／`skRemote`、主僕 `b.stun`；測試模式武器階 `data-tool="wtier"`；模擬 `tools/sim184.js`、測試 `tools/t184.js`。
 - 第一位神之子、轉生的夢（183）：`state.anchor`（`mq2First`）、夢 `dreamNeed`／`dreamOpen`／`dreamAfter`（`#dream`、`DREAM_L`）、1-5 `altWho`／`mq2FirstBody`（`FIRST_L`）、`state.cropEarly`（`cropKept`）、清單 `altL(k)`（取代 `ALT_LIST[k]`；番茄第二份 `ALT_LIST.tomato2`、`altObj('tomato').l2`）；主線 17 步（2-5、2-6、3-5、3-6 拿掉），神之子類任務 `FYQ`／`fyqTick`（`state.fyq`，kind `fyq`）；遷移 `m183`（旗標 `mq183V`）；測試 `tools/t183.js`。
 - 個人介面 `openMe`／`meSheetHTML`、通知 `noteOpen`、慶祝卡 `celShow`、提示 `toast`、「？」小說明 `qh`。
@@ -381,3 +383,5 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 182 | 整理 CLAUDE.md：刪掉過時、被取代的內容 | 已完成 | 只改 CLAUDE.md；照 182.4 沒有動 `docs/規格存檔.md`、`docs/待實作/`（`第182節.md` 還在） |
 | 183 | 第一位神之子自己選：轉生的夢；主線不再發神之子 | 已完成 | docs/規格存檔.md；20l（9.183）；神之子類任務放在「故事」分頁、2-4／3-4 獎勵是加上去；**沒有截圖**；沒測 iPhone |
 | 184 | 武器技能（每把 2 招＋覺醒）、翻滾閃避 | 已完成 | docs/規格存檔.md；20m（9.184）；**±15% 只調技能倍率做不到（差在普通攻擊），倍率照起始值，等使用者決定**；主沒有 ult 狀態（改看長蓄力）；測試模式武器階之後拿掉；沒有截圖；沒測 iPhone、兩台手機 |
+| 185 | 素材的取得提示（楓之谷式） | 已完成 | docs/規格存檔.md；20n（9.185）；遊戲沒有怪物資訊畫面，「會掉：」放在來源卡；8 種舊怪素材沒有來源；沒有截圖；沒測 iPhone |
+| 186 | 武器平衡照定位重調；第 184 節補成新版 | 已完成 | docs/規格存檔.md；20o（9.186）；**22／54 格還在 ±10% 外，等使用者決定**；鐮刀也加 splash；技能改放開才放（長按看說明）；沒有截圖；沒測 iPhone |

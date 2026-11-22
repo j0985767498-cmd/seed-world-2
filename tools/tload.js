@@ -5,7 +5,7 @@ const src=process.argv[2]||require('path').join(__dirname,'..','index.html');
 const h=fs.readFileSync(src,'utf8');
 let js=h.slice(h.indexOf('<script>',h.indexOf('</style>'))+8,h.lastIndexOf('</script>'));
 const P=new Proxy(function(){},{get:(t,k)=>k===Symbol.toPrimitive?()=>'':(k==='then'?undefined:P),apply:()=>P,construct:()=>P,set:()=>true});
-js+=';globalThis.T={newGame,makeWild,plantFromLot,packState,loadSave,repairState,get state(){return state}};';
+js+=';globalThis.T={newGame,makeWild,plantFromLot,packState,loadSave,repairState,lookNorm,lookPack,lookUnpack,char3On,charG,get state(){return state},set state(v){state=v}};';
 const ctx={document:P,window:P,firebase:P,navigator:P,location:{pathname:'/',search:'',hash:''},localStorage:P,console,setTimeout:()=>0,setInterval:()=>0,clearTimeout(){},clearInterval(){},requestAnimationFrame:()=>0,fetch:()=>new Promise(()=>{}),btoa:s=>Buffer.from(s,'binary').toString('base64'),atob:s=>Buffer.from(s,'base64').toString('binary'),TextEncoder,Math,Date,JSON,addEventListener(){},matchMedia:()=>({matches:false,addEventListener(){}}),performance:{now:()=>0},innerWidth:400,innerHeight:800,devicePixelRatio:1,screen:P,history:P,alert(){},confirm:()=>true,URLSearchParams};
 ctx.globalThis=ctx;ctx.self=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
 const T=ctx.T;let fails=0;const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)fails++};
@@ -28,4 +28,13 @@ ok(a.lots.find(l=>l.id===2).count===12&&a.lots.find(l=>l.id===1).seeds.length===
 /* 同名函式：同一個名字的 function 宣告只能有一個（後面的會蓋掉前面的） */
 const names={};for(const x of js.matchAll(/(?:^|[;}\s])(?:async\s+)?function\s+([A-Za-z_\$][\w\$]*)\s*\(/g))names[x[1]]=(names[x[1]]||0)+1;
 const dup=Object.keys(names).filter(k=>names[k]>1&&k!=='openBuild');ok(!dup.length,'no duplicate function names (openBuild is old dead code, known)'+(dup.length?': '+dup.join(','):''));
+/* 第 171 節：新版人物的開關開／關都能讀舊存檔；look 缺欄位補預設值 */
+{const old=J(T.packState(st));for(const sw of [undefined,false,true]){const o=JSON.parse(old);const S=load(typeof o==='string'?o:JSON.stringify(o));S.char3=sw;const S2=load(T.packState(S));ok(JSON.stringify(genes(S2))===JSON.stringify(want)&&S2.look&&S2.look.top==='t01',`171: switch ${sw===undefined?'(not set = on)':sw?'on':'off'}: old save loads, genes intact, look filled in`)}
+  const S=load(T.packState(st));S.look={top:'t02'};const S2=load(T.packState(S));ok(S2.look.top==='t02'&&S2.look.shoes==='s01'&&S2.look.hair==='h01'&&S2.look.hairColor===0,'171: look with missing fields → defaults filled, chosen top kept');
+  S.look={top:'zzz',hairColor:99};ok(JSON.stringify(T.lookNorm(S.look))===JSON.stringify({hair:'h01',hairColor:0,top:'t01',bottom:'b01',shoes:'s01'}),'171: unknown values → defaults');
+  ok(T.lookPack(T.lookNorm({top:'t02',hairColor:3}))==='f.h01.3.t02.b01.s01'&&T.lookUnpack('f.h01.3.t02.b01.s01').top==='t02'&&T.lookUnpack('m.x')===null,'171: ap string packs / unpacks; bad strings ignored');
+  T.state=S;S.char2Sex='f';S.char3=undefined;ok(T.char3On()===true,'171: girl, switch not set → new character on');S.char3=false;ok(T.char3On()===false,'…switched off → old drawing');S.char3=true;S.char2Sex='m';ok(T.char3On()===false,'…boy → old drawing (only girl art for now)');
+  let g='';try{g=T.charG('',10,10,S.avatar,false,{view:'front',face:2},'朋友',3,null,'u9',false,null,null,'f.h01.0.t01.b01.s01')}catch(e){g='ERR '+e.message}ok(g&&!/^ERR/.test(g),'171: other player with ap while the art is still loading → falls back to the old drawing, no error')}
 console.log(fails?('FAILS '+fails):'ALL PASS');
+/* 第 172 節：主、僕人共鬥（兩到三個假玩家共用假的 Realtime Database） */
+try{require('./tcoop.js')}catch(e){console.log('FAIL tcoop.js crashed: '+e.message);process.exitCode=1}

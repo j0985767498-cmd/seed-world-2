@@ -889,6 +889,8 @@ details.gfold .gfb{margin-top:8px}
 .offfx{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);z-index:60;display:flex;gap:14px;pointer-events:auto;animation:offfx .9s ease-out forwards}.offfx b{font-size:30px;text-shadow:0 0 8px #fff}.offok{color:#E8B400}.offbad{color:#8A8A8A}.offfx .offbad::before{content:'✕ '}@keyframes offfx{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-80%) scale(1)}}/* 114 */
 .mwind{animation:mwind .5s ease-in-out}.mwind .ms{filter:drop-shadow(0 0 6px #FF2A2A) drop-shadow(0 0 2px #FF2A2A) brightness(1.15) sepia(.5) saturate(4) hue-rotate(-30deg)}@keyframes mwind{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 /* 135 */#bossBar{position:fixed;left:50%;transform:translateX(-50%);top:calc(122px + env(safe-area-inset-top,0px));z-index:11;width:min(300px,82vw);display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;pointer-events:none}#bossBar[hidden]{display:none}#bossBar b{width:100%;text-align:center;font-size:14px;color:#fff;text-shadow:0 0 3px #3B2614,0 0 3px #3B2614}#bossBar .bbw{position:relative;flex:1;height:14px;border-radius:8px;border:2px solid #3B2614;background:#4A2A18;overflow:hidden}#bossBar .bbw i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#E8504A,#B8282A);transition:width .2s}#bossBar .bbw em{position:absolute;left:50%;top:0;bottom:0;width:2px;background:#FFF6DE;opacity:.85}#bossBar.ph2 .bbw i{background:linear-gradient(#F0A040,#C8501A)}#bossBar .bbq{pointer-events:auto;font-size:12px;padding:2px 8px;border-radius:8px;border:2px solid #5A3416;background:#FFF6DE;color:#5A3416}#bossBar .bbq[hidden]{display:none}
+/* 172.3：成員列、隊友的傷害數字 */#bossBar .bmem{flex-basis:100%;display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}#bossBar .bmem[hidden]{display:none}#bossBar .bm{font-size:11px;padding:1px 6px;border-radius:8px;background:rgba(255,255,255,.18);color:#fff}#bossBar .bm.me{background:rgba(255,226,122,.35)}#bossBar .bm.dn{opacity:.5}#bossBar .bm.pt{color:#4FE3C1;font-weight:700}
+/* 173：隊伍名單、邀請卡、開打提示 */#partyBox{position:fixed;left:8px;top:calc(232px + env(safe-area-inset-top,0px));z-index:14;width:148px;background:rgba(255,248,232,.92);border:2px solid var(--ol,#5A3416);border-radius:10px;padding:4px 6px;font-size:11px;color:#3B2614}#partyBox[hidden]{display:none}#partyBox .phd{font-weight:800;cursor:pointer}#partyBox .prow{margin:3px 0;position:relative;display:block}#partyBox .php{width:100%}#partyBox .prow b{color:#2E8F78}#partyBox .prow.off{opacity:.45;filter:grayscale(1)}#partyBox .php{display:block;height:4px;background:#3B2614;border-radius:2px;margin:1px 0}#partyBox .php i{display:block;height:100%;background:#7FBF4A;border-radius:2px}#partyBox .pkick{position:absolute;right:0;top:0;border:0;background:none;color:#B4442A;font-size:11px;padding:0 2px}#partyBox .mini{font-size:10px;padding:2px 6px;margin-top:2px}#partyInv,#partyEv{position:fixed;left:50%;transform:translateX(-50%);top:calc(70px + env(safe-area-inset-top,0px));z-index:60;background:#FFF6E4;border:2px solid var(--ol,#5A3416);border-radius:12px;padding:8px 12px;box-shadow:0 3px 0 rgba(0,0,0,.25);font-size:14px;color:#3B2614;text-align:center}#partyInv[hidden],#partyEv[hidden]{display:none}#partyEv{top:calc(116px + env(safe-area-inset-top,0px));display:flex;gap:8px;align-items:center}.dmg.tm{font-size:20px;opacity:.72}.dmg.tm b{color:#F3EAD8}
 .fyhero{position:relative;width:75%;margin:0 auto 4px;aspect-ratio:420/424;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .fyhero .fyglow{position:absolute;left:50%;top:52%;width:105%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,var(--g1) 0%,transparent 64%);opacity:.55;filter:blur(6px);animation:fyGlowA 7s ease-in-out infinite}
 .fyhero.god .fyglow{background:conic-gradient(from 0deg,var(--g1),var(--g2),var(--g1),var(--g2),var(--g1));-webkit-mask:radial-gradient(circle,#000 0,#000 30%,transparent 66%);mask:radial-gradient(circle,#000 0,#000 30%,transparent 66%);opacity:.6;filter:blur(10px)}
@@ -1789,7 +1791,7 @@ function exMigrate(o){
   }catch(e){}
   o.exV=2;
 }
-function migrate(o){if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fairy))o.fairy={};for(const k of Object.keys(o.fairy)){if(k==='follow'||k==='mj'||k==='altar')continue;const f=o.fairy[k];if(!FY[k]||!f||typeof f!=='object'||!f.no)delete o.fairy[k]}if(o.fairy.follow&&!o.fairy[o.fairy.follow])o.fairy.follow=null;/* 93：精靈 */if(!o.fairy.altar||typeof o.fairy.altar!=='object'||Array.isArray(o.fairy.altar))o.fairy.altar={};/* 113.7：祭壇清單的進度 */if(!o.wardrobe||typeof o.wardrobe!=='object')o.wardrobe={};if(!o.meihin||typeof o.meihin!=='object')o.meihin={};/* 86.5：衣櫃（特殊取得的衣服），用到才建立 */
+function migrate(o){try{o.look=lookNorm(o.look)}catch(e){}/* 171：外觀缺欄位補預設值（不用旗標，每次讀檔都整理） */if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fairy))o.fairy={};for(const k of Object.keys(o.fairy)){if(k==='follow'||k==='mj'||k==='altar')continue;const f=o.fairy[k];if(!FY[k]||!f||typeof f!=='object'||!f.no)delete o.fairy[k]}if(o.fairy.follow&&!o.fairy[o.fairy.follow])o.fairy.follow=null;/* 93：精靈 */if(!o.fairy.altar||typeof o.fairy.altar!=='object'||Array.isArray(o.fairy.altar))o.fairy.altar={};/* 113.7：祭壇清單的進度 */if(!o.wardrobe||typeof o.wardrobe!=='object')o.wardrobe={};if(!o.meihin||typeof o.meihin!=='object')o.meihin={};/* 86.5：衣櫃（特殊取得的衣服），用到才建立 */
   if(!o.nextLid)o.nextLid=1;if(!o.counts)o.counts={};
   while(o.plots.length<64)o.plots.push(null);
   geneMigrate(o);exMigrate(o);
@@ -1924,7 +1926,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-20c';
+const BUILD='2026-11-20d';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -3228,6 +3230,7 @@ function renderSheet(){
   if(sheet.give){sb.innerHTML=giveHTML();return}/* 117.2 */
   if(sheet.rnpc){sb.innerHTML=rnpcHTML();return}/* 121 */
   if(sheet.hatsuho){sb.innerHTML=hatsuhoHTML();return}/* 135 */
+  if(sheet.look){sb.innerHTML=lookHTML();return}/* 171 */
   if(sheet.me){sb.innerHTML=meSheetHTML();return}
   if(sheet.sellOld){sb.innerHTML=sellOldHTML();return}
   if(sheet.m96){sb.innerHTML=mu96HTML();return}
@@ -3595,7 +3598,7 @@ function renderSocial(scroll){
   if(!state)return;
   const fr=profiles.filter(p=>p.id!==uid);if(curPanel==='social')statusWatch(fr.map(p=>p.id));
   fr.sort((a,b)=>(stIsOn(b.id)-stIsOn(a.id))||(((stData[b.id]||{}).at||0)-((stData[a.id]||{}).at||0)));/* 62.1：上線中在前，其餘照最後上線時間 */
-  const frow=(p,isF)=>`<div class="friend"><span class="fnm"><b>${esc(p.name||'玩家')}</b>${statusHTML(p.id)}</span>${stIsOn(p.id)&&(stData[p.id].place||'farm')==='farm'?`<button class="mini" data-visit="${p.id}">去找他</button>`:''}<button class="mini" data-card="${p.id}">名片</button><button class="mini" data-visit="${p.id}">參觀農場</button><button class="mini" data-dm="${p.id}">私訊${dmUnread.has(p.id)?'（新訊息）':''}</button>${isF?`${helpedToday(p.id)?'<span class="meta" title="今天幫過了">✓ 幫過了</span>':'<span class="meta">還沒幫</span>'}<button class="mini" data-frdel="${p.id}">${frDelArm.has(p.id)?'確定刪除':'刪除'}</button>`:(()=>{const s=frStatus(p.id);return s==='none'?`<button class="mini" data-frinv="${p.id}">加朋友</button>`:s==='in'?`<button class="mini" data-frinv="${p.id}">接受邀請</button>`:s==='out'?'<span class="meta">已邀請</span>':''})()}</div>`;
+  const frow=(p,isF)=>`<div class="friend"><span class="fnm"><b>${esc(p.name||'玩家')}</b>${statusHTML(p.id)}</span>${stIsOn(p.id)&&(stData[p.id].place||'farm')==='farm'?`<button class="mini" data-visit="${p.id}">去找他</button>`:''}<button class="mini" data-card="${p.id}">名片</button><button class="mini" data-visit="${p.id}">參觀農場</button><button class="mini" data-dm="${p.id}">私訊${dmUnread.has(p.id)?'（新訊息）':''}</button>${isF?`${(()=>{const w=partyCanInvite(p.id);return w==='in'?'<span class="meta">同隊</span>':`<button class="mini" data-pinvite="${p.id}"${w&&w!=='off'?' disabled aria-disabled="true"':''}>邀請組隊</button>`})()}${helpedToday(p.id)?'<span class="meta" title="今天幫過了">✓ 幫過了</span>':'<span class="meta">還沒幫</span>'}<button class="mini" data-frdel="${p.id}">${frDelArm.has(p.id)?'確定刪除':'刪除'}</button>`:(()=>{const s=frStatus(p.id);return s==='none'?`<button class="mini" data-frinv="${p.id}">加朋友</button>`:s==='in'?`<button class="mini" data-frinv="${p.id}">接受邀請</button>`:s==='out'?'<span class="meta">已邀請</span>':''})()}</div>`;
   {const F=fr.filter(p=>isFriendU(p.id)).sort((a,b)=>helpedToday(a.id)-helpedToday(b.id)),tip=!(state.tips||{}).frtip;if(curPanel==='social'&&tip){(state.tips||(state.tips={})).frtip=1;save()}
     const tabs=`<div class="row2"><button class="btn${socTab==='fr'?' primary':''}" data-soctab="fr">朋友（${F.length}）</button><button class="btn${socTab==='all'?' primary':''}" data-soctab="all">其他玩家</button></div>`;
     document.getElementById('friends').innerHTML=tabs+(socTab==='fr'?`${tip?'<p class="note">加了朋友，才能去對方的農場偷摘種子。</p>':''}<p class="note">我的朋友代碼：<b>${frCode(uid)}</b></p><div class="chatbar"><input id="frCodeIn" maxlength="6" placeholder="輸入對方的代碼" aria-label="朋友代碼"><button class="mini big" data-frcode="1">邀請</button></div>`+(F.length?F.map(p=>frow(p,true)).join(''):'<p class="note">還沒有朋友。到「其他玩家」或對方的名片按「加朋友」。</p>'):(fr.length?fr.map(p=>frow(p,false)).join(''):'<p class="note">其他玩家登入遊戲後，就會出現在這裡。</p>'))}
@@ -3604,7 +3607,7 @@ function renderSocial(scroll){
   ch.innerHTML=list.length?list.map(m=>`<div class="msg${m.from===uid?' me':''}"><span class="who">${m.from===uid?'你':esc(m.fromName)}</span>${esc(m.text)}</div>`).join(''):'<p class="note">還沒有人說話，打個招呼吧。</p>';
   if(scroll||atBottom)ch.scrollTop=ch.scrollHeight;
 }
-document.getElementById('friends').addEventListener('click',e=>{{const t=e.target.closest('[data-soctab],[data-frdel],[data-frinv],[data-frcode]');if(t){/* 129 */
+document.getElementById('friends').addEventListener('click',e=>{{const pi=e.target.closest('[data-pinvite]');if(pi){partyInvite(pi.dataset.pinvite);renderSocial();return}}/* 173 */{const t=e.target.closest('[data-soctab],[data-frdel],[data-frinv],[data-frcode]');if(t){/* 129 */
     if(t.dataset.soctab){socTab=t.dataset.soctab;frDelArm.clear();renderSocial();return}
     if(t.dataset.frdel){const u=t.dataset.frdel;if(!frDelArm.has(u)){frDelArm.add(u);renderSocial();return}frDelArm.delete(u);frDelete(u);toast('刪掉了');renderSocial();return}
     if(t.dataset.frinv){frInvite(t.dataset.frinv);renderSocial();return}
@@ -7723,32 +7726,33 @@ function bossShapeSVG(s){if(!s)return '';const F='rgba(230,40,30,.28)',S='#E0321
   if(s.t==='half')return `<rect x="${s.side<0?s.x-s.w:s.x}" y="${s.y-s.h/2}" width="${s.w}" height="${s.h}" fill="${F}"/>`;
   return ''}
 /* ---- 狀態 ---- */
-let bossRT=null,bossRaf=0,bossLast=0,bossSwingAt=0,bossNetOff=null;const bossCalled={},lordSum={},lordNetState={};
+let bossRT=null,bossRaf=0,bossLast=0,bossSwingAt=0,bossNetOff=null;const BOSS_JOIN_K=0.6;/* 172：每多一個人加入，血量上限＋單人份 ×0.6 */const bossCalled={},lordSum={},lordNetState={};
 const bossNow=()=>Date.now();
 const bossMe=()=>uid||'me';
 const lordCdOk=id=>!(state.lordCd&&state.lordCd[id]&&bossNow()-state.lordCd[id]<LORD_CD);
 const bossMonHp=bk=>(typeof MON_RHP!=='undefined'&&MON_RHP[bk])||3000;
 const bossDmgOf=b=>{const r=(typeof MON_RDMG!=='undefined'&&MON_RDMG[b.bk])||[50,80],a=BATK[b.atk]||{};return Math.round((r[0]+Math.random()*(r[1]-r[0]))*b.dmgK*(a.dmg||1))};
-const bossHp=b=>Math.max(0,b.max-Object.values(b.dmg||{}).reduce((s,v)=>s+(+v||0),0));
+const bossHp=b=>Math.max(0,b.max-(b.adj||0)-Object.values(b.dmg||{}).reduce((s,v)=>s+(+v||0),0));/* 172：adj＝加人時為了維持血量比例補的量 */
 function bossMake(kind,bk,def,members){const M=regCur(),n=Math.max(1,Object.keys(members||{}).length),base=bossMonHp(bk)*def.hpK,max=kind==='lord'?Math.round(base*(1+LORD_HP_K*(n-1))):base;
   const c=def.c||def.at;return {kind,bk,def,art:def.art,n:def.n,x:def.at[0],y:def.at[1],face:-1,max,mode:'idle',until:bossNow()+1500,atk:null,shape:null,seq:0,ph:1,hidden:false,rs:(hashStr(bk+kind+bossNow())>>>0)||7,
-    B:M&&M.B?{x0:M.B.x0,x1:M.B.x1,y0:M.B.y0,y1:M.B.y1}:{x0:0,x1:800,y0:0,y1:1200},cx:c[0],cy:c[1],dmgK:def.dmgK,dmg:{[bossMe()]:0},myDmg:0,members:members||null,active:kind==='lord',t0:bossNow(),done:false}}
+    B:M&&M.B?{x0:M.B.x0,x1:M.B.x1,y0:M.B.y0,y1:M.B.y1}:{x0:0,x1:800,y0:0,y1:1200},cx:c[0],cy:c[1],dmgK:def.dmgK,dmg:{[bossMe()]:0},myDmg:0,members:members||null,active:kind==='lord',t0:bossNow(),done:false,base,adj:0,mcount:n}}
 /* ---- 進出地圖 ---- */
 function bossEnter(bk,id){bossLeave();if(id!=='secret'||!(SERVANTS[bk]||LORDS[bk]))return;const sv=SERVANTS[bk];
   if(sv){const at=(state.servantAt||{})[bk]||0;bossRT=bossNow()-at>=BOSS_RESPAWN?bossMake('servant',bk,sv,null):{kind:'wait',bk,until:at+BOSS_RESPAWN,def:sv}}
   if(sv&&sv.call&&!bossCalled[bk]){bossCalled[bk]=1;setTimeout(()=>{try{if(scene==='explore'&&exBiome===bk&&regMap==='secret')toast(`${myName()}……`,2500)}catch(e){}},1500)}/* 喚名鴉：像有人在叫你的名字 */
+  if(sv)svNetWatch(bk);/* 172 */
   if(LORDS[bk]){lordSum.bk=bk;lordSum.f=0;lordSum.still=null;lordSum.path=null;lordNetWatch(bk)}
   bossStart()}
-function bossLeave(){const b=bossRT;if(b&&b.kind==='lord'&&!b.done)lordForfeit(true);bossRT=null;if(bossNetOff){try{bossNetOff()}catch(e){}bossNetOff=null}lordSum.path=null;lordSum.f=0;
+function bossLeave(){try{dropClear()}catch(e){}/* 174：換地圖才清地上的掉落物（秘境出去時 monClear 不會跑） */const b=bossRT;if(b&&(b.kind==='lord'||(b.kind==='servant'&&b.net))&&!b.done)lordForfeit(true);bossRT=null;if(bossNetOff){try{bossNetOff()}catch(e){}bossNetOff=null}if(bossNetOff2){try{bossNetOff2()}catch(e){}bossNetOff2=null}lordSum.path=null;lordSum.f=0;
   try{bossClear()}catch(e){}}
 function bossStart(){if(!bossRaf&&typeof requestAnimationFrame==='function'){bossLast=0;bossRaf=requestAnimationFrame(bossLoop)||-1}}
 function bossLoop(ts){bossRaf=0;if(!state||scene!=='explore'||regMap!=='secret'){if(bossRT)bossLeave();return}bossRaf=requestAnimationFrame(bossLoop)||-1;if(document.hidden===true||regBusy)return;
-  const dt=bossLast?Math.min(0.2,(ts-bossLast)/1000):0;bossLast=ts;try{bossStep(dt)}catch(e){try{crumb('boss '+e.message)}catch(x){}}try{fyAtkTick()}catch(e){}/* 170 */}
+  const dt=bossLast?Math.min(0.2,(ts-bossLast)/1000):0;bossLast=ts;try{bossStep(dt)}catch(e){try{crumb('boss '+e.message)}catch(x){}}try{fyAtkTick()}catch(e){}/* 170 */try{dropTick()}catch(e){}/* 174：秘境沒有一般怪、monLoop 不會跑，掉落物（撿取按鈕、自動撿、60 秒消失）改在這裡也跑 */}
 /* 一步：現身條件、AI（主機或僕人）、自己打它、畫 */
 function bossStep(dt){lordSummonTick();const b=bossRT,now=bossNow();if(!b)return;
   if(b.kind==='wait'){if(now>=b.until)bossRT=bossMake('servant',b.bk,b.def,null);else bossPaintWait(b);return}
   const me=curMe();
-  if(b.kind==='servant'&&!b.active){if(Math.hypot(me.x-b.x,me.y-b.y)<150){b.active=true;b.until=now+900;bossJump(b,now)}bossPaint(b);return}/* 靠近才站起來；162：跳到空地 */
+  if(b.kind==='servant'&&!b.active){if(Math.hypot(me.x-b.x,me.y-b.y)<150){b.active=true;b.until=now+900;bossJump(b,now);bossSvNet(b)}bossPaint(b);return}/* 靠近才站起來；162：跳到空地 */
   if(b.done){if(b.kind==='lord'&&b.fade&&now>b.fade){bossRT=null;try{bossClear();renderWorld()}catch(e){}return}bossPaint(b);return}
   const host=bossIsHost(b);
   if(host&&!b.inArena&&!b.jump&&bossArena(b)&&b.kind==='lord')bossJump(b,now);/* 162：主也下來空地 */
@@ -7761,7 +7765,7 @@ function bossStep(dt){lordSummonTick();const b=bossRT,now=bossNow();if(!b)return
     if(wb)wpnFire(wb,{boss:b});else bossDealt(b,wpnDmg(null))}
   if(host&&bossHp(b)<=0&&!b.done)bossWin(b);
   bossPaint(b)}
-const bossIsHost=b=>b.kind==='servant'||!b.net||b.net.host===uid;
+const bossIsHost=b=>!b.net||b.net.host===uid;/* 172：僕人連線時也只有主機算 AI */
 function bossTargets(b){const me=curMe(),out=[{u:bossMe(),x:me.x,y:me.y}];if(b.kind==='lord'&&b.members)for(const u of Object.keys(b.members)){if(u===uid)continue;const o=others&&others[u];if(o&&!(b.downs&&b.downs[u]))out.push({u,x:o.x,y:o.y})}return out}
 function bossAI(b,dt,now){const P=bossTargets(b),T=P.reduce((a,p)=>!a||Math.hypot(p.x-b.x,p.y-b.y)<Math.hypot(a.x-b.x,a.y-b.y)?p:a,null);b.tx=T.x;b.ty=T.y;
   if(b.kind==='lord'){if(b.ph===1&&bossHp(b)<=b.max/2)b.ph=2;if(!b.net&&now-b.t0>LORD_LIMIT){lordEnd(b,'lost');return}}/* 第二階段；一個人打（沒有連線）也有 15 分鐘 */
@@ -7818,11 +7822,11 @@ function bossPaintWait(b){const g=bossLayer('bossG','monBack');if(!g)return;cons
 function bossBar(b){let el=document.getElementById('bossBar');if(!b){if(el&&!el.hidden){el.hidden=true;try{renderMini()}catch(e){}}return}/* 154：大血條收起來 → 小地圖恢復 */
   if(!el||!el.querySelector){el=document.createElement('div');el.id='bossBar';el.innerHTML='<b></b><span class="bpor"><img alt="" aria-hidden="true"></span><span class="bbw"><i></i><em></em></span><button type="button" class="bbq">離開</button>';document.body.appendChild(el);
     el.querySelector('.bbq').addEventListener('click',()=>{if(bossRT&&bossRT.kind==='lord'&&!bossRT.done&&confirm('離開就算放棄。確定嗎？'))goFarm()})}
-  if(el.hidden){el.hidden=false;try{renderMini()}catch(e){}}/* 154：大血條出現 → 小地圖自動收起 */el.hidden=false;try{const ps=el.querySelector('.bpor');if(ps&&ps._a!==b.art){ps._a=b.art;ps.hidden=!b.art;ps.style.setProperty('--pc',porC(b.art));const im=ps.querySelector('img');im.onerror=()=>{ps.hidden=true};im.src=porSrc(b.art)}}catch(e){}/* 147：血條旁的頭像 */const hp=bossHp(b),lord=b.kind==='lord',k=[b.n,hp,b.max,b.ph,lord&&b.net?Object.keys(b.members||{}).length:0,b.done].join('|');if(el._k===k)return;el._k=k;
-  el.querySelector('b').textContent=b.n+(lord&&b.net&&Object.keys(b.members||{}).length>1?`（${Object.keys(b.members).length} 人）`:'');el.querySelector('i').style.width=(hp/b.max*100).toFixed(1)+'%';
+  if(el.hidden){el.hidden=false;try{renderMini()}catch(e){}}/* 154：大血條出現 → 小地圖自動收起 */el.hidden=false;try{const ps=el.querySelector('.bpor');if(ps&&ps._a!==b.art){ps._a=b.art;ps.hidden=!b.art;ps.style.setProperty('--pc',porC(b.art));const im=ps.querySelector('img');im.onerror=()=>{ps.hidden=true};im.src=porSrc(b.art)}}catch(e){}/* 147：血條旁的頭像 */const hp=bossHp(b),lord=b.kind==='lord',nm=b.net?Object.keys(b.members||{}).length:0,mh=nm>1?bossMemHTML(b):'',k=[b.n,hp,b.max,b.ph,nm,b.done,mh].join('|');if(el._k===k)return;el._k=k;
+  el.querySelector('b').textContent=b.n+(nm>1?`（${nm} 人）`:'');{let L=el.querySelector('.bmem');if(!L){L=document.createElement('div');L.className='bmem';el.appendChild(L)}L.innerHTML=mh;L.hidden=!mh}/* 172.3 */el.querySelector('i').style.width=(hp/b.max*100).toFixed(1)+'%';
   el.querySelector('em').hidden=!lord;el.querySelector('.bbq').hidden=!lord||b.done;el.classList.toggle('ph2',b.ph===2)}
 /* ---- 贏了、輸了 ---- */
-function bossWin(b){if(b.kind==='lord'){lordEnd(b,'won');return}b.done=true;b.mode='idle';b.shape=null;bossReward(b);(state.servantAt||(state.servantAt={}))[b.bk]=bossNow();save();
+function bossWin(b){if(b.kind==='lord'){lordEnd(b,'won');return}if(b.net){if(b.done)return;const next=bossNow()+BOSS_RESPAWN;bossNet.update(bpath(b)+'/meta',{st:'won',next});svResult(b,next);return}/* 172 */b.done=true;b.mode='idle';b.shape=null;bossReward(b);(state.servantAt||(state.servantAt={}))[b.bk]=bossNow();save();
   setTimeout(()=>{if(bossRT===b)bossRT={kind:'wait',bk:b.bk,until:(state.servantAt||{})[b.bk]+BOSS_RESPAWN,def:b.def}},1200)}
 const spiritName=bk=>LORDS[bk]?LORDS[bk].n.replace(/^.*的/,'')+'的精魄':'精魄';
 function bossReward(b){const bk=b.bk,lord=b.kind==='lord',sv=SERVANTS[bk],got=[];
@@ -7831,7 +7835,7 @@ function bossReward(b){const bk=b.bk,lord=b.kind==='lord',sv=SERVANTS[bk],got=[]
   if(typeof MON_XP_ON!=='undefined'&&MON_XP_ON){try{const x=monXp(bk,false)*(lord?100:20);addXp(x,true);petXp(x)}catch(e){}}
   if(lord){if(Math.random()<0.4){const I=state.items||(state.items={});I['sp_'+bk]=(I['sp_'+bk]||0)+1;got.push(spiritName(bk))}if(Math.random()<0.2){const P=packsObj();P[bk]=(P[bk]||0)+1;got.push(`夢幻色卡包（${BIOMES[bk]?BIOMES[bk].n:bk}）`)}{const W=state.lordWon||(state.lordWon={});W[b.def.id]=(W[b.def.id]||0)+1}/* 135 第二階段 */
     if(Math.random()<0.01){try{const L=lordSeed(bk);if(L)got.push(`「${L.name}」的種子 ${L.count} 顆`)}catch(e){}}
-    if(!b.def.cons)(state.lordCd||(state.lordCd={}))[b.def.id]=bossNow();lordFirst(b)}
+    lordFirst(b)}
   save();try{renderHUD()}catch(e){}
   setTimeout(()=>{try{noteOpen(`<h2>${esc(b.n)}${lord?'平靜下來了':''}</h2>${!lord&&sv?`<p class="note">${esc(sv.bye)}</p>`:''}<p class="note">得到：${got.join('、')}</p><p class="note" style="opacity:.75">素材和金幣掉在地上，記得撿。</p>`)}catch(e){}},lord?2600:700);return got}
 /* 1%：該區作物的專屬造型種子（接替第 134 節拿掉的種子台座） */
@@ -7841,14 +7845,14 @@ function lordSeed(bk){const cs=(BIOMES[bk]&&BIOMES[bk].crops||[]).map(c=>Array.i
 async function lordFirst(b){if(!uid)return;try{const ref=db.collection('fairyFirst').doc('lord_'+b.def.id);let first=false;await db.runTransaction(async tx=>{const d=await tx.get(ref);if(d.exists)return;tx.set(ref,{u:uid,name:myName(),at:Date.now()});first=true});if(first)postNews('fairy',`${myName()} 是第一個讓${b.def.n}平靜下來的人`,4)}catch(e){}}
 /* 結束：st＝won／lost。主機（或一個人）判斷；連線時寫進 meta，大家在 lordNetSync 收到 */
 function lordEnd(b,st){if(b.done)return;b.done=true;b.shape=null;b.mode='idle';b.fade=bossNow()+(st==='won'?6000:1500);
-  if(b.net){bossNet.update(fpath(b.bk)+'/meta',{st});if(b.net.host===uid){const fid=b.net.fid;setTimeout(()=>{const N=lordNetState[b.bk];if(N&&N.meta&&N.meta.fid===fid)try{bossNet.remove(fpath(b.bk))}catch(e){}},20000)}}
+  if(b.net){bossNet.update(bpath(b)+'/meta',{st});if(b.net.host===uid&&b.kind==='lord'){const fid=b.net.fid;setTimeout(()=>{const N=lordNetState[b.bk];if(N&&N.meta&&N.meta.fid===fid)try{bossNet.remove(bpath(b))}catch(e){}},20000)}}
   lordResult(b,st)}
 function lordResult(b,st){if(b.res)return;b.res=st;b.done=true;b.shape=null;if(!b.fade)b.fade=bossNow()+(st==='won'?6000:1500);
-  if(st==='won'){try{const ov=document.createElement('div');ov.className='lordcalm';ov.innerHTML=`${porHTML(b.art,84)}<div>${esc(b.n)}平靜下來了</div>`;document.body.appendChild(ov);setTimeout(()=>{try{ov.remove()}catch(e){}},2600)}catch(e){}if(!(b.downs&&b.downs[uid]))bossReward(b)}
+  if(st==='won'){try{const ov=document.createElement('div');ov.className='lordcalm';ov.innerHTML=`${porHTML(b.art,84)}<div>${esc(b.n)}平靜下來了</div>`;document.body.appendChild(ov);setTimeout(()=>{try{ov.remove()}catch(e){}},2600)}catch(e){}if(!b.def.cons)(state.lordCd||(state.lordCd={}))[b.def.id]=bossNow();/* 172：平靜 20 小時對這一場所有成員生效 */if(!(b.downs&&b.downs[uid])&&b.myDmg>0)bossReward(b);else if(b.myDmg<=0)setTimeout(()=>{try{toast('這一場你沒有打到牠，沒有獎勵。',3500)}catch(e){}},2700)}
   else setTimeout(()=>{try{noteOpen(`<div style="text-align:center">${porHTML(b.art,72)}</div><h2>${esc(b.n)}離開了</h2><p class="note">這次沒能讓牠平靜下來。${b.def.cons?'用掉的供品不會還回來。':''}</p>`)}catch(e){}},500)}
 /* 放棄（離開地圖、倒下、按「離開」）：連線時記 down；自己是主機就交給下一個人，沒人了就算輸 */
-function lordForfeit(quiet){const b=bossRT;if(!b||b.kind!=='lord'||b.done)return;b.done=true;b.res='left';
-  if(b.net){bossNet.set(fpath(b.bk)+'/down/'+uid,1);if(b.net.host===uid){const alive=lordAlive(b).filter(u=>u!==uid);if(alive.length)bossNet.update(fpath(b.bk)+'/meta',{host:alive.sort()[0]});else bossNet.update(fpath(b.bk)+'/meta',{st:'lost'})}}}
+function lordForfeit(quiet){const b=bossRT;if(!b||!(b.kind==='lord'||(b.kind==='servant'&&b.net))||b.done)return;b.done=true;b.res='left';
+  if(b.net){bossNet.set(bpath(b)+'/down/'+uid,1);if(b.net.host===uid){const alive=lordAlive(b).filter(u=>u!==uid);if(alive.length)bossNet.update(bpath(b)+'/meta',{host:alive.sort()[0]});else if(b.kind==='lord')bossNet.update(bpath(b)+'/meta',{st:'lost'});else bossNet.remove(bpath(b))}}}/* 172：僕人沒人了就整份清掉，下一個人重新開始 */
 /* ---- 主：現身條件 ---- */
 const twNow=()=>{const d=new Date(bossNow()+8*3600e3);return {h:d.getUTCHours(),m:d.getUTCMinutes()}};
 const minervaFog=()=>{const t=twNow();return t.h%2===0&&t.m<20};/* 台灣時間偶數整點起霧 20 分鐘 */
@@ -7901,27 +7905,66 @@ function fightDenied(e){const s=String((e&&(e.code||e.message))||e||'');if(!/per
 let bossNet={on:(p,cb)=>{const r=rtdb.ref(p),f=s=>cb(s.val());r.on('value',f,fightDenied);return ()=>r.off('value',f)},set:(p,v)=>rtdb.ref(p).set(v).catch(fightDenied),update:(p,v)=>rtdb.ref(p).update(v).catch(fightDenied),remove:p=>rtdb.ref(p).remove().catch(fightDenied),
   stamp:()=>firebase.database.ServerValue.TIMESTAMP,onDis:p=>{try{rtdb.ref(p).onDisconnect().set(1)}catch(e){}}};
 const fpath=bk=>`fight/${bk}`;
+const bpath=b=>fpath(b.kind==='servant'?b.bk+'_sv':b.bk);/* 172：主 fight/<區>、僕人 fight/<區>_sv */
+const svNetState={};let bossNetOff2=null;
 function lordNetWatch(bk){if(!uid||!(rtdb||bossNet.fake))return;if(bossNetOff){try{bossNetOff()}catch(e){}}bossNetOff=bossNet.on(fpath(bk),v=>{lordNetState[bk]=v||null;try{lordNetSync(bk,v)}catch(e){try{crumb('lordsync '+e.message)}catch(x){}}})}
-function lordNetStart(b){const bk=b.bk,fid=uid+'_'+bossNow();b.net.fid=fid;b.hbs={};bossNet.set(fpath(bk),{meta:{fid,host:uid,max:b.max,members:b.members,t0:bossNow(),st:'on'},s:lordState(b)});lordHeartbeat(b)}
+function lordNetStart(b){try{partyFightEv(b.kind,b.bk)}catch(e){}/* 173：隊友收到開打提示 */const fid=uid+'_'+bossNow();b.net.fid=fid;b.hbs={};b.seen={};bossNet.set(bpath(b),{meta:{fid,host:uid,max:b.max,base:b.base,adj:0,members:b.members,t0:bossNow(),st:'on',kind:b.kind},s:lordState(b)});lordHeartbeat(b)}
 function lordState(b){return {x:Math.round(b.x),y:Math.round(b.y),face:b.face,mode:b.mode,atk:b.atk||'',seq:b.seq,shape:b.shape||null,left:Math.max(0,Math.round(b.until-bossNow())),ph:b.ph,hid:b.hidden?1:0}}
-function lordPushState(b,now){if(!b.net||b.net.host!==uid||b.done)return;if(b._ps&&now-b._ps<150&&b._pseq===b.seq)return;b._ps=now;b._pseq=b.seq;bossNet.set(fpath(b.bk)+'/s',lordState(b))}
-function lordPushDmg(b){const now=bossNow();if(b._pd&&now-b._pd<250&&bossHp(b)>0)return;b._pd=now;bossNet.set(fpath(b.bk)+'/dmg/'+uid,b.myDmg)}
+function lordPushState(b,now){if(!b.net||b.net.host!==uid||b.done)return;if(b._ps&&now-b._ps<150&&b._pseq===b.seq)return;b._ps=now;b._pseq=b.seq;bossNet.set(bpath(b)+'/s',lordState(b))}
+function lordPushDmg(b){const now=bossNow();if(b._pd&&now-b._pd<250&&bossHp(b)>0)return;b._pd=now;bossNet.set(bpath(b)+'/dmg/'+uid,b.myDmg)}
 /* 每秒：自己的心跳（斷線時 onDisconnect 記 down）＋檢查主機、輸贏 */
-function lordHeartbeat(b){bossNet.onDis(fpath(b.bk)+'/down/'+uid);const tick=()=>{if(bossRT!==b||b.done)return;bossNet.set(fpath(b.bk)+'/hb/'+uid,bossNet.stamp());if(b.myDmg)bossNet.set(fpath(b.bk)+'/dmg/'+uid,b.myDmg);lordHostCheck(b);setTimeout(tick,1000)};tick()}
+function lordHeartbeat(b){bossNet.onDis(bpath(b)+'/down/'+uid);const tick=()=>{if(bossRT!==b||b.done)return;bossNet.set(bpath(b)+'/hb/'+uid,bossNet.stamp());if(b.myDmg)bossNet.set(bpath(b)+'/dmg/'+uid,b.myDmg);lordHostCheck(b);setTimeout(tick,1000)};tick()}
 const lordAlive=b=>{const hb=b.hbs||{},v=Object.values(hb).filter(x=>typeof x==='number'),newest=v.length?Math.max(...v):0;return Object.keys(b.members||{}).filter(u=>!(b.downs&&b.downs[u])&&(u===uid||(typeof hb[u]==='number'&&newest-hb[u]<LORD_HB_DEAD)))};
 function lordHostCheck(b){if(!b.net||b.done)return;const now=bossNow(),alive=lordAlive(b);
-  if(b.net.host===uid){if(now-b.t0>LORD_LIMIT)lordEnd(b,'lost');else if(bossHp(b)<=0)lordEnd(b,'won');return}
+  if(b.net.host===uid){bossScaleUp(b);if(b.kind==='lord'&&now-b.t0>LORD_LIMIT)lordEnd(b,'lost');else if(bossHp(b)<=0)bossWin(b);return}
   const hb=b.hbs||{},hh=hb[b.net.host];
   if(alive.includes(b.net.host)&&typeof hh==='number')return;if(typeof hh!=='number'&&now-b.t0<LORD_HB_DEAD+2000)return;/* 主機剛開始，心跳還沒到 */
-  if(alive.sort()[0]===uid){b.net.host=uid;bossNet.update(fpath(b.bk)+'/meta',{host:uid});const S=b.net.s;if(S){b.x=S.x;b.y=S.y;b.ph=S.ph||b.ph}b.mode='idle';b.until=now+800;b.shape=null;b.seq=(b.seq||0)+1}}/* 主機斷線：接手 */
+  if(alive.sort()[0]===uid){b.net.host=uid;bossNet.update(bpath(b)+'/meta',{host:uid});const S=b.net.s;if(S){b.x=S.x;b.y=S.y;b.ph=S.ph||b.ph}b.mode='idle';b.until=now+800;b.shape=null;b.seq=(b.seq||0)+1}}/* 主機斷線：接手 */
 /* 收到同步：加入（成員裡有自己）、更新、結束 */
-function lordNetSync(bk,v){const b=bossRT;if(!v||!v.meta)return;const m=v.meta;
-  if(m.st==='on'&&(!b||b.kind!=='lord')&&m.members&&m.members[uid]&&!(v.down&&v.down[uid])&&exBiome===bk&&regMap==='secret'&&lordBusy(bk)&&lordSum.gone!==m.fid){
-    const nb=bossMake('lord',bk,LORDS[bk],m.members);nb.max=m.max;nb.t0=m.t0;nb.net={host:m.host,fid:m.fid,s:v.s||null};nb.dmg=Object.assign({},v.dmg||{});nb.myDmg=(v.dmg||{})[uid]||0;nb.dmg[uid]=nb.myDmg;nb.hbs=v.hb||{};nb.downs=v.down||{};
-    if(v.s){nb.x=v.s.x;nb.y=v.s.y;nb.seq=v.s.seq;nb.mode=v.s.mode;nb.shape=v.s.shape||null}bossRT=nb;lordSum.f=0;lordSum.still=null;lordShow(LORDS[bk]);lordHeartbeat(nb);try{renderWorld()}catch(e){}return}
-  if(!b||b.kind!=='lord'||!b.net||b.net.fid!==m.fid)return;
-  b.net.host=m.host;if(v.s)b.net.s=v.s;b.hbs=v.hb||{};b.downs=v.down||{};b.dmg=Object.assign({},v.dmg||{});b.dmg[uid]=Math.max(b.myDmg,b.dmg[uid]||0);
-  if(m.st!=='on'&&b.res!=='left'){lordSum.gone=m.fid;lordResult(b,m.st)}}
+function lordNetSync(bk,v){bossNetSync('lord',bk,v)}
+/* ===== 172（20c）：主、僕人同一張地圖只有一隻、大家一起打 =====
+   fight/<區>（主）、fight/<區>_sv（僕人）：meta｛fid,host,max,base,adj,members,t0,st,kind,next｝、s、dmg、hb、down。
+   這張秘境有進行中的戰鬥 → 進來的人自動加入（members 寫自己、down 清掉，之前打的量保留）；主機看到人數變多就把 max 加「單人份 ×0.6」、同時加 adj 讓血量比例不變。
+   僕人：第一個讓牠醒來的人當主機；贏了寫 st:'won'、next＝重生時間，大家的倒數一樣。獎勵要有打出傷害；主的冷卻對所有成員生效。 */
+function bossNetOk(){return !!(uid&&(rtdb||bossNet.fake))}
+function svNetWatch(bk){if(!bossNetOk())return;if(bossNetOff2){try{bossNetOff2()}catch(e){}}bossNetOff2=bossNet.on(fpath(bk+'_sv'),v=>{svNetState[bk]=v||null;try{bossNetSync('servant',bk,v)}catch(e){try{crumb('svsync '+e.message)}catch(x){}}})}
+function svBusy(bk){const N=svNetState[bk];if(!N||!N.meta||N.meta.st!=='on')return false;const hb=Object.values(N.hb||{}).filter(x=>typeof x==='number');const last=hb.length?Math.max(...hb):N.meta.t0||0;return bossNow()-last<LORD_STALE}
+/* 僕人醒來：沒有人在打牠 → 自己當主機開一場 */
+function bossSvNet(b){if(!b||b.kind!=='servant'||b.net||!bossNetOk()||svBusy(b.bk))return;b.members={[bossMe()]:myName()};b.mcount=1;b.net={host:uid,s:null};lordNetStart(b)}
+/* 主機：人數變多 → max 加單人份 ×0.6，adj 補上讓目前血量比例不變 */
+function bossScaleUp(b){const n=Object.keys(b.members||{}).length;if(b.mcount==null){b.mcount=n;return}if(n<=b.mcount)return;
+  const add=(b.base||b.max)*BOSS_JOIN_K*(n-b.mcount),D=b.max-bossHp(b),adj=(b.adj||0)+D*add/b.max;b.max=Math.round(b.max+add);b.adj=adj;b.mcount=n;bossNet.update(bpath(b)+'/meta',{max:b.max,adj:Math.round(adj*100)/100})}
+/* 隊友的傷害數字：dmg 增量，一秒內同一個人合成一個 */
+const tmAcc={};
+function tmDmg(b,old,nw){for(const u of Object.keys(nw||{})){if(u===uid)continue;const d=(+nw[u]||0)-(+((old||{})[u])||0);if(d<=0)continue;const A=tmAcc[u]||(tmAcc[u]={d:0,t:0});A.d+=d;if(!A.t){A.t=setTimeout(()=>{const v=A.d;A.d=0;A.t=0;try{if(bossRT&&!bossRT.done)dmgShow(bossRT.x+(hashStr(u)%30-15),bossRT.y-BOSS_HU*(bossRT.def.h||1)-10,v,{key:'tm'+u,tm:1,color:typeof partyHas==='function'&&partyHas(u)?PARTY_COLOR:null})}catch(e){}},1000)}}}
+/* 有人加入、倒下、離開：一行小字 */
+function bossEvents(b,m,v){const S=b.seen||(b.seen={}),nm=u=>esc(String((m.members||{})[u]||'隊友'));const alive=new Set(lordAlive(b));
+  for(const u of Object.keys(m.members||{})){if(u===uid)continue;const st=v.down&&v.down[u]?'down':(alive.has(u)||!(v.hb&&typeof v.hb[u]==='number'))?'on':'gone';/* 剛加入、心跳還沒到也算在場 */if(S[u]===st)continue;const was=S[u];S[u]=st;
+    if(!was){if(st!=='gone')toast(`${nm(u)} 加入了戰鬥`,2200)}else if(st==='down')toast(`${nm(u)} 倒下了`,2200);else if(st==='gone')toast(`${nm(u)} 離開了`,2200);else if(was!=='on')toast(`${nm(u)} 回到戰鬥`,2200)}}
+/* 血條下面的成員（最多 6 個）：名字、倒下、傷害佔比 */
+function bossMemHTML(b){const M=b.members||{},D=b.dmg||{},tot=Object.values(D).reduce((s,x)=>s+(+x||0),0)||1;const pt=u=>u!==uid&&typeof partyHas==='function'&&partyHas(u)?1:0;const L=Object.keys(M).sort((a,c)=>(c===uid)-(a===uid)||pt(c)-pt(a)||(+D[c]||0)-(+D[a]||0)).slice(0,6);/* 173：隊友排前面 */
+  return L.map(u=>{const dn=b.downs&&b.downs[u];return `<span class="bm${u===uid?' me':''}${dn?' dn':''}${pt(u)?' pt':''}">${esc(String(M[u]).slice(0,8))}${dn?'（倒下）':''} ${Math.round((+D[u]||0)/tot*100)}%</span>`}).join('')}
+/* 僕人結算（大家同一刻收到）：有打出傷害才有獎勵；重生時間照 next */
+function svResult(b,next){if(b.res)return;b.res='won';b.done=true;b.mode='idle';b.shape=null;
+  if(!(b.downs&&b.downs[uid])&&b.myDmg>0)bossReward(b);else if(b.myDmg<=0)setTimeout(()=>{try{toast('這一場你沒有打到牠，沒有獎勵。',3500)}catch(e){}},700);
+  (state.servantAt||(state.servantAt={}))[b.bk]=next-BOSS_RESPAWN;save();setTimeout(()=>{if(bossRT===b)bossRT={kind:'wait',bk:b.bk,until:next,def:b.def}},1200)}
+/* 收到同步（主、僕人共用）：加入、更新、結束 */
+function bossNetSync(kind,bk,v){const b=bossRT;if(!v||!v.meta)return;const m=v.meta,here=exBiome===bk&&regMap==='secret'&&scene==='explore',now=bossNow();
+  const busy=kind==='lord'?lordBusy(bk):svBusy(bk),def=kind==='lord'?LORDS[bk]:SERVANTS[bk];if(!def)return;
+  const mine=b&&b.kind===kind&&b.net&&b.net.fid===m.fid;
+  /* 加入：這張圖有進行中的那一場、自己還沒在裡面 */
+  if(!mine&&m.st==='on'&&here&&busy&&(kind!=='lord'||lordSum.gone!==m.fid)&&!(b&&b.kind==='lord'&&!b.done&&kind==='servant')&&!(b&&b.kind===kind&&!b.done&&b.net)){
+    const nb=bossMake(kind,bk,def,m.members||{});nb.max=m.max;nb.base=m.base||nb.base;nb.adj=+m.adj||0;nb.t0=m.t0;nb.active=true;nb.net={host:m.host,fid:m.fid,s:v.s||null};nb.dmg=Object.assign({},v.dmg||{});nb.myDmg=(v.dmg||{})[uid]||0;nb.dmg[uid]=nb.myDmg;nb.hbs=v.hb||{};nb.downs=Object.assign({},v.down||{});delete nb.downs[uid];
+    nb.members=Object.assign({},m.members||{},{[uid]:myName()});nb.mcount=Object.keys(nb.members).length;nb.seen={};for(const u of Object.keys(m.members||{}))nb.seen[u]='on';
+    if(v.s){nb.x=v.s.x;nb.y=v.s.y;nb.seq=v.s.seq;nb.mode=v.s.mode;nb.shape=v.s.shape||null;nb.inArena=true}
+    bossNet.set(bpath(nb)+'/meta/members/'+uid,myName());if(v.down&&v.down[uid])bossNet.remove(bpath(nb)+'/down/'+uid);
+    bossRT=nb;if(kind==='lord'){lordSum.f=0;lordSum.still=null;lordShow(def)}lordHeartbeat(nb);try{renderWorld()}catch(e){}return}
+  /* 僕人倒下後的重生倒數：大家照 next */
+  if(kind==='servant'&&m.st==='won'&&m.next&&now<m.next&&here&&(!b||b.kind==='wait'||(b.kind==='servant'&&!b.active&&!b.net))){bossRT={kind:'wait',bk,until:m.next,def};(state.servantAt||(state.servantAt={}))[bk]=m.next-BOSS_RESPAWN;return}
+  if(!mine)return;
+  const old=b.dmg;b.net.host=m.host;if(v.s)b.net.s=v.s;b.hbs=v.hb||{};b.downs=v.down||{};b.members=m.members||b.members;if(m.max)b.max=m.max;b.adj=+m.adj||0;b.dmg=Object.assign({},v.dmg||{});b.dmg[uid]=Math.max(b.myDmg,b.dmg[uid]||0);
+  try{tmDmg(b,old,b.dmg);bossEvents(b,m,v)}catch(e){}
+  if(m.st!=='on'&&b.res!=='left'){if(kind==='lord'){lordSum.gone=m.fid;lordResult(b,m.st)}else if(m.st==='won')svResult(b,m.next||now+BOSS_RESPAWN)}}
 /* ===== 135 結束 ===== */
 /* ===== 135（19d）第二階段：精魄孵化與神寵、夢幻色卡包（佔位）、米涅瓦的巢 =====
    精魄＝道具 sp_<地區>（state.items，可以上架市集）；用了 → state.hatch 孵 6 小時（離線也算，hatchTick 在 tick 裡）→ state.pets 多一隻幼獸。
@@ -8461,7 +8504,7 @@ function fyScaleSet(hu){AV_HU=hu;const PH=AV_HU*CHAR_S;FY_S=FY_REL*PH/FY_FH;FY_D
   try{for(const S of FYO.values()){S.sh.setAttribute('rx',fyShRx().toFixed(1));S.sh.setAttribute('ry',(fyShRx()*0.3).toFixed(1))}}catch(e){}}
 function fyShRx(){return FY_FH*0.42*FY_S*0.35}/* 158.3：神之子身體寬約 FY_FH×0.42 */
 fyScaleSet(AV_HU0);
-function fyScaleMeasure(){if(fyMeasured)return;try{const e=document.getElementById('meGAv')||document.getElementById('meAv');if(!e||!e.getBBox)return;const hh=e.getBBox().height;if(hh>20&&hh<200){fyMeasured=true;if(Math.abs(hh-AV_HU)>0.5)fyScaleSet(hh)}}catch(e){}}
+function fyScaleMeasure(){if(fyMeasured)return;if(typeof char3On==='function'&&char3On()){fyMeasured=true;if(AV_HU!==C3_HU)fyScaleSet(C3_HU);return}/* 171：新版人物的框是整格，照舊角色高度 */try{const e=document.getElementById('meGAv')||document.getElementById('meAv');if(!e||!e.getBBox)return;const hh=e.getBBox().height;if(hh>20&&hh<200){fyMeasured=true;if(Math.abs(hh-AV_HU)>0.5)fyScaleSet(hh)}}catch(e){}}
 /* ===== 170（20a）：神之子的普通攻擊 =====
    跟隨中、主人在野外（含秘境）才出手；目標＝正在和主人交手的（主人 6 秒內打過、或正在追／打主人）一般怪、僕人、主，離主人 FY_ATK_R 內最近的一隻；
    FY_ATK_CD 秒一次；傷害＝主人普通攻擊的基礎傷害（等級、武器，不含爆擊）× FY_ATK_PCT[階段]，不爆擊、不 MISS；擊殺、掉落、主的傷害都算主人的。
@@ -8665,7 +8708,7 @@ const monDmg=m=>{const r=MON_RDMG[exBiome]||[50,80];return Math.round((r[0]+Math
 const monCount=()=>Math.min(MON_MAXN,MON_N+2*Object.keys(others||{}).length);
 let pHP=PHP_BASE,pFightAt=0,pRegAt=0,potCd=0;
 const wpnMelee=()=>{const w=curWpn();return !!w&&w.W.ty==='近戰'};
-function pDamage(n){if(wpnMelee())n=Math.max(1,Math.round(n*0.6));/* 166：近戰受到的傷害 −40% */pHP=Math.max(0,pHP-n);pFightAt=Date.now();try{const me=curMe();dmgShow(me.x,me.y-78,n,{hurt:1,key:'me'})}catch(e){}/* 152：紅字 */renderHP();if(pHP<=0)pDie();else autoPotCheck()}
+function pDamage(n){c3HitAt=Date.now();/* 171：被打 */if(wpnMelee())n=Math.max(1,Math.round(n*0.6));/* 166：近戰受到的傷害 −40% */pHP=Math.max(0,pHP-n);pFightAt=Date.now();try{const me=curMe();dmgShow(me.x,me.y-78,n,{hurt:1,key:'me'})}catch(e){}/* 152：紅字 */renderHP();if(pHP<=0)pDie();else autoPotCheck()}
 function pDie(){const lost=tripLose();pHP=pMax();pFightAt=0;try{closePanel();closeSheet()}catch(e){}goFarm();renderHP();
   setTimeout(()=>{try{noteOpen(`<h2>你倒下了</h2><p class="note">被送回農場，血量補滿了。${lost?'這趟撿到、還沒帶回來的素材掉了一半。':''}</p><p class="note">金幣、種子、果實、道具都沒有少。</p>`)}catch(e){}},400)}
 function pRegen(){autoPotCheck();const now=Date.now();if(scene!=='explore'){if(pHP<pMax()){pHP=pMax();renderHP()}pRegAt=now;return}const dt=Math.min(5,(now-(pRegAt||now))/1000);pRegAt=now;if(pHP<pMax()&&now-pFightAt>=PHP_CALM){const ed=Math.min(dt,(now-pFightAt-PHP_CALM)/1000);if(ed>0){pHP=Math.min(pMax(),pHP+pMax()*PHP_REGEN*ed);renderHP()}}}/* 只算安靜滿 5 秒之後的時間 */
@@ -9075,7 +9118,7 @@ function joinFarm(key){
 function leavePresence(){try{if(rtdbRef)rtdbRef.remove()}catch(e){}rtdbRef=null;if(rtdbOff){rtdbOff();rtdbOff=null}if(hb){clearInterval(hb);hb=null}others={}}
 function pushPos(force){
   if(!rtdbRef)return;const now=Date.now();if(!force&&now-lastPush<150)return;lastPush=now;const m=curMe();
-  rtdbRef.set({x:Math.round(m.x),y:Math.round(m.y),d:meDir,name:myName(),lv:myLv(),ch:champOn()?1:0,av:avPack(state.avatar),w:wpnTag(),...(char2On()?{c2:char2Sex()}:{}),...(fyAct&&Date.now()-fyAct.t<1500?{fa:fyAct}:{}),/* 170：神之子最近一次出手（1.5 秒內才送） */fy:fyPack(fyMe()),/* 168：新版主角 m／f，沒開不送 */a:meAct&&Date.now()-meAct.at<1500?meAct:null,f:meFace,t:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});
+  rtdbRef.set({x:Math.round(m.x),y:Math.round(m.y),d:meDir,name:myName(),lv:myLv(),ch:champOn()?1:0,av:avPack(state.avatar),w:wpnTag(),...(char2On()?{c2:char2Sex()}:{}),...(char3On()?{ap:lookPack(lookNorm(state.look))}:{}),/* 171 */...(fyAct&&Date.now()-fyAct.t<1500?{fa:fyAct}:{}),/* 170：神之子最近一次出手（1.5 秒內才送） */fy:fyPack(fyMe()),/* 168：新版主角 m／f，沒開不送 */a:meAct&&Date.now()-meAct.at<1500?meAct:null,f:meFace,t:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});
 }
 let meDir=1,walkPh=0,meFace=2;
 const VIEWS=['side','fq','front','fq','side','bq','back','bq'];
@@ -9106,13 +9149,163 @@ function char2Paint(a,face,moving,sex){let g=a.querySelector&&a.querySelector('g
   g.setAttribute('transform',`translate(0 ${F.bob.toFixed(1)})`);if(im.getAttribute('href')!==src){try{imgHref(im,src)}catch(e){im.setAttribute('href',src)}}
   im.setAttribute('x',G.x.toFixed(1));im.setAttribute('width',G.W.toFixed(1));if(F.mir)im.setAttribute('transform','scale(-1 1)');else im.removeAttribute('transform')}
 function renderChar2Box(){const el=document.getElementById('char2Box');if(!el||!state)return;const on=char2On(),s=char2Sex();
-  el.innerHTML=`<h3>新版角色（測試）</h3><button class="btn${on?' primary':''}" data-c2="tog">新版角色（測試）：${on?'開':'關'}</button>${on?`<div class="row2" style="margin-top:6px"><button class="mini" data-c2="m" aria-pressed="${s==='m'}" style="${s==='m'?'background:var(--tabon);color:var(--tabtx)':''}">男生</button><button class="mini" data-c2="f" aria-pressed="${s==='f'}" style="${s==='f'?'background:var(--tabon);color:var(--tabtx)':''}">女生</button></div>`:''}<p class="note">只換你自己的樣子；衣服、髮型、神之翼這一版還不會顯示。</p>`}
+  el.innerHTML=`<h3>新版角色（測試）</h3><button class="btn${on?' primary':''}" data-c2="tog">新版角色（測試）：${on?'開':'關'}</button>${on?`<div class="row2" style="margin-top:6px"><button class="mini" data-c2="m" aria-pressed="${s==='m'}" style="${s==='m'?'background:var(--tabon);color:var(--tabtx)':''}">男生</button><button class="mini" data-c2="f" aria-pressed="${s==='f'}" style="${s==='f'?'background:var(--tabon);color:var(--tabtx)':''}">女生</button></div>`:''}<p class="note">只換你自己的樣子；衣服、髮型、神之翼這一版還不會顯示。</p><h3 style="margin-top:10px">新版人物（測試）</h3><button class="btn${state.char3!==false?' primary':''}" data-c3="tog">新版人物（測試）：${state.char3!==false?'開':'關'}</button>${state.char3!==false?`<div class="row2" style="margin-top:6px"><button class="mini" data-c2="m" aria-pressed="${s==='m'}">男生</button><button class="mini" data-c2="f" aria-pressed="${s==='f'}">女生</button><button class="mini" data-c3="look">造型</button></div><p class="note">目前只有女生的身形；選男生的話照舊。</p>`:''}`}
+try{document.getElementById('char2Box').addEventListener('click',e=>{const b=e.target.closest('[data-c3]');if(!b||!state)return;if(b.dataset.c3==='look'){sheet={look:1};renderSheet();openSheetUI();return}state.char3=state.char3===false?true:false;save();renderChar2Box();try{const L=document.getElementById('charLayer');if(L)L._s='';renderChars();fyMeasured=false;fyScaleSet(AV_HU0);fyScaleMeasure();pushPos(true)}catch(x){}})}catch(e){}/* 171 */
 try{document.getElementById('char2Box').addEventListener('click',e=>{const b=e.target.closest('[data-c2]');if(!b||!state)return;const v=b.dataset.c2;if(v==='tog'){state.char2=!state.char2;if(state.char2)char2Preload()}else state.char2Sex=v;save();renderChar2Box();try{pushPos(true);pushProfile()}catch(e){}/* 168：別人馬上看到 */try{const L=document.getElementById('charLayer');if(L)L._s='';renderChars();fyMeasured=false;fyScaleMeasure()}catch(e){}})}catch(e){}/* 155：神之子跟著新角色的高度 */
 /* 158.3：主角腳下的影子（寬約身體 70%、高為寬的 30%、黑 25%）；新版角色身體約畫布寬的 60% */
 function charShadow(c2s){const bw=c2s?char2Geo(c2s).W*0.6:24,rx=bw*0.35,ry=rx*0.3;return `<ellipse class="psh" cx="0" cy="-0.5" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="#000" opacity=".25"/>`}
 /* ===== 156 結束 ===== */
-function charG(id,x,y,av,flip,pose,name,lv,fy,who,ch,wtag,c2){const me=id==='meG',c2s=me?(char2On()?char2Sex():null):(c2==='m'||c2==='f'?c2:null);/* 168：別的玩家開了新版主角（c2＝m／f）也用同一套畫法 */
-  const WH=wpnHTML(wtag,flip,pose&&pose.view,c2s?CHAR2_H/CHAR_S:57.5,me);return `<g ${id?`id="${id}"`:''} transform="translate(${Math.round(x)} ${Math.round(y)}) scale(1.15)" pointer-events="none">${charShadow(c2s)}${me?`<g id="meWB">${WH.b}</g>`:WH.b}<g${id?` id="${id}Av"`:''}${!me&&c2s?` data-c2w="${esc(String(who))}"`:''}>${c2s?char2SVG(me?meFace:(pose&&pose.face!=null?pose.face:2),me?!!raf:!!(pose&&pose.mv),c2s):avIdle(av,flip,pose)}</g>${me?`<g id="meWF">${WH.f}</g>`:WH.f}${name?`<g${id?` id="${id}Tag"`:''}${c2s?` transform="translate(0 ${char2TagDY().toFixed(1)})"`:''}>${nameTag(name,lv,ch)}</g>`:''}</g>`}
+/* ===== 171（20d）：分層人物（3D 拍成 2D）=====
+   assets/char3/f/<槽位>/<編號>/<動作>.png（格 128×192，欄＝方向 0 正面～4 背面、列＝格序；朝右鏡射），疊放 hb→body→shoes→bottom→top→hf；anchors.json 是每格的手的位置。
+   外觀＋動作第一次用到時合成一張（加 1px 深褐外輪廓）轉成 blob 網址，之後每格只改 <svg viewBox>（手機上不會每幀重新合成）；快取 24 張。武器照 C3_WPN（握法）＋anchors 疊在手上，攻擊照 159 的間隔播完一次動作。
+   只有女性體型 f；男生照舊。設定「新版人物（測試）」預設開（state.char3===false 才關）；外觀 state.look；別人用位置同步的 ap（f.h01.0.t01.b01.s01）。 */
+const C3={CW:128,CH:192,FX:64,FY:157,H:122},C3_HU=57.5;/* 人物 122px＝舊角色的高度（神之子等高照舊） */
+const C3_DIR={0:[2,1],1:[1,1],2:[0,0],3:[1,0],4:[2,0],5:[3,0],6:[4,0],7:[3,1]};/* 遊戲的 8 方向 → [圖的欄, 是否鏡射] */
+const C3_HAIRS=[[0,1,1,'#7a4a36'],[0,.15,.45,'#2a2626'],[.08,1.1,1.5,'#e8c170'],[.92,1.1,1.25,'#d9788c'],[.55,1.2,1.1,'#4a7fd0'],[0,0,1.7,'#e6e3ea']];
+const C3_LOOK={top:[['t01','連帽衫'],['t02','開襟衫']],shoes:[['s01','球鞋'],['s02','靴子']],hair:[['h01','短髮']],bottom:[['b01','短褲']]};/* 之後加衣服只加這張清單和圖 */
+const C3_WPN={tomato:{act:'slash',mode:'hand',gx:.5,gy:.86,h:.49},chili:{act:'dual',mode:'dual',gy:.86,h:.34},broccoli:{act:'chop',mode:'hand',gx:.5,gy:.80,h:.60},zucchini:{act:'chop',mode:'hand',gx:.5,gy:.82,h:.56},pumpkin:{act:'sweep',mode:'hand',gx:.36,gy:.78,h:.73},strawberry:{act:'slash',mode:'hand',gx:.26,gy:.88,h:.42},eggplant:{act:'cast',mode:'upright',gx:.5,gy:.60,h:.64},corn:{act:'shoot',mode:'aim',gx:.70,gy:.78,h:.29,base:-52},melon:{act:'cast',mode:'float',h:.30}};/* 握法（聊天室之後只改這裡和 anchors.json） */
+function lookNorm(l){const L=l&&typeof l==='object'?l:{},ok=(k,v)=>C3_LOOK[k].some(o=>o[0]===v),hc=L.hairColor|0;return {hair:ok('hair',L.hair)?L.hair:'h01',hairColor:hc>=0&&hc<C3_HAIRS.length?hc:0,top:ok('top',L.top)?L.top:'t01',bottom:ok('bottom',L.bottom)?L.bottom:'b01',shoes:ok('shoes',L.shoes)?L.shoes:'s01'}}
+const char3On=()=>!!(state&&state.char3!==false&&char2Sex()==='f');
+const lookPack=L=>['f',L.hair,L.hairColor,L.top,L.bottom,L.shoes].join('.');
+function lookUnpack(s){if(typeof s!=='string')return null;const p=s.split('.');if(p.length!==6||p[0]!=='f')return null;return lookNorm({hair:p[1],hairColor:+p[2],top:p[3],bottom:p[4],shoes:p[5]})}
+/* 素材：用到才載 */
+const C3_IM={};let C3_ANC=null,C3_ANCst=0,c3KickT=0;
+function c3Kick(){if(c3KickT)return;c3KickT=setTimeout(()=>{c3KickT=0;try{const L=document.getElementById('charLayer');if(L)L._s='';renderChars()}catch(e){}},60)}
+function c3Im(src){let o=C3_IM[src];if(o)return o;o=C3_IM[src]={st:0,im:null};try{const im=new Image();im.onload=()=>{o.st=1;o.im=im;c3Kick()};im.onerror=()=>{o.st=2};im.src=src+'?v='+BUILD}catch(e){o.st=2}return o}
+function c3Anc(){if(C3_ANCst)return C3_ANC;C3_ANCst=1;try{fetch('assets/char3/f/anchors.json?v='+BUILD).then(r=>r.json()).then(j=>{C3_ANC=j.actions;c3Kick()}).catch(()=>{C3_ANCst=2})}catch(e){C3_ANCst=2}return null}
+const c3Src=(slot,id,act,suf)=>`assets/char3/f/${slot}/${id}/${act}${suf||''}.png`;
+const c3Layers=(L,act)=>[c3Src('hair',L.hair,act,'_hb'),c3Src('body','base',act),c3Src('shoes',L.shoes,act),c3Src('bottom',L.bottom,act),c3Src('top',L.top,act),c3Src('hair',L.hair,act,'_hf')];
+function c3Hue(im,hs){const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const g=c.getContext('2d');g.drawImage(im,0,0);if(hs[0]===0&&hs[1]===1&&hs[2]===1)return c;
+  const id=g.getImageData(0,0,c.width,c.height),d=id.data;for(let i=0;i<d.length;i+=4){if(!d[i+3])continue;let r=d[i]/255,gg=d[i+1]/255,b=d[i+2]/255;const mx=Math.max(r,gg,b),mn=Math.min(r,gg,b),df=mx-mn;let hh=0;
+    if(df){if(mx===r)hh=((gg-b)/df)%6;else if(mx===gg)hh=(b-r)/df+2;else hh=(r-gg)/df+4;hh/=6;if(hh<0)hh+=1}let s=mx?df/mx:0,v=mx;hh=(hh+hs[0])%1;s=Math.min(1,s*hs[1]);v=Math.min(1,v*hs[2]);
+    const k=Math.floor(hh*6),f=hh*6-k,p=v*(1-s),q=v*(1-f*s),t=v*(1-(1-f)*s);[r,gg,b]=[[v,t,p],[q,v,p],[p,v,t],[p,q,v],[t,p,v],[v,p,q]][k%6];d[i]=r*255;d[i+1]=gg*255;d[i+2]=b*255}
+  g.putImageData(id,0,0);return c}
+/* 合成：6 層＋1px 深褐外輪廓 → blob 網址（快取 24 張，最久沒用的先丟） */
+const C3_SH=new Map();let c3LastMs=0;
+function c3Sheet(L,act){const key=lookPack(L)+'|'+act;let s=C3_SH.get(key);if(s){C3_SH.delete(key);C3_SH.set(key,s);return s.url?s:null}
+  const ims=c3Layers(L,act).map(c3Im);if(!ims.every(o=>o.st===1))return null;
+  s={url:null,w:0,h:0};C3_SH.set(key,s);if(C3_SH.size>24){const k0=C3_SH.keys().next().value,o=C3_SH.get(k0);C3_SH.delete(k0);try{o.url&&URL.revokeObjectURL(o.url)}catch(e){}}
+  try{const t0=performance.now(),base=ims[1].im,W=base.width,H=base.height,hs=C3_HAIRS[L.hairColor]||C3_HAIRS[0];
+    const t=document.createElement('canvas');t.width=W;t.height=H;const g=t.getContext('2d');g.drawImage(c3Hue(ims[0].im,hs),0,0);for(const i of [1,2,3,4])g.drawImage(ims[i].im,0,0);g.drawImage(c3Hue(ims[5].im,hs),0,0);
+    const sl=document.createElement('canvas');sl.width=W;sl.height=H;const sg=sl.getContext('2d');sg.drawImage(t,0,0);sg.globalCompositeOperation='source-in';sg.fillStyle='rgb(70,48,40)';sg.fillRect(0,0,W,H);
+    const c=document.createElement('canvas');c.width=W;c.height=H;const og=c.getContext('2d');for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]])og.drawImage(sl,dx,dy);og.drawImage(t,0,0);
+    c3LastMs=performance.now()-t0;s.w=W;s.h=H;c.toBlob(b=>{if(b){s.url=URL.createObjectURL(b);c3Kick()}},'image/png')}catch(e){s.err=1}
+  return null}
+/* 現在的動作、格 */
+let c3Walk=0,c3Last=null,c3Atk=null,c3HitAt=0;const C3_OA={};
+function c3Act(isMe,id,o,moving,wtag){const now=Date.now(),crop=wtag?String(wtag).split('|')[0]:null,W=crop&&C3_WPN[crop];
+  let a=isMe?c3Atk:null;if(!isMe&&o&&o.a&&o.a.type==='atk'){const A=o.a;if(!C3_OA[id]||C3_OA[id].at!==A.at)C3_OA[id]={at:A.at,t:now,dur:A.dur||500};a={at:C3_OA[id].t,dur:C3_OA[id].dur}}
+  if(a&&W){const u=(now-a.at)/(a.dur||500);if(u>=0&&u<1){const n=C3_ANC&&C3_ANC[W.act]?C3_ANC[W.act].n:6;return {act:W.act,fr:Math.min(n-1,Math.floor(u*n))}}}/* 間隔短的（雙刀、槍）照時間取樣跳格 */
+  if(isMe&&now-c3HitAt<200)return {act:'hit',fr:Math.min(1,Math.floor((now-c3HitAt)/100))};
+  if(moving)return {act:'walk',fr:isMe?Math.floor(c3Walk/11)%8:Math.floor(now/69)%8};
+  return {act:'stand',fr:0}}
+function c3State(L,face,moving,wtag,isMe,id,o){const A=c3Anc();if(!A)return null;let {act,fr}=c3Act(isMe,id,o,moving,wtag);let S=A[act]?c3Sheet(L,act):null;if(!S){act='stand';fr=0;S=c3Sheet(L,'stand')}if(!S||!A[act])return null;
+  const [dir,mir]=C3_DIR[((face|0)%8+8)%8]||[0,0];fr=Math.min(fr,A[act].n-1);return {S,act,fr,dir,mir,anc:A[act].a[fr][dir],wtag}}
+/* 武器：照握點疊上去（座標是格內像素） */
+function c3Part(src,D,x,y,ang,gx,gy,hk,flip,half){const hh=C3.H*hk,iw=D[0]*(half?0.5:1),w=hh*iw/D[1];
+  const img=half?`<svg x="${f1(-gx*w)}" y="${f1(-gy*hh)}" width="${f1(w)}" height="${f1(hh)}" viewBox="${half==='R'?D[0]/2:0} 0 ${iw} ${D[1]}" preserveAspectRatio="none"><image href="${src}" width="${D[0]}" height="${D[1]}"/></svg>`:`<image href="${src}" x="${f1(-gx*w)}" y="${f1(-gy*hh)}" width="${f1(w)}" height="${f1(hh)}"/>`;
+  return `<g transform="translate(${f1(x)} ${f1(y)}) rotate(${f1(ang)})${flip?' scale(-1 1)':''}">${img}</g>`}
+function c3Wpn(tag,A,front){if(!tag||!A)return '';const [crop,tier]=String(tag).split('|'),W=C3_WPN[crop],D=typeof WP_DIM!=='undefined'&&WP_DIM[crop];if(!W||!D)return '';const src=wpSrc(crop,tier);
+  if(W.mode==='float'){if(!front)return '';const hh=C3.H*W.h,w=hh*D[0]/D[1];return `<g class="wbob"><image href="${src}" x="${C3.FX+30}" y="${f1(52-hh/2)}" width="${f1(w)}" height="${f1(hh)}"/></g>`}
+  if(W.mode==='dual'){let s='';if(!!A[7]===front)s+=c3Part(src,D,A[4],A[5],A[6],.62,W.gy,W.h,false,'L');if(!!A[3]===front)s+=c3Part(src,D,A[0],A[1],A[2],.38,W.gy,W.h,false,'R');return s}
+  if(!!A[3]!==front)return '';if(W.mode==='hand')return c3Part(src,D,A[0],A[1],A[2],W.gx,W.gy,W.h);if(W.mode==='upright')return c3Part(src,D,A[0],A[1],0,W.gx,W.gy,W.h);
+  if(W.mode==='aim'){const fl=A[8]>0;return c3Part(src,D,A[0],A[1],A[8]-(fl?-W.base:W.base),W.gx,W.gy,W.h,fl)}return ''}
+const c3Tr=st=>{const k=C3_HU/C3.H;return `scale(${f3(st.mir?-k:k)} ${f3(k)}) translate(${-C3.FX} ${-C3.FY})`};
+function c3SVG(st,wid){return `<g class="c3"${wid?` data-c3w="${esc(String(wid))}"`:''}><g class="c3t" transform="${c3Tr(st)}"><g class="c3wb">${c3Wpn(st.wtag,st.anc,false)}</g><svg class="c3c" x="0" y="0" width="${C3.CW}" height="${C3.CH}" viewBox="${st.dir*C3.CW} ${st.fr*C3.CH} ${C3.CW} ${C3.CH}" overflow="hidden"><image href="${st.S.url}" width="${st.S.w}" height="${st.S.h}"/></svg><g class="c3wf">${c3Wpn(st.wtag,st.anc,true)}</g></g></g><!--/c3-->`}
+/* 換格：只改 viewBox、鏡射、網址、武器（不重建整個角色） */
+function c3Paint(a,st,wid){if(!a||!st)return;const g=a.querySelector&&a.querySelector('g.c3');if(!g){a.innerHTML=c3SVG(st,wid);return}
+  const t=g.querySelector('.c3t'),sv=g.querySelector('svg.c3c'),im=sv&&sv.querySelector('image');if(!t||!sv||!im){a.innerHTML=c3SVG(st,wid);return}
+  const key=[st.S.url,st.act,st.fr,st.dir,st.mir,st.wtag].join('|');if(g._k===key)return;g._k=key;
+  t.setAttribute('transform',c3Tr(st));sv.setAttribute('viewBox',`${st.dir*C3.CW} ${st.fr*C3.CH} ${C3.CW} ${C3.CH}`);if(im.getAttribute('href')!==st.S.url){im.setAttribute('href',st.S.url);im.setAttribute('width',st.S.w);im.setAttribute('height',st.S.h)}
+  const wb=g.querySelector('.c3wb'),wf=g.querySelector('.c3wf');if(wb)wb.innerHTML=c3Wpn(st.wtag,st.anc,false);if(wf)wf.innerHTML=c3Wpn(st.wtag,st.anc,true)}
+/* 每次 renderChars（約 80ms）：自己和別人都換格 */
+function c3PaintAll(){try{if(char3On()){const a=document.getElementById('meGAv');if(a&&a.querySelector&&a.querySelector('g.c3')){const st=c3State(lookNorm(state.look),meFace,!!raf,scene==='explore'?wpnTag():null,true,'me');if(st)c3Paint(a,st)}}
+  for(const [id,o] of Object.entries(others||{})){const L=o&&lookUnpack(o.ap);if(!L)continue;const a=document.querySelector(`[data-c3w="${CSS.escape(id)}"]`);if(!a)continue;const A=animO[id]||{};const st=c3State(L,o.f!=null?o.f:(o.d<0?3:1),!!A.moving,scene==='explore'&&typeof o.w==='string'?o.w:null,false,id,o);if(st)c3Paint(a.parentNode&&a.classList.contains('c3')?a.parentNode:a,st,id)}}catch(e){}}
+/* 造型面板（測試：拿到全部武器） */
+function lookHTML(){const L=lookNorm(state.look),st=c3State(L,2,false,null,true,'me');
+  const row=(k,n)=>`<div class="row2" style="flex-wrap:wrap;gap:6px;margin:6px 0"><b style="min-width:3em">${n}</b>${C3_LOOK[k].map(([v,t])=>`<button class="mini" data-lk="${k}|${v}" aria-pressed="${L[k]===v}" style="${L[k]===v?'background:var(--tabon);color:var(--tabtx)':''}">${t}</button>`).join('')}</div>`;
+  return `<h2>造型</h2><div style="text-align:center"><svg viewBox="-34 -70 68 76" width="120" height="134" aria-hidden="true">${st?c3SVG(st):'<text x="0" y="-30" text-anchor="middle" font-size="7">載入中…</text>'}</svg></div>${row('top','上衣')}${row('shoes','鞋子')}
+    <div class="row2" style="flex-wrap:wrap;gap:6px;margin:6px 0"><b style="min-width:3em">髮色</b>${C3_HAIRS.map((c,i)=>`<button class="mini" data-lkc="${i}" aria-label="髮色 ${i+1}" aria-pressed="${L.hairColor===i}" style="width:30px;height:30px;border-radius:50%;padding:0;background:${c[3]};${L.hairColor===i?'box-shadow:0 0 0 3px var(--tabon)':''}"></button>`).join('')}</div>
+    <p class="note">新版人物（測試）目前只有女生的身形；之後會加更多衣服、髮型。</p>
+    <button class="btn" data-lkt="1">測試：拿到全部武器</button><button class="btn" data-act="close">關閉</button>`}
+function lookAction(b){const L=lookNorm(state.look);if(b.dataset.lk){const [k,v]=b.dataset.lk.split('|');L[k]=v}else if(b.dataset.lkc!=null)L.hairColor=+b.dataset.lkc;
+  else if(b.dataset.lkt){c3TestWeapons();return}/* 測試按鈕，之後拿掉 */state.look=lookNorm(L);save();renderSheet();try{pushPos(true)}catch(e){}c3Kick()}
+function c3TestWeapons(){const W=Array.isArray(state.weapons)?state.weapons:(state.weapons=[]);let n=0;for(const c of WP_ORDER)if(!W.some(w=>w&&w.crop===c)){wpnGive(c,1);n++}save();toast(n?`拿到 ${n} 把武器（普通階），到背包的武器分頁換。`:'九把武器都有了。',3500)}
+/* ===== 171 結束 ===== */
+/* ===== 173（20d）：組隊邀請 =====
+   party/<pid>：{leader,t0,members:{<uid>:{n,lv,hp,hpMax,map,t,j,off?}},ev}；partyInv/<被邀請的人>/<邀請人>：{pid,n,t}。一隊最多 PARTY_MAX 人、一個人一隊。
+   自己那一格 3 秒檢查一次，血量、地圖、等級沒變就不寫；斷線時 onDisconnect 寫 off，60 秒內回來還在隊裡，超過由最早加入、在線上的隊員把他移出。
+   重新整理：本機記 partyId（sw_party_<uid>），啟動時確認隊伍還在、自己還是成員。寫入被拒照 172.0 跳一次「組隊功能還沒開」。 */
+const PARTY_MAX=4,PARTY_OFF=60000,PARTY_INV_MS=30000,PARTY_EV_MS=15000,PARTY_COLOR='#4FE3C1';
+let partyId=null,PARTY=null,partyOff=null,partyInvOff=null,partyDeniedShown=false,partySeenEv=null,partyLast='',partyHbT=0,partyCol=false;const partyInvSeen={};
+function partyDenied(e){const s=String((e&&(e.code||e.message))||e||'');if(!/permission|denied/i.test(s))return false;try{crumb('party denied')}catch(x){}if(!partyDeniedShown){partyDeniedShown=true;try{toast('組隊功能還沒開（請管理者更新資料庫規則）',6000)}catch(x){}}return true}
+let partyNet={on:(p,cb)=>{const r=rtdb.ref(p),f=s=>cb(s.val());r.on('value',f,partyDenied);return ()=>r.off('value',f)},get:p=>rtdb.ref(p).once('value').then(s=>s.val()).catch(e=>{partyDenied(e);return null}),set:(p,v)=>rtdb.ref(p).set(v).catch(partyDenied),update:(p,v)=>rtdb.ref(p).update(v).catch(partyDenied),remove:p=>rtdb.ref(p).remove().catch(partyDenied),
+  stamp:()=>firebase.database.ServerValue.TIMESTAMP,onDis:(p,v)=>{try{rtdb.ref(p).onDisconnect().set(v)}catch(e){}},onDisOff:p=>{try{rtdb.ref(p).onDisconnect().cancel()}catch(e){}}};
+const partyOk=()=>!!(uid&&(rtdb||partyNet.fake));
+const partyLsK=()=>'sw_party_'+uid;
+const partyHas=u=>!!(PARTY&&PARTY.members&&u&&PARTY.members[u]);
+const partyMembers=()=>PARTY&&PARTY.members?Object.entries(PARTY.members).sort((a,b)=>(+a[1].j||0)-(+b[1].j||0)):[];
+function partyMyMap(){return scene==='farm'?'farm':scene==='market'?'town':scene==='explore'?exBiome+(regMap==='secret'?':s':''):'farm'}
+function partyMapName(m){if(!m||m==='farm')return '農場';if(m==='town')return '城鎮';const [bk,s]=String(m).split(':');const n=BIOMES[bk]?BIOMES[bk].n:bk;return s?n+'秘境':n}
+function partyMe(){return {n:myName(),lv:myLv(),hp:Math.round(typeof pHP!=='undefined'?pHP:0),hpMax:Math.round(typeof pMax==='function'?pMax():0),map:partyMyMap()}}
+function partySaveId(v){partyId=v||null;try{if(v)localStorage.setItem(partyLsK(),v);else localStorage.removeItem(partyLsK())}catch(e){}}
+/* 啟動：看邀請、回到原本的隊伍 */
+function partyBoot(){if(!partyOk())return;if(partyInvOff){try{partyInvOff()}catch(e){}}partyInvOff=partyNet.on('partyInv/'+uid,v=>{try{partyInvSync(v)}catch(e){}});
+  let pid=null;try{pid=localStorage.getItem(partyLsK())}catch(e){}if(pid)partyNet.get('party/'+pid).then(v=>{if(v&&v.members&&v.members[uid]){partyWatch(pid);partyNet.update('party/'+pid+'/members/'+uid,{...partyMe(),off:null,t:partyNet.stamp()});partyNet.onDis('party/'+pid+'/members/'+uid+'/off',partyNet.stamp())}else partySaveId(null)})}
+function partyWatch(pid){if(partyOff){try{partyOff()}catch(e){}}partySaveId(pid);partySeenEv=null;partyOff=partyNet.on('party/'+pid,v=>{try{partySync(v)}catch(e){try{crumb('party '+e.message)}catch(x){}}});partyTick()}
+/* 每 3 秒：自己那一格（沒變就不寫）、清掉斷線超過 60 秒的人 */
+function partyTick(){clearTimeout(partyHbT);if(!partyId)return;partyHbT=setTimeout(partyTick,3000);
+  const me=partyMe(),k=JSON.stringify(me);if(k!==partyLast&&PARTY&&PARTY.members&&PARTY.members[uid]){partyLast=k;partyNet.update('party/'+partyId+'/members/'+uid,{...me,t:partyNet.stamp()})}
+  if(!PARTY||!PARTY.members)return;const L=partyMembers(),now=Date.now(),on=L.filter(([u,m])=>!m.off||u===uid);if(!on.length||on[0][0]!==uid)return;/* 最早加入、在線上的人負責 */
+  for(const [u,m] of L)if(u!==uid&&m.off&&now-m.off>PARTY_OFF)partyDrop(u,true)}
+/* 移出一個人（隊長按、或斷線太久）；隊長走了交給最早加入的人；剩一個人就解散 */
+function partyDrop(u,quiet){if(!PARTY||!partyId)return;const rest=partyMembers().filter(([x])=>x!==u);
+  if(rest.length<=1){partyNet.remove('party/'+partyId);return}
+  partyNet.remove('party/'+partyId+'/members/'+u);if(PARTY.leader===u)partyNet.update('party/'+partyId,{leader:rest[0][0]})}
+/* 收到隊伍資料 */
+function partySync(v){const old=PARTY;PARTY=v||null;
+  if(!v||!v.members||!v.members[uid]){const kicked=old&&old.members&&old.members[uid]&&v&&v.members;partyLeaveLocal();if(kicked)toast('你被移出隊伍了',3000);else if(old)toast('隊伍解散了',2600);return}
+  if(old&&old.members){const nm=u=>esc(String((v.members[u]||old.members[u]||{}).n||'隊友'));
+    for(const u of Object.keys(v.members))if(!old.members[u]&&u!==uid)toast(`${nm(u)} 加入了隊伍`,2400);
+    for(const u of Object.keys(old.members))if(!v.members[u]&&u!==uid)toast(`${nm(u)} 離開了隊伍`,2400);
+    if(old.leader!==v.leader)toast(v.leader===uid?'你成為隊長了':`${nm(v.leader)} 成為隊長`,2400)}
+  const ev=v.ev;if(ev&&ev.t!=null){if(partySeenEv===null)partySeenEv=ev.t;else if(ev.t!==partySeenEv){partySeenEv=ev.t;if(ev.by!==uid&&ev.k==='fight')partyFightPrompt(ev)}}else if(partySeenEv===null)partySeenEv=0;
+  renderParty();try{renderChars()}catch(e){}}
+function partyLeaveLocal(){if(partyOff){try{partyOff()}catch(e){}partyOff=null}if(partyId)partyNet.onDisOff('party/'+partyId+'/members/'+uid+'/off');PARTY=null;partySaveId(null);partyLast='';clearTimeout(partyHbT);renderParty();try{renderChars()}catch(e){}}
+function partyLeave(){if(!PARTY||!partyId)return;const rest=partyMembers().filter(([x])=>x!==uid);const pid=partyId;
+  if(rest.length<=1)partyNet.remove('party/'+pid);else{if(PARTY.leader===uid)partyNet.update('party/'+pid,{leader:rest[0][0]});partyNet.remove('party/'+pid+'/members/'+uid)}
+  partyLeaveLocal();toast('離開隊伍了',2200)}
+/* 邀請 */
+function partyCanInvite(u){if(!partyOk())return 'off';if(!isFriendU(u))return 'nf';if(!stIsOn(u))return 'offline';if(PARTY&&partyHas(u))return 'in';if(PARTY&&partyMembers().length>=PARTY_MAX)return 'full';return ''}
+function partyInvite(u){const why=partyCanInvite(u);if(why==='off'){toast('組隊功能還沒開',2600);return false}if(why==='offline'){toast('對方不在線上',2200);return false}if(why==='full'){toast(`隊伍滿了（最多 ${PARTY_MAX} 人）`,2400);return false}if(why==='in'){toast('已經在隊伍裡了',2000);return false}if(why)return false;
+  if(!partyId){const pid=uid+'_'+Date.now();partyNet.set('party/'+pid,{leader:uid,t0:partyNet.stamp(),members:{[uid]:{...partyMe(),t:partyNet.stamp(),j:Date.now()}}});partyNet.onDis('party/'+pid+'/members/'+uid+'/off',partyNet.stamp());partyWatch(pid)}
+  partyNet.set('partyInv/'+u+'/'+uid,{pid:partyId,n:myName(),t:Date.now()});toast('邀請送出了',2000);return true}
+function partyInvSync(v){const L=Object.entries(v||{});for(const [from,inv] of L){if(!inv||!inv.pid)continue;const k=from+'|'+inv.pid+'|'+inv.t;if(partyInvSeen[k])continue;partyInvSeen[k]=1;if(Date.now()-(+inv.t||0)>PARTY_INV_MS){partyNet.remove('partyInv/'+uid+'/'+from);continue}partyInvCard(from,inv)}}
+function partyInvCard(from,inv){let el=document.getElementById('partyInv');if(!el){el=document.createElement('div');el.id='partyInv';document.body.appendChild(el)}
+  el.innerHTML=`<b>${esc(String(inv.n||'朋友'))}</b> 邀你組隊<div class="row2"><button class="btn primary" data-pinv="ok">接受</button><button class="btn" data-pinv="no">拒絕</button></div>`;el.hidden=false;
+  const done=()=>{el.hidden=true;clearTimeout(el._t);partyNet.remove('partyInv/'+uid+'/'+from)};clearTimeout(el._t);el._t=setTimeout(done,PARTY_INV_MS);
+  el.onclick=e=>{const b=e.target.closest('[data-pinv]');if(!b)return;if(b.dataset.pinv==='ok'){el.hidden=true;clearTimeout(el._t);Promise.resolve(partyAccept(from,inv)).finally(()=>partyNet.remove('partyInv/'+uid+'/'+from))}else done()}}/* 先加入再刪邀請（規則要邀請還在才讀得到、寫得進去） */
+async function partyAccept(from,inv){if(PARTY&&partyId&&partyId!==inv.pid){if(!confirm('要離開現在的隊伍嗎？'))return false;partyLeave()}
+  const v=await partyNet.get('party/'+inv.pid);if(!v||!v.members){toast('這個隊伍已經解散了',2400);return false}if(Object.keys(v.members).length>=PARTY_MAX&&!v.members[uid]){toast(`隊伍滿了（最多 ${PARTY_MAX} 人）`,2400);return false}
+  partyNet.set('party/'+inv.pid+'/members/'+uid,{...partyMe(),t:partyNet.stamp(),j:Date.now()});partyNet.onDis('party/'+inv.pid+'/members/'+uid+'/off',partyNet.stamp());partyWatch(inv.pid);toast('加入隊伍了',2200);return true}
+/* 開打提示：主現身、僕人醒來時寫一則 ev；隊友 15 秒內可以按「前往」 */
+function partyFightEv(kind,bk){if(!PARTY||!partyId)return;partyNet.set('party/'+partyId+'/ev',{k:'fight',by:uid,n:myName(),bk,kind,t:Date.now()})}
+function partyFightPrompt(ev){let el=document.getElementById('partyEv');if(!el){el=document.createElement('div');el.id='partyEv';document.body.appendChild(el)}
+  const rn=BIOMES[ev.bk]?BIOMES[ev.bk].n:ev.bk;el.innerHTML=`<span>${esc(String(ev.n||'隊友'))} 在〈${esc(rn)}〉開打了</span><button class="mini" data-pgo="${esc(ev.bk)}">前往</button>`;el.hidden=false;clearTimeout(el._t);el._t=setTimeout(()=>{el.hidden=true},PARTY_EV_MS);
+  el.onclick=e=>{const b=e.target.closest('[data-pgo]');if(!b)return;el.hidden=true;partyGo(b.dataset.pgo)}}
+function partyGo(bk){try{if(!(scene==='explore'&&exBiome===bk))goExplore(bk);setTimeout(()=>{try{if(scene==='explore'&&exBiome===bk&&regMap!=='secret')secEnter(bk)}catch(e){}},1400)}catch(e){}}
+/* 左上角的隊伍名單（可收合） */
+function renderParty(){let el=document.getElementById('partyBox');if(!PARTY||!PARTY.members){if(el)el.hidden=true;return}if(!el){el=document.createElement('div');el.id='partyBox';document.body.appendChild(el);
+    el.addEventListener('click',e=>{const b=e.target.closest('[data-pact]');if(!b)return;const a=b.dataset.pact;if(a==='col'){partyCol=!partyCol;renderParty()}else if(a==='leave'){if(confirm('離開隊伍？'))partyLeave()}else if(a==='kick'){partyDrop(b.dataset.u);toast('移出隊伍了',2000)}})}
+  const L=partyMembers(),lead=PARTY.leader===uid;el.hidden=false;
+  el.innerHTML=`<div class="phd" data-pact="col">隊伍（${L.length}／${PARTY_MAX}）${partyCol?'▸':'▾'}</div>`+(partyCol?'':L.map(([u,m])=>{const f=m.hpMax?Math.max(0,Math.min(1,m.hp/m.hpMax)):1;return `<div class="prow${m.off?' off':''}"><b>${PARTY.leader===u?'★':''}${esc(String(m.n||'隊友').slice(0,8))}</b> <small>Lv ${m.lv|0}</small>${lead&&u!==uid?`<button class="pkick" data-pact="kick" data-u="${esc(u)}" aria-label="移出">✕</button>`:''}<i class="php"><i style="width:${(f*100).toFixed(0)}%"></i></i><small>${m.off?'離線':esc(partyMapName(m.map))}</small></div>`}).join('')+'<button class="mini" data-pact="leave">離開隊伍</button>')}
+/* ===== 173 結束 ===== */
+
+
+function charG(id,x,y,av,flip,pose,name,lv,fy,who,ch,wtag,c2,ap){const me=id==='meG';let c3h=null;
+  {const L=me?(char3On()?lookNorm(state.look):null):lookUnpack(ap);if(L){const st=c3State(L,me?meFace:(pose&&pose.face!=null?pose.face:2),me?!!raf:!!(pose&&pose.mv),wtag,me,who,pose&&pose.o);if(st)c3h=c3SVG(st,me?null:who)}}/* 171：分層人物（素材沒載完時先畫舊的） */
+  const c2s=c3h?null:me?(char2On()?char2Sex():null):(c2==='m'||c2==='f'?c2:null);/* 168：別的玩家開了新版主角（c2＝m／f）也用同一套畫法 */
+  const WH=c3h?{b:'',f:''}:wpnHTML(wtag,flip,pose&&pose.view,c2s?CHAR2_H/CHAR_S:57.5,me);return `<g ${id?`id="${id}"`:''} transform="translate(${Math.round(x)} ${Math.round(y)}) scale(1.15)" pointer-events="none">${charShadow(c2s)}${me?`<g id="meWB">${WH.b}</g>`:WH.b}<g${id?` id="${id}Av"`:''}${!me&&c2s?` data-c2w="${esc(String(who))}"`:''}>${c3h?c3h:c2s?char2SVG(me?meFace:(pose&&pose.face!=null?pose.face:2),me?!!raf:!!(pose&&pose.mv),c2s):avIdle(av,flip,pose)}</g>${me?`<g id="meWF">${WH.f}</g>`:WH.f}${name?`<g${id?` id="${id}Tag"`:''}${!me&&typeof partyHas==='function'&&partyHas(who)?` style="--ink:${PARTY_COLOR}"`:''}${c2s?` transform="translate(0 ${char2TagDY().toFixed(1)})"`:''}>${nameTag(name,lv,ch)}</g>`:''}</g>`}
 /* 168：別的玩家的新版主角換走路格（不重建整層，同 char2Paint） */
 function char2PaintOthers(){try{for(const [id,o] of Object.entries(others)){const s=o&&(o.c2==='m'||o.c2==='f')?o.c2:null;if(!s)continue;const a=document.querySelector(`[data-c2w="${CSS.escape(id)}"]`);if(!a)continue;const A=animO[id]||{};char2Paint(a,o.f!=null?o.f:(o.d<0?3:1),!!A.moving,s)}}catch(e){}}/* 71.1（16h）：角色和名牌分成兩個群組，走路時只重畫角色 */
 function avIdle(av,flip,pose){const a=avatarSVG(av,flip,pose);return pose&&typeof pose==='object'&&pose.ph==null&&!pose.act?`<g class="brth">${a}</g>`:a}/* 56：站著不動時輕微起伏 */
@@ -9120,13 +9313,13 @@ function renderChars(){
   if(!state)return;const L=document.getElementById('charLayer');let s='';
   const t=performance.now()/1000,list=[];
   for(const [id,o] of Object.entries(others)){if(!o||typeof o.x!=='number')continue;const A=animO[id]||{x:o.x,y:o.y,ph:0};
-    const ps=poseFor(false,{a:o.a,_aStart:A.aStart,_seed:A.seed},t);if(A.moving)ps.ph=A.ph;else if(!ps.act)ps.t=0;/* 99.8：站著不動時姿勢不跟時間變（呼吸交給 CSS .brth），內容不變就不用重建 */const of=o.f!=null?o.f:(o.d<0?3:1);ps.view=VIEWS[of];ps.face=of;ps.mv=!!A.moving;const ofy=fyUnpack(o.fy);list.push({y:A.y,h:charG('',A.x,A.y,o.av,faceFlip(of),ps,o.name||'朋友',o.lv,ofy,id,!!o.ch,scene==='explore'&&typeof o.w==='string'?o.w:null,o.c2)+`<circle cx="${Math.round(A.x)}" cy="${Math.round(A.y-30)}" r="17" fill="transparent" style="pointer-events:auto" data-ply="${esc(id)}"/>`});if(ofy)fyRegister(id,ofy,()=>{const B=animO[id]||o,F=o.f!=null?o.f:(o.d<0?3:1);return {x:B.x,y:B.y,flip:faceFlip(F),face:F}});if(ofy&&o.fa)fyAtkRemote(id,ofy,o.fa)}
+    const ps=poseFor(false,{a:o.a,_aStart:A.aStart,_seed:A.seed},t);if(A.moving)ps.ph=A.ph;else if(!ps.act)ps.t=0;/* 99.8：站著不動時姿勢不跟時間變（呼吸交給 CSS .brth），內容不變就不用重建 */const of=o.f!=null?o.f:(o.d<0?3:1);ps.view=VIEWS[of];ps.face=of;ps.mv=!!A.moving;ps.o=o;const ofy=fyUnpack(o.fy);list.push({y:A.y,h:charG('',A.x,A.y,o.av,faceFlip(of),ps,o.name||'朋友',o.lv,ofy,id,!!o.ch,scene==='explore'&&typeof o.w==='string'?o.w:null,o.c2,o.ap)+`<circle cx="${Math.round(A.x)}" cy="${Math.round(A.y-30)}" r="17" fill="transparent" style="pointer-events:auto" data-ply="${esc(id)}"/>`});if(ofy)fyRegister(id,ofy,()=>{const B=animO[id]||o,F=o.f!=null?o.f:(o.d<0?3:1);return {x:B.x,y:B.y,flip:faceFlip(F),face:F}});if(ofy&&o.fa)fyAtkRemote(id,ofy,o.fa)}
   const m=curMe(),mp=poseFor(true,null,t);if(raf)mp.ph=walkPh;else if(!mp.act)mp.t=0;mp.view=VIEWS[meFace];const mfy=fyMe();/* 97：拜訪朋友、城鎮、各地區都帶著自己的精靈 */list.push({y:m.y-1,h:petCharG()});list.push({y:m.y+1,h:hpHeadG()});list.push({y:m.y,h:charG('meG',m.x,m.y,state.avatar,faceFlip(meFace),mp,'你',myLv(),mfy,'me',champOn(),wpnTag())});if(mfy)fyRegister('me',mfy,()=>{const q=curMe();return {x:q.x,y:q.y,flip:faceFlip(meFace),face:meFace}});{const H=fyHomeSet();if(H)fyRegister('home',H.f,fyHomePos)}fyStart();
   list.sort((a,b)=>a.y-b.y);s=list.map(x=>x.h).join('');
-  const key=s.replace(/(id="|url\(#|href="#)([A-Za-z_-]*)\d+/g,'$1$2').replace(/animation-delay:-?[\d.]+s/g,'').replace(/<g class="c2"[^]*?<\/g>/g,'<c2/>').replace(/ class="wsw[^"]*"/g,'');/* 156：新版角色的走路格由 char2Paint 換，不算內容改變 *//* 圖層 id、眨眼的延遲每次都不一樣，比較時拿掉 */
-  if(L._s===key){char2PaintOthers();return false}L._s=key;L.innerHTML=s;char2PaintOthers();return true;/* 99.8（17k）：每 80ms 都會叫一次，內容沒變就不重建（原本一直重建角色層、重新對齊所有動畫，站著也一直在重畫） */
+  const key=s.replace(/(id="|url\(#|href="#)([A-Za-z_-]*)\d+/g,'$1$2').replace(/animation-delay:-?[\d.]+s/g,'').replace(/<g class="c2"[^]*?<\/g>/g,'<c2/>').replace(/<g class="c3"[^]*?<!--\/c3-->/g,'<c3/>').replace(/ class="wsw[^"]*"/g,'');/* 156：新版角色的走路格由 char2Paint 換，不算內容改變 *//* 圖層 id、眨眼的延遲每次都不一樣，比較時拿掉 */
+  if(L._s===key){char2PaintOthers();c3PaintAll();return false}L._s=key;L.innerHTML=s;char2PaintOthers();c3PaintAll();return true;/* 99.8（17k）：每 80ms 都會叫一次，內容沒變就不重建（原本一直重建角色層、重新對齊所有動畫，站著也一直在重畫） */
 }
-function updateMe(){petMove();const g=document.getElementById('meG');if(!g){renderChars();return}const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y)}) scale(1.15)`);const mp=poseFor(true,null,performance.now()/1000);if(raf)mp.ph=walkPh;else if(!mp.act)mp.t=0;mp.view=VIEWS[meFace];const a=document.getElementById('meGAv');if(!a){renderChars();return}wpnPaintMe();/* 159 */try{ghostTick()}catch(e){}/* 164 */if(char2On()){char2Paint(a,meFace,!!raf);return}/* 156 */if(a._k==='c2')a._k='';const h=avIdle(state.avatar,faceFlip(meFace),mp),k=h.replace(/(id="|url\(#|href="#)([A-Za-z_-]*)\d+/g,'$1$2');if(a._k===k)return;a._k=k;a.innerHTML=h}/* 106.4：內容沒變就不寫（站著、只是位置變時） *//* 71.1：以前這裡每一格都把名牌重畫成只有「你」（沒帶等級），稱號那一行就一閃一閃；現在走路時完全不碰名牌 */
+function updateMe(){petMove();const g=document.getElementById('meG');if(!g){renderChars();return}const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y)}) scale(1.15)`);const mp=poseFor(true,null,performance.now()/1000);if(raf)mp.ph=walkPh;else if(!mp.act)mp.t=0;mp.view=VIEWS[meFace];const a=document.getElementById('meGAv');if(!a){renderChars();return}wpnPaintMe();/* 159 */try{ghostTick()}catch(e){}/* 164 */{const q=curMe();if(c3Last)c3Walk+=Math.min(40,Math.hypot(q.x-c3Last.x,q.y-c3Last.y));c3Last={x:q.x,y:q.y}}if(char3On()&&a.querySelector&&a.querySelector('g.c3')){const st=c3State(lookNorm(state.look),meFace,!!raf,scene==='explore'?wpnTag():null,true,'me');if(st){c3Paint(a,st);return}}/* 171 */if(char2On()){char2Paint(a,meFace,!!raf);return}/* 156 */if(a._k==='c2')a._k='';const h=avIdle(state.avatar,faceFlip(meFace),mp),k=h.replace(/(id="|url\(#|href="#)([A-Za-z_-]*)\d+/g,'$1$2');if(a._k===k)return;a._k=k;a.innerHTML=h}/* 106.4：內容沒變就不寫（站著、只是位置變時） *//* 71.1：以前這裡每一格都把名牌重畫成只有「你」（沒帶等級），稱號那一行就一閃一閃；現在走路時完全不碰名牌 */
 
 // ===== 互動按鈕 =====
 function nearest(){
@@ -9503,7 +9696,7 @@ function dmgShow(x,y,val,o){o=o||{};if(!dmgOn())return null;const p=w2s(x,y);if(
   const dx=k?(k%2?1:-1)*(6+(k%3)*5):0,dy=-k*15;
   const txt=o.text||(o.miss?'MISS':o.heal?'+'+dmgFmt(val):o.hurt?'-'+dmgFmt(val):dmgFmt(val));
   d.className='';void d.offsetWidth;/* 重新開始動畫 */
-  d.className='dmg'+(o.crit?' crit':'')+(o.hurt?' hurt':'')+(o.heal?' heal':'')+(o.miss?' miss':'')+(o.pet?' pet':'');
+  d.className='dmg'+(o.crit?' crit':'')+(o.hurt?' hurt':'')+(o.heal?' heal':'')+(o.miss?' miss':'')+(o.pet?' pet':'')+(o.tm?' tm':'');
   d.style.left=(p[0]+dx).toFixed(1)+'px';d.style.top=(p[1]+dy).toFixed(1)+'px';
   if(o.color)d.style.setProperty('--dc',o.color);else d.style.removeProperty('--dc');
   d.innerHTML=(o.crit?'<i>爆擊</i>':'')+'<b>'+txt+'</b>';return d}
@@ -10219,6 +10412,7 @@ function avatarAction(b){
   if(b.dataset.avc){d[b.dataset.avc]=+b.dataset.v;renderSheet();return}
   if(b.dataset.act==='avsave'){state.avatar=avNorm(d);save();db.collection('profiles').doc(uid).set({avatar:state.avatar},{merge:true}).catch(()=>{});pushPos(true);renderChars();closeSheet();toast('角色已更新')}
 }
+sb.addEventListener('click',e=>{if(!sheet||!sheet.look)return;const b=e.target.closest('[data-lk],[data-lkc],[data-lkt]');if(b){e.stopPropagation();lookAction(b)}},true);/* 171 */
 sb.addEventListener('click',e=>{if(!sheet||!sheet.avatar)return;const b=e.target.closest('[data-avk],[data-avc],[data-avtab],[data-avdir],[data-avfc]');if(b){e.stopPropagation();avatarAction(b)}},true);
 const avB=document.getElementById('avatarBtn2');if(avB)avB.onclick=()=>{closePanel();openAvatar()};
 
@@ -10347,7 +10541,7 @@ const wpnTag=()=>{const w=curWpn();return w?w.crop+'|'+w.tier:null};
 function wpnDmg(w,mul){const W=w&&w.W;let d=pAtkNow()*(W?W.mul:0.5)/* 166：野外鐮刀 ×0.5 */*Math.pow(1.3,((w&&w.tier)||1)-1)*(mul||1);const crit=Math.random()<0.05+((W&&W.crit)||0);if(crit)d*=1.5+((W&&W.critDmg)||0);return {d:Math.max(1,Math.round(d)),crit}}
 function hitMon(m,o){if(!MON_RT||!m||m.dead)return false;const i=MON_RT.list.indexOf(m);if(i<0)return false;monHit(i,o.d,o.crit,true,o.pet);return true}
 /* 主、僕人受到的傷害（擋住時不算） */
-function bossDealt(b,o){if(!b||b.done)return;if(b.kind==='servant'&&!b.active){b.active=true;b.until=bossNow()+900;bossJump(b,bossNow())}/* 162：第一次被打也開打 */const now=bossNow(),y=b.y-BOSS_HU*(b.def.h||1);if(b.mode==='guard'){try{dmgShow(b.x,y,0,{miss:1,text:'擋住了',key:'boss'})}catch(e){}return}
+function bossDealt(b,o){if(!b||b.done)return;if(b.kind==='servant'&&!b.active){b.active=true;b.until=bossNow()+900;bossJump(b,bossNow());bossSvNet(b)}/* 162：第一次被打也開打 */const now=bossNow(),y=b.y-BOSS_HU*(b.def.h||1);if(b.mode==='guard'){try{dmgShow(b.x,y,0,{miss:1,text:'擋住了',key:'boss'})}catch(e){}return}
   b.myDmg+=o.d;try{dmgShow(b.x,y,o.d,{key:'boss',crit:o.crit,pet:!!o.pet})}catch(e){}b.dmg[bossMe()]=b.myDmg;b.hitT=now;if(b.net)lordPushDmg(b)}
 const dealT=(t,o)=>t.boss?bossDealt(t.boss,o):hitMon(t.m,o);
 const tPos=t=>t.boss?[t.boss.x,t.boss.y-14]:[t.m.x,t.m.y-14];
@@ -10355,7 +10549,7 @@ const monsAlive=()=>MON_RT?MON_RT.list.filter(m=>m&&!m.dead):[];
 /* 特效（世界座標，畫在 #monSw） */
 function fxW(x,y,html,ms,rot){const L=document.getElementById('monSw');if(!L)return null;const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})${rot?` rotate(${rot.toFixed(1)})`:''}`);g.setAttribute('pointer-events','none');g.innerHTML=html;L.appendChild(g);setTimeout(()=>{try{g.remove()}catch(e){}},ms);return g}
 const angTo=(x0,y0,x1,y1)=>Math.atan2(y1-y0,x1-x0)*180/Math.PI;
-function wpnFire(w,t){const me=curMe(),[tx,ty]=tPos(t),W=w.W,now=Date.now(),dirx=tx>=me.x?1:-1,ox=me.x,oy=me.y-24,a=angTo(ox,oy,tx,ty);pFightAt=now;wpnDrawnUntil=now+600;wpnPaintMe();setTimeout(()=>{try{wpnPaintMe()}catch(e){}},650);/* 166：拔出來，0.6 秒後收回 */wpnAnim(W.k);
+function wpnFire(w,t){const me=curMe(),[tx,ty]=tPos(t),W=w.W,now=Date.now(),dirx=tx>=me.x?1:-1,ox=me.x,oy=me.y-24,a=angTo(ox,oy,tx,ty);c3Atk={at:now,dur:W.cd};meAct={type:'atk',at:now,dur:W.cd};if(!wpnFire._p||now-wpnFire._p>400){wpnFire._p=now;try{pushPos(true)}catch(e){}}/* 171：攻擊動作（別人用 a 看到） */pFightAt=now;wpnDrawnUntil=now+600;wpnPaintMe();setTimeout(()=>{try{wpnPaintMe()}catch(e){}},650);/* 166：拔出來，0.6 秒後收回 */wpnAnim(W.k);
   if(W.k==='sword'){fxW(ox,oy,`<path class="wfx-arc" d="M8 -22 A26 26 0 0 1 8 22 A20 20 0 0 0 8 -16Z" fill="rgba(255,255,255,.85)"/>`,260,a);dealT(t,wpnDmg(w))}
   else if(W.k==='dagger'){wpnAlt=-wpnAlt;fxW(ox,oy,`<path class="wfx-arc" d="M6 ${-12*wpnAlt} L30 ${4*wpnAlt} L8 ${-2*wpnAlt}Z" fill="#FF5A4A" opacity=".9"/>`,200,a);dealT(t,wpnDmg(w))}
   else if(W.k==='hammer'){fxW(tx,ty+10,`<g class="wfx-ring"><circle r="50" fill="none" stroke="#FF9A3A" stroke-width="4"/></g><path d="M-14 2 l8 -3 l5 4 l7 -5 l8 3 M-6 -1 l2 8 M5 1 l3 7" stroke="#5A3A1A" stroke-width="1.6" fill="none" opacity=".7"/>`,450);
@@ -11885,7 +12079,7 @@ async function bootStart(cloud,noLocal){
   {const m=state._lvMsg;delete state._lvMsg;if(cloud)delete cloud._lvMsg;if(local)delete local._lvMsg;if(m)setTimeout(()=>noteOpen(`<h2>新增了育種家等級</h2><p>依照你種出過的樣子和標本，你現在是 Lv ${m}・${lvTitle(m)}。</p><p class="note">劇情已標成完成，補償 2,000 金幣和加速劑 6 次。每日訂單改成「任務」裡的委託；點左上角的名字可以看名片、打扮。</p>`),3200)}
   dirty=true;flush();
   db.collection('profiles').doc(uid).set({name:myName(),avatar:avNorm(state.avatar),at:TS()},{merge:true}).catch(()=>{});pushProfile();try{sakuraNews()}catch(e){}/* 82.2 */
-  startListeners();startSocial();watchOwnSave();checkBuild();specMigrate();
+  startListeners();startSocial();watchOwnSave();try{partyBoot()}catch(e){}/* 173 */checkBuild();specMigrate();
   if(repaired){save();repNotice(repaired)}
   closePanel();scene='farm';viewing=null;renderHUD();renderAll();tick();tutRender();renderOrdersBtn();joinFarm(uid);renderChars();updateCam();refreshAct();
   if(state.mq&&state.mq.ch===1&&state.mq.st===0){mqAccept(true);noteQ.push(`<h2>第 1 章　${MQ[1].t}</h2>`+npcTalk('tu',MQ[1].open)+'<p class="note">「阿土伯的紅番茄」放進背包了，點一塊空田種下去吧！</p>');if(!state.pname){sheet={me:uid,ren:1,first:1};renderSheet();openSheetUI()}else noteFlush()}

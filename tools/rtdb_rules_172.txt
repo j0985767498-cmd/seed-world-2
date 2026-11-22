@@ -1,0 +1,67 @@
+第 172 節（20c）：Realtime Database 規則「整份」。Firebase 主控台 → Realtime Database → 規則，把原本的內容全部刪掉、貼上下面 { 到 } 的整段，按「發布」。
+
+這一份包含遊戲現在用到的全部三個地方：
+  presence/<場景>/<uid>   角色位置（每個人只能寫自己的）
+  status/<uid>           上線狀態（每個人只能寫自己的）
+  fight/<地區>            主的共鬥（第 135 節）
+  fight/<地區>_sv         僕人的共鬥（第 172 節新增，和主用同一條規則）
+如果主控台上原本還有這三個以外的東西（例如別的測試用路徑），貼上前先把那一段抄下來，貼完再補回去；遊戲本身不需要其他路徑。
+
+{
+  "rules": {
+    "presence": {
+      ".read": "auth != null",
+      "$scene": {
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid"
+        }
+      }
+    },
+    "status": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "fight": {
+      "$bk": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() || data.child('meta/host').val() === auth.uid || data.child('meta/st').val() !== 'on' || now - data.child('meta/t0').val() > 960000)",
+        "meta": {
+          ".write": "auth != null",
+          "members": {
+            "$uid": {
+              ".write": "auth != null && auth.uid === $uid",
+              ".validate": "newData.isString() && newData.val().length <= 40"
+            }
+          }
+        },
+        "s": {
+          ".write": "auth != null && (data.parent().child('meta/host').val() === auth.uid || newData.parent().child('meta/host').val() === auth.uid)"
+        },
+        "dmg": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid",
+            ".validate": "newData.isNumber()"
+          }
+        },
+        "hb": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid"
+          }
+        },
+        "down": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid"
+          }
+        }
+      }
+    }
+  }
+}
+
+說明：
+- 和第 135 節那一段相比：members 底下每個人可以把「自己」加進去（中途加入）；僕人的 fight/<地區>_sv 不用另外寫，"$bk" 本來就涵蓋。
+- meta 任何登入的人都能改（接手主機、結束、主機調整血量上限 max／adj、僕人的重生時間 next）。
+- 整份 fight/<地區> 只有在「沒有戰鬥」「自己是主機」「已經結束（st 不是 on）」「開始超過 16 分鐘」時能整個蓋掉或刪掉。僕人沒人打了、主機離開時會整份刪掉（主機本人刪得掉）。
+- 沒貼這份（或第 135 節那段）時：遊戲會跳「共鬥連線沒開，現在是各打各的（請管理者更新資料庫規則）」，每個人各打各的，不會卡住。

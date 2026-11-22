@@ -2,7 +2,7 @@
 
 > 程式：`index.html`。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> **目前 BUILD `2026-11-20r`，下一版 `2026-11-20s`。**
+> **目前 BUILD `2026-11-20s`，下一版 `2026-11-20t`。**
 > **使用者要自己做的事**：Realtime Database 規則整份貼 `tools/rtdb_rules_173.txt`（含 62 的 status、135、172、173）；Firestore 規則整份貼 `tools/firestore_rules_console_114.txt`（117 那份＋`fairyFirst`）。舊的規則檔都只是紀錄。
 > **還沒做的節**：165（新版角色正面、背面走路）、108 的其他地區／農場／城鎮（3D）、135 的後六區與神寵技能、136（跟晶霜雪原那一章一起做）；未定案：14、19、69。各節做完的紀錄看下面的索引表。
 
@@ -286,6 +286,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 組隊（173）：`party/<pid>`／`partyInv`、`partyNet`／`partyDenied`、`partyBoot`／`partyWatch`／`partySync`／`partyTick`（3 秒、沒變不寫）、`partyInvite`／`partyCanInvite`／`partyInvSync`／`partyInvCard`／`partyAccept`、`partyLeave`／`partyDrop`、`partyFightEv`（在 `lordNetStart`）／`partyFightPrompt`／`partyGo`、`renderParty`（`#partyBox`）、`partyHas`（名牌、172.3 成員列、隊友傷害數字用 `PARTY_COLOR`）。
 - 素材的取得提示（185）：`matSrc`（`MAT_RARE_N`、`matSrcNm`／`matSrcPic`）、製作畫面一行 `matRowHTML`、取得方式小卡 `sheet.msrc`／`msrcHTML`／`msrcGo`（`qGo`）、`monDropsHTML`、`matHTML` 的來源清單；測試 `tools/t185.js`。
 - 武器平衡、184 新版（186）：目標 `WP_TARGET`、錘與鐮刀 `W.splash`、`SK_NAMES`／`skName`／`skNameShow`（`state.skSeen`）、`SK_DESC`／`skCardShow`（長按）、星星 `weapons[i].st`／`WP_SHAPES`／`STAR_FX`／`wpStat`／`skStarK`；`tools/sim184.js` 跑真的 `wpnFire`／`skCast`（186 補：合格線 `LIMIT` ±15%，結果 `tools/sim186b_20p.txt`）、測試 `tools/t186.js`。
+- 武器頁（190）：`sheet.wpi`（`wpOpen`／`wpPageHTML`、`wpSkCard`、`wpStarRow`）、技能定義 `skDefFor`、星星 `wpSlot`／`wpStarFruits`／`wpStarP`／`wpStarDo`（`WP_STAR_P`、`e.sf`、名品存負數 `wpStatOf`）、升階 `WP_UP`／`wpUpNeed`／`wpUpDo`（`wpFarKeys`）、轉移 `wpTrCost`／`wpTrOk`／`wpTrDo`（`WP_TR_COIN`）、副武器 `state.wpn2`／`wpn2On`（`wpn2Tick`）、`wpSetMain`／`wpSetSub`／`wpnSwap`、`#wpSwap`（`wpSwapPaint`）、各把的冷卻 `SKCW`／`skCdSwap`；測試 `tools/t190.js`。
 - 攻擊鍵（189）：普通攻擊不再自動，`atkTick`（在 `monLoop`、`bossStep`）、`atkPress`／`atkRelease`（`atkHeld`、`atkTap`）、`atkLock`／`atkLockT`／`atkTs`／`atkSearch`、走過去 `moveTo`（`atkJoy` 推搖桿就取消）、空揮 `atkWhiff`、鎖定圈 `#atkRing`（`atkRingPaint`）；按鈕是 `#skR`（`.ska`）；翻滾拿掉；`TIP_TXT.atk`。
 - 畫面按鈕重排（188）：位置都在 `<style>` 最後的「188」區塊（`body.h188`、`--h188-*` 變數）、`hud188()`（選單搬進 `#rbar`、回家／幫忙照顧搬進 `#ctxBar`）、`MENU` 加朋友／圖鑑／布置、`renderFrDot` 紅點在選單；`#hpBar` 所有場景都顯示；檢查 `tools/layout188.js`。**之後加按鈕要照 188 的位置表排**。
 - 連擊數（187）：`comboHit`（在 `monHit`／`bossDealt`，神之子不算）、`COMBO_GAP`、`comboTick`／`comboReset`、`#combo`（`comboPaint`）、`state.comboMax`、`comboNow()`、`onCombo(n,t)`（`COMBO_FNS`）；測試 `tools/t187.js`。
@@ -391,3 +392,4 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 187 | 連擊數；三隻主的現身條件改版 | 已完成 | docs/規格存檔.md；20p（9.188）；187.2 只改第 135 節文件；100 連擊用粉紅；沒有截圖；沒測 iPhone |
 | 188 | 畫面按鈕整體重排：功能鍵固定在左邊、戰鬥鍵弧形在右下 | 已完成 | docs/規格存檔.md；20q（9.189）；樣稿移到 docs/規格存檔_附件/；主僕血條上 110、地名放地圖按鈕左邊（規格沒寫）；照數字算沒有重疊（`tools/layout188.js`）；**沒有截圖**；沒測 iPhone |
 | 189 | 攻擊鍵（鎖定最近的怪）、拿掉自動開打、拿掉翻滾 | 已完成 | docs/規格存檔.md；20r（9.190）；`tcoop.js` 假玩家改成一直按住攻擊鍵；**沒有截圖**；**要請使用者 iPhone 試按住、邊走邊打、自動走過去** |
+| 190 | 武器頁：升階、放星星、副武器、武器轉移 | 已完成 | docs/規格存檔.md；20s（9.191）；神話公告用現有的 `news`（規則不用改）；目前沒有拿不到的升階素材；**沒有截圖**；沒測 iPhone |

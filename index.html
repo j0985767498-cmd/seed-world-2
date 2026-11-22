@@ -1937,7 +1937,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-20h';
+const BUILD='2026-11-20i';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -4873,8 +4873,8 @@ function potChoose(k){if(!POT_TYPES.some(x=>x.k===k))return;state.potSel=k;save(
 function autoPotCheck(){try{if(!state||state.autoPot===false||scene!=='explore'||pHP<=0)return false;const at=state.autoPotAt||0.3;if(pHP>=pMax()*at||Date.now()<potCd)return false;const k=potPick();if(!((state.items||{})[k]>0))return false;
   if(!drinkPot(k,true))return false;const pb=document.getElementById('potBtn');if(pb){pb.classList.remove('flash');void pb.offsetWidth;pb.classList.add('flash')}return true}catch(e){return false}}
 function renderPotBox(){const el=document.getElementById('potBox');if(!el||!state)return;const on=state.autoPot!==false,at=state.autoPotAt||0.3;
-  el.innerHTML=`<h3>自動喝補血藥</h3><button class="btn${on?' primary':''}" data-ap="tog">自動喝補血藥：${on?'開':'關'}</button><div class="row2" style="margin-top:6px">${[0.2,0.3,0.5].map(v=>`<button class="mini" data-ap="${v}" aria-pressed="${at===v}" style="${at===v?'background:var(--tabon);color:var(--tabtx)':''}">血量低於 ${Math.round(v*100)}%</button>`).join('')}</div><p class="note">在野外（包括打主的時候），血量低於這條線就自動喝一瓶。</p><h3>自動撿取</h3><button class="btn${state.autoPick?' primary':''}" data-ap="pick">自動撿取：${state.autoPick?'開':'關'}</button><p class="note">開了就走到掉落物旁邊自動撿；關著要按「撿」。</p><h3>傷害數字</h3><button class="btn${state.dmgNum!==false?' primary':''}" data-ap="dmg">顯示傷害數字：${state.dmgNum!==false?'開':'關'}</button>`}/* 152 */
-try{document.getElementById('potBox').addEventListener('click',e=>{const b=e.target.closest('[data-ap]');if(!b||!state)return;if(b.dataset.ap==='tog')state.autoPot=state.autoPot===false;else if(b.dataset.ap==='dmg')state.dmgNum=state.dmgNum===false;else if(b.dataset.ap==='pick')state.autoPick=!state.autoPick;else state.autoPotAt=+b.dataset.ap;save();renderPotBox()})}catch(e){}
+  el.innerHTML=`<h3>自動喝補血藥</h3><button class="btn${on?' primary':''}" data-ap="tog">自動喝補血藥：${on?'開':'關'}</button><div class="row2" style="margin-top:6px">${[0.2,0.3,0.5].map(v=>`<button class="mini" data-ap="${v}" aria-pressed="${at===v}" style="${at===v?'background:var(--tabon);color:var(--tabtx)':''}">血量低於 ${Math.round(v*100)}%</button>`).join('')}</div><p class="note">在野外（包括打主的時候），血量低於這條線就自動喝一瓶。</p><h3>自動撿取</h3><button class="btn${state.autoPick?' primary':''}" data-ap="pick">自動撿取：${state.autoPick?'開':'關'}</button><p class="note">開了就走到掉落物旁邊自動撿；關著要按「撿」。</p><h3>傷害數字</h3><button class="btn${state.dmgNum!==false?' primary':''}" data-ap="dmg">顯示傷害數字：${state.dmgNum!==false?'開':'關'}</button><h3>顯示出手點（測試）</h3><button class="btn${mzShow?' primary':''}" data-ap="mz">遠程武器的出手點畫紅點：${mzShow?'開':'關'}</button>`}/* 179.2 *//* 152 */
+try{document.getElementById('potBox').addEventListener('click',e=>{const b=e.target.closest('[data-ap]');if(!b||!state)return;if(b.dataset.ap==='tog')state.autoPot=state.autoPot===false;else if(b.dataset.ap==='dmg')state.dmgNum=state.dmgNum===false;else if(b.dataset.ap==='pick')state.autoPick=!state.autoPick;else if(b.dataset.ap==='mz'){mzToggle();renderPotBox();return}else state.autoPotAt=+b.dataset.ap;save();renderPotBox()})}catch(e){}
 /* 頭上的細血條（野外、血量不滿才有） */
 function hpHeadG(){if(!state||scene!=='explore'||pHP>=pMax())return '';const m=curMe(),w=40,f=Math.max(0,pHP/pMax());return `<g id="hpHead" transform="translate(${Math.round(m.x)} ${Math.round(m.y+(char2On()?char2TagDY()*CHAR_S:0))})" pointer-events="none"><rect x="${-w/2}" y="-108" width="${w}" height="5" rx="2.5" fill="#3B2614"/><rect id="hpHeadF" x="${-w/2+1}" y="-107" width="${((w-2)*f).toFixed(1)}" height="3" rx="1.5" fill="${f<0.3?'#E0463B':'#7FBF4A'}"/></g>`}
 function hpHeadPaint(){try{const want=state&&scene==='explore'&&pHP<pMax(),g=document.getElementById('hpHead');if(!want){if(g)renderChars();return}if(!g){renderChars();return}const f=Math.max(0,pHP/pMax()),r=document.getElementById('hpHeadF');if(r){r.setAttribute('width',(38*f).toFixed(1));r.setAttribute('fill',f<0.3?'#E0463B':'#7FBF4A')}}catch(e){}}
@@ -9240,14 +9240,14 @@ function c3State(L,face,moving,wtag,isMe,id,o){if(!c3Mf()||!L)return null;const 
   let S=G&&A[act]?c3Sheet(L,G.g):null;if(!S){act='stand';fr=0;G=c3G('stand');S=G?c3Sheet(L,G.g):null}if(!S||!G||!A[act])return null;
   const [dir,mir]=C3_DIR[((face|0)%8+8)%8]||[0,0];fr=Math.min(fr,G.n-1,A[act].a.length-1);return {S,act,fr,row:G.row+fr,dir,mir,anc:A[act].a[fr][dir],wtag}}
 /* 武器：照握點疊上去（座標是格內像素） */
-function c3Part(src,D,x,y,ang,gx,gy,hk,flip,half){const hh=C3.H*hk,iw=D[0]*(half?0.5:1),w=hh*iw/D[1];
+function c3Part(src,D,x,y,ang,gx,gy,hk,flip,half,mz){const hh=C3.H*hk,iw=D[0]*(half?0.5:1),w=hh*iw/D[1];const dot=mz?`<circle cx="${f1((mz[0]-gx)*w)}" cy="${f1((mz[1]-gy)*hh)}" r="2.2" fill="#ff1e1e" stroke="#fff" stroke-width=".6"/>`:'';/* 179.2：顯示出手點 */
   const img=half?`<svg x="${f1(-gx*w)}" y="${f1(-gy*hh)}" width="${f1(w)}" height="${f1(hh)}" viewBox="${half==='R'?D[0]/2:0} 0 ${iw} ${D[1]}" preserveAspectRatio="none"><image href="${src}" width="${D[0]}" height="${D[1]}"/></svg>`:`<image href="${src}" x="${f1(-gx*w)}" y="${f1(-gy*hh)}" width="${f1(w)}" height="${f1(hh)}"/>`;
-  return `<g transform="translate(${f1(x)} ${f1(y)}) rotate(${f1(ang)})${flip?' scale(-1 1)':''}">${img}</g>`}
-function c3Wpn(tag,A,front){if(!tag||!A)return '';const [crop,tier]=String(tag).split('|'),W=C3_WPN[crop],D=typeof WP_DIM!=='undefined'&&WP_DIM[crop];if(!W||!D)return '';const src=wpSrc(crop,tier);
-  if(W.mode==='float'){if(!front)return '';const hh=C3.H*W.h,w=hh*D[0]/D[1];return `<g class="wbob"><image href="${src}" x="${C3.FX+30}" y="${f1(52-hh/2)}" width="${f1(w)}" height="${f1(hh)}"/></g>`}
+  return `<g transform="translate(${f1(x)} ${f1(y)}) rotate(${f1(ang)})${flip?' scale(-1 1)':''}">${img}${dot}</g>`}
+function c3Wpn(tag,A,front){if(!tag||!A)return '';const [crop,tier]=String(tag).split('|'),W=C3_WPN[crop],D=typeof WP_DIM!=='undefined'&&WP_DIM[crop];if(!W||!D)return '';const src=wpSrc(crop,tier),M=mzOf(crop,tier),mz=mzShow&&M&&M.p;/* 179.2：遠程武器順便算出手點 */
+  if(W.mode==='float'){if(!front)return '';const hh=C3.H*W.h,w=hh*D[0]/D[1],dot=mzShow&&M?[M.l,M.r].map(p=>`<circle cx="${f1(C3.FX+30+p[0]*w)}" cy="${f1(52-hh/2+p[1]*hh)}" r="2.2" fill="#ff1e1e" stroke="#fff" stroke-width=".6"/>`).join(''):'';return `<g class="wbob"><image href="${src}" x="${C3.FX+30}" y="${f1(52-hh/2)}" width="${f1(w)}" height="${f1(hh)}"/>${dot}</g>`}
   if(W.mode==='dual'){let s='';if(!!A[7]===front)s+=c3Part(src,D,A[4],A[5],A[6],.62,W.gy,W.h,false,'L');if(!!A[3]===front)s+=c3Part(src,D,A[0],A[1],A[2],.38,W.gy,W.h,false,'R');return s}
-  if(!!A[3]!==front)return '';if(W.mode==='hand')return c3Part(src,D,A[0],A[1],A[2],W.gx,W.gy,W.h);if(W.mode==='upright')return c3Part(src,D,A[0],A[1],0,W.gx,W.gy,W.h);
-  if(W.mode==='aim'){const fl=A[8]>0;return c3Part(src,D,A[0],A[1],A[8]-(fl?-W.base:W.base),W.gx,W.gy,W.h,fl)}return ''}
+  if(!!A[3]!==front)return '';if(W.mode==='hand')return c3Part(src,D,A[0],A[1],A[2],W.gx,W.gy,W.h,false,false,mz);if(W.mode==='upright')return c3Part(src,D,A[0],A[1],0,W.gx,W.gy,W.h,false,false,mz);
+  if(W.mode==='aim'){const fl=A[8]>0;return c3Part(src,D,A[0],A[1],A[8]-(fl?-W.base:W.base),W.gx,W.gy,W.h,fl,false,mz)}return ''}
 /* 178.3：浮游砲在世界座標的位置（飛彈從這裡射出）；沒在畫新版人物回 null */
 function c3PodPos(){try{if(!document.querySelector('#meGAv g.c3'))return null;const D=WP_DIM.melon,W=C3_WPN.melon,hh=C3.H*W.h,w=hh*D[0]/D[1],me=curMe(),mir=(C3_DIR[((meFace|0)%8+8)%8]||[0,0])[1],k=C3_HU/C3.H*1.15;return [me.x+(mir?-1:1)*(30+w/2)*k,me.y+(52-C3.FY)*k]}catch(e){return null}}
 const c3Tr=st=>{const k=C3_HU/C3.H;return `scale(${f3(st.mir?-k:k)} ${f3(k)}) translate(${-C3.FX} ${-C3.FY})`};
@@ -10653,7 +10653,7 @@ const monsAlive=()=>MON_RT?MON_RT.list.filter(m=>m&&!m.dead):[];
 /* 特效（世界座標，畫在 #monSw） */
 function fxW(x,y,html,ms,rot){const L=document.getElementById('monSw');if(!L)return null;const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})${rot?` rotate(${rot.toFixed(1)})`:''}`);g.setAttribute('pointer-events','none');g.innerHTML=html;L.appendChild(g);setTimeout(()=>{try{g.remove()}catch(e){}},ms);return g}
 const angTo=(x0,y0,x1,y1)=>Math.atan2(y1-y0,x1-x0)*180/Math.PI;
-function wpnFire(w,t){const me=curMe(),[tx,ty]=tPos(t),W=w.W,now=Date.now(),dirx=tx>=me.x?1:-1,ox=me.x,oy=me.y-24,a=angTo(ox,oy,tx,ty);c3Atk={at:now,dur:W.cd};meAct={type:'atk',at:now,dur:W.cd};if(!wpnFire._p||now-wpnFire._p>400){wpnFire._p=now;try{pushPos(true)}catch(e){}}/* 171：攻擊動作（別人用 a 看到） */pFightAt=now;wpnDrawnUntil=now+600;wpnPaintMe();setTimeout(()=>{try{wpnPaintMe()}catch(e){}},650);/* 166：拔出來，0.6 秒後收回 */wpnAnim(W.k);
+function wpnFire(w,t){const me=curMe(),[tx,ty]=tPos(t),W=w.W,now=Date.now(),dirx=tx>=me.x?1:-1,ox=me.x,oy=me.y-24,a=angTo(ox,oy,tx,ty);c3Atk={at:now,dur:W.cd};meAct={type:'atk',at:now,dur:W.cd};if(!wpnFire._p||now-wpnFire._p>400){wpnFire._p=now;try{pushPos(true)}catch(e){}}/* 171：攻擊動作（別人用 a 看到） */pFightAt=now;wpnAnim(W.k);/* 179.1：不再拔出、收回 */
   if(W.k==='sword'){fxW(ox,oy,`<path class="wfx-arc" d="M8 -22 A26 26 0 0 1 8 22 A20 20 0 0 0 8 -16Z" fill="rgba(255,255,255,.85)"/>`,260,a);dealT(t,wpnDmg(w))}
   else if(W.k==='dagger'){wpnAlt=-wpnAlt;fxW(ox,oy,`<path class="wfx-arc" d="M6 ${-12*wpnAlt} L30 ${4*wpnAlt} L8 ${-2*wpnAlt}Z" fill="#FF5A4A" opacity=".9"/>`,200,a);dealT(t,wpnDmg(w))}
   else if(W.k==='hammer'){fxW(tx,ty+10,`<g class="wfx-ring"><circle r="50" fill="none" stroke="#FF9A3A" stroke-width="4"/></g><path d="M-14 2 l8 -3 l5 4 l7 -5 l8 3 M-6 -1 l2 8 M5 1 l3 7" stroke="#5A3A1A" stroke-width="1.6" fill="none" opacity=".7"/>`,450);
@@ -10662,10 +10662,44 @@ function wpnFire(w,t){const me=curMe(),[tx,ty]=tPos(t),W=w.W,now=Date.now(),dirx
       setTimeout(()=>{try{if(t.boss)dealT(t,wpnDmg(w,0.5));else if(!t.m.dead){hitMon(t.m,wpnDmg(w,0.5));if(!t.m.dead){const M=regCur(),nx=t.m.x+dirx*30;if(M&&!regBlocked(M,nx,t.m.y))t.m.x=nx}}}catch(e){}},120)}}
   else if(W.k==='scythe'){fxW(ox,oy,`<path class="wfx-arc" d="M0 -60 A60 60 0 0 1 0 60 A48 48 0 0 0 0 -48Z" fill="rgba(80,230,200,.55)" stroke="#9FFFE8" stroke-width="1"/>`,320,dirx>0?0:180);
     if(t.boss)dealT(t,wpnDmg(w));else{const bd=Math.round(pAtkNow()*0.1*Math.pow(1.3,w.tier-1));for(const m of monsAlive())if(Math.hypot(m.x-me.x,m.y-me.y)<=W.range&&(m.x-me.x)*dirx>=-4){hitMon(m,wpnDmg(w));if(!m.dead)m.burn={until:now+3000,next:now+1000,d:bd}}}}
-  else if(W.k==='fan')wpnShot({k:'fan',x:ox,y:oy,a:a*Math.PI/180,max:W.range*1.2,w,hit:new Set()});
-  else if(W.k==='staff')wpnShot({k:'star',x:ox,y:oy,t,w});
-  else if(W.k==='gun')wpnShot({k:'bullet',x:ox+dirx*10,y:oy,t,w,tx,ty});
-  else if(W.k==='pod'){const PP=c3PodPos(),px0=PP?PP[0]:ox-dirx*12,py0=PP?PP[1]:me.y-80;/* 178.3：從浮游砲的位置射出 */for(let s=0;s<(W.shots||3);s++){const pa=Math.random()*Math.PI*2,pr=Math.random()*25,px=tx+Math.cos(pa)*pr,py=ty+Math.sin(pa)*pr;/* 166：半徑 25 內 */wpnShot({k:'pod',x:px0,y:py0,x0:px0,y0:py0,px,py,u:0,dur:Math.hypot(px-ox,py-oy)/600+0.15+s*0.08,w,t})}}}
+  else if(W.k==='fan'||W.k==='staff'||W.k==='gun'||W.k==='pod')mzFire(w,t);/* 179.2：遠程從武器的出手點射出 */}
+/* ===== 179（20i）：遠程攻擊從武器射出（扇、法杖、槍、浮游砲） =====
+   出手點：每張武器圖載入時算一次（圖內比例座標）。扇、法杖：從握點往圖的上方（±8°）最遠的不透明像素；
+   槍：base 是握把的方向、不是槍管，改取離握點最遠的不透明像素（就是槍口）；浮游砲：左右最外側那一欄的中點，射的時候取朝目標那一邊。
+   換到地圖座標用和 c3Wpn 完全相同的平移、旋轉、縮放、鏡射。在攻擊動作的第幾格射出看 MZ_FR（_w 用同一格）。 */
+let mzShow=false;try{mzShow=localStorage.getItem('sw_mz')==='1'}catch(e){}
+const MZ={},MZ_FR={fan:2,staff:2,gun:0,pod:2};
+function mzCalc(im,W,D){const w=im.naturalWidth||im.width,h=im.naturalHeight||im.height,c=document.createElement('canvas');/* 高階武器圖的長寬比和 WP_DIM（第 1 階）不同，畫的時候是等比縮進同一個框（置中）；握點、出手點都用框內比例 */const bA=D[0]/D[1],iA=w/h,sx=iA<bA?iA/bA:1,sy=iA<bA?1:bA/iA,ox=(1-sx)/2,oy=(1-sy)/2,toB=(u,v)=>[ox+u*sx,oy+v*sy];c.width=w;c.height=h;const g=c.getContext('2d');g.drawImage(im,0,0);const d=g.getImageData(0,0,w,h).data,op=(x,y)=>d[(y*w+x)*4+3]>127;
+  if(W.mode==='float'){let x0=w,x1=-1;for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(op(x,y)){if(x<x0)x0=x;if(x>x1)x1=x}if(x1<0)return {l:[0,.5],r:[1,.5]};
+    let y0=h,y1=-1;for(let y=0;y<h;y++)for(let x=x0;x<=x1;x++)if(op(x,y)){if(y<y0)y0=y;if(y>y1)y1=y;break}const ym=(y0+y1+1)/2/h;return {l:toB(x0/w,ym),r:toB((x1+1)/w,ym)}}/* 不透明範圍左右兩邊的中點 */
+  const gx=(W.gx-ox)/sx*w,gy=(W.gy-oy)/sy*h,t=Math.tan(8*Math.PI/180);let best=null,bd=-1;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){if(!op(x,y))continue;let q;if(W.mode==='aim')q=(x-gx)*(x-gx)+(y-gy)*(y-gy);else{const dy=gy-y;if(dy<=0||Math.abs(x-gx)>dy*t+1)continue;q=dy}if(q>bd){bd=q;best=[x+.5,y+.5]}}
+  return {p:best?toB(best[0]/w,best[1]/h):[W.gx,0]}}
+function mzOf(crop,tier){const W=C3_WPN[crop];if(!W||!WEAPONS[crop]||WEAPONS[crop].ty!=='遠程')return null;const src=wpSrc(crop,tier);let o=MZ[src];if(o)return o.st===1?o:null;o=MZ[src]={st:0};
+  try{const im=new Image();im.onload=()=>{try{Object.assign(o,mzCalc(im,W,WP_DIM[crop]));o.st=1}catch(e){o.st=2}};im.onerror=()=>{o.st=2};im.src=src}catch(e){o.st=2}return null}
+/* 格內座標（c3Wpn 那一層）：武器圖內 (u,v) → 格內 */
+function mzCell(st,crop,tier){const W=C3_WPN[crop],D=WP_DIM[crop],M=mzOf(crop,tier);if(!W||!D||!M||!st)return null;const hh=C3.H*W.h,w=hh*D[0]/D[1];
+  if(W.mode==='float'){const f=p=>[C3.FX+30+p[0]*w,52-hh/2+p[1]*hh];return [f(M.l),f(M.r)]}
+  const A=st.anc;if(!A)return null;let ang,fl=false;if(W.mode==='hand')ang=A[2];else if(W.mode==='upright')ang=0;else if(W.mode==='aim'){fl=A[8]>0;ang=A[8]-(fl?-W.base:W.base)}else return null;
+  let x=(M.p[0]-W.gx)*w,y=(M.p[1]-W.gy)*hh;if(fl)x=-x;const r=ang*Math.PI/180;return [[A[0]+x*Math.cos(r)-y*Math.sin(r),A[1]+x*Math.sin(r)+y*Math.cos(r)]]}
+/* 格內 → 地圖（同 c3Tr 與 charG 的 translate(x y) scale(1.15)） */
+const mzToW=(st,P,me)=>{const k=C3_HU/C3.H*1.15;return [me.x+(st.mir?-1:1)*(P[0]-C3.FX)*k,me.y+(P[1]-C3.FY)*k]};
+function mzMe(w,tx){try{if(!document.querySelector('#meGAv g.c3'))return null;const L=lookNorm(state.look),st=c3State(L,meFace,!!raf,wpnTag(),true,'me');if(!st)return null;const W=C3_WPN[w.crop];
+  if(W.mode!=='float'){const A=c3Anc(L.b);if(A&&(st.act===W.act||st.act===W.act+'_w')&&A[st.act]){const a=A[st.act].a;st.anc=a[Math.min(MZ_FR[w.W.k]||0,a.length-1)][st.dir]}}/* 用射出那一格的錨點（不受計時誤差影響） */
+  const C=mzCell(st,w.crop,w.tier);if(!C)return null;const me=curMe(),P=C.map(c=>mzToW(st,c,me));if(P.length===1)return P[0];
+  const lo=P[0][0]<=P[1][0]?P[0]:P[1],hi=lo===P[0]?P[1]:P[0];return tx<(lo[0]+hi[0])/2?lo:hi}catch(e){return null}}/* 浮游砲：朝目標那一邊 */
+function mzFire(w,t){const W=w.W,k=W.k,c3=!!document.querySelector('#meGAv g.c3'),G=c3&&C3_WPN[w.crop]&&c3G(C3_WPN[w.crop].act),n=G?G.n:6,delay=c3?Math.round(W.cd*(MZ_FR[k]||0)/n)+(MZ_FR[k]?10:0):0;
+  const go=()=>{if(scene!=='explore'||!state)return;if(k!=='fan'&&(t.boss?t.boss.done:(!t.m||t.m.dead)))return;/* 等出手那一格時目標已經倒了：扇照樣飛出去，其他不射 */
+    const me=curMe(),[tx,ty]=tPos(t),ox=me.x,oy=me.y-24,dirx=tx>=me.x?1:-1,P=c3?mzMe(w,tx):null;
+    if(P&&mzShow)fxW(P[0],P[1],'<circle r="2.6" fill="#ff1e1e" stroke="#fff" stroke-width=".8"/>',800);
+    if(k==='fan'){const x=P?P[0]:ox,y=P?P[1]:oy;wpnShot({k:'fan',x,y,a:Math.atan2(ty-y,tx-x),max:W.range*1.2,w,hit:new Set(),cx:ox,cy:oy})}
+    else if(k==='staff')wpnShot({k:'star',x:P?P[0]:ox,y:P?P[1]:oy,t,w});
+    else if(k==='gun')wpnShot({k:'bullet',x:P?P[0]:ox+dirx*10,y:P?P[1]:oy,t,w,tx,ty});
+    else{const PP=P||c3PodPos(),px0=PP?PP[0]:ox-dirx*12,py0=PP?PP[1]:me.y-80;for(let s=0;s<(W.shots||3);s++){const pa=Math.random()*Math.PI*2,pr=Math.random()*25,px=tx+Math.cos(pa)*pr,py=ty+Math.sin(pa)*pr;/* 166：半徑 25 內 */wpnShot({k:'pod',x:px0,y:py0,x0:px0,y0:py0,px,py,u:0,dur:Math.hypot(px-ox,py-oy)/600+0.15+s*0.08,w,t})}}};
+  if(delay)setTimeout(()=>{try{go()}catch(e){}},delay);else go()}
+/* 設定：測試用「顯示出手點」（之後拿掉） */
+function mzToggle(){mzShow=!mzShow;try{localStorage.setItem('sw_mz',mzShow?'1':'0')}catch(e){}}
+/* ===== 179 結束 ===== */
 /* 子彈：速度約 600／秒；飛超過距離 ×1.2 就消失；扇會穿透 */
 const WPN_PROJ=[];let wpnRaf=0,wpnLast=0;
 function wpnShot(p){const L=document.getElementById('monSw');if(L){const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('pointer-events','none');
@@ -10675,7 +10709,7 @@ function wpnBoom(x,y,r,w,t){fxW(x,y,`<g class="wfx-ring"><circle r="${r}" fill="
   if(t&&t.boss){if(Math.hypot(t.boss.x-x,t.boss.y-14-y)<=r+BOSS_HU*0.5)dealT(t,wpnDmg(w))}else for(const m of monsAlive())if(Math.hypot(m.x-x,m.y-14-y)<=r)hitMon(m,wpnDmg(w))}
 function wpnStep(dt){for(let k=WPN_PROJ.length-1;k>=0;k--){const p=WPN_PROJ[k];let done=false;
     if(p.k==='fan'){const s=600*dt;p.x+=Math.cos(p.a)*s;p.y+=Math.sin(p.a)*s;p.d+=s;for(const m of monsAlive()){if(p.hit.has(m))continue;if(Math.hypot(m.x-p.x,m.y-14-p.y)<=18){p.hit.add(m);hitMon(m,wpnDmg(p.w));pHP=Math.min(pMax(),pHP+pMax()*0.02);try{renderHP()}catch(e){}}}
-      if(bossRT&&bossRT.active&&!bossRT.done&&!p.hit.has(bossRT)&&Math.hypot(bossRT.x-p.x,bossRT.y-14-p.y)<=24){p.hit.add(bossRT);bossDealt(bossRT,wpnDmg(p.w))}if(p.d>p.max)done=true}
+      if(bossRT&&bossRT.active&&!bossRT.done&&!p.hit.has(bossRT)&&Math.hypot(bossRT.x-p.x,bossRT.y-14-p.y)<=24){p.hit.add(bossRT);bossDealt(bossRT,wpnDmg(p.w))}if((p.cx!=null?Math.hypot(p.x-p.cx,p.y-p.cy):p.d)>p.max)done=true}/* 179.2：扇的距離從人物位置算 */
     else if(p.k==='pod'){p.u+=dt/p.dur;const u=Math.min(1,p.u);p.x=p.x0+(p.px-p.x0)*u;p.y=p.y0+(p.py-p.y0)*u-60*Math.sin(Math.PI*u);if(u>=1){wpnBoom(p.px,p.py,35,p.w,p.t);done=true}}
     else{const alive=p.t.boss?(!p.t.boss.done):(!p.t.m.dead);const [tx,ty]=alive?tPos(p.t):[p.tx||p.x,p.ty||p.y];const dx=tx-p.x,dy=ty-p.y,dd=Math.hypot(dx,dy),s=600*dt;
       if(dd<=s+6){if(alive){const o=wpnDmg(p.w);dealT(p.t,o);if(p.k==='bullet')fxW(tx,ty,'<g class="wfx-pop"><circle cx="-4" cy="-2" r="2.4" fill="#FFFBE8"/><circle cx="3" cy="-4" r="2" fill="#FFE07A"/><circle cx="1" cy="3" r="2.2" fill="#FFFBE8"/><circle cx="-2" cy="4" r="1.6" fill="#FFE07A"/></g>',380)}done=true}
@@ -10703,23 +10737,15 @@ function ghostTick(){try{const L=occList(),k=L.join(',');const F=document.getEle
 function wpnLoop(ts){wpnRaf=0;const dt=wpnLast?Math.min(0.05,(ts-wpnLast)/1000):0.016;wpnLast=ts;try{wpnStep(dt)}catch(e){WPN_PROJ.length=0}if(WPN_PROJ.length)wpnRaf=requestAnimationFrame(wpnLoop)}
 /* 拿在手上：高約角色顯示高度 55%（雙刀那張是兩把交叉在一起的一張圖，畫一次 45%）；浮游砲浮在肩膀斜上方。手的位置先用固定偏移 */
 const WP_HAND={x:9,y:0.4};
-let wpnDrawnUntil=0;/* 166：攻擊後 0.6 秒才收回背上 */
-function wpnBackHTML(crop,tier,W,D,dir,back,charH,id){/* 平常背著：斜背（右肩到左腰 35°）；雙刀右腰、扇左腰；面向正面、側面時畫在身體後面，背面時畫在前面 */
-  if(back)dir=-dir;/* 166 修正（19x）：背面看時左右相反，才會一樣在角色的右肩 */
-  if(W.k==='dagger'||W.k==='fan'){const H=charH*(W.k==='fan'?0.25:0.28),Wd=H*D[0]/D[1],x=(W.k==='fan'?1:-1)*dir*8;const s=`<g transform="translate(${x.toFixed(1)} ${(-charH*0.32).toFixed(1)}) scale(${dir} 1) rotate(${W.k==='fan'?15:-10})"><g${id} class="wsw"><image href="${wpSrc(crop,tier)}" x="${(-Wd/2).toFixed(1)}" y="${(-H*0.5).toFixed(1)}" width="${Wd.toFixed(1)}" height="${H.toFixed(1)}"/></g></g>`;return back?{b:s,f:''}:{b:'',f:s}}
-  /* 166 修正（19x）：斜背 60°（離垂直 30°），從右肩後方往上露出；錘頭、槍口朝上，從肩膀上方露出 */
-  const gun=W.k==='gun',ham=W.k==='hammer',H=charH*(gun?0.4:0.55),Wd=H*D[0]/D[1],rot=gun||ham?15:30,cx=-dir*charH*(gun?0.07:ham?0.1:0.12),cy=-charH*(gun?0.74:0.7);
-  const s=`<g transform="translate(${cx.toFixed(1)} ${cy.toFixed(1)}) scale(${-dir} 1) rotate(${rot})"><g${id} class="wsw"><image href="${wpSrc(crop,tier)}" x="${(-Wd/2).toFixed(1)}" y="${(-H/2).toFixed(1)}" width="${Wd.toFixed(1)}" height="${H.toFixed(1)}"${gun?' transform="rotate(50)"':''}/></g></g>`;/* 槍管在圖裡往左上約 25°，再轉 50＋15 才朝上 */
-  return back?{b:'',f:s}:{b:s,f:''}}
-function wpnHTML(tag,flip,view,charH,mine,drawn){if(!tag)return {b:'',f:''};const [crop,tier]=String(tag).split('|'),W=WEAPONS[crop],D=WP_DIM[crop];if(!W||!D)return {b:'',f:''};
-  if(!drawn&&W.k!=='pod')return wpnBackHTML(crop,tier,W,D,flip?-1:1,view==='back'||view==='bq',charH,mine?' id="meWpnI"':'');
+/* 179.1（20i）：第 166.1 節「平常背著、攻擊才拔出」整段拿掉；這套 159.4 的畫法只在退回舊人物時用 */
+function wpnHTML(tag,flip,view,charH,mine){if(!tag)return {b:'',f:''};const [crop,tier]=String(tag).split('|'),W=WEAPONS[crop],D=WP_DIM[crop];if(!W||!D)return {b:'',f:''};
   const dir=flip?-1:1,back=view==='back'||view==='bq',id=mine?' id="meWpnI"':'';
   if(W.k==='pod'){const H=charH*0.3,Wd=H*D[0]/D[1];return {b:'',f:`<g transform="translate(${(-dir*13).toFixed(1)} ${(-charH*0.98).toFixed(1)})"><g class="wbob"><g${id} class="wsw"><image href="${wpSrc(crop,tier)}" x="${(-Wd/2).toFixed(1)}" y="${(-H/2).toFixed(1)}" width="${Wd.toFixed(1)}" height="${H.toFixed(1)}"/></g></g></g>`}}
   const H=charH*(W.k==='dagger'?0.45:0.55),Wd=H*D[0]/D[1],gun=W.k==='gun',rot=gun?0:W.k==='staff'||W.k==='fan'?12:25,gy=gun?-H*0.35:-H*0.85,gx=gun?-Wd*0.7:-Wd/2;
   const s=`<g transform="translate(${(dir*WP_HAND.x).toFixed(1)} ${(-charH*WP_HAND.y).toFixed(1)}) scale(${dir} 1) rotate(${rot})"><g${id} class="wsw"><image href="${wpSrc(crop,tier)}" x="${gx.toFixed(1)}" y="${gy.toFixed(1)}" width="${Wd.toFixed(1)}" height="${H.toFixed(1)}"${gun?' transform="scale(-1 1)"':''}/></g></g>`;
   return back?{b:s,f:''}:{b:'',f:s}}
 const charHU=mine=>mine&&char2On()?CHAR2_H/CHAR_S:57.5;
-function wpnPaintMe(){try{const B=document.getElementById('meWB'),F=document.getElementById('meWF');if(!B||!F)return;if(document.querySelector('#meGAv g.c3,#meGAv g.c3w')){if(B.innerHTML)B.innerHTML='';if(F.innerHTML)F.innerHTML='';F._k='c3';return}/* 178.3：新版人物的武器由 c3Wpn 畫，這裡不再畫第二個（浮游砲出現兩個的原因） */const drawn=Date.now()<wpnDrawnUntil,tag=wpnTag(),k=tag+'|'+meFace+'|'+char2On()+'|'+drawn;if(F._k===k)return;F._k=k;const H=wpnHTML(tag,faceFlip(meFace),VIEWS[meFace],charHU(true),true,drawn);B.innerHTML=H.b;F.innerHTML=H.f}catch(e){}}
+function wpnPaintMe(){try{const B=document.getElementById('meWB'),F=document.getElementById('meWF');if(!B||!F)return;if(document.querySelector('#meGAv g.c3,#meGAv g.c3w')){if(B.innerHTML)B.innerHTML='';if(F.innerHTML)F.innerHTML='';F._k='c3';return}/* 178.3：新版人物的武器由 c3Wpn 畫，這裡不再畫第二個（浮游砲出現兩個的原因） */const tag=wpnTag(),k=tag+'|'+meFace+'|'+char2On();if(F._k===k)return;F._k=k;const H=wpnHTML(tag,faceFlip(meFace),VIEWS[meFace],charHU(true),true);B.innerHTML=H.b;F.innerHTML=H.f}catch(e){}}
 function wpnAnim(k){try{const g=document.getElementById('meWpnI');if(!g)return;const c=k==='hammer'||k==='axe'?'chop':['fan','staff','gun','pod'].includes(k)?'push':'swing';g.classList.remove('swing','chop','push');void g.getBBox;g.getBoundingClientRect();g.classList.add(c)}catch(e){}}
 /* 換裝備 */
 function wpnEquip(i){const e=weaponsArr()[i];if(!e)return false;state.wpn=i;if(scene==='explore')wpnLock=Date.now()+WP_SWAP_MS;save();try{const F=document.getElementById('meWF');if(F)F._k='';wpnPaintMe();pushPos(true)}catch(e){}return true}

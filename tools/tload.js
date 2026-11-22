@@ -51,3 +51,4 @@ const dup=Object.keys(names).filter(k=>names[k]>1&&k!=='openBuild');ok(!dup.leng
 console.log(fails?('FAILS '+fails):'ALL PASS');
 /* 第 172 節：主、僕人共鬥（兩到三個假玩家共用假的 Realtime Database） */
 try{require('./tcoop.js')}catch(e){console.log('FAIL tcoop.js crashed: '+e.message);process.exitCode=1}
+try{require('./t183.js')}catch(e){console.log('FAIL t183.js crashed: '+e.message);process.exitCode=1}

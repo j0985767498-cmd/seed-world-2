@@ -2,7 +2,7 @@
 
 > 程式：`index.html`。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> **目前 BUILD `2026-11-20k`，下一版 `2026-11-20l`。**
+> **目前 BUILD `2026-11-20l`，下一版 `2026-11-20m`。**
 > **使用者要自己做的事**：Realtime Database 規則整份貼 `tools/rtdb_rules_173.txt`（含 62 的 status、135、172、173）；Firestore 規則整份貼 `tools/firestore_rules_console_114.txt`（117 那份＋`fairyFirst`）。舊的規則檔都只是紀錄。
 > **還沒做的節**：165（新版角色正面、背面走路）、108 的其他地區／農場／城鎮（3D）、135 的後六區與神寵技能、136（跟晶霜雪原那一章一起做）；未定案：14、19、69。各節做完的紀錄看下面的索引表。
 
@@ -284,6 +284,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 遠程從武器射出（179）：`wpnHTML` 只在退回舊人物時用；`mzFire`（取代 `wpnFire` 的遠程四段、`MZ_FR` 第幾格）、出手點 `mzOf`／`mzCalc`（`MZ`，高階圖照 `WP_DIM` 換框內比例）、`mzCell`／`mzToW`／`mzMe`；測試開關 `mzShow`（`sw_mz`、`c3Part` 的 `mz`、設定 `data-ap="mz"`）。
 - 任務提示收合（175）：`#mqWrap`（`mqColInit` 把 `#mqLine` 搬進去）、`#mqCol`「‹」、左邊緣標籤 `#mqTab`（紅點 `dot`、`bump`）、`mqColSet`（本機 `sw_mqcol`）、`mqColSync`（包在 `renderMqLine` 外面，`mqSig`）、`mqLay`（隊伍名單在上、任務提示在下，`body.mqParty`；也包在 `renderParty` 外面）。
 - 組隊（173）：`party/<pid>`／`partyInv`、`partyNet`／`partyDenied`、`partyBoot`／`partyWatch`／`partySync`／`partyTick`（3 秒、沒變不寫）、`partyInvite`／`partyCanInvite`／`partyInvSync`／`partyInvCard`／`partyAccept`、`partyLeave`／`partyDrop`、`partyFightEv`（在 `lordNetStart`）／`partyFightPrompt`／`partyGo`、`renderParty`（`#partyBox`）、`partyHas`（名牌、172.3 成員列、隊友傷害數字用 `PARTY_COLOR`）。
+- 第一位神之子、轉生的夢（183）：`state.anchor`（`mq2First`）、夢 `dreamNeed`／`dreamOpen`／`dreamAfter`（`#dream`、`DREAM_L`）、1-5 `altWho`／`mq2FirstBody`（`FIRST_L`）、`state.cropEarly`（`cropKept`）、清單 `altL(k)`（取代 `ALT_LIST[k]`；番茄第二份 `ALT_LIST.tomato2`、`altObj('tomato').l2`）；主線 17 步（2-5、2-6、3-5、3-6 拿掉），神之子類任務 `FYQ`／`fyqTick`（`state.fyq`，kind `fyq`）；遷移 `m183`（旗標 `mq183V`）；測試 `tools/t183.js`。
 - 個人介面 `openMe`／`meSheetHTML`、通知 `noteOpen`、慶祝卡 `celShow`、提示 `toast`、「？」小說明 `qh`。
 
 **效能、模式、其他**
@@ -377,3 +378,4 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 180 | 打扮面板改版：縮圖只放單品、版面好操作 | 已完成 | docs/規格存檔.md；20j（9.181）；選髮型不再換成預設髮色（和 177 不同）；**沒有截圖**（Browser 窗格卡住）；沒測 iPhone |
 | 181 | 撿起按鈕改版；神之子攻擊、雙色特效的問題先查 | 已完成 | docs/規格存檔.md；20k（9.182）；90～120 之間按了會走過去（規格沒寫）、「自動撿取」設定拿掉；181.2 只查：怪方塊是麥斯 `corn_2_c`／`corn_3_c` 圖裡的全息方塊、28 張圖光效碰到畫布邊；**沒有遊戲截圖**（Browser 窗格卡住）；沒測 iPhone |
 | 182 | 整理 CLAUDE.md：刪掉過時、被取代的內容 | 已完成 | 只改 CLAUDE.md；照 182.4 沒有動 `docs/規格存檔.md`、`docs/待實作/`（`第182節.md` 還在） |
+| 183 | 第一位神之子自己選：轉生的夢；主線不再發神之子 | 已完成 | docs/規格存檔.md；20l（9.183）；神之子類任務放在「故事」分頁、2-4／3-4 獎勵是加上去；**沒有截圖**；沒測 iPhone |

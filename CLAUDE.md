@@ -1,8 +1,8 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-20c'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`（`BUILD = '2026-11-20d'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-20d`。第 172 節（20c：主、僕人共鬥）已做，**Realtime Database 規則要整份貼 `tools/rtdb_rules_172.txt`（取代第 135 節那一段）**。第 170 節（20a：神之子的普通攻擊）、第 170 節補（20b：攻擊演出加強）已做。第 168、169 節（19z：別人看得到新版主角、神之子背面）已做。第 167 節（19y：神之子新圖、光芒顏色）已做。第 161～164、166 節（19w）已做，第 166 節修正（19x：怪物追擊、背武器 60°）已做；第 165 節還沒做。第 141 節（19g）、第 142 節（19h）、第 143 節（19i）、第 144 節（19j）、第 145 節（19k）、第 144 節修正（19l、19m）、第 147、148 節（19m）、第 149 節（19n）、第 150 節（19o，19p 修 iPhone 地面圖）、第 151～154 節（19q）、第 155 節（19r）、第 156 節（19s）、第 157 節（19t）、第 158 節（19u）、第 159、160 節（19v）已做；第 146 節（色塊圖工具）已做。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）、第 140 節（19f）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> 下一版 BUILD 是 `2026-11-20e`。第 174、171、173 節（20d）已做，**Realtime Database 規則要整份貼 `tools/rtdb_rules_173.txt`（含第 172 節，取代 135／172 那幾份）**。第 172 節（20c：主、僕人共鬥）已做。第 170 節（20a：神之子的普通攻擊）、第 170 節補（20b：攻擊演出加強）已做。第 168、169 節（19z：別人看得到新版主角、神之子背面）已做。第 167 節（19y：神之子新圖、光芒顏色）已做。第 161～164、166 節（19w）已做，第 166 節修正（19x：怪物追擊、背武器 60°）已做；第 165 節還沒做。第 141 節（19g）、第 142 節（19h）、第 143 節（19i）、第 144 節（19j）、第 145 節（19k）、第 144 節修正（19l、19m）、第 147、148 節（19m）、第 149 節（19n）、第 150 節（19o，19p 修 iPhone 地面圖）、第 151～154 節（19q）、第 155 節（19r）、第 156 節（19s）、第 157 節（19t）、第 158 節（19u）、第 159、160 節（19v）已做；第 146 節（色塊圖工具）已做。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）、第 140 節（19f）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
 
 ---
 
@@ -274,6 +274,9 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 神之子背面（169）：`fy2Src(k,st,b)`、`fyBackReady`／`FY_BK`、`fyUp`／`fyWantBack`、`fyFace`、`S.sq`（壓扁翻面）；`getPos` 回傳 `face`。
 - 神之子的普通攻擊（170）：`FY_ATK_R`／`FY_ATK_CD`／`FY_ATK_PCT`／`FY_ATK_ENG`／`FY_BOLT`、`fyAtkTick`（`monLoop`、`bossLoop`）、`fyTarget`、`fyBaseDmg`、`fyAutoOn`（`state.fyAuto`）、演出 `fyAtkFx`／`fyCastArt`（`_c` 圖、`FY_CK`、`S.castFlip`）、同步 `fyAct`→`pushPos` 的 `fa`、`fyAtkRemote`（`FY_SEEN`）；`monHit(…,pet)`、`bossDealt` 的 `o.pet`。170 補：`FY_BOLT_MS` 380、`FY_LINE_HOLD`、打中 `fyHitFx`（`.fyp-ring`）、出手光環 `.fyp-cring`。
 - 主、僕人共鬥（172）：`bpath`（`fight/<區>`／`fight/<區>_sv`）、`bossNetSync`（加入、更新、結束，`lordNetSync` 轉呼叫）、`svNetWatch`／`svNetState`／`svBusy`／`bossSvNet`、`bossScaleUp`（`BOSS_JOIN_K`、`b.base`／`b.adj`／`b.mcount`，`bossHp` 扣 `adj`）、`svResult`、`bossMemHTML`（`.bmem`）、`tmDmg`（`.dmg.tm`）、`bossEvents`、`fightDenied`；測試 `tools/tcoop.js`（`tload.js` 會跑）。
+- 秘境掉落物（174）：`bossLoop` 也跑 `dropTick`、`bossLeave` 先 `dropClear`。
+- 分層人物（171）：`C3`／`C3_HU`／`C3_DIR`／`C3_HAIRS`／`C3_LOOK`／`C3_WPN`、`char3On`（`state.char3`）、`lookNorm`／`lookPack`／`lookUnpack`（`state.look`、同步 `ap`）、`c3Im`／`c3Anc`、`c3Sheet`（合成＋外輪廓→blob，LRU 24，`c3LastMs`）、`c3Act`／`c3State`、`c3SVG`／`c3Paint`／`c3PaintAll`、`c3Wpn`／`c3Part`、`c3Atk`／`c3HitAt`／`c3Walk`、造型 `sheet.look`（`lookHTML`／`lookAction`、`c3TestWeapons`）；參考實作在 `docs/規格存檔_附件/第171節_參考實作.html`。
+- 組隊（173）：`party/<pid>`／`partyInv`、`partyNet`／`partyDenied`、`partyBoot`／`partyWatch`／`partySync`／`partyTick`（3 秒、沒變不寫）、`partyInvite`／`partyCanInvite`／`partyInvSync`／`partyInvCard`／`partyAccept`、`partyLeave`／`partyDrop`、`partyFightEv`（在 `lordNetStart`）／`partyFightPrompt`／`partyGo`、`renderParty`（`#partyBox`）、`partyHas`（名牌、172.3 成員列、隊友傷害數字用 `PARTY_COLOR`）。
 - 個人介面 `openMe`／`meSheetHTML`、通知 `noteOpen`、慶祝卡 `celShow`、提示 `toast`、「？」小說明 `qh`。
 
 **效能、模式、其他**
@@ -462,7 +465,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 168 | 別人也看得到新版主角（補第 156 節） | 已完成 | docs/規格存檔.md；19z（9.168）；Firestore 不用改、RTDB presence 規則不在 repo（照 w、fy 的經驗應該不用改，9.168 附上萬一要加的那段）；互看截圖用假的其他玩家；沒測多人連線、iPhone |
 | 169 | 神之子的背面（補第 167 節） | 已完成 | docs/規格存檔.md；19z（9.169）；朝上先用正上方（165 還沒做）；順便修省電時換不到圖、換階段用錯圖；有截圖；沒測 iPhone |
 | 170 | 神之子的普通攻擊（要同步給別人看）；170 補：演出加強 | 已完成 | docs/規格存檔.md；20a（9.170）；傷害佔比：喚醒約 6%、神化 14～18%；有出手截圖、互看要兩個帳號沒拍；沒測 iPhone、多人連線 |；170 補 20b（9.171），九隻的畫面使用者自己進遊戲看（不截圖）
-| 171 | 分層人物（3D 拍成 2D）：換裝、動作、武器拿在手上 | 未做 | docs/待實作/第171節.md（參考實作 docs/待實作/第171節_參考實作.html） |
+| 171 | 分層人物（3D 拍成 2D）：換裝、動作、武器拿在手上 | 已完成 | docs/規格存檔.md；20d（9.174）；參考實作移到 docs/規格存檔_附件/；法杖在左前方被身體擋住、握角等聊天室調；總覽截圖（在頁面裡畫）；沒測 iPhone 掉幀 |
 | 172 | 主、僕人改成同一張地圖只有一隻、大家一起打 | 已完成 | docs/規格存檔.md；20c（9.172）；**規則 `tools/rtdb_rules_172.txt` 要使用者自己貼**；2 人 5 分鐘約 4,800 次寫入、320 KB；沒測兩台手機、iPhone |
-| 173 | 組隊邀請 | 未做 | docs/待實作/第173節.md；排在第 172 節之後 |
-| 174 | 主、僕人的掉落物撿不到（使用者回報，先修） | 未做 | docs/待實作/第174節.md |
+| 173 | 組隊邀請 | 已完成 | docs/規格存檔.md；20d（9.175）；**規則 `tools/rtdb_rules_173.txt`（含 172）要使用者自己貼**；4 人掛 10 分鐘約 7 次寫入；沒測兩台手機 |
+| 174 | 主、僕人的掉落物撿不到（使用者回報，先修） | 已完成 | docs/規格存檔.md；20d（9.173）；原因：秘境沒有一般怪、monLoop 不跑、dropTick 跑不到；有截圖 |

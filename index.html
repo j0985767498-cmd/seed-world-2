@@ -889,8 +889,19 @@ details.gfold .gfb{margin-top:8px}
 .offfx{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);z-index:60;display:flex;gap:14px;pointer-events:auto;animation:offfx .9s ease-out forwards}.offfx b{font-size:30px;text-shadow:0 0 8px #fff}.offok{color:#E8B400}.offbad{color:#8A8A8A}.offfx .offbad::before{content:'✕ '}@keyframes offfx{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-80%) scale(1)}}/* 114 */
 .mwind{animation:mwind .5s ease-in-out}.mwind .ms{filter:drop-shadow(0 0 6px #FF2A2A) drop-shadow(0 0 2px #FF2A2A) brightness(1.15) sepia(.5) saturate(4) hue-rotate(-30deg)}@keyframes mwind{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 /* 135 */#bossBar{position:fixed;left:50%;transform:translateX(-50%);top:calc(122px + env(safe-area-inset-top,0px));z-index:11;width:min(300px,82vw);display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;pointer-events:none}#bossBar[hidden]{display:none}#bossBar b{width:100%;text-align:center;font-size:14px;color:#fff;text-shadow:0 0 3px #3B2614,0 0 3px #3B2614}#bossBar .bbw{position:relative;flex:1;height:14px;border-radius:8px;border:2px solid #3B2614;background:#4A2A18;overflow:hidden}#bossBar .bbw i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#E8504A,#B8282A);transition:width .2s}#bossBar .bbw em{position:absolute;left:50%;top:0;bottom:0;width:2px;background:#FFF6DE;opacity:.85}#bossBar.ph2 .bbw i{background:linear-gradient(#F0A040,#C8501A)}#bossBar .bbq{pointer-events:auto;font-size:12px;padding:2px 8px;border-radius:8px;border:2px solid #5A3416;background:#FFF6DE;color:#5A3416}#bossBar .bbq[hidden]{display:none}
-/* 172.3：成員列、隊友的傷害數字 */#bossBar .bmem{flex-basis:100%;display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}#bossBar .bmem[hidden]{display:none}#bossBar .bm{font-size:11px;padding:1px 6px;border-radius:8px;background:rgba(255,255,255,.18);color:#fff}#bossBar .bm.me{background:rgba(255,226,122,.35)}#bossBar .bm.dn{opacity:.5}#bossBar .bm.pt{color:#4FE3C1;font-weight:700}
-/* 173：隊伍名單、邀請卡、開打提示 */#partyBox{position:fixed;left:8px;top:calc(232px + env(safe-area-inset-top,0px));z-index:14;width:148px;background:rgba(255,248,232,.92);border:2px solid var(--ol,#5A3416);border-radius:10px;padding:4px 6px;font-size:11px;color:#3B2614}#partyBox[hidden]{display:none}#partyBox .phd{font-weight:800;cursor:pointer}#partyBox .prow{margin:3px 0;position:relative;display:block}#partyBox .php{width:100%}#partyBox .prow b{color:#2E8F78}#partyBox .prow.off{opacity:.45;filter:grayscale(1)}#partyBox .php{display:block;height:4px;background:#3B2614;border-radius:2px;margin:1px 0}#partyBox .php i{display:block;height:100%;background:#7FBF4A;border-radius:2px}#partyBox .pkick{position:absolute;right:0;top:0;border:0;background:none;color:#B4442A;font-size:11px;padding:0 2px}#partyBox .mini{font-size:10px;padding:2px 6px;margin-top:2px}#partyInv,#partyEv{position:fixed;left:50%;transform:translateX(-50%);top:calc(70px + env(safe-area-inset-top,0px));z-index:60;background:#FFF6E4;border:2px solid var(--ol,#5A3416);border-radius:12px;padding:8px 12px;box-shadow:0 3px 0 rgba(0,0,0,.25);font-size:14px;color:#3B2614;text-align:center}#partyInv[hidden],#partyEv[hidden]{display:none}#partyEv{top:calc(116px + env(safe-area-inset-top,0px));display:flex;gap:8px;align-items:center}.dmg.tm{font-size:20px;opacity:.72}.dmg.tm b{color:#F3EAD8}
+/* 172.3：成員列、隊友的傷害數字 */#bossBar .bmem{flex-basis:100%;display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}#bossBar .bmem[hidden]{display:none}#bossBar .bm{font-size:11px;padding:1px 6px;border-radius:8px;background:rgba(255,255,255,.18);color:#fff}#bossBar .bm.me{background:rgba(255,226,122,.35)}#bossBar .bm.dn{opacity:.5}.c3in{animation:c3in .15s ease-out}@keyframes c3in{from{opacity:0}to{opacity:1}}/* 176 */#bossBar .bm.pt{color:#4FE3C1;font-weight:700}
+/* 175：任務提示收合 */#mqWrap{position:fixed;left:12px;top:calc(166px + env(safe-area-inset-top,0px));z-index:24;max-width:calc(100vw - 136px);transition:transform .2s ease,opacity .2s ease}#mqWrap[hidden]{display:none}
+#mqWrap #mqLine{position:relative;left:auto;top:auto;transform:none;max-width:none;padding-right:22px;z-index:1}
+#mqWrap.mqc{transform:translateX(calc(-100% - 24px));opacity:0;pointer-events:none}
+#mqCol{position:absolute;z-index:2;right:-15px;top:-15px;width:40px;height:40px;padding:0;border:0;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#mqCol i{display:block;width:22px;height:22px;line-height:19px;border-radius:50%;background:var(--pn);border:2px solid var(--ol);color:var(--ol);font-style:normal;font-weight:900;font-size:17px;text-align:center;box-shadow:0 2px 0 rgba(0,0,0,.18)}
+#mqTab{position:fixed;left:0;top:calc(166px + env(safe-area-inset-top,0px));z-index:24;width:40px;min-height:64px;padding:6px 0 7px;border:2.5px solid var(--ol);border-left:0;border-radius:0 12px 12px 0;background:var(--pn);color:var(--ol);display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transform:translateX(-110%);transition:transform .2s ease;box-shadow:0 3px 0 rgba(0,0,0,.15);-webkit-tap-highlight-color:transparent}
+#mqTab[hidden]{display:none}#mqTab.mqc{transform:none}#mqTab b{writing-mode:vertical-rl;font-size:13px;font-weight:800;letter-spacing:.15em;color:var(--tx)}
+#mqTab .mqdot{position:absolute;right:-5px;top:-5px;width:12px;height:12px;border-radius:50%;background:#E8432E;border:2px solid #fff;display:none}#mqTab.dot .mqdot{display:block}
+#mqTab.bump{animation:mqBump .5s ease-out}@keyframes mqBump{0%,100%{transform:none}35%{transform:translateY(-7px)}65%{transform:translateY(2px)}}
+body.mqParty #mqWrap{max-width:min(calc(100vw - 136px),150px)}
+body.pnlOpen #mqCol,body.pnlOpen #mqTab,body.shFull #mqCol,body.shFull #mqTab{visibility:hidden}body.vnStory #mqWrap,body.vnStory #mqTab{opacity:0;pointer-events:none}
+/* 173：隊伍名單、邀請卡、開打提示 */#partyBox{position:fixed;left:8px;top:calc(166px + env(safe-area-inset-top,0px));z-index:14;width:148px;background:rgba(255,248,232,.92);border:2px solid var(--ol,#5A3416);border-radius:10px;padding:4px 6px;font-size:11px;color:#3B2614}#partyBox[hidden]{display:none}#partyBox .phd{font-weight:800;cursor:pointer}#partyBox .prow{margin:3px 0;position:relative;display:block}#partyBox .php{width:100%}#partyBox .prow b{color:#2E8F78}#partyBox .prow.off{opacity:.45;filter:grayscale(1)}#partyBox .php{display:block;height:4px;background:#3B2614;border-radius:2px;margin:1px 0}#partyBox .php i{display:block;height:100%;background:#7FBF4A;border-radius:2px}#partyBox .pkick{position:absolute;right:0;top:0;border:0;background:none;color:#B4442A;font-size:11px;padding:0 2px}#partyBox .mini{font-size:10px;padding:2px 6px;margin-top:2px}#partyInv,#partyEv{position:fixed;left:50%;transform:translateX(-50%);top:calc(70px + env(safe-area-inset-top,0px));z-index:60;background:#FFF6E4;border:2px solid var(--ol,#5A3416);border-radius:12px;padding:8px 12px;box-shadow:0 3px 0 rgba(0,0,0,.25);font-size:14px;color:#3B2614;text-align:center}#partyInv[hidden],#partyEv[hidden]{display:none}#partyEv{top:calc(116px + env(safe-area-inset-top,0px));display:flex;gap:8px;align-items:center}.dmg.tm{font-size:20px;opacity:.72}.dmg.tm b{color:#F3EAD8}
 .fyhero{position:relative;width:75%;margin:0 auto 4px;aspect-ratio:420/424;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .fyhero .fyglow{position:absolute;left:50%;top:52%;width:105%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,var(--g1) 0%,transparent 64%);opacity:.55;filter:blur(6px);animation:fyGlowA 7s ease-in-out infinite}
 .fyhero.god .fyglow{background:conic-gradient(from 0deg,var(--g1),var(--g2),var(--g1),var(--g2),var(--g1));-webkit-mask:radial-gradient(circle,#000 0,#000 30%,transparent 66%);mask:radial-gradient(circle,#000 0,#000 30%,transparent 66%);opacity:.6;filter:blur(10px)}
@@ -1926,7 +1937,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-20d';
+const BUILD='2026-11-20f';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -9170,7 +9181,7 @@ const lookPack=L=>['f',L.hair,L.hairColor,L.top,L.bottom,L.shoes].join('.');
 function lookUnpack(s){if(typeof s!=='string')return null;const p=s.split('.');if(p.length!==6||p[0]!=='f')return null;return lookNorm({hair:p[1],hairColor:+p[2],top:p[3],bottom:p[4],shoes:p[5]})}
 /* 素材：用到才載 */
 const C3_IM={};let C3_ANC=null,C3_ANCst=0,c3KickT=0;
-function c3Kick(){if(c3KickT)return;c3KickT=setTimeout(()=>{c3KickT=0;try{const L=document.getElementById('charLayer');if(L)L._s='';renderChars()}catch(e){}},60)}
+function c3Kick(){if(c3KickT)return;c3KickT=setTimeout(()=>{c3KickT=0;try{const L=document.getElementById('charLayer');if(L)L._s='';renderChars()}catch(e){}try{meKey='';renderMe();if(sheet&&sheet.me)renderSheet()}catch(e){}},60)}/* 176：頭像、名片也跟著換 */
 function c3Im(src){let o=C3_IM[src];if(o)return o;o=C3_IM[src]={st:0,im:null};try{const im=new Image();im.onload=()=>{o.st=1;o.im=im;c3Kick()};im.onerror=()=>{o.st=2};im.src=src+'?v='+BUILD}catch(e){o.st=2}return o}
 function c3Anc(){if(C3_ANCst)return C3_ANC;C3_ANCst=1;try{fetch('assets/char3/f/anchors.json?v='+BUILD).then(r=>r.json()).then(j=>{C3_ANC=j.actions;c3Kick()}).catch(()=>{C3_ANCst=2})}catch(e){C3_ANCst=2}return null}
 const c3Src=(slot,id,act,suf)=>`assets/char3/f/${slot}/${id}/${act}${suf||''}.png`;
@@ -9199,7 +9210,7 @@ function c3Act(isMe,id,o,moving,wtag){const now=Date.now(),crop=wtag?String(wtag
   if(isMe&&now-c3HitAt<200)return {act:'hit',fr:Math.min(1,Math.floor((now-c3HitAt)/100))};
   if(moving)return {act:'walk',fr:isMe?Math.floor(c3Walk/11)%8:Math.floor(now/69)%8};
   return {act:'stand',fr:0}}
-function c3State(L,face,moving,wtag,isMe,id,o){const A=c3Anc();if(!A)return null;let {act,fr}=c3Act(isMe,id,o,moving,wtag);let S=A[act]?c3Sheet(L,act):null;if(!S){act='stand';fr=0;S=c3Sheet(L,'stand')}if(!S||!A[act])return null;
+function c3State(L,face,moving,wtag,isMe,id,o){const A=c3Anc();if(!A)return null;if(wtag){const W=C3_WPN[String(wtag).split('|')[0]];if(W)c3Sheet(L,W.act)}/* 176：有武器才載攻擊動作 */let {act,fr}=c3Act(isMe,id,o,moving,wtag);let S=A[act]?c3Sheet(L,act):null;if(!S){act='stand';fr=0;S=c3Sheet(L,'stand')}if(!S||!A[act])return null;
   const [dir,mir]=C3_DIR[((face|0)%8+8)%8]||[0,0];fr=Math.min(fr,A[act].n-1);return {S,act,fr,dir,mir,anc:A[act].a[fr][dir],wtag}}
 /* 武器：照握點疊上去（座標是格內像素） */
 function c3Part(src,D,x,y,ang,gx,gy,hk,flip,half){const hh=C3.H*hk,iw=D[0]*(half?0.5:1),w=hh*iw/D[1];
@@ -9211,7 +9222,7 @@ function c3Wpn(tag,A,front){if(!tag||!A)return '';const [crop,tier]=String(tag).
   if(!!A[3]!==front)return '';if(W.mode==='hand')return c3Part(src,D,A[0],A[1],A[2],W.gx,W.gy,W.h);if(W.mode==='upright')return c3Part(src,D,A[0],A[1],0,W.gx,W.gy,W.h);
   if(W.mode==='aim'){const fl=A[8]>0;return c3Part(src,D,A[0],A[1],A[8]-(fl?-W.base:W.base),W.gx,W.gy,W.h,fl)}return ''}
 const c3Tr=st=>{const k=C3_HU/C3.H;return `scale(${f3(st.mir?-k:k)} ${f3(k)}) translate(${-C3.FX} ${-C3.FY})`};
-function c3SVG(st,wid){return `<g class="c3"${wid?` data-c3w="${esc(String(wid))}"`:''}><g class="c3t" transform="${c3Tr(st)}"><g class="c3wb">${c3Wpn(st.wtag,st.anc,false)}</g><svg class="c3c" x="0" y="0" width="${C3.CW}" height="${C3.CH}" viewBox="${st.dir*C3.CW} ${st.fr*C3.CH} ${C3.CW} ${C3.CH}" overflow="hidden"><image href="${st.S.url}" width="${st.S.w}" height="${st.S.h}"/></svg><g class="c3wf">${c3Wpn(st.wtag,st.anc,true)}</g></g></g><!--/c3-->`}
+function c3SVG(st,wid,fade){return `<g class="c3${fade?' c3in':''}"${wid?` data-c3w="${esc(String(wid))}"`:''}><g class="c3t" transform="${c3Tr(st)}"><g class="c3wb">${c3Wpn(st.wtag,st.anc,false)}</g><svg class="c3c" x="0" y="0" width="${C3.CW}" height="${C3.CH}" viewBox="${st.dir*C3.CW} ${st.fr*C3.CH} ${C3.CW} ${C3.CH}" overflow="hidden"><image href="${st.S.url}" width="${st.S.w}" height="${st.S.h}"/></svg><g class="c3wf">${c3Wpn(st.wtag,st.anc,true)}</g></g></g><!--/c3-->`}
 /* 換格：只改 viewBox、鏡射、網址、武器（不重建整個角色） */
 function c3Paint(a,st,wid){if(!a||!st)return;const g=a.querySelector&&a.querySelector('g.c3');if(!g){a.innerHTML=c3SVG(st,wid);return}
   const t=g.querySelector('.c3t'),sv=g.querySelector('svg.c3c'),im=sv&&sv.querySelector('image');if(!t||!sv||!im){a.innerHTML=c3SVG(st,wid);return}
@@ -9229,9 +9240,23 @@ function lookHTML(){const L=lookNorm(state.look),st=c3State(L,2,false,null,true,
     <p class="note">新版人物（測試）目前只有女生的身形；之後會加更多衣服、髮型。</p>
     <button class="btn" data-lkt="1">測試：拿到全部武器</button><button class="btn" data-act="close">關閉</button>`}
 function lookAction(b){const L=lookNorm(state.look);if(b.dataset.lk){const [k,v]=b.dataset.lk.split('|');L[k]=v}else if(b.dataset.lkc!=null)L.hairColor=+b.dataset.lkc;
-  else if(b.dataset.lkt){c3TestWeapons();return}/* 測試按鈕，之後拿掉 */state.look=lookNorm(L);save();renderSheet();try{pushPos(true)}catch(e){}c3Kick()}
+  else if(b.dataset.lkt){c3TestWeapons();return}/* 測試按鈕，之後拿掉 */state.look=lookNorm(L);save();renderSheet();try{pushPos(true);pushProfile()}catch(e){}c3Kick()}
 function c3TestWeapons(){const W=Array.isArray(state.weapons)?state.weapons:(state.weapons=[]);let n=0;for(const c of WP_ORDER)if(!W.some(w=>w&&w.crop===c)){wpnGive(c,1);n++}save();toast(n?`拿到 ${n} 把武器（普通階），到背包的武器分頁換。`:'九把武器都有了。',3500)}
 /* ===== 171 結束 ===== */
+/* ===== 176（20e）：新版人物的三個修正 =====
+   進遊戲先預載 stand、walk（c3Preload）；素材沒好時角色只留影子和名字（不先畫舊的），stand 好了淡入 0.15 秒；
+   圖檔 404、anchors 讀不到、或 5 秒還沒好才退回舊人物（crumb('char3 fallback')，之後好了照樣換成新版）。
+   頭像、名片改用合成圖裁：頭 (64,52) 為中心邊長 56、全身 x34～94／y26～160。 */
+const C3_WAIT={},C3_SHOWN={};let c3FbLogged=false;
+const C3_HEAD=[36,24,56,56],C3_BODY=[34,26,60,134];
+function c3Preload(L){const k=lookPack(L);if(!C3_WAIT[k])C3_WAIT[k]=Date.now();c3Anc();c3Sheet(L,'stand');c3Sheet(L,'walk')}
+function c3Ready(L){const s=C3_SH.get(lookPack(L)+'|stand');return !!(s&&s.url&&C3_ANC)}
+function c3Fail(L){if(c3Ready(L))return false;const k=lookPack(L),bad=C3_ANCst===2||c3Layers(L,'stand').some(src=>C3_IM[src]&&C3_IM[src].st===2),late=C3_WAIT[k]&&Date.now()-C3_WAIT[k]>5000;
+  if((bad||late)&&!c3FbLogged){c3FbLogged=true;try{crumb('char3 fallback')}catch(e){}}if(late&&!bad&&!C3_WAIT['_t'+k]){C3_WAIT['_t'+k]=1;setTimeout(c3Kick,50)}return bad||!!late}
+/* 頭像（圓）、全身縮圖：從 stand 正面那一格裁；還沒好回 null */
+function c3Crop(L,box,w,hh,extra){const S=c3Sheet(L,'stand');if(!S)return null;return `<svg viewBox="${box.join(' ')}" width="${w}" height="${hh}" preserveAspectRatio="xMidYMid meet"${extra||''} aria-hidden="true"><image href="${S.url}" width="${S.w}" height="${S.h}"/></svg>`}
+/* ===== 176 結束 ===== */
+
 /* ===== 173（20d）：組隊邀請 =====
    party/<pid>：{leader,t0,members:{<uid>:{n,lv,hp,hpMax,map,t,j,off?}},ev}；partyInv/<被邀請的人>/<邀請人>：{pid,n,t}。一隊最多 PARTY_MAX 人、一個人一隊。
    自己那一格 3 秒檢查一次，血量、地圖、等級沒變就不寫；斷線時 onDisconnect 寫 off，60 秒內回來還在隊裡，超過由最早加入、在線上的隊員把他移出。
@@ -9300,10 +9325,35 @@ function renderParty(){let el=document.getElementById('partyBox');if(!PARTY||!PA
   const L=partyMembers(),lead=PARTY.leader===uid;el.hidden=false;
   el.innerHTML=`<div class="phd" data-pact="col">隊伍（${L.length}／${PARTY_MAX}）${partyCol?'▸':'▾'}</div>`+(partyCol?'':L.map(([u,m])=>{const f=m.hpMax?Math.max(0,Math.min(1,m.hp/m.hpMax)):1;return `<div class="prow${m.off?' off':''}"><b>${PARTY.leader===u?'★':''}${esc(String(m.n||'隊友').slice(0,8))}</b> <small>Lv ${m.lv|0}</small>${lead&&u!==uid?`<button class="pkick" data-pact="kick" data-u="${esc(u)}" aria-label="移出">✕</button>`:''}<i class="php"><i style="width:${(f*100).toFixed(0)}%"></i></i><small>${m.off?'離線':esc(partyMapName(m.map))}</small></div>`}).join('')+'<button class="mini" data-pact="leave">離開隊伍</button>')}
 /* ===== 173 結束 ===== */
+/* ===== 175（20f）：左邊的任務提示可以收合 =====
+   #mqLine 搬進 #mqWrap（右上角「‹」#mqCol 收起）；收起後只剩左邊緣的 #mqTab（任務圖示＋「任務」），按了展開。
+   收合狀態存本機 sw_mqcol（try/catch），預設展開。收起時換了任務或可以完成了 → 標籤亮紅點、跳一下（不自動展開）。
+   隊伍名單（#partyBox）在上、任務提示在下：mqLay 依隊伍名單實際的底邊排任務提示的位置。 */
+let mqCol=false,mqSig=null;try{mqCol=localStorage.getItem('sw_mqcol')==='1'}catch(e){}
+function mqColInit(){try{const ln=document.getElementById('mqLine');if(!ln||document.getElementById('mqWrap'))return;const w=document.createElement('div');w.id='mqWrap';w.hidden=true;ln.parentNode.insertBefore(w,ln);w.appendChild(ln);
+    const b=document.createElement('button');b.id='mqCol';b.type='button';b.setAttribute('aria-label','收起任務提示');b.innerHTML='<i>‹</i>';w.appendChild(b);
+    const t=document.createElement('button');t.id='mqTab';t.type='button';t.hidden=true;t.setAttribute('aria-label','展開任務提示');t.innerHTML='<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><rect x="3" y="2" width="14" height="16" rx="2.5" fill="#FFF6DD" stroke="currentColor" stroke-width="1.8"/><path d="M6.5 7h7M6.5 10.5h7M6.5 14h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><b>任務</b><span class="mqdot"></span>';document.body.appendChild(t);
+    b.addEventListener('click',e=>{e.stopPropagation();mqColSet(true)});t.addEventListener('click',e=>{e.stopPropagation();mqColSet(false)});
+    w.classList.toggle('mqc',mqCol);t.classList.toggle('mqc',mqCol);addEventListener('resize',()=>mqLay())}catch(e){}}
+function mqColSet(v){mqCol=!!v;try{localStorage.setItem('sw_mqcol',mqCol?'1':'0')}catch(e){}const w=document.getElementById('mqWrap'),t=document.getElementById('mqTab');if(w)w.classList.toggle('mqc',mqCol);if(t){t.classList.toggle('mqc',mqCol);if(!mqCol)t.classList.remove('dot','bump')}mqColSync()}
+/* renderMqLine 之後：外框跟著顯示／隱藏、紅點 */
+function mqColSync(){try{const ln=document.getElementById('mqLine'),w=document.getElementById('mqWrap'),t=document.getElementById('mqTab');if(!ln||!w||!t)return;const on=!ln.hidden;w.hidden=!on;t.hidden=!on;
+    let q=null;try{q=on&&state&&!viewing?qTracked():null}catch(e){}const sig=q?q.id+'|'+q.st:null;
+    if(sig&&mqSig&&sig!==mqSig&&mqCol){const [id0]=mqSig.split('|');if(q.st==='done'||q.id!==id0){t.classList.add('dot');t.classList.remove('bump');void t.offsetWidth;t.classList.add('bump')}}
+    if(sig)mqSig=sig;mqLay()}catch(e){}}
+/* 隊伍名單在上、任務提示在下 */
+function mqLay(){try{const w=document.getElementById('mqWrap'),t=document.getElementById('mqTab'),pb=document.getElementById('partyBox');if(!w)return;let top='';
+    if(pb&&!pb.hidden){const r=pb.getBoundingClientRect();if(r.height>0)top=Math.round(r.bottom+8)+'px'}
+    if(w.style.top!==top)w.style.top=top;if(t&&t.style.top!==top)t.style.top=top;document.body.classList.toggle('mqParty',!!top)}catch(e){}}
+renderMqLine=(f=>function(){f.apply(this,arguments);mqColSync()})(renderMqLine);
+renderParty=(f=>function(){f.apply(this,arguments);mqLay()})(renderParty);
+mqColInit();
+/* ===== 175 結束 ===== */
+
 
 
 function charG(id,x,y,av,flip,pose,name,lv,fy,who,ch,wtag,c2,ap){const me=id==='meG';let c3h=null;
-  {const L=me?(char3On()?lookNorm(state.look):null):lookUnpack(ap);if(L){const st=c3State(L,me?meFace:(pose&&pose.face!=null?pose.face:2),me?!!raf:!!(pose&&pose.mv),wtag,me,who,pose&&pose.o);if(st)c3h=c3SVG(st,me?null:who)}}/* 171：分層人物（素材沒載完時先畫舊的） */
+  {const L=me?(char3On()?lookNorm(state.look):null):lookUnpack(ap);if(L){c3Preload(L);const st=c3State(L,me?meFace:(pose&&pose.face!=null?pose.face:2),me?!!raf:!!(pose&&pose.mv),wtag,me,who,pose&&pose.o);const sid=me?'me':String(who);if(st){c3h=c3SVG(st,me?null:who,!C3_SHOWN[sid]);C3_SHOWN[sid]=1}else if(!c3Fail(L))c3h='<g class="c3w"></g>'}}/* 171／176：素材沒好先只留影子和名字（不先畫舊的），失敗才退回舊人物 */
   const c2s=c3h?null:me?(char2On()?char2Sex():null):(c2==='m'||c2==='f'?c2:null);/* 168：別的玩家開了新版主角（c2＝m／f）也用同一套畫法 */
   const WH=c3h?{b:'',f:''}:wpnHTML(wtag,flip,pose&&pose.view,c2s?CHAR2_H/CHAR_S:57.5,me);return `<g ${id?`id="${id}"`:''} transform="translate(${Math.round(x)} ${Math.round(y)}) scale(1.15)" pointer-events="none">${charShadow(c2s)}${me?`<g id="meWB">${WH.b}</g>`:WH.b}<g${id?` id="${id}Av"`:''}${!me&&c2s?` data-c2w="${esc(String(who))}"`:''}>${c3h?c3h:c2s?char2SVG(me?meFace:(pose&&pose.face!=null?pose.face:2),me?!!raf:!!(pose&&pose.mv),c2s):avIdle(av,flip,pose)}</g>${me?`<g id="meWF">${WH.f}</g>`:WH.f}${name?`<g${id?` id="${id}Tag"`:''}${!me&&typeof partyHas==='function'&&partyHas(who)?` style="--ink:${PARTY_COLOR}"`:''}${c2s?` transform="translate(0 ${char2TagDY().toFixed(1)})"`:''}>${nameTag(name,lv,ch)}</g>`:''}</g>`}
 /* 168：別的玩家的新版主角換走路格（不重建整層，同 char2Paint） */
@@ -9319,7 +9369,7 @@ function renderChars(){
   const key=s.replace(/(id="|url\(#|href="#)([A-Za-z_-]*)\d+/g,'$1$2').replace(/animation-delay:-?[\d.]+s/g,'').replace(/<g class="c2"[^]*?<\/g>/g,'<c2/>').replace(/<g class="c3"[^]*?<!--\/c3-->/g,'<c3/>').replace(/ class="wsw[^"]*"/g,'');/* 156：新版角色的走路格由 char2Paint 換，不算內容改變 *//* 圖層 id、眨眼的延遲每次都不一樣，比較時拿掉 */
   if(L._s===key){char2PaintOthers();c3PaintAll();return false}L._s=key;L.innerHTML=s;char2PaintOthers();c3PaintAll();return true;/* 99.8（17k）：每 80ms 都會叫一次，內容沒變就不重建（原本一直重建角色層、重新對齊所有動畫，站著也一直在重畫） */
 }
-function updateMe(){petMove();const g=document.getElementById('meG');if(!g){renderChars();return}const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y)}) scale(1.15)`);const mp=poseFor(true,null,performance.now()/1000);if(raf)mp.ph=walkPh;else if(!mp.act)mp.t=0;mp.view=VIEWS[meFace];const a=document.getElementById('meGAv');if(!a){renderChars();return}wpnPaintMe();/* 159 */try{ghostTick()}catch(e){}/* 164 */{const q=curMe();if(c3Last)c3Walk+=Math.min(40,Math.hypot(q.x-c3Last.x,q.y-c3Last.y));c3Last={x:q.x,y:q.y}}if(char3On()&&a.querySelector&&a.querySelector('g.c3')){const st=c3State(lookNorm(state.look),meFace,!!raf,scene==='explore'?wpnTag():null,true,'me');if(st){c3Paint(a,st);return}}/* 171 */if(char2On()){char2Paint(a,meFace,!!raf);return}/* 156 */if(a._k==='c2')a._k='';const h=avIdle(state.avatar,faceFlip(meFace),mp),k=h.replace(/(id="|url\(#|href="#)([A-Za-z_-]*)\d+/g,'$1$2');if(a._k===k)return;a._k=k;a.innerHTML=h}/* 106.4：內容沒變就不寫（站著、只是位置變時） *//* 71.1：以前這裡每一格都把名牌重畫成只有「你」（沒帶等級），稱號那一行就一閃一閃；現在走路時完全不碰名牌 */
+function updateMe(){petMove();const g=document.getElementById('meG');if(!g){renderChars();return}const m=curMe();g.setAttribute('transform',`translate(${Math.round(m.x)} ${Math.round(m.y)}) scale(1.15)`);const mp=poseFor(true,null,performance.now()/1000);if(raf)mp.ph=walkPh;else if(!mp.act)mp.t=0;mp.view=VIEWS[meFace];const a=document.getElementById('meGAv');if(!a){renderChars();return}wpnPaintMe();/* 159 */try{ghostTick()}catch(e){}/* 164 */{const q=curMe();if(c3Last)c3Walk+=Math.min(40,Math.hypot(q.x-c3Last.x,q.y-c3Last.y));c3Last={x:q.x,y:q.y}}if(char3On()){const L3=lookNorm(state.look);if(a.querySelector&&a.querySelector('g.c3')){const st=c3State(L3,meFace,!!raf,scene==='explore'?wpnTag():null,true,'me');if(st){c3Paint(a,st);return}}else if(!c3Fail(L3))return}/* 171／176：還沒好時不畫舊人物 */if(char2On()){char2Paint(a,meFace,!!raf);return}/* 156 */if(a._k==='c2')a._k='';const h=avIdle(state.avatar,faceFlip(meFace),mp),k=h.replace(/(id="|url\(#|href="#)([A-Za-z_-]*)\d+/g,'$1$2');if(a._k===k)return;a._k=k;a.innerHTML=h}/* 106.4：內容沒變就不寫（站著、只是位置變時） *//* 71.1：以前這裡每一格都把名牌重畫成只有「你」（沒帶等級），稱號那一行就一閃一閃；現在走路時完全不碰名牌 */
 
 // ===== 互動按鈕 =====
 function nearest(){
@@ -10373,7 +10423,8 @@ const SPIN=[2,1,0,7,6,5,4,3];let spinG=null;
 function spinIdx(k){return ((k==='av'?sheet.avDir:sheet.dir)||0)%8}
 function spinAv(k){if(k==='av')return sheet.draft;if(sheet.me===uid)return state.avatar;const P=profiles.find(p=>p.id===sheet.me);return P?avNorm(P.avatar):state.avatar}
 function spinC2(k){if(k==='av')return null;if(sheet.me===uid)return char2On()?char2Sex():null;const P=profiles.find(p=>p.id===sheet.me);return P&&(P.c2==='m'||P.c2==='f')?P.c2:null}
-function spinSVG(k){const f=SPIN[spinIdx(k)],c=spinC2(k);if(c)return `<g transform="scale(${(57.5/(CHAR2_H/CHAR_S)).toFixed(3)})">${char2SVG(f,false,c)}</g>`;/* 168：名片也照對方的新版主角設定 */return avatarSVG(spinAv(k),faceFlip(f),{t:performance.now()/1000,view:VIEWS[f]})}
+function spinC3(k){if(k==='av')return null;if(sheet.me===uid)return char3On()?lookNorm(state.look):null;const P=profiles.find(p=>p.id===sheet.me);return P?lookUnpack(P.ap):null}
+function spinSVG(k){const L3=spinC3(k);if(L3){const b=c3Crop(L3,C3_BODY,60,70,' x="-30" y="-66"');if(b)return b;if(!c3Fail(L3)){c3Preload(L3);return ''}}/* 176：名片用新版人物的全身 */const f=SPIN[spinIdx(k)],c=spinC2(k);if(c)return `<g transform="scale(${(57.5/(CHAR2_H/CHAR_S)).toFixed(3)})">${char2SVG(f,false,c)}</g>`;/* 168：名片也照對方的新版主角設定 */return avatarSVG(spinAv(k),faceFlip(f),{t:performance.now()/1000,view:VIEWS[f]})}
 function spinHint(){let seen=false;try{seen=localStorage.getItem('sw_spin')==='1'}catch(e){}return seen?'':'<p class="note spinhint">左右滑動可以轉身</p>'}
 function spinSet(el,k,i){i=((i%8)+8)%8;if(k==='av')sheet.avDir=i;else sheet.dir=i;const sv=el.querySelector('svg');if(!sv)return;
   if(RMQ&&RMQ.matches){sv.innerHTML=spinSVG(k);return}
@@ -11465,12 +11516,12 @@ function giveAction(b){const a=b.dataset.act,s=sheet.give;
   if(a==='quests'){sheet={orders:true};renderSheet();return}}
 /* --- 41 個人介面 --- */
 let meKey='';
-function renderMe(){try{const el=document.getElementById('meChip');if(!el||!state)return;const k=myName()+'|'+myLv()+'|'+Math.round((state.xp||0)/xpNeed(myLv())*20)+'|'+JSON.stringify(avPack(state.avatar));if(k===meKey)return;meKey=k;
-  el.innerHTML=`<span class="mcav"><svg viewBox="-13 -52 26 27" width="46" height="48" aria-hidden="true">${avatarSVG(state.avatar,false,{view:'front'})}</svg></span><span class="mclv" aria-label="等級 ${myLv()}"><i>${myLv()}</i></span><span class="mcn"><b>${esc(myName())}</b><span class="xpbar"><i style="width:${Math.round((state.xp||0)/xpNeed(myLv())*100)}%"></i></span></span>`}catch(e){}}/* 16t：木牌名片、金框頭像、六角等級徽章 */
+function renderMe(){try{const el=document.getElementById('meChip');if(!el||!state)return;const L3=char3On()?lookNorm(state.look):null,hd=L3?c3Crop(L3,C3_HEAD,46,48):null,k=myName()+'|'+myLv()+'|'+Math.round((state.xp||0)/xpNeed(myLv())*20)+'|'+JSON.stringify(avPack(state.avatar))+'|'+(L3?(hd?lookPack(L3):'wait'):'');if(k===meKey)return;meKey=k;
+  el.innerHTML=`<span class="mcav">${hd?hd:L3&&!c3Fail(L3)?'':`<svg viewBox="-13 -52 26 27" width="46" height="48" aria-hidden="true">${avatarSVG(state.avatar,false,{view:'front'})}</svg>`}</span><span class="mclv" aria-label="等級 ${myLv()}"><i>${myLv()}</i></span><span class="mcn"><b>${esc(myName())}</b><span class="xpbar"><i style="width:${Math.round((state.xp||0)/xpNeed(myLv())*100)}%"></i></span></span>`}catch(e){}}/* 16t：木牌名片、金框頭像、六角等級徽章 */
 function meStats(){const seen=state.seen||{};let ns=0;for(const c in seen)ns+=(seen[c]||[]).length;const sp=[0,0,0,0,0,0];(state.specs||[]).forEach(s=>sp[s.tier||0]++);
   return {seen:ns,fin:Object.keys(state.fin||{}).length,specs:(state.specs||[]).length,sp,named:regList.filter(r=>r.inventorUid===uid).length,hv:(state.st&&state.st.hv)||0,cr:(state.st&&state.st.cr)||0,since:(state.st&&state.st.since)||0}}
 let profT=0;
-function pushProfile(){try{if(!uid||!state)return;const s=meStats();db.collection('profiles').doc(uid).set({name:myName(),lv:myLv(),title:lvTitle(myLv()),titles:state.titles||[],fr:myFr().slice(0,FRIEND_MAX),c2:char2On()?char2Sex():'',th:state.themeUsed&&THEMES[state.themeUsed]?THEMES[state.themeUsed].n:'',st:{seen:s.seen,fin:s.fin,specs:s.specs,named:s.named,hv:s.hv,cr:s.cr,since:s.since}},{merge:true}).catch(()=>{})}catch(e){}}
+function pushProfile(){try{if(!uid||!state)return;const s=meStats();db.collection('profiles').doc(uid).set({name:myName(),lv:myLv(),title:lvTitle(myLv()),titles:state.titles||[],fr:myFr().slice(0,FRIEND_MAX),c2:char2On()?char2Sex():'',ap:char3On()?lookPack(lookNorm(state.look)):'',th:state.themeUsed&&THEMES[state.themeUsed]?THEMES[state.themeUsed].n:'',st:{seen:s.seen,fin:s.fin,specs:s.specs,named:s.named,hv:s.hv,cr:s.cr,since:s.since}},{merge:true}).catch(()=>{})}catch(e){}}
 function openMe(pid){if(pid&&pid!==uid)statusWatch([pid]);sheet={me:pid||uid,dir:2};renderSheet();openSheetUI()}
 function meSheetHTML(){
   const own=sheet.me===uid,P=own?null:profiles.find(p=>p.id===sheet.me);if(!own&&!P)return '<p class="note">找不到這位玩家。</p><button class="btn" data-act="close">關閉</button>';

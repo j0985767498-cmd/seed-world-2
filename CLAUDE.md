@@ -1,8 +1,10 @@
 # 《種子的世界》專案說明（CLAUDE.md）
 
-> 程式：`index.html`（`BUILD = '2026-11-20i'`）。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
+> 程式：`index.html`。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> 下一版 BUILD 是 `2026-11-20j`。第 179 節（20i：舊武器畫法拿掉、遠程從武器射出）已做。第 178 節（20h：邊走邊攻擊、浮游砲、人物變白）已做。第 177 節（20g：打扮功能、正式素材、manifest）已做。第 175 節（20f：任務提示可以收合）已做。第 176 節（20e：新版人物三個修正）已做。第 174、171、173 節（20d）已做，**Realtime Database 規則要整份貼 `tools/rtdb_rules_173.txt`（含第 172 節，取代 135／172 那幾份）**。第 172 節（20c：主、僕人共鬥）已做。第 170 節（20a：神之子的普通攻擊）、第 170 節補（20b：攻擊演出加強）已做。第 168、169 節（19z：別人看得到新版主角、神之子背面）已做。第 167 節（19y：神之子新圖、光芒顏色）已做。第 161～164、166 節（19w）已做，第 166 節修正（19x：怪物追擊、背武器 60°）已做；第 165 節還沒做。第 141 節（19g）、第 142 節（19h）、第 143 節（19i）、第 144 節（19j）、第 145 節（19k）、第 144 節修正（19l、19m）、第 147、148 節（19m）、第 149 節（19n）、第 150 節（19o，19p 修 iPhone 地面圖）、第 151～154 節（19q）、第 155 節（19r）、第 156 節（19s）、第 157 節（19t）、第 158 節（19u）、第 159、160 節（19v）已做；第 146 節（色塊圖工具）已做。第 138 節（19c）、第 135 節第二階段（19d）、第 139 節的地圖部分（19e）、第 140 節（19f）已做。第 111～134、137 節（18c～19a）已做，第 135 節第一階段（19b）已做（**Realtime Database 要加 `tools/rtdb_rules_135_fight.txt` 那一段**）；探險家大衣還沒有圖，`state.coatDue` 記著要補發，都還沒在 iPhone 實測；主控台的 Firestore 規則已經包含第 117 節；**要貼的是 `tools/firestore_rules_console_114.txt`（整份取代，加了 `fairyFirst`，第 114 節的「全服第一個」公告才寫得進去）**；第 114 節神化改 2,000（114.10，程式在第 134.5 節改）。接下來：134 → 133 → 131；135 等 131 做完；136 跟晶霜雪原那一章。另外進行中：第 108 節（3D 畫面），草原 5 張已做（17x、17y），第 109 節的修正已做（17z），都還沒在 iPhone 實測；接下來是第 108.0 的第 2 階段（其他地區，每區一節）。
+> **目前 BUILD `2026-11-20k`，下一版 `2026-11-20l`。**
+> **使用者要自己做的事**：Realtime Database 規則整份貼 `tools/rtdb_rules_173.txt`（含 62 的 status、135、172、173）；Firestore 規則整份貼 `tools/firestore_rules_console_114.txt`（117 那份＋`fairyFirst`）。舊的規則檔都只是紀錄。
+> **還沒做的節**：165（新版角色正面、背面走路）、108 的其他地區／農場／城鎮（3D）、135 的後六區與神寵技能、136（跟晶霜雪原那一章一起做）；未定案：14、19、69。各節做完的紀錄看下面的索引表。
 
 ---
 
@@ -11,14 +13,14 @@
 ### 0.1 如何讀取程式碼
 
 1. 本專案在 Claude Code 中使用，`index.html` 就在專案資料夾內，直接讀取即可。
-2. **不要把整個 `index.html` 讀進來**（約 380 KB，會耗掉大量額度）。用 `grep -n`、Python 搜尋關鍵字，只看需要的段落。
+2. **不要把整個 `index.html` 讀進來**（約 1.7 MB、1 萬 2 千多行，會耗掉大量額度）。用 `grep -n`、Python 搜尋關鍵字，只看需要的段落。
 3. 修改時用 Python 做字串替換，每次替換都確認「只出現一次」，替換後立刻做語法檢查（見第 15 節）。
 4. **注意：** 程式中很多函式寫在同一行。插入註解時一律用 `/* … */`，不要用 `//`，否則會把同一行後面的程式碼變成註解（曾經實際發生過）。
 
 ### 0.2 工作守則
 
 1. **每次改版都要更新 `BUILD`**（`const BUILD='…'`），**同時把專案根目錄的 `version.json` 改成同一個值**（`{"build":"…"}`；16h 起遊戲一打開會抓這個檔，和程式裡的 BUILD 不一樣就自動重新整理一次，見 9.53）。遊戲會比對網頁上的版本號，舊版畫面發現有新版時會停止存檔並提示重新整理。忘記更新會造成新舊版本混用、存檔互相覆蓋。
-2. **不要重置玩家資料。** 使用者明確要求改版時保留既有的品種、種子與植株。需要轉換資料時，寫一次性的遷移函式，放在 `migrate(o)` 裡，並用 `state` 上的旗標避免重複執行（現有旗標：`shapeV`、`cleanV`、`tutV`、`resV`、`specV`、`geneV`）。`newGame()` 也要同步加上新旗標。例外：舊肥料換金幣（14g）刻意**不用旗標**，每次載入都檢查（見 9.10）。
+2. **不要重置玩家資料。** 使用者明確要求改版時保留既有的品種、種子與植株。需要轉換資料時，寫一次性的遷移函式，放在 `migrate(o)` 裡，並用 `state` 上的旗標避免重複執行。旗標都在 `migrate(o)` 與 `newGame()`，新增時兩邊都要加。例外：舊肥料換金幣（14g）刻意**不用旗標**，每次載入都檢查（見 9.10）。
 3. **基因型新增任何欄位，必須同步修改四個地方**，否則存檔後欄位會遺失：`genc3`／`gdec3`（14l 起新格式 `K:`；`genc2`／`gdec2`／`needH` 只剩讀舊存檔）；`gFlat`／`gUnflat`；`gamete`／`fuse`；`isGeno`。
 4. **大的設計變更先討論、確認後才動程式。** 使用者常說「先別改」「你先等等想一下」，習慣先看方案、確認細節再實作。明確的錯誤修正可以直接做。使用者說「你自己決定吧」時，要給出明確的決定與理由。
 5. **介面文字一律繁體中文，避免專業術語**（不出現「顯性、隱性、自交系、分離」等詞，或只放在說明頁）。使用者本身是作物遺傳育種背景的碩士生，討論時可以用專業用語。
@@ -86,12 +88,12 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 
 ## 2. 技術架構
 
-- **單一檔案** `index.html`（約 3,600 行、380 KB），CSS 與 JavaScript 都在檔案內。
+- **單一檔案** `index.html`（約 12,300 行、1.7 MB），CSS 與 JavaScript 都在檔案內；3D 畫面另有 `js/w3d.js`、`lib/three.min.js`，舊人物另有 `assets/char/av3*.js`，用到才載入。
 - 後端：Firebase（compat 10.12.2），專案名稱 `seed-world`
   - Auth：Google 登入；
   - Firestore 集合：`players`（每人一份存檔，欄位 `save` 為字串）、`listings`、`registry`、`rights`、`news`、`discoveries`、`boards`、`profiles`、`messages`、`backups`；
   - Realtime Database：線上狀態與角色位置。
-- Firestore 安全規則在 Firebase 主控台。主控台上目前完整的一份是 `tools/firestore_rules_console_117.txt`（使用者 2026-11-21 提供）；**之後要改規則，一律以最新的這份為底，產出完整的一份新檔案**（例 `tools/firestore_rules_console_<節>.txt`），不要只給片段。舊的 `firestore_rules_91／93／95／98／117.txt` 是片段，只當紀錄。
+- Firestore 安全規則在 Firebase 主控台。最新的完整一份是 `tools/firestore_rules_console_114.txt`（以使用者 2026-11-21 提供的主控台版 `firestore_rules_console_117.txt` 為底，加了 `fairyFirst`）；**之後要改規則，一律以最新的這份為底，產出完整的一份新檔案**（例 `tools/firestore_rules_console_<節>.txt`），不要只給片段。舊的 `firestore_rules_91／93／95／98／117.txt` 是片段，只當紀錄。
 - `ADMIN_EMAILS = []`，管理員功能目前無法使用。
 - **每位玩家的存檔上限 1 MB**，用 `byteLen()`（`TextEncoder`）計算，不能用字串長度。
 
@@ -106,8 +108,8 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
   sp: [0, 3],            // 特殊/專屬造型因子：0 無、1–6 特殊、7–13 專屬，兩個一樣才出現
   pw: [1, 1],            // 花紋開關，兩個都是 1 才有花紋
   c:  ['red','yellow'],  // 果皮顏色（一對，看到什麼就是什麼：純色／混色／淡特殊色／雙色）
-  pc: ['white','white'], // 花紋顏色（同一條規則）
-  pf: [0, 1],            // 花紋形式 0 條紋、1 斑點、2 星點、3 漸層；兩個不同 → 兩種一起
+  pc: ['white','white'], // 花紋顏色：兩個是同一種夢幻色才是夢幻色花紋，否則是一般花紋（顏色照果皮自動配，patTone）
+  pf: [0, 2],            // 花紋形式 0 條紋、2 星點、3 漸層、4 櫻花瓣（PF_OK）；條紋以外兩個一樣才出現，否則條紋；1 斑點 123 起拿掉（讀到當條紋）
   n:  { size, perf },    // 各 10 組，NUMN = 10，數值 0–1
   o:  { sp, c, pc, pf }  // 選填：遠緣導入的來源作物
 }
@@ -141,25 +143,24 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 
 ### 3.5 state 重要欄位
 
-`lots`（種子袋 40 格：常用 10、備用 30）、`vault`、`plots`、`plotPos`（`null` 表示未開墾）、`tray`（育苗盤，見 9.2）、`ex`、`exCap`、`weekly`、`daily`、`orders`、`counts`、`coins`、`items`（14g 起只有 `acc` 生長加速劑「次」、`mut` 誘變劑「瓶」）、`speed`、`tut`、`specs`（果實標本清單，14i）、旗標 `shapeV`／`cleanV`／`tutV`／`resV`／`specV`／`geneV`（14l 遺傳改版遷移）。
+`lots`（種子袋，格數 `bagCap()`＝100＋每 5 級 10，常用 `MY_SLOTS` 10；每包最多 `LOT_MAX` 60 顆）、`vault`（種原庫）、`fruits`（果實袋 `FRUIT_SLOTS` 30 格）、`mats`（素材）、`items`（道具：`acc` 加速劑、`mut` 誘變劑、`pot`／`pot_m`／`pot_l` 補血藥、`fix` 定型劑、`glove` 偷偷手套、精魄 `sp_<地區>`…）、`packs`（卡包）、`weapons`／`wpn`（武器）、`pets`／`petOn`（神寵）、`fairy`（神之子）、`look`（新版人物外觀）、`plots`、`plotPos`（`null` 表示未開墾）、`tray`（育苗盤）、`fixq`（定型中）、`trip`（這趟拿到的素材）、`mq2`（主線）、`orders`、`weekly`、`daily`、`coins`、`lv`／`xp`、`specs`（標本）；遷移旗標見 0.2 第 2 點。
 
 ## 4. 遺傳規則（現行；14l 起照第 20 節，詳見 20.0）
 
-> 特殊色自第 49 節起顯示為夢幻色
-> 一般突變、專屬造型突變已由第 67 節移除（下表「突變」那一列只剩夢幻色、特殊造型）
+> 特殊色自第 49 節起顯示為夢幻色（程式裡仍叫 `SPECIAL`／特殊色）
 
 | 性狀 | 規則 |
 | --- | --- |
 | 基本造型 | 一對類型因子 `b`（0–2），兩個一樣 → 該類型，否則第 0 種；各作物名稱見第 24.2 節 |
 | 特殊造型（1–6） | 正方形、三角形、愛心、星形、月牙形、甜甜圈。兩個一樣才出現（`spExpr`），否則顯示基本造型；沒有強弱排序 |
 | 專屬造型（7–13） | 與特殊造型同一組因子，規則相同（14 元寶已停用） |
-| 顏色 | 沒有強弱排序。基本色 6：白、綠、黃、紅、紫、黑；特殊色 8：銀、珍珠白、藍、金、黑曜、水晶、星空、彩虹 |
-| 果皮顏色 | `colKey`：兩個一樣 → 純色；兩種基本色 → 15 種混色（`MIX15`）；特殊＋基本 → 淡特殊色 `l-x`；兩種特殊色 → 雙色 `d-a-b`。共 65 種（`ALL_SKINS`） |
-| 花紋 | `pw` 兩個都是 1 才有；花紋顏色同果皮規則；形式 4 種，兩個不同就兩種一起畫；與果皮同色時畫成稍深／稍淺 |
+| 顏色 | 沒有強弱排序。基本色 6（`BASIC`）：白、綠、黃、紅、紫、黑；夢幻色 9（`SPECIAL`，顯示名 `CN`）：銀、珍珠白、水藍、金、黑曜、水晶、星空、彩虹、櫻雪。**設計已改名**為翡翠、銀、珍珠、櫻雪、金、水晶、赤曜、星空、彩虹，**程式未改** |
+| 果皮顏色 | `colKey`：兩個一樣 → 純色；兩種基本色 → 15 種混色（`MIX15`）；特殊＋基本 → 淡特殊色 `l-x`；兩種特殊色 → 雙色 `d-a-b`。共 75 種（`ALL_SKINS`：6＋15＋9＋9＋36） |
+| 花紋 | `pw` 兩個都是 1 才有（第 123 節起）：形式 條紋、星點、漸層、櫻花瓣，條紋以外兩份一樣才出現、否則條紋；顏色兩份是同一種夢幻色才是夢幻色花紋，其他是一般花紋、顏色照果皮自動配（`patOf`／`patTone`）；不再有兩種形式一起、混色花紋 |
 | 大小、完美度 | 各 10 組加性因子，取平均。**只顯示等級**（迷你／小／中／大／巨大；奇異造型／歪斜／良好／完美），不影響稀有度與品種權，只影響賣價與紀錄榜 |
-| 突變（每顆種子，`mutRound`） | 特殊色 0.2%、特殊造型 0.05%、一般 0.1%（基本色、基本造型、大小完美度）；誘變劑 `mutateX` 為 25 倍且不蓋掉專屬造型 |
+| 突變（每顆種子，`mutRound`） | 只剩夢幻色 0.2%、特殊造型 0.05%（`MUT_P`）；一般突變、專屬造型突變第 67 節拿掉；誘變劑 `mutateX` 為 25 倍（`MUTX`）且不蓋掉專屬造型 |
 
-外觀穩定度 `ph.stab`：這株自交後保留同外觀的機率。外觀鍵值 `appKey`（14l）：`b{0-2}` 或 `p{1-13}` ＋ `|果皮|花紋顏色/形式`（兩種形式寫成 `f+f2`）。舊的大寫鍵值用 `keyV3()` 對照成新鍵值。
+外觀穩定度 `ph.stab`：這株自交後保留同外觀的機率。外觀鍵值 `appKey`（14l）：`b{0-2}` 或 `p{1-13}` ＋ `|果皮|花紋（夢幻色或 n）/形式`（123 起；舊鍵值用 `keyV4()`，更舊的大寫鍵值用 `keyV3()` 換算）。
 
 ---
 
@@ -186,7 +187,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 **存檔與載入**
 - 每日備份與還原（128）：`bkDaily`（`bootLoad` 讀到原始存檔、`migrate` 之前）、`bkWrite`／`bkRead`（`backups/<uid>_day<0-6>`、分段 `stamp`、`BK_CH`）、失敗計數 `sw_bkf_<uid>`、設定頁 `bkBox`／`renderBk`、還原 `openBk`／`bkHTML`／`bkAction`／`bkSum`／`bkRestore`（`_prerestore`）。
 - 存檔：`packState`／`unpack`（`gReplacer`／`gReviver`，基因型自動編碼成 `K:`）、`save()`（重要變動立刻存）、`saveLite()`／`liteRun`（輕量：本機 5 秒、雲端 60 秒）、`saveNow()`、`flush()`。上限 1 MB（`byteLen`）。
-- 遷移：`migrate(o)`（旗標 `shapeV`、`cleanV`、`tutV`、`resV`、`specV`、`geneV`、`exV`、`farmV`、`lvV`、`rv98`…，`newGame()` 同步）；`geneMigrate`、`exMigrate`、`lvMigrate`、`recover98`。
+- 遷移：`migrate(o)`（旗標都在 `migrate(o)` 與 `newGame()`，新增時兩邊都要加）；`geneMigrate`、`exMigrate`、`lvMigrate`、`recover98`。
 - 讀取：`bootLoad`→`bootStart`、`loadSave`、`saveSanitize`（壞資料略過）、`backupSaveStrict`、`repairState`、`isGeno`；載入畫面 `#boot`（`bootHide`）；版本檢查 `verCheck`（`version.json`）、`checkBuild`。
 
 **遺傳與外觀**（「v0.5 遺傳引擎」區塊）
@@ -215,11 +216,11 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 後六區地圖（139）：`VOLCANO_MAPS`／`CANYON_MAPS`／`RUINS_MAPS`（`borrowArt`、`SRC_IMG`、`*_ART`／`*_IMG`）、`SAKURA_SECRET`（狐火庭）、開放 `REG_OPEN`／`regOpenOk`、調色 `REGION_CFG.tint`→`regSrc`（`RT_CACHE`、`rtDone`、`regTintPreload`）、水色 `M.water`（`LAVA_W`、`SULFUR_W`）、程式畫的 `regX139`（seams／chains／smokes／vents／lstrings／mural／rails…）、峽谷 `night`（暗場用 `cave||night`）、機關 `reg139Step`（噴氣孔、回音 `ECHO_L`）、NPC smith／appr／cguard／granny／pounder／miko／oasisp／miner。
 - 畫好的地面（150）：地圖的 `ground` 是圖片路徑才算（`gndImg`；秘境的 `ground` 是顏色）、`gndLoad`（fetch 成 blob、`REG_GND_IM` 留住參考、逾時重試）／`REG_GND_ST`／`gndHref`（在 `regGroundEl`）、接地陰影 `gndShadowSVG`；先做 `RUINS_MAPS.plaza`（`assets/ground/ruins_plaza.jpg`、1100×1100）。
 - 遺城重排（143）：`RUINS_ART`（assets/ruins/ 自己的圖）、v2 邊界掛鉤 `REG_V2.<區>.edgeFn`（`ruinsEdge`）、地面 `ruins143`（`road:1` 人行道＋柏油、`zebra`、`pit`、`geo`）、坑洞入口 `pitStep`（`pitTrig`、`body.pitglow`）。
-- 素材、製作、定型（115）：`MATS`／`MON_MAT`、`matDrop`（`MAT_P`、`MAT_GOLD_P`）、`matIcon`（`MAT_ICON`）、`state.mats`、種子袋「素材」分頁 `matBagHTML`／`matHTML`；道具行「製作」`RECIPES`、`craftEntries`／`craftPlan`／`craftDo`／`craftHTML`；定型 `fixWhy`／`fixBlock`／`fixGeno`／`fixStart`／`fixTick`（`FIX_MIN`、`FIX_MAX`、`state.fixq`）。
+- 素材、製作、定型（115）：`MATS`／`MON_MAT`、`matDrop`（`MAT_P`、`MAT_GOLD_P`）、`matIcon`（`MAT_ICON`）、`state.mats`、種子袋「素材」分頁 `matBagHTML`／`matHTML`；道具行「製作」`RECIPES`、`craftEntries`／`craftPlan`／`craftDo`／`craftHTML`；定型 `fixWhy`／`fixBlock`／`fixToGeno`／`fixStart`／`fixTick`（`FIX_MIN`、`FIX_MAX`、`state.fixq`）。
 - 主與僕人（135 第一階段）：`SERVANTS`／`LORDS`／`BATK`（招式資料）、`bossRT`、`bossEnter`／`bossLeave`／`bossLoop`→`bossStep`、`bossAI`／`bossFollow`（不是主機）、`bossStrike`／`bossHit`、畫 `bossPaint`（`bossG`、範圍 `bossTel`）、`#bossBar`；掉落 `bossReward`（`state.servantAt`、`state.lordCd`、`state.spirits`／`spiritLine`、`lordSeed`、`lordFirst`）；現身 `lordSummonTick`（`minervaFog`／`MIN_FEATHERS`、`exhShore`／`lordSum.path`／`bossWalkOk`）、初穗 `sheet.hatsuho`（`hatsuhoHTML`／`hatsuhoGo`）、`lordSummon`、出口封住 `regSealed`；同步 `bossNet`、`fight/<地區>`（`lordNetStart`／`lordNetSync`／`lordHeartbeat`／`lordHostCheck`／`lordEnd`／`lordResult`／`lordForfeit`、`lordBusy`）。
 - 精魄與神寵（135 第二階段）：精魄是道具 `sp_<地區>`（`SPK`／`isSpK`、`spiritArt`）、孵化 `spiritUse`／`hatchTick`（`state.hatch`、`HATCH_MS`）、神寵 `state.pets`／`state.petOn`（`petsArr`、`petCur`、`petName`、`petSVG` 佔位、`petCharG`／`petMove`、`petXp`、`petEvoNeed`／`petEvoOk`／`petEvolve`、頁面 `sheet.pet` `petHTML`／`petAction`）、卡包 `state.packs`（`packsObj`）、背包道具分頁 `spiritLine`；米涅瓦的巢 `NEST_AT`／`nestObj`／`nestTick`（`state.lordWon`、筆記 `R6`，`x:1` 不算進五件）；旗標 `spV`。
 - 主題布置（137）：`THEMES`（相對 `THEME_A`）、`themePrice`、`themeApply`（`decoCollectAll`、`decoPlaceList`）、`themeUndo`（`state.themePrev`）、我的布置 `state.layouts`（`layoutSave`／`layoutApply`／`layoutRename`／`layoutDel`）、面板 `themeBoxHTML`／`themeSVG`、預覽 `sheet.theme`／`themeHTML`、`state.themeUsed`（名片 `th`）、旗標 `themeV`。
-- 戰鬥（131）：血量 `PHP_MAX`／`pHP`、`pDamage`／`pDie`／`pRegen`、`#hpBar`（`renderHP`）；怪物 `MON_RHP`／`MON_RDMG`／`SICKLE_DMG`、還手（`aggro`、`MON_WIND`／`MON_ATK_R`／`MON_LEASH`／`MON_GIVEUP`、`.mwind`）、數量 `monCount`（`MON_RT.xs`）；小補血藥 `pot`（`drinkPot`、`#potBtn`、`state.potGift`）；這趟素材 `state.trip`（`tripAdd`／`tripSave`／`tripLose`）；經驗 `monXp`（`MON_XP_ON=false`）。
+- 戰鬥（131）：血量 `pHP`（上限 `pMax`，158）、`pDamage`／`pDie`／`pRegen`、`#hpBar`（`renderHP`）；怪物 `MON_RHP`／`MON_RDMG`／`SICKLE_DMG`、還手（`aggro`、`MON_WIND`／`MON_ATK_R`／`MON_LEASH`／`MON_GIVEUP`、`.mwind`）、數量 `monCount`（`MON_RT.xs`）；小補血藥 `pot`（`drinkPot`、`#potBtn`、`state.potGift`）；這趟素材 `state.trip`（`tripAdd`／`tripSave`／`tripLose`）；經驗 `monXp`（`MON_XP_ON=false`）。
 - 後六區的怪（141）：`MON_DEF` 的 `var`（變種，`monVar`／`MON_VAR_K`）、佔位 `monPhTag`／`monDim`／`MON_PH_C`／`monPhIcon`、被打 `monHit2`（`#monFlash`、`.hit2`）／`monDebris`／`monColor`、素材鍵 `x_<怪物 id>`、`monSrcB`（素材圖示用那一區的資料夾）。
 - 第一季怪換新（142）：元素變種（`var`）、`monFill` 會把不在這張圖的舊怪重抽、配方素材替代品 `mcnt`／`mtake`（定型劑 碎石／陶片）。
 - 野外戰鬥按鈕（144）：`POT_TYPES`、`potPick`／`potChoose`（`state.potSel`）、快捷格 `#potBtn`（`potSlotPaint`／`potSlotBind`／`potMenu`／`potCdRun`）、自動喝藥 `autoPotCheck`（`state.autoPot`／`autoPotAt`、設定 `renderPotBox`）、頭上血條 `hpHeadG`／`hpHeadPaint`；`wildBar` 只切 `body.wild`（19l 起按鈕不搬，快捷格在背包左邊）。
@@ -246,10 +247,10 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 故事引擎（126）：`FY_STORY[作物]` 每段 `steps`（deep／regions／talk／give／gives／altar／show，進度 `s.f.i`），`fsStep`／`fsNext`／`fsMap`／`fsCheck`（`fsTickAll`）／`fsAnswer`／`fsGiveSpec`（交付 id＝作物或「作物|第幾種」）、`FY_STORY_LATER`；台詞 `FY_LTAB`（`ROMA_L`／`JACK_L`／`MIERU_L`）；煙火 `fwShow`；地區故事 `RS[地區]`（grass／forest／marsh；步驟 `npc`／`spot`／`wait`／`ask`），`rsObj(bk)`／`rsAccept(bk)`／`rsDone(bk)`／`rsTick`、`rsNpcHTML`／`rsAskHTML`／`rsAllCardsHTML`；`mq2Past`。
 - 蘿瑪與地區故事（118）：台詞 `fyLinesFor`（`ROMA_L`、`fyGod`）；`FY_STORY`／`fsObj`／`fsAccept`／`fsDone`／`fsMap`／`fsCheck`／`fsCardHTML`（`state.fyst`）；地區故事 `RS_GRASS`／`rsObj`／`rsTick`／`rsCardHTML`／`rsTheoHTML`（`state.rs`）；交付 `giveSpec` 的 kind `fs`、`rs`。
 - 標本名額照組（127）：`specGroup`／`specGid`、`sgTally`／`sgFetch`／`sgCounts`／`sgN`、`sgFullTxt`。
-- 標本與精靈：`claimSpec`、`rightsTx`、`specUse`、收藏櫃 `cabListHTML`；精靈 `fyWake`／`fyEvolve`、`fySpringHTML`、跟隨 `fyLoop`、演出 `fyShow`、圖 `fyArt`／`fyArtHTML`（167 起 `assets/fairy2/<鍵>_<階段>.png`，`fyStg`／`fy2Src`、畫布 `FY_CV`，不再上色）。
-- 角色：`avatarSVG`→`avV3SVG`（`av3.js`、`av3_heads.js`、衣服 `avOutfitParts`）、`avNorm`／`avPack`、打扮頁 `avatarEditorHTML`、衣櫃 `WARD`／`wardCheck`；`renderChars`、`updateMe`、`charG`、`poseFor`、`walkLoop`、`walkTo`。
-- 介面改版（138）：共用樣式 CSS 變數 `--tx`／`--ol`／`--pn`…、稀有度色 `RCOL`（`--r0`～`--r5`）；一套面板 `sheetMode`／`sheetModeOff`（`body.shOnP`、`shFull`、`SHEET_FULL`、`#sheetBack`）、`body.pnlOpen`；主畫面 `#rbar`、`#mapBtn`→`p-map`（`renderMapPanel`／`mapPanelTap`）、選單 `p-menu`（`MENU`／`menuTap`）、神之子 `openFyPage`、`#syncDot`；背包 `bagTabsHTML`（種子／果實／素材／道具 `itemBagHTML`）、`bagCatOf`（野生）、`slotCell`／`lotIc`／`lotTier`、`bagSel`／`bagInfoHTML`、`bagTidy`、`bagVaultReq`；種子詳細 `lotHeroHTML`／`lotParentsTxt`／`rbtn`；任務面板 `ordersHTML`（`qTab`／`qCatOf`／`Q_GRP`／`qCardHTML2`／`qProgHTML`）。
-- 主畫面重排（140）：右上 `#tbar`（`#ibFr`／`#frDot` `frDotOn`、`#ibDex`、`#ibLay`、`#mapBtn`、`#ibMenu`）、右下 `#rbar`（column-reverse：背包、任務、神之子）、布置模式 `layMode`／`renderLay`／`layTap`（`#layBar`）、背包分頁 種子／果實／素材（含道具）／種原庫、`MENU` 三格。
+- 標本與精靈：`claimSpec`、`rightsTx`、`specUse`、收藏櫃 `cabListHTML`；精靈之泉 `fySpringHTML`（設計已作廢，程式還在、城鎮 `spring` 還開得到，待刪）、跟隨 `fyLoop`、演出 `fyShow`、圖 `fyArt`／`fyArtHTML`（167 起 `assets/fairy2/<鍵>_<階段>.png`，`fyStg`／`fy2Src`、畫布 `FY_CV`，不再上色）。
+- 角色（舊人物，**後備**：新版人物 171 載入失敗、也沒開 156 時才用）：`avatarSVG`→`avV3SVG`（`av3.js`、`av3_heads.js`、衣服 `avOutfitParts`）、`avNorm`／`avPack`、打扮頁 `avatarEditorHTML`、衣櫃 `WARD`／`wardCheck`；`renderChars`、`updateMe`、`charG`、`poseFor`、`walkLoop`、`walkTo`。
+- 介面改版（138）：共用樣式 CSS 變數 `--tx`／`--ol`／`--pn`…、稀有度色 `RCOL`（`--r0`～`--r5`）；一套面板 `sheetMode`／`sheetModeOff`（`body.shOnP`、`shFull`、`SHEET_FULL`、`#sheetBack`）、`body.pnlOpen`；主畫面 `#rbar`、`#mapBtn`→`p-map`（`renderMapPanel`／`mapPanelTap`）、選單 `p-menu`（`MENU`／`menuTap`）、神之子 `openFyPage`、`#syncDot`；背包 `bagTabsHTML`（分頁見 140）、`bagCatOf`（野生）、`slotCell`／`lotIc`／`lotTier`、`bagSel`／`bagInfoHTML`、`bagTidy`、`bagVaultReq`；種子詳細 `lotHeroHTML`／`lotParentsTxt`／`rbtn`；任務面板 `ordersHTML`（`qTab`／`qCatOf`／`Q_GRP`／`qCardHTML2`／`qProgHTML`）。
+- 主畫面重排（140）：右上 `#tbar`（`#ibFr`／`#frDot` `frDotOn`、`#ibDex`、`#ibLay`、`#mapBtn`、`#ibMenu`）、右下 `#rbar`（column-reverse：背包、任務、神之子）、布置模式 `layMode`／`renderLay`／`layTap`（`#layBar`）、背包分頁 種子／果實／素材（含道具 `itemBagHTML`）／武器／種原庫、`MENU` 三格。
 - 自然命名（145）：`appName`（`nameCol`／`patWord`／`shapeWord`／`cropWord`）、`appTags`／`appTagsHTML`、`nmIc`、`shortApp(ph,crop)`、`lotAppOf`／`lotAutoName`、`lotsVarietySync`、玩家改名 `l.nm`／`p.nm`、遷移 `m145`（旗標 `nameV`）；地名兩層 `#sceneName.two`、`regBanner(地區,地圖)`。地圖版面色塊圖 `tools/export_layout.js`（146）。
 - 類型名稱（149）：`BASE_NAMES`／`baseName`（完整名稱）、`BASE_SHAPES`（小標籤短詞）、`gAutoName`（原始品種、野生種原的名字）、遷移 `m149`（旗標 `n149V`）、圖鑑系統名字在 `sortReg` 顯示時換；`shortApp(ph,crop)` 一定要傳作物。
 - 主與僕人的頭像（147）：`porHTML`／`porFail`／`porSrc`／`porC`（`POR_C`）、`porArtOfSrc`（素材圖示）；血條 `#bossBar .bpor`。
@@ -259,17 +260,17 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 道具圖示（153）：`itemArt`（新圖＋`itemArtOld` 退路、`itFail`、`ITEM_IMG`／`ITEM_DIM`、精魄 `spTint`、金色濾鏡 `itDefs`）、`potIc`（快捷格）。
 - 小地圖（154）：`renderMini`／`regMiniSVG`／`mapQSet`／`miniFight`（`#miniMap`、`state.miniMap`）；地區地圖 `regMapSVG`（等級、任務、頭像）＋`regMapInfo`（`#rmInfo`）。
 - 神之子放大（155）：`FY_S`＝1.3×角色高（`fyScaleSet`／`fyScaleMeasure`、`AV_HU`、`CHAR_S`、`FY_DX`／`FY_DY`／`FY_Q`）、放招 `fyCast`／`fyCastOrigin`；地面圖 `imgHref`（href＋xlink:href）。
-- 新版主角（156）：`state.char2`／`state.char2Sex`（`char2Sex`、`CHAR2_FHAIR`）、`char2SVG`／`char2Paint`（同一個 `<image>` 換格）／`char2Frame`／`char2Geo`／`char2Preload`、名牌 `char2TagDY`、鐮刀 `CHAR2_HAND_DY`、設定 `renderChar2Box`（`#char2Box`）；WebKit 測試 `tools/wk150.js`。
+- 新版主角（156，**後備**：分層人物 171 載入失敗時才用）：`state.char2`／`state.char2Sex`（`char2Sex`、`CHAR2_FHAIR`）、`char2SVG`／`char2Paint`（同一個 `<image>` 換格）／`char2Frame`／`char2Geo`／`char2Preload`、名牌 `char2TagDY`、鐮刀 `CHAR2_HAND_DY`、設定 `renderChar2Box`（`#char2Box`）；WebKit 測試 `tools/wk150.js`。
 - 升級獎勵（157）：`LV_PACK`／`lvPackFor`（`ITEM_DOWN`、`lvItemResolve`、`itemExists`）、`lvPackBk`、`lvGiftHTML`；套裝 `OUTFITS`／`OUTFIT_MATS`／`outfitCoins`、`state.outfitRx`／`state.outfits`、`outfitReady`（`OF_READY`，看 `assets/char2/outfit/<套裝>/m_front.png`）、`outfitMake`、製作分頁 `craftTabsHTML`／`outfitCraftHTML`（`sheet.ctab`）、衣櫃 `outfitWardHTML`、遷移 `m157`（旗標 `rx157V`）。
 - 等級成長（158）：`pAtk`／`pHpMax`（`pAtkNow`、`pMax`，取代 `PHP_MAX`；`PHP_BASE` 只當開局值）；野外鏡頭 `exZoom`／`EX_ZOOM`（`state.camZoom`，`zk`、`setZoom`）；影子 `charShadow`、`fyShRx`。
-- 武器（159）：`WEAPONS`／`WP_ORDER`／`WP_DIM`、`state.weapons`／`state.wpn`／`state.wpnPick`、`curWpn`／`wpnTag`／`wpnDmg`／`wpnFire`（`dealT`、`hitMon`、`bossDealt`、`m.stun`、`m.burn`）、子彈 `wpnShot`／`wpnStep`／`wpnLoop`（`WPN_PROJ`）、特效 `fxW`、拿在手上 `wpnHTML`／`wpnPaintMe`／`wpnAnim`（`#meWB`／`#meWF`、`WP_HAND`）、`wpnEquip`／`wpnLock`、新手 `wpickHTML`／`wpickDo`、背包 `wpnBagHTML`、製作 `wpCraftHTML`／`wpMake`（`fruitCropTake`）。
+- 武器（159）：`WEAPONS`／`WP_ORDER`／`WP_DIM`、`state.weapons`／`state.wpn`／`state.wpnPick`、`curWpn`／`wpnTag`／`wpnDmg`／`wpnFire`（`dealT`、`hitMon`、`bossDealt`、`m.stun`、`m.burn`）、子彈 `wpnShot`／`wpnStep`／`wpnLoop`（`WPN_PROJ`）、特效 `fxW`、拿在手上 `wpnHTML`／`wpnPaintMe`／`wpnAnim`（`#meWB`／`#meWF`、`WP_HAND`；171／179 起只在退回舊人物時用，新版人物的武器是 `c3Wpn`）、`wpnEquip`／`wpnLock`、新手 `wpickHTML`／`wpickDo`、背包 `wpnBagHTML`、製作 `wpCraftHTML`／`wpMake`（`fruitCropTake`）。
 - 補血藥（160）：`POT_TYPES` 三種（pot／pot_m／pot_l）、配方在 `RECIPES`。
-- 掉落物在地上（161）：`GDROP`（`DROP_LIFE`、`PICK_R`、`AUTO_PICK_R`）、`dropLayer`（`#dropL`）、`dropArt`、`dropSpawn`、`dropTake`、`dropPick`、`dropTick`（在 `monLoop`）、`dropClear`（在 `monClear`）、撿取按鈕 `#pickBtn`（`dropBtnPaint`）、`state.autoPick`；`matDrop(m,p,ground)`；`bossReward` 的素材、金幣也掉地上；傷害數字 28／36px。
+- 掉落物在地上（161）：`GDROP`（`DROP_LIFE`、`PICK_R` 90、`PICK_SHOW_R` 120／`PICK_HIDE_R` 132、`AUTO_PICK_R` 28，181）、`dropLayer`（`#dropL`）、`dropArt`、`dropSpawn`、`dropTake`→`dropFly`（181）、`dropPick`、`dropPickBtn`（181：90 內沒有就走過去）、`dropTick`（在 `monLoop`；181 起一律自動撿）、`dropClear`（在 `monClear`）、撿起按鈕 `#pickBtn`（`dropBtnPaint({d,n})`，pointerdown）；`state.autoPick` 181 起不用；`matDrop(m,p,ground)`；`bossReward` 的素材、金幣也掉地上；傷害數字 28／36px。
 - 僕人下來空地（162）：`SERVANTS`／`LORDS` 的 `arena`（`arenaR`）、`ARENA_R`／`ARENA_JUMP`／`ARENA_LEAVE`、`bossArena`／`bossArenaR`、`bossJump`／`bossJumpStep`／`bossArenaSet`、`bossClamp`、`bossHomeStep`。
 - 劇情對話（163）：`VN_REG`／`VN_STORY`、`vnParse`（「名字(表情)：台詞」、「｜」分頁、「旁白：」）、`vnPlay`／`vnNext`／`vnTap`／`vnLog`／`vnEnd`／`vnFromNote`、立繪 `vnPortrait`（`assets/portrait/`、`VN_PID`／`FY_PID`）＋替代 `vnFallback`／`vnImgFail`（神之子裁切 `FY_CROP2`）、鏡頭 `vnCamP`／`vnZ`／`vnCamTo`、章節卡 `chapterCard`（`CH_BK`、`state.chSeen`）、設定 `renderVnBox`（`state.vnSpeed`）；`npcTalk`／`fyTalkHTML` 用 `<!--vnS:id-->…<!--vnE-->` 包台詞，`noteOpen` 看到就先播。
-- 被擋住的剪影（164）：`meBox`／`boxOver`／`meOccluded`、`ghostTick`（`#meGhost`、濾鏡 `#ghostF`）；`EX_ZOOM` 1.15（遷移 `cam164V`）、`FY_REL` 1.0、`FY_DX`／`FY_DY`。
+- 鏡頭、神之子大小（164）：`EX_ZOOM` 1.15（遷移 `cam164V`）、`FY_REL` 1.0、`FY_DX`／`FY_DY`；被擋住的白色剪影 178 拿掉，現在的做法見 178 那條（`meOccluded` 還在但沒人呼叫）。
 - 武器平衡（166）：`wpnMelee`（受傷 ×0.6）；背武器（166.1）已由第 179 節刪掉；野外鐮刀 `wpnDmg(null)` ×0.5。怪物追擊（19x）：`MON_CHASE_K` 0.85×玩家走路、`MON_LEASH` 400，正在打的那隻也追。
-- 神之子新圖、光芒顏色（167）：`fyStg`／`fy2Src`、`FY_CV`（420×424、身體 88%）、`fyCols`（`fyGlowC`→暗色換紫綠反光／往白混、動態色列）、`fyBodySVG`（背光 `.fy7bl.s1～s3`、神化腳下 `.fy7ring`）、`fyLoop` 的光點（`S.cols`）、`FY_CROP2`；拿掉 `FAIRY_BASE_READY`／`FY_RECOLOR`／`fyBase`／`FY_PART`。
+- 神之子新圖、光芒顏色（167）：`fyStg`／`fy2Src`、`FY_CV`（420×424、身體 88%）、`fyCols`（`fyGlowC`→暗色換紫綠反光／往白混、動態色列）、`fyBodySVG`（背光 `.fy7bl.s1～s3`、神化腳下 `.fy7ring`）、`fyLoop` 的光點（`S.cols`）、`FY_CROP2`。
 - 別人看得到新版主角（168）：`pushPos` 的 `c2`、`profiles.c2`（`pushProfile`）、`charG(…,c2)`、`char2SVG(face,moving,sex)`／`char2Paint(…,sex)`、`char2PaintOthers`（`[data-c2w]`）、`charShadow(c2s)`、名片 `spinC2`。
 - 神之子背面（169）：`fy2Src(k,st,b)`、`fyBackReady`／`FY_BK`、`fyUp`／`fyWantBack`、`fyFace`、`S.sq`（壓扁翻面）；`getPos` 回傳 `face`。
 - 神之子的普通攻擊（170）：`FY_ATK_R`／`FY_ATK_CD`／`FY_ATK_PCT`／`FY_ATK_ENG`／`FY_BOLT`、`fyAtkTick`（`monLoop`、`bossLoop`）、`fyTarget`、`fyBaseDmg`、`fyAutoOn`（`state.fyAuto`）、演出 `fyAtkFx`／`fyCastArt`（`_c` 圖、`FY_CK`、`S.castFlip`）、同步 `fyAct`→`pushPos` 的 `fa`、`fyAtkRemote`（`FY_SEEN`）；`monHit(…,pet)`、`bossDealt` 的 `o.pet`。170 補：`FY_BOLT_MS` 380、`FY_LINE_HOLD`、打中 `fyHitFx`（`.fyp-ring`）、出手光環 `.fyp-cring`。
@@ -277,7 +278,8 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 秘境掉落物（174）：`bossLoop` 也跑 `dropTick`、`bossLeave` 先 `dropClear`。
 - 分層人物（171，177 改讀 manifest）：`C3`／`C3_HU`／`C3_DIR`／`C3_WPN`、`char3On`（`state.char3`）、`lookNorm`／`lookPack`／`lookUnpack`（`state.look`、同步 `ap`）、`c3Im`／`c3Anc`、`c3Sheet`（合成＋外輪廓→blob，LRU 24，`c3LastMs`）、`c3Act`／`c3State`、`c3SVG`／`c3Paint`／`c3PaintAll`、`c3Wpn`／`c3Part`、`c3Atk`／`c3HitAt`／`c3Walk`、造型 `sheet.look`（`lookHTML`／`lookAction`、`c3TestWeapons`）；參考實作在 `docs/規格存檔_附件/第171節_參考實作.html`。
 - 新版人物修正（176）：`c3Preload`／`c3Ready`／`c3Fail`（`C3_WAIT`，404 或 5 秒才退回舊人物）、等素材時 `<g class="c3w">`、淡入 `c3in`（`C3_SHOWN`）、頭像與名片裁圖 `c3Crop`（`C3_HEAD`／`C3_BODY`，`renderMe`、`spinSVG`／`spinC3`、`profiles.ap`）。
-- 打扮、正式素材（177）：`assets/char3/manifest.json`（`c3Mf`／`c3MfSet`、`C3_MF`）、`c3Anc(體型)`（`C3_ANCB`）、`c3G(動作)`→組、`c3Sheet(L,組)`（move／atkA／atkB）、`c3Layers`（`manifest.order`、套服 `c3Suit` 不畫 bottom）、`c3Comp`、`c3HS`、`c3Body`（跟著 `char2Sex`）、`lookNorm(l,b)`／`lookStore`、`ap` 第一段是體型；打扮面板 `openLook`／`lookHTML`／`lookAction`（`sheet.ld` 草稿、`sheet.lt` 分頁、`sheet.lr` 方向、`LOOK_TABS`／`LOOK_RING`）、縮圖 `c3Thumb`（`C3_TH`）、`c3Release`。
+- 打扮、正式素材（177）：`assets/char3/manifest.json`（`c3Mf`／`c3MfSet`、`C3_MF`）、`c3Anc(體型)`（`C3_ANCB`）、`c3G(動作)`→組、`c3Sheet(L,組)`（move／atkA／atkB）、`c3Layers`（`manifest.order`、套服 `c3Suit` 不畫 bottom）、`c3Comp`、`c3HS`、`c3Body`（跟著 `char2Sex`）、`lookNorm(l,b)`／`lookStore`、`ap` 第一段是體型；打扮面板 `openLook`／`lookHTML`／`lookAction`（`sheet.ld` 草稿、`sheet.lt` 分頁、`sheet.lr` 方向、`LOOK_TABS`／`LOOK_RING`）、`c3Release`。
+- 打扮面板改版（180）：單品縮圖 `lkThumb`（`LK_TH`，髮型照髮色分開快取）、分頁圖示 `LK_IC`、色點 `data-lkc`、`#sheet.lkOpen`（`.lkp` 預覽／`.lks` 捲動區／`.lkf` 固定按鈕）、滑動轉身 `lkSw`／`lookPrevPaint`／`lookPrevSVG`。
 - 邊走邊攻擊、變白（178）：`c3State` 攻擊中有移動 → `<動作>_w`（atkAw／atkBw，好了才換）；`wpnPaintMe` 遇到新版人物不畫（浮游砲兩個的原因）、`c3PodPos`（飛彈起點）、`wBob3`；白色剪影拿掉：`ghostTick` 改成 `occList`→前景物件 `.fo[data-fo]` 加 `focc`（`M._objs[i].r`）；被打 `c3hurt`（只改透明度）、hit 0.3 秒。
 - 遠程從武器射出（179）：`wpnHTML` 只在退回舊人物時用；`mzFire`（取代 `wpnFire` 的遠程四段、`MZ_FR` 第幾格）、出手點 `mzOf`／`mzCalc`（`MZ`，高階圖照 `WP_DIM` 換框內比例）、`mzCell`／`mzToW`／`mzMe`；測試開關 `mzShow`（`sw_mz`、`c3Part` 的 `mz`、設定 `data-ap="mz"`）。
 - 任務提示收合（175）：`#mqWrap`（`mqColInit` 把 `#mqLine` 搬進去）、`#mqCol`「‹」、左邊緣標籤 `#mqTab`（紅點 `dot`、`bump`）、`mqColSet`（本機 `sw_mqcol`）、`mqColSync`（包在 `renderMqLine` 外面，`mqSig`）、`mqLay`（隊伍名單在上、任務提示在下，`body.mqParty`；也包在 `renderParty` 外面）。
@@ -297,6 +299,8 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 
 狀態：保留（就在這個檔案）、已完成、未做、未定案、紀錄（不是待做的事，只是紀錄）。
 
+第 1～134 節中沒有列在下面的，都已完成，原文與實作紀錄在 `docs/規格存檔.md`（第 70、75、107 節沒有這一節；第 102 節已取消）。
+
 | 節 | 名稱 | 狀態 | 檔案；備註 |
 | --- | --- | --- | --- |
 | 0 | 接手者必讀 | 保留 | CLAUDE.md |
@@ -304,138 +308,29 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 2 | 技術架構 | 保留 | CLAUDE.md |
 | 3 | 資料模型 | 保留 | CLAUDE.md |
 | 4 | 遺傳規則 | 保留 | CLAUDE.md |
-| 5 | 稀有度與數值 | 已完成 | docs/規格存檔.md；已由第 28 節取代 |
-| 6 | 作物與造型 | 已完成 | docs/規格存檔.md；部分由 24、73 節更新 |
-| 7 | 探索與地區 | 已完成 | docs/規格存檔.md |
-| 8 | 遠緣雜交與品種登錄 | 已完成 | docs/規格存檔.md |
 | 9 | 主要系統 | 紀錄 | docs/規格存檔.md；各版本的實作紀錄（程式地圖濃縮在 CLAUDE.md） |
 | 10 | 版本歷程 | 紀錄 | docs/規格存檔.md；各 BUILD 改了什麼 |
 | 11 | 設計原則 | 保留 | CLAUDE.md |
 | 12 | 已確定不做 | 保留 | CLAUDE.md |
-| 13 | 下一批待改 | 已完成 | docs/規格存檔.md；14h、14z |
 | 14 | 後續規劃 | 未定案 | docs/待實作/第14節.md；第五、六版規劃（多已由 28–33 取代）；「延後評估」4 項未定案 |
 | 15 | 測試方法 | 保留 | CLAUDE.md |
 | 16 | 與使用者溝通的習慣 | 保留 | CLAUDE.md |
 | 17 | 2026-11-14 設計討論紀錄 | 紀錄 | docs/規格存檔.md；討論紀錄；多數已由後續各節取代 |
 | 18 | 畫風規範 | 紀錄 | docs/規格存檔.md；畫風規範（做素材時查） |
 | 19 | 標本機制與服裝 | 未定案 | docs/待實作/第19節.md；19.0 已做（14i）；19.3／19.4 布料、服裝、製作費用、正式名額還要討論 |
-| 20 | 外觀遺傳規則改版 | 已完成 | docs/規格存檔.md |
-| 21 | 作物植株與果實重畫 | 已完成 | docs/規格存檔.md；由第 26 節取代 |
-| 22 | 人物重畫 | 已完成 | docs/規格存檔.md |
 | 23 | 待辦總表 | 紀錄 | docs/規格存檔.md；舊的待辦總表，已由本索引表取代 |
-| 24 | 作物精簡與果實素模 | 已完成 | docs/規格存檔.md；24.4 由第 26 節取代 |
-| 25 | 人物換裝選項擴充 | 已完成 | docs/規格存檔.md |
-| 26 | 作物植株與果實素模上線 | 已完成 | docs/規格存檔.md |
-| 27 | 新地區地圖：草原、森林、沙漠、濕地 | 已完成 | docs/規格存檔.md |
-| 28 | 稀有度計分制、標本規則修正、育種家等級 | 已完成 | docs/規格存檔.md |
-| 29 | 主線任務 | 已完成 | docs/規格存檔.md |
-| 30 | NPC 委託 | 已完成 | docs/規格存檔.md |
-| 31 | 農地維持自由鋪設 | 已完成 | docs/規格存檔.md |
-| 32 | 城鎮 | 已完成 | docs/規格存檔.md |
-| 33 | 秘境 | 已完成 | docs/規格存檔.md |
-| 34 | 專屬造型與神話的稀有感特效 | 已完成 | docs/規格存檔.md |
-| 35 | 人物新畫法擴充：所有造型都用新畫法 | 已完成 | docs/規格存檔.md；35.4 部分帽子、配件等素材 |
-| 36 | 2026-11-15 補充決定與待辦管理 | 已完成 | docs/規格存檔.md |
-| 37 | 2026-11-15 試玩回報修正 | 已完成 | docs/規格存檔.md |
-| 38 | 水面、台地、方向性、種子袋整理、紀錄榜 | 已完成 | docs/規格存檔.md；38.4 圍籬由第 68 節處理 |
-| 39 | 圓盤選單調整：開墾、剷除 | 已完成 | docs/規格存檔.md |
-| 40 | NPC 服裝、重複資訊清理、農場改成正方形 | 已完成 | docs/規格存檔.md；40.1 由第 74 節取代 |
-| 41 | 個人介面 | 已完成 | docs/規格存檔.md |
-| 42 | 主線之後：種子庫館藏、NPC 個人故事 | 已完成 | docs/規格存檔.md |
-| 43 | 待定事項定案 | 已完成 | docs/規格存檔.md |
-| 44 | 預約雜交與拖曳授粉 | 已完成 | docs/規格存檔.md |
-| 45 | 選單與動作圖示 | 已完成 | docs/規格存檔.md |
-| 46 | 裝飾模式的操作改成和開墾一樣 | 已完成 | docs/規格存檔.md |
-| 47 | 突變揭曉、新種子標示 | 已完成 | docs/規格存檔.md |
-| 48 | 特殊色的動態質感 | 已完成 | docs/規格存檔.md |
-| 49 | 改名：特殊色 → 夢幻色；藍 → 水藍 | 已完成 | docs/規格存檔.md |
-| 50 | 遺傳說明頁重寫 | 已完成 | docs/規格存檔.md |
-| 51 | 探索地圖：美化、機關、秘境修訂 | 已完成 | docs/規格存檔.md |
-| 52 | 高低差的畫法：階地 | 已完成 | docs/規格存檔.md |
-| 53 | 探索地圖重新擺設 | 已完成 | docs/規格存檔.md |
-| 54 | 連接與地形的合理性 | 已完成 | docs/規格存檔.md |
-| 55 | 秘境地標與水面紋理素材、水的流動 | 已完成 | docs/規格存檔.md |
-| 56 | 環境小動畫 | 已完成 | docs/規格存檔.md |
-| 57 | 夢幻色八種的畫法 | 已完成 | docs/規格存檔.md |
-| 58 | 遊玩模式：一般／測試 | 已完成 | docs/規格存檔.md |
 | 59 | 茄科果實的辨識度 | 已完成 | docs/規格存檔.md；番茄細萼片要等使用者看 iPhone |
-| 60 | 專屬造型：個人運氣、極低機率、全服公告 | 已完成 | docs/規格存檔.md |
-| 61 | 主線交付與第 11 章獎勵 | 已完成 | docs/規格存檔.md |
-| 62 | 好友上線狀態 | 已完成 | docs/規格存檔.md；Realtime Database 要加 status 規則 |
-| 63 | 會動的物件靠近時跳回開頭 | 已完成 | docs/規格存檔.md |
-| 64 | 地圖場勘修正 | 已完成 | docs/規格存檔.md |
-| 65 | 遺傳說明頁加入「基因」「等位基因」 | 已完成 | docs/規格存檔.md |
-| 66 | 秘境的謎語 NPC | 已完成 | docs/規格存檔.md；16p 已做 |
-| 67 | 拿掉一般突變與專屬造型突變 | 已完成 | docs/規格存檔.md |
-| 68 | 農場圍籬改成斜向，可以把田圍起來 | 已完成 | docs/規格存檔.md |
 | 69 | 採集、素材 | 未定案 | 還沒有規格檔（第 91.5 節會用到） |
-| 70 | （沒有這一節） | — | — |
-| 71 | 稱號閃爍、載入畫面、朋友卡在讀取 | 已完成 | docs/規格存檔.md |
-| 72 | 遺傳說明頁：圖多字少、夢幻色動態 | 已完成 | docs/規格存檔.md |
 | 73 | 專屬造型換新：火山、球棒、炸彈、萬聖節南瓜 | 已完成 | docs/規格存檔.md；73.4 萬聖節活動未定案（在規格存檔） |
-| 74 | NPC 外觀重新設計 | 已完成 | docs/規格存檔.md |
-| 75 | （沒有這一節） | — | — |
-| 76 | 地面上莫名的圓形色塊 | 已完成 | docs/規格存檔.md |
-| 77 | 法老王棺材放上長方形石台 | 已完成 | docs/規格存檔.md |
-| 78 | 沙漠：黃金沙地＋流沙 | 已完成 | docs/規格存檔.md |
-| 79 | 水邊輪廓自然化 | 已完成 | docs/規格存檔.md |
-| 80 | 夢幻色動態：預覽也要動、更明顯、稍快 | 已完成 | docs/規格存檔.md |
-| 81 | 夢幻色動態改成連續流動 | 已完成 | docs/規格存檔.md |
 | 82 | 櫻花區 | 已完成 | docs/規格存檔.md；82.6 秘境、謎語 NPC、抽籤繪馬未定案（在規格存檔） |
-| 83 | 遠緣雜交不帶專屬造型 | 已完成 | docs/規格存檔.md |
-| 84 | 遺傳說明頁：先講「兩份」再講混色，卡片照重要性重排 | 已完成 | docs/規格存檔.md |
-| 85 | 果實上色原則：除了蒂頭，整顆都由顏色基因決定 | 已完成 | docs/規格存檔.md |
-| 86 | 新畫法人物可以換各種衣服：先用程式試做 | 已完成 | docs/規格存檔.md；門檻是暫定值 |
-| 87 | 夢幻色不混色：一半一半 | 已完成 | docs/規格存檔.md |
-| 88 | 授粉倒數圈；雜交改成「先標記、確認後才授粉」、可以多個父本 | 已完成 | docs/規格存檔.md |
-| 89 | 洞穴內部擺設 | 已完成 | docs/規格存檔.md |
-| 90 | 名品：特殊造型＋完整夢幻色的組合名稱 | 已完成 | docs/規格存檔.md；數值暫定 |
 | 91 | 全服稀有植株「發光的植株」 | 已完成 | docs/規格存檔.md；91.5 等第 69 節；規則要貼 Firebase |
-| 92 | 謎語 NPC 台詞修正 | 已完成 | docs/規格存檔.md |
-| 93 | 花精靈：傳說喚醒、神話進化 | 已完成 | docs/規格存檔.md；基本型素材還沒有（FAIRY_BASE_READY） |
-| 94 | 介面文字精簡 | 已完成 | docs/規格存檔.md |
-| 95 | 精靈改版：標本是一次性通行證 | 已完成 | docs/規格存檔.md；規則要貼 Firebase |
-| 96 | 突變通知改版 | 已完成 | docs/規格存檔.md |
-| 97 | 精靈的動態、喚醒與進化特效 | 已完成 | docs/規格存檔.md |
-| 98 | 存檔修復誤刪櫻花區種子、探索地圖面板被切掉 | 已完成 | docs/規格存檔.md；救回要 backups 讀取規則 |
-| 99 | 試玩回報：重複入口、閃退、數字字型、佈置拖曳、打扮轉向 | 已完成 | docs/規格存檔.md |
-| 100 | 加入主畫面 | 已完成 | docs/規格存檔.md |
-| 101 | 育苗盤改版：分區、目標、穩定度、和種子袋統一 | 已完成 | docs/規格存檔.md |
-| 102 | 害蟲（草稿） | 已取消 | 由第 105 節取代，沒有搬進來 |
-| 103 | 稀有度徽章：和特徵標籤分開、放到顯眼的地方 | 已完成 | docs/規格存檔.md |
-| 104 | 手機發熱：量測與省電 | 已完成 | docs/規格存檔.md；104.2 第 6 點已取消（第 108 節） |
-| 105 | 野外怪物：第一階段 | 已完成 | docs/規格存檔.md；掉落是測試值 |
-| 106 | 整體順暢度優化 | 已完成 | docs/規格存檔.md |
-| 107 | （沒有這一節） | — | — |
 | 108 | 立體化改版 | 未做 | docs/待實作/第108節.md；草原 5 張已做（17x、17y，見規格存檔 9.104、9.105）；其他地區、農場、城鎮還沒做 |
 | 109 | 3D 草原試玩回報修正 | 已完成 | docs/規格存檔.md；17z（9.106）；黑塊、頭閃的原因是推測，等 iPhone 確認 |
-| 110 | 花精靈新圖上線 | 已完成 | docs/規格存檔.md；18a（9.107）、修訂版 18b（9.108：348×445 畫布、恢復上色） |
-| 111 | 種植節奏第一步：生長時間、加速劑、地區改名、中間色不取名、育苗盤 10 等解鎖 | 已完成 | docs/規格存檔.md；18c（9.109）；沒有截圖、沒測 iPhone |
-| 112 | 一株只收一次、果實袋 | 已完成 | docs/規格存檔.md；18d（9.110）；沒有截圖、沒測 iPhone |
-| 113 | 神之子：改稱呼與名字、祭壇清單喚醒、專屬造型捷徑 | 已完成 | docs/規格存檔.md；18e（9.111）；「精靈之翼」照舊不改名（使用者 2026-11-20）；沒有截圖、沒測 iPhone |
-| 114 | 神之子的供奉：進化、神化、換色 | 已完成 | docs/規格存檔.md；18s（9.125）；照 114.9（1,000／1,500、百分比、25／50／75% 的話）；**114.10 神化改 2,000，程式在 134.5 改**；買來的果實可以供奉；公告要貼 `tools/firestore_rules_console_114.txt` 才寫得進去；沒有截圖、沒測 iPhone |
-| 115 | 怪物素材、背包、製作、定型 | 已完成 | docs/規格存檔.md；18f（9.112）；素材圖示暫用怪物縮圖；沒有截圖、沒測 iPhone |
-| 116 | 主線改寫第一步：序章「醒來」、第一章「蘿瑪的清單」、操作引導 | 已完成 | docs/規格存檔.md；18g（9.113）；花紋兩邊各藏一份（使用者決定）；沒有截圖、沒測 iPhone |
-| 117 | 果實的去處：委託改從果實袋交、果實上架市集 | 已完成 | docs/規格存檔.md；18h（9.114）；Firestore 規則要貼主控台；沒有 9 顆的那一類委託；沒有截圖、沒測 iPhone |
-| 118 | 蘿瑪的故事、蘿瑪的台詞、翠風草原的地區故事 | 已完成 | docs/規格存檔.md；18j（9.116）；第二、三段等第 114 節；可以調查的田改成乾草堆、筆記頁沒做；沒有截圖、沒測 iPhone |
-| 119 | 等級與解鎖：配合新主線重排前三區、新動作的經驗、節奏試算 | 已完成 | docs/規格存檔.md；18i（9.115）；進化、神化、供奉的經驗等第 114 節接上；沒測 iPhone |
 | 120 | 修正：十級一區、支線「失落的種子庫」的結尾、新手前三株加速 | 已完成 | docs/規格存檔.md；18k（9.117）；探險家大衣之後補發（`coatDue`）；沒測 iPhone |
-| 121 | 主線第二章「銀霧白樺林」：調停、傑柯的清單、喚醒傑柯 | 已完成 | docs/規格存檔.md；18l（9.118）；照使用者三點修改；沒有截圖、沒測 iPhone |
-| 122 | 主線第三章「珍珠潟湖」：追查、蜜露的清單、喚醒蜜露、第一季收尾 | 已完成 | docs/規格存檔.md；18m（9.119）；估計 3～4 天（第 3 項約 1.5～2 天）；沒有截圖、沒測 iPhone |
-| 123 | 花紋改版：三種形式、顏色自動配 | 已完成 | docs/規格存檔.md；18n（9.120）；櫻花瓣保留成第四種（使用者）；自動配色定案（2026-11-21，有問題再改）；順便修定型函式同名的錯；沒測 iPhone |
-| 124 | 稀有度改版：最稀有的一項決定等級 | 已完成 | docs/規格存檔.md；18o（9.121）；跨界照舊是神話（規格沒提）；rights 各等級數量讀不到；沒測 iPhone |
-| 125 | 偷菜與偷偷手套 | 已完成 | docs/規格存檔.md；18p（9.122）；第 129 節起只限朋友；通知用私訊、不用改規則；沒有截圖、沒測 iPhone |
-| 126 | 傑柯與蜜露的台詞、故事；銀霧白樺林與珍珠潟湖的地區故事 | 已完成 | docs/規格存檔.md；18v（9.128）；傑柯第三段之後開放；裝飾給楓樹；沒有截圖、沒測 iPhone |
-| 127 | 種子袋整理：還會變的種子換圖示；標本名額照「作物＋夢幻色」算 | 已完成 | docs/規格存檔.md；18q（9.123）；自動合併不做（使用者）；不用改規則；沒測 iPhone |
-| 128 | 每日自動備份與自己還原 | 已完成 | docs/規格存檔.md；18r（9.124）；不用改規則；沒測 iPhone |
-| 129 | 朋友名單（補第 125 節：偷菜只能偷朋友） | 已完成 | docs/規格存檔.md；18t（9.126）；不用改規則；沒有截圖、沒測 iPhone |
-| 130 | 筆記頁：主的傳說、第一批的遺物 | 已完成 | docs/規格存檔.md；18w（9.129）；調查點都用現成物件；沒有截圖、沒測 iPhone |
-| 134 | 秘境公開、當地人帶路、拿掉種子台座；神化 2,000 | 已完成 | docs/規格存檔.md；18x（9.130）；白樺林、潟湖照觸發改對白（種子、睡蓮）；沒有截圖、沒測 iPhone |
-| 133 | 任務的指引、「可以完成了」的提示、提醒（擴到所有任務） | 已完成 | docs/規格存檔.md；18y（9.131）；難判斷的四類列在 9.131；**要請使用者在 iPhone 上看那一行和箭頭**；沒有截圖 |
 | 131 | 戰鬥改版第一步：血量、怪物會還手、小補血藥、打怪經驗、白樺林與潟湖的素材 | 已完成 | docs/規格存檔.md；18z（9.132）；打怪經驗先 0（使用者）；怪物仍是各人各自的；**要請使用者 iPhone 實機試邊走邊打邊躲**；沒有截圖 |
-| 135 | 主、主的僕人、精魄、神寵：九隻主的現身條件、重生、掉落、神寵三階段 | 進行中 | docs/待實作/第135節.md；**第一階段（19b，9.134）、第二階段（19d，9.136）已做**：三隻僕人、第一季三隻主、多人同步（Realtime Database 要加 `tools/rtdb_rules_135_fight.txt`）、精魄孵化與神寵、卡包（規則文件不在 repo，先收著）、米涅瓦的巢；圖都是佔位；神寵經驗跟著打怪經驗（現在 0）；後六區、27 個技能還沒做；**要請使用者兩支手機實測**；**135.13 金瞳的巴絲（黑貓）的打法已定（2026-11-22，只是設計、還沒做）**：看眼睛（凝視扇形金光掃過→被盯住、撲擊三下、金瞳暗下來 3 秒是破綻、每掉三分之一血化沙＋聖甲蟲記號；第二階段雙重凝視、化沙時冒 2 條小金蛇、破綻縮成 2 秒），只用現有 6 張圖 |
+| 133 | 任務的指引、「可以完成了」的提示、提醒（擴到所有任務） | 已完成 | docs/規格存檔.md；18y（9.131）；難判斷的四類列在 9.131；**要請使用者在 iPhone 上看那一行和箭頭**；沒有截圖 |
+| 135 | 主、主的僕人、精魄、神寵：九隻主的現身條件、重生、掉落、神寵三階段 | 進行中 | docs/待實作/第135節.md；第一、二階段已做（19b、19d）；後六區、27 個神寵技能未做；135.13 巴絲打法已定未做；要兩支手機實測 |
 | 136 | 冰封種子庫的由來（門禁卡、館藏重開、古老的種子） | 未做（設計定案） | docs/待實作/第136節.md；跟晶霜雪原那一章一起做 |
-| 132 | 互助：每天幫每位朋友照顧一次 | 已完成 | docs/規格存檔.md；18u（9.127）；開花等授粉的不計時、不受影響；不用改規則；沒有截圖、沒測 iPhone |
 | 137 | 主題布置：一鍵套用、存自己的布置 | 已完成 | docs/規格存檔.md；19a（9.133）；田園小屋是「已擁有」、沒有開局自動擺；**要請使用者 iPhone 看四套套用後的畫面** |
 | 138 | 介面改版第一步：共用樣式、主畫面、背包、種子詳細、任務面板 | 已完成 | docs/規格存檔.md；19c（9.135）；農場上的抽屜照舊是抽屜、野生不含雜交第一代、道具放背包第四分頁（和規格不同的地方列在 9.135）；果實、素材詳細只換樣式；沒有截圖；**要請使用者 iPhone 看主畫面與面板** |
 | 139 | 後六區的地圖模板與怪物 | 已完成 | docs/規格存檔.md；19e（9.137）；139.7、139.8 由第 141 節取代；建議之後產圖的物件列在 9.137 |
@@ -469,7 +364,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 167 | 神之子新圖（三階段）、固定配色、果實顏色改成光芒顏色 | 已完成 | docs/規格存檔.md；19y（9.167）；跟隨大小照 164 ×1.0（使用者）；喚醒選色也改「光芒顏色」；有截圖；沒測 iPhone |
 | 168 | 別人也看得到新版主角（補第 156 節） | 已完成 | docs/規格存檔.md；19z（9.168）；Firestore 不用改、RTDB presence 規則不在 repo（照 w、fy 的經驗應該不用改，9.168 附上萬一要加的那段）；互看截圖用假的其他玩家；沒測多人連線、iPhone |
 | 169 | 神之子的背面（補第 167 節） | 已完成 | docs/規格存檔.md；19z（9.169）；朝上先用正上方（165 還沒做）；順便修省電時換不到圖、換階段用錯圖；有截圖；沒測 iPhone |
-| 170 | 神之子的普通攻擊（要同步給別人看）；170 補：演出加強 | 已完成 | docs/規格存檔.md；20a（9.170）；傷害佔比：喚醒約 6%、神化 14～18%；有出手截圖、互看要兩個帳號沒拍；沒測 iPhone、多人連線 |；170 補 20b（9.171），九隻的畫面使用者自己進遊戲看（不截圖）
+| 170 | 神之子的普通攻擊（要同步給別人看）；170 補：演出加強 | 已完成 | docs/規格存檔.md；20a（9.170）；傷害佔比：喚醒約 6%、神化 14～18%；有出手截圖、互看要兩個帳號沒拍；沒測 iPhone、多人連線；170 補 20b（9.171），九隻的畫面使用者自己進遊戲看（不截圖） |
 | 171 | 分層人物（3D 拍成 2D）：換裝、動作、武器拿在手上 | 已完成 | docs/規格存檔.md；20d（9.174）；參考實作移到 docs/規格存檔_附件/；法杖在左前方被身體擋住、握角等聊天室調；總覽截圖（在頁面裡畫）；沒測 iPhone 掉幀 |
 | 172 | 主、僕人改成同一張地圖只有一隻、大家一起打 | 已完成 | docs/規格存檔.md；20c（9.172）；**規則 `tools/rtdb_rules_172.txt` 要使用者自己貼**；2 人 5 分鐘約 4,800 次寫入、320 KB；沒測兩台手機、iPhone |
 | 173 | 組隊邀請 | 已完成 | docs/規格存檔.md；20d（9.175）；**規則 `tools/rtdb_rules_173.txt`（含 172）要使用者自己貼**；4 人掛 10 分鐘約 7 次寫入；沒測兩台手機 |
@@ -479,3 +374,6 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 177 | 打扮功能：正式素材（女 6 套、男 3 套）、新的素材格式、打扮面板 | 已完成 | docs/規格存檔.md；20g（9.178）；髮型預設髮色拿來用；地圖上各套拍成合併的兩張、互看用假玩家；舊測試素材已刪；沒測 iPhone、兩台手機 |
 | 178 | 邊走邊攻擊、劈砍加深、浮游砲重複、人物變白 | 已完成 | docs/規格存檔.md；20h（9.179）；變白是 164 的剪影濾鏡；每幀耗時只量到 JS（窗格在背景），要請使用者 iPhone 開 ?perf=1 看；有截圖；沒測 iPhone |
 | 179 | 舊武器畫法全部拿掉、遠程攻擊從武器射出 | 已完成 | docs/規格存檔.md；20i（9.180）；槍改取離握點最遠的像素（base 是握把方向）、高階圖換框內比例；**沒有截圖**（Browser 窗格卡住）；沒測 iPhone、兩台手機 |
+| 180 | 打扮面板改版：縮圖只放單品、版面好操作 | 已完成 | docs/規格存檔.md；20j（9.181）；選髮型不再換成預設髮色（和 177 不同）；**沒有截圖**（Browser 窗格卡住）；沒測 iPhone |
+| 181 | 撿起按鈕改版；神之子攻擊、雙色特效的問題先查 | 已完成 | docs/規格存檔.md；20k（9.182）；90～120 之間按了會走過去（規格沒寫）、「自動撿取」設定拿掉；181.2 只查：怪方塊是麥斯 `corn_2_c`／`corn_3_c` 圖裡的全息方塊、28 張圖光效碰到畫布邊；**沒有遊戲截圖**（Browser 窗格卡住）；沒測 iPhone |
+| 182 | 整理 CLAUDE.md：刪掉過時、被取代的內容 | 已完成 | 只改 CLAUDE.md；照 182.4 沒有動 `docs/規格存檔.md`、`docs/待實作/`（`第182節.md` 還在） |

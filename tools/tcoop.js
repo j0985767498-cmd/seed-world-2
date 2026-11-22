@@ -82,7 +82,7 @@ function servantTests(){
 {reset();const A=client('uA','甲');enter(A,'grass',560,900);const s=A.bossRT;A.me().x=s.x;A.me().y=s.y+100;A.pHP=1e12;step([A],300);
   A.me().x=s.x+20;A.me().y=s.y;step([A],2000);const mat=A.SERVANTS.grass.mat,m0=A.matCount(mat);setP('fight/grass_sv/dmg/uX',s.max*5);fire();step([A],1600);
   ok(s.res==='won'&&A.GDROP.length>0,'[174] secret map, no regular monsters: servant beaten → drops on the ground ('+A.GDROP.length+')');
-  A.me().x=A.GDROP[0].x;A.me().y=A.GDROP[0].y;let ts=1000;A.bossLoop(ts);ts+=40;A.bossLoop(ts);ok(A.pickOn===true,'[174] dropTick runs in the secret map (boss loop) → 「撿」 button shows');
+  A.me().x=A.GDROP[0].x+60;A.me().y=A.GDROP[0].y;/* 181：站在 28 以內會自動撿，改站 60 外 */let ts=1000;A.bossLoop(ts);ts+=40;A.bossLoop(ts);ok(A.pickOn===true,'[174] dropTick runs in the secret map (boss loop) → 「撿」 button shows');
   const n=A.dropPick(1e9);ok(n>0&&A.matCount(mat)>m0&&A.GDROP.length===0,'[174] dropPick picks them up → bag count goes up ('+m0+' → '+A.matCount(mat)+')');
   /* 主：倒下演出 6 秒後東西還在 */
   A.bossRT=null;const a=A.lordSummon('grass');a.myDmg=a.max;a.dmg={uA:a.max};step([A],8000);ok(a.res==='won'&&!A.bossRT&&A.GDROP.length>0,'[174] lord beaten: drops still there after the ~6 s ending ('+A.GDROP.length+')');

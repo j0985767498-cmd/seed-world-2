@@ -2,10 +2,10 @@
 
 > 程式：`index.html`。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> **目前 BUILD `2026-11-21m`，下一版 `2026-11-21n`。**
+> **目前 BUILD `2026-11-21n`，下一版 `2026-11-21o`。**
 > **用詞（第 194 節）**：舊文件（`docs/規格存檔.md`）裡的「主」＝**領主**（各區古老的守護者，被蝕的力量侵蝕而失控），「僕人」＝**眷屬**（跟隨領主的魔獸）；抽火傀儡不是眷屬。程式的鍵（`LORDS`、`SERVANTS`、`lord_*`、`servant_*`）不改。**渡界者**（舊稱轉生者，第 201 節）：教會用召喚魔法、帶著原本的身體活著帶過來的人；「轉生」「接住」「錨」整套不用。
 > **使用者要自己做的事**：Realtime Database 規則整份貼 `tools/rtdb_rules_196.txt`（含 62 的 status、135、172、173、196 的 `od`）；Firestore 規則整份貼 `tools/firestore_rules_console_114.txt`（117 那份＋`fairyFirst`）。舊的規則檔都只是紀錄。
-> **還沒做的節**：135 的神寵技能、136（跟晶霜雪原那一章一起做）、201 的後半（第二、三章，見索引表）；未定案：14、19、69；暫停：108（3D，草原預設 2D）。各節做完的紀錄看下面的索引表。
+> **還沒做的節**：135 的神寵技能、136（跟晶霜雪原那一章一起做）；未定案：14、19、69；暫停：108（3D，草原預設 2D）。各節做完的紀錄看下面的索引表。
 
 ---
 
@@ -307,7 +307,8 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 連擊數（187）：`comboHit`（在 `monHit`／`bossDealt`，神之子不算）、`COMBO_GAP`、`comboTick`／`comboReset`、`#combo`（`comboPaint`）、`state.comboMax`、`comboNow()`、`onCombo(n,t)`（`COMBO_FNS`）；測試 `tools/t187.js`。
 - 武器技能、翻滾（184）：表 `SKILLS`／`SK_ROLL`、`skDef`／`skV`／`skDmg`、`skCast`→`SK_DO[招式]`＋特效 `skFx[招式]`（之後換圖只改這裡）、`skAim`／`skTs`／`skIn`／`skInRect`／`skShove`／`skStun`／`skMove`／`skBlink`、冷卻 `SKC`、狀態 `SKB`（不存檔）、受傷 `skHurt`（`pDamage(n,src)`）、普通攻擊掛鉤 `skIv`／`skPreAtk`／`skPostAtk`／`skSat`（`c3Wpn` 第 4 參數）、`skTick`、子彈 `sb`／`pt`（`wpnStep`）、按鈕 `#skBar`（`skBar`／`skPaint`、`SK_GLYPH`）、同步 `pushPos` 的 `sk`／`skRemote`、領主、眷屬 `b.stun`；測試模式武器階 `data-tool="wtier"`；模擬 `tools/sim184.js`、測試 `tools/t184.js`。
 - 第一位神之子、轉生的夢（183）：`state.anchor`（`mq2First`）、夢 `dreamNeed`／`dreamOpen`／`dreamAfter`（`#dream`、`DREAM_L`）、1-5 `altWho`／`mq2FirstBody`（`FIRST_L`）、`state.cropEarly`（`cropKept`）、清單 `altL(k)`（取代 `ALT_LIST[k]`；番茄第二份 `ALT_LIST.tomato2`、`altObj('tomato').l2`）；主線 17 步（2-5、2-6、3-5、3-6 拿掉），神之子類任務 `FYQ`／`fyqTick`（`state.fyq`，kind `fyq`）；遷移 `m183`（旗標 `mq183V`）；測試 `tools/t183.js`。
-- 第一季劇情改版（201，前半）：`MQ2` 序章、第一章 10 格（多了 1-6 夜襲）、遷移 `m201`（旗標 `mq201V`、回顧 `rc201`／`raidRecap`）；夢拿掉（`dreamNeed` false），新玩家 `start201`；祭壇前選 `pick201`／`pickAltar201`／`beam201`（`ALTAR_VOICE`、`voice201`、`state.pick201`）、醒來 `WAKE_L`（`mq2FirstBody`）；夜襲 `RAID`／`raidStart`／`raidGo`／`raidLoop`／`raidEnd`（`RAID_L`、`RAID_PRE`／`RAID_POST`、`#raidG`、`body.raid201`）；草原的田 `s201Field`；對話的 `{名}`／`{神}`＝`t201`；NPC 老李 `li`、草原農戶大叔 `uncle`，阿土伯在 `garden`；測試 `tools/t201.js`。
+- 第一季劇情改版（201）後半：第二、三章（`MQ2` 2-1～3-7，巴頓 `yue`、林婆婆 `jin`、漁民阿海 `hai`；一件事兩種果實 `gives`；碼頭＝倒木隧道 `DOCK`、海蝕洞在倒木 `HIDE`）、第一位是自己的人照樣走 `fyHasX`；關鍵道具 `NOTE_REL` 的 K1／R6／R7／K4／K5（`KI_ICON`）、交給研究所 `state.lab201`（`wien201`）、觸發 `ki201Lord`（`bossReward`）／`npc201`（`openTown`）、`state.s201`；遷移 `m201b`（旗標 `mq201bV`）。
+- 第一季劇情改版（201）前半：`MQ2` 序章、第一章 10 格（多了 1-6 夜襲）、遷移 `m201`（旗標 `mq201V`、回顧 `rc201`／`raidRecap`）；夢拿掉（`dreamNeed` false），新玩家 `start201`；祭壇前選 `pick201`／`pickAltar201`／`beam201`（`ALTAR_VOICE`、`voice201`、`state.pick201`）、醒來 `WAKE_L`（`mq2FirstBody`）；夜襲 `RAID`／`raidStart`／`raidGo`／`raidLoop`／`raidEnd`（`RAID_L`、`RAID_PRE`／`RAID_POST`、`#raidG`、`body.raid201`）；草原的田 `s201Field`；對話的 `{名}`／`{神}`＝`t201`；NPC 老李 `li`、草原農戶大叔 `uncle`，阿土伯在 `garden`；測試 `tools/t201.js`。
 - 個人介面 `openMe`／`meSheetHTML`、通知 `noteOpen`、慶祝卡 `celShow`、提示 `toast`、「？」小說明 `qh`。
 
 **效能、模式、其他**
@@ -419,7 +420,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 198 | 神之子的技能：每位三招（喚醒、進化自動放；神化是大招鍵） | 已完成 | docs/規格存檔.md；20z（9.198）；照 35% 降了 11 個倍率（列在 9.198）；切入改成在畫面裡滑進來；幻影、麻痺對領主只有主機有用；截圖只看了蘿瑪大招、沒存；沒測 iPhone、兩台手機 |
 | 199 | 世界地圖：選地區改成一張插畫地圖 | 已完成 | docs/規格存檔.md；21a（9.199）；各區的神之子、夢幻色是我配的（列在 9.199）；雲霧加大加灰；430 寬、散開動畫沒截圖；沒測 iPhone |
 | 200 | 領主變難；神寵會普通攻擊；第 165 節作廢 | 已完成 | docs/規格存檔.md；21b（9.200）；22% 照近戰算（遠程吃滿）；21c 後四隻 hpK 照估計調到約 9 分鐘（奧索 460、歐特魯斯 610、蕾普絲 660、塔羅斯 1080；數字表在 9.200）；截圖沒存；沒測 iPhone、兩台手機 |
-| 201 | 劇情任務改版：第一季（序章～第三章）照《第一季劇情任務 v3》重寫 | 進行中 | docs/待實作/第201節.md＋第201節_劇情腳本.md；**前半（序章、第一章、改字、夢拿掉、祭壇前選、夜襲）已做：21m（9.210）**；夜襲是大殿專用的小戰鬥（不是野外的戰鬥系統）；後半（第二、三章、201.5 道具、觸發型小段）還沒做；截圖沒拍到；沒測 iPhone |
+| 201 | 劇情任務改版：第一季（序章～第三章）照《第一季劇情任務 v3》重寫 | 已完成 | docs/規格存檔.md；前半 21m（9.210）、後半 21n（9.211）；夜襲是大殿專用的小戰鬥；**「沙洲盡頭」那張圖不存在，海蝕洞放在倒木**；新角色外觀沿用舊的；截圖沒拍到；沒測 iPhone |
 | 202 | 技能鍵換成畫好的圖示 | 已完成 | docs/規格存檔.md；21d（9.201）；技能鍵是暫時往上移才拍到（窗格拍不到最下面）、截圖沒存；長按小卡沒看；沒測 iPhone |
 | 203 | 神寵改成在地上走 | 已完成 | docs/規格存檔.md；21e（9.202）；主人停下來時神寵也會走到位（加了 `petRaf`）；3D 沒有踏步；截圖沒存；沒測 iPhone |
 | 204 | 後六區領主的修正（第 196 節做完後的落差） | 已完成 | docs/規格存檔.md；21f（9.203）；巴絲眼睛照每張姿勢量；tint 38 筆（蜜露彩色沒加）；小黑貓帶入口只在 vm 測；截圖沒存；沒測 iPhone、兩台手機 |

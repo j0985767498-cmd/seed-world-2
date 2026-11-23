@@ -10,8 +10,8 @@ const T=ctx.T;let fails=0;const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+'[207
 T.newGame();T.setScene('market');const st=T.state;st.lv=30;st.mq2={i:5};
 for(const f of ['assets/ground/town_garden.jpg','assets/town/church.png','assets/town/institute.png','assets/hut/hut_bed.png','assets/church/altar_lit.png','assets/lab/machine.png'])ok(fs.existsSync(path.join(ROOT,f)),'圖在：'+f);
 /* 廣場：東側出口往菜圃、建築位置 */
-const PM=T.regPrep('town','plaza');const e=T.regExitAt(PM,PM.B.x0-5,590);ok(e&&e.to==='garden'&&!T.regExitAt(PM,PM.B.x1+5,590),'廣場西側（y 590）出口往城郊菜圃（209.2 從東邊搬過來）');ok(T.regExitAt(PM,400,PM.B.y1+5).to==='farm','南邊照舊回農場（城鎮加高到 '+T.TOWN_MAPS.plaza.H+'）');
-const ch=T.TOWN_BLD.find(b=>b.id==='church'),ins=T.TOWN_BLD.find(b=>b.id==='institute'),hall=T.TOWN_BLD.find(b=>b.id==='hall');ok(ch&&ch.x===400&&ch.y<520&&ins&&hall,'教會在噴水池北邊；研究所、農會在加高出來的那一條');
+const PM=T.regPrep('town','plaza');const e=T.regExitAt(PM,PM.B.x0-5,432);ok(e&&e.to==='garden'&&!T.regExitAt(PM,PM.B.x1+5,432),'廣場西側（y 432）出口往城郊菜圃（209.2 從東邊搬過來）');ok(T.regExitAt(PM,400,PM.B.y1+5).to==='farm','南邊照舊回農場（城鎮加高到 '+T.TOWN_MAPS.plaza.H+'）');
+const ch=T.TOWN_BLD.find(b=>b.id==='church'),ins=T.TOWN_BLD.find(b=>b.id==='institute'),hall=T.TOWN_BLD.find(b=>b.id==='hall');ok(ch&&ch.x>=380&&ch.x<=420&&ch.y<520&&ins&&hall,'教會在噴水池北邊；研究所、農會在加高出來的那一條');
 /* 菜圃：圍籬只能從上邊左側缺口進出 */
 T.townMap='garden';const G=T.TOWN_SUB.garden;ok(T.regBlocked(G,200,747)&&T.regBlocked(G,450,747)&&!T.regBlocked(G,300,747),'木圍籬擋住，上邊左側缺口（x 300）可以走');
 ok(!T.regBlocked(G,300,900)&&T.regBlocked(G,106,900),'菜畦可以走、左邊圍籬擋住');ok(T.regExitAt(G,G.B.x1+5,710).to==='plaza'&&!T.regExitAt(G,G.B.x1+5,400),'右邊樹籬缺口（y 710）回城鎮，其他地方不行');

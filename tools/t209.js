@@ -25,7 +25,7 @@ st.weapons[0].st=[B,B,B];ok(T.wpSlot(st.weapons[0])===null&&st.weapons[0].st.joi
 vm.runInContext("wpTrOk=()=>null;wpTrCost=()=>({coins:0,gold:0})",ctx);st.weapons=[{crop:'corn',tier:2,st:[A,B,A,B,A,B]},{crop:'tomato',tier:1,st:[]}];T.wpTrDo(0,1);
 ok(st.weapons[1].st.join()===[0,1,2,3,4,5].map(i=>T.wpWant('tomato',i)).join(),'轉移：照番茄劍每一格指定的造型');
 /* 209.2：城鎮西側出口、菜圃右邊出口 */
-const PM=T.regPrep('town','plaza');ok(T.regExitAt(PM,PM.B.x0-5,590).to==='garden'&&!T.regExitAt(PM,PM.B.x1+5,590),'城鎮往左（西側）進菜圃');
+const PM=T.regPrep('town','plaza');ok(T.regExitAt(PM,PM.B.x0-5,432).to==='garden'&&!T.regExitAt(PM,PM.B.x1+5,432),'城鎮往左（西側）進菜圃');
 const G=T.TOWN_SUB.garden;ok(T.regExitAt(G,G.B.x1+5,710).to==='plaza','菜圃往右回城鎮');
 T.setScene('market');T.townMap='garden';vm.runInContext("townMapGo('plaza')",ctx);run();ok(T.townMap==='plaza'&&T.me.x<PM.B.x0+40,'從菜圃回來站在城鎮的西邊（x '+Math.round(T.me.x)+'）');
 /* 209.3：門墊走進去、出來站外面、1 秒內不觸發 */

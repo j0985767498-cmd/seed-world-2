@@ -1,0 +1,41 @@
+{
+ "cell": [
+  128,
+  192
+ ],
+ "foot": [
+  64,
+  157
+ ],
+ "cols": "0 正面、1 左前、2 左側、3 左後、4 背面；朝右用水平鏡射",
+ "portrait": [
+  512,
+  512
+ ],
+ "npcs": {
+  "atubo": {
+   "name": "阿土伯",
+   "faces": [
+    "normal",
+    "angry",
+    "smile"
+   ]
+  },
+  "wein": {
+   "name": "維恩",
+   "faces": [
+    "normal",
+    "smile",
+    "neutral"
+   ]
+  },
+  "theo": {
+   "name": "提歐神父",
+   "faces": [
+    "normal",
+    "surprised",
+    "sad"
+   ]
+  }
+ }
+}

@@ -2,7 +2,7 @@
 
 > 程式：`index.html`。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> **目前 BUILD `2026-11-21e`，下一版 `2026-11-21f`。**
+> **目前 BUILD `2026-11-21f`，下一版 `2026-11-21g`。**
 > **用詞（第 194 節）**：舊文件（`docs/規格存檔.md`）裡的「主」＝**領主**（各區古老的守護者，被蝕的力量侵蝕而失控），「僕人」＝**眷屬**（跟隨領主的魔獸）；抽火傀儡不是眷屬。程式的鍵（`LORDS`、`SERVANTS`、`lord_*`、`servant_*`）不改。
 > **使用者要自己做的事**：Realtime Database 規則整份貼 `tools/rtdb_rules_196.txt`（含 62 的 status、135、172、173、196 的 `od`）；Firestore 規則整份貼 `tools/firestore_rules_console_114.txt`（117 那份＋`fairyFirst`）。舊的規則檔都只是紀錄。
 > **還沒做的節**：108 的其他地區／農場／城鎮（3D）、135 的神寵技能、136（跟晶霜雪原那一章一起做）；未定案：14、19、69、201（劇情改版）。各節做完的紀錄看下面的索引表。
@@ -296,6 +296,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 世界地圖（199）：`worldMapHTML`（在 `renderMapPanel`，`WM_SRC`／`WM_PTS`／`WM_R`）、`wmState`（開放、Lv、測試）、雲霧 `wmFog`（散開 `.burst`、`state.wmSeen`）、標記 `wmMeHead`／`wmHere`／`wmQuestBk`、各區 `WM_FY`／`WM_DREAM`、小卡 `wmCardHTML`／`wmTap`（`wmSel`、`data-wm`／`data-wmx`）；測試 `tools/t199.js`。
 - 領主變難、神寵普通攻擊（200）：`LORD_HIT`／`lordDmgK`（載入時寫進 `LORDS[bk].dmgK`）、`LORD_HPK`（後四隻的 `hpK`，其他 300）、第二階段 ×`LORD_PH2`（`bossDmgOf`）、倒下 `lordKoTry`（在 `pDamage`）／`lordKoTick`（在 `bossStep`）／`lordKoOn`／`lordKoEnd`（`#koBox`、`body.lordko`）；神寵 `petAtkTick`（在 `fyAtkTick`）／`PET_ATK_PCT`／`petAtkFx`（`.petorb`）／`petLungeOff`（`petMove`）、同步 `petAct`→`pa`／`petAtkRemote`、傷害數字 `pet:{col}`→`dmgShow` 的 `color`／`sm`；表 `tools/sim200.js`、測試 `tools/t200.js`。
 - 技能鍵圖示（202）：`skIcon`／`skImgSet`（`#sk1`／`#sk2` 的 `.skimg`、`hasimg`）、`skIconHTML`（武器頁 `wpSkCard`、長按 `skCardShow`，`.skic40`）；圖在 `assets/icons/skills/<W.k>_s<1|2>.webp`。
+- 後六區領主修正（204）：巴絲眼睛 `bossOver`／`bossOverKey`／`basEyeSt`／`BAS_EYE`（每張姿勢的眼睛位置）、盯住 `basMarkTick`／`basMarkPos`／`LAI.bas.aim`（`bossAI` 的 `aim` 掛鉤）、塔羅斯 `talosAimT`、`regNextExitAll`（貓帶到隱藏入口 → `secEnter`）、別人的貓 `catRemote`／`catPaintR`（presence `cat`）、連擊加總 `orthComboSum`（`od/<uid>.c`、`b.odAll`）、吼聲 `bossShoveMe`（`BATK.roar.shove`）、特效染色 `fxTintImg`（`FXTI`、plan 的 `tint`）、素材圖示 `assets/icons/mats/`；測試 `tools/t204.js`。
 - 武器頁（190）：`sheet.wpi`（`wpOpen`／`wpPageHTML`、`wpSkCard`、`wpStarRow`）、技能定義 `skDefFor`、星星 `wpSlot`／`wpStarFruits`／`wpStarP`／`wpStarDo`（`WP_STAR_P`、`e.sf`、名品存負數 `wpStatOf`）、升階 `WP_UP`／`wpUpNeed`／`wpUpDo`（`wpFarKeys`）、轉移 `wpTrCost`／`wpTrOk`／`wpTrDo`（`WP_TR_COIN`）、副武器 `state.wpn2`／`wpn2On`（`wpn2Tick`）、`wpSetMain`／`wpSetSub`／`wpnSwap`、`#wpSwap`（`wpSwapPaint`）、各把的冷卻 `SKCW`／`skCdSwap`；測試 `tools/t190.js`。
 - 攻擊鍵（189）：普通攻擊不再自動，`atkTick`（在 `monLoop`、`bossStep`）、`atkPress`／`atkRelease`（`atkHeld`、`atkTap`）、`atkLock`／`atkLockT`／`atkTs`／`atkSearch`、走過去 `moveTo`（`atkJoy` 推搖桿就取消）、空揮 `atkWhiff`、鎖定圈 `#atkRing`（`atkRingPaint`）；按鈕是 `#skR`（`.ska`）；翻滾拿掉；`TIP_TXT.atk`。
 - 畫面按鈕重排（188）：位置都在 `<style>` 最後的「188」區塊（`body.h188`、`--h188-*` 變數）、`hud188()`（選單搬進 `#rbar`、回家／幫忙照顧搬進 `#ctxBar`）、`MENU` 加朋友／圖鑑／布置、`renderFrDot` 紅點在選單；`#hpBar` 所有場景都顯示；檢查 `tools/layout188.js`。**之後加按鈕要照 188 的位置表排**。
@@ -416,3 +417,4 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 201 | 劇情任務改版：第一季（序章～第三章）照《第一季劇情任務 v2》重寫 | 未定案 | docs/待實作/第201節.md＋第201節_劇情腳本.md；規格寫明劇情還沒定案、先不要實作（使用者 2026-11-23） |
 | 202 | 技能鍵換成畫好的圖示 | 已完成 | docs/規格存檔.md；21d（9.201）；技能鍵是暫時往上移才拍到（窗格拍不到最下面）、截圖沒存；長按小卡沒看；沒測 iPhone |
 | 203 | 神寵改成在地上走 | 已完成 | docs/規格存檔.md；21e（9.202）；主人停下來時神寵也會走到位（加了 `petRaf`）；3D 沒有踏步；截圖沒存；沒測 iPhone |
+| 204 | 後六區領主的修正（第 196 節做完後的落差） | 已完成 | docs/規格存檔.md；21f（9.203）；巴絲眼睛照每張姿勢量；tint 38 筆（蜜露彩色沒加）；小黑貓帶入口只在 vm 測；截圖沒存；沒測 iPhone、兩台手機 |

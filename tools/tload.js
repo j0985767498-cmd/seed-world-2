@@ -64,4 +64,5 @@ try{require('./t197.js')}catch(e){console.log('FAIL t197.js crashed: '+e.message
 try{require('./t198.js')}catch(e){console.log('FAIL t198.js crashed: '+e.message);process.exitCode=1}
 try{require('./t199.js')}catch(e){console.log('FAIL t199.js crashed: '+e.message);process.exitCode=1}
 try{require('./t200.js')}catch(e){console.log('FAIL t200.js crashed: '+e.message);process.exitCode=1}
+try{require('./t204.js')}catch(e){console.log('FAIL t204.js crashed: '+e.message);process.exitCode=1}
 try{require('./t193.js')}catch(e){console.log('FAIL t193.js crashed: '+e.message);process.exitCode=1}

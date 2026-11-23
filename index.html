@@ -1270,7 +1270,7 @@ body.h188 #partyBox{left:54px!important;top:calc(var(--h188-top) + 96px)!importa
 /* 188.2 右上：小地圖（野外）／地圖按鈕（農場、城鎮） */
 body.h188 #tbar{top:var(--h188-top)!important;right:8px!important}
 body.h188 #miniMap{right:8px!important;top:var(--h188-top)!important}
-body.h188.wild #mapBtn{display:none!important}
+/* 208.3：地圖鍵在三個場景都放在左邊那一排的最上面（hud188 搬進 #rbar） */
 /* 188.3 主、僕人的血條：頭像和小地圖下方 */
 body.h188 #bossBar{top:calc(var(--h188-top) + 102px)!important;width:210px!important;left:50%!important;transform:translateX(-50%)!important}
 body.h188.mqParty #bossBar{left:auto!important;right:8px!important;transform:none!important;width:min(210px,calc(100vw - 218px))!important}
@@ -1381,6 +1381,13 @@ body.lordko #meGAv,body.lordko #meG{opacity:.35}
 /* ===== 207：祭壇亮起的光 ===== */
 .altglow{animation:altGl 2.2s ease-in-out infinite}@keyframes altGl{50%{opacity:.08}}
 @media (prefers-reduced-motion:reduce){.altglow{animation:none}}
+
+/* ===== 208：世界地圖小卡蓋在地圖上、地圖鍵在左邊那一排 ===== */
+.wm .wmcard{position:absolute;left:10px;right:10px;bottom:10px;margin:0;z-index:6;display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(22,26,36,.84);border:1px solid rgba(255,255,255,.22);border-radius:12px;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.wm .wmcard .wmci{flex:1;min-width:0}.wm .wmcard h3{margin:0;color:#fff;font-size:15px}.wm .wmcard .note{margin:3px 0 0;color:rgba(255,255,255,.86);font-size:12px}
+.wm .wmcard .wmgo{flex:none;display:flex;flex-direction:column;gap:6px}.wm .wmcard .wmgo .btn{height:44px;min-height:44px;min-width:86px;margin:0;padding:0 14px;font-size:15px}
+.wm .wmcard .wmx{right:-4px;top:-12px;width:26px;height:26px;border-radius:50%;background:rgba(22,26,36,.95);border:1px solid rgba(255,255,255,.45);color:#fff;font-size:13px;line-height:24px;padding:0}
+body.h188 #rbar #mapBtn{position:relative!important;top:auto!important;right:auto!important;left:auto!important;background:#FFF9EC}
 </style>
 </head>
 <body class="game">
@@ -2145,7 +2152,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-21i';
+const BUILD='2026-11-21j';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -5023,17 +5030,17 @@ function worldMapHTML(){const Q=wmQuestBk(),here=wmHere(),F=fyMine();if(!state.w
       `<span class="wmring"></span>${fogged||burst?wmFog(k,st,burst):''}${here===k?`<span class="wmme">${wmMeHead()}</span>`:''}`+
       `<span class="wmlab">${fy?`<img class="wmfy" src="assets/fairy2/${fy}_${fyStg(Object.assign({k:fy},F[fy]))}.png?v=${BUILD}" alt="">`:''}${esc(lab)}${Q.has(k)&&!st.lock?'<b class="wmq">!</b>':''}</span></button>`}
   if(burstAny)try{save()}catch(e){}
-  h+=`</div>`;if(wmSel)h+=wmCardHTML(wmSel);return h}
+  if(wmSel)h+=wmCardHTML(wmSel);h+=`</div>`;return h}/* 208.2：小卡放在地圖裡、蓋在下緣 */
 function wmCardHTML(k){const st=wmState(k);let h=`<div class="wmcard" role="dialog" aria-label="${esc(wmName(k))}"><button class="wmx" data-wmx="1" aria-label="關閉">✕</button>`;
-  if(k==='town'){h+=`<h3>城鎮與農場</h3><p class="note">${scene==='market'?'你在城鎮。':scene==='farm'&&!viewing?'你在農場。':''}</p><div class="row2"><button class="btn primary" data-mp="farm">回農場</button><button class="btn" data-mp="town"${st.lock?' disabled':''}>${st.lock?`Lv ${LV_TOWN} 開放`:'去城鎮'}</button></div></div>`;return h}
+  if(k==='town'){h+=`<div class="wmci"><h3>城鎮與農場</h3><p class="note">${scene==='market'?'你在城鎮。':scene==='farm'&&!viewing?'你在農場。':'回家、去城鎮買賣。'}</p></div><div class="wmgo"><button class="btn primary" data-mp="farm">回農場</button><button class="btn" data-mp="town"${st.lock?' disabled':''}>${st.lock?`Lv ${LV_TOWN} 開放`:'去城鎮'}</button></div></div>`;return h}
   const D=WM_DREAM[k],L=LORDS[k],MS=REGION_MAPS[k]||{},ids=Object.keys(MS).filter(id=>!MS[id].secret),seenN=ids.filter(id=>regSeen(k)[id]).length;
-  h+=`<div class="wmct">${L?porHTML(L.art,44):''}<div><h3>${esc(wmName(k))}</h3><p class="note">Lv ${regLv(k)} 開放${st.test?'（還沒開放，測試模式進得去）':''}</p></div></div>`;
-  h+=`<p class="note">夢幻色：<i class="wmsw" style="background:${D?D[1]:'#ccc'}"></i>${esc(D?D[0]:'')}　去過 ${seenN}／${ids.length} 張地圖</p>`;
-  h+=`<button class="btn primary" data-mp="${k}"${st.lock?' disabled':''}>${st.closed?'尚未開放':st.lock?`Lv ${st.lv} 開放`:scene==='explore'&&exBiome===k?'回到這裡':'前往'}</button></div>`;return h}
+  h+=`<div class="wmci"><div class="wmct">${L?porHTML(L.art,40):''}<div><h3>${esc(wmName(k))}</h3><p class="note">Lv ${regLv(k)} 開放${st.test?'（還沒開放，測試模式進得去）':''}</p></div></div>`;
+  h+=`<p class="note">夢幻色：<i class="wmsw" style="background:${D?D[1]:'#ccc'}"></i>${esc(D?D[0]:'')}　去過 ${seenN}／${ids.length} 張地圖</p></div>`;
+  h+=`<div class="wmgo"><button class="btn primary" data-mp="${k}"${st.lock?' disabled':''}>${st.closed?'尚未開放':st.lock?`Lv ${st.lv} 開放`:scene==='explore'&&exBiome===k?'回到這裡':'前往'}</button></div></div>`;return h}
 function wmTap(k){wmSel=wmSel===k?null:k;renderMapPanel()}
 /* ===== 199 結束 ===== */
 
-function mapPanelTap(k){if(!state)return;
+function mapPanelTap(k){if(!state)return;if(k!=='region'&&typeof bossRT!=='undefined'&&bossRT&&bossRT.kind==='lord'&&!bossRT.done&&!confirm('離開就算放棄。確定嗎？'))return;/* 208.3：領主戰中照血條上「離開」的規則 */
   if(k==='region'){closePanel();const el=document.getElementById('mapPanel');if(el){el.hidden=false;renderRegMap()}return}
   if(k==='farm'){closePanel();if(scene!=='farm'||viewing)goFarm();return}
   if(k==='town'){closePanel();if(scene!=='market')goMarket();return}
@@ -5075,7 +5082,7 @@ function qTabsHTML(L){return `<div class="qtabs">${[['all','全部'],['main','�
 try{document.getElementById('sheetBody').addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-qtab]');if(t&&sheet&&sheet.orders){qTab=t.dataset.qtab;renderSheet()}},true)}catch(e){}
 /* ---- 綁定 ---- */
 try{
-  document.getElementById('mapBody').addEventListener('click',e=>{const x=e.target.closest('[data-wmx]');if(x){wmSel=null;renderMapPanel();return}const w=e.target.closest('[data-wm]');if(w){wmTap(w.dataset.wm);return}const b=e.target.closest('[data-mp]');if(b){if(b.disabled)return;wmSel=null;mapPanelTap(b.dataset.mp)}});/* 199：點熱區先看小卡 */
+  document.getElementById('mapBody').addEventListener('click',e=>{const x=e.target.closest('[data-wmx]');if(x){wmSel=null;renderMapPanel();return}const w=e.target.closest('[data-wm]');if(w){wmTap(w.dataset.wm);return}const b=e.target.closest('[data-mp]');if(b){if(b.disabled)return;wmSel=null;mapPanelTap(b.dataset.mp);return}if(wmSel&&e.target.closest('.wm')&&!e.target.closest('.wmcard')){wmSel=null;renderMapPanel()}});/* 199：點熱區先看小卡；208.2：點地圖空白處關掉 */
   document.getElementById('menuGrid').addEventListener('click',e=>{const b=e.target.closest('[data-menu]');if(b)menuTap(b.dataset.menu)});
   document.getElementById('sheetBack').onclick=()=>closeSheet();
   document.getElementById('bagSearch').onclick=()=>{bagTab=bagTab==='search'?'bag':'search';renderBag()};
@@ -7723,7 +7730,7 @@ const regSplitN=()=>{const M=regCur(),y=curMe().y;let n=0;for(const v of M._ys){
    每個地區同一時間全服只有 1 株（Firestore roamers/<地區>）；第一個點到的人拿走（transaction）；拿走後 4 小時、或沒人拿 4 小時後，
    由任何讀到過期的客戶端用 transaction 寫入下一株（換一張地圖）。只有在那個地區裡才監聽那一份文件。測試模式改用 roamers_test。 */
 const ROAM_HOURS=4,ROAM_DAY_MAX=2,ROAM_MS=ROAM_HOURS*3600e3,ROAM_BK=['grass','forest','marsh','desert','snow','sakura'];
-const ROAM_PTS={"grass":{"entry":[[154,474],[634,914],[654,214],[134,954],[494,594]],"meadow":[[194,434],[634,954],[654,234],[134,934],[534,594]],"river":[[314,454],[654,934],[174,954],[654,214],[654,574]],"hill":[[374,614],[594,214],[654,954],[134,954],[194,234]]},"forest":{"entry":[[494,474],[134,954],[594,914],[134,214],[154,594]],"pine_path":[[154,474],[654,954],[654,214],[134,934],[514,594]],"glen":[[534,534],[134,934],[214,214],[634,954],[174,574]],"shrine":[[414,494],[134,954],[654,954],[654,214],[194,214]],"cabin":[[194,514],[554,954],[654,274],[134,934],[594,614]],"giant_tree":[[314,514],[614,954],[654,214],[134,874],[134,214]]},"marsh":{"entry":[[374,494],[654,954],[154,914],[654,214],[134,214]],"marsh":[[174,374],[654,894],[134,954],[654,214],[494,554]],"lotus":[[514,654],[154,274],[134,914],[594,214],[614,954]],"village":[[214,534],[654,954],[654,214],[134,954],[594,574]],"frog":[[514,474],[154,914],[654,954],[134,214],[174,554]],"log":[[534,474],[134,914],[654,954],[134,214],[154,574]]},"desert":{"entry":[[514,434],[134,954],[654,954],[134,214],[174,574]],"dunes":[[274,494],[634,954],[134,954],[654,254],[614,594]],"cactus":[[194,514],[654,854],[654,214],[134,954],[534,534]],"oasis":[[494,414],[134,954],[654,914],[134,214],[174,594]],"canyon":[[334,534],[654,894],[274,954],[534,214],[134,274]],"ruins":[[354,514],[654,914],[134,954],[654,214],[214,214]]},"snow":{"entry":[[494,434],[194,954],[654,874],[134,214],[174,554]],"forest":[[594,474],[134,954],[134,294],[634,954],[334,674]],"cabin":[[634,474],[134,954],[134,214],[614,954],[254,574]],"lake":[[414,434],[134,954],[654,914],[134,274],[154,634]],"cave_front":[[594,594],[134,214],[134,874],[534,214],[494,954]]},"sakura":{"entry":[[394,474],[654,954],[134,894],[654,214],[134,254]],"path":[[314,494],[654,914],[134,914],[594,214],[654,554]],"koi_pond":[[654,434],[134,954],[134,414],[574,934],[354,674]],"bamboo":[[354,494],[654,954],[134,914],[654,214],[134,214]],"teahouse":[[134,534],[654,874],[654,214],[214,954],[294,214]],"garden":[[314,474],[514,954],[654,214],[134,834],[654,614]],"pagoda":[[174,494],[654,914],[634,214],[134,954],[534,574]]}};/* 每張一般地圖 5 個候選點（離出口、植株點、道具點、NPC 至少 80px，從入口走得到；vm 產生） */
+const ROAM_PTS={"grass":{"entry":[[634,914],[494,594],[180,220],[180,860],[620,220]],"meadow":[[194,434],[534,594],[260,900],[560,220],[540,860]],"river":[[314,454],[600,860],[620,220],[620,540],[180,740]],"hill":[[374,614],[594,214],[194,234],[620,860],[180,900]]},"forest":{"entry":[[494,474],[594,914],[180,820],[180,220],[620,220]],"pine_path":[[514,594],[240,220],[180,900],[620,900],[180,520]],"glen":[[534,534],[214,214],[174,574],[400,900],[600,220]],"shrine":[[414,494],[194,214],[200,880],[620,860],[620,220]],"cabin":[[194,514],[594,614],[480,220],[300,900],[220,220]],"giant_tree":[[314,514],[620,900],[620,220],[220,880],[180,220]]},"marsh":{"entry":[[374,494],[180,900],[620,220],[620,760],[180,220]],"marsh":[[174,374],[494,554],[180,840],[620,220],[620,880]],"lotus":[[514,654],[594,214],[180,320],[180,900],[200,620]],"village":[[214,534],[594,574],[340,900],[440,220],[620,860]],"frog":[[514,474],[174,554],[440,900],[280,220],[180,840]],"log":[[534,474],[180,900],[180,220],[560,820],[220,620]]},"desert":{"entry":[[514,434],[174,574],[620,900],[220,220],[220,900]],"dunes":[[274,494],[614,594],[180,900],[540,220],[520,900]],"cactus":[[194,514],[534,534],[320,900],[380,220],[620,840]],"oasis":[[494,414],[174,594],[620,900],[180,220],[320,860]],"canyon":[[334,534],[534,214],[620,880],[280,900],[600,620]],"ruins":[[354,514],[214,214],[180,900],[620,220],[500,820]]},"snow":{"entry":[[494,434],[174,554],[620,900],[240,900],[220,220]],"forest":[[594,474],[334,674],[220,240],[620,900],[180,900]],"cabin":[[634,474],[254,574],[540,900],[360,220],[240,880]],"lake":[[414,434],[180,900],[620,880],[620,220],[180,600]],"cave_front":[[594,594],[534,214],[180,840],[180,340],[620,900]]},"sakura":{"entry":[[394,474],[620,900],[180,860],[620,220],[200,220]],"path":[[314,494],[594,214],[620,900],[180,900],[620,580]],"koi_pond":[[354,674],[620,220],[220,280],[620,520],[180,880]],"bamboo":[[354,494],[620,900],[180,880],[620,280],[180,220]],"teahouse":[[294,214],[560,900],[180,660],[620,440],[440,640]],"garden":[[314,474],[600,860],[180,900],[620,220],[620,540]],"pagoda":[[174,494],[634,214],[534,574],[260,900],[620,900]]}};/* 208.1：離下緣 180、左右 160 內的點拿掉，補到 5 個（可走、離物件 40、離出口／植株點／道具點／NPC 80，從入口走得到） *//* 每張一般地圖 5 個候選點（離出口、植株點、道具點、NPC 至少 80px，從入口走得到；vm 產生） */
 const roamCrops=bk=>((BIOMES[bk]&&BIOMES[bk].crops)||[['tomato',1]]).map(c=>Array.isArray(c)?c[0]:c).filter(c=>CROPS[c]);
 const ROAM={};let roamBk=null,roamCol=null,roamUnsub=null,roamBusy=false,roamChk=0;
 const roamColName=()=>typeof isTestMode==='function'&&isTestMode()?'roamers_test':'roamers';
@@ -7744,13 +7751,21 @@ function roamWatch(){try{const inR=scene==='explore'&&typeof regIn==='function'&
       if(prev&&!prev.takenBy&&d&&d.takenBy&&d.takenBy!==uid&&d.spawnAt===prev.spawnAt&&exBiome===bk&&regMap===d.map)toast(`發光的植株被 ${d.takenName||'別人'} 採走了`,3200);
       if(roamExpired(d))roamRespawn(bk);try{renderWorld()}catch(e){}},()=>{})}
   if(Date.now()-roamChk>30e3){roamChk=Date.now();if(roamExpired(ROAM[roamBk]))roamRespawn(roamBk)}}catch(e){}}
+/* 208.1：野外的角落（下緣 180 內＋左右 160 內）＝按鈕底下點不到 */
+const exCorner=(M,x,y)=>!!M&&y>(M.H||1100)-180&&(x<160||x>(M.W||800)-160);
 const roamHere=()=>{const d=ROAM[exBiome];return d&&!d.takenBy&&d.map===regMap&&!roamExpired(d)?d:null};
 function roamSVG(d){const bk=exBiome,crop=CROPS[d.crop]?d.crop:'tomato',x=Math.round(d.x),y=Math.round(d.y);let g;try{g=withSeed(hashStr('roamg|'+bk+'|'+d.spawnAt),()=>makeWild(crop,bk,false))}catch(e){g=makeWild(crop,bk,false)}
   const ph=phen(g,crop),cd=CROPS[crop],im=plantImgSVG(crop,'ripe',x,y,1),sz=cd.fs*sizeScale(ph.ab.size);
   const body=im?im.svg+plantFruitsSVG(crop,ph,x,y,im.w,im.h,1,1):`${bodySVG(cd.body,x,y,false,cd.fl)}<svg x="${f1(x+cd.fx-sz/2)}" y="${f1(y+cd.fy-sz*0.53)}" width="${f1(sz)}" height="${f1(sz*3.2/3)}" viewBox="-1.5 -1.6 3 3.2" stroke="none">${fruitInner(ph,1,crop)}</svg>`,hh=im?im.h:50;
   const sp=[0,1,2,3,4].map(k=>`<circle class="rmup" style="animation-delay:-${(k*0.62).toFixed(2)}s" cx="${x-16+k*8}" cy="${y-8-(k%2)*6}" r="${k%2?1.6:2.2}" fill="#FFF6C8"/>`).join('');
   return `<g><ellipse class="glw" cx="${x}" cy="${y-hh*0.45}" rx="${(hh*0.75).toFixed(1)}" ry="${(hh*0.7).toFixed(1)}" fill="url(#sglow)" pointer-events="none"/><ellipse cx="${x}" cy="${y-3}" rx="34" ry="12" fill="#FFE27A" opacity=".45" pointer-events="none"/>${shadow(x,y+1,19)}<g transform="translate(${x} ${y}) scale(1.1) translate(${-x} ${-y})">${body}</g><g pointer-events="none">${sp}</g><rect data-reg="roam" x="${x-30}" y="${y-hh*1.1-10}" width="60" height="${(hh*1.1+16).toFixed(1)}" fill="transparent" style="cursor:pointer"/></g>`}
-function roamTap(){const d=roamHere();if(!d)return;const m=curMe(),go=()=>roamTake(exBiome);if(Math.hypot(m.x-d.x,m.y-d.y)<70)go();else walkTo(d.x,d.y+14,go)}
+function roamTap(){const d=roamHere();if(!d)return;const m=curMe(),go=()=>roamTake(exBiome);if(Math.hypot(m.x-d.x,m.y-d.y)<90)go();else{const [tx,ty]=roamWalkPt(d);walkTo(tx,ty,go)}}
+/* 208.1：植株腳下被擋住時，走到周圍最近的可走點 */
+function roamWalkPt(d){let M=null;try{M=regCur()}catch(e){}if(!M||!regBlocked(M,d.x,d.y+14))return [d.x,d.y+14];for(let r=10;r<=140;r+=10)for(let a=0;a<16;a++){const t=Math.PI/2+a*Math.PI/8,x=d.x+Math.cos(t)*r,y=d.y+Math.sin(t)*r;if(!regBlocked(M,x,y))return [x,y]}return [d.x,d.y+14]}
+/* 208.1：撿取鍵也能採（90 內出現、100 外收起） */
+function roamBtnO(){if(scene!=='explore')return null;const d=roamHere();if(!d)return null;const me=curMe(),b=document.getElementById('pickBtn'),lim=b&&b._on&&String(b._k||'').startsWith('roam')?100:PICK_R;return Math.hypot(d.x-me.x,d.y-me.y)<=lim?{d:{id:'roam'+d.spawnAt,roam:1},n:1}:null}
+const roamArt=()=>'<circle cx="0" cy="-14" r="15" fill="#FFE27A" opacity=".45"/><path d="M0 0V-16" stroke="#3E7A2A" stroke-width="2.4" stroke-linecap="round"/><path d="M0-9C-9-10-12-17-11-21C-4-20-1-15 0-10ZM0-13C8-15 11-21 10-25C3-24 0-19 0-14Z" fill="#6DBB45" stroke="#2F5A1E" stroke-width="1.2"/><circle cx="0" cy="-21" r="5" fill="#FF6A5C" stroke="#7A2A20" stroke-width="1.2"/><path d="M10-27l1.3 3 3 1.3-3 1.3-1.3 3-1.3-3-3-1.3 3-1.3z" fill="#FFF6C8"/><path d="M-11-24l1 2.2 2.2 1-2.2 1-1 2.2-1-2.2-2.2-1 2.2-1z" fill="#FFF6C8"/>';
+let roamGoT=0;
 function roamDay(){const k=dayKey();if(!state.roam||state.roam.day!==k)state.roam={day:k,n:0};return state.roam}
 async function roamTake(bk){const R=roamDay(),test=isTestMode();if(!test&&R.n>=ROAM_DAY_MAX){toast(`今天已經採過 ${ROAM_DAY_MAX} 株發光的植株了`);return}
   if(typeof db==='undefined'||!uid){toast('要連上網路才能採');return}
@@ -7867,11 +7882,11 @@ function regEnter(id,from){
 function regPlants(bk,id,day){
   if(day==null){ensureEx();day=state.ex.day}const key='w|'+bk+'|'+id+'|'+day;/* 同一天、同一張圖全服相同 */const ck=key+(bk==='sakura'&&(REGION_MAPS[bk][id]||{}).sk&&sakuraContent()?'|S':'');let c=wpCache.get(ck);if(c)return c;
   const M=REGION_MAPS[bk][id],R=seededRnd(hashStr(key)),out=[];
-  M.spawns.forEach(([x,y],k)=>{const on=R()<0.55,crop=wpickR(BIOMES[bk].crops,R)[0],rel=R()<(M.rare||0.08),seed=Math.floor(R()*1e9);if(on)out.push({key:key+'|'+k,x,y,crop,rel,seed,bk})});
+  M.spawns.forEach(([x,y],k)=>{const on=R()<0.55,crop=wpickR(BIOMES[bk].crops,R)[0],rel=R()<(M.rare||0.08),seed=Math.floor(R()*1e9);if(on&&!exCorner(M,x,y))out.push({key:key+'|'+k,x,y,crop,rel,seed,bk})});
   /* 33.1 發光種子台座：每天一株，30% 帶一份專屬造型、5% 直接是專屬造型（見 wpGeno）。51.3：高草叢裡、樹洞正中央藏的那一株（hid，找到才看得到） */
   if(M.tg&&M.tg.length){const R3=seededRnd(hashStr('hid|'+key)),k=Math.floor(R3()*M.tg.length);out.push({key:key+'|h',x:M.tg[k][0],y:M.tg[k][1],crop:wpickR(BIOMES[bk].crops,R3)[0],rel:R3()<(M.rare||0.08),seed:Math.floor(R3()*1e9),bk,hid:1})}
   if(M.lightPuzzle&&M.rings){const R3=seededRnd(hashStr('hid|'+key));out.push({key:key+'|h',x:M.rings[0],y:M.rings[1],crop:wpickR(BIOMES[bk].crops,R3)[0],rel:R3()<0.15,seed:Math.floor(R3()*1e9),bk,hid:1})}
-  if(M.petal&&M.petal.length){const R3=seededRnd(hashStr('pw|'+key)),k=Math.floor(R3()*M.petal.length);out.push({key:key+'|pw',x:M.petal[k][0],y:M.petal[k][1],crop:wpickR(BIOMES[bk].crops,R3)[0],rel:R3()<(M.rare||0.08),seed:Math.floor(R3()*1e9),bk,hid:1,pw:1})}/* 82.4 花瓣風 */
+  if(M.petal&&M.petal.length){const PL=M.petal.filter(([x,y])=>!exCorner(M,x,y))/* 208.1 */,R3=seededRnd(hashStr('pw|'+key)),k=Math.floor(R3()*PL.length);out.push({key:key+'|pw',x:PL[k][0],y:PL[k][1],crop:wpickR(BIOMES[bk].crops,R3)[0],rel:R3()<(M.rare||0.08),seed:Math.floor(R3()*1e9),bk,hid:1,pw:1})}/* 82.4 花瓣風 */
   if(M.sk&&sakuraContent()){const R4=seededRnd(hashStr('sk|'+key));out.push({key:key+'|sk',x:M.sk[0],y:M.sk[1],crop:wpickR(BIOMES[bk].crops,R4)[0],rel:false,seed:Math.floor(R4()*1e9),bk,sk:1})}/* 82.5B 千年櫻樹下（花季限定） */
   if(REG_DEEP[bk]===id)for(const w of out)w.deep=1;/* 43.3 */
   wpCache.set(ck,out);return out;
@@ -7879,7 +7894,7 @@ function regPlants(bk,id,day){
 function regItems(bk,id,day){
   if(day==null){ensureEx();day=state.ex.day}const key='i|'+bk+'|'+id+'|'+day;let c=exItemCache.get(key);if(c)return c;
   const M=REGION_MAPS[bk][id],R=seededRnd(hashStr(key)),out=[];
-  M.items.forEach(([x,y],k)=>{const on=R()<0.5,t=wpickR(M.secret?[['acc',50],['mut',50]]:IW,R)[0];if(on)out.push({key:key+'|'+k,x,y,t})});
+  M.items.forEach(([x,y],k)=>{const on=R()<0.5,t=wpickR(M.secret?[['acc',50],['mut',50]]:IW,R)[0];if(on&&!exCorner(M,x,y))out.push({key:key+'|'+k,x,y,t})});
   exItemCache.set(key,out);return out;
 }
 function regCam(){
@@ -9844,7 +9859,7 @@ function matBagHTML(){const S=matsObj(),regs={};for(const b in MATS)(regs[MATS[b
 function openMat(k){if(!MATS[matBase(k)])return;sheet={mat:k};renderSheet();openSheetUI()}
 function matHTML(){const k=sheet.mat,M=MATS[matBase(k)];if(!M)return '<button class="btn" data-act="close">關閉</button>';
   const uses=RECIPES.filter(r=>r.mats.some(e=>e[0]===k||(e[2]||[]).includes(k)));
-  return `<div class="lot-top">${matIcon(k,56)}<div><div class="lot-name">${esc(matName(k))}</div><div class="meta">持有 ${matCount(k)} 個</div></div></div>${(()=>{const S=matSrc(k);return '<h3>取得方式</h3>'+(S.length?S.map((x,i)=>{const lk=myLv()<x.lv;return `<div class="mscard">${matSrcPic(x,44)}<span class="msmid"><b>${esc(x.who)}</b><span class="meta">${esc(BIOMES[x.reg]?BIOMES[x.reg].n:x.reg)}・${esc(x.mapN)}・Lv ${x.lv}</span><span><i class="mstag r-${x.rare}">${MAT_RARE_N[x.rare]}</i>${x.kind==='lord'?'<i class="mstag">領主</i>':x.kind==='sv'?'<i class="mstag">眷屬</i>':''}</span>${x.cond?'<span class="meta">要滿足條件才會出現</span>':''}</span><button type="button" class="btn small" data-mgo="${i}"${lk?' disabled':''}>${lk?`Lv ${x.lv} 才能去`:'帶我去'}</button></div>`}).join(''):'<p class="note">目前還沒有地方掉這個素材。</p>')})()}/* 185.3 */<h3>可以做什麼</h3>${uses.length?uses.map(r=>`<p class="note">・<b>${r.n}</b>：${r.mats.map(([x,c])=>esc(matName(x))+' ×'+c).join('、')}、${fruitReqTxt(r.fruit)}的果實 ×${r.fruit.n}、${r.coins} 金幣（到城鎮的道具行製作）</p>`).join(''):'<p class="note">目前還沒有用到它的配方。</p>'}<p class="note">素材不能賣，也不能上架市集。</p><button class="btn" data-act="close">關閉</button>`}
+  return `<div class="lot-top">${matIcon(k,56)}<div><div class="lot-name">${esc(matName(k))}</div><div class="meta">持有 ${matCount(k)} 個</div></div></div>${(()=>{const S=matSrc(k);return '<h3>取得方式</h3>'+(S.length?S.map((x,i)=>{const lk=myLv()<x.lv;return `<div class="mscard">${matSrcPic(x,44)}<span class="msmid"><b>${esc(x.who)}</b><span class="meta">${esc(BIOMES[x.reg]?BIOMES[x.reg].n:x.reg)}・${esc(x.mapN)}・Lv ${x.lv}</span><span><i class="mstag r-${x.rare}">${MAT_RARE_N[x.rare]}</i>${x.kind==='lord'?'<i class="mstag">領主</i>':x.kind==='sv'?'<i class="mstag">眷屬</i>':''}</span>${x.cond?'<span class="meta">要滿足條件才會出現</span>':''}</span><button type="button" class="btn small" data-mgo="${i}"${lk?' disabled':''}>${lk?`Lv ${x.lv} 才能去`:'帶我去'}</button></div>`}).join(''):'<p class="note">目前還沒有地方掉這個素材。</p>')})()}/* 185.3 */<h3>可以做什麼</h3>${uses.length?uses.map(r=>`<p class="note">・<b>${r.n}</b>：${r.mats.map(([x,c])=>esc(matName(x))+' ×'+c).join('、')}、${fruitReqTxt(r.fruit)}的果實 ×${r.fruit.n}、${r.coins} 金幣（到城鎮的道具行製作）</p>`).join(''):''}${(()=>{const wu=wpUpUses(k);return wu.length?`<p class="note">・<b>武器升階</b>：${wu.map(esc).join('、')}（到武器頁升階）</p>`:(uses.length?'':'<p class="note">目前還沒有用到它的配方。</p>')})()}<p class="note">素材不能賣，也不能上架市集。</p><button class="btn" data-act="close">關閉</button>`}
 /* ===== 185（20n）：素材的取得提示（楓之谷式） =====
    matSrc(k)：從 MATS／MON_MAP／SERVANTS／LORDS 自動算出所有來源 {kind:'mon'|'sv'|'lord', who, mon|art, reg, map, lv, rare}；
    製作畫面每一項素材一行 matRowHTML（持有／需要、最主要的來源、等級鎖），點了開「取得方式」小卡（sheet.msrc，蓋在原本的畫面上，關掉回原本）；
@@ -9868,7 +9883,7 @@ function matRowHTML(e,have,want){const k0=e[0],k=matSrc(k0).length?k0:((e[2]||[]
   const src=top?`<span class="msrc1">${matSrcPic(top,18)}<span>${esc(matSrcNm(top))}${S.length>1?`<em>等 ${S.length} 處</em>`:''}</span>${lk?`<i class="mslk" aria-label="Lv ${top.lv} 才能去">🔒Lv ${top.lv}</i>`:''}</span>`:'<span class="msrc1">還沒有地方掉</span>';
   return `<button type="button" class="crow mrow${ok?'':' short'}" data-msrc="${esc(k)}">${matIcon(k0,32)}<span><span class="mrn">${esc(matName(k0))}${alt}</span>${src}</span><b>${ok?'<i class="mok">✓</i>':''}${have}／${want}</b></button>`}
 function msrcHTML(){const k=sheet.msrc,S=matSrc(k);
-  let h=`<div class="lot-top">${matIcon(k,56)}<div><div class="lot-name">${esc(matName(k))}</div><div class="meta">持有 ${matCount(k)} 個</div></div></div><h3>取得方式</h3>`;
+  let h=`<div class="lot-top">${matIcon(k,56)}<div><div class="lot-name">${esc(matName(k))}</div><div class="meta">持有 ${matCount(k)} 個</div></div></div>${(()=>{const wu=wpUpUses(matBase(k));return wu.length?`<p class="note">用途：${wu.map(esc).join('、')}</p>`:''})()}<h3>取得方式</h3>`;/* 208.4 */
   h+=S.length?S.map((x,i)=>{const lk=myLv()<x.lv;return `<div class="mscard">${matSrcPic(x,44)}<span class="msmid"><b>${esc(x.who)}</b><span class="meta">${esc(BIOMES[x.reg]?BIOMES[x.reg].n:x.reg)}・${esc(x.mapN)}・Lv ${x.lv}</span><span><i class="mstag r-${x.rare}">${MAT_RARE_N[x.rare]}</i>${x.kind==='sv'?'<i class="mstag">眷屬</i>':x.kind==='lord'?'<i class="mstag">領主</i>':''}</span>${x.cond?'<span class="meta">要滿足條件才會出現</span>':''}${monDropsHTML(x)}</span><button type="button" class="btn small" data-msgo="${i}"${lk?' disabled':''}>${lk?`Lv ${x.lv} 才能去`:'帶我去'}</button></div>`}).join(''):'<p class="note">目前還沒有地方掉這個素材。</p>';
   return h+`<button class="btn" data-msx="1">返回</button>`}
 function msrcGo(i){const S=matSrc(sheet.msrc),x=S[i];if(!x||myLv()<x.lv)return;closeSheet();try{qGo({where:{bk:x.reg,map:x.map},hint:matSrcNm(x)})}catch(e){}}
@@ -9984,7 +9999,7 @@ function dropArt(d){const S=24;if(d.t==='coin')return `<image href="${iconSrc('c
   const b=matBase(d.k),M=MATS[b];if(!M)return '';const gold=matGold(d.k);
   if(!MAT_ICON[b]&&M.mon&&MON_DEF[M.mon]&&!MON_IMG[M.mon])return `<svg x="${-S/2}" y="${-S}" width="${S}" height="${S}" viewBox="0 0 40 40" overflow="visible">${monPhIcon(M.mon,M.reg,40,gold).replace(/^<svg[^>]*>|<\/svg>$/g,'')}</svg>`;
   const src=MAT_ICON[b]||monSrcB(M.reg,M.mon);return `<image href="${src}" x="${-S/2}" y="${-S}" width="${S}" height="${S}" preserveAspectRatio="xMidYMid meet"/>`}
-function dropSpawn(t,k,n,x,y){const L=dropLayer(),a=Math.random()*Math.PI*2,r=6+Math.random()*14,d={id:++dropSeq,t,k,n,x:x+Math.cos(a)*r,y:y+Math.sin(a)*r*0.6,t0:Date.now(),gold:t==='mat'&&matGold(k)};
+function dropSpawn(t,k,n,x,y){const L=dropLayer(),a=Math.random()*Math.PI*2,r=6+Math.random()*14,d={id:++dropSeq,t,k,n,x:x+Math.cos(a)*r,y:y+Math.sin(a)*r*0.6,t0:Date.now(),gold:t==='mat'&&matGold(k)};try{if(scene==='explore'){const M=regCur();if(exCorner(M,d.x,d.y))d.y=(M.H||1100)-182}}catch(e){}/* 208.1：不掉在角落（按鈕底下） */
   if(L){const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('transform',`translate(${d.x.toFixed(1)} ${d.y.toFixed(1)})`);
     g.innerHTML=`<ellipse class="gdg${d.gold?' gold':''}" cx="0" cy="0" rx="13" ry="4.5" fill="${d.gold?'#FFD54A':'#FFFFFF'}" opacity=".55"/><g class="gdb">${dropArt(d)}</g>`;L.appendChild(g);d.el=g}
   GDROP.push(d);return d}
@@ -9996,21 +10011,21 @@ function dropTake(d){const it=state.items||(state.items={});
 /* 181.1：飛向人物 0.25 秒再消失（CSS transform，SVG 屬性不能過渡） */
 function dropFly(d){const g=d.el;if(!g)return;d.el=null;try{const me=curMe();g.style.transform=`translate(${d.x.toFixed(1)}px,${d.y.toFixed(1)}px)`;g.removeAttribute('transform');void g.getBoundingClientRect();g.style.transition=`transform ${DROP_FLY_MS}ms ease-in,opacity ${DROP_FLY_MS}ms ease-in`;g.style.transform=`translate(${me.x.toFixed(1)}px,${(me.y-24).toFixed(1)}px) scale(.45)`;g.style.opacity='.2'}catch(e){}setTimeout(()=>{try{g.remove()}catch(e){}},DROP_FLY_MS+30)}
 function dropPick(r){const me=curMe();let n=0;for(let i=GDROP.length-1;i>=0;i--){const d=GDROP[i];if(Math.hypot(d.x-me.x,d.y-me.y)<=(r||PICK_R)){dropTake(d);GDROP.splice(i,1);n++}}if(n){try{sfx('pop',60);renderAll()}catch(e){}save()}try{dropTick()}catch(e){}return n}
-function dropTick(){if(!GDROP.length){dropBtnPaint(null);return}const now=Date.now(),me=curMe(),b=document.getElementById('pickBtn'),shown=!!(b&&b._on),lim=shown?PICK_HIDE_R:PICK_SHOW_R;let near=null,nd=1e9,cnt=0,took=0;
+function dropTick(){if(!GDROP.length){dropBtnPaint(roamBtnO());return}/* 208.1 */const now=Date.now(),me=curMe(),b=document.getElementById('pickBtn'),shown=!!(b&&b._on),lim=shown?PICK_HIDE_R:PICK_SHOW_R;let near=null,nd=1e9,cnt=0,took=0;
   for(let i=GDROP.length-1;i>=0;i--){const d=GDROP[i],age=now-d.t0;if(age>DROP_LIFE){try{d.el&&d.el.remove()}catch(e){}GDROP.splice(i,1);continue}
     if(d.el)d.el.classList.toggle('gdblink',age>DROP_LIFE-DROP_BLINK);const dd=Math.hypot(d.x-me.x,d.y-me.y);
     if(scene==='explore'&&dd<=AUTO_PICK_R){dropTake(d);GDROP.splice(i,1);took++;continue}/* 181.1：走過去自動撿 */
     if(dd<=lim){cnt++;if(dd<nd){nd=dd;near=d}}}
   if(took){try{sfx('pop',60);renderAll()}catch(e){}save()}
-  dropBtnPaint(near&&scene==='explore'?{d:near,n:cnt}:null)}
+  dropBtnPaint(near&&scene==='explore'?{d:near,n:cnt}:roamBtnO())}/* 208.1：掉落物優先，再來是發光的植株 */
 /* 181.1：按鈕看得到（120 內）但 90 內沒有東西 → 走過去，到 28 內自動撿（不會按了沒反應） */
-function dropPickBtn(){if(dropPick())return;const me=curMe();let near=null,nd=1e9;for(const d of GDROP){const dd=Math.hypot(d.x-me.x,d.y-me.y);if(dd<nd){nd=dd;near=d}}if(near)try{walkTo(near.x,near.y,null,true)}catch(e){}}
+function dropPickBtn(){if(dropPick())return;const me=curMe();{const d=scene==='explore'&&roamHere();if(d&&Math.hypot(d.x-me.x,d.y-me.y)<=100){if(Date.now()-roamGoT>1500){roamGoT=Date.now();roamTake(exBiome)}return}}/* 208.1 */let near=null,nd=1e9;for(const d of GDROP){const dd=Math.hypot(d.x-me.x,d.y-me.y);if(dd<nd){nd=dd;near=d}}if(near)try{walkTo(near.x,near.y,null,true)}catch(e){}}
 /* 181.1：按鈕 72px，中間畫最近那一件、下面「撿起」、2 件以上右上角「×N」；pointerdown 就撿（不等 click：iOS 一手按著搖桿時常常不送 click） */
 function dropBtnPaint(o){let b=document.getElementById('pickBtn');const on=!!o;
   if(!b){if(!on)return;b=document.createElement('button');b.id='pickBtn';b.type='button';b.setAttribute('aria-label','撿起附近的東西');b.innerHTML='<svg viewBox="-17 -31 34 34" aria-hidden="true"></svg><span class="pkt">撿起</span><b class="pkn" hidden></b>';
     b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(b.hidden)return;dropPickBtn()});b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation()});
     b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();dropPickBtn()}});document.body.appendChild(b)}
-  if(on){const k=o.d.id+'|'+o.n;if(b._k!==k){b._k=k;const sv=b.querySelector('svg'),nb=b.querySelector('.pkn');if(sv)sv.innerHTML=dropArt(o.d);if(nb){nb.hidden=o.n<2;nb.textContent='×'+o.n}b.setAttribute('aria-label',o.n>1?`撿起附近 ${o.n} 件東西`:'撿起附近的東西')}}
+  if(on){const k=o.d.id+'|'+o.n;if(b._k!==k){b._k=k;const sv=b.querySelector('svg'),nb=b.querySelector('.pkn');if(sv)sv.innerHTML=o.d.roam?roamArt():dropArt(o.d);{const tx=b.querySelector('.pkt');if(tx)tx.textContent=o.d.roam?'採集':'撿起'}if(nb){nb.hidden=o.n<2;nb.textContent='×'+o.n}b.setAttribute('aria-label',o.d.roam?'採集發光的植株':o.n>1?`撿起附近 ${o.n} 件東西`:'撿起附近的東西')}}
   if(b._on===on)return;b._on=on;b.hidden=!on;if(on){b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop')}else b._k=''}
 /* ===== 161 結束 ===== */
 function monDrop(m){const b=m.boss?1:0,c=MON_COIN[b],coins=Math.random()<MON_COIN_P[b]?c[0]+Math.floor(Math.random()*(c[1]-c[0]+1)):0,acc=Math.random()<MON_ACC[b];/* 105.10：普通 30% 掉 1–2 金幣、3% 加速劑；王一定掉 10–15、20% 加速劑 */
@@ -10517,6 +10532,7 @@ function handleTap(e,cx,cy){
   const w=screenToWorld(cx,cy),t=e&&e.target;
   if(buildMode){buildTap(w,t);return}
   {const n=npcAt(w.x,w.y);if(n){npcGo(n);return}}/* 148：NPC 優先於神之子、物件、地面 */
+  if(scene==='explore'){const d=roamHere();if(d&&Math.hypot(w.x-d.x,w.y-(d.y-26))*zk()<=56){roamTap();return}}/* 208.1：發光的植株點的範圍半徑 56（畫面像素） */
   if(ctrlMode==='joy'){
     const g2=t&&t.closest&&t.closest('[data-plot]'),st2=t&&t.closest&&t.closest('[data-stall]'),dg2=t&&t.closest&&t.closest('[data-decor]'),ie2=t&&t.closest&&t.closest('[data-item]');
     const we2=t&&t.closest&&t.closest('[data-wp]');
@@ -11879,6 +11895,11 @@ const FX_TGT_A=new Set(['thrust','gale','shadow','thousand','strafe']),FX_NO_TGT
    武器資料 weapons[i]：tier、st（星星造型，負數＝名品果實放的、造型加成 ×1.5）、sf（第 3 格失敗次數，每次 +10%）。
    副武器 state.wpn2（2-4 完成解鎖 state.wpn2On），野外 #wpSwap 換手（WP_SWAP_MS 不能攻擊）；技能冷卻各把各算（SKCW）。數字都在 WP_UP／WP_STAR_P／WP_TR_COIN。 ===== */
 const WP_UP={2:{lv:10,near:10,far:null,gold:0,ft:1,fn:10,c:200},3:{lv:20,near:10,far:['marsh',6],gold:0,ft:2,fn:8,c:500},4:{lv:30,near:15,far:['sakura',10],gold:1,ft:3,fn:5,c:1000},5:{lv:40,near:20,far:['desert',15],gold:3,ft:4,fn:3,c:3000},6:{lv:50,near:0,far:['snow',20],gold:5,ft:5,fn:1,c:10000}};
+/* 208.4：每階的素材照剛好打得到的那一區（2 草原、3 白樺林、4 潟湖、5 櫻花之丘、6 流金沙海），3 階起加那一區的眷屬素材；WP_UP 的 near／far／gold 不再用。
+   規格表裡 8 種舊怪的素材（鐵箍、陶片、薄鰭、環石、紅眼荊棘、樹皮面具、苔殼、網紋翼膜）現在沒有怪會掉，換成同一區掉得到的素材，舊的放在第三格當替代品（照 142.4 的做法） */
+const WP_UP2={tomato:{2:[['x_thunder_rock',10,['hoop']],['x_bloom_log',10,['shard']]],3:[['creekstone',12,['ringstone']],['x_silver_stone',4],['ravenfeather',2]],4:[['x_pearl_crab',15],['pearlplume',3],['heroncrest',1]],5:[['x_sakura_golem',18],['x_blossom_twig',8],['sakuramoss',4],['shrinebell',2]],6:[['x_sun_scarab',20],['x_obelisk_imp',10],['snakescale',5],['snakeeye',3]]},chili:{2:[['mane',10],['x_wind_boar',10,['fin']]],3:[['redspore',12,['redthorn']],['x_venom_fern',4],['ravenfeather',2]],4:[['x_fire_urchin',15],['pearlplume',3],['heroncrest',1]],5:[['x_wild_rose',18],['x_bamboo_rat',8],['sakuramoss',4],['shrinebell',2]],6:[['x_jackal_shade',20],['x_ammit',10],['snakescale',5],['snakeeye',3]]},strawberry:{2:[['bud',10],['x_bloom_log',10,['fin']]],3:[['fernbud',12],['x_frost_fern',4],['ravenfeather',2]],4:[['x_bloom_frog',15],['pearlplume',3],['heroncrest',1]],5:[['x_sakura_aphid',18],['x_bell_cricket',8],['sakuramoss',4],['shrinebell',2]],6:[['x_barrel_ball',20],['x_bell_scorpion',10],['snakescale',5],['snakeeye',3]]},eggplant:{2:[['xfur',10],['bud',10]],3:[['mothdust',12],['x_thunder_moth',4],['ravenfeather',2]],4:[['x_venom_snail',15,['batwing']],['pearlplume',3],['heroncrest',1]],5:[['x_dream_tapir',18],['x_night_tapir',8],['sakuramoss',4],['shrinebell',2]],6:[['x_sand_eye_worm',20],['x_crystal_scorpion',10],['snakescale',5],['snakeeye',3]]},corn:{2:[['hay',10],['x_wind_boar',10,['hoop']]],3:[['creekstone',12],['x_torrent_stone',4],['ravenfeather',2]],4:[['x_fiddler_crab',15],['pearlplume',3],['heroncrest',1]],5:[['x_bamboo_beetle',18],['x_glow_bamboo',8],['sakuramoss',4],['shrinebell',2]],6:[['x_coconut_hopper',20],['x_horned_lizard',10],['snakescale',5],['snakeeye',3]]},pumpkin:{2:[['hay',10],['twig',10]],3:[['rootlet',12],['x_shade_burl',4],['ravenfeather',2]],4:[['x_venom_snail',15],['pearlplume',3],['heroncrest',1]],5:[['x_old_sakura_spirit',18],['x_ripple_wraith',8],['sakuramoss',4],['shrinebell',2]],6:[['x_coffin_beetle',20],['x_jackal_shade',10],['snakescale',5],['snakeeye',3]]},broccoli:{2:[['gravel',10],['twig',10]],3:[['burl',12],['x_moss_stump',4],['ravenfeather',2]],4:[['bubshell',15],['pearlplume',3],['heroncrest',1]],5:[['x_root_crab',18],['x_sand_ripple',8],['sakuramoss',4],['shrinebell',2]],6:[['x_rock_hermit',20],['x_hoodoo_rock',10],['snakescale',5],['snakeeye',3]]},zucchini:{2:[['gravel',10],['xfur',10]],3:[['burl',12,['barkmask']],['x_mist_shroom',4],['ravenfeather',2]],4:[['x_thunder_urchin',15],['pearlplume',3],['heroncrest',1]],5:[['x_antlion',18],['x_white_rose',8],['sakuramoss',4],['shrinebell',2]],6:[['x_spine_beast',20],['x_pad_cactus',10],['snakescale',5],['snakeeye',3]]},melon:{2:[['x_thunder_rock',10,['shard']],['mane',10]],3:[['x_moss_stump',12,['mossshell']],['x_silver_stone',4],['ravenfeather',2]],4:[['x_leaf_frog',15],['pearlplume',3],['heroncrest',1]],5:[['x_glow_bamboo',18],['x_bamboo_beetle',8],['sakuramoss',4],['shrinebell',2]],6:[['x_sand_whale',20],['x_sun_scarab',10],['snakescale',5],['snakeeye',3]]}};
+const wpUp2=(c,t)=>((WP_UP2[c]||{})[t])||[];
+const wpUpUses=k=>{const o=[];for(const c in WP_UP2)for(const t in WP_UP2[c])for(const [m,n,al] of WP_UP2[c][t])if(m===k||(al||[]).includes(k))o.push(`${WEAPONS[c]?WEAPONS[c].n:c} 升 ${t} 階 ×${n}`);return o};
 const WP_STAR_P=t=>t<=2?0.8:t<=4?0.65:0.5,WP_STAR_FAIL=0.1,WP_TR_COIN=[0,100,350,850,2350,7350],WP_MH_K=1.5;
 const wpE=i=>weaponsArr()[i]||null;
 const wpTierOk=e=>Math.max(1,Math.min(6,(e&&e.tier)|0||1));
@@ -11903,15 +11924,11 @@ const wpFruitN=(c,t)=>fruitsArr().filter(f=>f.c===c&&(f.t||0)>=t).reduce((s,f)=>
 function wpUpNeed(e){const t=wpTierOk(e)+1,U=WP_UP[t];if(!U)return null;const N=wpNear(e),L=[];
   L.push({k:'stars',ok:(e.st||[]).length>=(t-1)*3,txt:`這一階 3 顆星都放滿（${Math.max(0,(e.st||[]).length-(t-2)*3)}／3）`});
   L.push({k:'lv',ok:myLv()>=U.lv,txt:`玩家等級 Lv ${U.lv}（你現在 Lv ${myLv()}）`});
-  if(U.near)for(const m of N)L.push({k:'mat',m:[m,U.near],have:matCount(m),want:U.near,ok:matCount(m)>=U.near});
-  if(U.far)L.push({k:'far',bk:U.far[0],have:wpFarCount(U.far[0]),want:U.far[1],ok:wpFarCount(U.far[0])>=U.far[1]});
-  if(U.gold){const g=[N[0]+'_g',U.gold,N.slice(1).map(x=>x+'_g')];L.push({k:'mat',m:g,have:mcnt(g),want:U.gold,ok:mcnt(g)>=U.gold})}
+  for(const g of wpUp2(e.crop,t))L.push({k:'mat',m:g,have:mcnt(g),want:g[1],ok:mcnt(g)>=g[1]});/* 208.4（舊素材當替代品也算） */
   L.push({k:'fruit',t:U.ft,have:wpFruitN(e.crop,U.ft),want:U.fn,ok:wpFruitN(e.crop,U.ft)>=U.fn});
   L.push({k:'coin',have:state.coins||0,want:U.c,ok:(state.coins||0)>=U.c});return {t,U,L,ok:L.every(x=>x.ok)}}
 function wpUpDo(i){const e=wpE(i);if(!e)return {err:'沒有這把武器'};const R=wpUpNeed(e);if(!R)return {err:'已經是最高階了'};if(!R.ok)return {err:R.L.find(x=>!x.ok).txt||'材料不夠'};const U=R.U,N=wpNear(e),S=matsObj();
-  if(U.near)for(const m of N){S[m]-=U.near;if(S[m]<=0)delete S[m]}
-  if(U.far){let left=U.far[1];for(const k of wpFarKeys(U.far[0]).sort((a,b)=>matCount(b)-matCount(a))){const m=Math.min(left,matCount(k));if(m){S[k]-=m;if(S[k]<=0)delete S[k];left-=m}if(!left)break}}
-  if(U.gold)mtake([N[0]+'_g',U.gold,N.slice(1).map(x=>x+'_g')],U.gold);
+  for(const g of wpUp2(e.crop,R.t))mtake(g,g[1]);/* 208.4 */
   {let left=U.fn;const F=fruitsArr();for(const f of F.filter(f=>f.c===e.crop&&(f.t||0)>=U.ft).sort((a,b)=>(a.t||0)-(b.t||0))){const m=fruitTake(f,Math.min(left,fCount(f)));left-=m;if(!left)break}for(let k=F.length-1;k>=0;k--)if(!fCount(F[k]))F.splice(k,1)}
   state.coins-=U.c;const t0=e.tier;e.tier=R.t;save();try{pushPos(true)}catch(x){}
   try{const me=curMe();fxT('tierUp',me.x,me.y,fxCommon())}catch(x){}/* 191 */
@@ -12020,7 +12037,7 @@ function atkRingPaint(){try{const T=atkLockT();let g=document.getElementById('at
    左上：頭像（名字、等級、血條、經驗條、金幣）→ 任務提示（上 66）→ 功能鍵直排（背包、任務、神之子、選單；左 8、上 104，每顆 38、間距 6）；隊伍名單在直排右邊（左 54）。
    右上：小地圖（野外）／地圖按鈕（農場、城鎮），點小地圖＝地圖面板。上方中間：主、僕人的血條。右下：戰鬥鍵弧形（野外、秘境）；農場的綠色大按鈕和翻滾同一位置。
    回家、幫忙照顧這類情境按鈕在 #ctxBar（右邊、弧形上方直排）。位置都在 :root 的 --h188-* 變數（CSS 在最後的「188」區塊）。 ===== */
-function hud188(){try{const rb=document.getElementById('rbar'),mn=document.getElementById('ibMenu');if(rb&&mn&&mn.parentNode!==rb)rb.appendChild(mn);
+function hud188(){try{const rb=document.getElementById('rbar'),mn=document.getElementById('ibMenu');if(rb&&mn&&mn.parentNode!==rb)rb.appendChild(mn);{const mp=document.getElementById('mapBtn');if(rb&&mp&&rb.firstElementChild!==mp)rb.prepend(mp)}/* 208.3 */
   let cx=document.getElementById('ctxBar');if(!cx){cx=document.createElement('div');cx.id='ctxBar';document.body.appendChild(cx)}for(const id of ['ibHome','ibHelp']){const b=document.getElementById(id);if(b&&b.parentNode!==cx)cx.appendChild(b)}
   document.body.classList.add('h188')}catch(e){}}
 /* ===== 188 結束 ===== */

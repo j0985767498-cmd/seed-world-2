@@ -28,7 +28,7 @@ const fruit=(crop,sp,t,n)=>({c:crop,k:`p${sp}|red|-`,t,q:{'2|1':n}});
 /* 升階條件 */
 {const e={crop:'tomato',tier:1,st:[2,4],sf:0};st.weapons=[e];st.mats={};st.fruits=[];let R=T.wpUpNeed(e);ok(R.t===2&&!R.ok&&!R.L.find(x=>x.k==='stars').ok,'upgrade to 2: blocked until 3 stars');
   e.st=[2,4,2];st.lv=5;R=T.wpUpNeed(e);ok(!R.L.find(x=>x.k==='lv').ok,'… and player level 10');
-  st.lv=60;const W=T.WEAPONS.tomato;for(const [m] of W.mats)st.mats[m]=10;st.fruits=[fruit('tomato',0,1,10)];const c0=st.coins;R=T.wpUpDo(0);
+  st.lv=60;const W={mats:vm.runInContext('WP_UP2.tomato[2]',ctx)};for(const [m,n] of W.mats)st.mats[m]=n;/* 208.4：升階素材改讀 WP_UP2 */st.fruits=[fruit('tomato',0,1,10)];const c0=st.coins;R=T.wpUpDo(0);
   ok(R.ok&&e.tier===2&&e.st.length===3&&st.coins===c0-200&&!st.fruits.length&&W.mats.every(([m])=>!st.mats[m]),'upgrade to 2: materials, 10 少見+ fruits, 200 coins taken; stars kept; tier 2');
   ok(R.learn==='十字斬','… 「學會了：十字斬」');}
 /* 轉移 */

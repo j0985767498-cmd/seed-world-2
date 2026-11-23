@@ -2166,7 +2166,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-21n';
+const BUILD='2026-11-21o';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -6435,10 +6435,31 @@ function townSignSVG(b){const a=TOWN_ART[b.k],dh=a[1],w=dh*TOWN_IMG[a[0]][0]/TOW
 const NPC_IMG={tu:[148,260],mei:[150,260],mo:[128,260],kai:[134,260],camel:[197,260],wood:[182,260],shepherd:[170,260],fisher:[215,260],ice:[187,260]},NPC_H=67,npcSt={};
 const npcSrc=id=>`assets/char/npc/npc_${id}.png?v=${BUILD}`;
 function npcReady(id){if(!NPC_IMG[id])return false;const st=npcSt[id];if(st===1)return true;if(st==null){npcSt[id]=0;try{const im=new Image();im.onload=()=>{npcSt[id]=1;try{if(scene==='market')renderWorld()}catch(e){}};im.onerror=()=>{npcSt[id]=-1};im.src=npcSrc(id)}catch(e){npcSt[id]=-1}}return false}
-function npcBodySVG(p){if(!npcReady(p.id))return `<g class="brth">${avatarSVG(p.av,false,{view:'front'})}${p.glasses&&avUseV3(avNorm(p.av))?NPC_GLASSES:''}</g>`;
+/* ===== 211（21o）：NPC 換成新的人物圖（第一批：阿土伯、維恩、提歐神父）=====
+   assets/npc/manifest.json（cell、foot、npcs）＋ <id>/stand.png（5 格，欄＝方向，和玩家 char3 同規格）＋ <id>/face_<表情>.png。
+   地圖上：縮放和玩家的新版人物一樣（C3_HU/C3.H，外面同樣 ×1.15）；玩家在 120 以內轉向玩家（dirIdx → C3_DIR），離開回正面；方向有變才重畫（npc2Tick）。圖沒載好照舊用換裝外觀。
+   對話頭像：vnPortrait 用 face_<表情>.png；台詞前面加 {f:angry} 這種標記指定表情（只管那一句），沒寫就 normal。 ===== */
+const NPC2_ID={tu:'atubo',wien:'wein',theo:'theo'};let NPC2_MF=null;const NPC2_ST={},NPC2_IM={};
+const npc2Src=id=>`assets/npc/${id}/stand.png?v=${BUILD}`;
+function npc2Boot(){try{fetch('assets/npc/manifest.json?v='+BUILD).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{NPC2_MF=j;for(const k in NPC2_ID){const id=NPC2_ID[k];if(!j.npcs||!j.npcs[id])continue;NPC2_ST[id]=0;const im=new Image();NPC2_IM[id]=im;/* 留住參考（Safari 會回收） */
+    im.onload=()=>{NPC2_ST[id]=1;try{if(scene==='market'||scene==='explore')renderWorld()}catch(e){}};im.onerror=()=>{NPC2_ST[id]=-1};im.src=npc2Src(id)}}).catch(()=>{})}catch(e){}}
+const npc2Ready=pid=>!!NPC2_ID[pid]&&NPC2_ST[NPC2_ID[pid]]===1;
+/* 方向：玩家在 120 以內轉向玩家，否則正面 */
+function npc2Dir(x,y){try{const m=curMe();if(m&&Math.hypot(m.x-x,m.y-y)<=120)return C3_DIR[dirIdx(m.x-x,m.y-y)]||[0,0]}catch(e){}return [0,0]}
+function npc2SVG(p,x,y){const M=NPC2_MF||{},cell=M.cell||[128,192],ft=M.foot||[64,157],[col,mir]=npc2Dir(x,y),k=C3_HU/C3.H;
+  return `<ellipse cx="0" cy="0" rx="13" ry="3.6" fill="rgba(60,40,20,.24)"/><g transform="scale(${f3(mir?-k:k)} ${f3(k)}) translate(${-ft[0]} ${-ft[1]})"><svg x="0" y="0" width="${cell[0]}" height="${cell[1]}" viewBox="${col*cell[0]} 0 ${cell[0]} ${cell[1]}" overflow="hidden"><image href="${npc2Src(NPC2_ID[p.id])}" width="${cell[0]*5}" height="${cell[1]}"/></svg></g>`}
+/* 方向有變才重畫 */
+let npc2Last='';
+function npc2Tick(){try{let L=[];if(scene==='market')L=townNpcs().filter(p=>npc2Ready(p.id)).map(p=>p.id+npc2Dir(p.x,p.y).join(''));
+  else if(scene==='explore')L=REG_NPCS.filter(r=>r.bk===exBiome&&r.map===regMap&&npc2Ready(r.id)&&(!r.show||r.show())).map(r=>r.id+npc2Dir(r.x,r.y).join(''));
+  const k=scene+'|'+L.join(',');if(k!==npc2Last){const was=npc2Last;npc2Last=k;if(was&&L.length)renderWorld()}}catch(e){}}
+/* 對話頭像 */
+function npc2Face(id,emo){const M=NPC2_MF&&NPC2_MF.npcs&&NPC2_MF.npcs[id],ok=M&&(M.faces||[]).includes(emo)?emo:'normal';return `assets/npc/${id}/face_${ok}.png?v=${BUILD}`}
+/* ===== 211 結束 ===== */
+function npcBodySVG(p,x,y){if(npc2Ready(p.id)&&x!=null)return npc2SVG(p,x,y);/* 211 */if(!npcReady(p.id))return `<g class="brth">${avatarSVG(p.av,false,{view:'front'})}${p.glasses&&avUseV3(avNorm(p.av))?NPC_GLASSES:''}</g>`;
   const [w,h]=NPC_IMG[p.id],H=NPC_H/1.15,W=H*w/h;return `<ellipse cx="0" cy="0" rx="${f1(W*0.36)}" ry="3.4" fill="rgba(60,40,20,.22)"/><g class="npcb"><image href="${npcSrc(p.id)}" x="${f1(-W/2)}" y="${f1(-H)}" width="${f1(W)}" height="${f1(H)}"/></g>`}
 const townNpcs=()=>TOWN_NPC.filter(p=>(!p.cond||p.cond())&&(p.map||'plaza')===(typeof townMap==='undefined'?'plaza':townMap));/* 207：室內的 NPC 只在那一張 *//* 116.2：有出現條件的 NPC */
-function townNpcSVG(p){return `<g transform="translate(${p.x} ${p.y}) scale(1.15)" pointer-events="none">${npcBodySVG(p)}${nameTag(p.n)}${qMarkSVG(qMarkFor(p.id))}${false?'<g><circle cx="0" cy="-80" r="8" fill="#FFF6DE" stroke="#C0392B" stroke-width="1.6"/><text x="0" y="-75.5" text-anchor="middle" font-size="12" font-weight="700" fill="#C0392B">!</text></g>':''}</g>`}/* 43.1：有故事可以接時頭上有「！」 */
+function townNpcSVG(p){return `<g transform="translate(${p.x} ${p.y}) scale(1.15)" pointer-events="none">${npcBodySVG(p,p.x,p.y)}${nameTag(p.n)}${qMarkSVG(qMarkFor(p.id))}${false?'<g><circle cx="0" cy="-80" r="8" fill="#FFF6DE" stroke="#C0392B" stroke-width="1.6"/><text x="0" y="-75.5" text-anchor="middle" font-size="12" font-weight="700" fill="#C0392B">!</text></g>':''}</g>`}/* 43.1：有故事可以接時頭上有「！」 */
 /* 40.1：墨先生的眼鏡（正面，眼睛約在 (-3.6,-37.7)、(4,-37.7)） */
 const NPC_GLASSES='<g fill="rgba(255,255,255,.18)" stroke="#4A3020" stroke-width=".75"><circle cx="-3.6" cy="-37.6" r="2.7"/><circle cx="4" cy="-37.6" r="2.7"/><path d="M-0.9 -37.9 Q0.2 -38.6 1.3 -37.9" fill="none"/></g>';
 const townRing=(x,y)=>`<ellipse cx="${x}" cy="${y}" rx="30" ry="9" fill="none" stroke="var(--mustard)" stroke-width="3" stroke-dasharray="6 4" pointer-events="none"/>`;
@@ -6571,7 +6592,7 @@ function townMove(m,dx,dy){
   {const e=regExitAt(M,nx,ny);if(e){if(e.to==='farm')goFarm();else townMapGo(e.to);return}}/* 206：往菜圃、回廣場、出小木屋 */
   if(regBlocked(M,m.x,m.y)){if(!(nx<M.B.x0||nx>M.B.x1||ny<M.B.y0||ny>M.B.y1)){m.x=nx;m.y=ny}return}
   if(!regBlocked(M,nx,ny)){m.x=nx;m.y=ny}else if(!regBlocked(M,nx,m.y))m.x=nx;else if(!regBlocked(M,m.x,ny))m.y=ny;
-  townSubTick();/* 206／207：門口的按鈕 */
+  townSubTick();/* 206／207：門口的按鈕 */npc2Tick();/* 211 */
 }
 function townNearest(m){if(townMap!=='plaza')return null;/* 206：子地圖沒有攤位、建築、NPC */
   let best=null,bd=1e9;
@@ -7885,7 +7906,7 @@ function regArrival(bk,id,from){
   if(e.door||e.trig)return e.arrive.slice();
   return e.side==='n'?[e.c,B.y0+18]:e.side==='s'?[e.c,B.y1-18]:e.side==='w'?[B.x0+18,e.c]:[B.x1-18,e.c];
 }
-function regMove(m,dx,dy){
+function regMove(m,dx,dy){npc2Tick();/* 211 */
   if(regBusy||lordKoOn())return;const M=regCur(),nx=m.x+dx,ny=m.y+dy;
   const ex=regExitAt(M,nx,ny);if(ex){regGo(ex);return}
   if(regBlocked(M,m.x,m.y)){if(!(nx<M.B.x0||nx>M.B.x1||ny<M.B.y0||ny>M.B.y1)){m.x=nx;m.y=ny}return}/* 萬一卡在障礙裡，讓角色走出來 */
@@ -12381,7 +12402,7 @@ function celShow(o){celOpen=true;sfx('fan');setTimeout(()=>sfx('sparkle'),450);c
     close();if(k==='go'&&o.go&&o.go.fn)setTimeout(()=>{try{o.go.fn()}catch(x){}},240)});
   document.body.appendChild(el);try{el.querySelector('.cel-ok').focus({preventScroll:true})}catch(e){}}
 function noteFlush(){try{if(!noteQ.length||uiBusy())return;const n=noteQ.shift();if(n&&n.cel){celShow(n.cel);return}if(n&&n.m96){sheet={m96:n.m96};renderSheet();openSheetUI();return}sheet=typeof n==='string'?{note:n}:{note:n.h,brag:n.brag};renderSheet();openSheetUI()}catch(e){}}
-function npcFaceHTML(p){const d=NPC_IMG[p.id];if(!d||npcSt[p.id]===-1)return '';npcReady(p.id);const hh=84,k=hh/(d[1]*0.55),w=Math.round(d[0]*k);return `<span style="flex:none;width:${w}px;height:${hh}px;overflow:hidden;display:block"><img src="${npcSrc(p.id)}" alt="" aria-hidden="true" style="display:block;width:${w}px;height:${Math.round(d[1]*k)}px"></span>`}
+function npcFaceHTML(p){if(NPC2_ID[p.id]&&NPC2_ST[NPC2_ID[p.id]]!==-1&&NPC2_MF)return `<span style="flex:none;width:84px;height:84px;display:block"><img src="${npc2Face(NPC2_ID[p.id],'normal')}" alt="" aria-hidden="true" style="display:block;width:84px;height:84px;object-fit:contain"></span>`;/* 211 */const d=NPC_IMG[p.id];if(!d||npcSt[p.id]===-1)return '';npcReady(p.id);const hh=84,k=hh/(d[1]*0.55),w=Math.round(d[0]*k);return `<span style="flex:none;width:${w}px;height:${hh}px;overflow:hidden;display:block"><img src="${npcSrc(p.id)}" alt="" aria-hidden="true" style="display:block;width:${w}px;height:${Math.round(d[1]*k)}px"></span>`}
 /* ===== 94（16y）：介面文字精簡的小元件 =====
    qh(說明)：放在一行字後面的「？」，點了在下面展開一段說明，再點收起（預設收起）。
    對白分頁：文字裡用「｜」分頁；容器帶 data-pg，一次只顯示一頁，「下一句」看下一頁；還沒看完時 .pgw 會把後面的按鈕藏起來。 */
@@ -12410,13 +12431,13 @@ function vnWho(name){name=String(name||'').trim();if(!name)return null;if(name==
   for(const k of FY_KEYS){if(fyN(k)===name||FY_PID[k]===name)return {kind:'fy',who:k}}return {kind:'npc',who:null,name}}
 function vnParse(text,def){const out=[];let cur=def||{kind:'narr'},emo='normal';
   for(let raw of String(text).split('｜')){raw=raw.trim();if(!raw)continue;const m=/^([^：:（(]{1,8})(?:[（(](笑|嚴肅)[）)])?[：:](.*)$/.exec(raw);
-    if(m){const w=vnWho(m[1]);if(w){cur=w;emo=VN_EMO[m[2]]||'normal';raw=m[3].trim()}}out.push({...cur,emo,text:t201(raw)})}return out}
+    if(m){const w=vnWho(m[1]);if(w){cur=w;emo=VN_EMO[m[2]]||'normal';raw=m[3].trim()}}let e1=emo;{const f=/^\{f:(\w+)\}/.exec(raw);if(f){e1=f[1];raw=raw.slice(f[0].length)}}/* 211 */out.push({...cur,emo:e1,text:t201(raw)})}return out}
 function vnName(pg){if(pg.kind==='narr')return '';if(pg.kind==='fy')return fyN(pg.who);const p=TOWN_NPC.find(q=>q.id===pg.who);return p?p.n:(pg.name||'')}
 /* 頭像：正式圖 assets/portrait/<id>_<表情>.png → normal → 替代（NPC 全身圖上 55%、神之子裁頭到胸口、主與僕人用 147 的頭像） */
 function vnFallback(pg){if(pg.kind==='fy'){const f=fyMine()[pg.who]||{evo:0},st=fyStg(f),src=fy2Src(pg.who,st),t=(FY_CROP2[pg.who]||[0.05,0.05,0.05])[st-1],hh=0.3,W=420/424/hh*100;return `<div class="vnfb fy" style="background-image:url('${src}');background-size:${W.toFixed(1)}% auto;background-position:50% ${(t/(1-hh)*100).toFixed(1)}%"></div>`}
   const p=TOWN_NPC.find(q=>q.id===pg.who);if(!p)return '';if(NPC_IMG[p.id]&&npcSt[p.id]!==-1)return `<div class="vnfb npc"><img src="${npcSrc(p.id)}" alt=""></div>`;
   return `<div class="vnfb av"><svg viewBox="-19 -60 38 34" width="150" height="134" aria-hidden="true">${avatarSVG(p.av,false,{view:'front'})}</svg></div>`}
-function vnPortrait(pg){if(!pg||pg.kind==='narr')return '';const pid=pg.kind==='fy'?FY_PID[pg.who]:VN_PID[pg.who]||pg.who;if(!pid)return vnFallback(pg);
+function vnPortrait(pg){if(!pg||pg.kind==='narr')return '';if(pg.kind==='npc'&&NPC2_ID[pg.who]){const id=NPC2_ID[pg.who];return `<div class="vnpor"><img src="${npc2Face(id,pg.emo||'normal')}" alt="" data-fb2="${npc2Face(id,'normal')}" onerror="vnImgFail(this)"><div class="vnalt" hidden>${vnFallback(pg)}</div></div>`}/* 211 */const pid=pg.kind==='fy'?FY_PID[pg.who]:VN_PID[pg.who]||pg.who;if(!pid)return vnFallback(pg);
   return `<div class="vnpor"><img src="assets/portrait/${pid}_${pg.emo||'normal'}.png?v=${BUILD}" alt="" data-fb2="assets/portrait/${pid}_normal.png?v=${BUILD}" onerror="vnImgFail(this)"><div class="vnalt" hidden>${vnFallback(pg)}</div></div>`}
 function vnImgFail(im){try{const f=im.getAttribute('data-fb2');if(f&&im.src.indexOf('_normal.')<0){im.removeAttribute('data-fb2');im.src=f;return}im.onerror=null;const par=im.parentNode,a=par&&par.querySelector('.vnalt');im.remove();if(a)a.hidden=false}catch(e){}}/* 先拿到外框再拿掉圖 */
 let VN=null;
@@ -12542,12 +12563,12 @@ const MQ2=[
  /* 201（21m）：序章、第一章照《第一季劇情任務 v3》。格數和舊的一樣（0-1～1-5 共 9 格），舊存檔的位置不用動；紅番茄併進 1-1，0-3 改成城郊菜圃 */
  {id:'0-1',ch:0,npc:'theo',t:'醒來的地方',tgt:'spring',hint:'和提歐神父說話 → 看看大殿裡的祭壇',open:'醒了嗎？別急，慢慢來。｜這裡是穗光教會。是我們用召喚的魔法把你帶來的。｜沒先問過你的意思，真的很抱歉。｜但我們已經沒有別的辦法了。｜四十幾年前，九位神之子變回了果實。｜從那之後，魔獸一年比一年不對勁。｜我們試了四十幾年，研究所的維恩所長也試了，｜叫不醒任何一位。｜四十幾年前來過的渡界者，懂得怎麼讓作物變樣。｜所以，我們把希望放在你身上。｜祭壇上的清單，就是叫醒神之子的方法。｜先去農會拿種子吧，老李會照顧你。',done:'',rw:{},ok:()=>!!state.mq2.alt},
  {id:'0-2',ch:0,npc:'li',t:'農會',tgt:'npc',hint:'到農會找老李拿種子 → 回農場種下 → 收成',open:'渡界者大人！種子拿去，鋤頭也拿去！｜翻土、澆水、收成，留種再種，就這樣！｜{名}：如果想讓果實長出條紋，或把兩種顏色合在一起呢？｜農會老李：條紋？合在一起？｜果實長怎樣，看女神賞臉跟天氣啦。收什麼種什麼，規矩！｜提歐神父：傳統的做法裡確實沒有這些。｜你來自不同的地方，或許能找到自己的方法。先去農場試試吧。',done:'三顆果實、一包種子，一株就這麼多。｜果實拿去用，種子留著下次種。收什麼種什麼！',rw:{c:100,deco:'scarecrow'},ok:()=>!!state.mq2.f.hv,acc:()=>mq2Seed()},
- {id:'0-3',ch:0,npc:'tu',t:'城郊菜圃',tgt:'npc',hint:'去城外走走：城鎮西邊的城郊菜圃',open:'{名}：（自言自語）光靠留種，清單要湊到什麼時候……｜{名}：得挑有隱性特徵的親本來配才行。｜阿土伯：兩株一模一樣的東西種在一起，種一百年也一樣啦。｜這裡的人連花粉怎麼傳都不知道。｜跟他們講挑親本，還以為你在唸咒。｜……等等。你剛剛說「隱性特徵」？｜這個詞，你從哪聽來的？｜{名}：我本來就不是這個世界的人。以前多少學過一點遺傳。｜阿土伯：……果然。又一個被那群神棍拉進來的倒楣鬼。｜聽好。我只是個在城外種菜的老頭，跟農會沒關係。｜你會什麼，別在城裡到處講。｜尤其是教會那些笑面虎，還有研究所那幫人。｜{名}：教會不是希望我們幫忙嗎？｜阿土伯：幫忙？知道得太多、露得太快，｜怎麼死的都不知道。｜想把那張清單種出來，就趁沒人的時候過來。｜老頭子教你幾招。別把我抖出去。',done:'',rw:{acc:3},ok:()=>true},
- {id:'0-4',ch:0,npc:'wien',t:'所長來訪',tgt:'npc',hint:'去分子育種研究所找所長維恩',open:'你就是新來的渡界者吧？我是分子育種研究所的維恩。｜有空來研究所坐坐。',done:'',tip:'生長加速劑：用一次，少等 10 分鐘。',rw:{acc:3},ok:()=>true},
+ {id:'0-3',ch:0,npc:'tu',t:'城郊菜圃',tgt:'npc',hint:'去城外走走：城鎮西邊的城郊菜圃',open:'{名}：（自言自語）光靠留種，清單要湊到什麼時候……｜{名}：得挑有隱性特徵的親本來配才行。｜阿土伯：{f:angry}兩株一模一樣的東西種在一起，種一百年也一樣啦。｜{f:angry}這裡的人連花粉怎麼傳都不知道。｜{f:angry}跟他們講挑親本，還以為你在唸咒。｜……等等。你剛剛說「隱性特徵」？｜這個詞，你從哪聽來的？｜{名}：我本來就不是這個世界的人。以前多少學過一點遺傳。｜阿土伯：……果然。又一個被那群神棍拉進來的倒楣鬼。｜聽好。我只是個在城外種菜的老頭，跟農會沒關係。｜你會什麼，別在城裡到處講。｜尤其是教會那些笑面虎，還有研究所那幫人。｜{名}：教會不是希望我們幫忙嗎？｜阿土伯：{f:angry}幫忙？知道得太多、露得太快，｜{f:angry}怎麼死的都不知道。｜想把那張清單種出來，就趁沒人的時候過來。｜老頭子教你幾招。別把我抖出去。',done:'',rw:{acc:3},ok:()=>true},
+ {id:'0-4',ch:0,npc:'wien',t:'所長來訪',tgt:'npc',hint:'去分子育種研究所找所長維恩',open:'你就是新來的渡界者吧？我是分子育種研究所的維恩。｜{f:smile}有空來研究所坐坐。',done:'',tip:'生長加速劑：用一次，少等 10 分鐘。',rw:{acc:3},ok:()=>true},
  {id:'1-1',ch:1,npc:'li',t:'紅色和黃色的番茄',tgt:'explore',hint:'獻上紅色番茄 → 去翠風草原找黃色的番茄，帶種子回來種 → 獻上 3 顆',open:'清單上的黃色番茄？田裡沒有，草原上黃的倒是多！｜野外的植物可以直接採種子，帶回來種就是你的了。｜紅的你已經有啦，先拿去祭壇獻上吧！',done:'去草原的路上小心啊，魔獸最近凶得很。',rw:{c:100},ok:()=>(altN(0)&&altN(1))||fyHas(mq2First())},
- {id:'1-2',ch:1,npc:'tu',t:'黃加紅',tgt:'farm',hint:'把黃番茄的花粉拍到紅番茄上 → 種出它們的孩子 → 獻上 3 顆',open:'黃加紅？城裡那些人只會收什麼種什麼。｜把黃番茄的花粉拍到紅番茄上，種出它們的孩子。｜配出來不一樣，才有意思。',done:'全部都是同一個顏色？哼，看到沒。｜配出來不一樣，才有意思。',rw:{c:150},ok:()=>altN(2)||fyHas(mq2First())},
+ {id:'1-2',ch:1,npc:'tu',t:'黃加紅',tgt:'farm',hint:'把黃番茄的花粉拍到紅番茄上 → 種出它們的孩子 → 獻上 3 顆',open:'黃加紅？城裡那些人只會收什麼種什麼。｜把黃番茄的花粉拍到紅番茄上，種出它們的孩子。｜{f:smile}配出來不一樣，才有意思。',done:'全部都是同一個顏色？哼，看到沒。｜{f:smile}配出來不一樣，才有意思。',rw:{c:150},ok:()=>altN(2)||fyHas(mq2First())},
  {id:'1-3',ch:1,npc:'mei',t:'形狀不一樣',tgt:'npc',hint:'拿 3 顆番茄和小莓姊換種子 → 種出來 → 獻上 3 顆',open:'哈囉～你就是新來的渡界者對吧？｜我家後院的番茄形狀跟別人不一樣喔。拿 3 顆你種的來，我跟你換種子！',done:'以後想要什麼特別的，也可以來找我換～',rw:{c:100,fav:['mei',3]},ok:()=>altN(3)||fyHas(mq2First())},
- {id:'1-4',ch:1,npc:'tu',t:'藏起來的花紋',tgt:'farm',hint:'讓黃＋紅的番茄自己結種子 → 種出下一代 → 找到有花紋的，獻上 3 顆',open:'有花紋的？你那個黃加紅的，讓它自己結種子看看。｜兩株都沒有，後代不一定沒有。',done:'看吧。藏起來的東西，總有一天會冒出來。｜……別在城裡說是我教的。',rw:{c:200,acc:3},ok:()=>altN(4)||fyHas(mq2First())},
+ {id:'1-4',ch:1,npc:'tu',t:'藏起來的花紋',tgt:'farm',hint:'讓黃＋紅的番茄自己結種子 → 種出下一代 → 找到有花紋的，獻上 3 顆',open:'有花紋的？你那個黃加紅的，讓它自己結種子看看。｜兩株都沒有，後代不一定沒有。',done:'{f:smile}看吧。藏起來的東西，總有一天會冒出來。｜……別在城裡說是我教的。',rw:{c:200,acc:3},ok:()=>altN(4)||fyHas(mq2First())},
  {id:'1-5',ch:1,npc:'theo',t:'喚醒',tgt:'npc',hint:'到教會大殿的祭壇獻滿清單 → 點一座祭壇，選要喚醒的神之子',open:'四十幾年了……終於有人做到了。｜請吧，把果實獻上祭壇。',done:'',roma:'1',rw:{c:300,deco:'sign',title:'見習育種家'},ok:()=>fyHas(mq2First())},/* 201.1c：醒來的是在祭壇前選的那一位 */
  {id:'1-6',ch:1,npc:'theo',t:'大殿夜襲',tgt:'npc',hint:'回教會大殿',open:'',done:'',rw:{c:200},ok:()=>!!state.mq2.f.raid},/* 201.4 */
  /* 201 後半（21n）：第二章《看不見的裂縫》。2-2、2-3 是同一步裡的兩件事（subs）；第一位是傑柯的人照樣要走（fyHasX） */
@@ -12561,7 +12582,7 @@ const MQ2=[
  {id:'3-2',ch:3,npc:'hai',reg:1,t:'漁村的委託',tgt:'explore',hint:'交白色月牙形的甜瓜 3 顆給阿海',open:'最近湖水怪怪的，岸邊的作物都長不好。｜你在白樺林都種得出東西，幫我們看看？｜{名}：葉緣焦了，還帶鹹霜……得挑耐鹹的親本來配。｜阿海：村裡老人講，白皮、彎彎的甜瓜不怕鹹。｜白色、月牙形的甜瓜，三顆就好。',done:'這甜瓜……真的不怕鹹！｜老舵：……好吧。我知道的都跟你說。',rw:{c:300,acc:3},give:{c:{crop:'melon',skin:'white',sp:5},need:3,t:'白色月牙形的甜瓜'},ok:()=>!!state.mq2.f.ok||fyHasX('melon')},
  {id:'3-3',ch:3,npc:'duo',reg:1,t:'三條線索',tgt:'explore',hint:'在潟湖找線索',hintF:()=>{const c=state.mq2.f.cl||{};if(c.dock)return '回蓮花池看看那艘小船';if(c.theo)return '去神父說的碼頭（倒木隧道）看看';return `在潟湖找線索（已找到 ${CLUES.filter(x=>c[x.id]).length}／3）`},open:'紅樹林、高腳屋、蓮花池那邊，你去看看。｜有什麼不對勁的，回來跟我說。',done:'船開走了……｜那就是他們的。我們晚了一步。',rw:{c:300},ok:()=>{const c=state.mq2.f.cl||{};return (CLUES.every(x=>c[x.id])&&!!c.dock&&!!c.gone)||fyHasX('melon')}},
  {id:'3-4',ch:3,npc:'wien',reg:1,t:'海蝕洞',tgt:'explore',hint:'和所長一起去倒木（水道的盡頭）堵人',hint2:'把果實帶回教會的祭壇',open:'採樣船昨天全程在外海，都有紀錄。｜我對這片的水流有點研究，一起去堵人吧。',doneNpc:'theo',done:'回來了……謝謝你。三座祭壇，都亮了。',rw:{c:800,title:'把果實找回來的人'},ok:()=>altLitOk('melon')||fyHasX('melon')},
- {id:'3-7',ch:3,npc:'theo',t:'歸還與季末',tgt:'npc',hint:'回教會',open:'回來啦。今晚教會有個小聚會，你一定要來。',doneNpc:'theo',done:'三處的果實都回來了。今晚好好放鬆吧。｜所長維恩：你帶來的變數，讓很多停了很久的事動了起來。｜旁白：（城郊菜圃。阿土伯關著門，擦著農具。）｜阿土伯：外頭熱鬧是他們的事。｜旁白：（幾天後，櫻花之丘的神社回信了——他們拒絕交出果實。）',rw:{c:800,acc:6,deco:'lantern'},ok:()=>true}];
+ {id:'3-7',ch:3,npc:'theo',t:'歸還與季末',tgt:'npc',hint:'回教會',open:'回來啦。今晚教會有個小聚會，你一定要來。',doneNpc:'theo',done:'三處的果實都回來了。今晚好好放鬆吧。｜所長維恩：{f:smile}你帶來的變數，讓很多停了很久的事動了起來。｜旁白：（城郊菜圃。阿土伯關著門，擦著農具。）｜阿土伯：外頭熱鬧是他們的事。｜旁白：（幾天後，櫻花之丘的神社回信了——他們拒絕交出果實。）',rw:{c:800,acc:6,deco:'lantern'},ok:()=>true}];
 /* 122：三個線索（＋神父說的潟湖口）、藏身處、記號。位置＝那張地圖第一條小路的中間點往旁邊挪一點 */
 const CLUES=[{id:'mud',map:'marsh',dx:60,t:'泥上有一排腳印，往紅樹林去。鞋印很深，像是抱著重的東西。'},{id:'root',map:'village',dx:-60,t:'幾條氣根被砍斷了，切口是新的。有人從這裡開了一條路。'},{id:'boat',map:'lotus',dx:50,t:'水邊的草叢裡蓋著一艘小船。船是空的，槳還是濕的。'}];
 const DOCK={id:'dock',map:'tunnel',dx:0,t:'只找到一塊爛麻布，勾在一根釘子上。'};/* 201：碼頭＝倒木隧道 */
@@ -12676,8 +12697,8 @@ function ki201Lord(bk){if(bk==='grass'&&!noteHas('K1')){noteGet('K1',true);setTi
 function npc201(id){if(!state||VN)return;const S=S201();
   if(id==='mo'&&noteHas('K1')&&!S.mo){S.mo=1;save();vn201('{名}：墨先生，你看看這個。｜墨先生：這金屬純得嚇人，這一帶最好的鍛造師也打不出來。｜「No.01-G」？不是商會的，也不是教會的。｜倒像是某個大名冊上的分類標籤。');return}
   if(id==='tu'&&noteHas('K1')&&!S.tuRing){S.tuRing=1;save();vn201('旁白：（阿土伯看了金屬環一眼，不說話，把它推回你面前。）｜阿土伯：收好。別給研究所看。');return}
-  if(id==='tu'&&mq2Past('2-4')&&lab201().R6&&!S.tuEgg){S.tuEgg=1;save();vn201('旁白：（阿土伯在剪側芽，剪刀停了一下。）｜阿土伯：林子裡撿到破銅爛鐵，有什麼好大驚小怪。｜撿到什麼自己收好，別往研究所送。｜{名}：……我已經交給維恩所長了。｜旁白：（阿土伯把剪刀丟進籃子。）｜阿土伯：……算了。以後長點心眼。');return}
-  if(id==='wien'&&noteHas('K4')&&!S.wienRing){S.wienRing=1;save();vn201('{名}：所長，艾克希爾腳上有這個。｜所長維恩：那是研究所歷代學者追蹤大型生物用的。｜規格一直沒變。');return}}
+  if(id==='tu'&&mq2Past('2-4')&&lab201().R6&&!S.tuEgg){S.tuEgg=1;save();vn201('旁白：（阿土伯在剪側芽，剪刀停了一下。）｜阿土伯：林子裡撿到破銅爛鐵，有什麼好大驚小怪。｜撿到什麼自己收好，別往研究所送。｜{名}：……我已經交給維恩所長了。｜旁白：（阿土伯把剪刀丟進籃子。）｜阿土伯：{f:angry}……算了。以後長點心眼。');return}
+  if(id==='wien'&&noteHas('K4')&&!S.wienRing){S.wienRing=1;save();vn201('{名}：所長，艾克希爾腳上有這個。｜所長維恩：{f:neutral}那是研究所歷代學者追蹤大型生物用的。｜{f:neutral}規格一直沒變。');return}}
 /* 維恩把手電筒、識別卡借走（第二章完成後；在大殿、研究所，或 2-4 完成的時候） */
 function wien201(){try{if(!state||VN||!mq2Past('2-4'))return false;if(!noteHas('R6')||lab201().R6)return false;if(scene!=='market'||(townMap!=='church_hall'&&townMap!=='institute_lab'))return false;
   lab201().R6=1;lab201().R7=1;save();vn201('所長維恩：（從側門進來）辛苦了。你身上那兩樣東西，方便借我看看嗎？｜{名}：在白樺林撿到的，很像我那個世界的東西。｜所長維恩：（拇指輕輕摸過識別卡）很可能是第一批留下的遺物。｜交給研究所保管研究吧？｜提歐神父：維恩所長是這方面的權威。｜旁白：（生鏽的手電筒、褪色的識別卡交給了研究所。）');return true}catch(e){return false}}
@@ -12697,7 +12718,7 @@ function m201b(o){if(!o||o.mq201bV)return;o.mq201bV=1;const M=o.mq2;
    台詞裡的 {名}＝玩家名字、{神}＝第一位神之子（vnWho／vnParse／npcTalk／fyTalkHTML 都認）。
    第一章結尾「大殿夜襲」（1-6）：大殿裡專用的小戰鬥，不用野外的怪物系統：4 個黑衣人（草原一般怪 ×1.5）、點黑衣人＝鎖定它、走到旁邊自動打；第一位神之子每 1.4 秒打最近的一隻；玩家血量最低剩 1。
    打倒 3 個 → 演出（搶走古籍、煙霧彈）→ 1-6 完成。舊存檔已經過第一章的人，第一次登入演一次回顧（rc201）。 ===== */
-const t201=s=>String(s==null?'':s).replace(/\{名\}/g,()=>{try{return myName()}catch(e){return '你'}}).replace(/\{神\}/g,()=>{try{return fyN(mq2First())}catch(e){return '神之子'}});
+const t201=s=>String(s==null?'':s).replace(/\{f:\w+\}/g,'').replace(/\{名\}/g,()=>{try{return myName()}catch(e){return '你'}}).replace(/\{神\}/g,()=>{try{return fyN(mq2First())}catch(e){return '神之子'}});
 const ALTAR_VOICE={tomato:'……還有人在嗎？我還不想就這樣結束。',pumpkin:'……有意思。你會選誰呢？',melon:'好悶喔……誰來把我放出去啦。',strawberry:'睡得太久了……有人願意喚我一聲嗎？',chili:'可惡，動不了……誰來幫我一把！',zucchini:'……別管我。……算了，你要來就來。',broccoli:'……大家，還平安嗎？',eggplant:'……星星在動。有人要來了。',corn:'……喂，有人聽得到嗎？我還有事沒做完。'};
 const WAKE_L={tomato:'呼啊——睡了好久！｜是你把本公主叫醒的吧，{名}？膽子不小嘛。以後本公主罩你啦！',
  pumpkin:'（拍拍燕尾服上不存在的灰）真遺憾，讓神父大人失望了呢。｜不過 {名}，既然你走進了這場戲，可別中途退場喔。',
@@ -12728,7 +12749,7 @@ const RAID={on:false,foes:[],lock:-1,t:0,at:0,fy:0,raf:0};
 const RAID_HP=MON_RHP.grass*1.5,RAID_DMG=[MON_RDMG.grass[0]*1.5,MON_RDMG.grass[1]*1.5];
 const raidPending=()=>{try{const s=mq2Cur(),M=state.mq2;return !!(s&&s.id==='1-6'&&M.st===1&&!M.f.raid)}catch(e){return false}};
 const RAID_PRE=()=>'旁白：（警鐘響了。黑袍、戴著無面白面具的人闖進大殿。）｜黑衣人：趁祂還沒恢復，帶走！｜不能讓獄卒回去看守真神！｜'+fyLines(RAID_L[mq2First()]||RAID_L.tomato);
-const RAID_POST='旁白：（領頭的黑衣人撞翻書架，搶走了一本厚厚的書——《八果實下落古籍》。）｜黑衣人：算你們走運……沒有這本古籍，你們別想找到剩下的果實！｜旁白：（煙霧彈炸開。煙散了，黑衣人全都不見了。）｜提歐神父：（帶著守衛趕到）都怪我……沒有那份紀錄，其餘八顆果實恐怕難找了。｜{神}：……還沒輸。我們九個同源，｜{神}：我感覺得到別的果實在哪——北邊那片起霧的林子。｜{名}：那就搶在他們前面。';
+const RAID_POST='旁白：（領頭的黑衣人撞翻書架，搶走了一本厚厚的書——《八果實下落古籍》。）｜黑衣人：算你們走運……沒有這本古籍，你們別想找到剩下的果實！｜旁白：（煙霧彈炸開。煙散了，黑衣人全都不見了。）｜提歐神父：{f:sad}（帶著守衛趕到）都怪我……沒有那份紀錄，其餘八顆果實恐怕難找了。｜{神}：……還沒輸。我們九個同源，｜{神}：我感覺得到別的果實在哪——北邊那片起霧的林子。｜{名}：那就搶在他們前面。';
 function raidStart(){if(RAID.on||!raidPending()||scene!=='market'||townMap!=='church_hall')return;
   if(VN||sheet||noteQ.length||(typeof uiBusy==='function'&&uiBusy())){setTimeout(raidStart,800);return}
   try{vnPlay(vnParse(RAID_PRE(),{kind:'narr'}),{story:1,onEnd:raidGo})}catch(e){raidGo()}}
@@ -12766,7 +12787,7 @@ function raidRecap(){if(!state||state.rc201!==1)return;if(VN||sheet||noteQ.lengt
   try{vnPlay(vnParse('旁白：（回顧）喚醒神之子的那天晚上，大殿出了事。｜'+RAID_PRE()+'｜'+RAID_POST,{kind:'narr'}),{story:1})}catch(e){}}
 /* 草原的田（第一章，第一次到翠風草原的時候演一次） */
 function s201Field(){try{if(!state||exBiome!=='grass')return;const M=state.mq2;if(!M||(M.i|0)<4||(M.i|0)>9)return;const S=state.s201||(state.s201={});if(S.field)return;if(VN){setTimeout(s201Field,1500);return}S.field=1;save();
-  vnPlay(vnParse('旁白：（草原上的田被踩得一塌糊塗。農戶大叔對著提歐神父大喊。）｜草原農戶大叔：神父你看！昨晚魔獸又衝下來，一季全毀了！｜教會守那顆果實四十幾年，守出什麼了？｜提歐神父：（深深鞠躬）是教會的力量不夠。損失的種子，教會會補。｜草原農戶大叔：……我不是衝著你。大家都知道你人好。｜只是這世道，真不知道該信什麼了。｜提歐神父：讓你見笑了。這就是為什麼我們需要你。',{kind:'narr'}),{story:1})}catch(e){}}
+  vnPlay(vnParse('旁白：（草原上的田被踩得一塌糊塗。農戶大叔對著提歐神父大喊。）｜草原農戶大叔：神父你看！昨晚魔獸又衝下來，一季全毀了！｜教會守那顆果實四十幾年，守出什麼了？｜提歐神父：{f:sad}（深深鞠躬）是教會的力量不夠。損失的種子，教會會補。｜草原農戶大叔：……我不是衝著你。大家都知道你人好。｜只是這世道，真不知道該信什麼了。｜提歐神父：讓你見笑了。這就是為什麼我們需要你。',{kind:'narr'}),{story:1})}catch(e){}}
 /* 新玩家：直接在教會醒來（第 183 節的夢拿掉） */
 function start201(){try{if(!state||!state.mq2)return;if(state.rc201===1)setTimeout(raidRecap,1500);const M=state.mq2;if((M.i|0)||(M.st|0)||FY_KEYS.some(fyHas))return;
   if(scene!=='market')goMarket();setTimeout(()=>{try{townMapGo('church_hall')}catch(e){}setTimeout(()=>{try{dreamAfter(true)}catch(e){}},500)},300)}catch(e){}}
@@ -12782,7 +12803,7 @@ function voice201(k,x,y){const t=ALTAR_VOICE[k]||'',L=[];for(let i=0;i<t.length;
 /* 201.1c：夢裡的台詞、舊的醒來台詞拿掉，醒來的台詞在 WAKE_L */
 const ROMA0=WAKE_L.tomato;/* 201 */
 function mq2FirstBody(s){const a=state.anchor&&FY[state.anchor]?state.anchor:'tomato';/* 201.1c：光直接落下（蘿瑪）／半空偏折（其他） */
-  return npcTalk('theo',a==='tomato'?'……蘿瑪大人。':'（笑容僵住）……光怎麼偏了？那座祭壇上，明明沒有果實——')+fyTalkHTML(a,WAKE_L[a])+npcTalk('theo','（很快恢復笑容）看來神之子會回應渡界者自己的選擇。｜古籍上沒寫過……今晚為神之子祈福。')}
+  return npcTalk('theo',a==='tomato'?'……蘿瑪大人。':'{f:surprised}（笑容僵住）……光怎麼偏了？那座祭壇上，明明沒有果實——')+fyTalkHTML(a,WAKE_L[a])+npcTalk('theo','（很快恢復笑容）看來神之子會回應渡界者自己的選擇。｜古籍上沒寫過……今晚為神之子祈福。')}
 /* 183.3／183.4：神之子類任務。list：清單獻滿（rw 金幣）；其他：喚醒後播台詞。state.fyq[id]：'o' 出現過、1 結束 */
 const fyRomaOn=()=>fyMine().follow==='tomato'&&fyHas('tomato');
 const FYQ=[
@@ -13107,7 +13128,7 @@ function mq2MarshTick(){try{if(scene!=='explore'||exBiome!=='marsh'||!state.mq2|
     else if(c.dock&&!c.gone&&regMap==='lotus'&&near(pathPt('marsh','lotus',CLUES.find(x=>x.id==='boat').dx),100)){c.gone=1;save();const k=mq2First(),L={pumpkin:'……嗯。',zucchini:'浪費時間。',broccoli:'神父也是好意。'}[k]||'白跑一趟。那個老好人神父，找人的眼光不太行耶。';vn201('旁白：（小船已經開走了，只剩水波。）｜{神}：'+L)}
     setTimeout(mq2Tick,0)}
   if(s&&s.id==='3-4'&&M.st===1&&!f.fruit&&regMap===HIDE.map&&near(pathPt('marsh',HIDE.map,HIDE.dx),100)){f.fruit=1;(state.mq2x||(state.mq2x={})).mark=1;save();noteGet('K5',true);
-    vn201('旁白：（水道盡頭的岩洞裡，有人抱著木盒。看見你們，他把木盒一丟，跳進海裡逃走了。）｜旁白：（木盒裡是永生的果實（甜瓜）。岩壁上刻著一個記號——被吞掉大半的日蝕。）｜{名}：這是什麼？不像這裡的文字。｜所長維恩：我也沒在任何文獻看過。｜看來暗中搞鬼的，是我們還不了解的勢力。｜旁白：（記號拓了下來，記進「圖鑑 → 筆記」了。）');try{renderWorld()}catch(e){}}
+    vn201('旁白：（水道盡頭的岩洞裡，有人抱著木盒。看見你們，他把木盒一丟，跳進海裡逃走了。）｜旁白：（木盒裡是永生的果實（甜瓜）。岩壁上刻著一個記號——被吞掉大半的日蝕。）｜{名}：這是什麼？不像這裡的文字。｜所長維恩：{f:neutral}我也沒在任何文獻看過。｜{f:neutral}看來暗中搞鬼的，是我們還不了解的勢力。｜旁白：（記號拓了下來，記進「圖鑑 → 筆記」了。）');try{renderWorld()}catch(e){}}
   if(fyHas('melon')&&fyRunning('melon')&&regMap===MIERU_AT.map&&near([MIERU_AT.x,MIERU_AT.y],90)){delete state.fyRun.melon;save();setTimeout(mq2Tick,0);try{renderWorld()}catch(e){}}
 }catch(e){}}
 /* ===== 121（18l）：銀霧白樺林的野外 NPC、霧裡的白南瓜路標 =====
@@ -13129,7 +13150,7 @@ function regNpcObjs(){if(scene!=='explore')return [];const out=[];
     out.push({y:L[1],h:`<g transform="translate(${L[0]} ${L[1]})" pointer-events="none"><ellipse cx="0" cy="0" rx="9" ry="3" fill="rgba(40,30,20,.22)"/><rect x="-1.6" y="-52" width="3.2" height="52" rx="1" fill="#7A5530" stroke="#3B2A18" stroke-width=".8"/><path d="M0 -50 h13 v4" fill="none" stroke="#3B2A18" stroke-width="1.2"/><svg x="1" y="-50" width="24" height="26" viewBox="-1.5 -1.6 3 3.2" stroke="none">${fr}</svg></g>`});
     if(regMap==='glen'&&kidOn()){const p=TOWN_NPC.find(q=>q.id==='kid');out.push({y:L[1]+4,h:regNpcSVG(p,L[0]-34,L[1]+4,false)})}}}
   return out}
-function regNpcSVG(p,x,y,bang){return `<g transform="translate(${x} ${y}) scale(1.15)" pointer-events="none">${npcBodySVG(p)}${nameTag(p.n)}${bang==='done'||bang==='acc'?qMarkSVG(bang):bang?qMarkSVG('acc'):''}</g><rect data-reg="npc:${p.id}" x="${x-22}" y="${y-106}" width="44" height="114" fill="transparent" style="cursor:pointer"/>`}
+function regNpcSVG(p,x,y,bang){return `<g transform="translate(${x} ${y}) scale(1.15)" pointer-events="none">${npcBodySVG(p,x,y)}${nameTag(p.n)}${bang==='done'||bang==='acc'?qMarkSVG(bang):bang?qMarkSVG('acc'):''}</g><rect data-reg="npc:${p.id}" x="${x-22}" y="${y-106}" width="44" height="114" fill="transparent" style="cursor:pointer"/>`}
 function regNpcTap(id){if(id==='kannushi'){const R0=REG_NPCS.find(r=>r.id===id),m=curMe(),go=()=>{sheet={l196:'kan'};renderSheet();openSheetUI()};if(Math.hypot(m.x-R0.x,m.y-R0.y)<80)go();else walkTo(R0.x,R0.y+16,go,true);return}/* 196：神官 */const R0=REG_NPCS.find(r=>r.id===id&&r.bk===exBiome),L=id==='kid'?lampPos('glen'):null,x=R0?R0.x:L?L[0]-34:0,y=R0?R0.y:L?L[1]:0;const go=()=>{const line=mq2Talk(id);sheet={rnpc:id,line};renderSheet();openSheetUI()};const m=curMe();if(Math.hypot(m.x-x,m.y-y)<80)go();else walkTo(x,y+16,go,true)}
 function rnpcHTML(){const id=sheet.rnpc,p=TOWN_NPC.find(q=>q.id===id);if(!p)return '<button class="btn" data-act="close">關閉</button>';const s=mq2Cur();
   return `<h2>${esc(p.n)}</h2>`+npcTalk(id,sheet.line||p.line)+npcExtraHTML(id)+'<button class="btn" data-act="close">關閉</button>'}/* 148：和城鎮同一份（有記號的任務一定看得到） */
@@ -13912,7 +13933,7 @@ async function bootStart(cloud,noLocal){
   if(state.mq&&state.mq.ch===1&&state.mq.st===0){mqAccept(true);noteQ.push(`<h2>第 1 章　${MQ[1].t}</h2>`+npcTalk('tu',MQ[1].open)+'<p class="note">「阿土伯的紅番茄」放進背包了，點一塊空田種下去吧！</p>');if(!state.pname){sheet={me:uid,ren:1,first:1};renderSheet();openSheetUI()}else noteFlush()}
   if(!loop)loop=setInterval(tick,1000);
   bootRaw=null;try{hud188()}catch(e){}/* 188 */bootHide();/* 71.2：存檔讀完、第一個畫面畫好才把載入畫面拿掉 */
-  setTimeout(()=>{try{start201()}catch(e){}},400);/* 201.1c：新玩家直接在教會醒來 */
+  setTimeout(()=>{try{start201()}catch(e){}},400);/* 201.1c：新玩家直接在教會醒來 */try{npc2Boot()}catch(e){}/* 211 */
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden)saveNow();else tick()});
 window.addEventListener('pagehide',()=>{saveNow()});

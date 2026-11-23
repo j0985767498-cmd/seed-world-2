@@ -2,7 +2,7 @@
 
 > 程式：`index.html`。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> **目前 BUILD `2026-11-21n`，下一版 `2026-11-21o`。**
+> **目前 BUILD `2026-11-21o`，下一版 `2026-11-21p`。**
 > **用詞（第 194 節）**：舊文件（`docs/規格存檔.md`）裡的「主」＝**領主**（各區古老的守護者，被蝕的力量侵蝕而失控），「僕人」＝**眷屬**（跟隨領主的魔獸）；抽火傀儡不是眷屬。程式的鍵（`LORDS`、`SERVANTS`、`lord_*`、`servant_*`）不改。**渡界者**（舊稱轉生者，第 201 節）：教會用召喚魔法、帶著原本的身體活著帶過來的人；「轉生」「接住」「錨」整套不用。
 > **使用者要自己做的事**：Realtime Database 規則整份貼 `tools/rtdb_rules_196.txt`（含 62 的 status、135、172、173、196 的 `od`）；Firestore 規則整份貼 `tools/firestore_rules_console_114.txt`（117 那份＋`fairyFirst`）。舊的規則檔都只是紀錄。
 > **還沒做的節**：135 的神寵技能、136（跟晶霜雪原那一章一起做）；未定案：14、19、69；暫停：108（3D，草原預設 2D）。各節做完的紀錄看下面的索引表。
@@ -307,6 +307,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 連擊數（187）：`comboHit`（在 `monHit`／`bossDealt`，神之子不算）、`COMBO_GAP`、`comboTick`／`comboReset`、`#combo`（`comboPaint`）、`state.comboMax`、`comboNow()`、`onCombo(n,t)`（`COMBO_FNS`）；測試 `tools/t187.js`。
 - 武器技能、翻滾（184）：表 `SKILLS`／`SK_ROLL`、`skDef`／`skV`／`skDmg`、`skCast`→`SK_DO[招式]`＋特效 `skFx[招式]`（之後換圖只改這裡）、`skAim`／`skTs`／`skIn`／`skInRect`／`skShove`／`skStun`／`skMove`／`skBlink`、冷卻 `SKC`、狀態 `SKB`（不存檔）、受傷 `skHurt`（`pDamage(n,src)`）、普通攻擊掛鉤 `skIv`／`skPreAtk`／`skPostAtk`／`skSat`（`c3Wpn` 第 4 參數）、`skTick`、子彈 `sb`／`pt`（`wpnStep`）、按鈕 `#skBar`（`skBar`／`skPaint`、`SK_GLYPH`）、同步 `pushPos` 的 `sk`／`skRemote`、領主、眷屬 `b.stun`；測試模式武器階 `data-tool="wtier"`；模擬 `tools/sim184.js`、測試 `tools/t184.js`。
 - 第一位神之子、轉生的夢（183）：`state.anchor`（`mq2First`）、夢 `dreamNeed`／`dreamOpen`／`dreamAfter`（`#dream`、`DREAM_L`）、1-5 `altWho`／`mq2FirstBody`（`FIRST_L`）、`state.cropEarly`（`cropKept`）、清單 `altL(k)`（取代 `ALT_LIST[k]`；番茄第二份 `ALT_LIST.tomato2`、`altObj('tomato').l2`）；主線 17 步（2-5、2-6、3-5、3-6 拿掉），神之子類任務 `FYQ`／`fyqTick`（`state.fyq`，kind `fyq`）；遷移 `m183`（旗標 `mq183V`）；測試 `tools/t183.js`。
+- NPC 新人物圖（211）：`assets/npc/manifest.json`＋`<id>/stand.png`／`face_<表情>.png`；`NPC2_ID`（tu→atubo、wien→wein、theo）、`npc2Boot`／`NPC2_ST`／`npc2Ready`、地圖 `npc2SVG`（`npcBodySVG(p,x,y)`，縮放同 `C3_HU/C3.H`）、轉向 `npc2Dir`（120 內）／`npc2Tick`、頭像 `npc2Face`（`vnPortrait`、`npcFaceHTML`）；台詞表情標記 `{f:表情}`（`vnParse`）；**之後換其他 NPC：放素材、在 manifest 加一筆、`NPC2_ID` 加對照**；測試 `tools/t211.js`。
 - 第一季劇情改版（201）後半：第二、三章（`MQ2` 2-1～3-7，巴頓 `yue`、林婆婆 `jin`、漁民阿海 `hai`；一件事兩種果實 `gives`；碼頭＝倒木隧道 `DOCK`、海蝕洞在倒木 `HIDE`）、第一位是自己的人照樣走 `fyHasX`；關鍵道具 `NOTE_REL` 的 K1／R6／R7／K4／K5（`KI_ICON`）、交給研究所 `state.lab201`（`wien201`）、觸發 `ki201Lord`（`bossReward`）／`npc201`（`openTown`）、`state.s201`；遷移 `m201b`（旗標 `mq201bV`）。
 - 第一季劇情改版（201）前半：`MQ2` 序章、第一章 10 格（多了 1-6 夜襲）、遷移 `m201`（旗標 `mq201V`、回顧 `rc201`／`raidRecap`）；夢拿掉（`dreamNeed` false），新玩家 `start201`；祭壇前選 `pick201`／`pickAltar201`／`beam201`（`ALTAR_VOICE`、`voice201`、`state.pick201`）、醒來 `WAKE_L`（`mq2FirstBody`）；夜襲 `RAID`／`raidStart`／`raidGo`／`raidLoop`／`raidEnd`（`RAID_L`、`RAID_PRE`／`RAID_POST`、`#raidG`、`body.raid201`）；草原的田 `s201Field`；對話的 `{名}`／`{神}`＝`t201`；NPC 老李 `li`、草原農戶大叔 `uncle`，阿土伯在 `garden`；測試 `tools/t201.js`。
 - 個人介面 `openMe`／`meSheetHTML`、通知 `noteOpen`、慶祝卡 `celShow`、提示 `toast`、「？」小說明 `qh`。
@@ -430,3 +431,4 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 208 | 試玩回報修正：發光植株、世界地圖、野外回城、武器升階素材 | 已完成 | docs/規格存檔.md；21j（9.207）；**規格表 8 種素材沒有怪會掉，換成同一區的、舊的當替代品**（對照在 9.207）；領主戰中用地圖離開會先確認；截圖沒拍到（窗格隱藏）；沒測 iPhone |
 | 209 | 武器鑲嵌（每一格指定造型、照順序）；城郊菜圃改到城鎮西邊；建築物用走的進去 | 已完成 | docs/規格存檔.md；21k（9.208）；現有出口違反通則的三個秘境列在 9.208（沒改）；截圖沒拍到（窗格隱藏）；沒測 iPhone |
 | 210 | 城鎮改用一整張畫好的地面 | 已完成 | docs/規格存檔.md；21l（9.209）；農會、研究所縮小（空地太矮）、教會 250；公布欄門口另外設；截圖沒拍到（窗格隱藏）；圖在手機上會有點軟；沒測 iPhone |
+| 211 | NPC 換成新的人物圖：阿土伯、維恩、提歐神父（第一批） | 已完成 | docs/規格存檔.md；21o（9.212）；表情用 `{f:…}` 標在台詞前面；截圖沒拍到（窗格隱藏）、大小比例沒用眼睛看過；沒測 iPhone |

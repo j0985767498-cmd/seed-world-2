@@ -38,8 +38,8 @@ const fruit=(crop,sp,t,n)=>({c:crop,k:`p${sp}|red|-`,t,q:{'2|1':n}});
   ok(R.ok&&B.tier===4&&B.st.length===10&&B.st.every((x,k)=>x===vm.runInContext(`wpWant('${B.crop}',${k})`,ctx))&&A.tier===1&&!A.st.length&&st.coins===c0-850,'transfer: B gets tier 4 + 10 stars (B\'s slot shapes per 209.1, no 名品), A back to tier 1 / 0 stars');
   ok(/比這把低/.test(T.wpTrOk(1,0)===''?'':T.wpTrOk(0,1)),'B must be lower tier than A');}
 /* 副武器：2-4 完成解鎖；換手；冷卻各算 */
-{st.weapons=[{crop:'tomato',tier:2,st:[],sf:0},{crop:'broccoli',tier:2,st:[],sf:0}];st.wpn=0;st.wpn2=null;delete st.wpn2On;st.mq2={i:11,st:1,f:{}};T.wpn2Tick();ok(!st.wpn2On,'sub weapon locked before 2-4 is done');
-  st.mq2={i:12,st:0,f:{}};T.wpn2Tick();ok(st.wpn2On===1,'unlocked once 2-4 is done (old players: on login)');
+{st.weapons=[{crop:'tomato',tier:2,st:[],sf:0},{crop:'broccoli',tier:2,st:[],sf:0}];st.wpn=0;st.wpn2=null;delete st.wpn2On;st.mq2={i:12,st:1,f:{}};T.wpn2Tick();ok(!st.wpn2On,'sub weapon locked before 2-4 is done');
+  st.mq2={i:13,st:0,f:{}};T.wpn2Tick();ok(st.wpn2On===1,'unlocked once 2-4 is done (old players: on login)');
   T.setScene('explore');ok(!T.wpSetSub(0)&&T.wpSetSub(1)&&st.wpn2===1,'sub can\'t be the main weapon; set sub = hammer');
   T.SKC.s1=0;const M=[];ok(T.skCast(1)&&T.SKC.s1>Date.now(),'cast sword skill 1 → on cooldown');const cdSword=T.SKC.s1;
   ok(T.wpnSwap()&&st.wpn===1&&st.wpn2===0&&T.SKC.s1===0,'swap: hammer in hand, its own cooldown (0)');T.wpnSwap();ok(st.wpn===0&&T.SKC.s1===cdSword,'swap back: sword cooldown still counting from where it was');}

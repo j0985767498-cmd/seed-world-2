@@ -8,12 +8,12 @@ const ctx={document:P,window:P,firebase:P,navigator:P,location:{pathname:'/',sea
 ctx.globalThis=ctx;ctx.self=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
 const T=ctx.T;let fails=0;const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+'[183] '+m);if(!c)fails++};
 const ids=()=>T.MQ2.map(s=>s.id).join(',');
-ok(ids()==='0-1,0-2,0-3,0-4,1-1,1-2,1-3,1-4,1-5,2-1,2-2+3,2-4,3-1,3-2,3-3,3-4,3-7','main story: 2-5, 2-6, 3-5, 3-6 removed ('+T.MQ2.length+' steps)');
+ok(ids()==='0-1,0-2,0-3,0-4,1-1,1-2,1-3,1-4,1-5,1-6,2-1,2-2+3,2-4,3-1,3-2,3-3,3-4,3-7','main story: 2-5, 2-6, 3-5, 3-6 removed; 201 adds 1-6 ('+T.MQ2.length+' steps)');
 /* 舊存檔：做一份「舊版」的存檔（沒有 mq183V），載入 → 遷移 */
-const oldSave=f=>{T.newGame();const st=T.state;delete st.mq183V;f(st);const r=T.loadSave(T.packState(st));if(!r.state)throw new Error(r.err);T.repairState(r.state);T.state=r.state;return r.state};
+const oldSave=f=>{T.newGame();const st=T.state;delete st.mq183V;delete st.mq201V;f(st);const r=T.loadSave(T.packState(st));if(!r.state)throw new Error(r.err);T.repairState(r.state);T.state=r.state;return r.state};
 /* 1. 有蘿瑪、在舊的 2-6（喚醒傑柯）：→ 3-1、補 500 金幣和稱號、沒有夢；傑柯變成神之子類任務 */
 {const s=oldSave(st=>{st.fairy.tomato={col:'red',no:1,evo:0};st.mq2={i:13,st:1,f:{}};st.altLit={pumpkin:1};st.coins=1000});
-  ok(s.mq2.i===12&&T.mq2Cur().id==='3-1'&&s.mq2.st===0,'old save with Roma at old 2-6 → now at 3-1');
+  ok(s.mq2.i===13&&T.mq2Cur().id==='3-1'&&s.mq2.st===0,'old save with Roma at old 2-6 → now at 3-1');
   ok(s.coins===1500&&s.titles.includes('調停的人'),'… gets the moved 2-6 reward (500 coins, 調停的人)');
   ok(!T.dreamNeed()&&!s.anchor,'… no dream, anchor not set');
   T.fyqTick();const q=T.qList().filter(x=>x.kind==='fyq').map(x=>x.t);ok(q.includes('傑柯的清單')&&!q.includes('喚醒傑柯'),'… 「神之子・傑柯的清單」 shows in the task panel');}
@@ -24,17 +24,17 @@ const oldSave=f=>{T.newGame();const st=T.state;delete st.mq183V;f(st);const r=T.
   delete s.fyRun.melon;const n0=T.notes.length;T.fyqTick();T.fyqTick();ok(T.notes.slice(n0).filter(x=>/砰/.test(x)).length===1&&s.fyq.mw===1,'… found her → her lines play once (a level-up note may come with it)');}
 /* 3. 沒有神之子、第一章中途：先看夢；選傑柯 → 1-5 的番茄清單喚醒傑柯 */
 {const s=oldSave(st=>{st.mq2={i:6,st:1,f:{}}});
-  ok(T.dreamNeed(),'old save, no 神之子, chapter 1 (1-3) → dream shows');
-  s.anchor='pumpkin';ok(!T.dreamNeed()&&T.altWho('tomato')==='pumpkin','… chose 傑柯 → the tomato list now wakes 傑柯');
+  ok(!T.dreamNeed(),'old save, no 神之子, chapter 1 (1-3) → no dream any more (201.1c)');
+  s.anchor='pumpkin';s.pick201=1;ok(T.altWho('tomato')==='pumpkin','… chose 傑柯 at the altar → the tomato list now wakes 傑柯');
   const A=T.altObj('tomato');A.n=[3,3,3,3,3];A.cols=['red','yellow'];s.mq2={i:8,st:1,f:{}};ok(T.altFull('tomato'),'… tomato list filled');
   ok(T.fyWakeAlt('tomato','yellow')&&T.fyHas('pumpkin')&&!T.fyHas('tomato')&&s.fairy.pumpkin.col==='yellow','… 1-5 wakes 傑柯 with the chosen colour (not 蘿瑪)');
   ok(s.cropEarly&&s.cropEarly.pumpkin===1&&T.cropOpen('pumpkin'),'… pumpkin can be planted right away');
   ok(s.lots.some(l=>l.crop==='pumpkin'&&/傑柯/.test(l.source)),'… gets 傑柯\'s exclusive-shape seeds');
   ok(T.altObj('tomato').l2===1&&T.altL('tomato')===T.ALT_LIST.tomato2&&!T.altFull('tomato')&&T.altWho('tomato')==='tomato','… tomato altar reset to the second list, which wakes 蘿瑪');
-  const n0=T.notes.length;T.mq2Tick();ok(T.mq2Cur().id==='2-1'&&/不是蘿瑪大人/.test(T.notes.slice(n0).join('')),'… 1-5 completes with 傑柯\'s lines + 「……不是蘿瑪大人。」');
+  const n0=T.notes.length;T.mq2Tick();ok(T.mq2Cur().id==='1-6'&&/光怎麼偏了/.test(T.notes.slice(n0).join('')),'… 1-5 completes with 傑柯\'s lines + 「……光怎麼偏了？」, then 1-6 (night raid)');
   T.fyqTick();T.fyqTick();const q=T.qList().filter(x=>x.kind==='fyq').map(x=>x.t);ok(q.includes('蘿瑪的清單')&&!q.includes('傑柯的清單'),'… 「蘿瑪的清單」 task appears; 傑柯 tasks do not');}
 /* 新遊戲：有旗標、要看夢 */
-{T.newGame();ok(T.state.mq183V===1&&T.dreamNeed(),'new game: flag set, dream shows');}
+{T.newGame();ok(T.state.mq183V===1&&T.state.mq201V===1&&!T.dreamNeed(),'new game: flags set, no dream (201.1c)');}
 /* 已經有任何一位神之子的舊玩家：沒有夢 */
 {oldSave(st=>{st.fairy.corn={col:'green',no:1,evo:0};st.mq2={i:5,st:1,f:{}}});ok(!T.dreamNeed(),'old save with any 神之子 (麥斯) in chapter 1 → no dream');}
 console.log(fails?('[183] FAILS '+fails):'[183] ALL PASS');if(fails)process.exitCode=1;

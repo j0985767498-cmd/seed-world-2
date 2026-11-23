@@ -1392,6 +1392,16 @@ body.h188 #rbar #mapBtn{position:relative!important;top:auto!important;right:aut
 /* ===== 209：鑲嵌的格子 ===== */
 .wpsc{display:flex;flex-direction:column;align-items:center;gap:3px;width:70px}.wpsc i{font-style:normal;font-size:10.5px;color:#7A5A30;text-align:center;line-height:1.2}
 .wpst.next{border-color:#E3A21A;border-width:2.5px;background:#FFF6D8}.wpsc.lock{opacity:.6}.wpsc.lock i{color:#9A8C78}
+
+/* ===== 201：選第一位的光、夜襲 ===== */
+.beam201{position:fixed;inset:0;z-index:60;pointer-events:none}.beam201 svg{position:absolute;inset:0}
+.beam201 .bm1{fill:none;stroke:rgba(255,236,160,.55);stroke-width:26;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:100;stroke-dashoffset:100;filter:blur(6px)}
+.beam201 .bm2{fill:none;stroke:#FFFBE6;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:100;stroke-dashoffset:100}
+.beam201.go .bm1,.beam201.go .bm2{transition:stroke-dashoffset 1.1s ease-in;stroke-dashoffset:0}
+.beam201 .bmf{fill:#FFF6C8;opacity:0;transform-box:fill-box;transform-origin:center}.beam201.go .bmf{animation:bm201 .7s 1.05s ease-out forwards}
+@keyframes bm201{0%{opacity:0;transform:scale(.3)}40%{opacity:.95}100%{opacity:0;transform:scale(2.2)}}
+.vc201{animation:vc201 2.6s ease-in-out infinite}@keyframes vc201{50%{opacity:.75}}
+@media (prefers-reduced-motion:reduce){.vc201{animation:none}.beam201.go .bm1,.beam201.go .bm2{transition:none}}
 </style>
 </head>
 <body class="game">
@@ -1907,7 +1917,7 @@ function packKeys(l){
 }
 let DRAW_MU=null;/* 96：剛抽到的那顆是不是新突變（{k,v}），發芽判定時用 */
 function drawSeed(l){if(l.zs)unzipLot(l);DRAW_MU=null;{const m=lcMu(l);if(m&&rnd()*lc(l)<m){const k=Math.floor(rnd()*m),g=l.mseeds.splice(k,1)[0],md=(l.mmd||[]).splice(k,1)[0];DRAW_MU=md||{k:'?'};if(!l.mseeds.length){delete l.mseeds;delete l.mmd}return g}}if(l.seeds&&l.seeds.length)return l.seeds.splice(Math.floor(rnd()*l.seeds.length),1)[0];l.count--;return child(l.m,l.f).g}
-function newGame(){state={wpn2:null,comboMax:0,mq183V:1,rv98:1,patV:1,fyopV:1,notes:{},rs134V:1,themeV:1,spV:1,lordWon:{},nameV:1,n149V:1,dmgNum:true,miniMap:true,char2:false,rx157V:1,outfitRx:{},outfits:{},weapons:[],wpn:null,cam164V:1,autoPick:false,vnSpeed:'mid',potSel:'pot',autoPot:true,autoPotAt:0.3,fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
+function newGame(){state={wpn2:null,comboMax:0,mq183V:1,mq201V:1,rv98:1,patV:1,fyopV:1,notes:{},rs134V:1,themeV:1,spV:1,lordWon:{},nameV:1,n149V:1,dmgNum:true,miniMap:true,char2:false,rx157V:1,outfitRx:{},outfits:{},weapons:[],wpn:null,cam164V:1,autoPick:false,vnSpeed:'mid',potSel:'pot',autoPot:true,autoPotAt:0.3,fairy:{altar:{}},meihin:{},wardrobe:{},vault:[],v:4,mapV:MAPV,farmV:FARMV,plotPos:defaultPos(),coins:1000,speed:1,last:Date.now(),plots:Array(64).fill(null),selfC:{},decor:[],avatar:{...AV_DEF},tut:{step:0,done:false},mq2:{i:0,st:0,f:{}},mqV:1,tips:{},lvKeepV:1,lvKeep:{reg:{},crop:{}},qf3V:1,tutV:2,resV:1,orders:{},shapeV:2,cleanV:1,me:{...ME0},lots:[],nextLine:1,nextLot:1,nextLid:1,counts:{},given:[],items:{},ex:null,specs:[],specV:1,geneV:3,exV:2,lvV:1,growV:1,hvV:1,fruits:[],mats:{},fixq:[],lv:1,xp:0,mq:{ch:5,st:0,f:{}},fin:{},fav:{},titles:[],st:{hv:0,cr:0,since:Date.now()}}}
 const WILD={tomato:'red',strawberry:'red',zucchini:'green',corn:'yellow',broccoli:'white',melon:'yellow',chili:'red',pumpkin:'yellow',eggplant:'purple'};
 function originalFor(crop){
   const wild=rnd()<0.7,col=wild?WILD[crop]:pk(['red','yellow','green','white','purple'].filter(c=>c!==WILD[crop]));
@@ -2020,7 +2030,7 @@ function exMigrate(o){
   }catch(e){}
   o.exV=2;
 }
-function migrate(o){try{m183(o)}catch(e){}/* 183 */if(typeof o.comboMax!=='number')o.comboMax=0;/* 187 */try{if(Array.isArray(o.weapons))for(const w of o.weapons)if(w&&typeof w==='object'){if(!Array.isArray(w.st))w.st=[];if(typeof w.sf!=='number')w.sf=0}}catch(e){}/* 186：星星；190：第 3 格失敗次數 */if(o.wpn2===undefined)o.wpn2=null;/* 190：副武器 */try{if(o.look&&typeof o.look==='object'){const L=o.look,s=v=>typeof v==='string'?v.slice(0,8):'';o.look={hair:s(L.hair),hairColor:+L.hairColor|0,top:s(L.top),bottom:s(L.bottom),shoes:s(L.shoes)}}}catch(e){}/* 177：讀到 manifest 後才換成預設（c3MfSet） *//* 171：外觀缺欄位補預設值（不用旗標，每次讀檔都整理） */if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fairy))o.fairy={};for(const k of Object.keys(o.fairy)){if(k==='follow'||k==='mj'||k==='altar')continue;const f=o.fairy[k];if(!FY[k]||!f||typeof f!=='object'||!f.no)delete o.fairy[k]}if(o.fairy.follow&&!o.fairy[o.fairy.follow])o.fairy.follow=null;/* 93：精靈 */if(!o.fairy.altar||typeof o.fairy.altar!=='object'||Array.isArray(o.fairy.altar))o.fairy.altar={};/* 113.7：祭壇清單的進度 */if(!o.wardrobe||typeof o.wardrobe!=='object')o.wardrobe={};if(!o.meihin||typeof o.meihin!=='object')o.meihin={};/* 86.5：衣櫃（特殊取得的衣服），用到才建立 */
+function migrate(o){try{m183(o)}catch(e){}/* 183 */try{m201(o)}catch(e){}/* 201 */if(typeof o.comboMax!=='number')o.comboMax=0;/* 187 */try{if(Array.isArray(o.weapons))for(const w of o.weapons)if(w&&typeof w==='object'){if(!Array.isArray(w.st))w.st=[];if(typeof w.sf!=='number')w.sf=0}}catch(e){}/* 186：星星；190：第 3 格失敗次數 */if(o.wpn2===undefined)o.wpn2=null;/* 190：副武器 */try{if(o.look&&typeof o.look==='object'){const L=o.look,s=v=>typeof v==='string'?v.slice(0,8):'';o.look={hair:s(L.hair),hairColor:+L.hairColor|0,top:s(L.top),bottom:s(L.bottom),shoes:s(L.shoes)}}}catch(e){}/* 177：讀到 manifest 後才換成預設（c3MfSet） *//* 171：外觀缺欄位補預設值（不用旗標，每次讀檔都整理） */if(!o.fairy||typeof o.fairy!=='object'||Array.isArray(o.fairy))o.fairy={};for(const k of Object.keys(o.fairy)){if(k==='follow'||k==='mj'||k==='altar')continue;const f=o.fairy[k];if(!FY[k]||!f||typeof f!=='object'||!f.no)delete o.fairy[k]}if(o.fairy.follow&&!o.fairy[o.fairy.follow])o.fairy.follow=null;/* 93：精靈 */if(!o.fairy.altar||typeof o.fairy.altar!=='object'||Array.isArray(o.fairy.altar))o.fairy.altar={};/* 113.7：祭壇清單的進度 */if(!o.wardrobe||typeof o.wardrobe!=='object')o.wardrobe={};if(!o.meihin||typeof o.meihin!=='object')o.meihin={};/* 86.5：衣櫃（特殊取得的衣服），用到才建立 */
   if(!o.nextLid)o.nextLid=1;if(!o.counts)o.counts={};
   while(o.plots.length<64)o.plots.push(null);
   geneMigrate(o);exMigrate(o);
@@ -2156,7 +2166,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-21l';
+const BUILD='2026-11-21m';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -3257,7 +3267,7 @@ const NOTE_LEG=[
 const NOTE_REL=[
  {id:'R1',t:'井邊的透明板子',where:'翠風草原・古井遺跡',hint:'草原最深處的古井',a:'嵌在井壁上，沒有人知道是誰放的。村裡的人說那是量雨水的。',b:'一把塑膠尺。刻度還很清楚，是公分。'},
  {id:'R2',t:'不會生鏽的罐子',where:'銀霧白樺林・石祠',hint:'白樺林的石祠',a:'供在石祠裡好幾代了。守林的人說它是「天上掉下來的鐵」，從來不生鏽。',b:'一個壓扁的鋁罐。拉環還在。'},
- {id:'R3',t:'橘色的浮球',where:'珍珠潟湖・漁村高腳屋',hint:'潟湖漁村的高腳屋',a:'掛在屋簷下當風鈴。漁村的人說是從很遠的海漂來的，泡了幾百年也不爛。',b:'塑膠浮球。底下有一排數字，是出廠編號。'},
+ {id:'R3',t:'橘色的浮球',where:'珍珠潟湖・漁村高腳屋',hint:'潟湖漁村的高腳屋',a:'掛在屋簷下當風鈴。漁村的人說是從很遠的海漂來的，泡了幾十年也不爛。',b:'塑膠浮球。底下有一排數字，是出廠編號。'},
  {id:'R4',t:'黑色的玻璃',where:'城鎮・品種鑑定所',hint:'品種鑑定所的收藏',a:'墨先生說這是他收藏裡最看不懂的一件：一片薄薄的黑玻璃，照得出人影，敲起來不像玻璃。',b:'一支手機。螢幕裂了，按什麼都不會亮。',npc:'mo',btn:'看看他的收藏',line:'你盯著它看很久了。認得？｜……不說也沒關係。我收東西，不問來歷。'},
  {id:'R5',t:'打不開門的鑰匙',where:'城鎮・阿凱',hint:'阿凱身上帶著的東西',a:'阿凱家代代傳下來的「鑰匙」，扁扁的一片，插不進任何鎖。他祖父說總有一天用得上。',b:'一張門禁卡。上面的字磨掉了，只剩一個角落的晶片。',npc:'kai',btn:'問他那把鑰匙',line:'這個？我爸給我的，他爸給他的。｜插不進鎖孔，可是家裡每個人都說它是鑰匙。｜我老覺得它跟那座種子庫有關係。沒有證據啦，就是直覺。',need:()=>!!(state.mq&&state.mq.ch>=6)},
  {id:'R6',x:1,t:'生鏽的指南針',where:'銀霧白樺林・神隱之森',hint:'神隱之森的大鳥巢',a:'在神隱之森一個很大的鳥巢裡，和樹枝、羽毛纏在一起。指針已經不會動了。',b:'一個登山用的指南針。背面刻著一行字，磨得看不清楚。'}
@@ -6379,7 +6389,9 @@ const TOWN_NPC=[
   {id:'kid',n:'採菇的孩子',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:0,face:5,hair:2,hairC:2,hat:0,top:0,topC:3,bottom:1,bottomC:0,shoe:1,shoeC:5},line:'我剛剛看不到路，看到白白的就一直跟著走。這是你掛的嗎？'},
   {id:'theo',n:'提歐神父',x:530,y:438,map:'church_hall',at:'spring',/* 207：大殿講台旁 */av:{...AV_DEF,skin:1,face:1,hair:10,hairC:2,hat:0,top:20,topC:6,bottom:7,bottomC:11,shoe:1,shoeC:12},/* 116.2：白色斗篷代替長袍（換裝沒有長袍）、寬褲、布鞋、棕色旁分 */line:'祭壇隨時都開著。累了就來坐坐。'},
   {id:'wien',n:'所長維恩',x:420,y:268,map:'institute_lab',/* 207：研究所黑板前 */glasses:1,cond:()=>!!(state&&state.mq2&&(state.mq2.i>=3))&&!wienAway(),av:{...AV_DEF,skin:0,face:4,hair:19,hairC:0,hat:0,top:3,topC:7,bottom:0,bottomC:7,shoe:6,shoeC:12,acc:2,accC:7},/* 116.2：深灰外套代替長外套、眼鏡、中分黑髮、皮鞋；序章第 4 步才出現 */line:'這裡的作物有個地方我一直想不通。改天說給你聽。'},
-  {id:'tu',n:'阿土伯',x:200,y:1268,at:'hall',av:{...AV_DEF,skin:2,face:1,hair:6,hairC:6,hat:1,hatC:12,top:2,topC:13,bottom:0,bottomC:10,shoe:0,shoeC:12},/* 40.1：老農夫：平頭、草帽、條紋 T＋深藍吊帶褲、靴子、灰白頭髮 */line:'年輕人，來啦！田裡的事有不懂的就來問我。'},
+  {id:'li',n:'農會老李',x:200,y:1268,at:'hall',av:{...AV_DEF,skin:3,face:5,hair:2,hairC:7,hat:1,hatC:12,top:2,topC:2,bottom:0,bottomC:10,shoe:0,shoeC:12},line:'收什麼種什麼，這就是規矩！'},/* 201.2：農會老李（熱心、傳統農法） */
+  {id:'uncle',n:'草原農戶大叔',x:0,y:0,cond:()=>false,av:{...AV_DEF,skin:3,face:6,hair:6,hairC:0,hat:1,hatC:12,top:19,topC:3,bottom:3,bottomC:10,shoe:0,shoeC:12},line:'這世道，真不知道該信什麼了。'},
+  {id:'tu',n:'阿土伯',x:300,y:690,map:'garden',/* 201.2：第一批渡界者的倖存者，住在城郊菜圃 */av:{...AV_DEF,skin:2,face:1,hair:6,hairC:6,hat:1,hatC:12,top:2,topC:13,bottom:0,bottomC:10,shoe:0,shoeC:12},/* 40.1：老農夫：平頭、草帽、條紋 T＋深藍吊帶褲、靴子、灰白頭髮 */line:'年輕人，來啦！田裡的事有不懂的就來問我。'},
   {id:'mo',n:'墨先生',x:215,y:298,at:'appraisal',glasses:1,av:{...AV_DEF,face:4,hair:10,hairC:0,hat:0,top:7,topC:2,bottom:0,bottomC:7,shoe:1,shoeC:7,acc:2,accC:7},/* 40.1：學者：旁分、眼鏡、墨綠針織背心＋襯衫、深灰長褲、布鞋、黑髮、不戴帽子 */line:'我在收集稀有的果實。鑑定所裡可以看全服的圖鑑和紀錄榜。'},
   {id:'mei',n:'小莓姊',x:655,y:1094,at:'dessert',av:{...AV_DEF,face:5,blush:1,hair:13,hairC:3,top:13,topC:6,bottom:4,bottomC:5,shoe:1,shoeC:5},/* 40.1：甜點師：半紮蝴蝶結、粉色園藝圍裙、百褶裙、布鞋、腮紅 */line:'哈囉～今天也有想請你幫忙種的顏色喔！'},
   {id:'kai',n:'阿凱',x:570,y:1296,at:'notice',av:{...AV_DEF,face:5,hair:15,hairC:2,hat:5,hatC:11,top:3,topC:11,bottom:3,bottomC:13,shoe:0,shoeC:12,acc:3,accC:12},/* 40.1：探險家：蓬鬆亂髮、卡其漁夫帽、卡其外套、橄欖工裝褲、靴子、背包 */line:'我在找一座傳說中的種子庫。各地採到的種子，記得帶回來給我看看！'}];
@@ -6477,7 +6489,7 @@ function townMapGo(to){if(regBusy)return;regBusy=true;const from=townMap,ov=docu
     if(to==='plaza'){WORLD.market.W=TOWN_MAPS.plaza.W;WORLD.market.H=TOWN_MAPS.plaza.H;if(FM&&FM.indoor){const [x,y]=inDoorBack(FM);marketMe={x,y}}else{const e=TOWN_MAPS.plaza.exits.find(x=>x.to==='garden');marketMe={x:TOWN_MAPS.plaza.B.x0+18,y:e?e.c:600}/* 209.2 */}}
     else{WORLD.market.W=M.W;WORLD.market.H=M.H;if(M.indoor)marketMe={x:M.exits[0].c,y:M.B.y1-24};else if(FM&&FM.indoor){const [x,y]=inDoorBack(FM);marketMe={x,y}}else marketMe={x:M.B.x1-18,y:M.exits[0].c}}
     if(FM&&FM.indoor)meFace=2;townDoorCool=Date.now()+1000;/* 209.3：面向外面、1 秒內不再被門吸進去 */hoverTown=null;townDoorK='';try{joinFarm(to==='plaza'?'town':'town_'+to)}catch(e){}try{renderHUD();renderWorld();renderChars();updateCam();refreshAct()}catch(e){}try{ov.style.opacity='0'}catch(e){}regBusy=false;
-    try{toast(to==='plaza'?'回到城鎮':M.n,1400)}catch(e){}},150)}
+    try{toast(to==='plaza'?'回到城鎮':M.n,1400)}catch(e){}if(to==='church_hall')setTimeout(raidStart,700);/* 201.4 */},150)}
 /* 門口 60 內：「進去」／「出去」 */
 function townDoors(){const M=townSubM();if(townMap==='plaza')return Object.keys(TOWN_IN_BLD).map(id=>{const [x,y]=bldFront(id);return {t:'in',to:TOWN_IN_BLD[id],x,y}});if(!M)return [];if(M.indoor)return [{t:'out',to:M.door.to,x:M.exits[0].c,y:M.B.y1}];return (M.doors||[]).map(d=>({t:'in',to:d.to,x:d.x,y:d.y}))}
 function townDoorAt(){const m=marketMe;if(!m)return null;for(const d of townDoors())if(Math.hypot(m.x-d.x,m.y-d.y)<60)return d;return null}
@@ -6490,7 +6502,8 @@ function townDoorTap(key){const [t,to]=String(key).split(':'),d=townDoors().find
 function townDoorBtn(){return '';/* 209.3：按鈕拿掉 */const d=townDoorAt();if(!d)return '';const lab=d.t==='in'?'進去':'出去',y=d.t==='in'?d.y-74:d.y-20;return `<g data-hutgo="${d.t}:${d.to}" style="cursor:pointer"><rect x="${d.x-30}" y="${y-14}" width="60" height="26" rx="13" fill="#FFF6DE" stroke="#5A3416" stroke-width="2"/><text x="${d.x}" y="${y+4}" text-anchor="middle" font-size="13" font-weight="800" fill="#5A3416">${lab}</text></g>`}
 function hutInspect(id){const M=townSubM();if(!M||!M.see)return;const S=M.see.find(s=>s.id===id);if(!S)return;const p=seeSpot(M,S),go=()=>{try{noteOpen(`<h2>${esc(S.n)}</h2><p class="note">${esc(S.t)}</p>`)}catch(e){}};if(Math.hypot(marketMe.x-p.x,marketMe.y-p.fy)<90)go();else walkTo(p.x,p.fy+26,go)}
 /* 點祭壇：打開那位神之子的頁面（喚醒、獻上、進化、神化那一套）；城鎮的噴水池照舊也能開 */
-function altarTap(k){const i=ALTAR_K.indexOf(k);if(i<0)return;const [x,y]=altarPos(i),go=()=>{try{sheet={fy:{m:fyHas(k)?'one':'alt',k}};renderSheet();openSheetUI()}catch(e){}}/* 還沒喚醒＝祭壇清單（喚醒）；喚醒了＝她的頁面（獻上、進化、神化） */;if(Math.hypot(marketMe.x-x,marketMe.y-y)<80)go();else walkTo(x,y+30,go)}
+function altarTap(k){const i=ALTAR_K.indexOf(k);if(i<0)return;if(RAID.on)return;try{mq2Ev('altar')}catch(e){}/* 201：0-1 看祭壇 */
+  if(pick201()){pickAltar201(k);return}if(state.pick201&&!FY_KEYS.some(fyHas)){sheet={fy:{m:'alt',k:'tomato'}};renderSheet();openSheetUI();return}/* 201.1c：選好了還沒選顏色 */const [x,y]=altarPos(i),go=()=>{try{sheet={fy:{m:fyHas(k)?'one':'alt',k}};renderSheet();openSheetUI()}catch(e){}}/* 還沒喚醒＝祭壇清單（喚醒）；喚醒了＝她的頁面（獻上、進化、神化） */;if(Math.hypot(marketMe.x-x,marketMe.y-y)<80)go();else walkTo(x,y+30,go)}
 /* 地板、牆 */
 function inRoomSVG(M){const B=M.B,T=B.y0,wh=M.wallH||110,x0=B.x0-8,ww=B.x1-B.x0+16,P=M.floor==='stone'?{wall:'#F2EDE2',wl:'#DCD2C0',beam:'#C9A86A',fl:'#E8DCC4',fl2:'#D8C9AC',side:'#CDBFA6',dark:'#7A6A55'}:M.floor==='lab'?{wall:'#EDE6DA',wl:'#D8CDBB',beam:'#9A7A56',fl:'#D2B48A',fl2:'#BE9C70',side:'#8A6A4A',dark:'#2A1E14'}:{wall:'#8A6038',wl:'#6E4A2A',beam:'#5A3A20',fl:'#B98A5A',fl2:'#9A6E44',side:'#5A3A20',dark:'#21160D'};
   let s=`<rect x="-800" y="-800" width="${M.W+1600}" height="${M.H+1600}" fill="${P.dark}"/><rect x="${x0}" y="${T-wh}" width="${ww}" height="${wh}" fill="${P.wall}"/>`;
@@ -6508,12 +6521,14 @@ function townSubWorld(){const M=townSubM(),me=marketMe,bg=[],fg=[],add=(y,h)=>(y
     add(-1e4,townDoorMats());/* 209.3 */for(const d of M.doors||[])hit+=`<rect data-hutgo="in:${d.to}" x="${d.x-26}" y="${d.y-60}" width="52" height="66" fill="rgba(0,0,0,0)" style="cursor:pointer"/>`}
   else{ground=inRoomSVG(M);
     for(const [k,x,y,h,cw] of M.furn){const w=inW(k,h);add(cw>0?y:y-200,`<g pointer-events="none">${cw>0?`<ellipse cx="${x}" cy="${y}" rx="${(w*0.4).toFixed(1)}" ry="${(w*0.09).toFixed(1)}" fill="rgba(30,15,5,.26)"/>`:''}<image href="assets/${k}.png?v=${BUILD}" x="${(x-w/2).toFixed(1)}" y="${(y-h).toFixed(1)}" width="${w.toFixed(1)}" height="${h}"/></g>`)}
-    if(M.altars)ALTAR_K.forEach((k,i)=>{const [x,y]=altarPos(i),lit=altarLit(k),key=lit?'church/altar_lit':'church/altar',h=lit?ALTAR_H*281/213:ALTAR_H,w=inW(key,h),c=altarCol(k),nm=fyN(k);
-      add(y,`<g pointer-events="none">${lit?`<ellipse cx="${x}" cy="${y-ALTAR_H*0.5}" rx="${(w*0.62).toFixed(1)}" ry="${(ALTAR_H*0.7).toFixed(1)}" fill="${c}" opacity=".22" class="altglow"/>`:''}<ellipse cx="${x}" cy="${y}" rx="${(w*0.42).toFixed(1)}" ry="${(w*0.1).toFixed(1)}" fill="rgba(30,20,10,.22)"/><image href="assets/${key}.png?v=${BUILD}" x="${(x-w/2).toFixed(1)}" y="${(y-h).toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}"/><rect x="${x-24}" y="${y+6}" width="48" height="15" rx="3" fill="#F7F0DC" stroke="#8A6A3A" stroke-width="1"/><text x="${x}" y="${y+17}" text-anchor="middle" font-size="10" font-weight="700" fill="#5A3A20">${esc(nm)}</text></g>`);hit+=`<rect data-altar="${k}" x="${(x-w/2).toFixed(1)}" y="${(y-h).toFixed(1)}" width="${w.toFixed(1)}" height="${(h+24).toFixed(1)}" fill="rgba(0,0,0,0)" style="cursor:pointer"/>`});
+    const pk=M.altars&&pick201();/* 201.1c */
+    if(M.altars)ALTAR_K.forEach((k,i)=>{const [x,y]=altarPos(i),lit=altarLit(k)||pk,key=lit?'church/altar_lit':'church/altar',h=lit?ALTAR_H*281/213:ALTAR_H,w=inW(key,h),c=altarCol(k),nm=fyN(k);
+      add(y,`<g pointer-events="none">${lit?`<ellipse cx="${x}" cy="${y-ALTAR_H*0.5}" rx="${(w*0.62).toFixed(1)}" ry="${(ALTAR_H*0.7).toFixed(1)}" fill="${c}" opacity=".22" class="altglow"/>`:''}<ellipse cx="${x}" cy="${y}" rx="${(w*0.42).toFixed(1)}" ry="${(w*0.1).toFixed(1)}" fill="rgba(30,20,10,.22)"/><image href="assets/${key}.png?v=${BUILD}" x="${(x-w/2).toFixed(1)}" y="${(y-h).toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}"/><rect x="${x-24}" y="${y+6}" width="48" height="15" rx="3" fill="#F7F0DC" stroke="#8A6A3A" stroke-width="1"/><text x="${x}" y="${y+17}" text-anchor="middle" font-size="10" font-weight="700" fill="#5A3A20">${esc(nm)}</text>${pk?voice201(k,x,y-h-8):''}</g>`);hit+=`<rect data-altar="${k}" x="${(x-w/2).toFixed(1)}" y="${(y-h).toFixed(1)}" width="${w.toFixed(1)}" height="${(h+24).toFixed(1)}" fill="rgba(0,0,0,0)" style="cursor:pointer"/>`});
     for(const S of M.see||[]){const p=seeSpot(M,S);add(p.fy+0.5,`<g>${S.img?`<image href="assets/${S.img}.png?v=${BUILD}" x="${(p.x-p.w/2).toFixed(1)}" y="${(p.y-p.h).toFixed(1)}" width="${p.w.toFixed(1)}" height="${p.h.toFixed(1)}" pointer-events="none"/>`:''}<circle class="hutglint" cx="${(p.x+Math.max(p.w*0.5,14)).toFixed(1)}" cy="${(p.y-p.h).toFixed(1)}" r="3.5" fill="#FFF4C2" pointer-events="none"/></g>`);hit+=`<rect data-hutsee="${S.id}" x="${(p.x-28).toFixed(1)}" y="${(p.y-p.h-18).toFixed(1)}" width="56" height="${(p.h+36).toFixed(1)}" fill="rgba(0,0,0,0)" style="cursor:pointer"/>`}}
-  for(const p of townNpcs()){add(p.y,townNpcSVG(p));hit+=`<rect data-npc="${p.id}" role="button" aria-label="${p.n}" x="${p.x-22}" y="${p.y-106}" width="44" height="114" fill="rgba(0,0,0,0)"/>`}
+  for(const p of townNpcs()){if(RAID.on&&townMap==='church_hall'&&p.id==='theo')continue;add(p.y,townNpcSVG(p));hit+=`<rect data-npc="${p.id}" role="button" aria-label="${p.n}" x="${p.x-22}" y="${p.y-106}" width="44" height="114" fill="rgba(0,0,0,0)"/>`}/* 201.4：夜襲時神父不在 */
+  if(RAID.on&&townMap==='church_hall')hit+='<g id="raidG"></g>';
   bg.sort((a,b)=>a.y-b.y);fg.sort((a,b)=>a.y-b.y);
-  let fgs=fg.map(o=>o.h).join('');if(M.indoor)fgs+=`<rect x="0" y="0" width="${M.W}" height="${M.H}" fill="${M.floor==='stone'?'rgba(255,220,140,.08)':'rgba(255,160,70,.12)'}" pointer-events="none"/>`;/* 室內光：大殿偏亮帶金、其他暖色 */
+  let fgs=fg.map(o=>o.h).join('');if(RAID.on&&townMap==='church_hall')fgs+=`<rect x="-400" y="-400" width="${M.W+800}" height="${M.H+800}" fill="rgba(14,18,48,.5)" pointer-events="none"/><polygon points="130,50 175,50 330,700 150,700" fill="rgba(190,210,255,.16)" pointer-events="none"/><polygon points="720,50 765,50 760,700 580,700" fill="rgba(190,210,255,.12)" pointer-events="none"/>`;/* 201.4：夜晚、月光 */if(M.indoor)fgs+=`<rect x="0" y="0" width="${M.W}" height="${M.H}" fill="${M.floor==='stone'?'rgba(255,220,140,.08)':'rgba(255,160,70,.12)'}" pointer-events="none"/>`;/* 室內光：大殿偏亮帶金、其他暖色 */
   townFg=fgs;townFgOn=true;try{const F=document.getElementById('fgLayer');if(F)F.innerHTML=townFg}catch(e){}
   return ground+bg.map(o=>o.h).join('')+hit+townDoorBtn()+townArrowSVG()}
 /* ===== 206／207 結束 ===== */
@@ -6564,7 +6579,7 @@ function townNearest(m){if(townMap!=='plaza')return null;/* 206：子地圖沒�
 /* 點建築或 NPC：太遠就先走過去 */
 function townGo(kind,id){
   const m=marketMe;let x,y,fn;
-  if(kind==='npc'){const p=TOWN_NPC.find(q=>q.id===id);if(!p)return;const pm=p.map||'plaza';if(pm!==townMap){if(townMap!=='plaza')return;const bid=Object.keys(TOWN_IN_BLD).find(b=>TOWN_IN_BLD[b]===pm);if(!bid)return;return townGo('bld',bid)}x=p.x;y=p.y+24;fn=()=>openTown('npc:'+id)}/* 207：在室內的 NPC */
+  if(kind==='npc'){const p=TOWN_NPC.find(q=>q.id===id);if(!p)return;const pm=p.map||'plaza';if(pm!==townMap){if(townMap!=='plaza')return;const bid=Object.keys(TOWN_IN_BLD).find(b=>TOWN_IN_BLD[b]===pm);if(!bid){if(pm==='garden'){const e=TOWN_MAPS.plaza.exits.find(x=>x.to==='garden');walkTo(TOWN_MAPS.plaza.B.x0+6,e?e.c:432,()=>townMapGo('garden'),true)}return}return townGo('bld',bid)}x=p.x;y=p.y+24;fn=()=>openTown('npc:'+id)}/* 207：在室內的 NPC；201：城郊菜圃的阿土伯 */
   else{const b=TOWN_BLD.find(q=>q.id===id);if(!b)return;[x,y]=townFront(b);fn=TOWN_IN_BLD[id]?()=>townMapGo(TOWN_IN_BLD[id]):()=>openTown(id)}
   if(Math.hypot(m.x-x,m.y-y)<60)fn();else walkTo(x,y,fn,kind==='npc');
 }
@@ -6579,7 +6594,7 @@ function townSheetHTML(){
   const id=sheet.town;
   if(id==='appraisal')return `<h2>品種鑑定所</h2><p class="note">全服圖鑑、紀錄榜，也在這裡登記品種名。</p><div class="row2"><button class="btn primary" data-act="twdex" data-k="dex">品種圖鑑</button><button class="btn" data-act="twdex" data-k="boards">紀錄榜</button></div><button class="btn" data-act="twdex" data-k="cab">看我的收藏櫃</button>`+townNameHTML();
   if(id==='lounge')return `<h2>交誼廳</h2><p class="note">看看誰在線上、在留言板聊天，或去朋友的農場參觀。</p><button class="btn primary" data-act="twsoc">朋友與留言板</button>`;
-  if(id==='hall')return `<h2>農會</h2><p class="note">你現在 Lv ${myLv()}・${lvTitle(myLv())}，離下一級還差 ${xpNeed(myLv())-(state.xp||0)} 經驗。</p><h3>劇情任務</h3>`+mqCardHTML()+`<h3>阿土伯的委託</h3>`+cmListHTML('tu')+`<button class="btn" data-act="quests">看全部任務</button>`;
+  if(id==='hall')return `<h2>農會</h2><p class="note">你現在 Lv ${myLv()}・${lvTitle(myLv())}，離下一級還差 ${xpNeed(myLv())-(state.xp||0)} 經驗。</p><h3>劇情任務</h3>`+mqCardHTML()+`<h3>農會的委託</h3>`+cmListHTML('tu')/* 201.2：農會改由老李顧 */+`<button class="btn" data-act="quests">看全部任務</button>`;
   if(id==='dessert')return `<h2>甜點店</h2>`+(myLv()>=LV_COMM?favHTML('mei'):'')+`<h3>小莓姊的委託</h3>`+cmListHTML('mei');
   if(id==='notice'){const ls=newsRecent.slice(0,12);return `<h2>公布欄</h2><p class="note">全服最近的消息（新品種、稀有發現…）。</p>`+(ls.length?ls.map(d=>`<div class="regbox" style="margin:6px 0;padding:8px 10px"><div>${esc(d.text||'')}</div><div class="meta">${agoTxt(d.at)}</div></div>`).join(''):'<p class="note">目前還沒有消息。</p>')}
   if(String(id).startsWith('npc:')){const p=TOWN_NPC.find(q=>'npc:'+q.id===id);if(!p)return '';const b=TOWN_BLD.find(q=>q.id===p.at);
@@ -7877,7 +7892,7 @@ function regGo(e){
   try{ov.style.opacity='1'}catch(err){}
   setTimeout(()=>{regEnter(e.to,from);try{ov.style.opacity='0'}catch(err){}regBusy=false},150);
 }
-function regEnter(id,from){
+function regEnter(id,from){setTimeout(()=>{try{s201Field()}catch(e){}},900);/* 201 */
   const bk=exBiome;regMap=id;const p=regArrival(bk,id,from);exMe.x=p[0];exMe.y=p[1];moveTo=null;
   regSeen(bk)[id]=1;mqEv('map',{bk,id});try{fsMap(bk,id)}catch(e){}try{rsEnter(bk,id)}catch(e){}/* 118.3、134 */
   regFxClear();regSplitLast=-1;hoverItem=null;hoverWp=null;regLit={};thinN=0;thinIn=false;frogA=null;ringT=0;tgIn=-1;stnLast=-1;slickV=null;
@@ -9208,7 +9223,7 @@ function altGive(k,j,fi,n){if(fyHas(altWho(k)))return 0;const it=altL(k)&&altL(k
   let m=0;if(it.q){const ks=Object.keys(f.q).filter(q=>{const [s,p]=fqSplit(q);return it.q(s,p)&&f.q[q]>0}).sort((a,b)=>{const A2=fqSplit(a),B2=fqSplit(b);return A2[1]-B2[1]||A2[0]-B2[0]});for(const q of ks){if(m>=n)break;const t=Math.min(n-m,f.q[q]);f.q[q]-=t;if(f.q[q]<=0)delete f.q[q];m+=t}}else m=fruitTake(f,n);A.n[j]=(A.n[j]||0)+m;const sk=keyApp(f.k).skin;if(sk&&!A.cols.includes(sk))A.cols.push(sk);A.warned=1;if(!fCount(f))F.splice(fi,1);save();return m}
 function fyExSlots(k){return fruitsArr().map((f,i)=>({f,i})).filter(x=>x.f.c===k&&!x.f.b&&fCount(x.f)>=WAKE_EX_N&&keyApp(x.f.k).sp===EX_OF[k])}
 const colFruit=(k,col)=>fruitSVG(fruitPh({c:k,k:'b0|'+col+'|-',t:0}),k,96,1,'',true);
-function fyWakeAlt(k,col){const w=altWho(k);if(fyHas(w)||!altFull(k))return false;const A=altObj(k);if(!A.cols.includes(col))return false;A.via=1;const first=w!==k;/* 183.2：1-5 的番茄清單喚醒的是夢裡那一位 */
+function fyWakeAlt(k,col){if(k==='tomato'&&!FY_KEYS.some(fyHas)&&!state.pick201){toast('到教會大殿的祭壇前，選一位神之子');return false}/* 201.1c */const w=altWho(k);if(fyHas(w)||!altFull(k))return false;const A=altObj(k);if(!A.cols.includes(col))return false;A.via=1;const first=w!==k;/* 183.2：1-5 的番茄清單喚醒的是夢裡那一位 */
   fyApply(w,'wake',{col,sid:null,fruit:colFruit(k,col)});
   if(k==='melon'){(state.fyRun||(state.fyRun={})).melon=1;const F=fyMine();if(F.follow==='melon')F.follow=null}/* 122：她跑出去了（183.4：不再看劇情步驟，從祭壇喚醒就跑） */
   if(!A.seed){A.seed=1;const l=exGift(w);save();setTimeout(()=>{try{toast(`${fyN(w)}交給你一包「${l.name}」的種子，放進背包了`,5000)}catch(e){}},3600)}/* 121.3：照蘿瑪 */
@@ -10550,7 +10565,7 @@ function handleTap(e,cx,cy){
     if(scene==='farm'&&!viewing&&!g2){const [gx,gy]=gatePos();if(Math.hypot(w.x-gx,w.y-gy)<60){openGatePop();return}}/* 36.8 F */
     if(!g2&&!st2&&!ie2&&!we2){const [gx,gy]=gatePos();if(Math.hypot(w.x-gx,w.y-gy)<60){const go=()=>{scene==='farm'?goMarket():goFarm()},m=curMe();if(Math.hypot(m.x-gx,m.y-gy)<56)go();else walkTo(gx,gy-10,go);return}}/* 14h：大門直接點 */
     if(scene==='explore'){{const rg=t&&t.closest&&t.closest('[data-reg]');if(rg&&!we2&&!ie2){regTap(rg.dataset.reg);return}}if(we2){const w=exVisiblePlants().find(x=>x.key===we2.dataset.wp);if(w){const m=curMe();if(Math.hypot(w.x-m.x,w.y-m.y)<90)openWp(w);else walkTo(w.x,w.y+10,()=>openWp(w))}return}if(ie2){const it=exVisibleItems().find(x=>x.key===ie2.dataset.item);if(it){const m=curMe();if(Math.hypot(it.x-m.x,it.y-m.y)<80)pickItem(it);else walkTo(it.x,it.y+6,()=>pickItem(it))}}return}
-    if(scene==='market'){{const hg=t&&t.closest&&t.closest('[data-hutgo]'),hs=t&&t.closest&&t.closest('[data-hutsee]');if(hg){townDoorTap(hg.dataset.hutgo);return}if(hs){hutInspect(hs.dataset.hutsee);return}{const al=t&&t.closest&&t.closest('[data-altar]');if(al){altarTap(al.dataset.altar);return}}if(townMap!=='plaza'){const np=t&&t.closest&&t.closest('[data-npc]');if(np)townGo('npc',np.dataset.npc);return}}/* 206 */if(st2){openStall(+st2.dataset.stall);return}const bd2=t&&t.closest&&t.closest('[data-bld]'),np2=t&&t.closest&&t.closest('[data-npc]');if(np2){townGo('npc',np2.dataset.npc);return}if(bd2){townGo('bld',bd2.dataset.bld);return}return}
+    if(scene==='market'){{const hg=t&&t.closest&&t.closest('[data-hutgo]'),hs=t&&t.closest&&t.closest('[data-hutsee]');if(hg){townDoorTap(hg.dataset.hutgo);return}if(hs){hutInspect(hs.dataset.hutsee);return}{const rd=t&&t.closest&&t.closest('[data-raid]');if(rd){raidTap(+rd.dataset.raid);return}}/* 201.4 */{const al=t&&t.closest&&t.closest('[data-altar]');if(al){altarTap(al.dataset.altar);return}}if(townMap!=='plaza'){const np=t&&t.closest&&t.closest('[data-npc]');if(np)townGo('npc',np.dataset.npc);return}}/* 206 */if(st2){openStall(+st2.dataset.stall);return}const bd2=t&&t.closest&&t.closest('[data-bld]'),np2=t&&t.closest&&t.closest('[data-npc]');if(np2){townGo('npc',np2.dataset.npc);return}if(bd2){townGo('bld',bd2.dataset.bld);return}return}
     if(viewing){if(g2){const p=viewing.st&&viewing.st.plots[+g2.dataset.plot];if(p)openFriendPlot(p)}return}
     if(g2)openPlot(+g2.dataset.plot);
     return;
@@ -11566,7 +11581,7 @@ document.getElementById('resetBtn').onclick=e=>{
 };
 
 const TUT=[/* 116.5：只在序章 0-2 出現；和對白重複的句子、最後的總結拿掉 */
-  {t:'點一塊空田，種下阿土伯給的番茄種子。｜用左下角的搖桿走路，兩根手指捏合可以縮放。',ev:'plant'},
+  {t:'點一塊空田，種下老李給的番茄種子。｜用左下角的搖桿走路，兩根手指捏合可以縮放。',ev:'plant'},
   {t:'發芽了！作物會自己長大，不用澆水。\n等它開花吧。',ev:'flower'},
   {t:'開花了！點它選「自交」，用自己的花粉結果。｜很多株一起開花時，長按綠色按鈕選「自交」。',ev:'pollinate'},
   {t:'成熟了！點它收成。｜很多株一起成熟時，長按綠色按鈕選「收成」。',ev:'harvest'}
@@ -12383,12 +12398,12 @@ const VN_EMO={'笑':'smile','嚴肅':'serious'};
 const VN_SPD={slow:15,mid:30,fast:60,inst:0};
 function vnMark(who,kind,text){const id=++vnSeq;VN_REG.set(id,{who,kind,text:String(text)});if(VN_REG.size>80){const k=VN_REG.keys().next().value;VN_REG.delete(k)}return id}
 /* 名字 → 說話的人 */
-function vnWho(name){name=String(name||'').trim();if(!name)return null;if(name==='旁白')return {kind:'narr'};
+function vnWho(name){name=String(name||'').trim();if(!name)return null;if(name==='旁白')return {kind:'narr'};if(name==='{名}')return {kind:'npc',who:null,name:t201('{名}')};if(name==='{神}')return {kind:'fy',who:mq2First()};/* 201 */
   const p=TOWN_NPC.find(q=>q.n===name||q.n.startsWith(name)||name.startsWith(q.n.replace(/神父|所長|伯|哥|姨|姊|先生/g,'')));if(p)return {kind:'npc',who:p.id};
   for(const k of FY_KEYS){if(fyN(k)===name||FY_PID[k]===name)return {kind:'fy',who:k}}return {kind:'npc',who:null,name}}
 function vnParse(text,def){const out=[];let cur=def||{kind:'narr'},emo='normal';
   for(let raw of String(text).split('｜')){raw=raw.trim();if(!raw)continue;const m=/^([^：:（(]{1,8})(?:[（(](笑|嚴肅)[）)])?[：:](.*)$/.exec(raw);
-    if(m){const w=vnWho(m[1]);if(w){cur=w;emo=VN_EMO[m[2]]||'normal';raw=m[3].trim()}}out.push({...cur,emo,text:raw})}return out}
+    if(m){const w=vnWho(m[1]);if(w){cur=w;emo=VN_EMO[m[2]]||'normal';raw=m[3].trim()}}out.push({...cur,emo,text:t201(raw)})}return out}
 function vnName(pg){if(pg.kind==='narr')return '';if(pg.kind==='fy')return fyN(pg.who);const p=TOWN_NPC.find(q=>q.id===pg.who);return p?p.n:(pg.name||'')}
 /* 頭像：正式圖 assets/portrait/<id>_<表情>.png → normal → 替代（NPC 全身圖上 55%、神之子裁頭到胸口、主與僕人用 147 的頭像） */
 function vnFallback(pg){if(pg.kind==='fy'){const f=fyMine()[pg.who]||{evo:0},st=fyStg(f),src=fy2Src(pg.who,st),t=(FY_CROP2[pg.who]||[0.05,0.05,0.05])[st-1],hh=0.3,W=420/424/hh*100;return `<div class="vnfb fy" style="background-image:url('${src}');background-size:${W.toFixed(1)}% auto;background-position:50% ${(t/(1-hh)*100).toFixed(1)}%"></div>`}
@@ -12436,7 +12451,7 @@ function chapterCard(ch,then){const T=MQ2_CH[ch]||'';const [sm,big]=T.split('　
 function renderVnBox(){const el=document.getElementById('vnBox');if(!el||!state)return;const v=state.vnSpeed||'mid';el.innerHTML=`<h3>文字速度</h3><div class="row2">${[['slow','慢'],['mid','中'],['fast','快'],['inst','立即']].map(([k,n])=>`<button class="mini" data-vns="${k}" aria-pressed="${v===k}" style="${v===k?'background:var(--tabon);color:var(--tabtx)':''}">${n}</button>`).join('')}</div><p class="note">劇情對話一個字一個字打出來的速度。</p>`}
 try{document.getElementById('vnBox').addEventListener('click',e=>{const b=e.target.closest('[data-vns]');if(!b||!state)return;state.vnSpeed=b.dataset.vns;save();renderVnBox()})}catch(e){}
 /* ===== 163 結束 ===== */
-function npcTalk(id,text){const p=TOWN_NPC.find(q=>q.id===id),face=npcFaceHTML(p),pg=String(text).includes('｜');return `<!--vnS:${vnMark(id,'npc',text)}--><div data-pg class="npctalk${pg?' pgw':''}" style="display:flex;gap:12px;align-items:center;margin:6px 0">${face?face:`<svg width="64" height="88" viewBox="-20 -60 40 66" aria-hidden="true" style="flex:none">${avatarSVG(p.av,false,{view:'front'})}${p.glasses&&avUseV3(avNorm(p.av))?NPC_GLASSES:''}</svg>`}<p style="flex:1;margin:0"><b>${p.n}</b><br>${pgHTML(String(text).split('｜').map(x=>'「'+x+'」').join('｜'))}</p></div><!--vnE-->`}
+function npcTalk(id,text){const p=TOWN_NPC.find(q=>q.id===id),face=npcFaceHTML(p),pg=String(text).includes('｜');return `<!--vnS:${vnMark(id,'npc',text)}--><div data-pg class="npctalk${pg?' pgw':''}" style="display:flex;gap:12px;align-items:center;margin:6px 0">${face?face:`<svg width="64" height="88" viewBox="-20 -60 40 66" aria-hidden="true" style="flex:none">${avatarSVG(p.av,false,{view:'front'})}${p.glasses&&avUseV3(avNorm(p.av))?NPC_GLASSES:''}</svg>`}<p style="flex:1;margin:0"><b>${p.n}</b><br>${pgHTML(t201(text).split('｜').map(x=>'「'+x+'」').join('｜'))}</p></div><!--vnE-->`}
 /* --- 29 劇情任務 --- */
 const MQ=[null,
  {npc:'tu',lv:1,t:'第一株番茄',open:'年輕人，來啦！這塊地交給你。先種一株番茄看看，等它結果，記得留種子喔。',hint:'種下番茄 → 收成（會拿到果實和種子）',done:'不錯嘛！種子留好，明年才有得種。這就是當農夫的第一課。',rw:{c:100,acc:2,deco:'hay_bales'}},
@@ -12514,26 +12529,28 @@ function mqCardHTML(){
    state.mq2={i:第幾步（MQ2 的索引，9＝做完）,st:0 還沒接／1 進行中,f:{trade},alt:看過祭壇,yw:草原第一包黃番茄已經藏了花紋}。接下要找那個 NPC（城鎮的 NPC 面板）；
    完成條件用實際狀態判斷（ok），已經達成的一接下就完成。接下 10 經驗、完成 100。舊的劇情第 5–11 章變成支線「阿凱的委託：失落的種子庫」（state.mq 照舊，第 1–4 章拿掉）。
    0-2 給的紅番茄、草原第一包黃番茄各藏一份花紋（pw=[1,0]）；0-2 那包的第一株 3 分鐘成熟（lot.qf→plot.qf）。 */
-const MQ2_CH=['序章　醒來','第一章　蘿瑪的清單','第二章　銀霧白樺林','第三章　珍珠潟湖'];
+const MQ2_CH=['序章　醒來的地方','第一章　學會看懂生命','第二章　看不見的裂縫','第三章　追查與記號'];/* 201 */
 const altN=j=>{try{return (altObj('tomato').n[j]||0)>=ALT_N}catch(e){return false}};
 const MQ2=[
- {id:'0-1',ch:0,npc:'theo',t:'醒來',tgt:'spring',hint:'和提歐神父說話 → 看看祭壇',open:'你醒了。別急，慢慢坐起來。｜這裡是穗光教會。是我們把你請過來的，對不起，沒能先問過你。｜這個世界的魔獸愈來愈多。能壓住牠們的九位神之子，幾百年前全都變回果實，睡著了。｜我們試了幾百年，叫不醒任何一位。所以才想請別的世界的人來試試。｜祭壇上那顆番茄，就是其中一位。你去看看吧。',done:'上面寫的東西，我們一樣都種不出來。｜農場的阿土伯會教你怎麼種。先從最簡單的開始。',rw:{},ok:()=>!!state.mq2.alt},
- {id:'0-2',ch:0,npc:'tu',t:'第一株番茄',tgt:'farm',hint:'回農場，種下番茄 → 等它成熟 → 收成',open:'你就是教會請來的人？來，這塊地給你。｜這包番茄種子拿去。種下去，等它結果，收起來就好。',done:'三顆果實、一包種子，一株就這麼多。｜果實拿去用，種子留著下次種。',rw:{c:100,deco:'scarecrow'},ok:()=>!!state.mq2.f.hv,acc:()=>mq2Seed()},
- {id:'0-3',ch:0,npc:'theo',t:'祭壇亮了',tgt:'spring',hint:'到祭壇，獻上紅色番茄',open:'紅色的番茄？清單第一項就是這個。｜放到祭壇上試試看。',done:'亮了……幾百年來，這是第一次。｜剩下的四項，就拜託你了。',rw:{acc:3},ok:()=>altN(0)||fyHas(mq2First())},
- {id:'0-4',ch:0,npc:'wien',t:'研究所的客人',tgt:'npc',hint:'城鎮入口有人在等你',open:'你好，我是分子育種研究所的維恩。聽說教會請來了客人，忍不住過來看看。｜你們那邊的人，種東西的方法和我們很不一樣。有空來找我聊聊。｜這個給你，讓植物長快一點的。我們所裡做的。',done:'',tip:'生長加速劑：用一次，少等 10 分鐘。',rw:{acc:3},ok:()=>true},
- {id:'1-1',ch:1,npc:'tu',t:'黃色的番茄',tgt:'explore',hint:'去翠風草原找黃色的番茄，帶種子回來種 → 獻上 3 顆',open:'黃色的？田裡沒有，草原上倒是很多。｜野外的植物可以直接採種子。帶回來種就是你的了。',done:'去草原的路上，有沒有看到被踩爛的田？｜魔獸一年比一年多。教會守了幾百年，也沒守出什麼。……這話別跟神父說。',rw:{c:100},ok:()=>altN(1)||fyHas(mq2First())},
- {id:'1-2',ch:1,npc:'tu',t:'黃加紅',tgt:'farm',hint:'把黃番茄的花粉拍到紅番茄上 → 種出它們的孩子 → 獻上 3 顆',open:'黃加紅？我種了一輩子，都是收什麼種什麼。｜沒想過可以挑兩株來配。你試給我看。',done:'全部都是同一個顏色，一株不差。｜有意思。',rw:{c:150},ok:()=>altN(2)||fyHas(mq2First())},
- {id:'1-3',ch:1,npc:'mei',t:'形狀不一樣',tgt:'npc',hint:'拿 3 顆番茄和小莓姊換種子 → 種出來 → 獻上 3 顆',open:'哈囉～你是教會的客人對吧？｜我家後院的番茄形狀跟別人不一樣喔。拿 3 顆你種的來，我跟你換種子！',done:'以後想要什麼特別的，也可以來找我換～',rw:{c:100,fav:['mei',3]},ok:()=>altN(3)||fyHas(mq2First())},
- {id:'1-4',ch:1,npc:'tu',t:'藏起來的花紋',tgt:'farm',hint:'讓黃＋紅的番茄自己結種子 → 種出下一代 → 找到有花紋的，獻上 3 顆',open:'有花紋的番茄？我沒看過。｜不過你那個黃加紅的，讓它自己結種子看看。我有個感覺。',done:'這哪來的？爸媽明明都沒有花紋。｜原來是藏在種子裡，隔了一代才跑出來。',rw:{c:200,acc:3},ok:()=>altN(4)||fyHas(mq2First())},
- {id:'1-5',ch:1,npc:'theo',t:'祭壇亮了',tgt:'spring',hint:'到祭壇，選一個顏色',open:'五項都亮了。｜選一個你獻過的顏色。蘿瑪大人會帶著那個顏色醒來。',done:'',roma:'哈啊——睡得好飽！｜現在是什麼時候？……幾百年？｜……哈哈，那還真是睡過頭了。｜是你把我叫醒的吧？這個給你，我的番茄。別人種不出這個形狀。',theo2:'蘿瑪大人……歡迎回來。｜還有八位。不急，照你的步調來。',rw:{c:300,deco:'sign',title:'見習育種家'},ok:()=>fyHas(mq2First())},/* 183.2：醒來的是夢裡那一位（roma、theo2 只給沒有 anchor 的舊存檔） */
+ /* 201（21m）：序章、第一章照《第一季劇情任務 v3》。格數和舊的一樣（0-1～1-5 共 9 格），舊存檔的位置不用動；紅番茄併進 1-1，0-3 改成城郊菜圃 */
+ {id:'0-1',ch:0,npc:'theo',t:'醒來的地方',tgt:'spring',hint:'和提歐神父說話 → 看看大殿裡的祭壇',open:'醒了嗎？別急，慢慢來。｜這裡是穗光教會。是我們用召喚的魔法把你帶來的。｜沒先問過你的意思，真的很抱歉。｜但我們已經沒有別的辦法了。｜四十幾年前，九位神之子變回了果實。｜從那之後，魔獸一年比一年不對勁。｜我們試了四十幾年，研究所的維恩所長也試了，｜叫不醒任何一位。｜四十幾年前來過的渡界者，懂得怎麼讓作物變樣。｜所以，我們把希望放在你身上。｜祭壇上的清單，就是叫醒神之子的方法。｜先去農會拿種子吧，老李會照顧你。',done:'',rw:{},ok:()=>!!state.mq2.alt},
+ {id:'0-2',ch:0,npc:'li',t:'農會',tgt:'npc',hint:'到農會找老李拿種子 → 回農場種下 → 收成',open:'渡界者大人！種子拿去，鋤頭也拿去！｜翻土、澆水、收成，留種再種，就這樣！｜{名}：如果想讓果實長出條紋，或把兩種顏色合在一起呢？｜農會老李：條紋？合在一起？｜果實長怎樣，看女神賞臉跟天氣啦。收什麼種什麼，規矩！｜提歐神父：傳統的做法裡確實沒有這些。｜你來自不同的地方，或許能找到自己的方法。先去農場試試吧。',done:'三顆果實、一包種子，一株就這麼多。｜果實拿去用，種子留著下次種。收什麼種什麼！',rw:{c:100,deco:'scarecrow'},ok:()=>!!state.mq2.f.hv,acc:()=>mq2Seed()},
+ {id:'0-3',ch:0,npc:'tu',t:'城郊菜圃',tgt:'npc',hint:'去城外走走：城鎮西邊的城郊菜圃',open:'{名}：（自言自語）光靠留種，清單要湊到什麼時候……｜{名}：得挑有隱性特徵的親本來配才行。｜阿土伯：兩株一模一樣的東西種在一起，種一百年也一樣啦。｜這裡的人連花粉怎麼傳都不知道。｜跟他們講挑親本，還以為你在唸咒。｜……等等。你剛剛說「隱性特徵」？｜這個詞，你從哪聽來的？｜{名}：我本來就不是這個世界的人。以前多少學過一點遺傳。｜阿土伯：……果然。又一個被那群神棍拉進來的倒楣鬼。｜聽好。我只是個在城外種菜的老頭，跟農會沒關係。｜你會什麼，別在城裡到處講。｜尤其是教會那些笑面虎，還有研究所那幫人。｜{名}：教會不是希望我們幫忙嗎？｜阿土伯：幫忙？知道得太多、露得太快，｜怎麼死的都不知道。｜想把那張清單種出來，就趁沒人的時候過來。｜老頭子教你幾招。別把我抖出去。',done:'',rw:{acc:3},ok:()=>true},
+ {id:'0-4',ch:0,npc:'wien',t:'所長來訪',tgt:'npc',hint:'去分子育種研究所找所長維恩',open:'你就是新來的渡界者吧？我是分子育種研究所的維恩。｜有空來研究所坐坐。',done:'',tip:'生長加速劑：用一次，少等 10 分鐘。',rw:{acc:3},ok:()=>true},
+ {id:'1-1',ch:1,npc:'li',t:'紅色和黃色的番茄',tgt:'explore',hint:'獻上紅色番茄 → 去翠風草原找黃色的番茄，帶種子回來種 → 獻上 3 顆',open:'清單上的黃色番茄？田裡沒有，草原上黃的倒是多！｜野外的植物可以直接採種子，帶回來種就是你的了。｜紅的你已經有啦，先拿去祭壇獻上吧！',done:'去草原的路上小心啊，魔獸最近凶得很。',rw:{c:100},ok:()=>(altN(0)&&altN(1))||fyHas(mq2First())},
+ {id:'1-2',ch:1,npc:'tu',t:'黃加紅',tgt:'farm',hint:'把黃番茄的花粉拍到紅番茄上 → 種出它們的孩子 → 獻上 3 顆',open:'黃加紅？城裡那些人只會收什麼種什麼。｜把黃番茄的花粉拍到紅番茄上，種出它們的孩子。｜配出來不一樣，才有意思。',done:'全部都是同一個顏色？哼，看到沒。｜配出來不一樣，才有意思。',rw:{c:150},ok:()=>altN(2)||fyHas(mq2First())},
+ {id:'1-3',ch:1,npc:'mei',t:'形狀不一樣',tgt:'npc',hint:'拿 3 顆番茄和小莓姊換種子 → 種出來 → 獻上 3 顆',open:'哈囉～你就是新來的渡界者對吧？｜我家後院的番茄形狀跟別人不一樣喔。拿 3 顆你種的來，我跟你換種子！',done:'以後想要什麼特別的，也可以來找我換～',rw:{c:100,fav:['mei',3]},ok:()=>altN(3)||fyHas(mq2First())},
+ {id:'1-4',ch:1,npc:'tu',t:'藏起來的花紋',tgt:'farm',hint:'讓黃＋紅的番茄自己結種子 → 種出下一代 → 找到有花紋的，獻上 3 顆',open:'有花紋的？你那個黃加紅的，讓它自己結種子看看。｜兩株都沒有，後代不一定沒有。',done:'看吧。藏起來的東西，總有一天會冒出來。｜……別在城裡說是我教的。',rw:{c:200,acc:3},ok:()=>altN(4)||fyHas(mq2First())},
+ {id:'1-5',ch:1,npc:'theo',t:'喚醒',tgt:'npc',hint:'到教會大殿的祭壇獻滿清單 → 點一座祭壇，選要喚醒的神之子',open:'四十幾年了……終於有人做到了。｜請吧，把果實獻上祭壇。',done:'',roma:'1',rw:{c:300,deco:'sign',title:'見習育種家'},ok:()=>fyHas(mq2First())},/* 201.1c：醒來的是在祭壇前選的那一位 */
+ {id:'1-6',ch:1,npc:'theo',t:'大殿夜襲',tgt:'npc',hint:'回教會大殿',open:'',done:'',rw:{c:200},ok:()=>!!state.mq2.f.raid},/* 201.4 */
  /* 121（18l）：第二章「銀霧白樺林」。2-2、2-3 是同一步裡的兩件事（subs），可以同時接、先後不拘；兩件都做完才到 2-4。已經喚醒傑柯的人每一步一接下就完成 */
  {id:'2-1',ch:2,npc:'theo',lv:10,t:'獵人聚落',tgt:'explore',hint:'去銀霧白樺林的獵人聚落，找兩位領頭人',open:'第二位是南瓜。教會的紀錄說，他的果實在白樺林的獵人聚落。｜那是他們代代傳下來的東西。肯不肯借，我沒有把握。｜麻煩你跑一趟。別提教會的名字比較好談。',narr:'兩邊都說果實歸自己管，誰也不肯先鬆口。',rw:{},ok:()=>{const t=state.mq2.f.t1||{};return !!(t.yue&&t.jin)||fyHas('pumpkin')}},
  {id:'2-2+3',ch:2,t:'兩邊各做一件事',subs:[
    {id:'2-2',npc:'yue',t:'過冬的南瓜',hint:'種出大顆的南瓜，交 6 顆給岳哥',open:'你會種東西？那正好。｜今年樹砍得少，換不到糧。我要大顆的南瓜，能放整個冬天的那種。｜六顆。種得出來，果實的事我這邊不擋你。',done:'這麼大顆……你怎麼弄的？挑大的留種？｜就這樣？我們怎麼沒想過。｜行，我說話算話。',rw:{c:300,acc:3},give:{c:{crop:'pumpkin',minSize:3},need:6}},
    {id:'2-3',npc:'jin',t:'霧裡的路標',hint:'育出白色的南瓜，交 3 顆給槿姨 → 沿著路標走到底',open:'霧季快到了。每年這時候都有人在林子裡迷路。｜去年有個孩子差點回不來。｜白色的南瓜掛在路口，霧裡遠遠就看得到。給我三顆。｜林子裡沒有全白的。帶白的那種，讓它自己結種子，下一代就有。',after:'掛上去了。你沿著走一趟，看看霧裡認不認得出來。',kid:'我剛剛看不到路，看到白白的就一直跟著走。這是你掛的嗎？',done:'……真的有用。｜你種的東西，比我們的火把管用。｜果實的事，我不擋你。伐木的那邊你自己去說。',rw:{c:300,acc:3},give:{c:{crop:'pumpkin',skin:'white'},need:3}}]},
- {id:'2-4',ch:2,npc:'yue',npc2:'jin',t:'借來的果實',tgt:'explore',hint:'回聚落 → 把果實帶回教會的祭壇',hint2:'把永生的果實帶回教會的祭壇',open:'她點頭了？……真的假的。',jinL:'他也點頭了？哼。',give2:'拿去吧。不是給教會，是借給你。',doneNpc:'theo',done:'……回來了。幾百年沒有離開過那片林子的東西。｜祭壇亮了。清單在上面。',rw:{c:700,title:'調停的人'},/* 183.4：2-6 的 500 金幣、稱號搬來 */ok:()=>altLitOk('pumpkin')||fyHas('pumpkin')},
+ {id:'2-4',ch:2,npc:'yue',npc2:'jin',t:'借來的果實',tgt:'explore',hint:'回聚落 → 把果實帶回教會的祭壇',hint2:'把永生的果實帶回教會的祭壇',open:'她點頭了？……真的假的。',jinL:'他也點頭了？哼。',give2:'拿去吧。不是給教會，是借給你。',doneNpc:'theo',done:'……回來了。四十幾年沒有離開過那片林子的東西。｜祭壇亮了。清單在上面。',rw:{c:700,title:'調停的人'},/* 183.4：2-6 的 500 金幣、稱號搬來 */ok:()=>altLitOk('pumpkin')||fyHas('pumpkin')},
  /* 122（18m）：第三章「珍珠潟湖」。老舵在青蛙石像那張（漁村的小祠）；所長在 3-3、3-4 期間站在同一張；線索、藏身處、記號都是走到附近就算 */
- {id:'3-1',ch:3,npc:'theo',lv:20,t:'漁村的小祠',tgt:'explore',hint:'去珍珠潟湖的漁村，看看小祠',open:'第三位是甜瓜。果實供在潟湖漁村的小祠裡，幾百年了，一直好好的。｜這次應該最順利。去請村長借就行。',rw:{},ok:()=>!!((state.mq2.f.t1||{}).duo)||fyHas('melon')},
+ {id:'3-1',ch:3,npc:'theo',lv:20,t:'漁村的小祠',tgt:'explore',hint:'去珍珠潟湖的漁村，看看小祠',open:'第三位是甜瓜。果實供在潟湖漁村的小祠裡，四十幾年了，一直好好的。｜這次應該最順利。去請村長借就行。',rw:{},ok:()=>!!((state.mq2.f.t1||{}).duo)||fyHas('melon')},
  {id:'3-2',ch:3,npc:'duo',t:'線索',tgt:'explore',hint:'在潟湖找線索',hintF:()=>`在潟湖找線索（已找到 ${CLUES.filter(c=>(state.mq2.f.cl||{})[c.id]).length}／3）`+((state.mq2.f.cl||{}).theo&&!(state.mq2.f.cl||{}).dock?'，再去神父說的潟湖口看一次':''),open:'你不信？那你自己查。查到是他們，我要一個交代。',done:'腳印、砍過的根、藏起來的船……可是人呢？果實呢？｜查了半天，還是不知道是誰。我還是覺得是研究所。',rw:{},ok:()=>{const c=state.mq2.f.cl||{};return (CLUES.every(x=>c[x.id])&&!!c.dock)||fyHas('melon')}},
  {id:'3-3',ch:3,npc:'wien',reg:1,t:'追蹤的儀器',tgt:'explore',hint:'種出綠色的甜瓜，交 3 顆給所長',open:'村長，我聽說了，所以自己過來。採樣船的紀錄我都帶來了，昨晚船不在潟湖。｜不過光說沒有用，把東西找回來才算數。｜永生的果實會留下很淡的光。我們所裡的儀器追得到，但要先用同一種作物校準。｜你能種三顆綠色的甜瓜給我嗎？愈快愈好。',done:'夠了。……有了。紅樹林最裡面，水道的盡頭。｜我腿腳慢，你先去。小心一點。',rw:{c:300,acc:3},give:{c:{crop:'melon',skin:'green'},need:3},ok:()=>!!state.mq2.f.ok||fyHas('melon')},
  {id:'3-4',ch:3,npc:'wien',reg:1,t:'藏身處',tgt:'explore',hint:'去所長指的地方 → 把果實帶回教會',hint2:'把果實拿回漁村給老舵看',hint3:'把果實帶回教會的祭壇',open:'水道的盡頭在倒木那一帶。我隨後就到。',back:'真的找回來了……｜所長，我說話太快。對不住。',backW:'沒事。換作是我，也會先懷疑外地人。｜那個記號我也不認得。我回去查查看。',doneNpc:'theo',done:'找回來了，太好了。｜……我指的那個地方什麼都沒有吧。對不起，害你白跑一趟。',rw:{c:800,title:'把果實找回來的人'},/* 183.4：3-6 的 500 金幣、稱號搬來 */ok:()=>altLitOk('melon')||fyHas('melon')},
@@ -12554,7 +12571,7 @@ const mq2Obj=()=>{if(!state.mq2||typeof state.mq2!=='object')state.mq2={i:0,st:0
 const mq2Cur=()=>state&&state.mq2?MQ2[state.mq2.i]||null:null;
 /* 0-2 的紅番茄：藏一份花紋、不再藏愛心；第一株 3 分鐘成熟 */
 function mq2SeedGeno(){const g=makeOriginal({bt:0,color:'red',pf:0});g.b=[0,0];g.sp=[0,0];g.pw=[1,0];g.c=['red','red'];g.pc=['red','red'];g.pf=[0,0];g.n.size=numLoci(0.5,0.05);g.n.perf=numLoci(0.6,0.05);return g}
-function mq2Seed(){const g=mq2SeedGeno();state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop:'tomato',name:'阿土伯的紅番茄',source:'任務種子',m:g,f:clone(g),count:0,seeds:Array.from({length:SEED_N},()=>clone(g)),gen:0,germ:1,qf:3,ptier:phen(g,'tomato').tier});lotNew(state.lots[0],'q');toast('收下一包紅番茄種子，放進背包了',3500)}
+function mq2Seed(){const g=mq2SeedGeno();state.lots.unshift({id:state.nextLot++,lid:'L'+(state.nextLid++),crop:'tomato',name:'農會的紅番茄',source:'任務種子',m:g,f:clone(g),count:0,seeds:Array.from({length:SEED_N},()=>clone(g)),gen:0,germ:1,qf:3,ptier:phen(g,'tomato').tier});lotNew(state.lots[0],'q');toast('收下一包紅番茄種子，放進背包了',3500)}
 /* 草原第一包黃番茄：藏一份花紋（只有第一次） */
 function mq2Wild(w,g){try{const M=mq2Obj();if(M.yw||w.crop!=='tomato'||w.bk!=='grass')return g;const a=appParts(g);if(a.skin!=='yellow'||a.pat)return g;g.pw=[1,0];M.yw=1;M.ywNow=1}catch(e){}return g}
 /* 每一顆都是這個基因型（不是自交的後代），這樣每一株都藏一份花紋 */
@@ -12612,6 +12629,7 @@ function mq2Done(){const M=mq2Obj(),s=mq2Cur();if(!s)return;const r=s.rw||{},got
   M.i++;M.st=0;M.f={};
   if(s.id==='0-2'&&state.tut){state.tut.done=true}
   if(M.i>=1&&M.i<8&&fyHas(mq2First())){M.i=8;M.st=1}/* 116.4：已經用第 113 節喚醒蘿瑪的人，0-1 之後直接到 1-5 完成 */
+  if(MQ2[M.i]&&MQ2[M.i].id==='1-6'&&M.st===0){M.st=1;M.f={};setTimeout(raidStart,600)}/* 201.4：夜襲接著開始 */
   const nx=mq2Cur();
   VN_STORY=1;noteOpen(`<h2>完成：${esc(s.t)}</h2>`+body+`<p class="note">得到：${got.join('、')}</p>`+(nx?(M.st===1?'':`<p class="note">下一步「${esc(nx.t)}」：${esc(nx.hint)}${nx.lv&&myLv()<nx.lv?`（Lv ${nx.lv} 開放）`:''}</p>`):`<p class="note">${MQ2_CH[3]}完成了！下一章「第四章　櫻花之丘」之後開放。</p>`));
   addXp(100,true);save();try{renderAll();renderOrdersBtn();renderMqLine();tutRender()}catch(e){}
@@ -12636,23 +12654,97 @@ function mq2CardHTML(np){const M=state.mq2||{},s=mq2Cur();
   if(s.id==='2-4'){const t=M.f.t4||{};h+=`<p class="note">${t.yue?'✔':'・'} 岳哥　${t.jin?'✔':'・'} 槿姨　${M.f.fruit?'✔ 拿到永生的果實（南瓜）':''}</p>`}
   return h+`<p class="note">完成後得到 100 經驗${s.rw&&s.rw.c?`和 ${s.rw.c} 金幣`:''}。</p></div>`}
 const mq2HintOf=s=>{const M=state.mq2||{},f=M.f||{};if(s.hintF)return s.hintF();if(s.id==='2-4'&&f.fruit)return s.hint2;if(s.id==='3-4'&&f.fruit)return f.back?s.hint3:s.hint2;if(s.id==='3-6'&&fyHas('melon')&&fyRunning('melon'))return s.hint2;return s.hint};
+/* ===== 201（21m）：第一季劇情改版（第一次：序章、第一章）=====
+   渡界者（舊稱轉生者）；序章的夢拿掉，第一位神之子改在大殿祭壇前選（蘿瑪的清單獻滿 → 九座祭壇一起發光、各說一句 → 點一座、確認 → 光落下／偏折 → 選光芒顏色喚醒）。
+   台詞裡的 {名}＝玩家名字、{神}＝第一位神之子（vnWho／vnParse／npcTalk／fyTalkHTML 都認）。
+   第一章結尾「大殿夜襲」（1-6）：大殿裡專用的小戰鬥，不用野外的怪物系統：4 個黑衣人（草原一般怪 ×1.5）、點黑衣人＝鎖定它、走到旁邊自動打；第一位神之子每 1.4 秒打最近的一隻；玩家血量最低剩 1。
+   打倒 3 個 → 演出（搶走古籍、煙霧彈）→ 1-6 完成。舊存檔已經過第一章的人，第一次登入演一次回顧（rc201）。 ===== */
+const t201=s=>String(s==null?'':s).replace(/\{名\}/g,()=>{try{return myName()}catch(e){return '你'}}).replace(/\{神\}/g,()=>{try{return fyN(mq2First())}catch(e){return '神之子'}});
+const ALTAR_VOICE={tomato:'……還有人在嗎？我還不想就這樣結束。',pumpkin:'……有意思。你會選誰呢？',melon:'好悶喔……誰來把我放出去啦。',strawberry:'睡得太久了……有人願意喚我一聲嗎？',chili:'可惡，動不了……誰來幫我一把！',zucchini:'……別管我。……算了，你要來就來。',broccoli:'……大家，還平安嗎？',eggplant:'……星星在動。有人要來了。',corn:'……喂，有人聽得到嗎？我還有事沒做完。'};
+const WAKE_L={tomato:'呼啊——睡了好久！｜是你把本公主叫醒的吧，{名}？膽子不小嘛。以後本公主罩你啦！',
+ pumpkin:'（拍拍燕尾服上不存在的灰）真遺憾，讓神父大人失望了呢。｜不過 {名}，既然你走進了這場戲，可別中途退場喔。',
+ melon:'哇，終於出來了！悶死我了！｜{名}，你可別隨便死在半路上！還有，誰都不准把我關在教會裡！',
+ strawberry:'（扇子掩嘴輕笑）真是費了好大一番工夫才喚醒呢……｜{名}，往後可要好好陪著人家喔？',
+ chili:'哈！終於醒了！把我叫回來的就是你吧，{名}？｜夠有膽！走，現在就去大幹一場！',
+ zucchini:'（皺眉扶額）……吵死了。剛醒，全身都沒力氣。｜……謝了，{名}。別讓我說第二次。',
+ broccoli:'（單膝微跪，緩緩站直）{名}，謝謝你。｜這份恩情，我用守護來還。從現在起，我們並肩作戰。',
+ eggplant:'（望向彩繪玻璃外的星光）星辰果然沒有說錯……｜{名} 的靈魂很溫暖。謝謝你來找我。',
+ corn:'（活動手腕）重新啟動，完成！你找對人了嘛，{名}。｜走吧夥伴，這世界還有一堆地方等著修理呢！'};
+const RAID_L={tomato:'趁本公主剛睡醒搞偷襲？太卑鄙了！｜{名}，一起把他們趕出去！',pumpkin:'哎呀呀，一開場就有不速之客？｜{名}，陪我跟他們玩玩吧——別搶我的風頭喔。',melon:'吵死了！本小姐剛醒就敢來惹我？｜{名}，跟上，讓他們見識一下！',strawberry:'真是不解風情的客人……｜{名}，幫我把這些弄髒大殿的傢伙請出去吧。',chili:'剛醒來就有架打？正合我意！｜{名}，跟緊我，別被甩在後頭！',zucchini:'……煩死了。趁人虛弱動手，真難看。｜喂，{名}，別拖我後腿。',broccoli:'退到我身後，{名}。｜就算力量還沒恢復，也絕不讓他們碰你一根手指。',eggplant:'暗影正在侵蝕這裡……｜{名}，借我一點時間，我們一起驅散他們。',corn:'一醒來就有突發狀況？沒問題，｜看我跟 {名} 把這群傢伙拆個精光！'};
+/* {神} 的每一格都要帶名字，否則會接在前一個人後面 */
+const fyLines=(txt)=>String(txt).split('｜').map(x=>'{神}：'+x).join('｜');
+/* ---- 祭壇前選第一位 ---- */
+const pick201=()=>{try{return !!state&&!FY_KEYS.some(fyHas)&&altFull('tomato')&&!altObj('tomato').l2&&!state.pick201}catch(e){return false}};
+function pickAltar201(k){if(!FY[k])return;if(!confirm(`喚醒${fyN(k)}？`))return;state.anchor=k;state.pick201=1;save();try{renderWorld()}catch(e){}
+  beam201(k,()=>{try{sheet={fy:{m:'alt',k:'tomato'}};renderSheet();openSheetUI()}catch(e){}})}
+/* 光：從上面落到蘿瑪的祭壇；選別人的話在半空折一下，射進那一座 */
+function beam201(k,then){let done=false;const fin=()=>{if(done)return;done=true;try{ov.remove()}catch(e){}then&&then()};let ov=null;
+  try{const ri=ALTAR_K.indexOf('tomato'),ti=ALTAR_K.indexOf(k),[rx,ry]=altarPos(ri),[tx,ty]=altarPos(ti),a=w2s(rx,ry-ALTAR_H),b=w2s(rx,ry-ALTAR_H-150),c=w2s(tx,ty-ALTAR_H*0.6);
+    if(!a||!b||!c)throw 0;const W=innerWidth,H=innerHeight,top=[a[0],-20];
+    const pts=k==='tomato'?[top,a]:[top,b,c],d='M'+pts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L'),end=pts[pts.length-1];
+    ov=document.createElement('div');ov.className='beam201';ov.setAttribute('aria-hidden','true');
+    ov.innerHTML=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><path class="bm1" d="${d}" pathLength="100"/><path class="bm2" d="${d}" pathLength="100"/><circle class="bmf" cx="${end[0].toFixed(1)}" cy="${end[1].toFixed(1)}" r="40"/></svg>`;
+    document.body.appendChild(ov);requestAnimationFrame(()=>ov.classList.add('go'));setTimeout(fin,1900)}catch(e){fin()}}
+/* ---- 大殿夜襲 ---- */
+const RAID={on:false,foes:[],lock:-1,t:0,at:0,fy:0,raf:0};
+const RAID_HP=MON_RHP.grass*1.5,RAID_DMG=[MON_RDMG.grass[0]*1.5,MON_RDMG.grass[1]*1.5];
+const raidPending=()=>{try{const s=mq2Cur(),M=state.mq2;return !!(s&&s.id==='1-6'&&M.st===1&&!M.f.raid)}catch(e){return false}};
+const RAID_PRE=()=>'旁白：（警鐘響了。黑袍、戴著無面白面具的人闖進大殿。）｜黑衣人：趁祂還沒恢復，帶走！｜不能讓獄卒回去看守真神！｜'+fyLines(RAID_L[mq2First()]||RAID_L.tomato);
+const RAID_POST='旁白：（領頭的黑衣人撞翻書架，搶走了一本厚厚的書——《八果實下落古籍》。）｜黑衣人：算你們走運……沒有這本古籍，你們別想找到剩下的果實！｜旁白：（煙霧彈炸開。煙散了，黑衣人全都不見了。）｜提歐神父：（帶著守衛趕到）都怪我……沒有那份紀錄，其餘八顆果實恐怕難找了。｜{神}：……還沒輸。我們九個同源，｜{神}：我感覺得到別的果實在哪——北邊那片起霧的林子。｜{名}：那就搶在他們前面。';
+function raidStart(){if(RAID.on||!raidPending()||scene!=='market'||townMap!=='church_hall')return;
+  if(VN||sheet||noteQ.length||(typeof uiBusy==='function'&&uiBusy())){setTimeout(raidStart,800);return}
+  try{vnPlay(vnParse(RAID_PRE(),{kind:'narr'}),{story:1,onEnd:raidGo})}catch(e){raidGo()}}
+function raidGo(){if(RAID.on||!raidPending())return;RAID.on=true;RAID.lock=-1;RAID.t=0;RAID.at=0;RAID.fy=performance.now()+1200;
+  RAID.foes=[[380,1040],[520,1040],[300,980],[600,980]].map(([x,y])=>({x,y,hp:RAID_HP,max:RAID_HP,cd:0,wind:0,dead:false,hit:0}));
+  try{pHP=pMax();renderHP()}catch(e){}document.body.classList.add('raid201');try{renderWorld()}catch(e){}
+  toast(`點黑衣人就會攻擊它；${fyN(mq2First())}會一起打`,4200);RAID.raf=requestAnimationFrame(raidLoop)}
+function raidDeal(f,d,fy){const now=performance.now();f.hp-=d;f.hit=now;try{dmgShow(f.x,f.y-72,Math.round(d),{})}catch(e){}
+  if(fy)f.fyHit=now;if(f.hp<=0&&!f.dead){f.dead=true;if(RAID.foes[RAID.lock]===f)RAID.lock=-1}}
+function raidTap(i){const f=RAID.foes[i];if(!RAID.on||!f||f.dead)return;RAID.lock=i;const m=marketMe;if(Math.hypot(m.x-f.x,m.y-f.y)>70)try{walkTo(f.x,f.y+24)}catch(e){}}
+function raidLoop(){if(!RAID.on)return;if(scene!=='market'||townMap!=='church_hall'){raidAbort();return}
+  const now=performance.now(),dt=RAID.t?Math.min(0.05,(now-RAID.t)/1000):0;RAID.t=now;const me=marketMe;
+  if(!VN)for(const f of RAID.foes){if(f.dead)continue;const dx=me.x-f.x,dy=me.y-f.y,d=Math.hypot(dx,dy)||1;
+    if(f.wind){if(now>=f.wind){f.wind=0;f.cd=now+1500;if(d<60){const dm=Math.round(RAID_DMG[0]+Math.random()*(RAID_DMG[1]-RAID_DMG[0]));pHP=Math.max(1,pHP-dm);try{renderHP();dmgShow(me.x,me.y-66,dm,{me:1})}catch(e){}}}}
+    else if(d<48){if(now>=(f.cd||0))f.wind=now+650}
+    else{const sp=58*dt;f.x+=dx/d*sp;f.y+=dy/d*sp}}
+  if(RAID.lock<0){let b=-1,bd=80;RAID.foes.forEach((f,i)=>{if(f.dead)return;const d=Math.hypot(me.x-f.x,me.y-f.y);if(d<bd){bd=d;b=i}});if(b>=0)RAID.lock=b}/* 靠很近的那一隻自動鎖定 */
+  const L=RAID.foes[RAID.lock];if(L&&!L.dead&&Math.hypot(me.x-L.x,me.y-L.y)<82&&now>=RAID.at){RAID.at=now+550;raidDeal(L,fyBaseDmg()*(0.9+Math.random()*0.2),0)}
+  if(now>=RAID.fy&&FY_KEYS.some(fyHas)){RAID.fy=now+1400;let b=null,bd=1e9;for(const f of RAID.foes)if(!f.dead){const d=Math.hypot(me.x-f.x,me.y-f.y);if(d<bd){bd=d;b=f}}if(b&&bd<300)raidDeal(b,fyBaseDmg()*0.35,1)}
+  raidPaint();
+  if(RAID.foes.filter(f=>f.dead).length>=3){raidEnd();return}
+  RAID.raf=requestAnimationFrame(raidLoop)}
+function raidFoeSVG(f,i,now){const fl=now-f.hit<140,w=f.wind&&now<f.wind,hp=Math.max(0,f.hp/f.max),lk=RAID.lock===i;
+  return `<g transform="translate(${f.x.toFixed(1)} ${f.y.toFixed(1)})"${fl?' opacity=".55"':''}>${lk?'<ellipse cx="0" cy="0" rx="30" ry="10" fill="none" stroke="#FF6A5C" stroke-width="2.5"/>':''}<ellipse cx="0" cy="1" rx="22" ry="6" fill="rgba(0,0,0,.35)"/>
+    <path d="M-20 0 L-14 -46 Q0 -56 14 -46 L20 0 Z" fill="#1E1A2A" stroke="#0A0812" stroke-width="2"/><circle cx="0" cy="-58" r="13" fill="#1E1A2A" stroke="#0A0812" stroke-width="2"/><ellipse cx="0" cy="-56" rx="8.5" ry="10" fill="#EDEBE4"/>
+    ${w?'<circle cx="0" cy="-30" r="26" fill="none" stroke="#FF5A3C" stroke-width="3" opacity=".8"/>':''}${f.fyHit&&now-f.fyHit<260?'<circle cx="0" cy="-34" r="20" fill="#FFF3B0" opacity=".55"/>':''}
+    <rect x="-20" y="-82" width="40" height="5" rx="2" fill="#3B2614"/><rect x="-19" y="-81" width="${(38*hp).toFixed(1)}" height="3" rx="1.5" fill="#E0463B"/></g><rect data-raid="${i}" x="${(f.x-26).toFixed(1)}" y="${(f.y-80).toFixed(1)}" width="52" height="90" fill="rgba(0,0,0,0)" style="cursor:pointer"/>`}
+function raidPaint(){const g=document.getElementById('raidG');if(!g)return;const now=performance.now();g.innerHTML=RAID.foes.map((f,i)=>f.dead?'':raidFoeSVG(f,i,now)).join('')}
+function raidAbort(){RAID.on=false;cancelAnimationFrame(RAID.raf);RAID.foes=[];document.body.classList.remove('raid201');try{renderWorld()}catch(e){}}/* 離開大殿：下次進來重新開始（不會失敗，所以不會卡關） */
+function raidEnd(){RAID.on=false;cancelAnimationFrame(RAID.raf);RAID.foes=[];RAID.lock=-1;try{pHP=pMax();renderHP()}catch(e){}
+  const fin=()=>{document.body.classList.remove('raid201');const M=state.mq2;if(M){M.f.raid=1;save()}try{renderWorld()}catch(e){}mq2Tick()};
+  try{renderWorld()}catch(e){}try{vnPlay(vnParse(RAID_POST,{kind:'narr'}),{story:1,onEnd:fin})}catch(e){fin()}}
+/* 舊存檔已經過第一章：第一次登入演一次回顧（可略過） */
+function raidRecap(){if(!state||state.rc201!==1)return;if(VN||sheet||noteQ.length){setTimeout(raidRecap,1500);return}state.rc201=2;save();
+  try{vnPlay(vnParse('旁白：（回顧）喚醒神之子的那天晚上，大殿出了事。｜'+RAID_PRE()+'｜'+RAID_POST,{kind:'narr'}),{story:1})}catch(e){}}
+/* 草原的田（第一章，第一次到翠風草原的時候演一次） */
+function s201Field(){try{if(!state||exBiome!=='grass')return;const M=state.mq2;if(!M||(M.i|0)<4||(M.i|0)>9)return;const S=state.s201||(state.s201={});if(S.field)return;if(VN){setTimeout(s201Field,1500);return}S.field=1;save();
+  vnPlay(vnParse('旁白：（草原上的田被踩得一塌糊塗。農戶大叔對著提歐神父大喊。）｜草原農戶大叔：神父你看！昨晚魔獸又衝下來，一季全毀了！｜教會守那顆果實四十幾年，守出什麼了？｜提歐神父：（深深鞠躬）是教會的力量不夠。損失的種子，教會會補。｜草原農戶大叔：……我不是衝著你。大家都知道你人好。｜只是這世道，真不知道該信什麼了。｜提歐神父：讓你見笑了。這就是為什麼我們需要你。',{kind:'narr'}),{story:1})}catch(e){}}
+/* 新玩家：直接在教會醒來（第 183 節的夢拿掉） */
+function start201(){try{if(!state||!state.mq2)return;if(state.rc201===1)setTimeout(raidRecap,1500);const M=state.mq2;if((M.i|0)||(M.st|0)||FY_KEYS.some(fyHas))return;
+  if(scene!=='market')goMarket();setTimeout(()=>{try{townMapGo('church_hall')}catch(e){}setTimeout(()=>{try{dreamAfter(true)}catch(e){}},500)},300)}catch(e){}}
+/* 201.0：舊存檔。第一章結尾多了 1-6（夜襲），已經過第一章的往後挪一格、補演回顧 */
+function m201(o){if(!o||o.mq201V)return;o.mq201V=1;const M=o.mq2;if(!M||typeof M!=='object')return;if((M.i|0)>=9){M.i=(M.i|0)+1;o.rc201=1}}
+/* ===== 201 結束 ===== */
+/* 祭壇上的那一句（選第一位的時候） */
+function voice201(k,x,y){const t=ALTAR_VOICE[k]||'',L=[];for(let i=0;i<t.length;i+=9)L.push(t.slice(i,i+9));const h=L.length*12+8;
+  return `<g class="vc201" pointer-events="none"><rect x="${x-52}" y="${y-h}" width="104" height="${h}" rx="7" fill="rgba(255,252,235,.92)" stroke="#C9A86A" stroke-width="1.2"/>${L.map((l,i)=>`<text x="${x}" y="${y-h+15+i*12}" text-anchor="middle" font-size="10" fill="#5A3A20">${esc(l)}</text>`).join('')}</g>`}
 /* ===== 183（20l）：第一位神之子自己選（轉生的夢）；主線不再發神之子 =====
    新玩家（和還沒有神之子、第一章還沒過 1-5 的舊玩家）先看夢：九個剪影選一位 → state.anchor。1-5 的番茄清單喚醒的是那一位（altWho），
    之後番茄清單換成第二份（tomato2）喚醒蘿瑪。2-5、2-6、3-5、3-6 拿掉，改成「神之子」類任務 FYQ（可做可不做；fyqTick 在 tick 裡）。 ===== */
-const DREAM_L={tomato:'喂——這邊！抓緊，別放手！',pumpkin:'……這邊。別出聲。',melon:'嘿，要不要來點刺激的？跳過來！',strawberry:'迷路了嗎……呵，來，牽著我。',chili:'發什麼呆！手給我，快！',zucchini:'……要走就快點。我不等人。',broccoli:'我在這裡。不會讓你掉下去。',eggplant:'看著那顆星……朝著光走。',corn:'座標鎖定了。伸手，剩下的交給我。'};
-const FIRST_L={tomato:'哈啊——睡得好飽！｜……啊，是你！路上那個差點掉下去的傢伙。｜放心，姊姊說到做到，接住了就不會不管你。｜這個給你，我的番茄。別人種不出這個形狀。',
- pumpkin:'……嗯。到了啊。｜路上還順利吧。看你的表情，應該是不記得了。｜沒關係。記得的人，有我就夠了。｜這個給你。',
- melon:'噹噹——是我！嚇到了吧？｜路上那一跳很帥喔，我就知道你敢。｜這邊好悶，等一下帶我出去玩。這個先給你！',
- strawberry:'呼啊……睡了好久呢。｜你的手，還是跟那時候一樣，有點冰。｜既然是我牽過來的人，就由我照顧到底吧。這個，收下。',
- chili:'終於醒了！……不對，是我醒了。｜你這傢伙，路上抓得那麼用力，手都被你捏痛了。｜算了！以後跟緊我就對了。這個給你，拿去種！',
- zucchini:'……吵死了。｜是你啊。說了不等人，結果還是等了。｜別誤會，只是不想白跑一趟。這個，拿去。',
- broccoli:'……醒了。｜你平安就好。那段路，很長。｜往後也一樣。我在。這個給你。',
- eggplant:'……星星，換位置了呢。睡了好久。｜您找到那道光了。我一直看著。｜謝謝您。這是我的果實，請收下。',
- corn:'早安。路線是我算的，誤差零。｜你只要伸手就好，很簡單吧？｜這個給你。我做的——不對，我種的。'};
-const ROMA0='哈啊——睡得好飽！｜現在是什麼時候？……幾百年？｜……哈哈，那還真是睡過頭了。｜是你把我叫醒的吧？這個給你，我的番茄。別人種不出這個形狀。';
-function mq2FirstBody(s){const a=state.anchor;if(!a||!FY[a])return fyTalkHTML('tomato',s.roma)+npcTalk('theo',s.theo2);
-  if(a==='tomato')return fyTalkHTML('tomato',FIRST_L.tomato)+npcTalk('theo','蘿瑪大人……歡迎回來。｜（看著你）你們……好像早就認識了。｜神之子一共九位。還有八位在等。不急，照你的步調來。');
-  const n=fyN(a);return fyTalkHTML(a,FIRST_L[a])+npcTalk('theo',`……不是蘿瑪大人。｜祭壇上明明只供著番茄，醒來的卻是${n}大人。｜（看著你）你們……早就認識了嗎？｜不管怎樣，${n}大人，歡迎回來。｜神之子一共九位。還有八位在等。不急，照你的步調來。`)}
+/* 201.1c：夢裡的台詞、舊的醒來台詞拿掉，醒來的台詞在 WAKE_L */
+const ROMA0=WAKE_L.tomato;/* 201 */
+function mq2FirstBody(s){const a=state.anchor&&FY[state.anchor]?state.anchor:'tomato';/* 201.1c：光直接落下（蘿瑪）／半空偏折（其他） */
+  return npcTalk('theo',a==='tomato'?'……蘿瑪大人。':'（笑容僵住）……光怎麼偏了？那座祭壇上，明明沒有果實——')+fyTalkHTML(a,WAKE_L[a])+npcTalk('theo','（很快恢復笑容）看來神之子會回應渡界者自己的選擇。｜古籍上沒寫過……今晚為神之子祈福。')}
 /* 183.3／183.4：神之子類任務。list：清單獻滿（rw 金幣）；其他：喚醒後播台詞。state.fyq[id]：'o' 出現過、1 結束 */
 const fyRomaOn=()=>fyMine().follow==='tomato'&&fyHas('tomato');
 const FYQ=[
@@ -12674,14 +12766,8 @@ function m183(o){if(!o||o.mq183V)return;o.mq183V=1;const M=o.mq2;if(!M||typeof M
   const pay=(c,t)=>{o.coins=(o.coins||0)+c;if(!Array.isArray(o.titles))o.titles=[];if(!o.titles.includes(t))o.titles.push(t)};
   if(i===12||i===13){pay(500,'調停的人');M.i=12;M.st=0;M.f={}}else if(i>=14&&i<=17)M.i=i-2;else if(i===18||i===19){pay(500,'把果實找回來的人');M.i=16;M.st=0;M.f={}}else if(i===20)M.i=16;else if(i>=21)M.i=i-4}
 /* 183.1：轉生的夢（全黑、九個剪影、選一位、伸出手 → 畫面變白） */
-const dreamNeed=()=>{try{return !!state&&!state.anchor&&!FY_KEYS.some(fyHas)&&!!state.mq2&&(state.mq2.i|0)<=8}catch(e){return false}};
-function dreamOpen(){if(!dreamNeed()||document.getElementById('dream'))return false;const M=state.mq2,fresh=!(M.i|0)&&!(M.st|0),el=document.createElement('div');el.id='dream';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','夢');
-  const R=FY_KEYS.map((k,i)=>{const a=i/FY_KEYS.length*Math.PI*2-Math.PI/2;return `<button type="button" class="dms" data-dk="${k}" style="left:${(50+Math.cos(a)*37).toFixed(1)}%;top:${(50+Math.sin(a)*38).toFixed(1)}%;animation-delay:${(-i*0.63).toFixed(2)}s" aria-label="剪影 ${i+1}"><span class="dmb">${fySil(k)}${k==='pumpkin'?'<i class="dmlamp"></i>':''}</span></button>`}).join('');
-  el.innerHTML=`<p class="dmt">${fresh?'……有人在叫你。':'……那時候，有人接住了你。'}</p><div class="dmr">${R}</div><p class="dml" aria-live="polite"></p><button type="button" class="dmgo" hidden>伸出手</button><div class="dmw"></div>`;
-  document.body.appendChild(el);let sel=null,busy=false;const line=el.querySelector('.dml'),go=el.querySelector('.dmgo');
-  el.addEventListener('click',e=>{e.stopPropagation();if(busy)return;const b=e.target.closest('.dms');if(b){sel=b.dataset.dk;for(const x of el.querySelectorAll('.dms'))x.classList.toggle('on',x===b);line.classList.remove('in');line.textContent=DREAM_L[sel]||'';void line.offsetWidth;line.classList.add('in');go.hidden=false;return}
-    if(e.target.closest('.dmgo')&&sel){busy=true;const b2=el.querySelector('.dms.on');if(b2)b2.classList.add('come');el.classList.add('white');
-      setTimeout(()=>{state.anchor=sel;save();try{el.remove()}catch(x){}dreamAfter(fresh)},650)}});return true}
+const dreamNeed=()=>false;/* 201.1c：夢拿掉 */
+function dreamOpen(){return false}/* 201.1c */
 function dreamAfter(fresh){if(!fresh){try{renderOrdersBtn();renderMqLine()}catch(e){}return}
   const go=()=>{try{mq2Accept();VN_STORY=1;noteOpen(npcTalk('theo',MQ2[0].open))}catch(e){}};const cs=state.chSeen||(state.chSeen={});if(!cs[0]&&typeof chapterCard==='function'){cs[0]=1;save();chapterCard(0,go)}else go()}
 /* ===== 183 結束 ===== */
@@ -12808,7 +12894,7 @@ function renderMqLine(){try{const el=document.getElementById('mqLine');if(!el)re
 function mq2Target(){const s=mq2Cur(),M=state.mq2;if(!s)return null;if(s.subs)return {where:'explore'};if(M.st===0)return MQ2_REGN.includes(s.npc)||s.reg?{where:'explore'}:{town:'npc:'+s.npc};if(s.id==='2-4')return M.f.fruit?{town:'spring'}:{where:'explore'};if(s.id==='3-4')return M.f.fruit&&M.f.back?{town:'spring'}:{where:'explore'};if(s.id==='3-6'&&fyHas('melon')&&fyRunning('melon'))return {where:'explore'};if(s.tgt==='spring')return {town:'spring'};if(s.tgt==='npc')return {town:'npc:'+s.npc};return {where:s.tgt}}
 function townArrowSet(id){townArrow=id;townArrowT=Date.now()+6000;try{renderWorld()}catch(e){}setTimeout(()=>{if(Date.now()>=townArrowT){townArrow=null;try{if(scene==='market')renderWorld()}catch(e){}}},6100)}
 function townArrowSVG(){const qa=qArrow&&qArrow.town;if(qa){townArrow=qa;townArrowT=Date.now()+1000}/* 133 */if(!townArrow||Date.now()>townArrowT)return '';let x,y;
-  if(townArrow.startsWith('npc:')){const p=TOWN_NPC.find(q=>'npc:'+q.id===townArrow);if(!p)return '';const pm=p.map||'plaza';if(pm===townMap){x=p.x;y=p.y-92}else if(townMap==='plaza'){const bid=Object.keys(TOWN_IN_BLD).find(b=>TOWN_IN_BLD[b]===pm);if(!bid)return '';[x,y]=bldFront(bid);y-=70}else return ''}/* 207 */
+  if(townArrow.startsWith('npc:')){const p=TOWN_NPC.find(q=>'npc:'+q.id===townArrow);if(!p)return '';const pm=p.map||'plaza';if(pm===townMap){x=p.x;y=p.y-92}else if(townMap==='plaza'){const bid=Object.keys(TOWN_IN_BLD).find(b=>TOWN_IN_BLD[b]===pm);if(!bid){if(pm!=='garden')return '';const e=TOWN_MAPS.plaza.exits.find(q=>q.to==='garden');x=TOWN_MAPS.plaza.B.x0+30;y=(e?e.c:432)-60}else{[x,y]=bldFront(bid);y-=70}}else return ''}/* 207；201：菜圃指西出口 */
   else{if(townMap!=='plaza')return '';const b=TOWN_BLD.find(q=>q.id===townArrow);if(!b)return '';[x,y]=townFront(b);y-=70}
   return `<g transform="translate(${x} ${y})" pointer-events="none"><g class="tarrow"><path d="M-10 -22 h20 v10 h8 l-18 18 l-18 -18 h8z" fill="#E8553A" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></g></g>`}
 function mqLineTap(){{const q=qTracked();if(q){qGo(q);return}}/* 133 */const T=mq2Target();if(!T)return;
@@ -12835,7 +12921,7 @@ ROMA_L.home='grass';const FY_LTAB={tomato:ROMA_L,pumpkin:JACK_L,melon:MIERU_L};
 function fyLinesFor(f){if(!f)return ['……'];const R=FY_LTAB[f.k];if(!R)return FY_LINES[f.k]||['……'];let L=[...R.base];
   if(scene==='farm')L=L.concat(R.farm);else if(scene==='explore')L=L.concat(exBiome===R.home?R[R.home]:R.other);
   if(f.evo)L=L.concat(R.evo);if(fyGod(f))L=L.concat(R.god||[]);return L}
-function fyTalkHTML(k,text){const f=fyMine()[k];return `<!--vnS:${vnMark(k,'fy',text)}--><div class="npctalk pgw" data-pg style="display:flex;gap:12px;align-items:center;margin:6px 0">${f?fyArtHTML(k,f,84,false):''}<p style="flex:1;margin:0"><b>${fyN(k)}</b><br>${pgHTML(String(text).split('｜').map(x=>'「'+esc(x)+'」').join('｜'))}</p></div><!--vnE-->`}
+function fyTalkHTML(k,text){const f=fyMine()[k];return `<!--vnS:${vnMark(k,'fy',text)}--><div class="npctalk pgw" data-pg style="display:flex;gap:12px;align-items:center;margin:6px 0">${f?fyArtHTML(k,f,84,false):''}<p style="flex:1;margin:0"><b>${fyN(k)}</b><br>${pgHTML(t201(text).split('｜').map(x=>'「'+esc(x)+'」').join('｜'))}</p></div><!--vnE-->`}
 const FS_XP=80,RS_XP=60,RS_WAIT=60*60e3;
 /* ===== 126（18v）：神之子的故事改成「步驟」：每一段 steps 依序完成，進度 s.f.i（第幾步）。步驟種類：
    deep（跟著、走到某地區最深那張；first＝進那個地區說一句、talk＝到了顯示）、regions（跟著、走進 n 個不同地區，lines 每進一個說一句）、
@@ -12844,7 +12930,7 @@ const FS_XP=80,RS_XP=60,RS_WAIT=60*60e3;
 const mq2Past=id=>{try{const i=MQ2.findIndex(s=>s.id===id);return i>=0&&!!state.mq2&&state.mq2.i>i}catch(e){return false}};
 const FY_STORY={tomato:[
  {t:'走一遍草原',cond:()=>fyHas('tomato'),need:'已喚醒蘿瑪',open:'欸，帶我去草原好不好？｜我想看看大家還在不在。……我是說，那些田啦、樹啦。',goals:['讓蘿瑪跟著，走到翠風草原最深的「古井遺跡」','交 3 顆黃色番茄（任何造型）'],
-  steps:[{k:'deep',bk:'grass',first:'哇，草長這麼高了！以前這裡整片都是田。',talk:'這裡以前有個村子。每年收成，他們都會留第一顆番茄給我。｜……房子都不見了耶。｜哈哈，也是啦，幾百年了嘛。'},{k:'give',c:{crop:'tomato',skin:'yellow'},n:3,hint:'蘿瑪想留幾顆番茄在這裡'}],
+  steps:[{k:'deep',bk:'grass',first:'哇，草長這麼高了！以前這裡整片都是田。',talk:'這裡以前有個村子。每年收成，他們都會留第一顆番茄給我。｜……房子都不見了耶。｜哈哈，也是啦，四十幾年了嘛。'},{k:'give',c:{crop:'tomato',skin:'yellow'},n:3,hint:'蘿瑪想留幾顆番茄在這裡'}],
   done:'放這裡就好。以前都是他們給我，這次換我。｜好了，回家！今天晚餐吃什麼？',rw:{c:150,acc:3}},
  {t:'醒來那天',cond:()=>{const f=fyMine().tomato;return !!(f&&f.evo)},need:'蘿瑪進化之後',open:'力氣回來了一點，想吃自己的番茄。｜皇冠形的那個。你種得出來了吧？',goals:['交 3 顆皇冠番茄（任何顏色）'],steps:[{k:'give',c:{crop:'tomato',sp:7},n:3}],done:'嗯——就是這個味道。｜……跟你說一件事，你不要笑。｜醒來那天，我其實很怕。｜睡著以前，我只記得力氣一下子全被抽走。醒來的時候，認識的人一個都不在了。｜還好第一個看到的是你。好啦講完了！不准笑！',rw:{c:300,deco:'sunflowers'}},
  {t:'數到九',cond:()=>fyGod(fyMine().tomato),need:'蘿瑪神化之後',open:'陪我去祭壇一下。',goals:['讓蘿瑪跟著，到城鎮的祭壇（噴水池）'],steps:[{k:'altar'}],done:'一、二、三……｜我每天都在數。九個位子，回來了幾個。｜我們九個以前常常吵架。誰的地盤比較大、誰的果實比較甜，什麼都能吵。｜現在好想再吵一次。｜你會把他們都叫醒吧？……嗯。我相信你。',rw:{c:500,title:'蘿瑪的朋友'}}],
@@ -12992,7 +13078,7 @@ const wienAway=()=>{try{const s=mq2Cur();return !!s&&(s.id==='3-3'||s.id==='3-4'
 const MIERU_AT={map:'frog',x:600,y:650};
 const LAMP_MAPS=['entry','pine_path','glen'];
 function lampPos(id){const M=REGION_MAPS.forest[id];if(!M)return null;const p=M.paths&&M.paths[0]&&M.paths[0].p;if(p&&p.length){const q=p[Math.floor(p.length/2)];return [q[0]+46,q[1]]}return [400,600]}
-const lampOn=()=>{try{const s=mq2Cur();if(s&&s.subs){const F=(state.mq2.f||{})['s2-3']||{};return !!F.lamp}return !!(state.mq2&&state.mq2.i>10)}catch(e){return false}};
+const lampOn=()=>{try{const s=mq2Cur();if(s&&s.subs){const F=(state.mq2.f||{})['s2-3']||{};return !!F.lamp}return !!(state.mq2&&state.mq2.i>11)}/* 201：前面多了 1-6 */catch(e){return false}};
 const kidOn=()=>{try{const s=mq2Cur();if(!s||!s.subs)return false;const F=(state.mq2.f||{})['s2-3']||{};return !!F.lamp&&!F.ok&&!F.d}catch(e){return false}};
 function regNpcBang(id){const s=mq2Cur(),M=state.mq2||{};if(!s)return false;if(id==='duo'){if(s.id==='3-1'&&M.st===1)return !(M.f.t1||{}).duo;if(s.id==='3-2'&&M.st===0)return true;if(s.id==='3-4'&&M.f.fruit&&!M.f.back)return true;return false}if(id==='wien')return (s.id==='3-3'||s.id==='3-4')&&M.st===0;if((s.id==='2-1'||s.id==='2-4')&&M.st===1&&(id==='yue'||id==='jin')){const t=(s.id==='2-1'?M.f.t1:M.f.t4)||{};return !t[id]}if(s.subs){const u=s.subs.find(x=>x.npc===id);const F=u&&(M.f||{})['s'+u.id]||{};return !!u&&!F.a}if(s.id==='2-4'&&M.st===0&&id==='yue')return true;return false}
 function regNpcObjs(){if(scene!=='explore')return [];const out=[];
@@ -13010,7 +13096,7 @@ function rnpcHTML(){const id=sheet.rnpc,p=TOWN_NPC.find(q=>q.id===id);if(!p)retu
 function mq2KidTick(){try{if(scene!=='explore'||exBiome!=='forest'||regMap!=='glen'||!kidOn())return;const L=lampPos('glen');if(!L||Math.hypot(exMe.x-(L[0]-34),exMe.y-L[1])>90)return;const s=mq2Cur(),u=mq2Sub(s,'2-3'),F=mq2SF('2-3');F.ok=1;save();
   VN_STORY=1;noteOpen(npcTalk('kid',u.kid));setTimeout(mq2Tick,0);try{renderWorld()}catch(e){}}catch(e){}}
 /* --- 30 NPC 委託 --- */
-const NPCN={tu:'阿土伯',mei:'小莓姊',mo:'墨先生',kai:'阿凱',theo:'提歐神父',wien:'所長維恩',yue:'岳哥',jin:'槿姨',kid:'採菇的孩子',duo:'老舵'};
+const NPCN={li:'農會老李',uncle:'草原農戶大叔',tu:'阿土伯',mei:'小莓姊',mo:'墨先生',kai:'阿凱',theo:'提歐神父',wien:'所長維恩',yue:'岳哥',jin:'槿姨',kid:'採菇的孩子',duo:'老舵'};
 const FAV_STEP=[5,15,30,50,80];
 const FAV_GIFT={tu:['hay_bales','wheelbarrow','water_trough','compost','tool_shed'],mei:['flower_pots','lavender','flower_shelf','table_chairs','cherry_tree'],mo:['birdhouse','stone_lantern','notice_board','seed_chest','koi_pond'],kai:['crates','barrel','firefly_jar','hammock','dock']};
 const CM_R=[0,120,300,700],CM_X=[0,20,40,60];
@@ -13785,7 +13871,7 @@ async function bootStart(cloud,noLocal){
   if(state.mq&&state.mq.ch===1&&state.mq.st===0){mqAccept(true);noteQ.push(`<h2>第 1 章　${MQ[1].t}</h2>`+npcTalk('tu',MQ[1].open)+'<p class="note">「阿土伯的紅番茄」放進背包了，點一塊空田種下去吧！</p>');if(!state.pname){sheet={me:uid,ren:1,first:1};renderSheet();openSheetUI()}else noteFlush()}
   if(!loop)loop=setInterval(tick,1000);
   bootRaw=null;try{hud188()}catch(e){}/* 188 */bootHide();/* 71.2：存檔讀完、第一個畫面畫好才把載入畫面拿掉 */
-  setTimeout(()=>{try{dreamOpen()}catch(e){}},400);/* 183.1 */
+  setTimeout(()=>{try{start201()}catch(e){}},400);/* 201.1c：新玩家直接在教會醒來 */
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden)saveNow();else tick()});
 window.addEventListener('pagehide',()=>{saveNow()});

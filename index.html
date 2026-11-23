@@ -1388,6 +1388,10 @@ body.lordko #meGAv,body.lordko #meG{opacity:.35}
 .wm .wmcard .wmgo{flex:none;display:flex;flex-direction:column;gap:6px}.wm .wmcard .wmgo .btn{height:44px;min-height:44px;min-width:86px;margin:0;padding:0 14px;font-size:15px}
 .wm .wmcard .wmx{right:-4px;top:-12px;width:26px;height:26px;border-radius:50%;background:rgba(22,26,36,.95);border:1px solid rgba(255,255,255,.45);color:#fff;font-size:13px;line-height:24px;padding:0}
 body.h188 #rbar #mapBtn{position:relative!important;top:auto!important;right:auto!important;left:auto!important;background:#FFF9EC}
+
+/* ===== 209：鑲嵌的格子 ===== */
+.wpsc{display:flex;flex-direction:column;align-items:center;gap:3px;width:70px}.wpsc i{font-style:normal;font-size:10.5px;color:#7A5A30;text-align:center;line-height:1.2}
+.wpst.next{border-color:#E3A21A;border-width:2.5px;background:#FFF6D8}.wpsc.lock{opacity:.6}.wpsc.lock i{color:#9A8C78}
 </style>
 </head>
 <body class="game">
@@ -2152,7 +2156,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-21j';
+const BUILD='2026-11-21k';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -3801,7 +3805,7 @@ function renderSpeed(){
   if(!TEST_MODE){el.innerHTML='';return}
   const on=isTestMode();testTagUpd();
   let h=`<h3 style="margin-top:0">回報問題</h3>${crashHTML()}<h3>音效</h3><button class="btn${SFX_ON?' primary':''}" data-tool="sfx">音效：${SFX_ON?'開':'關'}（按一下切換）</button><h3>省電模式</h3><button class="btn${ecoOn()?' primary':''}" data-tool="eco">省電模式：${ecoOn()?'開':'關'}（按一下切換）</button><p class="note">特效和動畫變少，比較不燙、比較省電。${RMQ.matches?'（手機設定了「減少動態效果」，已經自動開啟）':''}</p><h3>3D 畫面</h3><button class="btn${W3D_USER?' primary':''}" data-tool="w3d">3D 畫面：${W3D_USER?'開':'關'}（按一下切換）</button><p class="note">實驗中：草原的立體地形（比較耗電）${W3D_ST===-1?'（這台裝置不能用 3D，已經用原本的畫法）':''}</p>${isTestMode()?`<button class="btn${W3D_SVG?' primary':''}" data-tool="w3dsvg">測試：強制 SVG：${W3D_SVG?'開':'關'}</button>`:''}${isStandalone()?'':`<h3>加到主畫面</h3><p class="note">把遊戲加到主畫面，打開就是全螢幕。${qh('iPhone：用 Safari 開，按下方的分享 → 加入主畫面。Android：Chrome 右上角選單 → 安裝應用程式（或加到主畫面）。')}</p>`}<h3>遊玩模式</h3><div class="row2"><button class="btn${on?'':' primary'}" data-mode="normal">一般</button><button class="btn${on?' primary':''}" data-mode="test">測試</button></div><p class="note">${on?'標出機關和秘境，可以傳送。'+qh('只存在這台裝置，別人看不到。'):'和正式玩家看到的一樣。'}</p>`;
-  if(on){const e2=weaponsArr()[state.wpn];h+=`<h3>測試：武器階</h3><p class="note">直接改目前裝備的那把（${e2?WEAPONS[e2.crop].n+'，現在第 '+(e2.tier||1)+' 階':'沒有裝備武器'}）。3 階解鎖技能 2、4 階技能 1 強化、6 階覺醒。</p><div class="row2">${[1,2,3,4,5,6].map(v=>`<button class="mini${e2&&(e2.tier||1)===v?' on':''}" data-tool="wtier" data-v="${v}">${v}</button>`).join('')}</div><h3>測試：領主（196）</h3><p class="note">到領主住的那張圖按「叫出來」（不看條件、清掉冷卻）。</p><div class="row2"><button class="mini" data-tool="lord196" data-v="summon">叫出來</button><button class="mini${fakeFull?' on':''}" data-tool="lord196" data-v="moon">假裝今天是滿月</button><button class="mini" data-tool="lord196" data-v="open">打開神社後院</button></div><h3>測試：星星</h3><p class="note">照那把的兩種造型輪流塞（${e2?(WP_SHAPES[e2.crop]||[]).map(x=>SPN[x]).join('、')+'，現在 '+((e2.st||[]).length)+' 顆':'沒有裝備武器'}）。</p><div class="row2">${[0,3,6,9,12,15,18].map(v=>`<button class="mini${e2&&(e2.st||[]).length===v?' on':''}" data-tool="wstar" data-v="${v}">${v}</button>`).join('')}</div>`}/* 184、186 */
+  if(on){const e2=weaponsArr()[state.wpn];h+=`<h3>測試：武器階</h3><p class="note">直接改目前裝備的那把（${e2?WEAPONS[e2.crop].n+'，現在第 '+(e2.tier||1)+' 階':'沒有裝備武器'}）。3 階解鎖技能 2、4 階技能 1 強化、6 階覺醒。</p><div class="row2">${[1,2,3,4,5,6].map(v=>`<button class="mini${e2&&(e2.tier||1)===v?' on':''}" data-tool="wtier" data-v="${v}">${v}</button>`).join('')}</div><h3>測試：領主（196）</h3><p class="note">到領主住的那張圖按「叫出來」（不看條件、清掉冷卻）。</p><div class="row2"><button class="mini" data-tool="lord196" data-v="summon">叫出來</button><button class="mini${fakeFull?' on':''}" data-tool="lord196" data-v="moon">假裝今天是滿月</button><button class="mini" data-tool="lord196" data-v="open">打開神社後院</button></div><h3>測試：鑲嵌</h3><p class="note">照每一格指定的造型塞（${e2?(WP_SHAPES[e2.crop]||[]).map(x=>SPN[x]).join('、')+'，現在 '+((e2.st||[]).length)+' 格':'沒有裝備武器'}）。</p><div class="row2">${[0,3,6,9,12,15,18].map(v=>`<button class="mini${e2&&(e2.st||[]).length===v?' on':''}" data-tool="wstar" data-v="${v}">${v}</button>`).join('')}</div>`}/* 184、186 */
   if(on)h+=`<h3>遠緣雜交</h3><button class="btn" data-tool="xc">跨界機率 100%：${(()=>{try{return localStorage.getItem('sw_xc')==='1'}catch(e){return false}})()?'開啟':'關閉'}（按一下切換）</button>`;
   if(on)h+=`<h3>櫻花之丘</h3><button class="btn" data-tool="sklook">花季外觀：${sakuraLook()?'櫻花（花季）':'綠葉（花季外）'}（按一下切換，只換畫面）</button><p class="note">測試模式沒有季節限制。<button type="button" class="qh" aria-expanded="false" aria-label="說明">？</button><span class="qhx" hidden>今天實際${sakuraBloom()?'是':'不是'}花季（每年 ${SAKURA_SEASON.from.join('/')}～${SAKURA_SEASON.to.join('/')}）。</span></p>`;
   if(on)h+=`<h3>會影響存檔的測試工具</h3><p class="note">用了存檔會和一般玩家不一樣。${qh('切回一般模式時，時間加速當 ×1、探索上限當開啟。')}</p><p class="note" style="margin:6px 0 2px">時間加速</p><div class="row2" style="grid-template-columns:repeat(4,1fr)">${SPEEDS.map(v=>`<button class="btn${state.speed===v?' primary':''}" data-spd="${v}">×${v}</button>`).join('')}</div>
@@ -6391,7 +6395,7 @@ function townEdge(M,R,inExit,objs){
   const south=[['planter',3],['shrub',3],['hedge',2]];{const prev=[];for(let x=30+R()*10;x<=M.W-30;){const kd=pick(south,prev);prev.push(kd);if(!inExit('s',x,34))objs.push([kd,x,M.H-6-R()*4,null,{s:0.9+R()*0.22,fl:R()<0.5}]);x+=(kd==='hedge'?62:54)+R()*12}}
 }
 const TOWN_MAPS={plaza:{n:'城鎮',gx:1,gy:1,W:800,H:1540,B:{x0:44,x1:756,y0:104,y1:1500},
-  exits:[{side:'s',c:400,w:110,to:'farm'},{side:'e',c:590,w:100,to:'garden'}],/* 206：東側往城郊菜圃 */
+  exits:[{side:'s',c:400,w:110,to:'farm'},{side:'w',c:590,w:100,to:'garden'}],/* 206；209.2：西側往城郊菜圃（菜圃的出口在右邊） */
   paths:[[[400,1550],[400,520]],[[400,520],[400,420]],[[140,420],[660,420]],[[118,1476],[400,1436],[656,1476]]],
   blocks:[[44,104,756,270]].concat(STALLS.map(([x,y])=>[x-40,y-24,x+40,y+2])),
   objs:[...TOWN_BLD.map(b=>[b.k,b.x,b.y]),['fountain',400,520],['bench',262,555],['bench',538,555],['planter',120,500],['planter',680,500],
@@ -6446,7 +6450,7 @@ const TOWN_SUB={
     blk:[[104,738,262,756],[341,738,592,756],[96,745,116,1108],[580,745,600,1108],[104,1092,592,1110],[GARDEN_CABIN.x-56,GARDEN_CABIN.y-46,GARDEN_CABIN.x+50,GARDEN_CABIN.y+2],[268,300,302,318],[78,316,112,334]],
     objs:[['cabin',GARDEN_CABIN.x,GARDEN_CABIN.y,GARDEN_CABIN.h,'assets/forest/cabin.png',277,300],['barrel',285,316,40,'assets/town/barrel.png',173,220],['crates',95,332,42,'assets/town/crates.png',183,220]],
     doors:[{to:'garden_hut',x:GARDEN_CABIN.door[0],y:GARDEN_CABIN.door[1]}]},
-  garden_hut:{id:'garden_hut',bk:'town',n:'小木屋',indoor:1,floor:'wood',W:600,H:500,B:{x0:40,x1:560,y0:150,y1:476},wallH:110,door:{to:'garden',x:GARDEN_CABIN.door[0],y:GARDEN_CABIN.door[1]+18},
+  garden_hut:{id:'garden_hut',bk:'town',n:'小木屋',indoor:1,floor:'wood',W:600,H:500,B:{x0:40,x1:560,y0:150,y1:476},wallH:110,door:{to:'garden',x:GARDEN_CABIN.door[0],y:GARDEN_CABIN.door[1]+40},/* 209.3：站在門墊外面 */
     exits:[{side:'s',c:300,w:90,to:'garden'}],
     furn:[['hut/hut_bed',112,222,80,0.85],['hut/hut_shelf',300,200,92,0.7],['hut/hut_stove',494,214,74,0.8],['hut/hut_table',372,340,70,0.8],['hut/hut_tools',92,452,78,0.7],['hut/hut_jar',516,456,56,0.8]],
     /* 伏筆：手錶在木架上（木架寬 15%）、照片倒扣在桌上（桌面 30%） */
@@ -6467,21 +6471,24 @@ const TOWN_IN_BLD={church:'church_hall',institute:'institute_lab'};
 /* 可以調查的東西的位置（放在家具上的照家具算） */
 function seeSpot(M,S){if(S.on){const F=M.furn.find(f=>f[0]===S.on),w=inW(F[0],F[3]),iw=w*S.fw,ih=iw*IN_IMG[S.img][1]/IN_IMG[S.img][0];return {x:F[1],y:F[2]-F[3]*S.fy,w:iw,h:ih,fy:F[2]}}return {x:S.x,y:S.y-S.h*0.6,w:0,h:S.h*0.4,fy:S.y}}
 /* 室內出去要站的地方：回到廣場就站在那棟建築門口 */
-function inDoorBack(M){const D=M.door;if(D.bld){const [x,y]=bldFront(D.bld);return [x,y+18]}return [D.x,D.y]}
+function inDoorBack(M){const D=M.door;if(D.bld){const [x,y]=bldFront(D.bld);return [x,y+40]}return [D.x,D.y]}/* 209.3：出來站在門墊外面一點 */
 /* 換子地圖：淡出淡入、相機範圍、多人頻道 */
 function townMapGo(to){if(regBusy)return;regBusy=true;const from=townMap,ov=document.getElementById('fadeOv');try{ov.style.opacity='1'}catch(e){}
   setTimeout(()=>{const FM=TOWN_SUB[from];townMap=to;const M=townSubM();
-    if(to==='plaza'){WORLD.market.W=TOWN_MAPS.plaza.W;WORLD.market.H=TOWN_MAPS.plaza.H;if(FM&&FM.indoor){const [x,y]=inDoorBack(FM);marketMe={x,y}}else{const e=TOWN_MAPS.plaza.exits.find(x=>x.to==='garden');marketMe={x:TOWN_MAPS.plaza.B.x1-18,y:e?e.c:600}}}
+    if(to==='plaza'){WORLD.market.W=TOWN_MAPS.plaza.W;WORLD.market.H=TOWN_MAPS.plaza.H;if(FM&&FM.indoor){const [x,y]=inDoorBack(FM);marketMe={x,y}}else{const e=TOWN_MAPS.plaza.exits.find(x=>x.to==='garden');marketMe={x:TOWN_MAPS.plaza.B.x0+18,y:e?e.c:600}/* 209.2 */}}
     else{WORLD.market.W=M.W;WORLD.market.H=M.H;if(M.indoor)marketMe={x:M.exits[0].c,y:M.B.y1-24};else if(FM&&FM.indoor){const [x,y]=inDoorBack(FM);marketMe={x,y}}else marketMe={x:M.B.x1-18,y:M.exits[0].c}}
-    hoverTown=null;townDoorK='';try{joinFarm(to==='plaza'?'town':'town_'+to)}catch(e){}try{renderHUD();renderWorld();renderChars();updateCam();refreshAct()}catch(e){}try{ov.style.opacity='0'}catch(e){}regBusy=false;
+    if(FM&&FM.indoor)meFace=2;townDoorCool=Date.now()+1000;/* 209.3：面向外面、1 秒內不再被門吸進去 */hoverTown=null;townDoorK='';try{joinFarm(to==='plaza'?'town':'town_'+to)}catch(e){}try{renderHUD();renderWorld();renderChars();updateCam();refreshAct()}catch(e){}try{ov.style.opacity='0'}catch(e){}regBusy=false;
     try{toast(to==='plaza'?'回到城鎮':M.n,1400)}catch(e){}},150)}
 /* 門口 60 內：「進去」／「出去」 */
 function townDoors(){const M=townSubM();if(townMap==='plaza')return Object.keys(TOWN_IN_BLD).map(id=>{const [x,y]=bldFront(id);return {t:'in',to:TOWN_IN_BLD[id],x,y}});if(!M)return [];if(M.indoor)return [{t:'out',to:M.door.to,x:M.exits[0].c,y:M.B.y1}];return (M.doors||[]).map(d=>({t:'in',to:d.to,x:d.x,y:d.y}))}
 function townDoorAt(){const m=marketMe;if(!m)return null;for(const d of townDoors())if(Math.hypot(m.x-d.x,m.y-d.y)<60)return d;return null}
-let townDoorK='';
-function townSubTick(){const d=townDoorAt(),k=d?d.t+d.to:'';if(k!==townDoorK){townDoorK=k;try{renderWorld()}catch(e){}}}
+let townDoorK='',townDoorCool=0;
+/* 209.3：走到門墊上就進去（不再有「進去」「出去」按鈕；出去是室內那面牆的出口） */
+function townDoorIn(){const m=marketMe;if(!m)return null;for(const d of townDoors())if(d.t==='in'&&Math.abs(m.x-d.x)<=26&&m.y>=d.y-30&&m.y<=d.y+6)return d;return null}
+function townSubTick(){if(regBusy||Date.now()<townDoorCool)return;const d=townDoorIn();if(d)townMapGo(d.to)}
+function townDoorMats(){return townDoors().filter(d=>d.t==='in').map(d=>`<g pointer-events="none"><ellipse cx="${d.x}" cy="${d.y-10}" rx="38" ry="14" fill="#FFF1B0" opacity=".28" class="altglow"/><rect x="${d.x-26}" y="${d.y-20}" width="52" height="20" rx="5" fill="#C9A26A" opacity=".55" stroke="#7A5530" stroke-opacity=".5" stroke-width="1.5"/></g>`).join('')}
 function townDoorTap(key){const [t,to]=String(key).split(':'),d=townDoors().find(x=>x.t===t&&(!to||x.to===to));if(!d)return;const go=()=>townMapGo(d.t==='in'?d.to:d.to);if(Math.hypot(marketMe.x-d.x,marketMe.y-d.y)<60)go();else walkTo(d.x,d.y+(d.t==='out'?-16:12),go)}
-function townDoorBtn(){const d=townDoorAt();if(!d)return '';const lab=d.t==='in'?'進去':'出去',y=d.t==='in'?d.y-74:d.y-20;return `<g data-hutgo="${d.t}:${d.to}" style="cursor:pointer"><rect x="${d.x-30}" y="${y-14}" width="60" height="26" rx="13" fill="#FFF6DE" stroke="#5A3416" stroke-width="2"/><text x="${d.x}" y="${y+4}" text-anchor="middle" font-size="13" font-weight="800" fill="#5A3416">${lab}</text></g>`}
+function townDoorBtn(){return '';/* 209.3：按鈕拿掉 */const d=townDoorAt();if(!d)return '';const lab=d.t==='in'?'進去':'出去',y=d.t==='in'?d.y-74:d.y-20;return `<g data-hutgo="${d.t}:${d.to}" style="cursor:pointer"><rect x="${d.x-30}" y="${y-14}" width="60" height="26" rx="13" fill="#FFF6DE" stroke="#5A3416" stroke-width="2"/><text x="${d.x}" y="${y+4}" text-anchor="middle" font-size="13" font-weight="800" fill="#5A3416">${lab}</text></g>`}
 function hutInspect(id){const M=townSubM();if(!M||!M.see)return;const S=M.see.find(s=>s.id===id);if(!S)return;const p=seeSpot(M,S),go=()=>{try{noteOpen(`<h2>${esc(S.n)}</h2><p class="note">${esc(S.t)}</p>`)}catch(e){}};if(Math.hypot(marketMe.x-p.x,marketMe.y-p.fy)<90)go();else walkTo(p.x,p.fy+26,go)}
 /* 點祭壇：打開那位神之子的頁面（喚醒、獻上、進化、神化那一套）；城鎮的噴水池照舊也能開 */
 function altarTap(k){const i=ALTAR_K.indexOf(k);if(i<0)return;const [x,y]=altarPos(i),go=()=>{try{sheet={fy:{m:fyHas(k)?'one':'alt',k}};renderSheet();openSheetUI()}catch(e){}}/* 還沒喚醒＝祭壇清單（喚醒）；喚醒了＝她的頁面（獻上、進化、神化） */;if(Math.hypot(marketMe.x-x,marketMe.y-y)<80)go();else walkTo(x,y+30,go)}
@@ -6499,7 +6506,7 @@ function inRoomSVG(M){const B=M.B,T=B.y0,wh=M.wallH||110,x0=B.x0-8,ww=B.x1-B.x0+
 function townSubWorld(){const M=townSubM(),me=marketMe,bg=[],fg=[],add=(y,h)=>(y<=me.y?bg:fg).push({y,h});let ground='',hit='';/* 可以點的框都放在最上面（前景層不接受點擊） */
   if(!M.indoor){ground=`<image href="${M.ground}?v=${BUILD}" x="0" y="0" width="${M.W}" height="${M.H}" preserveAspectRatio="none"/>`;
     for(const [k,x,y,h,src,iw,ih] of M.objs){const w=h*iw/ih;add(y,`<g pointer-events="none"><ellipse cx="${x}" cy="${y}" rx="${(w*0.42).toFixed(1)}" ry="${(w*0.1).toFixed(1)}" fill="rgba(30,20,10,.28)"/><image href="${src}?v=${BUILD}" x="${(x-w/2).toFixed(1)}" y="${y-h}" width="${w.toFixed(1)}" height="${h}"/></g>`)}
-    for(const d of M.doors||[])hit+=`<rect data-hutgo="in:${d.to}" x="${d.x-26}" y="${d.y-60}" width="52" height="66" fill="rgba(0,0,0,0)" style="cursor:pointer"/>`}
+    add(-1e4,townDoorMats());/* 209.3 */for(const d of M.doors||[])hit+=`<rect data-hutgo="in:${d.to}" x="${d.x-26}" y="${d.y-60}" width="52" height="66" fill="rgba(0,0,0,0)" style="cursor:pointer"/>`}
   else{ground=inRoomSVG(M);
     for(const [k,x,y,h,cw] of M.furn){const w=inW(k,h);add(cw>0?y:y-200,`<g pointer-events="none">${cw>0?`<ellipse cx="${x}" cy="${y}" rx="${(w*0.4).toFixed(1)}" ry="${(w*0.09).toFixed(1)}" fill="rgba(30,15,5,.26)"/>`:''}<image href="assets/${k}.png?v=${BUILD}" x="${(x-w/2).toFixed(1)}" y="${(y-h).toFixed(1)}" width="${w.toFixed(1)}" height="${h}"/></g>`)}
     if(M.altars)ALTAR_K.forEach((k,i)=>{const [x,y]=altarPos(i),lit=altarLit(k),key=lit?'church/altar_lit':'church/altar',h=lit?ALTAR_H*281/213:ALTAR_H,w=inW(key,h),c=altarCol(k),nm=fyN(k);
@@ -6522,7 +6529,7 @@ function marketWorld(hl){
   for(const b of TOWN_BLD)if(b.sg)add(b.y+0.5,townSignSVG(b));
   add(612,`<g pointer-events="none"><rect x="372" y="594" width="56" height="20" rx="5" fill="#F7F0DC" stroke="#4A3020" stroke-width="1.5"/><text x="400" y="608.5" text-anchor="middle" font-size="12" font-weight="700" fill="#4A3020" font-family="Noto Sans TC,sans-serif">市集</text></g>`);/* 32.0：攤位區仍叫市集 */
   for(const p of townNpcs())add(p.y,townNpcSVG(p));
-  add(560,`<g transform="translate(716 560)" pointer-events="none"><rect x="-2" y="-40" width="4" height="40" fill="#7A5530"/><rect x="-36" y="-58" width="72" height="22" rx="4" fill="#F7F0DC" stroke="#4A3020" stroke-width="1.5"/><text x="0" y="-42.5" text-anchor="middle" font-size="11" font-weight="700" fill="#4A3020">城郊菜圃 →</text></g>`);/* 206 */
+  add(560,`<g transform="translate(84 560)" pointer-events="none"><rect x="-2" y="-40" width="4" height="40" fill="#7A5530"/><rect x="-36" y="-58" width="72" height="22" rx="4" fill="#F7F0DC" stroke="#4A3020" stroke-width="1.5"/><text x="0" y="-42.5" text-anchor="middle" font-size="11" font-weight="700" fill="#4A3020">← 城郊菜圃</text></g>`);/* 206；209.2 搬到西側 */add(-1e4,townDoorMats());/* 209.3 */
   bg.sort((a,b)=>a.y-b.y);fg.sort((a,b)=>a.y-b.y);
   townFg=fg.map(o=>o.h).join('');townFgOn=true;
   try{const F=document.getElementById('fgLayer');if(F)F.innerHTML=townFg}catch(e){}
@@ -11531,7 +11538,7 @@ document.getElementById('testBox').addEventListener('click',e=>{
   const md=e.target.closest('[data-mode]');if(md){setTestMode(md.dataset.mode==='test');return}
   const sp=e.target.closest('[data-spd]');if(sp){tick();state.speed=+sp.dataset.spd;save();renderSpeed();toast(`時間加速 ×${state.speed}`);return}
   const t=e.target.closest('[data-tool]');if(!t)return;const k=t.dataset.tool;
-  if(k==='wstar'){const e2=weaponsArr()[state.wpn];if(!e2){toast('先裝備一把武器');return}const S2=WP_SHAPES[e2.crop]||[2,4];e2.st=Array.from({length:+t.dataset.v},(_,i)=>S2[i%2]);save();renderSpeed();toast(`${WEAPONS[e2.crop].n}放了 ${e2.st.length} 顆星星`,1800);return}/* 186：測試用 */
+  if(k==='wstar'){const e2=weaponsArr()[state.wpn];if(!e2){toast('先裝備一把武器');return}const S2=WP_SHAPES[e2.crop]||[2,4];e2.st=Array.from({length:+t.dataset.v},(_,i)=>wpWant(e2.crop,i));save();renderSpeed();toast(`${WEAPONS[e2.crop].n}鑲了 ${e2.st.length} 格`,1800);return}/* 186：測試用 */
   if(k==='lord196'){lord196Tool(t.dataset.v);renderSpeed();return}/* 196 */
   if(k==='wtier'){const e2=weaponsArr()[state.wpn];if(!e2){toast('先裝備一把武器');return}e2.tier=+t.dataset.v;save();try{const F=document.getElementById('meWF');if(F)F._k='';pushPos(true)}catch(x){}renderSpeed();toast(`${WEAPONS[e2.crop].n}改成第 ${e2.tier} 階`,1800);return}/* 184：測試用，之後拿掉 */
   if(k==='crashclr'){try{localStorage.removeItem('sw_err');localStorage.removeItem('sw_crash')}catch(x){}renderSpeed();toast('已清除');return}
@@ -11908,12 +11915,14 @@ function skDefFor(crop,t,slot){const S=SKILLS[crop];if(!S)return null;if(slot===
 /* 星星的造型加成（名品 ×1.5）：照一把武器算 */
 function wpStatOf(e,k){let v=0;for(const s of (e&&e.st)||[]){const sh=Math.abs(s),f=STAR_FX[sh];if(f&&f[0]===k)v+=f[1]*(s<0?WP_MH_K:1)}return v}
 function wpStatTxt(e){const o=[];for(const k of ['atk','crit','critDmg','spd','hp','def']){const v=wpStatOf(e,k);if(v)o.push(`${STAR_N[k]} ${k==='def'?'−':'+'}${+(v*100).toFixed(1)}%`)}return o.join('、')}
-/* 放星星 */
+/* 209.1：鑲嵌（原本的放星星）：每一階 3 格各指定一種造型（A／B＝WP_SHAPES 的順序），只能照順序鑲下一格 */
+const WP_INLAY=[[0,1,0],[1,0,1],[0,0,1],[1,1,0],[0,1,1],[1,0,0]];
+const wpWant=(crop,idx)=>{const S=WP_SHAPES[crop]||[2,4],r=WP_INLAY[Math.floor(idx/3)]||WP_INLAY[0];return S[r[idx%3]]};
 function wpSlot(e){const n=(e.st||[]).length,t=wpTierOk(e);if(n>=t*3)return null;return {idx:n,pos:n%3,tier:Math.floor(n/3)+1}}
 function wpStarP(e){const S=wpSlot(e);if(!S)return 0;if(S.pos<2)return 1;return Math.min(1,WP_STAR_P(S.tier)+WP_STAR_FAIL*((e.sf|0)))}
-function wpStarFruits(e){const S=wpSlot(e);if(!S)return [];const ok=WP_SHAPES[e.crop]||[];return fruitsArr().map((f,i)=>({f,i,a:keyApp(f.k)})).filter(x=>x.f.c===e.crop&&fCount(x.f)>0&&ok.includes(x.a.sp)&&(x.f.t||0)>=S.tier-1).sort((p,q)=>(q.f.t||0)-(p.f.t||0))}
-function wpStarDo(i,fi,rnd){const e=wpE(i);if(!e)return {err:'沒有這把武器'};const S=wpSlot(e);if(!S)return {err:'這一階的星星滿了'};const F=fruitsArr(),f=F[fi],ok=WP_SHAPES[e.crop]||[];
-  if(!f||f.c!==e.crop||!fCount(f))return {err:'沒有這顆果實'};const a=keyApp(f.k);if(!ok.includes(a.sp))return {err:'造型不對'};if((f.t||0)<S.tier-1)return {err:'稀有度不夠'};
+function wpStarFruits(e){const S=wpSlot(e);if(!S)return [];const ok=WP_SHAPES[e.crop]||[];return fruitsArr().map((f,i)=>({f,i,a:keyApp(f.k)})).filter(x=>x.f.c===e.crop&&fCount(x.f)>0&&x.a.sp===wpWant(e.crop,S.idx)&&(x.f.t||0)>=S.tier-1)/* 209.1：只列這一格要的造型 */.sort((p,q)=>(q.f.t||0)-(p.f.t||0))}
+function wpStarDo(i,fi,rnd){const e=wpE(i);if(!e)return {err:'沒有這把武器'};const S=wpSlot(e);if(!S)return {err:'這一階都鑲好了'};const F=fruitsArr(),f=F[fi],ok=WP_SHAPES[e.crop]||[];
+  if(!f||f.c!==e.crop||!fCount(f))return {err:'沒有這顆果實'};const a=keyApp(f.k);if(a.sp!==wpWant(e.crop,S.idx))return {err:`這一格要「${SPN[wpWant(e.crop,S.idx)]}」的果實`};/* 209.1 */if((f.t||0)<S.tier-1)return {err:'稀有度不夠'};
   const p=wpStarP(e),mh=!!mhOf(a);fruitTake(f,1);if(!fCount(f))F.splice(fi,1);if(!Array.isArray(e.st))e.st=[];
   const win=(rnd||Math.random)()<p;if(win){e.st.push(mh?-a.sp:a.sp);e.sf=0;try{const me=curMe();fxT('starOk',me.x,me.y,fxCommon())}catch(x){}}else e.sf=(e.sf|0)+1;save();try{if(state.wpn===i||state.wpn2===i)pushPos(true)}catch(x){}return {ok:win,p,mh,sp:a.sp}}
 /* 升階 */
@@ -11922,7 +11931,7 @@ const wpFarKeys=bk=>Object.keys(MATS).filter(k=>MATS[k].reg===bk&&MATS[k].mon&&!
 const wpFarCount=bk=>wpFarKeys(bk).reduce((s,k)=>s+matCount(k),0);
 const wpFruitN=(c,t)=>fruitsArr().filter(f=>f.c===c&&(f.t||0)>=t).reduce((s,f)=>s+fCount(f),0);
 function wpUpNeed(e){const t=wpTierOk(e)+1,U=WP_UP[t];if(!U)return null;const N=wpNear(e),L=[];
-  L.push({k:'stars',ok:(e.st||[]).length>=(t-1)*3,txt:`這一階 3 顆星都放滿（${Math.max(0,(e.st||[]).length-(t-2)*3)}／3）`});
+  L.push({k:'stars',ok:(e.st||[]).length>=(t-1)*3,txt:`這一階 3 格都鑲好（${Math.max(0,(e.st||[]).length-(t-2)*3)}／3）`});
   L.push({k:'lv',ok:myLv()>=U.lv,txt:`玩家等級 Lv ${U.lv}（你現在 Lv ${myLv()}）`});
   for(const g of wpUp2(e.crop,t))L.push({k:'mat',m:g,have:mcnt(g),want:g[1],ok:mcnt(g)>=g[1]});/* 208.4（舊素材當替代品也算） */
   L.push({k:'fruit',t:U.ft,have:wpFruitN(e.crop,U.ft),want:U.fn,ok:wpFruitN(e.crop,U.ft)>=U.fn});
@@ -11938,7 +11947,7 @@ function wpUpDo(i){const e=wpE(i);if(!e)return {err:'沒有這把武器'};const 
 function wpTrCost(a,b){const t=wpTierOk(a);return {coins:Math.round(WP_TR_COIN[t-1]),gold:t-1,g:[wpNear(b)[0]+'_g',t-1,wpNear(b).slice(1).map(x=>x+'_g')]}}
 function wpTrOk(ai,bi){const a=wpE(ai),b=wpE(bi);if(!a||!b||ai===bi)return '選另一把';if(wpTierOk(b)>=wpTierOk(a))return '那一把的階要比這把低';const C=wpTrCost(a,b);if((state.coins||0)<C.coins)return '金幣不夠';if(C.gold&&mcnt(C.g)<C.gold)return `${matName(C.g[0])}不夠`;return ''}
 function wpTrDo(ai,bi){const err=wpTrOk(ai,bi);if(err)return {err};const a=wpE(ai),b=wpE(bi),C=wpTrCost(a,b),S2=WP_SHAPES[b.crop]||[2,4],n=(a.st||[]).length;
-  state.coins-=C.coins;if(C.gold)mtake(C.g,C.gold);b.tier=wpTierOk(a);b.st=Array.from({length:n},(_,k)=>S2[k%2]);b.sf=0;a.tier=1;a.st=[];a.sf=0;save();try{pushPos(true)}catch(x){}return {ok:1}}
+  state.coins-=C.coins;if(C.gold)mtake(C.g,C.gold);b.tier=wpTierOk(a);b.st=Array.from({length:n},(_,k)=>wpWant(b.crop,k));/* 209.1 */b.sf=0;a.tier=1;a.st=[];a.sf=0;save();try{pushPos(true)}catch(x){}return {ok:1}}
 /* 主／副武器、換手、各把的冷卻 */
 const SKCW={};
 function skCdSwap(from,to){if(from!=null)SKCW[from]=SKC;SKC=SKCW[to]||(SKCW[to]={s1:0,s2:0,roll:0})}
@@ -11955,22 +11964,26 @@ function wpOpen(i){if(!wpE(i))return;sheet={wpi:i};renderSheet();openSheetUI()}
 function wpSkCard(e,slot){const t=wpTierOk(e),d=skDefFor(e.crop,t,slot);if(!d)return '';const nm=d.locked?skName(e.crop,2,2):skName(e.crop,slot,t),k=d.mul?d.mul*Math.pow(1.3,t-1)*(1+STAR_SK*((e.st||[]).length)):0,open=sheet.wpr===slot;
   const route=slot===1?[1,2,3,4,5,6]:[2,3,4,5,6];
   return `<button type="button" class="wpsk${d.locked?' lock':''}" data-wpr="${slot}">${skIconHTML(e.crop,slot)}<b>${d.locked?'🔒 ':''}技能 ${slot}：${esc(nm)}</b><span>${esc(SK_DESC[d.id]||'')}</span><span class="meta">冷卻 ${d.cd} 秒${k?`・傷害 攻擊力 ×${k.toFixed(1)}`:''}${d.locked?'・第 2 階解鎖':''}</span>${open?`<span class="wproute">${route.map(x=>`<i class="${x===t||(slot===2&&t<2&&x===2)?'on':''}${x<=t?' got':''}">${esc(skName(e.crop,slot,x))}${slot===1&&x===4?'<em>強化</em>':''}${x===6&&slot===2?'<em>覺醒</em>':''}</i>`).join('')}</span>`:'<span class="meta wpmore">點一下看進化路線</span>'}</button>`}
-function wpStarRow(e){const t=wpTierOk(e),st=e.st||[],base=(t-1)*3,ok=WP_SHAPES[e.crop]||[];let h='<div class="wpstars">';
-  for(let j=0;j<3;j++){const s=st[base+j];h+=s!=null?`<span class="wpst on${s<0?' mh':''}" title="${SPN[Math.abs(s)]}">${wpShapeSVG(Math.abs(s))}</span>`:`<span class="wpst">${ok.map(x=>wpShapeSVG(x,1)).join('')}</span>`}
-  const tx=wpStatTxt(e);return h+`</div><p class="note">共 ${st.length} 顆・技能傷害 +${st.length*5}%${tx?`・${tx}`:''}</p>`}
+function wpStarRow(e){const t=wpTierOk(e),st=e.st||[],base=(t-1)*3;let h='<div class="wpstars">';/* 209.1：彩色＝已鑲、金框＝下一格、灰色＝先鑲前一格 */
+  for(let j=0;j<3;j++){const idx=base+j,s=st[idx],w=wpWant(e.crop,idx);
+    if(s!=null)h+=`<span class="wpsc"><span class="wpst on${s<0?' mh':''}" title="${SPN[Math.abs(s)]}">${wpShapeSVG(Math.abs(s))}</span><i>${SPN[Math.abs(s)]}</i></span>`;
+    else if(idx===st.length)h+=`<span class="wpsc"><span class="wpst next">${wpShapeG(w,'#E3C27A')}</span><i>下一格：${SPN[w]}</i></span>`;
+    else h+=`<span class="wpsc lock"><span class="wpst">${wpShapeG(w,'#CFC6B6')}</span><i>先鑲前一格</i></span>`}
+  const k=Math.max(0,Math.min(3,st.length-base)),tx=wpStatTxt(e);return h+`</div><p class="note">鑲嵌 ${k}／3・技能傷害 +${st.length*5}%${tx?`・${tx}`:''}</p>`}
+const wpShapeG=(sh,col)=>`<svg viewBox="-10 -10 20 20" width="22" height="22" aria-hidden="true"><g fill="${col}" stroke="rgba(90,60,20,.35)" stroke-width="1">${WP_SH_PATH[sh]||''}</g></svg>`;
 const WP_SH_PATH={1:'<rect x="-7" y="-7" width="14" height="14" rx="2"/>',2:'<path d="M0 -8 L8 7 L-8 7Z"/>',3:'<path d="M0 7 C-10 0 -7 -8 0 -4 C7 -8 10 0 0 7Z"/>',4:'<path d="M0 -8 L2.4 -2.5 8 -2.5 3.5 1 5.2 7 0 3.5 -5.2 7 -3.5 1 -8 -2.5 -2.4 -2.5Z"/>',5:'<path d="M3 -8 A8 8 0 1 0 3 8 A6 6 0 1 1 3 -8Z"/>',6:'<path d="M0 -8 A8 8 0 1 1 -0.01 -8Z M0 -3.5 A3.5 3.5 0 1 0 0.01 -3.5Z" fill-rule="evenodd"/>'};
 const wpShapeSVG=(sh,dim)=>`<svg viewBox="-10 -10 20 20" width="${dim?14:22}" height="${dim?14:22}" aria-hidden="true"><g fill="${dim?'none':'#FFD84A'}" stroke="${dim?'#B9A68A':'#8A5A10'}" stroke-width="1.4"${dim?' stroke-dasharray="2 1.5"':''}>${WP_SH_PATH[sh]||''}</g></svg>`;
 function wpPageHTML(){const i=sheet.wpi,e=wpE(i);if(!e||!WEAPONS[e.crop])return '<p class="note">找不到這把武器。</p><button class="btn" data-act="close">關閉</button>';const W=WEAPONS[e.crop],t=wpTierOk(e);
   if(sheet.wpv==='star')return wpStarHTML(i,e);if(sheet.wpv==='up')return wpUpHTML(i,e);if(sheet.wpv==='tr')return wpTrHTML(i,e);
   const main=state.wpn===i,sub=state.wpn2===i,S=wpSlot(e),R=wpUpNeed(e);
   let h=`${sheet.wpmsg?`<div class="wpmsg ${sheet.wpmsg.k}">${esc(sheet.wpmsg.t)}</div>`:''}<div class="wphero" style="--wr:${RCOL[t-1]}"><span class="wpbig"><img src="${wpSrc(e.crop,t)}" alt=""></span><div><div class="lot-name">${esc(W.n)}</div><div class="meta"><b style="color:${RCOL[t-1]}">${TIERS[t-1]}</b>・${W.ty}${main?'・主武器':sub?'・副武器':''}</div><div class="meta">${esc(W.desc)}</div></div></div>`;
-  h+=wpSkCard(e,1)+wpSkCard(e,2)+`<h3>星星（第 ${t} 階）</h3>`+wpStarRow(e);
-  h+=`<div class="row2"><button class="btn${S?' primary':''}" data-wpv="star"${S?'':' disabled'}>放星星${S&&S.pos===2?`（成功率 ${Math.round(wpStarP(e)*100)}%）`:''}</button><button class="btn${R&&R.ok?' primary':''}" data-wpv="up"${R?'':' disabled'}>${R?'升階':'已經是最高階'}</button></div>`;
+  h+=wpSkCard(e,1)+wpSkCard(e,2)+`<h3>鑲嵌（第 ${t} 階）</h3>`+wpStarRow(e);
+  h+=`<div class="row2"><button class="btn${S?' primary':''}" data-wpv="star"${S?'':' disabled'}>鑲嵌${S&&S.pos===2?`（成功率 ${Math.round(wpStarP(e)*100)}%）`:''}</button><button class="btn${R&&R.ok?' primary':''}" data-wpv="up"${R?'':' disabled'}>${R?'升階':'已經是最高階'}</button></div>`;
   h+=`<div class="row2"><button class="btn" data-wpmain="1"${main?' disabled':''}>${main?'主武器（裝備中）':'設為主武器'}</button>${state.wpn2On?`<button class="btn" data-wpsub="1"${main||sub?' disabled':''}>${sub?'副武器':'設為副武器'}</button>`:''}</div>`;
   h+=`<button class="btn" data-wpv="tr">轉移</button><button class="btn" data-act="close">關閉</button>`;return h}
-function wpStarHTML(i,e){const S=wpSlot(e),L=wpStarFruits(e),ok=WP_SHAPES[e.crop]||[];if(!S)return `<p class="note">這一階的 3 顆星都放滿了，升階之後會多 3 格。</p><button class="btn" data-wpv="">返回</button>`;
-  const p=wpStarP(e);let h=`<h2>放星星</h2><p class="note">這一格要放：${esc(CROPS[e.crop].n)}的果實、造型是「${ok.map(x=>SPN[x]).join('」或「')}」、稀有度 ${TIERS[S.tier-1]}以上。成功率 <b>${Math.round(p*100)}%</b>${(e.sf|0)?`（失敗過 ${e.sf} 次，+${e.sf*10}%）`:''}。失敗只會損失那顆果實；放了就拿不下來。</p>`;
-  h+=L.length?L.map(x=>{const f=STAR_FX[x.a.sp],mh=!!mhOf(x.a);let ic='';try{ic=fruitSVG(fruitPh(x.f),x.f.c,40)}catch(z){}return `<button class="pick" data-wpstar="${x.i}"><span class="seedic">${ic}</span><span><b>${esc(shortApp(fruitPh(x.f),x.f.c))}</b><span class="meta">${TIERS[x.f.t||0]}・${fCount(x.f)} 顆${x.f.b?'・買來的':''}</span><span class="meta">放進去：技能傷害 +5%、${STAR_N[f[0]]} ${f[0]==='def'?'−':'+'}${+(f[1]*(mh?WP_MH_K:1)*100).toFixed(1)}%${mh?'（名品 ×1.5）':''}</span></span></button>`}).join(''):'<p class="note">果實袋裡沒有符合的果實。</p>';
+function wpStarHTML(i,e){const S=wpSlot(e),L=wpStarFruits(e),ok=WP_SHAPES[e.crop]||[];if(!S)return `<p class="note">這一階的 3 格都鑲好了，升階之後會多 3 格。</p><button class="btn" data-wpv="">返回</button>`;
+  const p=wpStarP(e);const w=wpWant(e.crop,S.idx);let h=`<h2>鑲嵌</h2><p class="note">把果實鑲進武器。</p>${wpStarRow(e)}<p class="note">第 ${S.pos+1} 格要鑲：${esc(CROPS[e.crop].n)}的果實、造型是「${SPN[w]}」、稀有度 ${TIERS[S.tier-1]}以上。成功率 <b>${Math.round(p*100)}%</b>${(e.sf|0)?`（失敗過 ${e.sf} 次，+${e.sf*10}%）`:''}。失敗只會損失那顆果實；放了就拿不下來。</p>`;
+  h+=L.length?L.map(x=>{const f=STAR_FX[x.a.sp],mh=!!mhOf(x.a);let ic='';try{ic=fruitSVG(fruitPh(x.f),x.f.c,40)}catch(z){}return `<button class="pick" data-wpstar="${x.i}"><span class="seedic">${ic}</span><span><b>${esc(shortApp(fruitPh(x.f),x.f.c))}</b><span class="meta">${TIERS[x.f.t||0]}・${fCount(x.f)} 顆${x.f.b?'・買來的':''}</span><span class="meta">鑲進去：技能傷害 +5%、${STAR_N[f[0]]} ${f[0]==='def'?'−':'+'}${+(f[1]*(mh?WP_MH_K:1)*100).toFixed(1)}%${mh?'（名品 ×1.5）':''}</span></span></button>`}).join(''):`<p class="note">果實袋裡沒有「${SPN[w]}」的${esc(CROPS[e.crop].n)}果實（${TIERS[S.tier-1]}以上）。</p>`;
   return h+`<button class="btn" data-wpv="">返回</button>`}
 function wpUpHTML(i,e){const R=wpUpNeed(e);if(!R)return `<p class="note">已經是最高階了。</p><button class="btn" data-wpv="">返回</button>`;const U=R.U;
   let h=`<h2>升到 ${TIERS[R.t-1]}</h2>`;for(const x of R.L){if(x.k==='mat')h+=matRowHTML(x.m,x.have,x.want);
@@ -11980,9 +11993,9 @@ function wpUpHTML(i,e){const R=wpUpNeed(e);if(!R)return `<p class="note">已經�
     else h+=`<div class="crow${x.ok?'':' short'}"><span>${x.ok?'✓':'・'}</span><span>${esc(x.txt)}</span><b></b></div>`}
   return h+`<button class="btn primary" data-wpup="1"${R.ok?'':' disabled'}>${R.ok?'升階':'條件還不夠'}</button><button class="btn" data-wpv="">返回</button>`}
 function wpTrHTML(i,a){const bi=sheet.wptb;if(bi==null){const L=weaponsArr().map((b,k)=>({b,k})).filter(x=>x.k!==i&&WEAPONS[x.b.crop]);
-    return `<h2>轉移</h2><p class="note">把這把的階與星星顆數轉給另一把（那一把的階要比較低），這把會變回普通階、沒有星星。</p>`+(L.length?L.map(x=>{const lo=wpTierOk(x.b)<wpTierOk(a);return `<button class="pick" data-wptb="${x.k}"${lo?'':' disabled'}><span class="wpimg sm"><img src="${wpSrc(x.b.crop,x.b.tier)}" alt=""></span><span><b>${esc(WEAPONS[x.b.crop].n)}</b><span class="meta">${TIERS[wpTierOk(x.b)-1]}・${(x.b.st||[]).length} 顆星${lo?'':'・階不比這把低'}</span></span></button>`}).join(''):'<p class="note">你只有這一把武器。</p>')+`<button class="btn" data-wpv="">返回</button>`}
+    return `<h2>轉移</h2><p class="note">把這把的階與鑲嵌數轉給另一把（那一把的階要比較低），這把會變回普通階、沒有鑲嵌。</p>`+(L.length?L.map(x=>{const lo=wpTierOk(x.b)<wpTierOk(a);return `<button class="pick" data-wptb="${x.k}"${lo?'':' disabled'}><span class="wpimg sm"><img src="${wpSrc(x.b.crop,x.b.tier)}" alt=""></span><span><b>${esc(WEAPONS[x.b.crop].n)}</b><span class="meta">${TIERS[wpTierOk(x.b)-1]}・鑲嵌 ${(x.b.st||[]).length}${lo?'':'・階不比這把低'}</span></span></button>`}).join(''):'<p class="note">你只有這一把武器。</p>')+`<button class="btn" data-wpv="">返回</button>`}
   const b=wpE(bi),C=wpTrCost(a,b),n=(a.st||[]).length,err=wpTrOk(i,bi);
-  return `<h2>確定轉移？</h2><div class="wptr"><p><b>${esc(WEAPONS[a.crop].n)}</b>：${TIERS[wpTierOk(a)-1]}・${n} 顆星 → <b>普通・0 顆星</b></p><p><b>${esc(WEAPONS[b.crop].n)}</b>：${TIERS[wpTierOk(b)-1]}・${(b.st||[]).length} 顆星 → <b>${TIERS[wpTierOk(a)-1]}・${n} 顆星</b>（造型照${esc(WEAPONS[b.crop].n)}收的「${(WP_SHAPES[b.crop]||[]).map(x=>SPN[x]).join('」「')}」輪流放；原本的階與星星會被蓋掉，名品加成不保留）</p></div>
+  return `<h2>確定轉移？</h2><div class="wptr"><p><b>${esc(WEAPONS[a.crop].n)}</b>：${TIERS[wpTierOk(a)-1]}・鑲嵌 ${n} → <b>普通・鑲嵌 0</b></p><p><b>${esc(WEAPONS[b.crop].n)}</b>：${TIERS[wpTierOk(b)-1]}・鑲嵌 ${(b.st||[]).length} → <b>${TIERS[wpTierOk(a)-1]}・鑲嵌 ${n}</b>（照${esc(WEAPONS[b.crop].n)}每一格指定的造型鑲；原本的階與鑲嵌會被蓋掉，名品加成不保留）</p></div>
     <h3>費用</h3><div class="crow${(state.coins||0)>=C.coins?'':' short'}"><img class="ibimg" src="${iconSrc('coin')}" alt="" style="width:28px;height:28px"><span>金幣</span><b>${state.coins||0}／${C.coins}</b></div>${C.gold?matRowHTML(C.g,mcnt(C.g),C.gold):''}
     <p class="err">不能復原。</p>${err?`<p class="err">${esc(err)}</p>`:''}<button class="btn primary" data-wptr="1"${err?' disabled':''}>確定轉移</button><button class="btn" data-wptb="">返回</button>`}
 /* 武器頁的點擊（capture，不碰其他畫面的 data-act） */
@@ -11990,7 +12003,7 @@ sb.addEventListener('click',e=>{if(!sheet||sheet.wpi==null||sheet.msrc)return;co
   delete sheet.wpmsg;
   if(d.wpv!=null){sheet.wpv=d.wpv||null;if(d.wpv==='tr')sheet.wptb=null}
   else if(d.wpr){sheet.wpr=sheet.wpr===+d.wpr?0:+d.wpr}
-  else if(d.wpstar!=null){const R=wpStarDo(i,+d.wpstar);if(R.err)toast(R.err);else{sheet.wpv=null;sheet.wpmsg=R.ok?{k:'ok',t:`✨ 星星放進去了！${R.mh?'（名品：造型加成 ×1.5）':''}`}:{k:'bad',t:`💥 果實碎掉了……下次成功率 +10%`};try{sfx(R.ok?'pop':'pop',60)}catch(x){}}}
+  else if(d.wpstar!=null){const R=wpStarDo(i,+d.wpstar);if(R.err)toast(R.err);else{sheet.wpv=null;sheet.wpmsg=R.ok?{k:'ok',t:`✨ 鑲嵌成功！${R.mh?'（名品：造型加成 ×1.5）':''}`}:{k:'bad',t:`💥 果實碎掉了……下次成功率 +10%`};try{sfx(R.ok?'pop':'pop',60)}catch(x){}}}
   else if(d.wpup){const R=wpUpDo(i);if(R.err)toast(R.err);else{sheet.wpv=null;const e2=wpE(i),W=WEAPONS[e2.crop];try{celShow({th:'dream',kicker:'升階',title:`${W.n}升到${TIERS[R.to-1]}了！`,sub:'',fruit:`<span class="wpbig cel" style="--wr:${RCOL[R.to-1]}"><img src="${wpSrc(e2.crop,R.to)}" alt=""></span>`,chips:[TIERS[R.to-1]]})}catch(x){}if(R.learn)setTimeout(()=>{try{noteOpen(`<h2>學會了：${esc(R.learn)}</h2><p class="note">${esc(W.n)}的技能變了，到野外試試看。</p>`)}catch(x){}},1600)}}
   else if(d.wpmain){wpSetMain(i);toast('設為主武器')}
   else if(d.wpsub){if(wpSetSub(i))toast('設為副武器')}
@@ -12256,7 +12269,7 @@ function wpickHTML(){return `<h2>選一把武器</h2><p class="note">送你一�
 function wpickDo(crop){if(!WEAPONS[crop])return;const i=wpnGive(crop,1);state.wpnPick=1;state.wpn=i;save();closeSheet();try{const F=document.getElementById('meWF');if(F)F._k='';wpnPaintMe()}catch(e){}toast(`拿到了${WEAPONS[crop].n}！`)}
 /* 背包：武器分頁 */
 function wpnBagHTML(){const A=weaponsArr();if(!A.length)return '<p class="note">還沒有武器。第一次到野外會送你一把。</p>';
-  return `<p class="note">點一把看詳細：放星星、升階、設為主／副武器、轉移。</p><div class="wpgrid">`+A.map((e,i)=>{const W=WEAPONS[e.crop];if(!W)return '';const on=state.wpn===i,sub=state.wpn2===i,t=wpTierOk(e);return `<button class="wpcard${on?' on':''}" data-wpeq="${i}" style="--wr:${RCOL[t-1]}"><span class="wpimg"><img src="${wpSrc(e.crop,t)}" alt=""></span><b>${W.n}</b><span class="wptag ${W.ty==='近戰'?'m':'r'}">${W.ty}</span><span class="meta">${TIERS[t-1]}・${(e.st||[]).length} 顆星${on?'・主武器':sub?'・副武器':''}</span></button>`}).join('')+`</div>`}
+  return `<p class="note">點一把看詳細：鑲嵌、升階、設為主／副武器、轉移。</p><div class="wpgrid">`+A.map((e,i)=>{const W=WEAPONS[e.crop];if(!W)return '';const on=state.wpn===i,sub=state.wpn2===i,t=wpTierOk(e);return `<button class="wpcard${on?' on':''}" data-wpeq="${i}" style="--wr:${RCOL[t-1]}"><span class="wpimg"><img src="${wpSrc(e.crop,t)}" alt=""></span><b>${W.n}</b><span class="wptag ${W.ty==='近戰'?'m':'r'}">${W.ty}</span><span class="meta">${TIERS[t-1]}・鑲嵌 ${(e.st||[]).length}${on?'・主武器':sub?'・副武器':''}</span></button>`}).join('')+`</div>`}
 /* 製作：武器分頁 */
 const fruitCropCount=c=>fruitsArr().filter(f=>f.c===c).reduce((s,f)=>s+fCount(f),0);
 function fruitCropTake(c,n){const F=fruitsArr();for(const f of F){if(f.c!==c)continue;for(const qk of Object.keys(f.q||{})){const m=Math.min(n,f.q[qk]);f.q[qk]-=m;n-=m;if(f.q[qk]<=0)delete f.q[qk];if(!n)break}if(!n)break}for(let i=F.length-1;i>=0;i--)if(!fCount(F[i]))F.splice(i,1)}

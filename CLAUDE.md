@@ -2,7 +2,7 @@
 
 > 程式：`index.html`。**程式碼才是唯一的事實來源**，和文件衝突時以程式為準。
 > 2026-11-18 起 CLAUDE.md 只放接手需要的東西。已完成各節的原文、第 9 節（各系統的實作紀錄）、第 10 節（版本歷程）、第 17 節都在 `docs/規格存檔.md`；還沒做或還沒定案的節，每節一個檔案在 `docs/待實作/`。哪一節在哪裡看最下面的「節號索引表」。
-> **目前 BUILD `2026-11-21j`，下一版 `2026-11-21k`。**
+> **目前 BUILD `2026-11-21k`，下一版 `2026-11-21l`。**
 > **用詞（第 194 節）**：舊文件（`docs/規格存檔.md`）裡的「主」＝**領主**（各區古老的守護者，被蝕的力量侵蝕而失控），「僕人」＝**眷屬**（跟隨領主的魔獸）；抽火傀儡不是眷屬。程式的鍵（`LORDS`、`SERVANTS`、`lord_*`、`servant_*`）不改。
 > **使用者要自己做的事**：Realtime Database 規則整份貼 `tools/rtdb_rules_196.txt`（含 62 的 status、135、172、173、196 的 `od`）；Firestore 規則整份貼 `tools/firestore_rules_console_114.txt`（117 那份＋`fairyFirst`）。舊的規則檔都只是紀錄。
 > **還沒做的節**：135 的神寵技能、136（跟晶霜雪原那一章一起做）；未定案：14、19、69、201（劇情改版）；暫停：108（3D，草原預設 2D）。各節做完的紀錄看下面的索引表。
@@ -174,6 +174,7 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 5. **母本資訊不要讓人誤會是這包種子的性質**（F1 曾被誤顯示為「完全穩定」）。
 6. 大小、完美度留給想挑戰紀錄的進階玩家（類似寶可夢個體值），一般玩家可忽略。
 7. 新增地點必須有功能，不能只是裝飾；測試人數少，空蕩的場所會更冷清。
+8. **地圖通則（第 209 節）**：A 地圖往某個方向的出口，接到 B 地圖的**相反方向**那一邊（往右出去＝從左邊進來；往上出去＝從下面進來）。建築物、洞穴用門墊／門走進去，室內的出口在門那面牆。現有違反的三個秘境列在規格存檔 9.208（還沒改）。
 
 ## 12. 已確定不做
 
@@ -297,8 +298,9 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 - 領主變難、神寵普通攻擊（200）：`LORD_HIT`／`lordDmgK`（載入時寫進 `LORDS[bk].dmgK`）、`LORD_HPK`（後四隻的 `hpK`，其他 300）、第二階段 ×`LORD_PH2`（`bossDmgOf`）、倒下 `lordKoTry`（在 `pDamage`）／`lordKoTick`（在 `bossStep`）／`lordKoOn`／`lordKoEnd`（`#koBox`、`body.lordko`）；神寵 `petAtkTick`（在 `fyAtkTick`）／`PET_ATK_PCT`／`petAtkFx`（`.petorb`）／`petLungeOff`（`petMove`）、同步 `petAct`→`pa`／`petAtkRemote`、傷害數字 `pet:{col}`→`dmgShow` 的 `color`／`sm`；表 `tools/sim200.js`、測試 `tools/t200.js`。
 - 技能鍵圖示（202）：`skIcon`／`skImgSet`（`#sk1`／`#sk2` 的 `.skimg`、`hasimg`）、`skIconHTML`（武器頁 `wpSkCard`、長按 `skCardShow`，`.skic40`）；圖在 `assets/icons/skills/<W.k>_s<1|2>.webp`。
 - 後六區領主修正（204）：巴絲眼睛 `bossOver`／`bossOverKey`／`basEyeSt`／`BAS_EYE`（每張姿勢的眼睛位置）、盯住 `basMarkTick`／`basMarkPos`／`LAI.bas.aim`（`bossAI` 的 `aim` 掛鉤）、塔羅斯 `talosAimT`、`regNextExitAll`（貓帶到隱藏入口 → `secEnter`）、別人的貓 `catRemote`／`catPaintR`（presence `cat`）、連擊加總 `orthComboSum`（`od/<uid>.c`、`b.odAll`）、吼聲 `bossShoveMe`（`BATK.roar.shove`）、特效染色 `fxTintImg`（`FXTI`、plan 的 `tint`）、素材圖示 `assets/icons/mats/`；測試 `tools/t204.js`。
-- 城鎮的子地圖、室內（206、207）：`townMap`、`TOWN_SUB`（garden／garden_hut／church_hall／institute_lab；`indoor`、`floor`、`furn`、`see`、`altars`、`door`）、`townSubWorld`／`inRoomSVG`、`townMapGo`、門口 `townDoors`／`townDoorAt`／`townDoorBtn`／`townDoorTap`／`townSubTick`、調查 `hutInspect`（`seeSpot`）、祭壇 `ALTAR_K`／`altarPos`／`altarLit`／`altarTap`、`TOWN_IN_BLD`／`bldFront`、NPC 的 `map`（`townNpcs` 照 `townMap` 過濾、`townGo`／`townArrowSVG` 會帶到建築門口）；城鎮 207 起加高到 1540（農會 (190,1255)、研究所 (600,1255)、教會 (400,365)）；測試 `tools/t207.js`。
+- 城鎮的子地圖、室內（206、207）：`townMap`、`TOWN_SUB`（garden／garden_hut／church_hall／institute_lab；`indoor`、`floor`、`furn`、`see`、`altars`、`door`）、`townSubWorld`／`inRoomSVG`、`townMapGo`、門口 `townDoors`／`townDoorAt`／`townDoorBtn`／`townDoorTap`／`townSubTick`、調查 `hutInspect`（`seeSpot`）、祭壇 `ALTAR_K`／`altarPos`／`altarLit`／`altarTap`、`TOWN_IN_BLD`／`bldFront`、209 起踩門墊進去 `townDoorIn`／`townDoorMats`／`townDoorCool`（按鈕 `townDoorBtn` 回空字串）、菜圃在城鎮西側、NPC 的 `map`（`townNpcs` 照 `townMap` 過濾、`townGo`／`townArrowSVG` 會帶到建築門口）；城鎮 207 起加高到 1540（農會 (190,1255)、研究所 (600,1255)、教會 (400,365)）；測試 `tools/t207.js`。
 - 武器升階素材（208）：`WP_UP2[作物][階]`（`[鍵,數量,替代品]`）、`wpUp2`、`wpUpUses`（素材詳細頁、取得方式的用途）；`WP_UP` 只剩等級、果實、金幣。地圖鍵（208）：`hud188` 搬進 `#rbar` 最前面，三個場景同一個位置；測試 `tools/t208.js`。
+- 鑲嵌（209，原本的放星星）：`WP_INLAY`（每階 3 格的 A／B）、`wpWant(作物,第幾格)`、`wpStarRow`（已鑲／下一格／先鑲前一格）、`wpShapeG`；轉移照 `wpWant`；測試 `tools/t209.js`。
 - 武器頁（190）：`sheet.wpi`（`wpOpen`／`wpPageHTML`、`wpSkCard`、`wpStarRow`）、技能定義 `skDefFor`、星星 `wpSlot`／`wpStarFruits`／`wpStarP`／`wpStarDo`（`WP_STAR_P`、`e.sf`、名品存負數 `wpStatOf`）、升階 `WP_UP`／`wpUpNeed`／`wpUpDo`（`wpFarKeys`）、轉移 `wpTrCost`／`wpTrOk`／`wpTrDo`（`WP_TR_COIN`）、副武器 `state.wpn2`／`wpn2On`（`wpn2Tick`）、`wpSetMain`／`wpSetSub`／`wpnSwap`、`#wpSwap`（`wpSwapPaint`）、各把的冷卻 `SKCW`／`skCdSwap`；測試 `tools/t190.js`。
 - 攻擊鍵（189）：普通攻擊不再自動，`atkTick`（在 `monLoop`、`bossStep`）、`atkPress`／`atkRelease`（`atkHeld`、`atkTap`）、`atkLock`／`atkLockT`／`atkTs`／`atkSearch`、走過去 `moveTo`（`atkJoy` 推搖桿就取消）、空揮 `atkWhiff`、鎖定圈 `#atkRing`（`atkRingPaint`）；按鈕是 `#skR`（`.ska`）；翻滾拿掉；`TIP_TXT.atk`。
 - 畫面按鈕重排（188）：位置都在 `<style>` 最後的「188」區塊（`body.h188`、`--h188-*` 變數）、`hud188()`（選單搬進 `#rbar`、回家／幫忙照顧搬進 `#ctxBar`）、`MENU` 加朋友／圖鑑／布置、`renderFrDot` 紅點在選單；`#hpBar` 所有場景都顯示；檢查 `tools/layout188.js`。**之後加按鈕要照 188 的位置表排**。
@@ -424,3 +426,4 @@ const A=hom(T.makeWild('tomato','grass',false)),B=hom(T.makeWild('tomato','fores
 | 206 | 城郊菜圃＋小木屋室內 | 已完成 | docs/規格存檔.md；21h（9.205）；子地圖放在 `TOWN_SUB` 不是 `TOWN_MAPS`；截圖沒存；沒測 iPhone |
 | 207 | 穗光教會大殿、分子育種研究所 | 已完成 | docs/規格存檔.md；21i（9.206）；**教會佔了農會的位置，城鎮加高 300、農會搬到下面**；序章要先進教會找神父；截圖沒存；沒測 iPhone |
 | 208 | 試玩回報修正：發光植株、世界地圖、野外回城、武器升階素材 | 已完成 | docs/規格存檔.md；21j（9.207）；**規格表 8 種素材沒有怪會掉，換成同一區的、舊的當替代品**（對照在 9.207）；領主戰中用地圖離開會先確認；截圖沒拍到（窗格隱藏）；沒測 iPhone |
+| 209 | 武器鑲嵌（每一格指定造型、照順序）；城郊菜圃改到城鎮西邊；建築物用走的進去 | 已完成 | docs/規格存檔.md；21k（9.208）；現有出口違反通則的三個秘境列在 9.208（沒改）；截圖沒拍到（窗格隱藏）；沒測 iPhone |

@@ -1373,6 +1373,10 @@ body.lordko #meGAv,body.lordko #meG{opacity:.35}
 @keyframes basEye{to{opacity:.7}}
 @keyframes basSand{0%{opacity:0;transform:translate(0,0)}30%{opacity:.7}100%{opacity:0;transform:translate(-8px,-26px)}}
 @media (prefers-reduced-motion:reduce){.baseye.hot ellipse,.baseye.dim .sand{animation:none}}
+
+/* ===== 206：小木屋可以調查的光點 ===== */
+.hutglint{animation:hutGl 1.4s ease-in-out infinite}@keyframes hutGl{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.hutglint{animation:none}}
 </style>
 </head>
 <body class="game">
@@ -2137,7 +2141,7 @@ function gReviver(k,v){return typeof v==='string'?(v.length===GLEN3+2&&v.startsW
 const packState=o=>JSON.stringify(o,gReplacer);
 const unpack=t=>JSON.parse(t,gReviver);
 // ===== 存檔檢查與修復 =====
-const BUILD='2026-11-21g';
+const BUILD='2026-11-21h';
 const isPair=p=>Array.isArray(p)&&p.length===2;
 function isGeno(g){
   if(!g||typeof g!=='object'||g.sv!==3)return false;
@@ -6376,7 +6380,7 @@ function townEdge(M,R,inExit,objs){
   const south=[['planter',3],['shrub',3],['hedge',2]];{const prev=[];for(let x=30+R()*10;x<=M.W-30;){const kd=pick(south,prev);prev.push(kd);if(!inExit('s',x,34))objs.push([kd,x,M.H-6-R()*4,null,{s:0.9+R()*0.22,fl:R()<0.5}]);x+=(kd==='hedge'?62:54)+R()*12}}
 }
 const TOWN_MAPS={plaza:{n:'城鎮',gx:1,gy:1,W:800,H:1240,B:{x0:44,x1:756,y0:104,y1:1200},
-  exits:[{side:'s',c:400,w:110,to:'farm'}],
+  exits:[{side:'s',c:400,w:110,to:'farm'},{side:'e',c:590,w:100,to:'garden'}],/* 206：東側往城郊菜圃 */
   paths:[[[400,1250],[400,520]],[[400,520],[400,420]],[[140,420],[660,420]],[[118,1176],[400,1136],[656,1176]]],
   blocks:[[44,104,756,270]].concat(STALLS.map(([x,y])=>[x-40,y-24,x+40,y+2])),
   objs:[...TOWN_BLD.map(b=>[b.k,b.x,b.y]),['fountain',400,520],['bench',262,555],['bench',538,555],['planter',120,500],['planter',680,500],
@@ -6391,7 +6395,7 @@ const TOWN_MAPS={plaza:{n:'城鎮',gx:1,gy:1,W:800,H:1240,B:{x0:44,x1:756,y0:104
   spawns:[],items:[]}};
 const townFront=b=>{const a=TOWN_ART[b.k],w=a[1]*TOWN_IMG[a[0]][0]/TOWN_IMG[a[0]][1];return [Math.round(b.x+(b.door-0.5)*w),b.y+26]};
 let townFg='',townSplit=-1,townFgOn=false,hoverTown=null;
-const townSplitN=()=>{const M=regPrep('town','plaza'),y=marketMe.y;let n=0;for(const v of M._ys){if(v<=y)n++;else break}for(const [,sy] of STALLS)if(sy<=y)n+=100;for(const p of townNpcs())if(p.y<=y)n+=1e4;return n};
+const townSplitN=()=>{if(townMap!=='plaza'){const M=TOWN_SUB[townMap],y=marketMe.y;return (M.objs||[]).filter(o=>o[2]<=y).length+(M.indoor?HUT_FURN.filter(f=>f[2]<=y).length*10:0)}/* 206 */const M=regPrep('town','plaza'),y=marketMe.y;let n=0;for(const v of M._ys){if(v<=y)n++;else break}for(const [,sy] of STALLS)if(sy<=y)n+=100;for(const p of townNpcs())if(p.y<=y)n+=1e4;return n};
 function townSignSVG(b){const a=TOWN_ART[b.k],dh=a[1],w=dh*TOWN_IMG[a[0]][0]/TOWN_IMG[a[0]][1],[fx]=townFront(b),tw=b.n.length*11+14,y=b.y-dh*b.sg;
   return `<g pointer-events="none"><rect x="${f1(fx-tw/2)}" y="${f1(y-9)}" width="${tw}" height="18" rx="4" fill="#F7F0DC" stroke="#4A3020" stroke-width="1.5"/><text x="${fx}" y="${f1(y+4.5)}" text-anchor="middle" font-size="11" font-weight="700" fill="#4A3020" font-family="Noto Sans TC,sans-serif">${b.n}</text>${b.id==='dessert'&&state&&state.ns&&state.ns.mei&&state.ns.mei.d>=5?(()=>{const t='特約農場：'+myName(),w2=[...t].length*8.5+12;return `<rect x="${f1(fx-w2/2)}" y="${f1(y+12)}" width="${f1(w2)}" height="14" rx="3" fill="#FFE9F0" stroke="#4A3020" stroke-width="1.2"/><text x="${fx}" y="${f1(y+22.5)}" text-anchor="middle" font-size="8.5" font-weight="700" fill="#4A3020" font-family="Noto Sans TC,sans-serif">${esc(t)}</text>`})():''}</g>`}/* 43.1：小莓姊的故事完成後，店門口多一塊牌子（只有自己看得到） */
 /* 74.2（16h）：城鎮 4 位 NPC 改用圖片 assets/char/npc/npc_<id>.png（260px 高的全身正面圖）。顯示高度 NPC_H（玩家在畫面上約 62，NPC 高一點）；
@@ -6406,8 +6410,62 @@ function townNpcSVG(p){return `<g transform="translate(${p.x} ${p.y}) scale(1.15
 /* 40.1：墨先生的眼鏡（正面，眼睛約在 (-3.6,-37.7)、(4,-37.7)） */
 const NPC_GLASSES='<g fill="rgba(255,255,255,.18)" stroke="#4A3020" stroke-width=".75"><circle cx="-3.6" cy="-37.6" r="2.7"/><circle cx="4" cy="-37.6" r="2.7"/><path d="M-0.9 -37.9 Q0.2 -38.6 1.3 -37.9" fill="none"/></g>';
 const townRing=(x,y)=>`<ellipse cx="${x}" cy="${y}" rx="30" ry="9" fill="none" stroke="var(--mustard)" stroke-width="3" stroke-dasharray="6 4" pointer-events="none"/>`;
+/* ===== 206（21h）：城鎮的子地圖——城郊菜圃（畫好的地面）＋阿土伯的小木屋室內（第一個「走進房子」） =====
+   townMap＝'plaza'（原本的廣場）／'garden'／'garden_hut'。子地圖不用 regPrep（舊格式會自己加邊緣的樹），自己組 M（B、blk、exits、wlk/lk 空）給 regBlocked／regExitAt 用。
+   室內地圖通用：indoor:1、door:{to,x,y}（回到哪一張、站在哪裡）；之後教會大殿、研究所照用（加進 TOWN_SUB 就好）。 ===== */
+let townMap='plaza';
+const HUT_W=600,HUT_H=500;
+/* 家具：[鍵, x, y（腳底）, 顯示高, 碰撞寬比例] */
+const HUT_FURN=[['hut_bed',112,222,80,0.85],['hut_shelf',300,200,92,0.7],['hut_stove',494,214,74,0.8],['hut_table',372,340,70,0.8],['hut_tools',92,452,78,0.7],['hut_jar',516,456,56,0.8]];
+const HUT_IMG={hut_bed:[302,300],hut_shelf:[247,369],hut_stove:[309,257],hut_table:[316,246],hut_tools:[285,316],hut_jar:[246,293],hut_watch:[196,287],hut_photo:[259,205]};
+const furnW=(k,h)=>h*HUT_IMG[k][0]/HUT_IMG[k][1];
+/* 伏筆：手錶在木架上（木架寬 15%）、照片倒扣在桌上（桌面 30%） */
+const HUT_INSPECT={watch:{n:'停掉的舊手錶',t:'指針停在一個時間。錶面上的數字，和這裡的不一樣。',on:'hut_shelf',img:'hut_watch',fw:0.15,fy:0.62},photo:{n:'褪色的照片',t:'照片倒扣著。翻過來，是一群穿著奇怪衣服的人，站在高樓前面笑。',on:'hut_table',img:'hut_photo',fw:0.3,fy:0.66}};
+function hutSpot(k){const I=HUT_INSPECT[k],F=HUT_FURN.find(f=>f[0]===I.on),w=furnW(F[0],F[3]),iw=w*I.fw,ih=iw*HUT_IMG[I.img][1]/HUT_IMG[I.img][0];return {x:F[1],y:F[2]-F[3]*I.fy,w:iw,h:ih,fy:F[2]}}
+const GARDEN_CABIN={x:190,y:300,h:150,door:[222,318]};
+const TOWN_SUB={
+  garden:{id:'garden',bk:'town',n:'城郊菜圃',W:800,H:1200,B:{x0:52,x1:748,y0:52,y1:1142},ground:'assets/ground/town_garden.jpg',
+    exits:[{side:'e',c:710,w:110,to:'plaza'}],
+    /* 照圖量（848×1264 → 800×1200）：木圍籬 x 104～592、y 745～1101，上邊左側缺口 x 262～341；小木屋、木桶、木箱的底座 */
+    blk:[[104,738,262,756],[341,738,592,756],[96,745,116,1108],[580,745,600,1108],[104,1092,592,1110],[GARDEN_CABIN.x-56,GARDEN_CABIN.y-46,GARDEN_CABIN.x+50,GARDEN_CABIN.y+2],[268,300,302,318],[78,316,112,334]],
+    objs:[['cabin',GARDEN_CABIN.x,GARDEN_CABIN.y,GARDEN_CABIN.h,'assets/forest/cabin.png',277,300],['barrel',285,316,40,'assets/town/barrel.png',173,220],['crates',95,332,42,'assets/town/crates.png',183,220]],
+    hutDoor:GARDEN_CABIN.door},
+  garden_hut:{id:'garden_hut',bk:'town',n:'小木屋',indoor:1,W:HUT_W,H:HUT_H,B:{x0:40,x1:560,y0:150,y1:476},door:{to:'garden',x:GARDEN_CABIN.door[0],y:GARDEN_CABIN.door[1]+18},
+    exits:[{side:'s',c:300,w:90,to:'garden'}],
+    blk:HUT_FURN.map(([k,x,y,h,cw])=>{const w=furnW(k,h)*cw;return [x-w/2,y-Math.min(h*0.4,34),x+w/2,y+2]}),objs:[]}};
+for(const k in TOWN_SUB){const M=TOWN_SUB[k];M.wlk=[];M.lk=[];M.pass=null;M._p=1}
+const townSubM=()=>TOWN_SUB[townMap]||null;
+/* 換城鎮的子地圖：淡出淡入、相機範圍、多人頻道 */
+function townMapGo(to){if(regBusy)return;regBusy=true;const from=townMap,ov=document.getElementById('fadeOv');try{ov.style.opacity='1'}catch(e){}
+  setTimeout(()=>{townMap=to;const M=townSubM();if(to==='plaza'){WORLD.market.W=800;WORLD.market.H=1240;const e=TOWN_MAPS.plaza.exits.find(x=>x.to==='garden');marketMe={x:TOWN_MAPS.plaza.B.x1-18,y:e?e.c:600}}
+    else{WORLD.market.W=M.W;WORLD.market.H=M.H;if(to==='garden'&&from==='plaza')marketMe={x:M.B.x1-18,y:M.exits[0].c};else if(to==='garden'&&from==='garden_hut')marketMe={x:M.hutDoor[0],y:M.hutDoor[1]+18};else if(M.indoor)marketMe={x:300,y:M.B.y1-24}}
+    hoverTown=null;try{joinFarm(to==='plaza'?'town':'town_'+to)}catch(e){}try{renderHUD();renderWorld();renderChars();updateCam();refreshAct()}catch(e){}try{ov.style.opacity='0'}catch(e){}regBusy=false;
+    try{toast(to==='plaza'?'回到城鎮':M.n,1400)}catch(e){}},150)}
+/* 走到門口 60 內：顯示「進去」／「出去」 */
+function townDoorAt(){const m=marketMe,M=townSubM();if(!M||!m)return null;if(townMap==='garden'){const [x,y]=M.hutDoor;return Math.hypot(m.x-x,m.y-y)<60?{t:'in',x,y}:null}if(M.indoor){const x=300,y=M.B.y1;return Math.hypot(m.x-x,m.y-y)<60?{t:'out',x,y}:null}return null}
+let townDoorK='';
+function townSubTick(){const d=townDoorAt(),k=d?d.t:'';if(k!==townDoorK){townDoorK=k;try{renderWorld()}catch(e){}}}
+function townDoorTap(t){const M=townSubM();if(!M)return;const go=()=>townMapGo(t==='in'?'garden_hut':M.door.to);if(townDoorAt())go();else{const [x,y]=t==='in'?M.hutDoor:[300,M.B.y1-16];walkTo(x,y,go)}}
+function hutInspect(k){const I=HUT_INSPECT[k];if(!I)return;const s=hutSpot(k),m=marketMe,go=()=>{try{noteOpen(`<h2>${esc(I.n)}</h2><p class="note">${esc(I.t)}</p>`)}catch(e){}};if(Math.hypot(m.x-s.x,m.y-s.fy)<80)go();else walkTo(s.x,s.fy+24,go)}
+/* 畫：地面圖／室內的地板牆、物件（照 y 排）、門口的按鈕、可以調查的光點；回傳 world 內容（前景放 townFg） */
+function townSubWorld(){const M=townSubM(),me=marketMe,bg=[],fg=[],add=(y,h)=>(y<=me.y?bg:fg).push({y,h});let ground='';
+  if(townMap==='garden'){ground=`<image href="${M.ground}?v=${BUILD}" x="0" y="0" width="${M.W}" height="${M.H}" preserveAspectRatio="none"/>`;
+    for(const [k,x,y,h,src,iw,ih] of M.objs){const w=h*iw/ih;add(y,`<g pointer-events="none"><ellipse cx="${x}" cy="${y}" rx="${(w*0.42).toFixed(1)}" ry="${(w*0.1).toFixed(1)}" fill="rgba(30,20,10,.28)"/><image href="${src}?v=${BUILD}" x="${(x-w/2).toFixed(1)}" y="${y-h}" width="${w.toFixed(1)}" height="${h}"/></g>`)}
+    add(GARDEN_CABIN.door[1]+1,`<rect data-hutgo="in" x="${GARDEN_CABIN.door[0]-26}" y="${GARDEN_CABIN.door[1]-60}" width="52" height="66" fill="rgba(0,0,0,0)" style="cursor:pointer"/>`)}
+  else if(M.indoor){const T=M.B.y0;ground=`<rect x="0" y="0" width="${M.W}" height="${M.H}" fill="#3A2818"/><rect x="${M.B.x0-8}" y="${T-110}" width="${M.B.x1-M.B.x0+16}" height="110" fill="#8A6038"/>${[0,1,2,3,4,5,6,7,8].map(i=>`<line x1="${M.B.x0-8+i*(M.B.x1-M.B.x0+16)/8}" y1="${T-110}" x2="${M.B.x0-8+i*(M.B.x1-M.B.x0+16)/8}" y2="${T}" stroke="#6E4A2A" stroke-width="2"/>`).join('')}<rect x="${M.B.x0-12}" y="${T-118}" width="${M.B.x1-M.B.x0+24}" height="14" fill="#5A3A20"/>`+
+      `<rect x="${M.B.x0-8}" y="${T}" width="${M.B.x1-M.B.x0+16}" height="${M.B.y1-T+14}" fill="#B98A5A"/>${Array.from({length:10},(_,i)=>`<line x1="${M.B.x0-8}" y1="${T+i*34}" x2="${M.B.x1+8}" y2="${T+i*34}" stroke="#9A6E44" stroke-width="2"/>`).join('')}<rect x="${M.B.x0-8}" y="${T}" width="${M.B.x1-M.B.x0+16}" height="10" fill="rgba(0,0,0,.18)"/>`+
+      `<rect x="${M.B.x0-24}" y="${T-118}" width="16" height="${M.B.y1-T+132}" fill="#5A3A20"/><rect x="${M.B.x1+8}" y="${T-118}" width="16" height="${M.B.y1-T+132}" fill="#5A3A20"/><rect x="255" y="${M.B.y1+2}" width="90" height="16" fill="#C9A26A" stroke="#5A3A20" stroke-width="2"/>`;
+    for(const [k,x,y,h] of HUT_FURN){const w=furnW(k,h);add(y,`<g pointer-events="none"><ellipse cx="${x}" cy="${y}" rx="${(w*0.4).toFixed(1)}" ry="${(w*0.09).toFixed(1)}" fill="rgba(30,15,5,.28)"/><image href="assets/hut/${k}.png?v=${BUILD}" x="${(x-w/2).toFixed(1)}" y="${(y-h).toFixed(1)}" width="${w.toFixed(1)}" height="${h}"/></g>`)}
+    for(const k in HUT_INSPECT){const I=HUT_INSPECT[k],s=hutSpot(k);add(s.fy+0.5,`<g><image href="assets/hut/${I.img}.png?v=${BUILD}" x="${(s.x-s.w/2).toFixed(1)}" y="${(s.y-s.h).toFixed(1)}" width="${s.w.toFixed(1)}" height="${s.h.toFixed(1)}" pointer-events="none"/><circle class="hutglint" cx="${(s.x+s.w*0.5).toFixed(1)}" cy="${(s.y-s.h).toFixed(1)}" r="3.5" fill="#FFF4C2" pointer-events="none"/><rect data-hutsee="${k}" x="${(s.x-26).toFixed(1)}" y="${(s.y-s.h-16).toFixed(1)}" width="52" height="${(s.h+32).toFixed(1)}" fill="rgba(0,0,0,0)" style="cursor:pointer"/></g>`)}}
+  bg.sort((a,b)=>a.y-b.y);fg.sort((a,b)=>a.y-b.y);
+  let fgs=fg.map(o=>o.h).join('');if(M.indoor)fgs+=`<rect x="0" y="0" width="${M.W}" height="${M.H}" fill="rgba(255,160,70,.12)" pointer-events="none"/>`;/* 室內：淡淡的暖光 */
+  townFg=fgs;townFgOn=true;try{const F=document.getElementById('fgLayer');if(F)F.innerHTML=townFg}catch(e){}
+  const d=townDoorAt();let btn='';if(d){const lab=d.t==='in'?'進去':'出去',y=d.t==='in'?d.y-74:d.y-20;btn=`<g data-hutgo="${d.t}" style="cursor:pointer"><rect x="${d.x-30}" y="${y-14}" width="60" height="26" rx="13" fill="#FFF6DE" stroke="#5A3416" stroke-width="2"/><text x="${d.x}" y="${y+4}" text-anchor="middle" font-size="13" font-weight="800" fill="#5A3416">${lab}</text></g>`}
+  return ground+bg.map(o=>o.h).join('')+btn}
+/* ===== 206 結束 ===== */
 /* 市集場景的畫面：物件、攤位、NPC 依 y 排序，比角色前面的放前景層；點擊範圍另外畫在最上面（透明），前景層不擋點擊 */
 function marketWorld(hl){
+  if(townMap!=='plaza'){townSplit=townSplitN();return townSubWorld()}/* 206 */
   const M=regPrep('town','plaza'),me=marketMe;townSplit=townSplitN();
   const bg=[],fg=[],add=(y,h)=>(y<=me.y?bg:fg).push({y,h});
   for(const o of M._objs)add(o.y,o.h);
@@ -6415,6 +6473,7 @@ function marketWorld(hl){
   for(const b of TOWN_BLD)if(b.sg)add(b.y+0.5,townSignSVG(b));
   add(612,`<g pointer-events="none"><rect x="372" y="594" width="56" height="20" rx="5" fill="#F7F0DC" stroke="#4A3020" stroke-width="1.5"/><text x="400" y="608.5" text-anchor="middle" font-size="12" font-weight="700" fill="#4A3020" font-family="Noto Sans TC,sans-serif">市集</text></g>`);/* 32.0：攤位區仍叫市集 */
   for(const p of townNpcs())add(p.y,townNpcSVG(p));
+  add(560,`<g transform="translate(716 560)" pointer-events="none"><rect x="-2" y="-40" width="4" height="40" fill="#7A5530"/><rect x="-36" y="-58" width="72" height="22" rx="4" fill="#F7F0DC" stroke="#4A3020" stroke-width="1.5"/><text x="0" y="-42.5" text-anchor="middle" font-size="11" font-weight="700" fill="#4A3020">城郊菜圃 →</text></g>`);/* 206 */
   bg.sort((a,b)=>a.y-b.y);fg.sort((a,b)=>a.y-b.y);
   townFg=fg.map(o=>o.h).join('');townFgOn=true;
   try{const F=document.getElementById('fgLayer');if(F)F.innerHTML=townFg}catch(e){}
@@ -6428,12 +6487,13 @@ function marketWorld(hl){
 }
 /* 走路：碰撞照地區地圖（regBlocked），撞到沿邊緣滑開；從南邊拱門走出去回農場 */
 function townMove(m,dx,dy){
-  const M=regPrep('town','plaza'),nx=m.x+dx,ny=m.y+dy;
-  if(regExitAt(M,nx,ny)){goFarm();return}
+  const M=townMap==='plaza'?regPrep('town','plaza'):townSubM(),nx=m.x+dx,ny=m.y+dy;
+  {const e=regExitAt(M,nx,ny);if(e){if(e.to==='farm')goFarm();else townMapGo(e.to);return}}/* 206：往菜圃、回廣場、出小木屋 */
   if(regBlocked(M,m.x,m.y)){if(!(nx<M.B.x0||nx>M.B.x1||ny<M.B.y0||ny>M.B.y1)){m.x=nx;m.y=ny}return}
   if(!regBlocked(M,nx,ny)){m.x=nx;m.y=ny}else if(!regBlocked(M,nx,m.y))m.x=nx;else if(!regBlocked(M,m.x,ny))m.y=ny;
+  if(townMap!=='plaza')townSubTick();/* 206：門口的按鈕 */
 }
-function townNearest(m){
+function townNearest(m){if(townMap!=='plaza')return null;/* 206：子地圖沒有攤位、建築、NPC */
   let best=null,bd=1e9;
   STALLS.forEach(([x,y],i)=>{const d=Math.hypot(x-m.x,(y+22-m.y)*1.3);if(d<bd){bd=d;best={t:'stall',i}}});
   for(const b of TOWN_BLD){const [fx,fy]=townFront(b),d=Math.hypot(fx-m.x,(fy-m.y)*1.3);if(d<bd){bd=d;best={t:'bld',id:b.id}}}
@@ -7920,7 +7980,7 @@ document.getElementById('exploreBody').addEventListener('click',e=>{const b=e.ta
 function goMarket(){try{bossLeave()}catch(e){}/* 135 */
   if(myLv()<LV_TOWN&&!mq2Cur()){/* 116：序章從教會開始，劇情進行中不擋 */toast(`城鎮 Lv ${LV_TOWN} 開放（你現在 Lv ${myLv()}）。收成、雜交、發現新的樣子都能得到經驗`,4500);return}
   if(viewing){if(viewing.unsub)viewing.unsub();viewing=null}
-  tripSave();pHP=pMax();/* 131 */selDecor=null;renderDecoBar();scene='market';{const a=regArrival('town','plaza','farm');marketMe={x:a[0],y:a[1]}}hoverPlot=null;hoverStall=null;hoverTown=null;regPreload('town');
+  tripSave();pHP=pMax();/* 131 */selDecor=null;renderDecoBar();scene='market';townMap='plaza';WORLD.market.W=800;WORLD.market.H=1240;/* 206 */{const a=regArrival('town','plaza','farm');marketMe={x:a[0],y:a[1]}}hoverPlot=null;hoverStall=null;hoverTown=null;regPreload('town');
   joinFarm('town');/* 15b：多人頻道改成 town（32.1） */renderHUD();renderWorld();renderChars();updateCam();refreshAct();
   toast('來到城鎮了！');mqEv('town');
 }
@@ -10422,7 +10482,7 @@ function handleTap(e,cx,cy){
     if(scene==='farm'&&!viewing&&!g2){const [gx,gy]=gatePos();if(Math.hypot(w.x-gx,w.y-gy)<60){openGatePop();return}}/* 36.8 F */
     if(!g2&&!st2&&!ie2&&!we2){const [gx,gy]=gatePos();if(Math.hypot(w.x-gx,w.y-gy)<60){const go=()=>{scene==='farm'?goMarket():goFarm()},m=curMe();if(Math.hypot(m.x-gx,m.y-gy)<56)go();else walkTo(gx,gy-10,go);return}}/* 14h：大門直接點 */
     if(scene==='explore'){{const rg=t&&t.closest&&t.closest('[data-reg]');if(rg&&!we2&&!ie2){regTap(rg.dataset.reg);return}}if(we2){const w=exVisiblePlants().find(x=>x.key===we2.dataset.wp);if(w){const m=curMe();if(Math.hypot(w.x-m.x,w.y-m.y)<90)openWp(w);else walkTo(w.x,w.y+10,()=>openWp(w))}return}if(ie2){const it=exVisibleItems().find(x=>x.key===ie2.dataset.item);if(it){const m=curMe();if(Math.hypot(it.x-m.x,it.y-m.y)<80)pickItem(it);else walkTo(it.x,it.y+6,()=>pickItem(it))}}return}
-    if(scene==='market'){if(st2){openStall(+st2.dataset.stall);return}const bd2=t&&t.closest&&t.closest('[data-bld]'),np2=t&&t.closest&&t.closest('[data-npc]');if(np2){townGo('npc',np2.dataset.npc);return}if(bd2){townGo('bld',bd2.dataset.bld);return}return}
+    if(scene==='market'){{const hg=t&&t.closest&&t.closest('[data-hutgo]'),hs=t&&t.closest&&t.closest('[data-hutsee]');if(hg){townDoorTap(hg.dataset.hutgo);return}if(hs){hutInspect(hs.dataset.hutsee);return}if(townMap!=='plaza')return}/* 206 */if(st2){openStall(+st2.dataset.stall);return}const bd2=t&&t.closest&&t.closest('[data-bld]'),np2=t&&t.closest&&t.closest('[data-npc]');if(np2){townGo('npc',np2.dataset.npc);return}if(bd2){townGo('bld',bd2.dataset.bld);return}return}
     if(viewing){if(g2){const p=viewing.st&&viewing.st.plots[+g2.dataset.plot];if(p)openFriendPlot(p)}return}
     if(g2)openPlot(+g2.dataset.plot);
     return;
